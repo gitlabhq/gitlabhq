@@ -41,10 +41,6 @@ module Mutations
                                                    params: args).execute
         { achievement: result.payload, errors: result.errors }
       end
-
-      def find_object(id:)
-        GitlabSchema.object_from_id(id, expected_type: ::Namespace)
-      end
     end
   end
 end

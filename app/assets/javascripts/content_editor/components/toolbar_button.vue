@@ -87,7 +87,7 @@ export default {
       :aria-label="label"
       :title="label"
       :icon="iconName"
-      class="gl-mr-3"
+      class="gl-mr-2"
       @click="execute"
     />
   </editor-state-observer>

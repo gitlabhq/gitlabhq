@@ -1,8 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Terraform limits **(FREE SELF)**
@@ -15,8 +14,7 @@ state file version, and is checked whenever a new version is created.
 
 To add a storage limit:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Terraform limits**.
 1. Enter a size limit in bytes. Set to `0` to allow files of unlimited size.

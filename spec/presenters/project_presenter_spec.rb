@@ -228,12 +228,8 @@ RSpec.describe ProjectPresenter do
     let_it_be(:project) { create(:project, :empty_repo) }
 
     describe '#storage_anchor_data' do
-      it 'returns storage data' do
-        expect(presenter.storage_anchor_data).to have_attributes(
-          is_link: true,
-          label: a_string_including('0 B'),
-          link: nil
-        )
+      it 'does not return storage data' do
+        expect(presenter.storage_anchor_data).to be_nil
       end
     end
 
@@ -282,12 +278,8 @@ RSpec.describe ProjectPresenter do
     let(:presenter) { described_class.new(project, current_user: user) }
 
     describe '#storage_anchor_data' do
-      it 'returns storage data without usage quotas link for non-admin users' do
-        expect(presenter.storage_anchor_data).to have_attributes(
-          is_link: true,
-          label: a_string_including('0 B'),
-          link: nil
-        )
+      it 'does not return storage data for non-admin users' do
+        expect(presenter.storage_anchor_data).to be(nil)
       end
 
       it 'returns storage data with usage quotas link for admin users' do
@@ -428,6 +420,10 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#new_file_anchor_data' do
+      before do
+        stub_feature_flags(project_overview_reorg: false)
+      end
+
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
@@ -751,6 +747,7 @@ RSpec.describe ProjectPresenter do
     subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
 
     before do
+      stub_feature_flags(project_overview_reorg: false)
       allow(project).to receive(:auto_devops_enabled?).and_return(false)
     end
 

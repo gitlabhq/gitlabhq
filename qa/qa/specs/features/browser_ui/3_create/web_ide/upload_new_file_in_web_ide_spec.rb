@@ -30,7 +30,7 @@ module QA
         it "verifies it successfully uploads and commits to a MR" do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.upload_file(file_path)
-            ide.commit_and_push(file_name)
+            ide.commit_and_push_to_new_branch(file_name)
 
             expect(ide).to have_message('Success! Your changes have been committed.')
 

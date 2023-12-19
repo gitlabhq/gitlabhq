@@ -332,6 +332,16 @@ describe('import_projects store mutations', () => {
     });
   });
 
+  describe(`${types.SET_HAS_NEXT_PAGE}`, () => {
+    it('sets hasNextPage in pageInfo', () => {
+      const NEW_HAS_NEXT_PAGE = true;
+      state = { pageInfo: { hasNextPage: false } };
+
+      mutations[types.SET_HAS_NEXT_PAGE](state, NEW_HAS_NEXT_PAGE);
+      expect(state.pageInfo.hasNextPage).toBe(NEW_HAS_NEXT_PAGE);
+    });
+  });
+
   describe(`${types.CANCEL_IMPORT_SUCCESS}`, () => {
     const payload = { repoId: 1 };
 

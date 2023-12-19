@@ -41,6 +41,18 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
     expect(page).not_to have_selector('#js-dropdown-target-branch', visible: false)
   end
 
+  it 'disables releases filter' do
+    visit merge_requests_dashboard_path
+
+    expect(page).not_to have_selector('#js-dropdown-release', visible: false)
+  end
+
+  it 'disables environments filter' do
+    visit merge_requests_dashboard_path
+
+    expect(page).not_to have_selector('#js-dropdown-environment', visible: false)
+  end
+
   context 'new merge request dropdown' do
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
@@ -199,19 +211,19 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
     end
 
     it 'shows sorted merge requests' do
-      pajamas_sort_by(s_('SortOptions|Created date'))
+      pajamas_sort_by(s_('SortOptions|Priority'), from: s_('SortOptions|Created date'))
 
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
 
-      expect(find('.issues-filters')).to have_content('Created date')
+      expect(find('.issues-filters')).to have_content(s_('SortOptions|Priority'))
     end
 
     it 'keeps sorting merge requests after visiting Projects MR page' do
-      pajamas_sort_by(s_('SortOptions|Created date'))
+      pajamas_sort_by(s_('SortOptions|Priority'), from: s_('SortOptions|Created date'))
 
       visit project_merge_requests_path(project)
 
-      expect(find('.issues-filters')).to have_content('Created date')
+      expect(find('.issues-filters')).to have_content(s_('SortOptions|Priority'))
     end
   end
 

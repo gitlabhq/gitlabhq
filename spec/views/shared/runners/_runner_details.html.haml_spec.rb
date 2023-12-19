@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :runner_fleet do
+RSpec.describe 'shared/runners/_runner_details.html.haml', feature_category: :fleet_visibility do
   include PageLayoutHelper
 
   let_it_be(:runner) do

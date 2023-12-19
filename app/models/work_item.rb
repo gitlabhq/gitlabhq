@@ -12,8 +12,10 @@ class WorkItem < Issue
   self.inheritance_column = :_type_disabled
 
   belongs_to :namespace, inverse_of: :work_items
+
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
+  has_one :dates_source, class_name: 'WorkItems::DatesSource', foreign_key: 'issue_id', inverse_of: :work_item
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -23,7 +25,6 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
-  scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
   scope :with_confidentiality_check, ->(user) {
     confidential_query = <<~SQL
@@ -37,6 +38,10 @@ class WorkItem < Issue
   }
 
   class << self
+    def find_by_namespace_and_iid!(namespace, iid)
+      find_by!(namespace: namespace, iid: iid)
+    end
+
     def assignee_association_name
       'issue'
     end

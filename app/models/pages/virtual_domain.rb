@@ -17,11 +17,7 @@ module Pages
     end
 
     def lookup_paths
-      projects
-        .map { |project| lookup_paths_for(project) }
-        .select(&:source) # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/328715
-        .sort_by(&:prefix)
-        .reverse
+      projects.flat_map { |project| lookup_paths_for(project) }
     end
 
     private
@@ -29,7 +25,26 @@ module Pages
     attr_reader :projects, :trim_prefix, :domain
 
     def lookup_paths_for(project)
-      Pages::LookupPath.new(project, trim_prefix: trim_prefix, domain: domain)
+      deployments_for(project).map do |deployment|
+        Pages::LookupPath.new(
+          deployment: deployment,
+          trim_prefix: trim_prefix,
+          domain: domain)
+      end
+    end
+
+    def deployments_for(project)
+      if ::Gitlab::Pages.multiple_versions_enabled_for?(project)
+        project.active_pages_deployments
+      else
+        # project.active_pages_deployments is already loaded from the database,
+        # so finding from the array to avoid N+1
+        project
+          .active_pages_deployments
+          .to_a
+          .find { |deployment| deployment.path_prefix.blank? }
+          .then { |deployment| [deployment] }
+      end
     end
   end
 end

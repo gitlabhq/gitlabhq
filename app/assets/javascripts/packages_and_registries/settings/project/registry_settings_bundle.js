@@ -23,6 +23,7 @@ export default () => {
     helpPagePath,
     showContainerRegistrySettings,
     showPackageRegistrySettings,
+    showDependencyProxySettings,
   } = el.dataset;
   return new Vue({
     el,
@@ -40,6 +41,7 @@ export default () => {
       helpPagePath,
       showContainerRegistrySettings: parseBoolean(showContainerRegistrySettings),
       showPackageRegistrySettings: parseBoolean(showPackageRegistrySettings),
+      showDependencyProxySettings: parseBoolean(showDependencyProxySettings),
     },
     render(createElement) {
       return createElement('registry-settings-app', {});

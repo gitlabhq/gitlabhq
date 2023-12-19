@@ -9,6 +9,8 @@ module Ci
     include Ci::Metadatable
     extend ::Gitlab::Utils::Override
 
+    self.allow_legacy_sti_class = true
+
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
 
@@ -29,6 +31,12 @@ module Ci
       needs = Ci::BuildNeed.scoped_build.select(1)
       needs = needs.where(name: names) if names
       where('NOT EXISTS (?)', needs)
+    end
+
+    scope :not_interruptible, -> do
+      joins(:metadata).where.not(
+        Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) }
+      )
     end
 
     state_machine :status do

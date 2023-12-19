@@ -18,6 +18,8 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidGitlabInstanceChecks, feature_category
         ::Gitlab.com?
         Gitlab::CurrentSettings.should_check_namespace_plan?
         ::Gitlab::CurrentSettings.should_check_namespace_plan?
+        Gitlab::Saas.enabled?
+        ::Gitlab::Saas.enabled?
       ]
     end
 

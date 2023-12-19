@@ -13,7 +13,7 @@ module Gitlab
               Gitlab::Database::Migrations::PgBackendPid.say(conn)
 
               yield(conn)
-
+            ensure
               Gitlab::Database::Migrations::PgBackendPid.say(conn)
             end
           end

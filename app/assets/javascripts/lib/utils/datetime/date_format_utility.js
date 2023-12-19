@@ -377,28 +377,50 @@ export const dateToTimeInputValue = (date) => {
 
 export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, months }) => {
   if (months) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}M'), {
-      value: roundToNearestHalf(months),
-    });
+    const value = roundToNearestHalf(months);
+    return sprintf(
+      n__('ValueStreamAnalytics|%{value} month', 'ValueStreamAnalytics|%{value} months', value),
+      {
+        value,
+      },
+    );
   }
   if (weeks) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}w'), {
-      value: roundToNearestHalf(weeks),
-    });
+    const value = roundToNearestHalf(weeks);
+    return sprintf(
+      n__('ValueStreamAnalytics|%{value} week', 'ValueStreamAnalytics|%{value} weeks', value),
+      {
+        value,
+      },
+    );
   }
   if (days) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}d'), {
-      value: roundToNearestHalf(days),
-    });
+    const value = roundToNearestHalf(days);
+    return sprintf(
+      n__('ValueStreamAnalytics|%{value} day', 'ValueStreamAnalytics|%{value} days', value),
+      {
+        value,
+      },
+    );
   }
   if (hours) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}h'), { value: hours });
+    return sprintf(
+      n__('ValueStreamAnalytics|%{value} hour', 'ValueStreamAnalytics|%{value} hours', hours),
+      {
+        value: hours,
+      },
+    );
   }
   if (minutes) {
-    return sprintf(s__('ValueStreamAnalytics|%{value}m'), { value: minutes });
+    return sprintf(
+      n__('ValueStreamAnalytics|%{value} minute', 'ValueStreamAnalytics|%{value} minutes', minutes),
+      {
+        value: minutes,
+      },
+    );
   }
   if (seconds) {
-    return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
+    return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1 minute'), { ALLOWED_TAGS: [] }));
   }
   return '-';
 };

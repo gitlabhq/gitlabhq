@@ -111,4 +111,30 @@ RSpec.describe 'projects/edit' do
       expect(rendered).to have_content(_('GitLab Pages has moved'))
     end
   end
+
+  describe 'notifications on renaming the project path' do
+    context 'when the GitlabAPI is supported' do
+      before do
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+      end
+
+      it 'displays the warning regarding the container registry' do
+        render
+
+        expect(rendered).to have_content('new uploads to the container registry are blocked')
+      end
+    end
+
+    context 'when the GitlabAPI is not supported' do
+      before do
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+      end
+
+      it 'does not display the warning regarding the container registry' do
+        render
+
+        expect(rendered).not_to have_content('new uploads to the container registry are blocked')
+      end
+    end
+  end
 end

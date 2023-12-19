@@ -49,7 +49,6 @@ describe('Work items root component', () => {
 
     expect(findWorkItemDetail().props()).toEqual({
       isModal: false,
-      workItemParentId: null,
       workItemIid: '1',
     });
   });

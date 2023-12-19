@@ -65,141 +65,182 @@ export const mockContentSection = [
   },
 ];
 
-export const mockJobLog = [...mockJobLines, ...mockEmptySection, ...mockContentSection];
-
-export const mockJobLogLineCount = 6; // `text` entries in mockJobLog
-
-export const originalTrace = [
+export const mockJobLogEnd = [
   {
-    offset: 1,
-    content: [
-      {
-        text: 'Downloading',
-      },
-    ],
+    offset: 1008,
+    content: [{ text: 'Job succeeded' }],
   },
 ];
 
-export const regularIncremental = [
-  {
-    offset: 2,
-    content: [
-      {
-        text: 'log line',
-      },
-    ],
-  },
+export const mockJobLog = [
+  ...mockJobLines,
+  ...mockEmptySection,
+  ...mockContentSection,
+  ...mockJobLogEnd,
 ];
 
-export const regularIncrementalRepeated = [
+export const mockJobLogLineCount = 7; // `text` entries in mockJobLog
+
+export const mockContentSectionClosed = [
   {
-    offset: 1,
+    offset: 0,
     content: [
       {
-        text: 'log line',
+        text: 'Using Docker executor with image dev.gitlab.org3',
       },
     ],
-  },
-];
-
-export const headerTrace = [
-  {
-    offset: 1,
+    section: 'mock-closed-section',
     section_header: true,
-    content: [
-      {
-        text: 'log line',
-      },
-    ],
-    section: 'section',
+    section_options: { collapsed: true },
+  },
+  {
+    offset: 1003,
+    content: [{ text: 'Docker executor with image registry.gitlab.com ...' }],
+    section: 'mock-closed-section',
+  },
+  {
+    offset: 1004,
+    content: [{ text: 'Starting service ...', style: 'term-fg-l-green' }],
+    section: 'mock-closed-section',
+  },
+  {
+    offset: 1005,
+    content: [],
+    section: 'mock-closed-section',
+    section_footer: true,
+    section_duration: '00:09',
   },
 ];
 
-export const headerTraceIncremental = [
+export const mockContentSectionHiddenDuration = [
   {
-    offset: 1,
+    offset: 0,
+    content: [{ text: 'Line 1' }],
+    section: 'mock-hidden-duration-section',
     section_header: true,
-    content: [
-      {
-        text: 'updated log line',
-      },
-    ],
-    section: 'section',
+    section_options: { hide_duration: 'true' },
+  },
+  {
+    offset: 1001,
+    content: [{ text: 'Line 2' }],
+    section: 'mock-hidden-duration-section',
+  },
+  {
+    offset: 1002,
+    content: [],
+    section: 'mock-hidden-duration-section',
+    section_footer: true,
+    section_duration: '00:09',
   },
 ];
 
-export const collapsibleTrace = [
+export const mockContentSubsection = [
   {
-    offset: 1,
+    offset: 0,
+    content: [{ text: 'Line 1' }],
+    section: 'mock-section',
     section_header: true,
-    content: [
-      {
-        text: 'log line',
-      },
-    ],
-    section: 'section',
   },
   {
-    offset: 2,
-    content: [
-      {
-        text: 'log line',
-      },
-    ],
-    section: 'section',
+    offset: 1002,
+    content: [{ text: 'Line 2 - section content' }],
+    section: 'mock-section',
+  },
+  {
+    offset: 1003,
+    content: [{ text: 'Line 3 - sub section header' }],
+    section: 'sub-section',
+    section_header: true,
+  },
+  {
+    offset: 1004,
+    content: [{ text: 'Line 4 - sub section content' }],
+    section: 'sub-section',
+  },
+  {
+    offset: 1005,
+    content: [{ text: 'Line 5 - sub sub section header with no content' }],
+    section: 'sub-sub-section',
+    section_header: true,
+  },
+  {
+    offset: 1006,
+    content: [],
+    section: 'sub-sub-section',
+    section_footer: true,
+    section_duration: '00:00',
+  },
+
+  {
+    offset: 1007,
+    content: [{ text: 'Line 6 - sub section content 2' }],
+    section: 'sub-section',
+  },
+  {
+    offset: 1008,
+    content: [],
+    section: 'sub-section',
+    section_footer: true,
+    section_duration: '00:29',
+  },
+  {
+    offset: 1009,
+    content: [{ text: 'Line 7 - section content' }],
+    section: 'mock-section',
+  },
+  {
+    offset: 1010,
+    content: [],
+    section: 'mock-section',
+    section_footer: true,
+    section_duration: '00:59',
+  },
+  {
+    offset: 1011,
+    content: [{ text: 'Job succeeded' }],
   },
 ];
 
-export const collapsibleTraceIncremental = [
+export const mockTruncatedBottomSection = [
+  // only the top of a section is obtained, such as when a job gets cancelled
   {
-    offset: 2,
+    offset: 1004,
     content: [
       {
-        text: 'updated log line',
+        text: 'Starting job',
       },
     ],
-    section: 'section',
+    section: 'mock-section',
+    section_header: true,
+  },
+  {
+    offset: 1005,
+    content: [{ text: 'Job interrupted' }],
+    section: 'mock-section',
   },
 ];
 
-export const collapsibleSectionClosed = {
-  offset: 5,
-  section_header: true,
-  isHeader: true,
-  isClosed: true,
-  line: {
-    content: [{ text: 'foo' }],
-    section: 'prepare-script',
-    lineNumber: 1,
+export const mockTruncatedTopSection = [
+  // only the bottom half of a section is obtained, such as when jobs are cut off due to large sizes
+  {
+    offset: 1008,
+    content: [{ text: 'Line N - incomplete section content' }],
+    section: 'mock-section',
   },
-  section_duration: '00:03',
-  lines: [
-    {
-      offset: 80,
-      content: [{ text: 'this is a collapsible nested section' }],
-      section: 'prepare-script',
-      lineNumber: 2,
-    },
-  ],
-};
-
-export const collapsibleSectionOpened = {
-  offset: 5,
-  section_header: true,
-  isHeader: true,
-  isClosed: false,
-  line: {
-    content: [{ text: 'foo' }],
-    section: 'prepare-script',
-    lineNumber: 1,
+  {
+    offset: 1009,
+    content: [{ text: 'Line N+1 - incomplete section content' }],
+    section: 'mock-section',
   },
-  section_duration: '00:03',
-  lines: [
-    {
-      offset: 80,
-      content: [{ text: 'this is a collapsible nested section' }],
-      section: 'prepare-script',
-      lineNumber: 2,
-    },
-  ],
-};
+  {
+    offset: 1010,
+    content: [],
+    section: 'mock-section',
+    section_footer: true,
+    section_duration: '00:59',
+  },
+  {
+    offset: 1011,
+    content: [{ text: 'Job succeeded' }],
+  },
+];

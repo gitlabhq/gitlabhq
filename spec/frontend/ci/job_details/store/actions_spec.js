@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import {
-  setJobLogOptions,
+  init,
   clearEtagPoll,
   stopPolling,
   requestJob,
@@ -15,7 +15,6 @@ import {
   fetchJobLog,
   startPollingJobLog,
   stopPollingJobLog,
-  receiveJobLogSuccess,
   receiveJobLogError,
   toggleCollapsibleLine,
   requestJobsForStage,
@@ -25,11 +24,24 @@ import {
   hideSidebar,
   showSidebar,
   toggleSidebar,
+  receiveTestSummarySuccess,
+  requestTestSummary,
+  enterFullscreenSuccess,
+  exitFullscreenSuccess,
+  fullScreenContainerSetUpResult,
 } from '~/ci/job_details/store/actions';
+import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+
 import * as types from '~/ci/job_details/store/mutation_types';
 import state from '~/ci/job_details/store/state';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { testSummaryData } from 'jest/ci/jobs_mock_data';
+
+jest.mock('~/lib/utils/scroll_utils');
+
+const mockJobEndpoint = '/group1/project1/-/jobs/99.json';
+const mockLogEndpoint = '/group1/project1/-/jobs/99/trace';
 
 describe('Job State actions', () => {
   let mockedState;
@@ -38,22 +50,28 @@ describe('Job State actions', () => {
     mockedState = state();
   });
 
-  describe('setJobLogOptions', () => {
+  describe('init', () => {
     it('should commit SET_JOB_LOG_OPTIONS mutation', () => {
       return testAction(
-        setJobLogOptions,
-        { endpoint: '/group1/project1/-/jobs/99.json', pagePath: '/group1/project1/-/jobs/99' },
+        init,
+        {
+          jobEndpoint: mockJobEndpoint,
+          logEndpoint: mockLogEndpoint,
+          testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
+        },
         mockedState,
         [
           {
             type: types.SET_JOB_LOG_OPTIONS,
             payload: {
-              endpoint: '/group1/project1/-/jobs/99.json',
-              pagePath: '/group1/project1/-/jobs/99',
+              fullScreenAPIAvailable: false,
+              jobEndpoint: mockJobEndpoint,
+              logEndpoint: mockLogEndpoint,
+              testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
             },
           },
         ],
-        [],
+        [{ type: 'fetchJob' }],
       );
     });
   });
@@ -96,7 +114,7 @@ describe('Job State actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.jobEndpoint = `${TEST_HOST}/endpoint.json`;
+      mockedState.jobEndpoint = mockJobEndpoint;
       mock = new MockAdapter(axios);
     });
 
@@ -108,9 +126,7 @@ describe('Job State actions', () => {
 
     describe('success', () => {
       it('dispatches requestJob and receiveJobSuccess', () => {
-        mock
-          .onGet(`${TEST_HOST}/endpoint.json`)
-          .replyOnce(HTTP_STATUS_OK, { id: 121212, name: 'karma' });
+        mock.onGet(mockJobEndpoint).replyOnce(HTTP_STATUS_OK, { id: 121212, name: 'karma' });
 
         return testAction(
           fetchJob,
@@ -200,7 +216,7 @@ describe('Job State actions', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.jobLogEndpoint = `${TEST_HOST}/endpoint`;
+      mockedState.logEndpoint = mockLogEndpoint;
       mock = new MockAdapter(axios);
     });
 
@@ -211,46 +227,46 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', () => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, {
-          html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
-          complete: true,
+      let jobLogPayload;
+
+      beforeEach(() => {
+        isScrolledToBottom.mockReturnValue(false);
+      });
+
+      describe('when job is complete', () => {
+        beforeEach(() => {
+          jobLogPayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: true,
+          };
+
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
-        return testAction(
-          fetchJobLog,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'toggleScrollisInBottom',
-              payload: true,
-            },
-            {
-              payload: {
-                html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
-                complete: true,
+        it('commits RECEIVE_JOB_LOG_SUCCESS, dispatches stopPollingJobLog and requestTestSummary', () => {
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
               },
-              type: 'receiveJobLogSuccess',
-            },
-            {
-              type: 'stopPollingJobLog',
-            },
-          ],
-        );
+            ],
+            [{ type: 'stopPollingJobLog' }, { type: 'requestTestSummary' }],
+          );
+        });
       });
 
       describe('when job is incomplete', () => {
-        let jobLogPayload;
-
         beforeEach(() => {
           jobLogPayload = {
             html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
             complete: false,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
         });
 
         it('dispatches startPollingJobLog', () => {
@@ -258,12 +274,13 @@ describe('Job State actions', () => {
             fetchJobLog,
             null,
             mockedState,
-            [],
             [
-              { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
-              { type: 'startPollingJobLog' },
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
             ],
+            [{ type: 'startPollingJobLog' }],
           );
         });
 
@@ -274,10 +291,44 @@ describe('Job State actions', () => {
             fetchJobLog,
             null,
             mockedState,
-            [],
             [
-              { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [],
+          );
+        });
+      });
+
+      describe('when user scrolled to the bottom', () => {
+        beforeEach(() => {
+          isScrolledToBottom.mockReturnValue(true);
+
+          jobLogPayload = {
+            html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
+            complete: true,
+          };
+
+          mock.onGet(mockLogEndpoint).replyOnce(HTTP_STATUS_OK, jobLogPayload);
+        });
+
+        it('should auto scroll to bottom by dispatching scrollBottom', () => {
+          return testAction(
+            fetchJobLog,
+            null,
+            mockedState,
+            [
+              {
+                type: types.RECEIVE_JOB_LOG_SUCCESS,
+                payload: jobLogPayload,
+              },
+            ],
+            [
+              { type: 'stopPollingJobLog' },
+              { type: 'requestTestSummary' },
+              { type: 'scrollBottom' },
             ],
           );
         });
@@ -286,7 +337,7 @@ describe('Job State actions', () => {
 
     describe('server error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        mock.onGet(mockLogEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       });
 
       it('dispatches requestJobLog and receiveJobLogError', () => {
@@ -306,7 +357,7 @@ describe('Job State actions', () => {
 
     describe('unexpected error', () => {
       beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(() => {
+        mock.onGet(mockLogEndpoint).reply(() => {
           throw new Error('an error');
         });
       });
@@ -386,18 +437,6 @@ describe('Job State actions', () => {
         [],
       );
       expect(window.clearTimeout).toHaveBeenCalledWith(jobLogTimeout);
-    });
-  });
-
-  describe('receiveJobLogSuccess', () => {
-    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation', () => {
-      return testAction(
-        receiveJobLogSuccess,
-        'hello world',
-        mockedState,
-        [{ type: types.RECEIVE_JOB_LOG_SUCCESS, payload: 'hello world' }],
-        [],
-      );
     });
   });
 
@@ -512,6 +551,97 @@ describe('Job State actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_JOBS_FOR_STAGE_ERROR }],
+        [],
+      );
+    });
+  });
+
+  describe('requestTestSummarySuccess', () => {
+    it('should commit RECEIVE_TEST_SUMMARY_SUCCESS mutation', () => {
+      return testAction(
+        receiveTestSummarySuccess,
+        { total: {}, test_suites: [] },
+        mockedState,
+        [{ type: types.RECEIVE_TEST_SUMMARY_SUCCESS, payload: { total: {}, test_suites: [] } }],
+        [],
+      );
+    });
+  });
+
+  describe('requestTestSummary', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      mock.restore();
+      stopPolling();
+      clearEtagPoll();
+    });
+
+    describe('success', () => {
+      it('dispatches receiveTestSummarySuccess', () => {
+        mockedState.testReportSummaryUrl = `${TEST_HOST}/test_report_summary.json`;
+
+        mock
+          .onGet(`${TEST_HOST}/test_report_summary.json`)
+          .replyOnce(HTTP_STATUS_OK, testSummaryData);
+
+        return testAction(
+          requestTestSummary,
+          null,
+          mockedState,
+          [{ type: types.RECEIVE_TEST_SUMMARY_COMPLETE }],
+          [
+            {
+              payload: testSummaryData,
+              type: 'receiveTestSummarySuccess',
+            },
+          ],
+        );
+      });
+    });
+
+    describe('without testReportSummaryUrl', () => {
+      it('does not dispatch any actions or mutations', () => {
+        return testAction(requestTestSummary, null, mockedState, [], []);
+      });
+    });
+  });
+
+  describe('enterFullscreenSuccess', () => {
+    it('should commit ENTER_FULLSCREEN_SUCCESS mutation', () => {
+      return testAction(
+        enterFullscreenSuccess,
+        {},
+        mockedState,
+        [{ type: types.ENTER_FULLSCREEN_SUCCESS }],
+        [],
+      );
+    });
+  });
+
+  describe('exitFullscreenSuccess', () => {
+    it('should commit EXIT_FULLSCREEN_SUCCESS mutation', () => {
+      return testAction(
+        exitFullscreenSuccess,
+        {},
+        mockedState,
+        [{ type: types.EXIT_FULLSCREEN_SUCCESS }],
+        [],
+      );
+    });
+  });
+
+  describe('fullScreenContainerSetUpResult', () => {
+    it('should commit FULL_SCREEN_CONTAINER_SET_UP mutation', () => {
+      return testAction(
+        fullScreenContainerSetUpResult,
+        {},
+        mockedState,
+        [{ type: types.FULL_SCREEN_CONTAINER_SET_UP, payload: {} }],
         [],
       );
     });

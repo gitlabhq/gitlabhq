@@ -9,10 +9,7 @@ class Event < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
   include ShaAttribute
-  include IgnorableColumns
   include EachBatch
-
-  ignore_column :target_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,
@@ -82,23 +79,38 @@ class Event < ApplicationRecord
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push_action?
-  after_create ->(event) { UserInteractedProject.track(event) }
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :for_wiki_page, -> { where(target_type: 'WikiPage::Meta') }
   scope :for_design, -> { where(target_type: 'DesignManagement::Design') }
   scope :for_issue, -> { where(target_type: ISSUE_TYPES) }
+  scope :for_merge_request, -> { where(target_type: 'MergeRequest') }
   scope :for_fingerprint, ->(fingerprint) do
     fingerprint.present? ? where(fingerprint: fingerprint) : none
   end
   scope :for_action, ->(action) { where(action: action) }
+  scope :created_between, ->(start_time, end_time) { where(created_at: start_time..end_time) }
+  scope :count_by_dates, ->(date_interval) { group("DATE(created_at + #{date_interval})").count }
+
+  scope :contributions, -> do
+    contribution_actions = [actions[:pushed], actions[:commented]]
+
+    contributable_target_types = %w[MergeRequest Issue WorkItem]
+    target_contribution_actions = [actions[:created], actions[:closed], actions[:merged], actions[:approved]]
+
+    where(
+      'action IN (?) OR (target_type IN (?) AND action IN (?))',
+      contribution_actions,
+      contributable_target_types, target_contribution_actions
+    )
+  end
 
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
-    includes(:author, :project, project: [:project_feature, :import_data, :namespace])
-      .preload(:target, :push_event_payload)
+    includes(:project, project: [:project_feature, :import_data, :namespace])
+      .preload(:author, :target, :push_event_payload)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
@@ -131,15 +143,6 @@ class Event < ApplicationRecord
       else
         Event
       end
-    end
-
-    # Update Gitlab::ContributionsCalendar#activity_dates if this changes
-    def contributions
-      where(
-        'action IN (?) OR (target_type IN (?) AND action IN (?))',
-        [actions[:pushed], actions[:commented]],
-        %w[MergeRequest Issue WorkItem], [actions[:created], actions[:closed], actions[:merged]]
-      )
     end
 
     def limit_recent(limit = 20, offset = nil)

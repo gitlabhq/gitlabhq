@@ -1,8 +1,8 @@
 <script>
 import { GlAvatar, GlAvatarLink, GlBadge } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isNumeric } from '~/lib/utils/number_utils';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
@@ -48,9 +48,6 @@ export default {
     entityId() {
       return getIdFromGraphQLId(this.resource.id);
     },
-    fullPath() {
-      return `${this.rootNamespace.fullPath}/${this.rootNamespace.name}`;
-    },
     hasLatestVersion() {
       return this.latestVersion?.tagName;
     },
@@ -60,13 +57,11 @@ export default {
     latestVersion() {
       return this.resource.latestVersion;
     },
-    rootNamespace() {
-      return this.resource.rootNamespace;
-    },
     versionBadgeText() {
-      return isNumeric(this.latestVersion.tagName)
-        ? `v${this.latestVersion.tagName}`
-        : this.latestVersion.tagName;
+      return this.latestVersion.tagName;
+    },
+    webPath() {
+      return cleanLeadingSeparator(this.resource?.webPath);
     },
   },
 };
@@ -89,7 +84,7 @@ export default {
         class="gl-display-flex gl-flex-direction-column gl-align-items-flex-start gl-justify-content-center"
       >
         <div class="gl-font-sm gl-text-secondary">
-          {{ fullPath }}
+          {{ webPath }}
         </div>
         <span class="gl-display-flex">
           <div class="gl-font-lg gl-font-weight-bold">{{ resource.name }}</div>

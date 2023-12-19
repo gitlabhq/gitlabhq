@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Notification emails **(FREE ALL)**
@@ -101,7 +101,7 @@ To select a notification level for a group, use either of these methods:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
-1. Locate the project in the **Groups** section.
+1. Locate the group in the **Groups** section.
 1. Select the desired [notification level](#notification-levels).
 
 Or:
@@ -120,7 +120,7 @@ You can use group notifications, for example, if you work freelance, and want to
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
-1. Locate the project in the **Groups** section.
+1. Locate the group in the **Groups** section.
 1. Select the desired email address.
 
 ### Change level of project notifications

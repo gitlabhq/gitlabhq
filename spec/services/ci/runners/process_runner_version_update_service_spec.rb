@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category: :runner_fleet do
+RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateService, feature_category: :fleet_visibility do
   subject(:service) { described_class.new(version) }
 
   let(:version) { '1.0.0' }

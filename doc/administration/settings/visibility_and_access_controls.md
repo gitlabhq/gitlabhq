@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Control access and visibility **(FREE SELF)**
@@ -13,8 +12,7 @@ specific controls on branches, projects, snippets, groups, and more.
 To access the visibility and access control options:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 
@@ -25,8 +23,7 @@ Instance-level protections for project creation define which roles can
 on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. For **Default project creation protection**, select the desired roles:
@@ -42,8 +39,7 @@ on the instance. To alter which roles have permission to create projects:
 By default both administrators and anyone with the **Owner** role can delete a project. To restrict project deletion to only administrators:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
@@ -80,8 +76,7 @@ then it gets automatically changed to `1` while also disabling deletion protecti
 To configure delayed project deletion:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
@@ -113,7 +108,7 @@ In GitLab 15.11 and later with the `always_perform_delayed_deletion` feature fla
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
-1. [Restore the project](../../user/project/settings/index.md#restore-a-project).
+1. [Restore the project](../../user/project/settings/migrate_projects.md#restore-a-project).
 1. Delete the project as described in the
    [Administering Projects page](../admin_area.md#administering-projects).
 
@@ -122,8 +117,7 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 To set the default [visibility levels for new projects](../../user/public_access.md):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default project visibility:
@@ -141,8 +135,7 @@ For more details on project visibility, see
 To set the default visibility levels for new [snippets](../../user/snippets.md):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default snippet visibility.
@@ -156,8 +149,7 @@ For more details on snippet visibility, read
 To set the default visibility levels for new groups:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired default group visibility:
@@ -173,6 +165,7 @@ For more details on group visibility, see
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649) in GitLab 16.3 to prevent restricting default project and group visibility, [with a flag](../feature_flags.md) named `prevent_visibility_restriction`. Disabled by default.
 > - `prevent_visibility_restriction` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) by default in GitLab 16.4.
+> - The flag `prevent_visibility_restriction` was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/433280) in GitLab 16.7.
 
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
@@ -181,8 +174,7 @@ the item you're changing.
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
@@ -211,8 +203,7 @@ The GitLab restrictions apply at the application level.
 To specify the enabled Git access protocols:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select the desired Git access protocols:
@@ -298,8 +289,7 @@ include the `10.0.0.0/24` range.
 To add a IP address range to the group-level allowlist:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:

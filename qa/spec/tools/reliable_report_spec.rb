@@ -18,10 +18,19 @@ describe QA::Tools::ReliableReport do
 
     let(:runs) do
       values = {
-        "name" => "stable spec",
+        "name" => "stable spec1",
+        "status" => "passed",
+        "file_path" => "some/spec.rb",
+        "stage" => "create",
+        "product_group" => "code_review",
+        "_time" => time
+      }
+      more_values = {
+        "name" => "stable spec2",
         "status" => "passed",
         "file_path" => "some/spec.rb",
         "stage" => "manage",
+        "product_group" => "import_and_integrate",
         "_time" => time
       }
       [
@@ -31,6 +40,14 @@ describe QA::Tools::ReliableReport do
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
+          ]
+        ),
+        instance_double(
+          "InfluxDB2::FluxTable",
+          records: [
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
           ]
         )
       ]
@@ -42,6 +59,17 @@ describe QA::Tools::ReliableReport do
         "status" => "failed",
         "file_path" => "some/spec.rb",
         "stage" => "create",
+        "product_group" => "code_review",
+        "failure_exception" => failure_message,
+        "job_url" => "https://job/url",
+        "_time" => time
+      }
+      more_values = {
+        "name" => "unstable spec",
+        "status" => "failed",
+        "file_path" => "some/spec.rb",
+        "stage" => "manage",
+        "product_group" => "import_and_integrate",
         "failure_exception" => failure_message,
         "job_url" => "https://job/url",
         "_time" => time
@@ -53,6 +81,14 @@ describe QA::Tools::ReliableReport do
             instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
             instance_double("InfluxDB2::FluxRecord", values: values),
             instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
+          ]
+        ),
+        instance_double(
+          "InfluxDB2::FluxTable",
+          records: [
+            instance_double("InfluxDB2::FluxRecord", values: { **more_values, "status" => "passed" }),
+            instance_double("InfluxDB2::FluxRecord", values: more_values),
+            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
           ]
         )
       ]
@@ -82,21 +118,20 @@ describe QA::Tools::ReliableReport do
           )
           |> filter(fn: (r) => r["_field"] == "job_url" or
             r["_field"] == "failure_exception" or
-            r["_field"] == "id"
+            r["_field"] == "id" or
+            r["_field"] == "failure_issue"
           )
           |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
           |> group(columns: ["name"])
       QUERY
     end
 
-    def markdown_section(summary, result, stage, type)
+    def expected_stage_markdown(result, stage, product_group, type)
       <<~SECTION.strip
-        #{summary_table(summary, type, true)}
-
-        ## #{stage} (1)
+        ## #{stage.capitalize} (1)
 
         <details>
-        <summary>Executions table</summary>
+        <summary>Executions table ~\"group::#{product_group}\" (1)</summary>
 
         #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
 
@@ -104,7 +139,7 @@ describe QA::Tools::ReliableReport do
       SECTION
     end
 
-    def summary_table(summary, type, markdown = false)
+    def expected_summary_table(summary, type, markdown = false)
       table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
     end
 
@@ -117,12 +152,12 @@ describe QA::Tools::ReliableReport do
       )
     end
 
-    def name_column(spec_name, exceptions_and_job_urls = {})
-      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_job_urls)}"
+    def name_column(spec_name, exceptions_and_related_urls = {})
+      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_related_urls)}"
     end
 
-    def exceptions_markdown(exceptions_and_job_urls)
-      exceptions_and_job_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://job/url)"
+    def exceptions_markdown(exceptions_and_related_urls)
+      exceptions_and_related_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://job/url)"
     end
 
     before do
@@ -241,28 +276,36 @@ describe QA::Tools::ReliableReport do
 
         let(:expected_issue_body) do
           <<~TXT.strip
-          [[_TOC_]]
+            [[_TOC_]]
 
-          # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
-          Total amount: **1**
+            Total amount: **2**
 
-          #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
+            #{expected_summary_table([['create', 1], ['manage', 1]], :stable, true)}
 
-          # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+            #{expected_stage_markdown([[name_column('stable spec1'), 3, 0, '0%']], 'create', 'code review', :stable)}
 
-          Total amount: **1**
+            #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
 
-          #{markdown_section([['create', 1]], [[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'create', 'unstable')}
+            # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+
+            Total amount: **2**
+
+            #{expected_summary_table([['create', 1], ['manage', 1]], :unstable, true)}
+
+            #{expected_stage_markdown([[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'create', 'code review', :unstable)}
+
+            #{expected_stage_markdown([[name_column('unstable spec', { failure_message => 'https://job/url' }), 3, 2, '66.67%']], 'manage', 'import and integrate', :unstable)}
           TXT
         end
 
         let(:expected_slack_text) do
           <<~TEXT
-              ```#{summary_table([['manage', 1]], 'stable')}```
-              ```#{summary_table([['create', 1]], 'unstable')}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :stable)}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :unstable)}```
 
-              #{issue_url}
+            #{issue_url}
           TEXT
         end
 
@@ -274,22 +317,26 @@ describe QA::Tools::ReliableReport do
 
         let(:expected_issue_body) do
           <<~TXT.strip
-          [[_TOC_]]
+            [[_TOC_]]
 
-          # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
 
-          Total amount: **1**
+            Total amount: **2**
 
-          #{markdown_section([['manage', 1]], [[name_column('stable spec'), 3, 0, '0%']], 'manage', 'stable')}
+            #{expected_summary_table([['create', 1], ['manage', 1]], :stable, true)}
+
+            #{expected_stage_markdown([[name_column('stable spec1'), 3, 0, '0%']], 'create', 'code review', :stable)}
+
+            #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
           TXT
         end
 
         let(:expected_slack_text) do
           <<~TEXT
-              ```#{summary_table([['manage', 1]], 'stable')}```
-              ```#{summary_table([], 'unstable')}```
+            ```#{expected_summary_table([['create', 1], ['manage', 1]], :stable)}```
+            ```#{expected_summary_table([], :unstable)}```
 
-              #{issue_url}
+            #{issue_url}
           TEXT
         end
 
@@ -325,6 +372,61 @@ describe QA::Tools::ReliableReport do
     it "returns false for disallowed failure" do
       expect(reliable_report.send(:allowed_failure?,
         %q([Unable to find css "[data-testid=\"user_action_dropdown\"]"]))).to be false
+    end
+  end
+
+  describe "#exceptions_and_related_urls" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    let(:failure_message) { "This is a failure exception" }
+    let(:job_url) { "https://example.com/job/url" }
+    let(:failure_issue_url) { "https://example.com/failure/issue" }
+
+    let(:records) do
+      [instance_double("InfluxDB2::FluxRecord", values: values)]
+    end
+
+    context "without failure_exception" do
+      let(:values) do
+        {
+          "failure_exception" => nil,
+          "job_url" => job_url,
+          "failure_issue" => failure_issue_url
+        }
+      end
+
+      it "returns an empty hash" do
+        expect(reliable_report.send(:exceptions_and_related_urls, records)).to be_empty
+      end
+
+      context "with failure_exception" do
+        context "without failure_issue" do
+          let(:values) do
+            {
+              "failure_exception" => failure_message,
+              "job_url" => job_url
+            }
+          end
+
+          it "returns job_url as value" do
+            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([job_url])
+          end
+        end
+
+        context "with failure_issue and job_url" do
+          let(:values) do
+            {
+              "failure_exception" => failure_message,
+              "failure_issue" => failure_issue_url,
+              "job_url" => job_url
+            }
+          end
+
+          it "returns failure_issue as value" do
+            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([failure_issue_url])
+          end
+        end
+      end
     end
   end
 end

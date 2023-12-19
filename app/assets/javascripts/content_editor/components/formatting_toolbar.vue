@@ -3,6 +3,7 @@ import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_t
 import { __, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import trackUIControl from '../services/track_ui_control';
+import HeaderDivider from '../../vue_shared/components/markdown/header_divider.vue';
 import ToolbarButton from './toolbar_button.vue';
 import ToolbarAttachmentButton from './toolbar_attachment_button.vue';
 import ToolbarTableButton from './toolbar_table_button.vue';
@@ -17,6 +18,7 @@ export default {
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
     CommentTemplatesDropdown,
+    HeaderDivider,
   },
   inject: {
     newCommentTemplatePath: { default: null },
@@ -73,14 +75,17 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base gl-justify-content-space-between"
+    class="gl-w-full gl-py-3 gl-row-gap-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
     data-testid="formatting-toolbar"
   >
-    <div class="gl-py-3 gl-display-flex gl-flex-wrap">
+    <div class="gl-display-flex">
       <toolbar-text-style-dropdown
         data-testid="text-styles"
         @execute="trackToolbarControlExecution"
       />
+      <header-divider />
+    </div>
+    <div v-if="codeSuggestionsEnabled" class="gl-display-flex">
       <toolbar-button
         v-if="codeSuggestionsEnabled"
         data-testid="code-suggestion"
@@ -91,22 +96,25 @@ export default {
         :show-active-state="false"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-button
-        data-testid="bold"
-        content-type="bold"
-        icon-name="bold"
-        editor-command="toggleBold"
-        :label="i18n.bold"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        data-testid="italic"
-        content-type="italic"
-        icon-name="italic"
-        editor-command="toggleItalic"
-        :label="i18n.italic"
-        @execute="trackToolbarControlExecution"
-      />
+      <header-divider />
+    </div>
+    <toolbar-button
+      data-testid="bold"
+      content-type="bold"
+      icon-name="bold"
+      editor-command="toggleBold"
+      :label="i18n.bold"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
+      data-testid="italic"
+      content-type="italic"
+      icon-name="italic"
+      editor-command="toggleItalic"
+      :label="i18n.italic"
+      @execute="trackToolbarControlExecution"
+    />
+    <div class="gl-display-flex">
       <toolbar-button
         data-testid="strike"
         content-type="strike"
@@ -115,48 +123,51 @@ export default {
         :label="i18n.strike"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-button
-        data-testid="blockquote"
-        content-type="blockquote"
-        icon-name="quote"
-        editor-command="toggleBlockquote"
-        :label="i18n.quote"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        data-testid="code"
-        content-type="code"
-        icon-name="code"
-        editor-command="toggleCode"
-        :label="i18n.code"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        data-testid="link"
-        content-type="link"
-        icon-name="link"
-        editor-command="editLink"
-        :label="i18n.link"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        data-testid="bullet-list"
-        content-type="bulletList"
-        icon-name="list-bulleted"
-        class="gl-display-none gl-sm-display-inline"
-        editor-command="toggleBulletList"
-        :label="i18n.bulletList"
-        @execute="trackToolbarControlExecution"
-      />
-      <toolbar-button
-        data-testid="ordered-list"
-        content-type="orderedList"
-        icon-name="list-numbered"
-        class="gl-display-none gl-sm-display-inline"
-        editor-command="toggleOrderedList"
-        :label="i18n.numberedList"
-        @execute="trackToolbarControlExecution"
-      />
+      <header-divider />
+    </div>
+    <toolbar-button
+      data-testid="blockquote"
+      content-type="blockquote"
+      icon-name="quote"
+      editor-command="toggleBlockquote"
+      :label="i18n.quote"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
+      data-testid="code"
+      content-type="code"
+      icon-name="code"
+      editor-command="toggleCode"
+      :label="i18n.code"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
+      data-testid="link"
+      content-type="link"
+      icon-name="link"
+      editor-command="editLink"
+      :label="i18n.link"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
+      data-testid="bullet-list"
+      content-type="bulletList"
+      icon-name="list-bulleted"
+      class="gl-display-none gl-sm-display-inline"
+      editor-command="toggleBulletList"
+      :label="i18n.bulletList"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
+      data-testid="ordered-list"
+      content-type="orderedList"
+      icon-name="list-numbered"
+      class="gl-display-none gl-sm-display-inline"
+      editor-command="toggleOrderedList"
+      :label="i18n.numberedList"
+      @execute="trackToolbarControlExecution"
+    />
+    <div class="gl-display-flex">
       <toolbar-button
         data-testid="task-list"
         content-type="taskList"
@@ -166,7 +177,12 @@ export default {
         :label="i18n.taskList"
         @execute="trackToolbarControlExecution"
       />
-      <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+      <div class="gl-display-none gl-sm-display-flex">
+        <header-divider />
+      </div>
+    </div>
+    <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+    <div class="gl-display-flex">
       <toolbar-attachment-button
         v-if="!hideAttachmentButton"
         data-testid="attachment"
@@ -183,12 +199,13 @@ export default {
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"
       />
-      <comment-templates-dropdown
-        v-if="newCommentTemplatePath"
-        :new-comment-template-path="newCommentTemplatePath"
-        @select="insertSavedReply"
-      />
-      <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
+      <header-divider v-if="newCommentTemplatePath" />
     </div>
+    <comment-templates-dropdown
+      v-if="newCommentTemplatePath"
+      :new-comment-template-path="newCommentTemplatePath"
+      @select="insertSavedReply"
+    />
+    <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />
   </div>
 </template>

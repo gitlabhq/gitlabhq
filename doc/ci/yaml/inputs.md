@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Define inputs for configuration added with `include` **(FREE ALL)**
@@ -9,19 +9,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 > - Made generally available in GitLab 16.6.
 
-## Define input parameters with `spec:inputs`
+Use inputs to increase the flexibility of CI/CD configuration files that are designed
+to be reused.
 
-> - `description` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
-> - `options` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
+Inputs can use CI/CD variables, but have the same [variable limitations as the `include` keyword](includes.md#use-variables-with-include).
+
+## Define input parameters with `spec:inputs`
 
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
 to a pipeline with `include`. Use [`include:inputs`](#set-input-values-when-using-include)
-to define the values to use when the pipeline runs.
+to pass input values when building the configuration for a pipeline.
 
 The specs must be declared at the top of the configuration file, in a header section.
 Separate the header from the rest of the configuration with `---`.
 
-Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+Use the interpolation format `$[[ inputs.input-id ]]` outside the header section to replace the values.
 The inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
 configuration is merged with the contents of the `.gitlab-ci.yml` file.
 
@@ -42,9 +44,9 @@ scan-website:
 When using `spec:inputs`:
 
 - Inputs are mandatory by default.
-- Inputs must be strings by default.
-- A string containing an interpolation block must not exceed 1 MB.
-- The string inside an interpolation block must not exceed 1 KB.
+- Validation errors are returned if:
+  - A string containing an interpolation block exceeds 1 MB.
+  - The string inside an interpolation block exceeds 1 KB.
 
 Additionally, use:
 
@@ -55,8 +57,53 @@ Additionally, use:
   understand the input details or expected values.
 - [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
   for an input.
+- [`spec:inputs:regex`](index.md#specinputsoptions) to specify a regular expression
+  that the input must match.
 - [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
-  can be `string` (the default type), `number`, or `boolean`.
+  can be `string` (default when not specified), `number`, or `boolean`.
+
+### Define inputs with multiple parameters
+
+You can define multiple inputs per CI/CD configuration file, and each input can have
+multiple configuration parameters.
+
+For example, in a file named `scan-website-job.yml`:
+
+```yaml
+spec:
+  inputs:
+    job-prefix:     # Mandatory string input
+      description: "Define a prefix for the job name"
+    job-stage:      # Optional string input with a default value when not provided
+      default: test
+    environment:    # Mandatory input that must match one of the options
+      options: ['test', 'staging', 'production']
+    concurrency:
+      type: number  # Optional numeric input with a default value when not provided
+      default: 1
+    version:        # Mandatory string input that must match the regular expression
+      type: string
+      regex: /^v\d\.\d+(\.\d+)$/
+    export_results: # Optional boolean input with a default value when not provided
+      type: boolean
+      default: true
+---
+
+"$[[ job-prefix ]]-scan-website":
+  stage: $[[ inputs.job-stage ]]
+  script:
+    - echo "scanning website -e $[[ inputs.environment ]] -c $[[ inputs.concurrency ]] -v $[[ inputs.version ]]"
+    - if [ $[[ inputs.export_results ]] ]; then echo "export results"; fi
+```
+
+In this example:
+
+- `job-prefix` is a mandatory string input and must be defined.
+- `job-stage` is optional. If not defined, the value is `test`.
+- `environment` is a mandatory string input that must match one of the defined options.
+- `concurrency` is an optional numeric input. When not specified, it defaults to `1`.
+- `version` is a mandatory string input that must match the specified regular expression.
+- `export_results` is an optional boolean input. When not specified, it defaults to `true`.
 
 ## Set input values when using `include`
 
@@ -65,29 +112,29 @@ Additionally, use:
 Use [`include:inputs`](index.md#includeinputs) to set the values for the parameters
 when the included configuration is added to the pipeline.
 
-For example, to include a `custom_website_scan.yml` that has the same specs
-as the [example above](#define-input-parameters-with-specinputs):
+For example, to include the `scan-website-job.yml` in the [example above](#define-inputs-with-multiple-parameters):
 
 ```yaml
 include:
-  - local: 'custom_website_scan.yml'
+  - local: 'scan-website-job.yml'
     inputs:
-      job-stage: post-deploy
-      environment: production
-
-stages:
-  - build
-  - test
-  - deploy
-  - post-deploy
-
-# The pipeline configuration would follow...
+      job-prefix: 'some-service-'
+      environment: 'staging'
+      concurrency: 2
+      version: 'v1.3.2'
+      export_results: false
 ```
 
-In this example, the included configuration is added with:
+In this example, the inputs for the included configuration are:
 
-- `job-stage` set to `post-deploy`, so the included job runs in the custom `post-deploy` stage.
-- `environment` set to `production`, so the included job runs for the production environment.
+| Input            | Value           | Details |
+|------------------|-----------------|---------|
+| `job-prefix`     | `some-service-` | Must be explicitly defined. |
+| `job-stage`      | `test`          | Not defined in `include:inputs`, so the value comes from `spec:inputs:default` in the included configuration. |
+| `environment`    | `staging`       | Must be explicitly defined, and must match one of the values in `spec:inputs:options` in the included configuration. |
+| `concurrency`    | `2`             | Must be a numeric value to match the `spec:inputs:type` set to `number` in the included configuration. Overrides the default value. |
+| `version`        | `v1.3.2`        | Must be explicitly defined, and must match the regular expression in the `spec:inputs:regex` in the included configuration. |
+| `export_results` | `false`         | Must be either `true` or `false` to match the `spec:inputs:type` set to `boolean` in the included configuration. Overrides the default value. |
 
 ### Use `include:inputs` with multiple files
 
@@ -96,7 +143,7 @@ For example:
 
 ```yaml
 include:
-  - component: gitlab.com/org/my-component@1.0
+  - component: gitlab.com/the-namespace/the-project/the-component@1.0
     inputs:
       stage: my-stage
   - local: path/to/file.yml

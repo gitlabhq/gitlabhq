@@ -4,11 +4,8 @@ module Ci
   class Trigger < Ci::ApplicationRecord
     include Presentable
     include Limitable
-    include IgnorableColumns
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
-
-    ignore_column :ref, remove_with: '16.1', remove_after: '2023-05-22'
 
     self.limit_name = 'pipeline_triggers'
     self.limit_scope = :project

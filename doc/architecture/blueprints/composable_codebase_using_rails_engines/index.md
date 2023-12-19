@@ -124,7 +124,7 @@ application layers. This list is not exhaustive, but shows a general list of the
 - Web GraphQL: provide a flexible API interface, allowing the Web frontend to fetch only the data needed thereby reducing the amount of compute and data transfer
 - Web ActionCable: provide bi-directional connection to enable real-time features for Users visiting web interface
 - Web Feature Flags Unleash Backend: provide an Unleash-compatible Server that uses GitLab API
-- Web Packages API: provide a REST API compatible with the packaging tools: Debian, Maven, Container Registry Proxy, etc.
+- Web Packages API: provide a REST API compatible with the packaging tools: Debian, Maven, container registry proxy, etc.
 - Git nodes: all code required to authorize `git pull/push` over `SSH` or `HTTPS`
 - Sidekiq: run background jobs
 - Services/Models/DB: all code required to maintain our database structure, data validation, business logic, and policies models that needs to be shared with other components

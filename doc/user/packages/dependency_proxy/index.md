@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Dependency Proxy **(FREE ALL)**
@@ -86,9 +86,9 @@ docker login gitlab.example.com --username my_username --password my_password
 You can authenticate using:
 
 - Your GitLab username and password.
-- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
+- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
 - A [group deploy token](../../../user/project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
-- A [group access token](../../../user/group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`.
+- A [group access token](../../../user/group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
 
 Users accessing the Dependency Proxy with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
@@ -170,7 +170,7 @@ build:
   before_script:
     - docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER
   script:
-    -  docker build -t test .
+    - docker build -t test .
 ```
 
 You can also use [custom CI/CD variables](../../../ci/variables/index.md#for-a-project) to store and access your personal access token or deploy token.

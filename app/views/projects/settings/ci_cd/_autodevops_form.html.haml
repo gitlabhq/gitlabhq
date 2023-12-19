@@ -26,7 +26,7 @@
                 - auto_devops_badge = auto_devops_enabled ? (gl_badge_tag badge_for_auto_devops_scope(@project), { variant: :info }, { class: 'js-instance-default-badge gl-ml-3 gl-mt-n1'}) : ''
                 = form.gitlab_ui_checkbox_component :enabled,
                   (s_('CICD|Default to Auto DevOps pipeline') + auto_devops_badge).html_safe,
-                  checkbox_options: { class: 'js-toggle-extra-settings', checked: auto_devops_enabled, data: { qa_selector: 'enable_autodevops_checkbox' } },
+                  checkbox_options: { class: 'js-toggle-extra-settings', checked: auto_devops_enabled, data: { testid: 'enable-autodevops-checkbox' } },
                   help_text: (s_('CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found.') + ' ' + autodevops_help_link).html_safe
               - c.with_footer do
                 - if @project.all_clusters.empty?
@@ -41,4 +41,4 @@
                 = form.gitlab_ui_radio_component :deploy_strategy, 'timed_incremental', (s_('CICD|Continuous deployment to production using timed incremental rollout') + ' ' + help_link_timed).html_safe
                 = form.gitlab_ui_radio_component :deploy_strategy, 'manual', (s_('CICD|Automatic deployment to staging, manual deployment to production') + ' ' + help_link_incremental).html_safe
 
-          = f.submit _('Save changes'), class: "gl-mt-5", data: { qa_selector: 'save_changes_button' }, pajamas_button: true
+          = f.submit _('Save changes'), class: "gl-mt-5", data: { testid: 'save-changes-button' }, pajamas_button: true

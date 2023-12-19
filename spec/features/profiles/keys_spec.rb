@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
+RSpec.describe 'Profile > SSH Keys', feature_category: :source_code_management do
   let(:user) { create(:user) }
 
   before do

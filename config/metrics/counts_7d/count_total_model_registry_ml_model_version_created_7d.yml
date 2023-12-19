@@ -1,0 +1,26 @@
+---
+key_path: count_total_model_registry_ml_model_version_created_7d
+description: Tracks the creation of Machine learning models versions (Ml::ModelVersion) through Ml::CreateModelVersionService in the last 7 days.
+product_section: data-science
+product_stage: modelops
+product_group: mlops
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: "16.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139798
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - model_registry_ml_model_version_created
+events:
+  - name: model_registry_ml_model_version_created

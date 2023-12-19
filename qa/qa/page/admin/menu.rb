@@ -23,16 +23,6 @@ module QA
         def go_to_applications
           click_element('nav-item-link', submenu_item: 'Applications')
         end
-
-        private
-
-        def within_sidebar(&block)
-          page.within('.sidebar-top-level-items', &block)
-        end
-
-        def within_submenu(element, &block)
-          within_element(element, &block)
-        end
       end
     end
   end

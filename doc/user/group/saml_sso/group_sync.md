@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # SAML Group Sync **(PREMIUM ALL)**
@@ -77,11 +76,26 @@ example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_
 
 ## Configure SAML Group Links
 
-When SAML is enabled, users with the Maintainer or Owner role
-see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
-a SAML identity provider group name to a GitLab role. This can be done for a top-level group or any subgroup.
+When SAML is enabled, users with the Maintainer or Owner role see a new menu
+item in group **Settings > SAML Group Links**.
 
-SAML Group Sync only manages a group if that group has one or more SAML group links. If a SAML group link is created then removed, the user remains in the group until they are removed from the group in the identity provider.
+- You can configure one or more **SAML Group Links** to map a SAML identity
+  provider group name to a GitLab role.
+- Members of the SAML identity provider group are added as members of the GitLab
+  group on their next SAML sign-in.
+- Group membership is evaluated each time a user signs in using SAML.
+- SAML Group Links can be configured for a top-level group or any subgroup.
+- SAML Group Sync only manages a group if that group has one or more SAML group
+  links. If a SAML group link is created then removed, and there are:
+  - Other SAML group links configured, users that were in the removed group
+    link are automatically removed from the group during sync.
+  - No other SAML group links configured, users remain in the group during sync.
+    Those users must be manually removed from the group.
+
+Prerequisites:
+
+- Self-managed GitLab instances must have configured SAML Group Sync. GitLab.com
+  instances are already configured for SAML Group Sync, and require no extra configuration.
 
 To link the SAML groups:
 
@@ -103,8 +117,6 @@ Users granted:
   [direct membership](../../project/members/index.md#display-direct-members) of the group.
 - A lower or the same role with Group Sync are displayed as having
   [inherited membership](../../project/members/index.md#display-inherited-members) of the group.
-
-SAML group membership is evaluated each time a user signs in.
 
 ### Use the API
 
@@ -171,8 +183,7 @@ To configure for a GitLab.com group:
 To configure for self-managed:
 
 1. Configure [SAML SSO for the instance](../../../integration/saml.md).
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
 1. Enter the **Tenant ID**, **Client ID**, and **Client secret** obtained earlier when configuring Azure Active Directory in the Azure Portal.
@@ -202,11 +213,10 @@ When global group memberships lock is enabled:
 To enable global group memberships lock:
 
 1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. Ensure the **Lock memberships to SAML synchronization** checkbox is selected.
+1. Ensure that **Lock memberships to SAML Group Links synchronization** is selected.
 
 ## Automatic member removal
 

@@ -27,6 +27,115 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     it { is_expected.to eq [package1] }
   end
 
+  describe '#packages_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:project2) { create(:project, namespace: subgroup) }
+    let_it_be(:package1) { create(:package, project: project) }
+    let_it_be(:package2) { create(:package, project: project2) }
+    let_it_be(:package3) { create(:package, :error, project: project2) }
+
+    let(:finder_class) do
+      Class.new do
+        include ::Packages::FinderHelper
+
+        def initialize(user)
+          @current_user = user
+        end
+
+        def execute(group)
+          packages_for(@current_user, within_group: group)
+        end
+      end
+    end
+
+    let(:finder) { finder_class.new(user) }
+
+    subject { finder.execute(group) }
+
+    shared_examples 'returning both packages' do
+      it { is_expected.to contain_exactly(package1, package2) }
+    end
+
+    shared_examples 'returning no packages' do
+      it { is_expected.to be_empty }
+    end
+
+    shared_examples 'returning package2' do
+      it { is_expected.to contain_exactly(package2) }
+    end
+
+    context 'with an user' do
+      let_it_be(:user) { create(:user) }
+
+      where(:group_visibility, :subgroup_visibility, :shared_example_name) do
+        'public'  | 'public'  | 'returning both packages'
+        # All packages are returned because of the parent group visibility set to `public`
+        # and all users will have `read_group` permission.
+        'public'  | 'private' | 'returning both packages'
+        # No packages are returned because of the parent group visibility set to `private`
+        # and non-members won't have `read_group` permission.
+        'private' | 'private' | 'returning no packages'
+      end
+
+      with_them do
+        before do
+          subgroup.update!(visibility: subgroup_visibility)
+          group.update!(visibility: group_visibility)
+        end
+
+        it_behaves_like params[:shared_example_name]
+      end
+
+      context 'without a group' do
+        subject { finder.execute(nil) }
+
+        it_behaves_like 'returning no packages'
+      end
+
+      context 'with a subgroup' do
+        subject { finder.execute(subgroup) }
+
+        it_behaves_like 'returning package2'
+      end
+    end
+
+    context 'with a deploy token' do
+      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      where(:group_visibility, :subgroup_visibility, :shared_example_name) do
+        'public'  | 'public'  | 'returning both packages'
+        'public'  | 'private' | 'returning both packages'
+        'private' | 'private' | 'returning both packages'
+      end
+
+      with_them do
+        before do
+          subgroup.update!(visibility: subgroup_visibility)
+          group.update!(visibility: group_visibility)
+        end
+
+        it_behaves_like params[:shared_example_name]
+      end
+
+      context 'without a group' do
+        subject { finder.execute(nil) }
+
+        it_behaves_like 'returning no packages'
+      end
+
+      context 'with a subgroup' do
+        subject { finder.execute(subgroup) }
+
+        it_behaves_like 'returning both packages'
+      end
+    end
+  end
+
   describe '#packages_visible_to_user' do
     using RSpec::Parameterized::TableSyntax
 

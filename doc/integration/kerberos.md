@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Use Kerberos as an OAuth 2.0 authentication provider **(FREE SELF)**
@@ -106,9 +106,8 @@ set up GitLab to create a new account when a Kerberos user tries to sign in.
 If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Users**.
 1. Select a user, then select the **Identities** tab.
 1. From the **Provider** dropdown list, select **Kerberos**.
 1. Make sure the **Identifier** corresponds to the Kerberos username.
@@ -148,8 +147,7 @@ With that information at hand:
       ```
 
       1. As an administrator, you can confirm the new, blocked account:
-         1. On the left sidebar, select **Search or go to**.
-         1. Select **Admin Area**.
+         1. On the left sidebar, at the bottom, select **Admin Area**.
          1. On the left sidebar, select **Overview > Users** and review the **Blocked** tab.
       1. You can enable the user.
    1. If `block_auto_created_users` is false, the Kerberos user is

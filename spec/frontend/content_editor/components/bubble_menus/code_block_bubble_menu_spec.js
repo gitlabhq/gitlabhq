@@ -80,6 +80,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
     expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Plain text');
+    expect(wrapper.findComponent(GlDropdown).attributes('contenteditable')).toBe(String(false));
   });
 
   it('selects appropriate language based on the code block', async () => {

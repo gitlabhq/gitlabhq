@@ -3,15 +3,14 @@
 module MergeRequests
   module Mergeability
     class CheckConflictStatusService < CheckBaseService
-      def self.failure_reason
-        :conflict
-      end
+      identifier :conflict
+      description 'Checks whether the merge request has a conflict'
 
       def execute
         if merge_request.can_be_merged?
           success
         else
-          failure(reason: failure_reason)
+          failure
         end
       end
 

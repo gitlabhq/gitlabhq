@@ -21,8 +21,6 @@ Rails/Pluck:
     - 'ee/app/models/boards/epic_list.rb'
     - 'ee/app/models/concerns/geo/verification_state.rb'
     - 'ee/app/services/concerns/incident_management/oncall_rotations/shared_rotation_logic.rb'
-    - 'ee/app/workers/geo/repository_shard_sync_worker.rb'
-    - 'ee/app/workers/geo/repository_verification/secondary/shard_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/lib/banzai/filter/references/iteration_reference_filter.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'

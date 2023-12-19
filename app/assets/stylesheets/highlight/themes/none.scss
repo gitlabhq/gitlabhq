@@ -5,8 +5,8 @@
 @import '../common';
 
 @mixin match-line {
-  color: $black-transparent;
-  background-color: $white-normal;
+  color: $t-gray-a-24;
+  background-color: $gray-50;
 }
 
 :root {
@@ -40,13 +40,13 @@
 
   .diff-line-num,
   .diff-line-num a {
-    color: $black-transparent;
+    color: $t-gray-a-24;
   }
 
   // Code itself
   pre.code,
   .diff-line-num {
-    border-color: $white-normal;
+    border-color: $gray-50;
   }
 
   &,
@@ -86,7 +86,7 @@
       &.new,
       &.new-nomappinginraw,
       &.old-nomappinginraw {
-        background-color: $white-normal;
+        background-color: $gray-50;
       }
     }
 
@@ -137,27 +137,27 @@
 
     .line_content {
       &.old, &.old-nomappinginraw {
-        background-color: $white-normal;
+        background-color: $gray-50;
 
         &::before {
           color: $gl-text-color;
         }
 
         span.idiff {
-          background-color: $white-normal;
+          background-color: $gray-50;
           text-decoration: underline;
         }
       }
 
       &.new:not(.hll), &.new-nomappinginraw:not(.hll) {
-        background-color: $white-normal;
+        background-color: $gray-50;
 
         &::before {
           color: $gl-text-color;
         }
 
         span.idiff {
-          background-color: $white-normal;
+          background-color: $gray-50;
           text-decoration: underline;
         }
       }
@@ -170,7 +170,7 @@
 
   // Search result highlight
   span.highlight_word {
-    background-color: $white-normal;
+    background-color: $gray-50;
   }
 
   // Links to URLs, emails, or dependencies

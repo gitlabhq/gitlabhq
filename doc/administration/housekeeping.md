@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Housekeeping **(FREE SELF)**
@@ -76,9 +76,8 @@ frequently.
 
 You can change how often Gitaly is asked to optimize a repository.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Housekeeping** section, configure the housekeeping options.
 1. Select **Save changes**.
@@ -110,7 +109,7 @@ housekeeping tasks. The manual trigger can be useful when either:
 To trigger housekeeping tasks manually:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
 
@@ -137,7 +136,7 @@ reduce the likelihood of such race conditions.
 To trigger a manual prune of unreachable objects:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
 1. Wait 30 minutes for the operation to complete.

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge requests for confidential issues **(FREE ALL)**
@@ -33,8 +33,8 @@ permissions in your downstream private fork without action by you. These users c
 immediately push code to branches in your private fork to help fix the confidential issue.
 
 WARNING:
-Your private fork may expose confidential information, if you create it in a different
-namespace than the upstream repository. The two namespaces may not contain the same users.
+Your private fork might expose confidential information, if you create it in a different
+namespace than the upstream repository. The two namespaces might not contain the same users.
 
 Prerequisites:
 
@@ -45,8 +45,9 @@ Prerequisites:
 
 To create a confidential merge request:
 
-1. Go to the confidential issue's page. Scroll below the issue description and
-   select **Create confidential merge request**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues** and find the issue you want to create a merge request for.
+1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
    - *To create both a branch and a merge request,* select
      **Create confidential merge request and branch**. Your merge request will

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import and migrate projects **(FREE ALL)**
@@ -41,8 +41,7 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.

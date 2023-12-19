@@ -54,9 +54,6 @@ export const i18n = {
     "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
-  confidentialTooltip: s__(
-    'WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this %{workItemType}.',
-  ),
 };
 
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
@@ -193,6 +190,11 @@ export const WORK_ITEMS_TYPE_MAP = {
     name: s__('WorkItem|Epic'),
     value: WORK_ITEM_TYPE_VALUE_EPIC,
   },
+};
+
+export const WORK_ITEM_TYPE_VALUE_MAP = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 };
 
 export const WORK_ITEMS_TREE_TEXT_MAP = {

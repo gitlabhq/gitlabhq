@@ -800,6 +800,21 @@ describe('date addition/subtraction methods', () => {
     );
   });
 
+  describe('nYearsBefore', () => {
+    it.each`
+      date            | numberOfYears | expected
+      ${'2020-07-06'} | ${4}          | ${'2016-07-06'}
+      ${'2020-07-06'} | ${1}          | ${'2019-07-06'}
+    `(
+      'returns $expected for "$numberOfYears year(s) before $date"',
+      ({ date, numberOfYears, expected }) => {
+        expect(datetimeUtility.nYearsBefore(new Date(date), numberOfYears)).toEqual(
+          new Date(expected),
+        );
+      },
+    );
+  });
+
   describe('nMonthsBefore', () => {
     // The previous month (February) has 28 days
     const march2019 = '2019-03-15T00:00:00.000Z';

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # How to run Jenkins in development environment (on macOS)
@@ -24,9 +24,8 @@ brew services start jenkins
 GitLab does not allow requests to localhost or the local network by default. When running Jenkins on your local machine, you need to enable local access.
 
 1. Log into your GitLab instance as an administrator.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Outbound requests**, and select the following checkboxes:
 
    - **Allow requests to the local network from webhooks and integrations**

@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Deploy keys **(FREE ALL)**
@@ -17,7 +17,7 @@ Depending on your needs, you might want to use a [deploy token](../deploy_tokens
 | Source           | Public SSH key generated on an external host. | Generated on your GitLab instance, and is provided to users only at creation time. |
 | Accessible resources  | Git repository over SSH | Git repository over HTTP, package registry, and container registry. |
 
-Deploy keys can't be used for Git operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+Deploy keys can't be used for Git operations if [external authorization](../../../administration/settings/external_authorization.md) is enabled.
 
 ## Scope
 
@@ -65,7 +65,7 @@ As with all sensitive information, you should ensure only those who need access 
 For human interactions, use credentials tied to users such as Personal Access Tokens.
 
 To help detect a potential secret leak, you can use the
-[Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-ssh-events-with-deploy-key) feature.
+[Audit Event](../../../administration/audit_event_streaming/examples.md#example-payloads-for-git-over-ssh-events-with-deploy-key) feature.
 
 ## View deploy keys
 
@@ -111,8 +111,7 @@ Prerequisites:
 
 To create a public deploy key:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Deploy Keys**.
 1. Select **New deploy key**.
 1. Complete the fields.

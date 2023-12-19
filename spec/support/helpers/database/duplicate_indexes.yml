@@ -27,12 +27,6 @@ boards_epic_board_recent_visits:
 boards_epic_user_preferences:
   index_boards_epic_user_preferences_on_board_user_epic_unique:
     - index_boards_epic_user_preferences_on_board_id
-bulk_import_batch_trackers:
-  i_bulk_import_trackers_id_batch_number:
-    - index_bulk_import_batch_trackers_on_tracker_id
-bulk_import_export_batches:
-  i_bulk_import_export_batches_id_batch_number:
-    - index_bulk_import_export_batches_on_export_id
 ci_job_artifacts:
   index_ci_job_artifacts_on_id_project_id_and_created_at:
     - index_ci_job_artifacts_on_project_id
@@ -44,14 +38,10 @@ ci_pipeline_artifacts:
   index_ci_pipeline_artifacts_on_pipeline_id_and_file_type:
     - index_ci_pipeline_artifacts_on_pipeline_id
 ci_stages:
-  index_ci_stages_on_pipeline_id_and_name:
-    - index_ci_stages_on_pipeline_id
   index_ci_stages_on_pipeline_id_and_position:
     - index_ci_stages_on_pipeline_id
-  index_ci_stages_on_pipeline_id_convert_to_bigint_and_name:
-    - index_ci_stages_on_pipeline_id_convert_to_bigint
-  index_ci_stages_on_pipeline_id_convert_to_bigint_and_position:
-    - index_ci_stages_on_pipeline_id_convert_to_bigint
+  index_ci_stages_on_pipeline_id_name_partition_id_unique:
+    - index_ci_stages_on_pipeline_id
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
     - index_dast_site_tokens_on_project_id
@@ -91,25 +81,12 @@ issue_links:
 issues:
   index_issues_on_author_id_and_id_and_created_at:
     - index_issues_on_author_id
-jira_connect_subscriptions:
-  idx_jira_connect_subscriptions_on_installation_id_namespace_id:
-    - idx_jira_connect_subscriptions_on_installation_id
 list_user_preferences:
   index_list_user_preferences_on_user_id_and_list_id:
     - index_list_user_preferences_on_user_id
 member_tasks:
   index_member_tasks_on_member_id_and_project_id:
     - index_member_tasks_on_member_id
-members:
-  index_members_on_member_namespace_id_compound:
-    - index_members_on_member_namespace_id
-merge_requests:
-  index_merge_requests_on_author_id_and_created_at:
-    - index_merge_requests_on_author_id
-  index_merge_requests_on_author_id_and_id:
-    - index_merge_requests_on_author_id
-  index_merge_requests_on_author_id_and_target_project_id:
-    - index_merge_requests_on_author_id
 ml_candidate_params:
   index_ml_candidate_params_on_candidate_id_on_name:
     - index_ml_candidate_params_on_candidate_id
@@ -158,15 +135,9 @@ pm_package_versions:
 project_compliance_standards_adherence:
   u_project_compliance_standards_adherence_for_reporting:
     - index_project_compliance_standards_adherence_on_project_id
-project_relation_exports:
-  index_project_export_job_relation:
-    - index_project_relation_exports_on_project_export_job_id
 project_repositories:
   index_project_repositories_on_shard_id_and_project_id:
     - index_project_repositories_on_shard_id
-project_topics:
-  index_project_topics_on_project_id_and_topic_id:
-    - index_project_topics_on_project_id
 protected_environments:
   index_protected_environments_on_project_id_and_name:
     - index_protected_environments_on_project_id
@@ -185,18 +156,8 @@ sbom_component_versions:
 sbom_occurrences:
   index_sbom_occurrences_for_input_file_path_search:
     - index_sbom_occurrences_on_project_id_component_id
-    - index_sbom_occurrences_on_project_id
-  idx_sbom_occurrences_on_project_id_and_source_id:
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_and_id:
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_component_id:
-    - index_sbom_occurrences_on_project_id
   index_sbom_occurrences_on_project_id_and_component_id_and_id:
     - index_sbom_occurrences_on_project_id_component_id
-    - index_sbom_occurrences_on_project_id
-  index_sbom_occurrences_on_project_id_and_package_manager:
-    - index_sbom_occurrences_on_project_id
 search_namespace_index_assignments:
   index_search_namespace_index_assignments_uniqueness_index_type:
     - index_search_namespace_index_assignments_on_namespace_id
@@ -217,9 +178,6 @@ todos:
 user_callouts:
   index_user_callouts_on_user_id_and_feature_name:
     - index_user_callouts_on_user_id
-users:
-  index_users_on_state_and_user_type:
-    - index_users_on_state
 vulnerabilities:
   index_vulnerabilities_project_id_state_severity_default_branch:
     - index_vulnerabilities_on_project_id_and_state_and_severity
@@ -235,12 +193,6 @@ vulnerability_finding_signatures:
 vulnerability_flags:
   index_vulnerability_flags_on_unique_columns:
     - index_vulnerability_flags_on_vulnerability_occurrence_id
-web_hook_logs:
-  index_web_hook_logs_on_web_hook_id_and_created_at:
-    - index_web_hook_logs_part_on_web_hook_id
-web_hooks:
-  index_web_hooks_on_project_id_recent_failures:
-    - index_web_hooks_on_project_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
     - index_work_item_hierarchy_restrictions_on_parent_type_id

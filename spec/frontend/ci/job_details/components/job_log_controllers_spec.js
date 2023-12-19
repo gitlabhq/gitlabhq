@@ -30,16 +30,11 @@ describe('Job log controllers', () => {
     jobLog: mockJobLog,
   };
 
-  const createWrapper = (props, { jobLogJumpToFailures = false } = {}) => {
+  const createWrapper = (props) => {
     wrapper = mount(JobLogControllers, {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          jobLogJumpToFailures,
-        },
       },
       data() {
         return {
@@ -62,6 +57,10 @@ describe('Job log controllers', () => {
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
   const findSearchHelp = () => wrapper.findComponent(HelpPopover);
   const findScrollFailure = () => wrapper.find('[data-testid="job-controller-scroll-to-failure"]');
+  const findShowFullScreenButton = () =>
+    wrapper.find('[data-testid="job-controller-enter-fullscreen"]');
+  const findExitFullScreenButton = () =>
+    wrapper.find('[data-testid="job-controller-exit-fullscreen"]');
 
   describe('Truncate information', () => {
     describe('with isJobLogSizeVisible', () => {
@@ -199,14 +198,6 @@ describe('Job log controllers', () => {
     });
 
     describe('scroll to failure button', () => {
-      describe('with feature flag disabled', () => {
-        it('does not display button', () => {
-          createWrapper();
-
-          expect(findScrollFailure().exists()).toBe(false);
-        });
-      });
-
       describe('with red text failures on the page', () => {
         let firstFailure;
         let secondFailure;
@@ -214,7 +205,7 @@ describe('Job log controllers', () => {
         beforeEach(() => {
           jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(['mock-element']);
 
-          createWrapper({}, { jobLogJumpToFailures: true });
+          createWrapper();
 
           firstFailure = document.createElement('div');
           firstFailure.className = 'term-fg-l-red';
@@ -262,7 +253,7 @@ describe('Job log controllers', () => {
         beforeEach(() => {
           jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce([]);
 
-          createWrapper({}, { jobLogJumpToFailures: true });
+          createWrapper();
         });
 
         it('is disabled', () => {
@@ -274,7 +265,7 @@ describe('Job log controllers', () => {
         beforeEach(() => {
           jest.spyOn(document, 'querySelectorAll').mockReturnValueOnce(['mock-element']);
 
-          createWrapper({ isComplete: false }, { jobLogJumpToFailures: true });
+          createWrapper();
         });
 
         it('is enabled', () => {
@@ -286,7 +277,7 @@ describe('Job log controllers', () => {
         beforeEach(() => {
           jest.spyOn(commonUtils, 'backOff').mockRejectedValueOnce();
 
-          createWrapper({}, { jobLogJumpToFailures: true });
+          createWrapper();
         });
 
         it('stays disabled', () => {
@@ -316,6 +307,55 @@ describe('Job log controllers', () => {
       findJobLogSearch().vm.$emit('clear');
 
       expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
+    });
+  });
+
+  describe('Fullscreen controls', () => {
+    it('displays a disabled "Show fullscreen" button', () => {
+      createWrapper();
+
+      expect(findShowFullScreenButton().exists()).toBe(true);
+      expect(findShowFullScreenButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('displays a enabled "Show fullscreen" button', () => {
+      createWrapper({
+        fullScreenModeAvailable: true,
+      });
+
+      expect(findShowFullScreenButton().exists()).toBe(true);
+      expect(findShowFullScreenButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it('emits a enterFullscreen event when the show fullscreen is clicked', async () => {
+      createWrapper({
+        fullScreenModeAvailable: true,
+      });
+
+      await findShowFullScreenButton().trigger('click');
+
+      expect(wrapper.emitted('enterFullscreen')).toHaveLength(1);
+    });
+
+    it('displays a enabled "Exit fullscreen" button', () => {
+      createWrapper({
+        fullScreenModeAvailable: true,
+        fullScreenEnabled: true,
+      });
+
+      expect(findExitFullScreenButton().exists()).toBe(true);
+      expect(findExitFullScreenButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it('emits a exitFullscreen event when the exit fullscreen is clicked', async () => {
+      createWrapper({
+        fullScreenModeAvailable: true,
+        fullScreenEnabled: true,
+      });
+
+      await findExitFullScreenButton().trigger('click');
+
+      expect(wrapper.emitted('exitFullscreen')).toHaveLength(1);
     });
   });
 });

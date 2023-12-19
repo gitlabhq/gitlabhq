@@ -17,6 +17,10 @@ module Gitlab
       instance.publish(event)
     end
 
+    def self.publish_group(events)
+      instance.publish_group(events)
+    end
+
     def self.instance
       @instance ||= Store.new { |store| configure!(store) }
     end
@@ -40,7 +44,9 @@ module Gitlab
       store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::ExecuteApprovalHooksWorker, to: ::MergeRequests::ApprovedEvent
-      store.subscribe ::MergeRequests::SetReviewerReviewedWorker, to: ::MergeRequests::ApprovedEvent
+      store.subscribe ::MergeRequests::SetReviewerReviewedWorker,
+        to: ::MergeRequests::ApprovedEvent,
+        if: -> (event) { ::Feature.disabled?(:mr_request_changes, User.find_by_id(event.data[:current_user_id])) }
       store.subscribe ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker,
         to: ::Packages::PackageCreatedEvent,
         if: -> (event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }

@@ -925,7 +925,7 @@ describe('emoji', () => {
         window.gon = {};
       });
 
-      it('returns empty object', async () => {
+      it('returns empty emoji data', async () => {
         const result = await loadCustomEmojiWithNames();
 
         expect(result).toEqual({ emojis: {}, names: [] });
@@ -937,7 +937,28 @@ describe('emoji', () => {
         delete document.body.dataset.groupFullPath;
       });
 
-      it('returns empty object', async () => {
+      it('returns empty emoji data', async () => {
+        const result = await loadCustomEmojiWithNames();
+
+        expect(result).toEqual({ emojis: {}, names: [] });
+      });
+    });
+
+    describe('when GraphQL request returns null data', () => {
+      beforeEach(() => {
+        mockClient = createMockClient([
+          [
+            customEmojiQuery,
+            jest.fn().mockResolvedValue({
+              data: {
+                group: null,
+              },
+            }),
+          ],
+        ]);
+      });
+
+      it('returns empty emoji data', async () => {
         const result = await loadCustomEmojiWithNames();
 
         expect(result).toEqual({ emojis: {}, names: [] });
@@ -945,7 +966,7 @@ describe('emoji', () => {
     });
 
     describe('when in a group with flag enabled', () => {
-      it('returns empty object', async () => {
+      it('returns emoji data', async () => {
         const result = await loadCustomEmojiWithNames();
 
         expect(result).toEqual({

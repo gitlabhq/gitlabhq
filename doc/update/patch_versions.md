@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Universal update guide for patch versions for self-compiled installations **(FREE SELF)**
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Make sure you view [this update guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/update/patch_versions.md) from the tag (version) of GitLab you would like to install.
 In most cases this should be the highest numbered production tag (without `rc` in it).
-You can select the tag in the version dropdown list in the upper-left corner of GitLab (below the menu bar).
+You can select the tag in the version dropdown list in the upper-left corner of GitLab.
 
 ### 0. Backup
 

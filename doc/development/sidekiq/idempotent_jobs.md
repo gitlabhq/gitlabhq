@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Sidekiq idempotent jobs
@@ -30,7 +30,7 @@ an unstarted job with the same arguments is already in the queue.
 Make sure the worker tests pass using the following shared example:
 
 ```ruby
-include_examples 'an idempotent worker' do
+it_behaves_like 'an idempotent worker' do
   it 'marks the MR as merged' do
     # Using subject inside this block will process the job multiple times
     subject
@@ -80,7 +80,7 @@ GitLab supports two deduplication strategies:
 
 More [deduplication strategies have been suggested](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/195).
 If you are implementing a worker that could benefit from a different
-strategy, please comment in the issue.
+strategy, comment in the issue.
 
 #### Until Executing
 

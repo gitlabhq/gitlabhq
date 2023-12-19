@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: IDE
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Web IDE **(FREE ALL)**
@@ -57,8 +57,6 @@ To open any file by its name:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
 1. Enter the name of your file.
-
-![fuzzy_finder_v15_7](img/fuzzy_finder_v15_7.png)
 
 ## Search across files
 
@@ -231,6 +229,10 @@ You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
 For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
+
+## Related topics
+
+- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#web-ide)
 
 ## Troubleshooting
 

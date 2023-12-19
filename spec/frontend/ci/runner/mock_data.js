@@ -43,6 +43,15 @@ const emptyPageInfo = {
   endCursor: '',
 };
 
+const runnerJobCountData = {
+  data: {
+    runner: {
+      id: 'gid://gitlab/Ci::Runner/99',
+      jobCount: 999,
+    },
+  },
+};
+
 // Other mock data
 
 // Mock searches and their corresponding urls
@@ -348,6 +357,7 @@ export {
   groupRunnersCountData,
   emptyPageInfo,
   runnerData,
+  runnerJobCountData,
   runnerWithGroupData,
   runnerProjectsData,
   runnerJobsData,

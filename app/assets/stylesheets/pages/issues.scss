@@ -29,7 +29,7 @@
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: $border-gray-normal;
+    background-color: $gray-100;
   }
 }
 
@@ -41,7 +41,7 @@
   &:focus,
   .issue-token:hover &,
   .issue-token-link:focus + & {
-    background-color: $border-gray-normal;
+    background-color: $gray-100;
     outline: none;
   }
 }
@@ -267,4 +267,26 @@ ul.related-merge-requests > li gl-emoji {
 .issuable-header-slide-enter,
 .issuable-header-slide-leave-to {
   transform: translateY(-100%);
+}
+
+.issuable-sticky-header-visible {
+  --issuable-sticky-header-height: 40px;
+}
+
+.md-header-preview {
+  z-index: 1;
+  position: sticky;
+  top: calc(#{$calc-application-header-height} + var(--issuable-sticky-header-height, 0px));
+}
+
+.detail-page-description .md-header {
+  top: $calc-application-header-height;
+}
+
+.gl-drawer .md-header {
+  top: 0;
+}
+
+.gl-modal .md-header {
+  top: -$gl-padding-8;
 }

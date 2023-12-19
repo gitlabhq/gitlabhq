@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Value Streams Dashboard **(ULTIMATE ALL)**
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
-To help us improve the Value Streams Dashboard, please share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
+To help us improve the Value Streams Dashboard, share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
 For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
@@ -28,6 +28,8 @@ With the Value Streams Dashboard, you can:
 - Identify downward trends early on.
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
+
+The Value Streams Dashboard has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
 
 ## DevSecOps metrics comparison panel
 
@@ -71,6 +73,21 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
+### Filter by project topics
+
+When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/settings/project_features_permissions.md#project-topics).
+
+```yaml
+panels:
+  - data:
+      namespace: group/my-custom-group
+      filter_project_topics:
+        - JavaScript
+        - Vue.js
+```
+
+If multiple topics are provided, all topics will need to match for the project to be included in the results.
+
 ## Enable or disable overview background aggregation **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`. Disabled by default.
@@ -81,7 +98,7 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -96,7 +113,7 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 
 ## View the value streams dashboard
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
@@ -114,6 +131,8 @@ To view the value streams dashboard:
    1. Select **Analyze > Value stream analytics**.
    1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
    1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
+
+You can also view the Value Streams Dashboard rendered as an analytics dashboard for a [group](analytics_dashboards.md#view-group-dashboards) or [project](analytics_dashboards.md#view-project-dashboards).
 
 ## Customize the dashboard panels
 
@@ -136,7 +155,7 @@ Query parameters can still be used to override the YAML configuration.
 
 First, you need to set up the project.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
@@ -203,6 +222,7 @@ panels:
 For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
 
 Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
+If the comparison panel from the configuration file is enabled with `filter_labels`, the drill-down links inherit the labels from the panel filter.
 
 ## Dashboard metrics and drill-down reports
 

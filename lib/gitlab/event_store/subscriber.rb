@@ -29,15 +29,21 @@ module Gitlab
       def perform(event_type, data)
         raise InvalidEvent, event_type unless self.class.const_defined?(event_type)
 
-        event = event_type.constantize.new(
-          data: data.with_indifferent_access
-        )
+        event_type_class = event_type.constantize
 
-        handle_event(event)
+        Array.wrap(data).each do |single_event_data|
+          handle_event(construct_event(event_type_class, single_event_data))
+        end
       end
 
       def handle_event(event)
         raise NotImplementedError, 'you must implement this methods in order to handle events'
+      end
+
+      private
+
+      def construct_event(event_type, event_data)
+        event_type.new(data: event_data.with_indifferent_access)
       end
     end
   end

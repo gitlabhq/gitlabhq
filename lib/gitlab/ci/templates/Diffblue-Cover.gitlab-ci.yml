@@ -1,0 +1,88 @@
+# This template is provided and maintained by Diffblue.
+# You can copy and paste this template into a new `.gitlab-ci.yml` file.
+# This template is designed to be used with the Cover Pipeline for GitLab integration from Diffblue.
+# It will download the latest version of Diffblue Cover, build the associated project, and
+# automatically write Java unit tests for the project.
+# Note that additional config is required:
+# https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab
+# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
+#
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml
+
+variables:
+  # Configure the following via the Diffblue Cover integration config for your project, or by
+  # using CI/CD masked Variables.
+  # For details, see https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab
+
+  # Diffblue Cover license key: DIFFBLUE_LICENSE_KEY
+  # Refer to your welcome email or you can obtain a free trial key from
+  # https://www.diffblue.com/try-cover/gitlab
+
+  # GitLab access token: DIFFBLUE_ACCESS_TOKEN, DIFFBLUE_ACCESS_TOKEN_NAME
+  # The access token should have a role of Developer or better and should have
+  # api and write_repository permissions.
+
+  # Diffblue Cover requires a minimum of 4GB of memory.
+  JVM_ARGS: -Xmx4g
+
+stages:
+  - build
+
+diffblue-cover:
+  stage: build
+
+  # Select the Cover CLI docker image to use with your CI tool.
+  # Tag variations are produced for each supported JDK version.
+  # Go to https://hub.docker.com/r/diffblue/cover-cli for details.
+  # Note: To use the latest version of Diffblue Cover, use one of the latest-jdk<nn> tags.
+  # To use a specific release version, use one of the yyyy.mm.dd-jdk<nn> tags.
+  image: diffblue/cover-cli:latest-jdk17
+
+  # Diffblue Cover currently only supports running on merge_request_events.
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+  # Diffblue Cover log files are saved to a .diffblue/ directory in the pipeline artifacts,
+  # and are available for download once the pipeline completes.
+  artifacts:
+    paths:
+      - "**/.diffblue/"
+
+  script:
+
+    # Diffblue Cover requires the project to be built before creating any tests.
+    # Either specify the build command here (one of the following), or provide
+    # prebuilt artifacts via a job dependency.
+
+    # Maven project example (comment out the Gradle version if used):
+    - mvn test-compile --batch-mode --no-transfer-progress
+
+    # Gradle project example (comment out the Maven version if used):
+    # - gradle testClasses
+
+    # Diffblue Cover commands and options to run.
+    #   dcover – the core Diffblue Cover command
+    #   ci – enable the GitLab CI/CD integration via environment variables
+    #   activate - activate the license key
+    #   validate - remove non-compiling and failing tests
+    #   create - create new tests for your project
+    #   --maven – use the maven build tool
+    # For detailed information on Cover CLI commands and options, see
+    # https://docs.diffblue.com/features/cover-cli/commands-and-arguments
+    - dcover
+        ci
+        activate
+        validate --maven
+        create --maven
+
+    # Diffblue Cover will also respond to specific project labels:
+    #   Diffblue Cover: Baseline
+    #     Used to mark a merge request as requiring a full suite of tests to be written.
+    #     This overrides the default behaviour where Cover will only write tests related
+    #     to the code changes already in the merge request. This is useful when running Diffblue
+    #     Cover for the first time on a project and when new product enhancements are released.
+    #   Diffblue Cover: Skip
+    #     Used to mark a merge request as requiring no tests to be written.

@@ -170,7 +170,8 @@ export default {
     >
       <div
         v-if="node.attrs.showPreview"
-        contenteditable="false"
+        :contenteditable="false"
+        data-testid="sandbox-preview"
         class="gl-mt-n3! gl-ml-n4! gl-mr-n4! gl-mb-3 gl-bg-white! gl-p-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
       >
         <sandboxed-mermaid v-if="node.attrs.language === 'mermaid'" :source="diagramSource" />
@@ -178,14 +179,14 @@ export default {
       </div>
       <span
         v-if="node.attrs.isFrontmatter"
-        contenteditable="false"
+        :contenteditable="false"
         data-testid="frontmatter-label"
         class="gl-absolute gl-top-0 gl-right-3"
         >{{ __('frontmatter') }}:{{ node.attrs.language }}</span
       >
       <div
         v-if="isCodeSuggestion"
-        contenteditable="false"
+        :contenteditable="false"
         class="gl-relative gl-z-index-0"
         data-testid="code-suggestion-box"
       >

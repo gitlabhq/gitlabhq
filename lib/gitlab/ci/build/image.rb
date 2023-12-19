@@ -4,7 +4,7 @@ module Gitlab
   module Ci
     module Build
       class Image
-        attr_reader :alias, :command, :entrypoint, :name, :ports, :variables, :pull_policy
+        attr_reader :alias, :command, :entrypoint, :name, :ports, :variables, :executor_opts, :pull_policy
 
         class << self
           def from_image(job)
@@ -28,6 +28,7 @@ module Gitlab
           when String
             @name = image
             @ports = []
+            @executor_opts = {}
           when Hash
             @alias = image[:alias]
             @command = image[:command]
@@ -35,6 +36,7 @@ module Gitlab
             @name = image[:name]
             @ports = build_ports(image).select(&:valid?)
             @variables = build_variables(image)
+            @executor_opts = image.fetch(:executor_opts, {})
             @pull_policy = image[:pull_policy]
           end
         end

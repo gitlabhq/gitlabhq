@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsFindFile from '~/behaviors/shortcuts/shortcuts_find_file';
 import ProjectFindFile from '~/projects/project_find_file';
 import InitBlobRefSwitcher from '../ref_switcher';
@@ -11,4 +12,4 @@ const projectFindFile = new ProjectFindFile($('.file-finder-holder'), {
   refType: findElement.dataset.refType,
 });
 projectFindFile.load(findElement.dataset.fileFindUrl);
-new ShortcutsFindFile(projectFindFile); // eslint-disable-line no-new
+addShortcutsExtension(ShortcutsFindFile, projectFindFile);

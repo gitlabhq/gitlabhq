@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "GitLab development guidelines - testing best practices."
 ---
 
@@ -386,7 +385,7 @@ NOTE:
 `stub_method` does not support method existence and method arity checks.
 
 WARNING:
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Please consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
+`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Stubbing member access level
 
@@ -583,7 +582,7 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 NOTE:
 Before writing a new system test,
-[please consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
+[consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -1298,7 +1297,7 @@ creates and deletes indices before and after all examples.
 
 The `:elastic_delete_by_query` trait was added to reduce runtime for pipelines by creating and deleting indices at the
 start and end of each context only. The [Elasticsearch delete by query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
-is used to delete data in all indices between examples to ensure a clean index.
+is used to delete data in all indices (except the migrations index) between examples to ensure a clean index.
 
 The `:elastic_clean` trait creates and deletes indices between examples to ensure a clean index. This way, tests are not
 polluted with non-essential data. If using the `:elastic` or `:elastic_delete_by_query` trait
@@ -1335,6 +1334,12 @@ Additionally, you can use the `ensure_elasticsearch_index!` method to overcome t
 It uses the [Elasticsearch Refresh API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html#refresh-api-desc)
 to make sure all operations performed on an index since the last refresh are available for search. This method is typically
 called after loading data into PostgreSQL to ensure the data is indexed and searchable.
+
+You can use the `SEARCH_SPEC_BENCHMARK` environment variable to benchmark test setup steps:
+
+```console
+SEARCH_SPEC_BENCHMARK=1 bundle exec rspec ee/spec/lib/elastic/latest/merge_request_class_proxy_spec.rb
+```
 
 #### Test Snowplow events
 

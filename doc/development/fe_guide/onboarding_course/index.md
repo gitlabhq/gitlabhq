@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Frontend onboarding course
@@ -46,7 +46,7 @@ A fortnightly 1-on-1 mentoring sessions are also available to each participant.
 
 There are 10 places available on the course.
 The date will be set after the course material has been prepared.
-Please complete the [Frontend Onboarding Course Application Form](https://forms.gle/39Rs4w4ZxQuByhE4A) to apply.
+Complete the [Frontend Onboarding Course Application Form](https://forms.gle/39Rs4w4ZxQuByhE4A) to apply.
 
 You may also participate in the course informally at your own pace, without the benefit of the synchronous office hours or mentoring session.
 GitLab team members are happy to support you regardless.

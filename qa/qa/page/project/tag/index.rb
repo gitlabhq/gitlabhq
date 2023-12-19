@@ -6,11 +6,11 @@ module QA
       module Tag
         class Index < Page::Base
           view 'app/views/projects/tags/index.html.haml' do
-            element :new_tag_button
+            element 'new-tag-button'
           end
 
           def click_new_tag_button
-            click_element :new_tag_button
+            click_element('new-tag-button')
           end
         end
       end

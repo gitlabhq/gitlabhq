@@ -1,0 +1,13 @@
+---
+table_name: p_catalog_resource_sync_events
+classes:
+- Ci::Catalog::Resources::SyncEvent
+feature_categories:
+- pipeline_composition
+description: A queue of catalog resources that need to be synchronized with data from
+  their associated `projects` records.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137238
+milestone: '16.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

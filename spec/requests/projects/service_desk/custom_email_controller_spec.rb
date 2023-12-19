@@ -74,16 +74,6 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
     end
   end
 
-  shared_examples 'a controller with disabled feature flag with status' do |status|
-    context 'when feature flag service_desk_custom_email is disabled' do
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it_behaves_like 'a controller that responds with status', status
-    end
-  end
-
   shared_examples 'a deletable resource' do
     describe 'DELETE custom email' do
       let(:perform_request) { delete custom_email_path }
@@ -97,9 +87,6 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
       sign_out(illegitimite_user)
       sign_in(user)
     end
-
-    # because CustomEmailController check_feature_flag_enabled responds
-    it_behaves_like 'a controller with disabled feature flag with status', :not_found
 
     describe 'GET custom email' do
       let(:perform_request) { get custom_email_path }
@@ -364,7 +351,6 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
     # because Projects::ApplicationController :authenticate_user! responds
     # with redirect to login page
     it_behaves_like 'a controller that responds with status', :found
-    it_behaves_like 'a controller with disabled feature flag with status', :found
   end
 
   context 'with illegitimate user signed in' do
@@ -374,7 +360,5 @@ RSpec.describe Projects::ServiceDesk::CustomEmailController, feature_category: :
     end
 
     it_behaves_like 'a controller that responds with status', :not_found
-    # because CustomEmailController check_feature_flag_enabled responds
-    it_behaves_like 'a controller with disabled feature flag with status', :not_found
   end
 end

@@ -152,7 +152,8 @@ describe('Diff Stats Dropdown', () => {
     });
 
     it('focuses the first item when pressing the down key within the search box', () => {
-      const spy = jest.spyOn(wrapper.vm, 'focusFirstItem');
+      const { element } = wrapper.find('.gl-new-dropdown-item');
+      const spy = jest.spyOn(element, 'focus');
       findSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ARROW_DOWN_KEY }));
 
       expect(spy).toHaveBeenCalled();

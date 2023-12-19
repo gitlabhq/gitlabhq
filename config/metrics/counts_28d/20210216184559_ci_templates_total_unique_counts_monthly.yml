@@ -181,6 +181,7 @@ options:
   - p_ci_templates_terraform_module_base
   - p_ci_templates_terraform_module
   - p_ci_templates_pages_zola
+  - p_ci_templates_diffblue_cover
 distribution:
 - ce
 - ee
@@ -188,6 +189,7 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 milestone: "<13.9"
 removed_by_url:

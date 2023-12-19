@@ -126,66 +126,9 @@ module API
 
       def self.integrations
         {
-          'apple-app-store' => [
-            {
-              required: true,
-              name: :app_store_issuer_id,
-              type: String,
-              desc: 'The Apple App Store Connect Issuer ID'
-            },
-            {
-              required: true,
-              name: :app_store_key_id,
-              type: String,
-              desc: 'The Apple App Store Connect Key ID'
-            },
-            {
-              required: true,
-              name: :app_store_private_key,
-              type: String,
-              desc: 'The Apple App Store Connect Private Key'
-            },
-            {
-              required: true,
-              name: :app_store_private_key_file_name,
-              type: String,
-              desc: 'The Apple App Store Connect Private Key File Name'
-            },
-            {
-              required: false,
-              name: :app_store_protected_refs,
-              type: ::Grape::API::Boolean,
-              desc: 'Only enable for protected refs'
-            }
-          ],
-          'asana' => [
-            {
-              required: true,
-              name: :api_key,
-              type: String,
-              desc: 'User API token'
-            },
-            {
-              required: false,
-              name: :restrict_to_branch,
-              type: String,
-              desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches'
-            }
-          ],
-          'assembla' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The authentication token'
-            },
-            {
-              required: false,
-              name: :subdomain,
-              type: String,
-              desc: 'Subdomain setting'
-            }
-          ],
+          'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
+          'asana' => ::Integrations::Asana.api_fields,
+          'assembla' => ::Integrations::Assembla.api_fields,
           'bamboo' => [
             {
               required: true,
@@ -620,14 +563,6 @@ module API
               desc: 'The Mattermost token'
             }
           ],
-          'shimo' => [
-            {
-              required: true,
-              name: :external_wiki_url,
-              type: String,
-              desc: 'Shimo workspace URL'
-            }
-          ],
           'slack-slash-commands' => [
             {
               required: true,
@@ -995,7 +930,6 @@ module API
           ::Integrations::Pumble,
           ::Integrations::Pushover,
           ::Integrations::Redmine,
-          ::Integrations::Shimo,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
           ::Integrations::SquashTm,

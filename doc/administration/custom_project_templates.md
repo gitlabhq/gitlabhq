@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Custom instance-level project templates **(PREMIUM SELF)**
@@ -24,9 +24,8 @@ might modify the template projects without understanding the side effects.
 
 To select the group to manage the project templates for your instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Templates**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Templates**.
 1. Expand **Custom project templates**.
 1. Select a group to use.
 1. Select **Save changes**.
@@ -51,7 +50,7 @@ Prerequisites:
    - **Public** and **Internal** projects can be selected by any authenticated user.
    - **Private** projects can be selected only by members of that project.
 1. Review the project's
-   [feature settings](../user/project/settings/index.md#configure-project-features-and-permissions).
+   [feature settings](../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
    All enabled project features should be set to **Everyone With Access**, except
    **GitLab Pages** and **Security and Compliance**.
 

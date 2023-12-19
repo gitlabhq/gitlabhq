@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <div class="disabled-comments gl-mt-3">
+  <div class="gl-mt-3" data-testid="disabled-comments">
     <span
       class="issuable-note-warning gl-display-inline-block gl-w-full gl-px-5 gl-py-4 gl-rounded-base"
     >

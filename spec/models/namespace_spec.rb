@@ -34,6 +34,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_many :namespace_members }
     it { is_expected.to have_one :cluster_enabled_grant }
     it { is_expected.to have_many(:work_items) }
+    it { is_expected.to have_many(:work_items_dates_source) }
     it { is_expected.to have_many :achievements }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:cycle_analytics_stages) }
@@ -82,7 +83,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-    it { is_expected.to validate_length_of(:description).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(500) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
     it { is_expected.to validate_presence_of(:owner) }
@@ -2387,8 +2388,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   context 'with loose foreign key on organization_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:organization) }
-      let!(:model) { create(:namespace, organization: parent) }
+      let_it_be(:parent) { create(:organization) }
+      let_it_be(:model) { create(:namespace, organization: parent) }
     end
   end
 end

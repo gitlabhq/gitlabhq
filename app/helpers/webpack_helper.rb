@@ -16,7 +16,7 @@ module WebpackHelper
   end
 
   def webpack_bundle_tag(bundle)
-    if vite_running
+    if vite_enabled?
       vite_javascript_tag bundle
     else
       javascript_include_tag(*webpack_entrypoint_paths(bundle))
@@ -24,6 +24,8 @@ module WebpackHelper
   end
 
   def webpack_preload_asset_tag(asset, options = {})
+    return if vite_enabled?
+
     path = Gitlab::Webpack::Manifest.asset_paths(asset).first
 
     if options.delete(:prefetch)
@@ -38,7 +40,7 @@ module WebpackHelper
   end
 
   def webpack_controller_bundle_tags
-    return if Feature.enabled?(:vite) && !Rails.env.test?
+    return if vite_enabled?
 
     chunks = []
 

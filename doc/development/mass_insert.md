@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Mass inserting Rails models
@@ -15,5 +15,5 @@ the following snippet in the rails console.
 
 ```ruby
 u = User.find(1)
-Project.last(100).each { |p| p.set_timestamps_for_create && p.add_maintainer(u, current_user: u) } # Change 100 to whatever number of projects you need access to
+Project.last(100).each { |p| p.send(:set_timestamps_for_create) && p.add_maintainer(u, current_user: u) } # Change 100 to whatever number of projects you need access to
 ```

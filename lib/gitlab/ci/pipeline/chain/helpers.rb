@@ -35,7 +35,7 @@ module Gitlab
           def drop_pipeline!(drop_reason)
             return if pipeline.readonly?
 
-            if drop_reason && command.save_incompleted
+            if Enums::Ci::Pipeline.persistable_failure_reason?(drop_reason) && command.save_incompleted
               # Project iid must be called outside a transaction, so we ensure it is set here
               # otherwise it may be set within the state transition transaction of the drop! call
               # which it will lock the InternalId row for the whole transaction
@@ -44,6 +44,8 @@ module Gitlab
               pipeline.drop!(drop_reason)
             else
               command.increment_pipeline_failure_reason_counter(drop_reason)
+
+              pipeline.set_failed(drop_reason) if Feature.enabled?(:always_set_pipeline_failure_reason, command.project)
             end
           end
         end

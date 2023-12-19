@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
@@ -67,6 +67,16 @@ If a feature is moved to another subscription tier, use `moved`:
 ```markdown
 > - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
 > - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
+```
+
+#### Changing the feature status
+
+If the feature status changes, use `changed`:
+
+```markdown
+> - [Introduced](<link-to-issue>) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Changed](<link-to-issue>) to Beta in GitLab 16.0.
+> - [Changed](<link-to-issue>) to Generally Available in GitLab 16.3.
 ```
 
 #### Features introduced behind feature flags
@@ -155,7 +165,7 @@ To remove a page:
    ---
    stage: Data Stores
    group: Global Search
-   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
    remove_date: '2022-08-02'
    redirect_to: '../newpath/to/file/index.md'
    ---

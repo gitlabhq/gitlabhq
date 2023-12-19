@@ -13,11 +13,6 @@ module Sidebars
         _('Explore')
       end
 
-      override :render_raw_scope_menu_partial
-      def render_raw_scope_menu_partial
-        "shared/nav/explore_scope_header"
-      end
-
       override :super_sidebar_context_header
       def super_sidebar_context_header
         aria_label

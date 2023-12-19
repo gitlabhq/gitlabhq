@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issue analytics for projects **(PREMIUM ALL)**
@@ -50,7 +49,7 @@ available. This feature is not ready for production use.
 Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your project over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
 
-![Issues opened and closed per month](img/issues_closed_analytics_v16_4.png)
+![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)
 
 ## Drill into the information
 

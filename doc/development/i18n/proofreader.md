@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Proofread Translations
@@ -33,7 +33,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Victor Wu - [GitLab](https://gitlab.com/_victorwu_), [Crowdin](https://crowdin.com/profile/victorwu)
   - Xiaogang Wen - [GitLab](https://gitlab.com/xiaogang_cn), [Crowdin](https://crowdin.com/profile/xiaogang_gitlab)
-  - Qi Zhao - [GitLab](https://gitlab.com/zhaoqi01), [Crowdin](https://crowdin.com/profile/zhaoqi01)
+  - Zhiyuan Lu - [GitLab](https://gitlab.com/luzhiyuan.deer), [Crowdin](https://crowdin.com/profile/luzhiyuan.deer)
 - Chinese Traditional 繁體中文
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)

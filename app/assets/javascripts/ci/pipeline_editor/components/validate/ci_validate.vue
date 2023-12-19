@@ -9,6 +9,7 @@ import {
   GlTooltip,
   GlTooltipDirective,
   GlSprintf,
+  GlEmptyState,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -67,6 +68,7 @@ export default {
     GlLink,
     GlSprintf,
     GlTooltip,
+    GlEmptyState,
     ValidatePipelinePopover,
   },
   directives: {
@@ -226,38 +228,44 @@ export default {
         </gl-button>
       </div>
     </div>
-    <div v-if="isInitState" :class="$options.BASE_CLASSES">
-      <img :src="validateTabIllustrationPath" />
-      <h1 class="gl-font-size-h1 gl-mb-6">{{ $options.i18n.title }}</h1>
-      <ul>
-        <li class="gl-mb-3">{{ $options.i18n.contentNote }}</li>
-        <li class="gl-mb-3">
+    <gl-empty-state
+      v-if="isInitState"
+      :svg-path="validateTabIllustrationPath"
+      :title="$options.i18n.title"
+      :primary-button-link="validateYaml"
+      :primary-button-text="$options.i18n.cta"
+    >
+      <template #description>
+        <p>{{ $options.i18n.contentNote }}</p>
+        <p>
           <gl-sprintf :message="$options.i18n.simulationNote">
             <template #code="{ content }">
               <code>{{ content }}</code>
             </template>
           </gl-sprintf>
-        </li>
-      </ul>
-      <div ref="simulatePipelineButton">
-        <gl-button
-          ref="simulatePipelineButton"
-          variant="confirm"
-          class="gl-mt-3"
-          :disabled="isInitialCiContentLoading"
-          data-testid="simulate-pipeline-button"
-          @click="validateYaml"
-        >
-          {{ $options.i18n.cta }}
-        </gl-button>
-      </div>
-      <gl-tooltip
-        v-if="isInitialCiContentLoading"
-        :target="() => $refs.simulatePipelineButton"
-        :title="$options.i18n.ctaDisabledTooltip"
-        data-testid="cta-tooltip"
-      />
-    </div>
+        </p>
+      </template>
+      <template #actions>
+        <div ref="simulatePipelineButton">
+          <gl-button
+            ref="simulatePipelineButton"
+            variant="confirm"
+            class="gl-mt-3"
+            :disabled="isInitialCiContentLoading"
+            data-testid="simulate-pipeline-button"
+            @click="validateYaml"
+          >
+            {{ $options.i18n.cta }}
+          </gl-button>
+        </div>
+        <gl-tooltip
+          v-if="isInitialCiContentLoading"
+          :target="() => $refs.simulatePipelineButton"
+          :title="$options.i18n.ctaDisabledTooltip"
+          data-testid="cta-tooltip"
+        />
+      </template>
+    </gl-empty-state>
     <div v-else-if="isSimulationLoading" :class="$options.BASE_CLASSES">
       <gl-loading-icon size="lg" class="gl-m-3" />
       <h1 class="gl-font-size-h1 gl-mb-6">{{ $options.i18n.loading }}</h1>

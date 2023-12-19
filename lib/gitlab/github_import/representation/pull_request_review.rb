@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class PullRequestReview
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :merge_request_iid, :review_id
 

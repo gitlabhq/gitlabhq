@@ -22,7 +22,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
           container_registry_protection_rule:
             be_a(ContainerRegistry::Protection::Rule)
               .and(have_attributes(
-                container_path_pattern: params[:container_path_pattern],
+                repository_path_pattern: params[:repository_path_pattern],
                 push_protected_up_to_access_level: params[:push_protected_up_to_access_level].to_s,
                 delete_protected_up_to_access_level: params[:delete_protected_up_to_access_level].to_s
               ))
@@ -36,7 +36,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       expect(
         ContainerRegistry::Protection::Rule.where(
           project: project,
-          container_path_pattern: params[:container_path_pattern],
+          repository_path_pattern: params[:repository_path_pattern],
           push_protected_up_to_access_level: params[:push_protected_up_to_access_level]
         )
       ).to exist
@@ -57,7 +57,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       expect(
         ContainerRegistry::Protection::Rule.where(
           project: project,
-          container_path_pattern: params[:container_path_pattern],
+          repository_path_pattern: params[:repository_path_pattern],
           push_protected_up_to_access_level: params[:push_protected_up_to_access_level]
         )
       ).not_to exist
@@ -67,12 +67,12 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
   it_behaves_like 'a successful service response'
 
   context 'when fields are invalid' do
-    context 'when container_path_pattern is invalid' do
-      let(:params) { super().merge(container_path_pattern: '') }
+    context 'when repository_path_pattern is invalid' do
+      let(:params) { super().merge(repository_path_pattern: '') }
 
       it_behaves_like 'an erroneous service response'
 
-      it { is_expected.to have_attributes(message: match(/Container path pattern can't be blank/)) }
+      it { is_expected.to have_attributes(message: match(/Repository path pattern can't be blank/)) }
     end
 
     context 'when delete_protected_up_to_access_level is invalid' do
@@ -100,8 +100,8 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     context 'when container registry name pattern is slightly different' do
       let(:params) do
         super().merge(
-          # The field `container_path_pattern` is unique; this is why we change the value in a minimum way
-          container_path_pattern: "#{existing_container_registry_protection_rule.container_path_pattern}-unique",
+          # The field `repository_path_pattern` is unique; this is why we change the value in a minimum way
+          repository_path_pattern: "#{existing_container_registry_protection_rule.repository_path_pattern}-unique",
           push_protected_up_to_access_level:
             existing_container_registry_protection_rule.push_protected_up_to_access_level
         )
@@ -110,17 +110,17 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       it_behaves_like 'a successful service response'
     end
 
-    context 'when field `container_path_pattern` is taken' do
+    context 'when field `repository_path_pattern` is taken' do
       let(:params) do
         super().merge(
-          container_path_pattern: existing_container_registry_protection_rule.container_path_pattern,
+          repository_path_pattern: existing_container_registry_protection_rule.repository_path_pattern,
           push_protected_up_to_access_level: :maintainer
         )
       end
 
       it_behaves_like 'an erroneous service response'
 
-      it { is_expected.to have_attributes(errors: ['Container path pattern has already been taken']) }
+      it { is_expected.to have_attributes(errors: ['Repository path pattern has already been taken']) }
 
       it { expect { subject }.not_to change { existing_container_registry_protection_rule.updated_at } }
     end

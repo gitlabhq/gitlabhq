@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Runners", feature_category: :runner_fleet do
+RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
+  include Features::SortingHelpers
   include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
@@ -11,8 +12,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
   before do
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
-
-    wait_for_requests
   end
 
   describe "Admin Runners page", :js do
@@ -21,19 +20,13 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace, creator: user) }
 
-    describe "runners creation" do
+    describe "runners creation and registration" do
       before do
         visit admin_runners_path
       end
 
       it 'shows a create button' do
         expect(page).to have_link s_('Runner|New instance runner'), href: new_admin_runner_path
-      end
-    end
-
-    describe "runners registration" do
-      before do
-        visit admin_runners_path
       end
 
       it_behaves_like "shows and resets runner registration token" do
@@ -50,11 +43,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           visit admin_runners_path
         end
 
-        it_behaves_like 'shows runner in list' do
-          let(:runner) { instance_runner }
-        end
-
-        it_behaves_like 'shows runner details from list' do
+        it_behaves_like 'shows runner summary and navigates to details' do
           let(:runner) { instance_runner }
           let(:runner_page_path) { admin_runner_path(instance_runner) }
         end
@@ -404,11 +393,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
           it_behaves_like 'shows no runners found'
 
-          it 'shows active tab with no runner' do
+          it 'shows active tab' do
             expect(page).to have_link('Instance', class: 'active')
-
-            expect(page).not_to have_content 'runner-project'
-            expect(page).not_to have_content 'runner-group'
           end
         end
       end
@@ -443,10 +429,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           end
 
           it_behaves_like 'shows no runners found'
-
-          it 'shows no runner' do
-            expect(page).not_to have_content 'runner-blue'
-          end
         end
 
         it 'shows correct runner when tag is selected and search term is entered' do
@@ -480,8 +462,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           end
         end
 
-        click_on 'Created date' # Open "sort by" dropdown
-        click_on 'Last contact'
+        pajamas_sort_by 'Last contact', from: 'Created date'
         click_on 'Sort direction: Descending'
 
         within_testid('runner-list') do
@@ -602,8 +583,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
 
     before do
       visit edit_admin_runner_path(project_runner)
-
-      wait_for_requests
     end
 
     it_behaves_like 'submits edit runner form' do
@@ -633,7 +612,6 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     context 'when a runner is updated', :js do
       before do
         click_on _('Save changes')
-        wait_for_requests
       end
 
       it 'show success alert and redirects to runner page' do

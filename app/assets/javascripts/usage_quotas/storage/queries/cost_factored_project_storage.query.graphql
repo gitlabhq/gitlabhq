@@ -1,0 +1,23 @@
+query getCostFactoredProjectStorageStatistics($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    statisticsDetailsPaths {
+      containerRegistry
+      buildArtifacts
+      packages
+      repository
+      snippets
+      wiki
+    }
+    statistics {
+      containerRegistrySize
+      buildArtifactsSize
+      lfsObjectsSize
+      packagesSize
+      repositorySize
+      snippetsSize
+      storageSize
+      wikiSize
+    }
+  }
+}

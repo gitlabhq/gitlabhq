@@ -8,18 +8,19 @@ module RuboCop
       class VersionedMigrationClass < RuboCop::Cop::Base
         include MigrationHelpers
 
-        ENFORCED_SINCE = 2023_01_12_00_00_00
+        ENFORCED_SINCE = 2023_11_01_02_15_00
+        CURRENT_MIGRATION_VERSION = 2.2 # Should be the same value as Gitlab::Database::Migration.current_version
         DOC_LINK = "https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning"
 
         MSG_INHERIT = "Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. " \
-                      "Use Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}.".freeze
+                      "Use Gitlab::Database::Migration[#{CURRENT_MIGRATION_VERSION}] instead. See #{DOC_LINK}.".freeze
 
         MSG_INCLUDE = "Don't include migration helper modules directly. " \
-                      "Inherit from Gitlab::Database::Migration[2.1] instead. See #{DOC_LINK}.".freeze
+                      "Inherit from Gitlab::Database::Migration[#{CURRENT_MIGRATION_VERSION}] instead. See #{DOC_LINK}."
+                      .freeze
 
         GITLAB_MIGRATION_CLASS = 'Gitlab::Database::Migration'
         ACTIVERECORD_MIGRATION_CLASS = 'ActiveRecord::Migration'
-        CURRENT_MIGRATION_VERSION = 2.1 # Should be the same value as Gitlab::Database::Migration.current_version
 
         def_node_search :includes_helpers?, <<~PATTERN
         (send nil? :include

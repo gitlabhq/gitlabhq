@@ -38,7 +38,7 @@ require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 
-require 'rspec_flaky'
+require 'gitlab/rspec_flaky'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -139,11 +139,6 @@ RSpec.configure do |config|
       metadata[:migration] = true if metadata[:level] == :migration || metadata[:level] == :background_migration
     end
 
-    # Do not overwrite schema if it's already set
-    unless metadata.key?(:schema)
-      metadata[:schema] = :latest if metadata[:level] == :background_migration
-    end
-
     # Admin controller specs get auto admin mode enabled since they are
     # protected by the 'EnforcesAdminAuthentication' concern
     metadata[:enable_admin_mode] = true if %r{(ee)?/spec/controllers/admin/}.match?(location)
@@ -212,7 +207,6 @@ RSpec.configure do |config|
   config.include_context 'when rendered has no HTML escapes', type: :view
 
   include StubFeatureFlags
-  include StubSaasFeatures
   include StubSnowplow
   include StubMember
 
@@ -230,9 +224,9 @@ RSpec.configure do |config|
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
-  if RspecFlaky::Config.generate_report?
+  if Gitlab::RspecFlaky::Config.generate_report?
     config.reporter.register_listener(
-      RspecFlaky::Listener.new,
+      Gitlab::RspecFlaky::Listener.new,
       :example_passed,
       :dump_summary)
   end
@@ -327,6 +321,7 @@ RSpec.configure do |config|
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
 
+      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/431041
       stub_feature_flags(vite: false)
     else
       unstub_all_feature_flags

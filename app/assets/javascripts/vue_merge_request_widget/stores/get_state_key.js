@@ -15,25 +15,25 @@ export default function deviseState() {
     return stateKey.missingBranch;
   }
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
-    return stateKey.checking;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.checking;
   }
   if (this.hasConflicts) {
-    return stateKey.conflicts;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.conflicts;
   }
   if (this.shouldBeRebased) {
-    return stateKey.rebase;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.rebase;
   }
   if (this.hasMergeChecksFailed && !this.autoMergeEnabled) {
-    return stateKey.mergeChecksFailed;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.mergeChecksFailed;
   }
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_MUST_PASS) {
-    return stateKey.pipelineFailed;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.pipelineFailed;
   }
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DRAFT_STATUS) {
-    return stateKey.draft;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.draft;
   }
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DISCUSSIONS_NOT_RESOLVED) {
-    return stateKey.unresolvedDiscussions;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.unresolvedDiscussions;
   }
   if (this.canMerge && this.isSHAMismatch) {
     return stateKey.shaMismatch;
@@ -47,5 +47,5 @@ export default function deviseState() {
   ) {
     return stateKey.readyToMerge;
   }
-  return stateKey.checking;
+  return window.gon?.features?.mergeBlockedComponent ? null : stateKey.checking;
 }

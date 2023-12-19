@@ -79,8 +79,16 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       expect(control_count).to eq 3
       # Since this is an issue filter that is not batching issue queries
       # across projects, we have to account for that.
-      # 1 for original issue, 2 for second route/project, 1 for other issue
-      max_count = control_count + 4
+      # 1 for for routes to find routes.source_id of projects matching paths
+      # 1 for projects belonging to the above routes
+      # 1 for preloading routes of the projects
+      # 1 for loading the namespaces associated to the project
+      # 1 for loading the routes associated with the namespace
+      # 1x2 for issues
+      # 1x2 for groups
+      # 1x2 for work_item_types
+      # Total = 11
+      max_count = control_count + 8
 
       expect do
         cache.load_references_per_parent(filter.nodes)

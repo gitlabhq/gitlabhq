@@ -413,6 +413,15 @@ export const nYearsAfter = (date, numberOfYears) => {
 };
 
 /**
+ * Returns the date `n` years before the date provided.
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfYears number of years before
+ * @return {Date} A `Date` object `n` years before the provided `Date`
+ */
+export const nYearsBefore = (date, numberOfYears) => nYearsAfter(date, -numberOfYears);
+
+/**
  * Returns the date after the date provided
  *
  * @param {Date} date the initial date

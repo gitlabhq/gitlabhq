@@ -10,33 +10,35 @@ module ClickHouse
     # sufficient. Multiple database applications need a +SchemaMigration+
     # per primary database.
     class MigrationContext
-      attr_reader :migrations_paths, :schema_migration
-
-      def initialize(migrations_paths, schema_migration)
+      def initialize(connection, migrations_paths, schema_migration)
+        @connection = connection
         @migrations_paths = migrations_paths
         @schema_migration = schema_migration
       end
 
-      def up(target_version = nil, &block)
+      def up(target_version = nil, step = nil, &block)
         selected_migrations = block ? migrations.select(&block) : migrations
 
-        migrate(:up, selected_migrations, target_version)
+        migrate(:up, selected_migrations, target_version, step)
       end
 
-      def down(target_version = nil, &block)
+      def down(target_version = nil, step = 1, &block)
         selected_migrations = block ? migrations.select(&block) : migrations
 
-        migrate(:down, selected_migrations, target_version)
+        migrate(:down, selected_migrations, target_version, step)
       end
 
       private
 
-      def migrate(direction, selected_migrations, target_version = nil)
+      attr_reader :migrations_paths, :schema_migration, :connection
+
+      def migrate(direction, selected_migrations, target_version = nil, step = nil)
         ClickHouse::MigrationSupport::Migrator.new(
           direction,
           selected_migrations,
           schema_migration,
-          target_version
+          target_version,
+          step
         ).migrate
       end
 
@@ -44,12 +46,12 @@ module ClickHouse
         migrations = migration_files.map do |file|
           version, name, scope = parse_migration_filename(file)
 
-          raise ClickHouse::MigrationSupport::IllegalMigrationNameError, file unless version
+          raise ClickHouse::MigrationSupport::Errors::IllegalMigrationNameError, file unless version
 
           version = version.to_i
           name = name.camelize
 
-          MigrationProxy.new(name, version, file, scope)
+          MigrationProxy.new(connection, name, version, file, scope)
         end
 
         migrations.sort_by(&:version)
@@ -67,9 +69,16 @@ module ClickHouse
 
     # MigrationProxy is used to defer loading of the actual migration classes
     # until they are needed
-    MigrationProxy = Struct.new(:name, :version, :filename, :scope) do
-      def initialize(name, version, filename, scope)
-        super
+    class MigrationProxy
+      attr_reader :name, :version, :filename, :scope
+
+      def initialize(connection, name, version, filename, scope)
+        @connection = connection
+        @name = name
+        @version = version
+        @filename = filename
+        @scope = scope
+
         @migration = nil
       end
 
@@ -87,7 +96,7 @@ module ClickHouse
 
       def load_migration
         require(File.expand_path(filename))
-        name.constantize.new(name, version)
+        name.constantize.new(@connection, name, version)
       end
     end
   end

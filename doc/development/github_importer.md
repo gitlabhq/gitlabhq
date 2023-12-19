@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GitHub importer developer documentation
@@ -209,7 +209,8 @@ When you schedule a job, `AdvanceStageWorker`
 is given a project ID, a list of Redis keys, and the name of the next
 stage. The Redis keys (produced by `Gitlab::JobWaiter`) are used to check if the
 running stage has been completed or not. If the stage has not yet been
-completed `AdvanceStageWorker` reschedules itself. After a stage finishes
+completed `AdvanceStageWorker` reschedules itself. After a stage finishes,
+or if more jobs have been finished after the last invocation.
 `AdvanceStageworker` refreshes the import JID (more on this below) and
 schedule the worker of the next stage.
 
@@ -221,18 +222,19 @@ also reduces pressure on the system as a whole.
 ## Refreshing import job IDs
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
-that periodically runs and marks project imports as failed if they have been
-running for more than 24 hours. For GitHub projects, this poses a bit of a
-problem: importing large projects could take several hours depending on how
+that periodically runs and marks project imports as failed if they have not been
+refreshed for more than 24 hours. For GitHub projects, this poses a bit of a
+problem: importing large projects could take several days depending on how
 often we hit the GitHub rate limit (more on this below), but we don't want
 `Gitlab::Import::StuckProjectImportJobsWorker` to mark our import as failed because of this.
 
 To prevent this from happening we periodically refresh the expiration time of
-the import process. This works by storing the JID of the import job in the
+the import. This works by storing the JID of the import job in the
 database, then refreshing this JID TTL at various stages throughout the import
-process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
-refreshing this TTL we can ensure our import does not get marked as failed so
-long we're still performing work.
+process. This is done either by calling `ProjectImportState#refresh_jid_expiration`,
+or by using the RefreshImportJidWorker and passing in the current worker's jid.
+By refreshing this TTL we can ensure our import does not get marked as failed so
+long as we're still performing work.
 
 ## GitHub rate limit
 
@@ -296,6 +298,54 @@ The code for this resides in:
 
 - `lib/gitlab/github_import/user_finder.rb`
 - `lib/gitlab/github_import/caching.rb`
+
+## Increasing Sidekiq interrupts
+
+When a Sidekiq process shut downs, it waits for a period of time for running
+jobs to finish before it then interrupts them. An interrupt terminates
+the job and requeues it again. Our
+[vendored `sidekiq-reliable-fetcher` gem](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/gems/sidekiq-reliable-fetch/README.md)
+puts a limit of `3` interrupts before a job is no longer requeued and is
+permanently terminated. Jobs that have been interrupted log a
+`json.interrupted_count` in Kibana.
+
+This limit offers protection from jobs that can never be completed in
+the time between Sidekiq restarts.
+
+For large imports, our GitHub [stage](#stages) workers (namespaced in
+`Stage::`) take many hours to finish. By default, the import is at risk
+of failing because of `sidekiq-reliable-fetcher` permanently stopping these
+workers before they can complete.
+
+Stage workers that pick up from where they left off when restarted can
+increase the interrupt limit of `sidekiq-reliable-fetcher` to `20` by
+calling `.resumes_work_when_interrupted!`:
+
+```ruby
+module Gitlab
+  module GithubImport
+    module Stage
+      class MyWorker
+        resumes_work_when_interrupted!
+
+        # ...
+      end
+    end
+  end
+end
+```
+
+Stage workers that do not fully resume their work when restarted should
+not call this method. For example, a worker that skips already imported
+objects, but starts its loop from the beginning each time.
+
+Examples of stage workers that do resume work fully are ones that
+execute services that:
+
+- [Continue paging](https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc/lib/gitlab/github_import/parallel_scheduling.rb#L114-117)
+  an endpoint from where it left off.
+- [Continue their loop](https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc26c1e2bdba4fc67c14478d2b2a5f2bfa/lib/gitlab/github_import/importer/attachments/issues_importer.rb#L27)
+  from where it left off.
 
 ## Mapping labels and milestones
 

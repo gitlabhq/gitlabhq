@@ -19,9 +19,9 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
 
     specify do
       aggregate_failures do
-        expect(track_action(author: user, project: project)).to be_truthy
-        expect(track_action(author: user2, project: project)).to be_truthy
-        expect(track_action(author: user3, project: project)).to be_truthy
+        track_action(author: user, project: project)
+        track_action(author: user2, project: project)
+        track_action(author: user3, project: project)
 
         expect(count_unique(date_from: time.beginning_of_week, date_to: 1.week.from_now)).to eq(3)
       end
@@ -30,7 +30,9 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
     it_behaves_like 'internal event tracking'
 
     it 'does not track edit actions if author is not present' do
-      expect(track_action(author: nil, project: project)).to be_nil
+      track_action(author: nil, project: project)
+
+      expect(count_unique(date_from: time.beginning_of_week, date_to: 1.week.from_now)).to eq(0)
     end
   end
 

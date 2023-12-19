@@ -6,6 +6,7 @@ import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
 import { CONTENT_EDITOR_READY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -157,6 +158,7 @@ export default {
       enableAutocomplete,
       autocompleteDataSources,
       codeSuggestionsConfig,
+      sidebarMediator: SidebarMediator.singleton,
       tiptapOptions: {
         autofocus,
         editable,

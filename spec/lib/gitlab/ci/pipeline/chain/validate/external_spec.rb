@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, :with_sign_ins) }
 
@@ -328,11 +328,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External do
       context 'when save_incompleted is false' do
         let(:save_incompleted) { false }
 
-        it 'adds errors to the pipeline without dropping it' do
+        it 'adds errors to the pipeline without persisting it', :aggregate_failures do
           perform!
 
-          expect(pipeline.status).to eq('pending')
           expect(pipeline).not_to be_persisted
+          expect(pipeline.status).to eq('failed')
+          expect(pipeline).to be_external_validation_failure
           expect(pipeline.errors.to_a).to include('External validation failed')
         end
 

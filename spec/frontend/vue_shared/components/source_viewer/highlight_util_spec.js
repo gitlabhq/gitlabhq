@@ -6,6 +6,7 @@ import { LINES_PER_CHUNK, NEWLINE } from '~/vue_shared/components/source_viewer/
 jest.mock('highlight.js/lib/core', () => ({
   highlight: jest.fn().mockReturnValue({ value: 'highlighted content' }),
   registerLanguage: jest.fn(),
+  getLanguage: jest.fn(),
 }));
 
 jest.mock('~/vue_shared/components/source_viewer/plugins/index', () => ({
@@ -28,11 +29,37 @@ describe('Highlight utility', () => {
     expect(registerPlugins).toHaveBeenCalled();
   });
 
+  describe('sub-languages', () => {
+    const languageDefinition = {
+      subLanguage: 'xml',
+      contains: [{ subLanguage: 'javascript' }, { subLanguage: 'typescript' }],
+    };
+
+    beforeEach(async () => {
+      jest.spyOn(hljs, 'getLanguage').mockReturnValue(languageDefinition);
+      await highlight(fileType, rawContent, language);
+    });
+
+    it('registers the primary sub-language', () => {
+      expect(hljs.registerLanguage).toHaveBeenCalledWith(
+        languageDefinition.subLanguage,
+        expect.any(Function),
+      );
+    });
+
+    it.each(languageDefinition.contains)(
+      'registers the rest of the sub-languages',
+      ({ subLanguage }) => {
+        expect(hljs.registerLanguage).toHaveBeenCalledWith(subLanguage, expect.any(Function));
+      },
+    );
+  });
+
   it('highlights the content', () => {
     expect(hljs.highlight).toHaveBeenCalledWith(rawContent, { language });
   });
 
-  it('splits the content into chunks', () => {
+  it('splits the content into chunks', async () => {
     const contentArray = Array.from({ length: 140 }, () => 'newline'); // simulate 140 lines of code
 
     const chunks = [
@@ -52,7 +79,7 @@ describe('Highlight utility', () => {
       },
     ];
 
-    expect(highlight(fileType, contentArray.join(NEWLINE), language)).toEqual(
+    expect(await highlight(fileType, contentArray.join(NEWLINE), language)).toEqual(
       expect.arrayContaining(chunks),
     );
   });
@@ -71,7 +98,7 @@ describe('unsupported languages', () => {
     expect(hljs.highlight).not.toHaveBeenCalled();
   });
 
-  it('does not return a result', () => {
-    expect(highlight(fileType, rawContent, unsupportedLanguage)).toBe(undefined);
+  it('does not return a result', async () => {
+    expect(await highlight(fileType, rawContent, unsupportedLanguage)).toBe(undefined);
   });
 });

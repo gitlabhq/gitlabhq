@@ -4,47 +4,27 @@ module Packages
   module MlModel
     class CreatePackageFileService < BaseService
       def execute
-        ::Packages::Package.transaction do
-          package = find_or_create_package
-          find_or_create_model_version(package)
+        @package = params[:model_version]&.package
 
-          create_package_file(package)
+        return unless @package
+
+        ::Packages::Package.transaction do
+          update_package
+          create_package_file
         end
       end
 
       private
 
-      def find_or_create_package
-        package_params = {
-          name: params[:package_name],
-          version: params[:package_version],
-          build: params[:build],
-          status: params[:status]
-        }
+      attr_reader :package
 
-        package = ::Packages::MlModel::FindOrCreatePackageService
-                    .new(project, current_user, package_params)
-                    .execute
-
+      def update_package
         package.update_column(:status, params[:status]) if params[:status] && params[:status] != package.status
 
         package.create_build_infos!(params[:build])
-
-        package
       end
 
-      def find_or_create_model_version(package)
-        model_version_params = {
-          model_name: package.name,
-          version: package.version,
-          package: package,
-          user: current_user
-        }
-
-        Ml::FindOrCreateModelVersionService.new(project, model_version_params).execute
-      end
-
-      def create_package_file(package)
+      def create_package_file
         file_params = {
           file: params[:file],
           size: params[:file].size,

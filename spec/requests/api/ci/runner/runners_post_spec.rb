@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :runner_fleet do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :fleet_visibility do
   describe '/api/v4/runners' do
     describe 'POST /api/v4/runners' do
       it_behaves_like 'runner migrations backoff' do

@@ -4,16 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Achievements::Achievement, type: :model, feature_category: :user_profile do
   describe 'associations' do
-    it { is_expected.to belong_to(:namespace).required }
+    it { is_expected.to belong_to(:namespace).inverse_of(:achievements).required }
 
     it { is_expected.to have_many(:user_achievements).inverse_of(:achievement) }
     it { is_expected.to have_many(:users).through(:user_achievements).inverse_of(:achievements) }
-  end
-
-  describe 'modules' do
-    subject { described_class }
-
-    it { is_expected.to include_module(Avatarable) }
   end
 
   describe 'validations' do
@@ -27,10 +21,15 @@ RSpec.describe Achievements::Achievement, type: :model, feature_category: :user_
 
   describe '#name' do
     it 'strips name' do
-      achievement = described_class.new(name: '  AchievementTest  ')
+      achievement = build(:achievement, name: '  AchievementTest  ')
+
       achievement.valid?
 
       expect(achievement.name).to eq('AchievementTest')
     end
+  end
+
+  it_behaves_like Avatarable do
+    let(:model) { create(:achievement, :with_avatar) }
   end
 end

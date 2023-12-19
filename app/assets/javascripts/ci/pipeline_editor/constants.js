@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const EDITOR_APP_DRAWER_HELP = 'HELP';
 export const EDITOR_APP_DRAWER_JOB_ASSISTANT = 'JOB_ASSISTANT';
@@ -93,6 +94,9 @@ export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;
 
+export const MIGRATION_PLAN_HELP_PATH = helpPagePath('ci/migration/plan_a_migration');
+export const MIGRATE_FROM_JENKINS_TRACKING_LABEL = 'migrate_from_jenkins_prompt';
+
 export const I18N = {
   title: s__('Pipelines|Get started with GitLab CI/CD'),
   learnBasics: {
@@ -106,6 +110,13 @@ export const I18N = {
         'Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  "Hello world" script to see how it runs, explore how CI/CD works.',
       ),
       cta: s__('Pipelines|Try test template'),
+    },
+    migrateFromJenkins: {
+      title: s__('Pipelines|Migrate to GitLab CI/CD from Jenkins'),
+      description: s__(
+        'Pipelines|Take advantage of simple, scalable pipelines and CI/CD-enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!',
+      ),
+      cta: s__('Pipelines|Start with a migration plan'),
     },
   },
   templates: {

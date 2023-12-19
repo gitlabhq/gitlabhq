@@ -625,7 +625,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     end
 
     context 'when ck param is present' do
-      let(:cache_key) { merge_request.merge_head_diff.id }
+      let(:cache_key) { 'abc123' }
 
       before do
         create(:merge_request_diff, :merge_head, merge_request: merge_request)
@@ -655,6 +655,24 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
 
           expect(response.headers['Cache-Control']).not_to eq('max-age=86400, private')
         end
+      end
+    end
+
+    context 'when collapse_generated_diff_files FF is enabled' do
+      it 'sets generated' do
+        go
+        expect(json_response["diff_files"][0]["viewer"]["generated"]).to eq(false)
+      end
+    end
+
+    context 'when collapse_generated_diff_files FF is disabled' do
+      before do
+        stub_feature_flags(collapse_generated_diff_files: false)
+      end
+
+      it 'sets generated as nil' do
+        go
+        expect(json_response["diff_files"][0]["viewer"]["generated"]).to be_nil
       end
     end
   end

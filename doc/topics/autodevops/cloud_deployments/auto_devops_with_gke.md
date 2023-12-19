@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE ALL)**
@@ -77,7 +77,7 @@ Now you have an application project you are going to deploy to the GKE cluster.
 Now we need to configure the GitLab agent for Kubernetes for us to be able to use it to deploy the application project.
 
 1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
-1. Navigate to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/gke-agent/config.yaml`) and edit it.
+1. Navigate to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/<agent-name>/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use application's project path as `id`:
 
 ```yaml
@@ -127,7 +127,7 @@ Follow these steps to configure the base domain and other settings required for 
 1. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value. For this example, use the domain `<IP address>.nip.io`.
    - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. You can use different namespaces per environment. Configure the environment, use the environment scope.
-   - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:gke-agent`. Select the environment scope of your choice.
+   - Add a key called `KUBE_CONTEXT` with the value `<path/to/agent/project>:<agent-name>`. Select the environment scope of your choice.
    - Select **Save changes**.
 
 ## Enable Auto DevOps and run the pipeline
@@ -182,8 +182,6 @@ The jobs are separated into stages:
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
-  - The `license_scanning` job is deprecated and does not produce any results. It is allowed to fail
-    ([Auto License Compliance](../stages.md#auto-license-compliance-deprecated))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).

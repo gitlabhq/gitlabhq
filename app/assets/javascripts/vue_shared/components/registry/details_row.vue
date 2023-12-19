@@ -32,12 +32,14 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-font-monospace gl-font-sm gl-word-break-all"
+    class="gl-display-flex gl-align-items-top gl-font-monospace gl-font-sm gl-word-break-all"
     :class="[padding, borderClass]"
   >
-    <gl-icon v-if="icon" :name="icon" class="gl-mr-4" />
-    <span>
+    <div v-if="icon" class="gl-w-5 gl-mr-4">
+      <gl-icon :name="icon" />
+    </div>
+    <div>
       <slot></slot>
-    </span>
+    </div>
   </div>
 </template>

@@ -1,10 +1,13 @@
 <script>
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import { sortableFields } from '~/packages_and_registries/package_registry/utils';
 import {
   FILTERED_SEARCH_TERM,
   OPERATORS_IS,
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_TYPE,
+  TOKEN_TITLE_VERSION,
+  TOKEN_TYPE_VERSION,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
@@ -19,6 +22,14 @@ export default {
       title: TOKEN_TITLE_TYPE,
       unique: true,
       token: PackageTypeToken,
+      operators: OPERATORS_IS,
+    },
+    {
+      type: TOKEN_TYPE_VERSION,
+      icon: 'doc-versions',
+      title: TOKEN_TITLE_VERSION,
+      unique: true,
+      token: GlFilteredSearchToken,
       operators: OPERATORS_IS,
     },
   ],
@@ -57,6 +68,7 @@ export default {
       const parsed = {
         packageName: '',
         packageType: undefined,
+        packageVersion: '',
       };
 
       return filters.reduce((acc, filter) => {
@@ -64,6 +76,13 @@ export default {
           return {
             ...acc,
             packageType: filter.value.data.toUpperCase(),
+          };
+        }
+
+        if (filter.type === TOKEN_TYPE_VERSION && filter.value?.data) {
+          return {
+            ...acc,
+            packageVersion: filter.value.data.trim(),
           };
         }
 

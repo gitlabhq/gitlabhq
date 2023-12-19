@@ -207,7 +207,6 @@ export default {
         >
           <gl-button
             data-testid="report-section-expand-button"
-            data-qa-selector="expand_report_button"
             category="tertiary"
             size="small"
             :icon="isExpanded ? 'chevron-lg-up' : 'chevron-lg-down'"

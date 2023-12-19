@@ -6,7 +6,7 @@ RSpec.describe Projects::Ml::ModelFinder, feature_category: :mlops do
   let_it_be(:project) { create(:project) }
   let_it_be(:model1) { create(:ml_models, :with_versions, project: project) }
   let_it_be(:model2) { create(:ml_models, :with_versions, project: project) }
-  let_it_be(:model3) { create(:ml_models, name: "#{model1.name}_1", project: project) }
+  let_it_be(:model3) { create(:ml_models, name: "#{model1.name}_1", project: project, updated_at: 1.week.ago) }
   let_it_be(:other_model) { create(:ml_models) }
   let_it_be(:project_models) { [model1, model2, model3] }
 
@@ -52,6 +52,7 @@ RSpec.describe Projects::Ml::ModelFinder, feature_category: :mlops do
       'by column'          | 'name'    | 'ASC'  | [0, 2, 1]
       'invalid sort'       | nil       | 'UP'   | [2, 1, 0]
       'invalid order by'   | 'INVALID' | nil    | [2, 1, 0]
+      'order by updated_at' | 'updated_at' | nil | [1, 0, 2]
     end
     with_them do
       let(:params) { { order_by: order_by, sort: direction } }

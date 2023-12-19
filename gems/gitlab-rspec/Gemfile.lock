@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     gitlab-rspec (0.1.0)
+      activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
       rspec (~> 3.0)
 
@@ -21,6 +22,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    activemodel (7.0.4.3)
+      activesupport (= 7.0.4.3)
+    activerecord (7.0.4.3)
+      activemodel (= 7.0.4.3)
+      activesupport (= 7.0.4.3)
     activesupport (7.0.4.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)

@@ -45,22 +45,32 @@ exports[`Contributors charts should render charts and a RefSelector when loading
       Excluding merge commits. Limited to 6,000 commits.
     </span>
     <glareachart-stub
-      annotations=""
       class="gl-mb-5"
       data="[object Object]"
+      format-tooltip-text="function () { [native code] }"
       height="264"
-      includelegendavgmax="true"
-      legendaveragetext="Avg"
-      legendcurrenttext="Current"
-      legendlayout="inline"
-      legendmaxtext="Max"
-      legendmintext="Min"
-      legendseriesinfo=""
       option="[object Object]"
       responsive=""
-      thresholds=""
       width="auto"
-    />
+    >
+      <div
+        data-testid="tooltip-title"
+      />
+      <div
+        class="gl-display-flex gl-gap-6 gl-justify-content-space-between"
+      >
+        <span
+          data-testid="tooltip-label"
+        >
+          Number of commits
+        </span>
+        <span
+          data-testid="tooltip-value"
+        >
+          []
+        </span>
+      </div>
+    </glareachart-stub>
     <div
       class="row"
     >
@@ -78,21 +88,31 @@ exports[`Contributors charts should render charts and a RefSelector when loading
           2 commits (jawnnypoo@gmail.com)
         </p>
         <glareachart-stub
-          annotations=""
           data="[object Object]"
+          format-tooltip-text="function () { [native code] }"
           height="216"
-          includelegendavgmax="true"
-          legendaveragetext="Avg"
-          legendcurrenttext="Current"
-          legendlayout="inline"
-          legendmaxtext="Max"
-          legendmintext="Min"
-          legendseriesinfo=""
           option="[object Object]"
           responsive=""
-          thresholds=""
           width="auto"
-        />
+        >
+          <div
+            data-testid="tooltip-title"
+          />
+          <div
+            class="gl-display-flex gl-gap-6 gl-justify-content-space-between"
+          >
+            <span
+              data-testid="tooltip-label"
+            >
+              Commits
+            </span>
+            <span
+              data-testid="tooltip-value"
+            >
+              []
+            </span>
+          </div>
+        </glareachart-stub>
       </div>
     </div>
   </div>

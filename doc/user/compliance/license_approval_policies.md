@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Govern
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # License approval policies **(ULTIMATE ALL)**
@@ -40,7 +39,7 @@ Create a license approval policy to enforce license compliance.
 
 To create a license approval policy:
 
-1. [Link a security policy project](../application_security/policies/index.md#managing-the-linked-security-policy-project) to your development group, subgroup, or project (the Owner role is required).
+1. [Link a security policy project](../application_security/policies/index.md#policy-implementation) to your development group, subgroup, or project (the Owner role is required).
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 1. Create a new [Scan Result Policy](../application_security/policies/scan-result-policies.md).

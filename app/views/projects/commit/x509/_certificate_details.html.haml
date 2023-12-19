@@ -1,17 +1,18 @@
-.gpg-popover-certificate-details
-  %strong= _('Certificate Subject')
-  - if signature.x509_certificate.revoked?
-    %strong.cred= _('(revoked)')
-  %ul
-    - x509_subject(signature.x509_certificate.subject, ["CN", "O"]).map do |key, value|
-      %li= key + "=" + value
-    %li= _('Subject Key Identifier:')
-    %li.unstyled= signature.x509_certificate.subject_key_identifier.gsub(":", " ")
+- if signature.x509_certificate
+  .gpg-popover-certificate-details
+    %strong= _('Certificate Subject')
+    - if signature.x509_certificate.revoked?
+      %strong.cred= _('(revoked)')
+    %ul
+      - x509_subject(signature.x509_certificate.subject, ["CN", "O"]).map do |key, value|
+        %li= key + "=" + value
+      %li= _('Subject Key Identifier:')
+      %li.unstyled= signature.x509_certificate.subject_key_identifier.gsub(":", " ")
 
-.gpg-popover-certificate-details
-  %strong= _('Certificate Issuer')
-  %ul
-    - x509_subject(signature.x509_certificate.x509_issuer.subject, ["CN", "OU", "O"]).map do |key, value|
-      %li= key + "=" + value
-    %li= _('Subject Key Identifier:')
-    %li.unstyled= signature.x509_certificate.x509_issuer.subject_key_identifier.gsub(":", " ")
+  .gpg-popover-certificate-details
+    %strong= _('Certificate Issuer')
+    %ul
+      - x509_subject(signature.x509_certificate.x509_issuer.subject, ["CN", "OU", "O"]).map do |key, value|
+        %li= key + "=" + value
+      %li= _('Subject Key Identifier:')
+      %li.unstyled= signature.x509_certificate.x509_issuer.subject_key_identifier.gsub(":", " ")

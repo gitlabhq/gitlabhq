@@ -27,18 +27,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
-
-    context 'kubernetes_agent_internal_api feature flag disabled' do
-      before do
-        stub_feature_flags(kubernetes_agent_internal_api: false)
-      end
-
-      it 'returns 404' do
-        send_request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   shared_examples 'agent authentication' do
@@ -134,15 +122,17 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           k8s_api_proxy_requests_via_user_access: 44,
           k8s_api_proxy_requests_via_pat_access: 45
         }
+        users = create_list(:user, 3)
+        user_ids = users.map(&:id) << users[0].id
         unique_counters = {
-          agent_users_using_ci_tunnel: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_users_via_ci_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_agents_via_ci_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_users_via_user_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_agents_via_user_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_users_via_pat_access: [10, 999, 777, 10],
-          k8s_api_proxy_requests_unique_agents_via_pat_access: [10, 999, 777, 10],
-          flux_git_push_notified_unique_projects: [10, 999, 777, 10]
+          agent_users_using_ci_tunnel: user_ids,
+          k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
+          k8s_api_proxy_requests_unique_agents_via_ci_access: user_ids,
+          k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
+          k8s_api_proxy_requests_unique_agents_via_user_access: user_ids,
+          k8s_api_proxy_requests_unique_users_via_pat_access: user_ids,
+          k8s_api_proxy_requests_unique_agents_via_pat_access: user_ids,
+          flux_git_push_notified_unique_projects: user_ids
         }
         expected_counters = {
           kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
@@ -167,6 +157,87 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
                 start_date: Date.current, end_date: Date.current + 10
               )
           ).to eq(xs.uniq.count)
+        end
+      end
+    end
+  end
+
+  describe 'POST /internal/kubernetes/agent_events', :clean_gitlab_redis_shared_state do
+    def send_request(headers: {}, params: {})
+      post api('/internal/kubernetes/agent_events'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
+    include_examples 'error handling'
+
+    context 'is authenticated for an agent' do
+      let!(:agent_token) { create(:cluster_agent_token) }
+
+      context 'when events are valid' do
+        let(:request_count) { 2 }
+        let(:users) { create_list(:user, 3).index_by(&:id) }
+        let(:projects) { create_list(:project, 3).index_by(&:id) }
+        let(:events) do
+          user_ids = users.keys
+          project_ids = projects.keys
+          event_data = Array.new(3) do |i|
+            { user_id: user_ids[i], project_id: project_ids[i] }
+          end
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: event_data,
+            k8s_api_proxy_requests_unique_users_via_user_access: event_data,
+            k8s_api_proxy_requests_unique_users_via_pat_access: event_data
+          }
+        end
+
+        it 'tracks events and returns no_content', :aggregate_failures do
+          events.each do |event_name, event_list|
+            event_list.each do |event|
+              expect(Gitlab::InternalEvents).to receive(:track_event)
+                                                  .with(event_name.to_s, user: users[event[:user_id]], project: projects[event[:project_id]])
+                                                  .exactly(request_count).times
+            end
+          end
+
+          request_count.times do
+            send_request(params: { events: events })
+          end
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when events are empty' do
+        let(:events) do
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: [],
+            k8s_api_proxy_requests_unique_users_via_user_access: [],
+            k8s_api_proxy_requests_unique_users_via_pat_access: []
+          }
+        end
+
+        it 'returns no_content for empty events' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+          send_request(params: { events: events })
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when events have non-integer values' do
+        let(:events) do
+          {
+            k8s_api_proxy_requests_unique_users_via_ci_access: [
+              { user_id: 'string', project_id: 111 }
+            ]
+          }
+        end
+
+        it 'returns 400 for non-integer values' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+          send_request(params: { events: events })
+
+          expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
     end
@@ -254,8 +325,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
             'agent_name' => agent.name,
             'gitaly_info' => a_hash_including(
               'address' => match(/\.socket$/),
-              'token' => 'secret',
-              'features' => Feature::Gitaly.server_feature_flags
+              'token' => 'secret'
             ),
             'gitaly_repository' => a_hash_including(
               'storage_name' => project.repository_storage,
@@ -297,8 +367,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
               'project_id' => project.id,
               'gitaly_info' => a_hash_including(
                 'address' => match(/\.socket$/),
-                'token' => 'secret',
-                'features' => Feature::Gitaly.server_feature_flags
+                'token' => 'secret'
               ),
               'gitaly_repository' => a_hash_including(
                 'storage_name' => project.repository_storage,

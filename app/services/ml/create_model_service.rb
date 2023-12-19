@@ -22,6 +22,12 @@ module Ml
 
         add_metadata(model, @metadata)
 
+        Gitlab::InternalEvents.track_event(
+          'model_registry_ml_model_created',
+          project: @project,
+          user: @user
+        )
+
         model
       end
     end

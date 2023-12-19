@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Manage issues **(FREE ALL)**
@@ -132,7 +132,7 @@ To move an issue:
 You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the project.
 

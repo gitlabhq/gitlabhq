@@ -61,7 +61,6 @@ export default {
           :show-label="false"
           class="gl-display-flex gl-border-0 gl-p-0 gl-mr-5"
           icon="doc-new"
-          data-qa-selector="new_file_button"
           @click="createNewFile()"
         />
         <upload
@@ -75,7 +74,6 @@ export default {
           :show-label="false"
           class="gl-display-flex gl-border-0 gl-p-0"
           icon="folder-new"
-          data-qa-selector="new_directory_button"
           @click="createNewFolder()"
         />
       </div>

@@ -8,7 +8,7 @@ import JobsList from '~/ide/components/jobs/list.vue';
 import List from '~/ide/components/pipelines/list.vue';
 import EmptyState from '~/ide/components/pipelines/empty_state.vue';
 import IDEServices from '~/ide/services';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 Vue.use(Vuex);
 

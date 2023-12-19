@@ -1,8 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab application limits **(FREE SELF)**
@@ -21,7 +20,7 @@ Depending on which limits you have configured, you can see:
 - SSH host keys information
 - CI/CD limits
 - GitLab Pages limits
-- Package Registry limits
+- Package registry limits
 - Rate limits
 - Size limits
 
@@ -88,10 +87,10 @@ Read more about [protected path rate limits](settings/protected_paths.md).
 
 - **Default rate limit**: After 10 requests, the client must wait 60 seconds before trying again.
 
-### Package Registry
+### Package registry
 
 This setting limits the request rate on the Packages API per user or IP. For more information, see
-[Package Registry Rate Limits](settings/package_registry_rate_limits.md).
+[package registry rate limits](settings/package_registry_rate_limits.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -202,7 +201,7 @@ Read more about [pipeline creation rate limits](settings/rate_limit_on_pipelines
 
 Clone traffic can put a large strain on your Gitaly service. To prevent such workloads from overwhelming your Gitaly server, you can set concurrency limits in the Gitaly configuration file.
 
-Read more about [Gitaly concurrency limits](gitaly/configure_gitaly.md#limit-rpc-concurrency).
+Read more about [Gitaly concurrency limits](gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
 - **Default rate limit**: Disabled.
 
@@ -436,7 +435,7 @@ You can change the maximum time a job can run before it times out:
 
 - At the project-level in the [project's CI/CD settings](../ci/pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)
   for a given project. This limit must be between 10 minutes and 1 month.
-- At the [runner level](../ci/runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+- At the [runner level](../ci/runners/configure_runners.md#set-the-maximum-job-timeout).
   This limit must be 10 minutes or longer.
 
 ### Maximum number of deployment jobs in a pipeline
@@ -961,7 +960,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 ### Maximum file size indexed
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit only index the filename.
+Elasticsearch. Any files larger than this limit only index the file name.
 The file content is neither indexed nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and
@@ -1052,11 +1051,11 @@ individual push events or a bulk push event are created.
 
 More information can be found in the [Push event activities limit and bulk push events documentation](settings/push_event_activities_limit.md).
 
-## Package Registry Limits
+## Package registry limits
 
-### File Size Limits
+### File size limits
 
-The default maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md) varies by format:
+The default maximum file size for a package that's uploaded to the [GitLab package registry](../user/packages/package_registry/index.md) varies by format:
 
 - Conan: 3 GB
 - Generic: 5 GB
@@ -1105,7 +1104,7 @@ Set the limit to `0` to allow any file size.
 
 ### Package versions returned
 
-When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 versions.
+When asking for versions of a given NuGet package name, the GitLab package registry returns a maximum of 300 versions.
 
 ## Dependency Proxy Limits
 
@@ -1134,7 +1133,7 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 
 ## Container Repository tag deletion limit
 
-Container repository tags are in the Container Registry and, as such, each tag deletion triggers network requests to the Container Registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+Container repository tags are in the container registry and, as such, each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
 

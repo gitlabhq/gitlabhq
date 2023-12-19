@@ -2,7 +2,7 @@
 require 'spec_helper'
 require 'rack'
 require 'request_store'
-require_relative '../../../support/helpers/next_instance_of'
+require 'gitlab/rspec/next_instance_of'
 
 RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :application_instrumentation do
   include NextInstanceOf

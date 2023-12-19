@@ -3,9 +3,6 @@
 module Users
   class InProductMarketingEmail < ApplicationRecord
     include BulkInsertSafe
-    include IgnorableColumns
-
-    ignore_column :campaign, remove_with: '16.7', remove_after: '2023-11-15'
 
     belongs_to :user
 
@@ -49,7 +46,7 @@ module Users
     end
 
     def self.distinct_users_sql
-      name = users_table.table_name
+      name = users_table.name
       Arel.sql("DISTINCT ON(#{name}.id) #{name}.*")
     end
 

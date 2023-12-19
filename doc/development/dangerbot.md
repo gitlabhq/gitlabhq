@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Danger bot
@@ -34,6 +34,8 @@ from the start of the merge request.
 
 - It's not obvious Danger updates the old comment, thus you need to
   pay attention to it if it is updated or not.
+- When Danger tokens are rotated, it creates confusion/clutter (as old comments
+  can't be updated).
 
 ## Run Danger locally
 
@@ -179,15 +181,19 @@ at GitLab so far:
 
 ## Limitations
 
-Danger is run but its output is not added to a merge request comment if working
-on a fork. This happens because the secret variable from the canonical project
-is not shared to forks.
+If working on a personal fork, Danger is run but it's output is not added to a
+merge request comment and labels are not applied.
+This happens because the secret variable from the canonical project is not shared
+to forks.
 
-### Configuring Danger for forks
+The best and recommended approach is to work from the [community forks](https://gitlab.com/gitlab-community/meta),
+where Danger is already configured.
+
+### Configuring Danger for personal forks
 
 Contributors can configure Danger for their forks with the following steps:
 
-1. Create a [personal API token](https://gitlab.com/-/profile/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
+1. Create a [personal API token](https://gitlab.com/-/user_settings/personal_access_tokens?name=GitLab+Dangerbot&scopes=api)
   that has the `api` scope set (don't forget to copy it to the clipboard).
 1. In your fork, add a [project CI/CD variable](../ci/variables/index.md#for-a-project)
   called `DANGER_GITLAB_API_TOKEN` with the token copied in the previous step.

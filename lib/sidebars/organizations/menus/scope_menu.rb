@@ -24,13 +24,6 @@ module Sidebars
           true
         end
 
-        override :extra_nav_link_html_options
-        def extra_nav_link_html_options
-          {
-            class: 'context-header'
-          }
-        end
-
         override :serialize_as_menu_item_args
         def serialize_as_menu_item_args
           super.merge({

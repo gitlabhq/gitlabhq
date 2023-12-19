@@ -50,6 +50,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
+    it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
@@ -1128,6 +1129,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:environments_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:model_experiments_access_level).to(:project_feature) }
+    it { is_expected.to delegate_method(:model_registry_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:feature_flags_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:releases_access_level).to(:project_feature) }
     it { is_expected.to delegate_method(:infrastructure_access_level).to(:project_feature) }
@@ -2049,50 +2051,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#avatar_type' do
-    let(:project) { create(:project) }
-
-    it 'is true if avatar is image' do
-      project.update_attribute(:avatar, 'uploads/avatar.png')
-      expect(project.avatar_type).to be_truthy
+  context 'with avatar' do
+    it_behaves_like Avatarable do
+      let(:model) { create(:project, :with_avatar) }
     end
 
-    it 'is false if avatar is html page' do
-      project.update_attribute(:avatar, 'uploads/avatar.html')
-      project.avatar_type
+    describe '#avatar_url' do
+      subject { project.avatar_url }
 
-      expect(project.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    subject { project.avatar_url }
-
-    let(:project) { create(:project) }
-
-    context 'when avatar file is uploaded' do
-      let(:project) { create(:project, :public, :with_avatar) }
-
-      it 'shows correct url' do
-        expect(project.avatar_url).to eq(project.avatar.url)
-        expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
-      end
-    end
-
-    context 'when avatar file in git' do
-      before do
-        allow(project).to receive(:avatar_in_git) { true }
-      end
-
-      let(:avatar_path) { "/#{project.full_path}/-/avatar" }
-
-      it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
-    end
-
-    context 'when git repo is empty' do
       let(:project) { create(:project) }
 
-      it { is_expected.to eq nil }
+      context 'when avatar file in git' do
+        before do
+          allow(project).to receive(:avatar_in_git) { true }
+        end
+
+        let(:avatar_path) { "/#{project.full_path}/-/avatar" }
+
+        it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      end
+
+      context 'when git repo is empty' do
+        let(:project) { create(:project) }
+
+        it { is_expected.to eq nil }
+      end
     end
   end
 
@@ -2176,19 +2159,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '.with_jira_dvcs_cloud' do
-    it 'returns the correct project' do
-      jira_dvcs_cloud_project = create(:project, :jira_dvcs_cloud)
-      create(:project, :jira_dvcs_server)
-
-      expect(described_class.with_jira_dvcs_cloud).to contain_exactly(jira_dvcs_cloud_project)
-    end
-  end
-
   describe '.with_jira_dvcs_server' do
     it 'returns the correct project' do
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
-      create(:project, :jira_dvcs_cloud)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
     end
@@ -2469,17 +2442,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns custom email address' do
         expect(subject).to eq(custom_email)
-      end
-
-      context 'when feature flag service_desk_custom_email is disabled' do
-        before do
-          stub_feature_flags(service_desk_custom_email: false)
-        end
-
-        it 'returns custom email address' do
-          # Don't check for a specific value. Just make sure it's not the custom email
-          expect(subject).not_to eq(custom_email)
-        end
       end
     end
   end
@@ -3102,23 +3064,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect(project.repository).not_to eq(previous_repository)
         end
-
-        context 'when "replicate_object_pool_on_move" FF is disabled' do
-          before do
-            stub_feature_flags(replicate_object_pool_on_move: false)
-          end
-
-          it 'does not update  a memoized repository value' do
-            previous_repository = project.repository
-
-            allow(project).to receive(:disk_path).and_return('fancy/new/path')
-            allow(project).to receive(:repository_storage).and_return('foo')
-
-            project.track_project_repository
-
-            expect(project.repository).to eq(previous_repository)
-          end
-        end
       end
     end
 
@@ -3151,7 +3096,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it 'passes through default branch' do
-        expect(project.repository).to receive(:create_repository).with('pineapple')
+        expect(project.repository).to receive(:create_repository).with('pineapple', object_format: nil)
 
         expect(project.create_repository(default_branch: 'pineapple')).to eq(true)
       end
@@ -3163,6 +3108,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.repository).not_to receive(:create_repository)
 
         project.create_repository
+      end
+    end
+
+    context 'using a SHA256 repository' do
+      it 'creates the repository' do
+        expect(project.repository).to receive(:create_repository).with(nil, object_format: Repository::FORMAT_SHA256)
+        expect(project.create_repository(object_format: Repository::FORMAT_SHA256)).to eq(true)
       end
     end
   end
@@ -6949,12 +6901,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let(:repository_storage) { shard_to.name }
 
     before do
-      stub_storage_settings(
-        'test_second_storage' => {
-          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-          'path' => TestEnv::SECOND_STORAGE_PATH
-        }
-      )
+      stub_storage_settings('test_second_storage' => {})
 
       project.update!(pool_repository: project_pool, repository_storage: repository_storage)
     end
@@ -6967,14 +6914,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'moves project to the new pool repository' do
       expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
-    end
-
-    context 'when feature flag replicate_object_pool_on_move is disabled' do
-      before do
-        stub_feature_flags(replicate_object_pool_on_move: false)
-      end
-
-      it_behaves_like 'no pool repository swap'
     end
 
     context 'when repository does not exist' do
@@ -7070,18 +7009,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(pool).not_to receive(:link_repository)
 
         subject
-      end
-
-      context 'when feature flag replicate_object_pool_on_move is disabled' do
-        before do
-          stub_feature_flags(replicate_object_pool_on_move: false)
-        end
-
-        it 'links pool repository to project repository' do
-          expect(pool).to receive(:link_repository).with(project.repository)
-
-          subject
-        end
       end
     end
   end
@@ -7961,14 +7888,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect(subject).to be_empty
         end
-      end
-    end
-
-    describe '#activity_path' do
-      it 'returns the project activity_path' do
-        expected_path = "/#{project.full_path}/activity"
-
-        expect(project.activity_path).to eq(expected_path)
       end
     end
   end
@@ -9000,62 +8919,53 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  # TODO: Remove/update this spec after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
-  describe '#update_catalog_resource' do
-    let_it_be_with_reload(:project) { create(:project, name: 'My project name', description: 'My description') }
-    let_it_be_with_reload(:resource) { create(:ci_catalog_resource, project: project) }
+  describe 'catalog resource process sync events worker' do
+    let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 
-    shared_examples 'name, description, and visibility_level of the catalog resource match the project' do
-      it do
-        expect(project).to receive(:update_catalog_resource).once.and_call_original
+    context 'when the project has a catalog resource' do
+      let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
-        project.save!
+      context 'when project name is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-        expect(resource.name).to eq(project.name)
-        expect(resource.description).to eq(project.description)
-        expect(resource.visibility_level).to eq(project.visibility_level)
-      end
-    end
-
-    context 'when the project name is updated' do
-      before do
-        project.name = 'My new project name'
+          project.update!(name: 'New name')
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when project description is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-    context 'when the project description is updated' do
-      before do
-        project.description = 'My new description'
+          project.update!(description: 'New description')
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when project visibility_level is updated' do
+        it 'enqueues Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).to receive(:perform_async).once
 
-    context 'when the project visibility_level is updated' do
-      before do
-        project.visibility_level = 10
+          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
       end
 
-      it_behaves_like 'name, description, and visibility_level of the catalog resource match the project'
-    end
+      context 'when neither the project name, description, nor visibility_level are updated' do
+        it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+          expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
 
-    context 'when neither the project name, description, nor visibility_level are updated' do
-      it 'does not call update_catalog_resource' do
-        expect(project).not_to receive(:update_catalog_resource)
-
-        project.update!(path: 'path')
+          project.update!(path: 'path')
+        end
       end
     end
 
     context 'when the project does not have a catalog resource' do
-      let_it_be(:project2) { create(:project) }
+      it 'does not enqueue Ci::Catalog::Resources::ProcessSyncEventsWorker' do
+        expect(Ci::Catalog::Resources::ProcessSyncEventsWorker).not_to receive(:perform_async)
 
-      it 'does not call update_catalog_resource' do
-        expect(project2).not_to receive(:update_catalog_resource)
-
-        project.update!(name: 'name')
+        project.update!(
+          name: 'New name',
+          description: 'New description',
+          visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end
     end
   end

@@ -287,9 +287,9 @@ export default {
             v-else
             ref="textarea"
             rows="1"
-            class="reply-placeholder-text-field gl-font-regular!"
+            class="reply-placeholder-text-field"
             data-testid="note-reply-textarea"
-            :placeholder="__('Reply')"
+            :placeholder="__('Reply…')"
             :aria-label="__('Reply to comment')"
             @focus="showReplyForm"
             @click="showReplyForm"

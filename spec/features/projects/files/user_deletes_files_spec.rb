@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :source_code_management do
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."

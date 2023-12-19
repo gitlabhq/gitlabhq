@@ -395,27 +395,12 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
             context 'is ipynb file' do
               before do
                 allow_any_instance_of(::Gitlab::Diff::File).to receive(:ipynb?).and_return(true)
-                stub_feature_flags(ipynbdiff_notes_tracker: false)
               end
 
-              context ':ipynbdiff_notes_tracker is off' do
-                it 'does not track ipynb note usage data' do
-                  expect(::Gitlab::UsageDataCounters::IpynbDiffActivityCounter).not_to receive(:note_created)
+              it 'tracks ipynb diff note creation' do
+                expect(::Gitlab::UsageDataCounters::IpynbDiffActivityCounter).to receive(:note_created)
 
-                  described_class.new(project_with_repo, user, new_opts).execute
-                end
-              end
-
-              context ':ipynbdiff_notes_tracker is on' do
-                before do
-                  stub_feature_flags(ipynbdiff_notes_tracker: true)
-                end
-
-                it 'tracks ipynb diff note creation' do
-                  expect(::Gitlab::UsageDataCounters::IpynbDiffActivityCounter).to receive(:note_created)
-
-                  described_class.new(project_with_repo, user, new_opts).execute
-                end
+                described_class.new(project_with_repo, user, new_opts).execute
               end
             end
           end

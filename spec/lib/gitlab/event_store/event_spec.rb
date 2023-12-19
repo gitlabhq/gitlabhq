@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'json_schemer'
+require 'oj'
 
-RSpec.describe Gitlab::EventStore::Event do
+RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
   let(:event_class) { stub_const('TestEvent', Class.new(described_class)) }
   let(:event) { event_class.new(data: data) }
   let(:data) { { project_id: 123, project_path: 'org/the-project' } }
@@ -42,6 +44,14 @@ RSpec.describe Gitlab::EventStore::Event do
         it 'initializes the event correctly' do
           expect(event.data).to eq(data)
         end
+
+        it 'validates schema' do
+          expect(event_class.json_schema_valid).to eq(nil)
+
+          event
+
+          expect(event_class.json_schema_valid).to eq(true)
+        end
       end
 
       context 'when some properties are missing' do
@@ -57,6 +67,31 @@ RSpec.describe Gitlab::EventStore::Event do
 
         it 'raises an error' do
           expect { event }.to raise_error(Gitlab::EventStore::InvalidEvent, 'Event data must be a Hash')
+        end
+      end
+
+      context 'when schema is invalid' do
+        before do
+          event_class.class_eval do
+            def schema
+              {
+                'required' => ['project_id'],
+                'type' => 'object',
+                'properties' => {
+                  'project_id' => { 'type' => 'int' },
+                  'project_path' => { 'type' => 'string ' }
+                }
+              }
+            end
+          end
+        end
+
+        it 'raises an error' do
+          expect(event_class.json_schema_valid).to eq(nil)
+
+          expect { event }.to raise_error(Gitlab::EventStore::InvalidEvent, 'Schema for event TestEvent is invalid')
+
+          expect(event_class.json_schema_valid).to eq(false)
         end
       end
     end

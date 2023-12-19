@@ -4,7 +4,7 @@ Conflicts=gitlab.service
 ReloadPropagatedFrom=gitlab.target
 PartOf=gitlab.target
 After=network.target
-StartLimitIntervalSec=100s
+StartLimitIntervalSec=11min
 
 [Service]
 Type=notify
@@ -15,7 +15,7 @@ ExecStart=/usr/local/bin/bundle exec puma --config /home/git/gitlab/config/puma.
 ExecReload=/usr/bin/kill -USR2 $MAINPID
 PIDFile=/home/git/gitlab/tmp/pids/puma.pid
 # puma can be slow to start
-TimeoutStartSec=120
+TimeoutStartSec=2min
 WatchdogSec=10
 Restart=on-failure
 RestartSec=1

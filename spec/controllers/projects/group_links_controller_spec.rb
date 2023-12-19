@@ -76,6 +76,17 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Not Found')
     end
+
+    context 'when MAINTAINER tries to update the link to OWNER access' do
+      let(:group_access) { Gitlab::Access::OWNER }
+
+      it 'returns 403' do
+        update_link
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('Forbidden')
+      end
+    end
   end
 
   describe '#destroy' do
@@ -167,10 +178,39 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
           sign_in(user)
         end
 
-        it 'renders 404' do
-          destroy_link
+        it 'returns 404' do
+          expect { destroy_link }.to not_change { project.reload.project_group_links.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when the user is a project maintainer' do
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context 'when they try to destroy a link with OWNER access level' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        it 'does not destroy the link' do
+          expect { destroy_link }.to not_change { project.reload.project_group_links.count }
+
+          expect(response).to redirect_to(project_project_members_path(project, tab: :groups))
+          expect(flash[:alert]).to include('The project-group link could not be removed.')
+        end
+
+        context 'when format is js' do
+          let(:format) { :js }
+
+          it 'returns 403' do
+            expect { destroy_link }.to not_change { project.reload.project_group_links.count }
+
+            expect(json_response).to eq({ "message" => "Forbidden" })
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
       end
     end

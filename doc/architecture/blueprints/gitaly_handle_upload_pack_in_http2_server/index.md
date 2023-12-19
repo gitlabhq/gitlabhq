@@ -28,7 +28,7 @@ provided. We are looking for a solution that won't require us to completely rewr
 
 ### How Git data transfer works
 
-Please skip this part if you are familiar with how Git data transfer architecture at GitLab.
+Skip this part if you are familiar with how Git data transfer architecture at GitLab.
 
 Git data transfer is undeniably one of the crucial services that a Git server can offer. It is a fundamental feature of Git that was originally developed for Linux
 kernel development. As Git gained popularity, it continued to be recognized as a distributed system. However, the emergence of centralized Git services like GitHub or

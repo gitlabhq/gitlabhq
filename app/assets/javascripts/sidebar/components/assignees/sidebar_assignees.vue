@@ -1,5 +1,4 @@
 <script>
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
@@ -104,8 +103,6 @@ export default {
         .then(() => {
           this.loading = false;
           this.store.resetChanging();
-
-          refreshUserMergeRequestCounts();
         })
         .catch(() => {
           this.loading = false;

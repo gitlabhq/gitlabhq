@@ -138,7 +138,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
         it 'cannot see Incident option' do
           open_issue_edit_form
 
-          page.within('[data-testid="issuable-form"]') do
+          within_testid('issuable-form') do
             expect(page).to have_content('Issue')
             expect(page).not_to have_content('Incident')
           end
@@ -151,7 +151,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
         it 'routes the user to the incident details page when the `issue_type` is set to incident' do
           open_issue_edit_form
 
-          page.within('[data-testid="issuable-form"]') do
+          within_testid('issuable-form') do
             update_type_select('Issue', 'Incident')
 
             expect(page).to have_current_path(incident_project_issues_path(project, issue))
@@ -181,7 +181,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
         it 'routes the user to the issue details page when the `issue_type` is set to issue' do
           open_issue_edit_form
 
-          page.within('[data-testid="issuable-form"]') do
+          within_testid('issuable-form') do
             update_type_select('Incident', 'Issue')
 
             expect(page).to have_current_path(project_issue_path(project, incident))
@@ -193,7 +193,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
   def update_type_select(from, to)
     click_button from
-    find('[data-testid="issue-type-list-item"]', text: to).click
+    find_by_testid('issue-type-list-item', text: to).click
     click_button 'Save changes'
 
     wait_for_requests

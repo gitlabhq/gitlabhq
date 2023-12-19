@@ -74,11 +74,13 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
         'title' => 'title',
         'source' => {
           'branch' => { 'name' => 'source-branch-name' },
-          'commit' => { 'hash' => 'source-commit-hash' }
+          'commit' => { 'hash' => 'source-commit-hash' },
+          'repository' => { 'uuid' => 'uuid' }
         },
         'destination' => {
           'branch' => { 'name' => 'destination-branch-name' },
-          'commit' => { 'hash' => 'destination-commit-hash' }
+          'commit' => { 'hash' => 'destination-commit-hash' },
+          'repository' => { 'uuid' => 'uuid' }
         },
         'merge_commit' => { 'hash' => 'merge-commit-hash' },
         'reviewers' => [
@@ -101,6 +103,7 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
         target_branch_sha: 'destination-commit-hash',
         title: 'title',
         updated_at: 'updated-at',
+        source_and_target_project_different: false,
         reviewers: ['user-2']
       }
 

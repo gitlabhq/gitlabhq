@@ -21,13 +21,14 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
     project = create(
       :project, :custom_repo,
       files: {
-        'template.yml' => content,
-        'my-component/template.yml' => content,
-        'my-dir/my-component/template.yml' => content
+        'templates/first-component.yml' => content,
+        'templates/second-component/template.yml' => content
       }
     )
 
     project.repository.add_tag(project.creator, 'v0.1', project.repository.commit.sha)
+
+    create(:release, project: project, tag: 'v0.1', sha: project.repository.commit.sha)
 
     project
   end
@@ -119,32 +120,27 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
     context 'when address points to an external component' do
       let(:address) { "#{current_host}/#{component_path}@#{version}" }
 
-      context 'when component path is the full path to a project' do
-        let(:component_path) { project.full_path }
-        let(:component_yaml_path) { 'template.yml' }
+      context 'when component path points to a template file in a project' do
+        let(:component_path) { "#{project.full_path}/first-component" }
 
         it_behaves_like 'an external component'
       end
 
-      context 'when component path points to a directory in a project' do
-        let(:component_path) { "#{project.full_path}/my-component" }
-        let(:component_yaml_path) { 'my-component/template.yml' }
+      context 'when component path points to a template directory in a project' do
+        let(:component_path) { "#{project.full_path}/second-component" }
 
         it_behaves_like 'an external component'
       end
 
-      context 'when component path points to a nested directory in a project' do
-        let(:component_path) { "#{project.full_path}/my-dir/my-component" }
-        let(:component_yaml_path) { 'my-dir/my-component/template.yml' }
+      context 'when the project exists but the component does not' do
+        let(:component_path) { "#{project.full_path}/unknown-component" }
+        let(:version) { '~latest' }
 
-        it_behaves_like 'an external component'
+        it 'returns a content not found error' do
+          expect(result).to be_error
+          expect(result.reason).to eq(:content_not_found)
+        end
       end
-    end
-  end
-
-  def stub_project_blob(ref, path, content)
-    allow_next_instance_of(Repository) do |instance|
-      allow(instance).to receive(:blob_data_at).with(ref, path).and_return(content)
     end
   end
 end

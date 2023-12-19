@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: howto
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Troubleshooting Git **(FREE ALL)**
@@ -10,6 +9,38 @@ type: howto
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues
 with Git.
+
+## Debugging
+
+When troubleshooting problems with Git, try these debugging techniques.
+
+### Use a custom SSH key for a Git command
+
+```shell
+GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
+```
+
+### Debug problems with cloning
+
+For Git over SSH:
+
+```shell
+GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>
+```
+
+For Git over HTTPS:
+
+```shell
+GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
+```
+
+### Debug Git with traces
+
+Git includes a complete set of [traces for debugging Git commands](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables#_debugging), for example:
+
+- `GIT_TRACE_PERFORMANCE=1`: enables tracing of performance data, showing how long each particular `git` invocation takes.
+- `GIT_TRACE_SETUP=1`: enables tracing of what `git` is discovering about the repository and environment it's interacting with.
+- `GIT_TRACE_PACKET=1`: enables packet-level tracing for network operations.
 
 ## Broken pipe errors on `git push`
 
@@ -337,7 +368,7 @@ details. This second request should succeed, and result in a `200 OK` log entry.
 If a `401` log entry lacks a corresponding `200` log entry, the Git client is likely using either:
 
 - An incorrect password.
-- An expired or revoked token.an incorrect
+- An expired or revoked token.
 
 If not rectified, you could encounter
 [`403` (Forbidden) errors](#403-error-when-performing-git-operations-over-http)

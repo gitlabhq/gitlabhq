@@ -123,7 +123,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             )
 
           allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            allow(client).to receive(:validate_import_scopes!).and_raise(BulkImports::Error.scope_validation_failure)
+            allow(client).to receive(:validate_import_scopes!)
+              .and_raise(BulkImports::Error.scope_or_url_validation_failure)
           end
 
           result = subject.execute
@@ -132,8 +133,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           expect(result).to be_error
           expect(result.message)
             .to eq(
-              "Personal access token does not " \
-              "have the required 'api' scope or is no longer valid."
+              "Check that the source instance base URL and the personal access token meet the necessary requirements."
             )
         end
       end
@@ -546,7 +546,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-              .to eq("Import failed. Destination 'destination-namespace' is invalid, or you don't have permission.")
+              .to eq("Import failed. Destination 'destination-namespace' is invalid, " \
+                     "or you don't have permission.")
           end
         end
 
@@ -571,7 +572,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-            .to eq("Import failed. Destination '#{parent_group.path}' is invalid, or you don't have permission.")
+            .to eq("Import failed. Destination '#{parent_group.path}' is invalid, " \
+                   "or you don't have permission.")
           end
         end
 
@@ -596,7 +598,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-              .to eq("Import failed. Destination '#{parent_group.path}' is invalid, or you don't have permission.")
+              .to eq("Import failed. Destination '#{parent_group.path}' is invalid, " \
+                     "or you don't have permission.")
           end
         end
       end

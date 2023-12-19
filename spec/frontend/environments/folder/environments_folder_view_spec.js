@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { removeBreakLine, removeWhitespace } from 'helpers/text_helper';
 import EnvironmentTable from '~/environments/components/environments_table.vue';
+import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -89,6 +90,10 @@ describe('Environments Folder View', () => {
       expect(
         removeBreakLine(removeWhitespace(wrapper.find('[data-testid="folder-name"]').text())),
       ).toContain('Environments / review');
+    });
+
+    it('should render the confirm rollback modal', () => {
+      expect(wrapper.findComponent(ConfirmRollbackModal).exists()).toBe(true);
     });
 
     describe('pagination', () => {

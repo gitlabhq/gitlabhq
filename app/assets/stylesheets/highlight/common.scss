@@ -132,7 +132,7 @@
   }
 }
 
-@mixin line-hover-bg($color: $white-normal) {
+@mixin line-hover-bg($color: $gray-50) {
   &:hover,
   &:focus-within {
     background-color: darken($color, 10);

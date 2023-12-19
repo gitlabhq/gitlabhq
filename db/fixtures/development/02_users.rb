@@ -78,7 +78,9 @@ class Gitlab::Seeder::Users
           email: FFaker::Internet.email,
           confirmed_at: DateTime.now,
           password: random_password
-        )
+        ) do |user|
+          user.assign_personal_namespace
+        end
 
         print '.'
       rescue ActiveRecord::RecordInvalid

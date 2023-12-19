@@ -1,0 +1,12 @@
+---
+table_name: audit_events_streaming_http_instance_namespace_filters
+classes:
+  - AuditEvents::Streaming::HTTP::Instance::NamespaceFilter
+feature_categories:
+  - audit_events
+description: Represents a group or project filter for instance-level custom http external audit event destinations.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136959
+milestone: '16.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

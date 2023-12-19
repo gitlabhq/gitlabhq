@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # CI/CD YAML syntax reference **(FREE ALL)**
@@ -55,13 +54,11 @@ A GitLab CI/CD pipeline configuration includes:
   | [`dast_configuration`](#dast_configuration) | Use configuration from DAST profiles on a job level. |
   | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
   | [`environment`](#environment)               | Name of an environment to which the job deploys. |
-  | [`except`](#only--except)                   | Control when jobs are not created. |
   | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
   | [`image`](#image)                           | Use Docker images. |
   | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
   | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
   | [`needs`](#needs)                           | Execute jobs earlier than the stage ordering. |
-  | [`only`](#only--except)                     | Control when jobs are created. |
   | [`pages`](#pages)                           | Upload the result of a job to use with GitLab Pages. |
   | [`parallel`](#parallel)                     | How many instances of a job should be run in parallel. |
   | [`release`](#release)                       | Instructs the runner to generate a [release](../../user/project/releases/index.md) object. |
@@ -192,6 +189,27 @@ The time limit to resolve all files is 30 seconds.
 
 - [Use variables with `include`](includes.md#use-variables-with-include).
 - [Use `rules` with `include`](includes.md#use-rules-with-include).
+
+#### `include:component`
+
+Use `include:component` to add a [CI/CD component](../components/index.md) to the
+pipeline configuration.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: The full address of the CI/CD component, formatted as
+`<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`.
+
+**Example of `include:component`**:
+
+```yaml
+include:
+  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0
+```
+
+**Related topics**:
+
+- [Use a CI/CD component](../components/index.md#use-a-component).
 
 #### `include:local`
 
@@ -454,6 +472,9 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 Use [`workflow`](workflow.md) to control pipeline behavior.
 
+You can use some [predefined CI/CD variables](../variables/predefined_variables.md) in
+`workflow` configuration, but not variables that are only defined when jobs start.
+
 **Related topics**:
 
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)
@@ -499,6 +520,7 @@ workflow:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         PROJECT1_PIPELINE_NAME: 'Ruby 3 pipeline'
+    - when: always  # Other pipelines can run, but use the default name
 ```
 
 **Additional details**:
@@ -727,8 +749,11 @@ In this example:
 
 **Additional details**:
 
-- If an input uses both `default` and [`options`](#specinputsoptions), the default value
-  must be one of the listed options. If not, the pipeline fails with a validation error.
+- The pipeline fails with a validation error when the input:
+  - Uses both `default` and [`options`](#specinputsoptions), but the default value
+    is not one of the listed options.
+  - Uses both `default` and `regex`, but the default value does not match the regular expression.
+  - Value does not match the [`type`](#specinputstype).
 
 ##### `spec:inputs:description`
 
@@ -788,8 +813,42 @@ In this example:
 
 **Additional details**:
 
-- If an input uses both [`default`](#specinputsdefault) and `options`, the default value
-  must be one of the listed options. If not, the pipeline fails with a validation error.
+- The pipeline fails with a validation error when:
+  - The input uses both `options` and [`default`](#specinputsdefault), but the default value
+    is not one of the listed options.
+  - Any of the input options do not match the [`type`](#specinputstype), which can
+    be either `string` or `number`, but not `boolean` when using `options`.
+
+##### `spec:inputs:regex`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410836) in GitLab 16.5.
+
+Use `spec:inputs:regex` to specify a regular expression that the input must match.
+
+**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+in a header section.
+
+**Possible inputs**: Must be a regular expression that starts and ends with the `/` character.
+
+**Example of `spec:inputs:regex`**:
+
+```yaml
+spec:
+  inputs:
+    version:
+      regex: /^v\d\.\d+(\.\d+)$/
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example, inputs of `v1.0` or `v1.2.3` match the regular expression and pass validation.
+An input of `v1.A.B` does not match the regular expression and fails validation.
+
+**Additional details**:
+
+- `inputs:regex` can only be used with a [`type`](#specinputstype) of `string`,
+  not `number` or `boolean`.
 
 ##### `spec:inputs:type`
 
@@ -1213,6 +1272,7 @@ job:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Rolled out and removed a feature flag named `non_public_artifacts`
 
 WARNING:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -2041,7 +2101,7 @@ stop_review_app:
 
 #### `environment:auto_stop_in`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
+> CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
 
 The `auto_stop_in` keyword specifies the lifetime of the environment. When an environment expires, GitLab
 automatically stops it.
@@ -2055,6 +2115,8 @@ these are all equivalent:
 - `7 days`
 - `one week`
 - `never`
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `environment:auto_stop_in`**:
 
@@ -2404,6 +2466,37 @@ image:
 
 - [Override the entrypoint of an image](../docker/using_docker_images.md#override-the-entrypoint-of-an-image).
 
+#### `image:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `image:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    docker:
+      platform: arm64/v8
+```
+
+**Additional details**:
+
+- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+
 #### `image:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
@@ -2444,8 +2537,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
-- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
 
 ### `inherit`
 
@@ -2529,13 +2622,22 @@ job2:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
 
-Use `interruptible` if a job should be canceled when a newer pipeline starts before the job completes.
+Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
+feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
+is disabled, the keyword has no effect.
 
-This keyword has no effect if [automatic cancellation of redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
-is disabled. When enabled, a running job with `interruptible: true` is cancelled when
-starting a pipeline for a new change on the same branch.
+**Running** jobs are only cancelled when the jobs are configured with `interruptible: true` and:
 
-You can't cancel subsequent jobs after a job with `interruptible: false` starts.
+- No jobs configured with `interruptible: false` have started at any time.
+  After a job with `interruptible: false` starts, the entire pipeline is no longer
+  considered interruptible.
+  - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
+    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
+- The new pipeline is for a commit with new changes. The **Auto-cancel redundant pipelines**
+  feature has no effect if you select **Run pipeline** in the UI to run a pipeline for the same commit.
+
+A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
+The `interruptible` configuration is only considered after the job starts.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2579,11 +2681,10 @@ In this example, a new pipeline causes a running pipeline to be:
 
 - Only set `interruptible: true` if the job can be safely canceled after it has started,
   like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
-- To completely cancel a running pipeline, all jobs must have `interruptible: true`,
-  or `interruptible: false` jobs must not have started.
-- Running jobs are only cancelled if the newer pipeline has new changes.
-  For example, a running job is not be cancelled if you run a new pipeline for the same
-  commit by selecting **Run pipeline** in the UI.
+- You can add an optional manual job with `interruptible: false` in the first stage of
+  a pipeline to allow users to manually prevent a pipeline from being automatically
+  cancelled. After a user starts the job, the pipeline cannot be canceled by the
+  **Auto-cancel redundant pipelines** feature.
 
 ### `needs`
 
@@ -3051,7 +3152,7 @@ pages:
   environment: production
 ```
 
-This example moves all files from a `my-html-content/` directory to the `public/` directory.
+This example renames the `my-html-content/` directory to `public/`.
 This directory is exported as an artifact and published with GitLab Pages.
 
 #### `pages:publish`
@@ -3083,6 +3184,41 @@ pages:
 This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
 output the generated HTML files into a the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
+
+#### `pages:pages.path_prefix` **(PREMIUM ALL EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named
+`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+
+Use `pages.path_prefix` to configure a path prefix for [multiple deployments](../../user/project/pages/index.md#create-multiple-deployments) of GitLab Pages.
+
+**Keyword type**: Job keyword. You can use it only as part of a `pages` job.
+
+**Possible inputs**:
+
+- A string with valid [URL characters](https://www.ietf.org/rfc/rfc1738.txt).
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- A combination of both.
+
+**Example of `pages.path_prefix`**:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
+  pages:
+    path_prefix: "$CI_COMMIT_BRANCH"
+  artifacts:
+    paths:
+    - public
+```
+
+In this example, a different pages deployment is created for each branch.
 
 ### `parallel`
 
@@ -3222,7 +3358,7 @@ The release job must have access to the [`release-cli`](https://gitlab.com/gitla
 which must be in the `$PATH`.
 
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
-you can use this image from the GitLab Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
+you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
 If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
 [install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
@@ -3556,7 +3692,7 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 - `archived_failure`: Retry if the job is archived and can't be run.
 - `unmet_prerequisites`: Retry if the job failed to complete prerequisite tasks.
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
-- `data_integrity_failure`: Retry if there is a structural integrity problem detected.
+- `data_integrity_failure`: Retry if there is an unknown job problem.
 
 **Example of `retry:when`** (single failure type):
 
@@ -3706,8 +3842,6 @@ An array including any number of:
   - A directory and all its subdirectories, for example `path/to/directory/**/*`.
 - Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
   with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  for the supported syntax list.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
@@ -3735,6 +3869,9 @@ docker build:
 **Additional details**:
 
 - `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 
@@ -3838,8 +3975,9 @@ job:
 
 **Additional details**:
 
-- Glob patterns are interpreted with Ruby [`File.fnmatch`](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
-  with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - For performance reasons, GitLab performs a maximum of 10,000 checks against
   `exists` patterns or file paths. After the 10,000th check, rules with patterned
   globs always match. In other words, the `exists` rule always assumes a match in
@@ -3995,7 +4133,7 @@ job2:
 
 **Additional details**:
 
-- When you use [these special characters in `script`](script.md#use-special-characters-with-script), you must use single quotes (`'`) or double quotes (`"`) .
+- When you use [these special characters in `script`](script.md#use-special-characters-with-script), you must use single quotes (`'`) or double quotes (`"`).
 
 **Related topics**:
 
@@ -4210,7 +4348,39 @@ In this example, GitLab launches two containers for the job:
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
 
-#### `service:pull_policy`
+#### `services:docker`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+
+Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+A hash of options for the Docker executor, which can include:
+
+- `platform`: Selects the architecture of the image to pull. When not specified,
+    the default is the same platform as the host runner.
+
+**Example of `services:docker`**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests in service container"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      docker:
+        platform: arm64/v8
+```
+
+**Additional details**:
+
+- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+
+#### `services:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
@@ -4226,7 +4396,7 @@ The pull policy that the runner uses to fetch the Docker image.
 - A single pull policy, or multiple pull policies in an array.
   Can be `always`, `if-not-present`, or `never`.
 
-**Examples of `service:pull_policy`**:
+**Examples of `services:pull_policy`**:
 
 ```yaml
 job1:
@@ -4250,8 +4420,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [How runner pull policies work](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work).
-- [Using multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#using-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
 
 ### `stage`
 
@@ -4420,7 +4590,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 
 **Related topics**:
 
-- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run).
+- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#control-jobs-that-a-runner-can-run).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `timeout`
@@ -4431,7 +4601,7 @@ Use `timeout` to configure a timeout for a specific job. If the job runs for lon
 than the timeout, the job fails.
 
 The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
-but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -4669,6 +4839,13 @@ child3:
     forward:
       yaml_variables: false
 ```
+
+**Additional details**:
+
+- CI/CD variables forwarded to downstream pipelines with `trigger:forward` have the
+  [highest precedence](../variables/index.md#cicd-variable-precedence). If a variable
+  with the same name is defined in the downstream pipeline, that variable is overwritten
+  by the forwarded variable.
 
 ### `variables`
 
@@ -5121,12 +5298,11 @@ Use `changes` in pipelines with the following refs:
 **Possible inputs**: An array including any number of:
 
 - Paths to files.
-- Wildcard paths for single directories, for example `path/to/directory/*`, or a directory
-  and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all
-  files with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-  See the [Ruby `fnmatch` documentation](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  for the supported syntax list.
+- Wildcard paths for:
+  - Single directories, for example `path/to/directory/*`.
+  - A directory and all its subdirectories, for example `path/to/directory/**/*`.
+- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
+  with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
 - Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
   For example `"*.json"` or `"**/*.json"`.
 
@@ -5149,6 +5325,9 @@ docker build:
 **Additional details**:
 
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
+  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
+  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
 - If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
   `changes` can't determine if a given file is new or old and always returns `true`.
 - If you use `only: changes` with other refs, jobs ignore the changes and always run.

@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          applications_profile_path
+          user_settings_applications_path
         end
 
         override :title

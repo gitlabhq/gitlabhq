@@ -193,7 +193,11 @@ RSpec.describe NotificationSetting do
     end
 
     it 'includes EXCLUDED_WATCHER_EVENTS' do
-      expect(subject).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+      expect(subject).to include(
+        :push_to_merge_request,
+        :issue_due,
+        :success_pipeline
+      )
     end
   end
 
@@ -224,8 +228,8 @@ RSpec.describe NotificationSetting do
 
   context 'with loose foreign key on notification_settings.user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:user) }
-      let!(:model) { create(:notification_setting, user: parent) }
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:notification_setting, user: parent) }
     end
   end
 end

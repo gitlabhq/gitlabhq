@@ -81,7 +81,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     it 'shows projects only with merge requests feature enabled', :js do
       click_button 'Select project to create merge request'
 
-      page.within('[data-testid="new-resource-dropdown"]') do
+      within_testid('new-resource-dropdown') do
         expect(page).to have_content(project.name_with_namespace)
         expect(page).not_to have_content(project_with_merge_requests_disabled.name_with_namespace)
       end

@@ -5,7 +5,6 @@ import {
   TRUNCATE_WIDTH_DEFAULT_WIDTH,
   TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
 } from '~/lib/utils/constants';
-import { allSingleQuotes } from '~/lib/utils/regexp';
 
 export const COLON = ':';
 export const HYPHEN = '-';
@@ -444,6 +443,11 @@ export const markdownConfig = {
   ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'dir'],
   ALLOW_DATA_ATTR: false,
 };
+
+/**
+ * A regex that matches all single quotes in a string
+ */
+const allSingleQuotes = /'/g;
 
 /**
  * Escapes a string into a shell string, for example

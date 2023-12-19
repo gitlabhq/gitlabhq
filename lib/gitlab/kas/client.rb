@@ -19,13 +19,13 @@ module Gitlab
         raise ConfigurationError, 'KAS internal URL is not configured' unless Gitlab::Kas.internal_url.present?
       end
 
-      def get_connected_agents(project:)
-        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest.new(project_id: project.id)
+      def get_connected_agents_by_agent_ids(agent_ids:)
+        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest.new(agent_ids: agent_ids)
 
         stub_for(:agent_tracker)
-          .get_connected_agents(request, metadata: metadata)
-          .agents
-          .to_a
+         .get_connected_agents_by_agent_ids(request, metadata: metadata)
+         .agents
+         .to_a
       end
 
       def list_agent_config_files(project:)

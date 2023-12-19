@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Gitaly and Gitaly Cluster **(FREE SELF)**
@@ -20,9 +20,8 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Gitaly Servers**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
 ### Find storage resource details
@@ -89,7 +88,7 @@ Check whether `Verify return code` field indicates a
 [known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
-check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
+check [certificate requirements](tls_support.md#certificate-requirements) for Gitaly.
 
 ### Server side gRPC logs
 
@@ -389,7 +388,7 @@ One way to resolve this is to make sure the entry is correct for the GitLab inte
 
 ### Changes (diffs) don't load for new merge requests when using Gitaly TLS
 
-After enabling [Gitaly with TLS](configure_gitaly.md#enable-tls-support), changes (diffs) for new merge requests are not generated
+After enabling [Gitaly with TLS](tls_support.md), changes (diffs) for new merge requests are not generated
 and you see the following message in GitLab:
 
 ```plaintext
@@ -424,7 +423,7 @@ and:
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the certificates are symlinked
 1. Restart Gitaly manually `sudo gitlab-ctl restart gitaly` for the certificates to be loaded by the Gitaly process.
 
-## Gitaly fails to fork processes stored on `noexec` file systems
+### Gitaly fails to fork processes stored on `noexec` file systems
 
 Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount
 point (for example, `/var`) causes Gitaly to throw `permission denied` errors related to forking processes. For example:
@@ -577,7 +576,7 @@ To determine the primary node of a repository:
     Praefect node:
 
     ```shell
-    curl localhost:9652/metrics | grep gitaly_praefect_primaries`
+    curl localhost:9652/metrics | grep gitaly_praefect_primaries
     ```
 
 ### View repository metadata
@@ -684,8 +683,8 @@ The documented examples specify `-virtual-storage default`. Check the Praefect s
 ### Check that repositories are in sync
 
 Is [some cases](index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
-a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
-that checksums the repository on all Gitaly nodes.
+a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums) on your Rails node.
+This Rake task checksums the repository on all Gitaly nodes.
 
 The [Praefect `dataloss`](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
 be relied to detect sync problems in this scenario.

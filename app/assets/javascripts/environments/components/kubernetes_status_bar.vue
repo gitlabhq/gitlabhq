@@ -153,7 +153,7 @@ export default {
     },
   },
   i18n: {
-    healthLabel: s__('Environment|Environment health'),
+    healthLabel: s__('Environment|Environment status'),
     syncStatusLabel: s__('Environment|Sync status'),
   },
   badgeContainerClasses: 'gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-mr-3 gl-mb-2',

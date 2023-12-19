@@ -1,6 +1,8 @@
 - add_to_breadcrumbs _('New group'), new_group_path
+- add_to_breadcrumbs _('Import group'), new_group_path(anchor: 'import-group-pane')
+- breadcrumb_title s_('BulkImport|Direct transfer')
+- page_title s_('BulkImport|Import groups by direct transfer')
 - add_page_specific_style 'page_bundles/import'
-- page_title _('Import groups')
 
 #import-groups-mount-element{ data: { status_path: status_import_bulk_imports_path(format: :json),
   default_target_namespace: @namespace&.id,

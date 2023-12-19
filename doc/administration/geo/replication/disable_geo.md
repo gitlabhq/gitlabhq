@@ -1,8 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Disabling Geo **(PREMIUM SELF)**
@@ -36,9 +35,8 @@ to do that.
 To remove the **primary** site:
 
 1. [Remove all secondary Geo sites](remove_geo_site.md)
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Geo > Nodes**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Nodes**.
 1. Select **Remove** for the **primary** node.
 1. Confirm by selecting **Remove** when the prompt appears.
 

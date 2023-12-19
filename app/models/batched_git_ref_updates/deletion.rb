@@ -15,7 +15,7 @@ module BatchedGitRefUpdates
 
     # This column must be ignored otherwise Rails will cache the default value and `bulk_insert!` will start saving
     # incorrect partition_id.
-    ignore_column :partition_id, remove_with: '3000.0', remove_after: '3000-01-01'
+    ignore_column :partition_id, remove_never: true
 
     belongs_to :project, inverse_of: :to_be_deleted_git_refs
 

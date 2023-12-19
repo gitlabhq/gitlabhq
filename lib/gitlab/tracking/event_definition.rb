@@ -17,9 +17,7 @@ module Gitlab
         end
 
         def definitions
-          paths.each_with_object({}) do |glob_path, definitions|
-            load_all_from_path!(definitions, glob_path)
-          end
+          paths.flat_map { |glob_path| load_all_from_path(glob_path) }
         end
 
         private
@@ -34,11 +32,8 @@ module Gitlab
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Tracking::InvalidEventError.new(e.message))
         end
 
-        def load_all_from_path!(definitions, glob_path)
-          Dir.glob(glob_path).each do |path|
-            definition = load_from_file(path)
-            definitions[definition.path] = definition
-          end
+        def load_all_from_path(glob_path)
+          Dir.glob(glob_path).map { |path| load_from_file(path) }
         end
       end
 

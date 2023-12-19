@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rails console **(FREE SELF)**
@@ -108,13 +108,24 @@ Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
 ## Disable database statement timeout
 
 You can disable the PostgreSQL statement timeout for the current Rails console
-session by running:
+session.
+
+In GitLab 15.11 and earlier, to disable the database statement timeout, run:
 
 ```ruby
 ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
 ```
 
-This change only affects the current Rails console session and is
+In GitLab 16.0 and later, [GitLab uses two database connections by default](../../update/versions/gitlab_16_changes.md#1600). To disable the database statement timeout, run:
+
+```ruby
+ActiveRecord::Base.connection.execute('SET statement_timeout TO 0')
+Ci::ApplicationRecord.connection.execute('SET statement_timeout TO 0')
+```
+
+Instances running GitLab 16.0 and later reconfigured to use a single database connection should disable the database statement timeout using the code for GitLab 15.11 and earlier.
+
+Disabling the database statement timeout affects only the current Rails console session and is
 not persisted in the GitLab production environment or in the next Rails
 console session.
 
@@ -707,7 +718,7 @@ irb(#<Project>)> web_url
 
 The `gitlab-rails` command executes Rails Runner using a non-root account and group, by default: `git:git`.
 
-If the non-root account cannot find the Ruby script filename passed to `gitlab-rails runner`
+If the non-root account cannot find the Ruby script file name passed to `gitlab-rails runner`
 you may get a syntax error, not an error that the file couldn't be accessed.
 
 A common reason for this is that the script has been put in the root account's home directory.

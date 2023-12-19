@@ -10,11 +10,13 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
+    application_settings: %w[instance_administration_project_id instance_administrators_group_id],
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    notes: %w[namespace_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    users: [%w[accepted_term_id]]
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -52,6 +54,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
+    ci_job_artifact_states: %w[partition_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
@@ -80,6 +83,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     members: %w[source_id created_by_id],
     merge_requests: %w[last_edited_by_id state_id],
     merge_requests_compliance_violations: %w[target_project_id],
+    merge_request_diffs: %w[project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
@@ -89,6 +93,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_applications: %w[owner_id],
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
+    p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_ci_finished_build_ch_sync_events: %w[build_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
@@ -111,7 +116,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
     user_agent_details: %w[subject_id],
-    users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id managing_group_id],
+    users: %w[color_scheme_id created_by_id theme_id managing_group_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
@@ -354,11 +359,11 @@ RSpec.describe 'Database schema', feature_category: :database do
 
     context 'for CI partitioned table' do
       # Check that each partitionable model with more than 1 column has the partition_id column at the trailing
-      # position. Using PARTITIONABLE_MODELS instead of iterating tables since when partitioning existing tables,
+      # position. Using .partitionable_models instead of iterating tables since when partitioning existing tables,
       # the routing table only gets created after the PK has already been created, which would be too late for a check.
 
       skip_tables = %w[]
-      partitionable_models = Ci::Partitionable::Testing::PARTITIONABLE_MODELS
+      partitionable_models = Ci::Partitionable::Testing.partitionable_models
       (partitionable_models - skip_tables).each do |klass|
         model = klass.safe_constantize
         table_name = model.table_name

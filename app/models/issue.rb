@@ -65,24 +65,7 @@ class Issue < ApplicationRecord
   belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
   has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
 
-  has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }, init: ->(issue, scope) do
-    # we need this init for the case where the IID allocation in internal_ids#last_value
-    # is higher than the actual issues.max(iid) value for a given project. For instance
-    # in case of an import where a batch of IIDs may be prealocated
-    #
-    # TODO: remove this once the UpdateIssuesInternalIdScope migration completes
-    if issue
-      [
-        InternalId.where(project: issue.project, usage: :issues).pick(:last_value).to_i,
-        issue.namespace&.issues&.maximum(:iid).to_i
-      ].max
-    else
-      [
-        InternalId.where(**scope, usage: :issues).pick(:last_value).to_i,
-        where(**scope).maximum(:iid).to_i
-      ].max
-    end
-  end
+  has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }
 
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -132,15 +115,15 @@ class Issue < ApplicationRecord
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
 
-  alias_method :issuing_parent, :project
-  alias_attribute :issuing_parent_id, :project_id
-
   alias_attribute :external_author, :service_desk_reply_to
 
   pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
 
+  scope :in_namespaces, ->(namespaces) { where(namespace: namespaces) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
+
+  scope :non_archived, -> { left_joins(:project).where(project_id: nil).or(where(projects: { archived: false })) }
 
   scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
@@ -639,7 +622,7 @@ class Issue < ApplicationRecord
   end
 
   def design_collection
-    @design_collection ||= ::DesignManagement::DesignCollection.new(self)
+    @design_collection ||= DesignManagement::DesignCollection.new(self)
   end
 
   def from_service_desk?
@@ -732,6 +715,11 @@ class Issue < ApplicationRecord
   def resource_parent
     project || namespace
   end
+  alias_method :issuing_parent, :resource_parent
+
+  def issuing_parent_id
+    project_id.presence || namespace_id
+  end
 
   # Persisted records will always have a work_item_type. This method is useful
   # in places where we use a non persisted issue to perform feature checks
@@ -751,6 +739,11 @@ class Issue < ApplicationRecord
 
   def hook_attrs
     Gitlab::HookData::IssueBuilder.new(self).build
+  end
+
+  override :gfm_reference
+  def gfm_reference(from = nil)
+    "#{work_item_type_with_default.name.underscore} #{to_reference(from)}"
   end
 
   private

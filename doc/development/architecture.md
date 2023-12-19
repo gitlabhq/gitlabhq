@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GitLab architecture overview
@@ -12,6 +12,7 @@ There are two software distributions of GitLab:
 
 - The open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE).
 - The open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE).
+  **Note:** The EE repository has been archived. GitLab now operates [under a single codebase](https://about.gitlab.com/blog/2019/08/23/a-single-codebase-for-gitlab-community-and-enterprise-edition/).
 
 GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
@@ -763,7 +764,7 @@ See our [Redis guidelines](redis.md) for more information about how GitLab uses 
   - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/registry.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [GitLab Container Registry](../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
+- GitLab.com: [GitLab container registry](../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
 
 The registry is what users use to store their own Docker images. The bundled
 registry uses NGINX as a load balancer and GitLab as an authentication manager.

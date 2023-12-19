@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Single Table Inheritance
@@ -53,8 +53,13 @@ class Animal < ActiveRecord::Base
   def self.inheritance_column = 'species'
 end
 
-class Dog < Animal; end
-class Cat < Animal; end
+class Dog < Animal
+  self.allow_legacy_sti_class = true
+end
+
+class Cat < Animal
+  self.allow_legacy_sti_class = true
+end
 ```
 
 If your table already has a `*_type`, new classes for the different types can be added as needed.

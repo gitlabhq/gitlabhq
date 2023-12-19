@@ -1,4 +1,0 @@
----
-API/EnsureStringDetail:
-  Exclude:
-    - 'ee/lib/api/analytics/group_activity_analytics.rb'

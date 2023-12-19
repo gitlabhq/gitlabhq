@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, howto
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Diagrams.net **(FREE SELF)**
@@ -46,9 +45,8 @@ For more information, see [Run your own diagrams.net server with Docker](https:/
 ## Enable Diagrams.net integration
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Diagrams.net**.
 1. Select the **Enable Diagrams.net** checkbox.
 1. Enter the Diagrams.net URL. To connect to:

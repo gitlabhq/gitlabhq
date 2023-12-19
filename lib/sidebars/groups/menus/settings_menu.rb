@@ -40,13 +40,6 @@ module Sidebars
           'settings'
         end
 
-        override :extra_nav_link_html_options
-        def extra_nav_link_html_options
-          {
-            class: 'shortcuts-settings'
-          }
-        end
-
         override :pick_into_super_sidebar?
         def pick_into_super_sidebar?
           true

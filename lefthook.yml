@@ -4,7 +4,9 @@ pre-push:
     - ref: master
   commands:
     danger:
-      run: bundle exec rake danger_local
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      # We need to specify {files} as part of the command, otherwise it won't execute the hook
+      run: echo {files} >/dev/null && FROM_LEFTHOOK=1 bundle exec rake danger_local
     eslint:
       tags: frontend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -61,7 +63,7 @@ pre-push:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running bin/rake gettext:regenerate" && exit 1 )
     docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -108,6 +110,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
+    verify-tff-mapping:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'tests.yml'
+      run: scripts/verify-tff-mapping
 
   scripts:
     "merge_conflicts":
@@ -125,6 +132,11 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
+    verify-tff-mapping:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'tests.yml'
+      run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged

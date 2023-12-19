@@ -1,8 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Dashboard for Kubernetes **(FREE ALL BETA)**
@@ -14,6 +13,8 @@ type: reference
 Use the Dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
+
+![Kubernetes summary UI](img/kubernetes_summary_ui.png)
 
 ## Configure a dashboard
 
@@ -31,7 +32,9 @@ Prerequisites:
 - The agent for Kubernetes must be shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
 - Self-managed only. KAS is running on the GitLab subdomain. For example, `kas.example.com` and `example.com`.
 
-### The environment already exists
+::Tabs
+
+:::TabTitle The environment already exists
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -42,7 +45,7 @@ Prerequisites:
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
-### The environment doesn't exist
+:::TabTitle The environment doesn't exist
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -53,18 +56,16 @@ Prerequisites:
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
+::EndTabs
+
 ## View a dashboard
 
-> Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default the Kubernetes watch API integration is not available.
-To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `k8s_watch_api`.
-On GitLab.com, this feature is not available.
+> - Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
+> - Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
 
 View a dashboard to see the status of any connected clusters.
 If the `k8s_watch_api` feature flag is enabled, the status of your
-pods and Flux reconciliation updates in real time.
+Kubernetes resources and Flux reconciliation updates in real time.
 
 To view a configured dashboard:
 

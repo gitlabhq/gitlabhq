@@ -72,7 +72,6 @@ RSpec.describe Gitlab::IssuablesCountForState do
     let_it_be(:group) { create(:group) }
 
     let(:cache_options) { { expires_in: 1.hour } }
-    let(:cache_key) { ['group', group.id, 'issues'] }
     let(:threshold) { described_class::THRESHOLD }
     let(:states_count) { { opened: 1, closed: 1, all: 2 } }
     let(:params) { {} }
@@ -95,9 +94,7 @@ RSpec.describe Gitlab::IssuablesCountForState do
       end
     end
 
-    context 'with Issues' do
-      let(:finder) { IssuesFinder.new(user, params) }
-
+    shared_examples 'calculating counts for issuables' do
       it 'returns -1 for the requested state' do
         allow(finder).to receive(:count_by_state).and_raise(ActiveRecord::QueryCanceled)
         expect(Rails.cache).not_to receive(:write)
@@ -160,6 +157,20 @@ RSpec.describe Gitlab::IssuablesCountForState do
           end
         end
       end
+    end
+
+    context 'with Issues' do
+      let(:finder) { IssuesFinder.new(user, params) }
+      let(:cache_key) { ['group', group.id, 'issues'] }
+
+      it_behaves_like 'calculating counts for issuables'
+    end
+
+    context 'with Work Items' do
+      let(:finder) { ::WorkItems::WorkItemsFinder.new(user, params) }
+      let(:cache_key) { ['group', group.id, 'work_items'] }
+
+      it_behaves_like 'calculating counts for issuables'
     end
 
     context 'with Merge Requests' do

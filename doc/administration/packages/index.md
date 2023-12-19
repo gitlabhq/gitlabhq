@@ -1,18 +1,18 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Package Registry administration **(FREE SELF)**
+# GitLab package registry administration **(FREE SELF)**
 
-To use GitLab as a private repository for a variety of common package managers, use the Package Registry.
+To use GitLab as a private repository for a variety of common package managers, use the package registry.
 You can build and publish
 packages, which can be consumed as dependencies in downstream projects.
 
 ## Supported formats
 
-The Package Registry supports the following formats:
+The package registry supports the following formats:
 
 | Package type                                                      | GitLab version |
 |-------------------------------------------------------------------|----------------|
@@ -55,11 +55,11 @@ guides you through the process.
 
 When downloading packages as dependencies in downstream projects, many requests are made through the
 Packages API. You may therefore reach enforced user and IP rate limits. To address this issue, you
-can define specific rate limits for the Packages API. For more details, see [Package Registry Rate Limits](../settings/package_registry_rate_limits.md).
+can define specific rate limits for the Packages API. For more details, see [package registry rate limits](../settings/package_registry_rate_limits.md).
 
-## Enable or disable the Package Registry
+## Enable or disable the package registry
 
-The Package Registry is enabled by default. To disable it:
+The package registry is enabled by default. To disable it:
 
 ::Tabs
 

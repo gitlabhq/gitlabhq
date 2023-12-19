@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_category: :importers do
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
-  let(:project) { instance_double(Project, id: 4, import_source: 'foo/bar') }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:parallel) { true }
@@ -74,6 +74,10 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'imports each note in parallel' do
       allow(importer).to receive(:each_object_to_import).and_yield(issue_event)
 

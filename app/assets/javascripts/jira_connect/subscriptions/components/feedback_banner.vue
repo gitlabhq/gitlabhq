@@ -1,6 +1,6 @@
 <script>
 import { GlBanner } from '@gitlab/ui';
-import ChatBubbleSvg from '@gitlab/svgs/dist/illustrations/chat-bubble-sm.svg?url';
+import ChatBubbleSvg from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';
 import { s__, __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 

@@ -5,14 +5,14 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
-	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 
 	gitalyauth "gitlab.com/gitlab-org/gitaly/v16/auth"
 	gitalyclient "gitlab.com/gitlab-org/gitaly/v16/client"
@@ -38,7 +38,6 @@ type connectionsCache struct {
 }
 
 var (
-	jsonUnMarshaler = jsonpb.Unmarshaler{AllowUnknownFields: true}
 	// This connection cache map contains two types of connections:
 	// - Normal gRPC connections
 	// - Sidechannel connections. When client dials to the Gitaly server, the
@@ -201,5 +200,5 @@ func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 }
 
 func UnmarshalJSON(s string, msg proto.Message) error {
-	return jsonUnMarshaler.Unmarshal(strings.NewReader(s), msg)
+	return protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal([]byte(s), msg)
 }

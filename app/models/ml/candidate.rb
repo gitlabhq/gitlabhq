@@ -3,10 +3,8 @@
 module Ml
   class Candidate < ApplicationRecord
     include Sortable
+    include Presentable
     include AtomicInternalId
-    include IgnorableColumns
-
-    ignore_column :iid, remove_with: '16.0', remove_after: '2023-05-01'
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
@@ -33,6 +31,7 @@ module Ml
 
     scope :including_relationships, -> { includes(:latest_metrics, :params, :user, :package, :project, :ci_build) }
     scope :by_name, ->(name) { where("ml_candidates.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
+    scope :without_model_version, -> { where(model_version: nil) }
 
     scope :order_by_metric, ->(metric, direction) do
       subquery = Ml::CandidateMetric.latest.where(name: metric)

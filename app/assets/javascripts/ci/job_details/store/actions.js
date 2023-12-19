@@ -15,19 +15,84 @@ import { __ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import * as types from './mutation_types';
 
-export const init = ({ dispatch }, { endpoint, pagePath }) => {
-  dispatch('setJobLogOptions', {
-    endpoint,
-    pagePath,
+export const init = (
+  { commit, dispatch },
+  { jobEndpoint, logEndpoint, testReportSummaryUrl, fullScreenAPIAvailable = false },
+) => {
+  commit(types.SET_JOB_LOG_OPTIONS, {
+    jobEndpoint,
+    logEndpoint,
+    testReportSummaryUrl,
+    fullScreenAPIAvailable,
   });
 
   return dispatch('fetchJob');
 };
 
-export const setJobLogOptions = ({ commit }, options) => commit(types.SET_JOB_LOG_OPTIONS, options);
-
 export const hideSidebar = ({ commit }) => commit(types.HIDE_SIDEBAR);
 export const showSidebar = ({ commit }) => commit(types.SHOW_SIDEBAR);
+
+export const enterFullscreen = ({ dispatch }) => {
+  const el = document.querySelector('.build-log-container');
+
+  if (!document.fullscreenElement && el) {
+    el.requestFullscreen()
+      .then(() => {
+        dispatch('enterFullscreenSuccess');
+      })
+      .catch((err) => {
+        reportToSentry('job_enter_fullscreen_mode', err);
+      });
+  }
+};
+
+export const enterFullscreenSuccess = ({ commit }) => {
+  commit(types.ENTER_FULLSCREEN_SUCCESS);
+};
+
+export const exitFullscreen = ({ dispatch }) => {
+  if (document.fullscreenElement) {
+    document
+      .exitFullscreen()
+      .then(() => {
+        dispatch('exitFullscreenSuccess');
+      })
+      .catch((err) => {
+        reportToSentry('job_exit_fullscreen_mode', err);
+      });
+  }
+};
+
+export const exitFullscreenSuccess = ({ commit }) => {
+  commit(types.EXIT_FULLSCREEN_SUCCESS);
+};
+
+export const fullScreenContainerSetUpResult = ({ commit }, value) => {
+  commit(types.FULL_SCREEN_CONTAINER_SET_UP, value);
+};
+
+export const fullScreenModeAvailableSuccess = ({ commit }) => {
+  commit(types.FULL_SCREEN_MODE_AVAILABLE_SUCCESS);
+};
+
+export const setupFullScreenListeners = ({ dispatch, state, getters }) => {
+  if (!state.fullScreenContainerSetUp && getters.hasJobLog) {
+    const el = document.querySelector('.build-log-container');
+
+    if (el) {
+      dispatch('fullScreenModeAvailableSuccess');
+
+      el.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          // Leaving fullscreen mode
+          dispatch('exitFullscreenSuccess');
+        }
+      });
+
+      dispatch('fullScreenContainerSetUpResult', true);
+    }
+  }
+};
 
 export const toggleSidebar = ({ dispatch, state }) => {
   if (state.isSidebarOpen) {
@@ -149,39 +214,46 @@ export const enableScrollTop = ({ commit }) => commit(types.ENABLE_SCROLL_TOP);
 export const toggleScrollAnimation = ({ commit }, toggle) =>
   commit(types.TOGGLE_SCROLL_ANIMATION, toggle);
 
-/**
- * Responsible to handle automatic scroll
- */
-export const toggleScrollisInBottom = ({ commit }, toggle) => {
-  commit(types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_JOB_LOG, toggle);
-};
-
 export const requestJobLog = ({ commit }) => commit(types.REQUEST_JOB_LOG);
 
-export const fetchJobLog = ({ dispatch, state }) =>
-  // update trace endpoint once BE compeletes trace re-naming in #340626
-  axios
-    .get(`${state.jobLogEndpoint}/trace.json`, {
-      params: { state: state.jobLogState },
-    })
-    .then(({ data }) => {
-      dispatch('toggleScrollisInBottom', isScrolledToBottom());
-      dispatch('receiveJobLogSuccess', data);
+export const fetchJobLog = ({ commit, dispatch, state }) => {
+  let isScrolledToBottomBeforeReceivingJobLog;
 
-      if (data.complete) {
-        dispatch('stopPollingJobLog');
-      } else if (!state.jobLogTimeout) {
-        dispatch('startPollingJobLog');
-      }
-    })
-    .catch((e) => {
-      if (e.response?.status === HTTP_STATUS_FORBIDDEN) {
-        dispatch('receiveJobLogUnauthorizedError');
-      } else {
-        reportToSentry('job_actions', e);
-        dispatch('receiveJobLogError');
-      }
-    });
+  return (
+    axios
+      .get(state.logEndpoint, {
+        params: { state: state.jobLogState },
+      })
+      .then(({ data }) => {
+        isScrolledToBottomBeforeReceivingJobLog = isScrolledToBottom();
+
+        commit(types.RECEIVE_JOB_LOG_SUCCESS, data);
+
+        if (data.complete) {
+          dispatch('stopPollingJobLog');
+          dispatch('requestTestSummary');
+        } else if (!state.jobLogTimeout) {
+          dispatch('startPollingJobLog');
+        }
+      })
+      // place `scrollBottom` in a separate `then()` block
+      // to wait on related components to update
+      // after the RECEIVE_JOB_LOG_SUCCESS commit
+      .then(() => {
+        if (isScrolledToBottomBeforeReceivingJobLog) {
+          dispatch('scrollBottom');
+        }
+      })
+      .catch((e) => {
+        if (e.response?.status === HTTP_STATUS_FORBIDDEN) {
+          dispatch('receiveJobLogUnauthorizedError');
+        } else {
+          reportToSentry('job_actions', e);
+          dispatch('receiveJobLogError');
+        }
+      })
+  );
+};
 
 export const startPollingJobLog = ({ dispatch, commit }) => {
   const jobLogTimeout = setTimeout(() => {
@@ -197,8 +269,6 @@ export const stopPollingJobLog = ({ state, commit }) => {
   commit(types.SET_JOB_LOG_TIMEOUT, 0);
   commit(types.STOP_POLLING_JOB_LOG);
 };
-
-export const receiveJobLogSuccess = ({ commit }, log) => commit(types.RECEIVE_JOB_LOG_SUCCESS, log);
 
 export const receiveJobLogError = ({ dispatch }) => {
   dispatch('stopPollingJobLog');
@@ -272,4 +342,24 @@ export const triggerManualJob = ({ state }, variables) => {
         message: __('An error occurred while triggering the job.'),
       }),
     );
+};
+
+export const requestTestSummary = ({ state, commit, dispatch }) => {
+  if (!state.testSummaryComplete && state.testReportSummaryUrl?.length) {
+    axios
+      .get(state.testReportSummaryUrl)
+      .then(({ data }) => {
+        dispatch('receiveTestSummarySuccess', data);
+      })
+      .catch((e) => {
+        reportToSentry('job_test_summary_report', e);
+      })
+      .finally(() => {
+        commit(types.RECEIVE_TEST_SUMMARY_COMPLETE);
+      });
+  }
+};
+
+export const receiveTestSummarySuccess = ({ commit }, data) => {
+  commit(types.RECEIVE_TEST_SUMMARY_SUCCESS, data);
 };

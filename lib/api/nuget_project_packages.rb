@@ -46,6 +46,10 @@ module API
       end
       strong_memoize_attr :project_or_group_without_auth
 
+      def symbol_server_enabled?
+        project_or_group_without_auth.namespace.package_settings.nuget_symbol_server_enabled
+      end
+
       def snowplow_gitlab_standard_context
         { project: project_or_group, namespace: project_or_group.namespace }
       end

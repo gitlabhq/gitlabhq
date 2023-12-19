@@ -8,14 +8,11 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
@@ -32,7 +29,6 @@ export default {
     GlLoadingIcon,
     GlIcon,
     UserAvatarLink,
-    TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
@@ -53,7 +49,6 @@ export default {
     'isEpicBoard',
     'issuableType',
     'isGroupBoard',
-    'isApolloBoard',
   ],
   props: {
     item: {
@@ -155,6 +150,9 @@ export default {
       const { referencePath } = this.item;
       return referencePath.split(this.itemPrefix)[0];
     },
+    directNamespaceReference() {
+      return this.itemReferencePath.split('/').slice(-1)[0];
+    },
     orderedLabels() {
       return sortBy(this.item.labels.filter(this.isNonListLabel), 'title');
     },
@@ -186,7 +184,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['performSearch']),
     setError,
     isIndexLessThanlimit(index) {
       return index < this.limitBeforeCounter;
@@ -224,9 +221,6 @@ export default {
         updateHistory({
           url: `${filterPath}${filter}`,
         });
-        if (!this.isApolloBoard) {
-          this.performSearch();
-        }
         eventHub.$emit('updateTokens');
       }
     },
@@ -308,13 +302,15 @@ export default {
             :work-item-type="item.type"
             show-tooltip-on-hover
           />
-          <tooltip-on-truncate
+          <span
             v-if="showReferencePath"
+            v-gl-tooltip
             :title="itemReferencePath"
-            placement="bottom"
-            class="board-item-path gl-text-truncate gl-font-weight-bold"
-            >{{ itemReferencePath }}</tooltip-on-truncate
+            data-placement="bottom"
+            class="board-item-path gl-text-truncate gl-font-weight-bold gl-cursor-help"
           >
+            {{ directNamespaceReference }}
+          </span>
           {{ itemId }}
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
@@ -411,7 +407,7 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex gl-gap-3 gl-mb-n2">
+      <div class="board-card-assignee gl-display-flex gl-mb-n2">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"
@@ -432,7 +428,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter gl-bg-gray-400 gl-cursor-help gl-font-weight-bold gl-ml-n4 gl-border-0 gl-line-height-24"
+          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-line-height-24 gl-ml-n3"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

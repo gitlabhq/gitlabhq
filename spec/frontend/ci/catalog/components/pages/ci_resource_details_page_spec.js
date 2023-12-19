@@ -5,7 +5,8 @@ import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { CI_CATALOG_RESOURCE_TYPE, cacheConfig } from '~/ci/catalog/graphql/settings';
+import { cacheConfig } from '~/ci/catalog/graphql/settings';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 
 import getCiCatalogResourceSharedData from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_shared_data.query.graphql';
 import getCiCatalogResourceDetails from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_details.query.graphql';
@@ -17,7 +18,6 @@ import CiResourceHeaderSkeletonLoader from '~/ci/catalog/components/details/ci_r
 
 import { createRouter } from '~/ci/catalog/router/index';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '~/ci/catalog/router/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { catalogSharedDataMock, catalogAdditionalDetailsMock } from '../../mock';
 
 Vue.use(VueApollo);
@@ -75,7 +75,7 @@ describe('CiResourceDetailsPage', () => {
     router = createRouter();
     await router.push({
       name: CI_RESOURCE_DETAILS_PAGE_NAME,
-      params: { id: defaultSharedData.id },
+      params: { id: defaultSharedData.webPath },
     });
   });
 
@@ -178,7 +178,7 @@ describe('CiResourceDetailsPage', () => {
 
       it('passes expected props', () => {
         expect(findDetailsComponent().props()).toEqual({
-          resourceId: convertToGraphQLId(CI_CATALOG_RESOURCE_TYPE, defaultAdditionalData.id),
+          resourcePath: cleanLeadingSeparator(defaultSharedData.webPath),
         });
       });
     });

@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Troubleshooting Service Ping
@@ -69,7 +69,7 @@ and run a local container instance:
 1. In the downstream pipeline, wait for the `gitlab-docker` job to finish.
 1. Open the job logs and locate the full container name including the version. It takes the following form: `registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`.
 1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
-   [Authenticate to the GitLab Container Registry](../../../user/packages/container_registry/authenticate_with_container_registry.md).
+   [Authenticate to the GitLab container registry](../../../user/packages/container_registry/authenticate_with_container_registry.md).
 1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
 1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](../../../install/docker.md) documentation.
 
@@ -142,8 +142,7 @@ checking the configuration file of your GitLab instance:
 
 - Using the Admin Area:
 
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage statistics**.
   1. Are you able to check or uncheck the checkbox to disable Service Ping?
@@ -200,8 +199,7 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage statistics**.
   1. Clear the **Enable Service Ping** checkbox.

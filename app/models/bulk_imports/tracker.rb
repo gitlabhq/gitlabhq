@@ -21,10 +21,9 @@ class BulkImports::Tracker < ApplicationRecord
 
   validates :stage, presence: true
 
-  delegate :file_extraction_pipeline?, to: :pipeline_class
+  delegate :file_extraction_pipeline?, :abort_on_failure?, to: :pipeline_class
 
   DEFAULT_PAGE_SIZE = 500
-  STALE_AFTER = 4.hours
 
   scope :next_pipeline_trackers_for, -> (entity_id) {
     entity_scope = where(bulk_import_entity_id: entity_id)
@@ -87,9 +86,5 @@ class BulkImports::Tracker < ApplicationRecord
     event :cleanup_stale do
       transition [:created, :started] => :timeout
     end
-  end
-
-  def stale?
-    created_at < STALE_AFTER.ago
   end
 end

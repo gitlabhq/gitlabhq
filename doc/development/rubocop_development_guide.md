@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # RuboCop rule development guidelines
@@ -45,6 +44,9 @@ More context can go into code comments above this inline disable comment. To
 reduce verbose code comments link a resource (issue, epic, ...) to provide
 detailed context.
 
+For temporary inline disables use `rubocop:todo` and link the follow-up issue
+or epic.
+
 For example:
 
 ```ruby
@@ -53,6 +55,10 @@ module Types
   module Domain
     # rubocop:disable Graphql/AuthorizeTypes
     class SomeType < BaseObject
+      if condition # rubocop:disable Style/GuardClause
+        # more logic...
+      end
+
       object.public_send(action) # rubocop:disable GitlabSecurity/PublicSend
     end
     # rubocop:enable Graphql/AuthorizeTypes
@@ -64,6 +70,10 @@ module Types
   module Domain
     # rubocop:disable Graphql/AuthorizeTypes -- already authroized in parent entity
     class SomeType < BaseObject
+      if condition # rubocop:todo Style/GuardClause -- Cleanup via https://gitlab.com/gitlab-org/gitlab/-/issues/1234567890
+        # more logic...
+      end
+
       # At this point `action` is safe to be used in `public_send`.
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/123457890.
       object.public_send(action) # rubocop:disable GitlabSecurity/PublicSend -- User input verified

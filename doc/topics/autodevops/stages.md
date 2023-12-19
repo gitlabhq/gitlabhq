@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Stages of Auto DevOps **(FREE ALL)**
@@ -239,18 +239,6 @@ check out. The merge request widget displays any security warnings detected,
 
 For more information, see
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
-
-<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
-
-## Auto License Compliance (deprecated) **(ULTIMATE ALL)**
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9,
-in GitLab 16.3 we [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) support for the License Compliance report.
-Auto License Compliance is still present in the pipeline, but won't produce any results.
-
-Use Auto Dependency Scanning instead.
-
-<!--- end_remove -->
 
 ## Auto Container Scanning
 

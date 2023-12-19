@@ -236,14 +236,62 @@ RSpec.describe Trigger, feature_category: :tooling do
 
       describe "TRIGGER_BRANCH" do
         context 'when CNG_BRANCH is not set' do
-          it 'sets TRIGGER_BRANCH to master' do
-            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-org')
-            expect(subject.variables['TRIGGER_BRANCH']).to eq('master')
+          context 'with gitlab-org' do
+            before do
+              stub_env('CI_PROJECT_NAMESPACE', 'gitlab-org')
+            end
+
+            it 'sets TRIGGER_BRANCH to master if the commit ref is master' do
+              stub_env('CI_COMMIT_REF_NAME', 'master')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('master')
+            end
+
+            it 'sets the TRIGGER_BRANCH to master if the commit is part of an MR targeting master' do
+              stub_env('CI_COMMIT_REF_NAME', 'feature_branch')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', 'master')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('master')
+            end
+
+            it 'sets TRIGGER_BRANCH to stable branch if the commit ref is a stable branch' do
+              stub_env('CI_COMMIT_REF_NAME', '16-6-stable-ee')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('16-6-stable')
+            end
+
+            it 'sets the TRIGGER_BRANCH to stable branch if the commit is part of an MR targeting stable branch' do
+              stub_env('CI_COMMIT_REF_NAME', 'feature_branch')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', '16-6-stable-ee')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('16-6-stable')
+            end
           end
 
-          it 'sets TRIGGER_BRANCH to main-jh on JH side' do
-            stub_env('CI_PROJECT_NAMESPACE', 'gitlab-cn')
-            expect(subject.variables['TRIGGER_BRANCH']).to eq('main-jh')
+          context 'with gitlab-cn' do
+            before do
+              stub_env('CI_PROJECT_NAMESPACE', 'gitlab-cn')
+            end
+
+            it 'sets TRIGGER_BRANCH to main-jh if commit ref is main-jh' do
+              stub_env('CI_COMMIT_REF_NAME', 'main-jh')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('main-jh')
+            end
+
+            it 'sets the TRIGGER_BRANCH to main-jh if the commit is part of an MR targeting main-jh' do
+              stub_env('CI_COMMIT_REF_NAME', 'feature_branch')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', 'main-jh')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('main-jh')
+            end
+
+            it 'sets TRIGGER_BRANCH to 16-6-stable if commit ref is a stable branch' do
+              stub_env('CI_COMMIT_REF_NAME', '16-6-stable-jh')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('16-6-stable')
+            end
+
+            it 'sets the TRIGGER_BRANCH to 16-6-stable if the commit is part of an MR targeting 16-6-stable-jh' do
+              stub_env('CI_COMMIT_REF_NAME', 'feature_branch')
+              stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', '16-6-stable-jh')
+              expect(subject.variables['TRIGGER_BRANCH']).to eq('16-6-stable')
+            end
           end
         end
 

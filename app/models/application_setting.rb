@@ -10,28 +10,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
-  ignore_column :user_email_lookup_limit, remove_with: '15.0', remove_after: '2022-04-18'
-  ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
-
-  ignore_column %i[
-    relay_state_domain_allowlist
-    in_product_marketing_emails_enabled
-  ], remove_with: '16.6', remove_after: '2023-10-22'
-
-  ignore_columns %i[
-    encrypted_product_analytics_clickhouse_connection_string
-    encrypted_product_analytics_clickhouse_connection_string_iv
-    encrypted_jitsu_administrator_password
-    encrypted_jitsu_administrator_password_iv
-    jitsu_host
-    jitsu_project_xid
-    jitsu_administrator_email
-  ], remove_with: '16.5', remove_after: '2023-09-22'
   ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
-
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
 
   INSTANCE_REVIEW_MIN_USERS = 50
@@ -61,6 +42,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   add_authentication_token_field :error_tracking_access_token, encrypted: :required
 
   belongs_to :push_rule
+  belongs_to :web_ide_oauth_application, class_name: 'Doorkeeper::Application'
 
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 
@@ -487,7 +469,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :invisible_captcha_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :invitation_flow_enforcement, :can_create_group, :allow_project_creation_for_guest_and_below, :user_defaults_to_private_profile,
+  validates :invitation_flow_enforcement,
+    :can_create_group,
+    :can_create_organization,
+    :allow_project_creation_for_guest_and_below,
+    :user_defaults_to_private_profile,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -528,7 +514,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     exclusion: { in: :restricted_visibility_levels, message: "cannot be set to a restricted visibility level" },
     if: :should_prevent_visibility_restriction?
 
-  validates_each :import_sources do |record, attr, value|
+  validates_each :import_sources, on: :update do |record, attr, value|
     value&.each do |source|
       unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, _("'%{source}' is not a import source") % { source: source })
@@ -763,6 +749,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :package_registry_allow_anyone_to_pull_option,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :security_txt_content,
+    length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
@@ -800,6 +790,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_data_exchange_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :cube_api_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
@@ -823,6 +814,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :bulk_import_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :bulk_import_concurrent_pipeline_batch_limit,
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :allow_runner_registration_token,
     allow_nil: false,
@@ -1009,10 +1004,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   def should_prevent_visibility_restriction?
-    Feature.enabled?(:prevent_visibility_restriction) &&
-      (default_project_visibility_changed? ||
-        default_group_visibility_changed? ||
-        restricted_visibility_levels_changed?)
+    default_project_visibility_changed? ||
+      default_group_visibility_changed? ||
+      restricted_visibility_levels_changed?
   end
 end
 

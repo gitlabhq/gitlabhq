@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Engineering Productivity
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Gitpod internal configuration
@@ -19,7 +19,7 @@ The current settings are:
 
 A webhook that starts with `https://gitpod.io/` is created to enable prebuilds (see [Enabling Prebuilds](https://www.gitpod.io/docs/configure/authentication/gitlab#enabling-prebuilds) for more details). The webhook is maintained by an [Engineering Productivity team](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/).
 
-You can find this webhook in [Webhook Settings in `gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/hooks). If you cannot access this setting, please chat to the [Engineering Productivity team](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/).
+You can find this webhook in [Webhook Settings in `gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/hooks). If you cannot access this setting, chat to the [Engineering Productivity team](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/).
 
 ### Troubleshooting a failed webhook
 

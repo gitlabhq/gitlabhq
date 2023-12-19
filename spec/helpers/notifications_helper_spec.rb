@@ -13,12 +13,6 @@ RSpec.describe NotificationsHelper do
     it { expect(notification_icon(:custom)).to equal('') }
   end
 
-  describe 'notification_title' do
-    it { expect(notification_title(:watch)).to match('Watch') }
-    it { expect(notification_title(:mention)).to match('On mention') }
-    it { expect(notification_title(:global)).to match('Global') }
-  end
-
   describe '#notification_icon_level' do
     let(:user) { create(:user) }
     let(:global_setting) { user.global_notification_setting }

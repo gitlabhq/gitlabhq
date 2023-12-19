@@ -6,6 +6,7 @@ require 'sidekiq/cron/web'
 InitializerConnections.raise_if_new_database_connection do
   Rails.application.routes.draw do
     concern :access_requestable do
+      get :request_access, on: :collection
       post :request_access, on: :collection
       post :approve_access_request, on: :member
     end
@@ -109,7 +110,8 @@ InitializerConnections.raise_if_new_database_connection do
 
       scope module: 'clusters' do
         scope module: 'agents' do
-          get '/kubernetes/:agent_id', to: 'dashboard#show', as: 'kubernetes_dashboard'
+          get '/kubernetes', to: 'dashboard#index', as: 'kubernetes_dashboard_index'
+          get '/kubernetes/:agent_id(/*vueroute)', to: 'dashboard#show', as: 'kubernetes_dashboard'
         end
       end
 
@@ -129,6 +131,7 @@ InitializerConnections.raise_if_new_database_connection do
       scope :ide, as: :ide, format: false do
         get '/', to: 'ide#index'
         get '/project', to: 'ide#index'
+        get '/oauth_redirect', to: 'ide#oauth_redirect'
 
         scope path: 'project/:project_id', as: :project, constraints: { project_id: Gitlab::PathRegex.full_namespace_route_regex } do
           %w[edit tree blob].each do |action|
@@ -210,6 +213,7 @@ InitializerConnections.raise_if_new_database_connection do
 
       draw :snippets
       draw :profile
+      draw :user_settings
 
       post '/mailgun/webhooks' => 'mailgun/webhooks#process_webhook'
 

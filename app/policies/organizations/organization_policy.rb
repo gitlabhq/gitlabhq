@@ -18,6 +18,7 @@ module Organizations
     end
 
     rule { organization_user }.policy do
+      enable :admin_organization
       enable :read_organization
       enable :read_organization_user
     end

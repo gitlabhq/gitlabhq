@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Manage groups
@@ -23,7 +23,7 @@ A single top-level group provides insights in your entire organization via a com
 As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
 The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
 
-Prerequisite:
+Prerequisites:
 
 - To create the README from the group settings, you must have the Owner role for the group.
 
@@ -53,19 +53,14 @@ member with the Owner role.
 
 ## Change a group's path
 
-Changing a group's path (group URL) can have unintended side effects. Read
-[how redirects behave](../project/repository/index.md#what-happens-when-a-repository-path-changes)
+Changing a group's path (group URL) can have unintended side effects. Read how redirects behave
+[on the project-level](../project/repository/index.md#what-happens-when-a-repository-path-changes)
+and [in the API](../../api/rest/index.md#redirects)
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,
 you must rename the group too. Both names and paths must
 be unique.
-
-After you change the group path, the new group path is a new namespace and you must update the existing project URL in the following resources:
-
-- [Include statements](../../ci/yaml/includes.md#include-a-single-configuration-file).
-- Docker image references in CI files.
-- Variables that specify a project or namespace.
 
 To retain ownership of the original namespace and protect the URL redirects,
 create a new group and transfer projects to it instead.
@@ -82,6 +77,11 @@ WARNING:
 It is not possible to rename a namespace if it contains a
 project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
+
+WARNING:
+To ensure that groups with thousands of subgroups get processed correctly, you should test the path change in a test environment.
+Consider increasing the [Puma worker timeout](../../administration/operations/puma.md#change-the-worker-timeout) temporarily.
+For more information about our solution to mitigate this timeout risk, see [issue 432065](https://gitlab.com/gitlab-org/gitlab/-/issues/432065).
 
 ## Change the default branch protection of a group
 
@@ -231,7 +231,7 @@ To disable group mentions:
 You can export a list of members in a group or subgroup as a CSV.
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. On the left sidebar,  **Manage > Members**.
+1. Select  **Manage > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -254,7 +254,7 @@ disabled for the group and its subgroups.
 
 ### Specify a user cap for a group
 
-Prerequisite:
+Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
@@ -276,7 +276,7 @@ Increasing the user cap does not approve pending members.
 
 You can remove the user cap, so there is no limit on the number of members you can add to a group.
 
-Prerequisite:
+Prerequisites:
 
 - You must be assigned the Owner role for the group.
 
@@ -297,14 +297,14 @@ and must be approved.
 
 Pending members do not count as billable. Members count as billable only after they have been approved and are no longer in a pending state.
 
-Prerequisite:
+Prerequisites:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To approve members that are pending because they've exceeded the user cap:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
 
@@ -322,7 +322,7 @@ User cap doesn’t consider whether users are billable or not (e.g., Free Guest 
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
-[instance template repository](../admin_area/settings/instance_template_repository.md).
+[instance template repository](../../administration/settings/instance_template_repository.md).
 The selected project should follow the same naming conventions as
 are documented on that page.
 
@@ -390,7 +390,7 @@ You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipelin
 
 See also [the project-level setting](../project/merge_requests/merge_when_pipeline_succeeds.md#allow-merge-after-skipped-pipelines).
 
-Prerequisite:
+Prerequisites:
 
 - You must be the owner of the group.
 
@@ -409,7 +409,7 @@ To change this behavior:
 You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, for all child projects in your group, the
 **Unresolved threads** count in a merge request is shown in orange when at least one thread remains unresolved.
 
-Prerequisite:
+Prerequisites:
 
 - You must be the owner of the group.
 
@@ -443,7 +443,7 @@ Approval settings should not be confused with [approval rules](../project/merge_
 for the ability to set merge request approval rules for groups is tracked in
 [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Enable Code Suggestions **(FREE SAAS)**
+## Enable Code Suggestions for a group **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
@@ -454,12 +454,9 @@ This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
 Beta users should read about the [known limitations](../project/repository/code_suggestions/index.md#known-limitations).
 We look forward to hearing your [feedback](../project/repository/code_suggestions/index.md#feedback).
 
-You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions/index.md).
-
-- This setting
-  [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
-- Each user can
-  [enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
+You can give all users in a group and its subgroups access to
+[Code Suggestions](../project/repository/code_suggestions/index.md). This setting
+[cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 
 Code Suggestions are enabled by default at the group level.
 
@@ -470,6 +467,9 @@ To update this setting:
 1. Expand **Permissions and group features**.
 1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
 1. Select **Save changes**.
+
+Individual users can disable Code Suggestions by disabling the feature in their
+[installed IDE editor extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
 
 ## Enable Experiment and Beta features **(ULTIMATE SAAS)**
 
@@ -509,7 +509,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Manage > Activity**.
+1. Select **Manage > Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** (**{rss}**) icon.

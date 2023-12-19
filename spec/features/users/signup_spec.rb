@@ -62,17 +62,11 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
   let(:terms_text) do
     <<~TEXT.squish
       By clicking Register or registering through a third party you accept the
-      Terms of Use and acknowledge the Privacy Policy and Cookie Policy
+      Terms of Use and acknowledge the Privacy Statement and Cookie Policy
     TEXT
   end
 
   shared_examples 'signup process' do
-    def confirm_email
-      new_user_token = User.find_by_email(new_user.email).confirmation_token
-
-      visit user_confirmation_path(confirmation_token: new_user_token)
-    end
-
     before do
       stub_feature_flags(arkose_labs_signup_challenge: false)
       stub_application_setting(require_admin_approval_after_user_signup: false)
@@ -220,7 +214,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
             expect(page).to have_current_path users_almost_there_path, ignore_query: true
             expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
 
-            confirm_email
+            confirm_email(new_user)
 
             expect(find_field('Username or primary email').value).to eq(new_user.email)
           end
@@ -345,11 +339,24 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
       end
 
       context 'when invisible captcha detects malicious behaviour' do
-        it 'prevents from signing up' do
-          visit new_user_registration_path
+        context 'with form submitted quicker than timestamp_threshold', :freeze_time do
+          it 'prevents from signing up' do
+            visit new_user_registration_path
 
-          expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
-          expect(page).to have_content('That was a bit too quick! Please resubmit.')
+            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+            expect(page).to have_content('That was a bit too quick! Please resubmit.')
+          end
+        end
+
+        context 'with honeypot field is filled' do
+          it 'prevents from signing up' do
+            visit new_user_registration_path
+
+            find_field('If you are human, please ignore this field.',
+              visible: false).execute_script("this.value = 'bot'")
+
+            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+          end
         end
       end
     end
@@ -389,7 +396,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
     let(:terms_text) do
       <<~TEXT.squish
         By clicking Register, I agree that I have read and accepted the Terms of
-        Use and Privacy Policy
+        Use and Privacy Statement
       TEXT
     end
 

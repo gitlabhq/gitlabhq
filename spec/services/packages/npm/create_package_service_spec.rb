@@ -322,7 +322,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       it { expect(subject[:message]).to eq 'Could not obtain package lease. Please try again.' }
     end
 
-    context 'when feature flag :packages_package_protection is disabled' do
+    context 'when feature flag :packages_protected_packages disabled' do
       let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, package_type: :npm, project: project) }
 
       before do

@@ -37,6 +37,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
                                                                           .with(data: project_data)
                                                                           .and_return(project_event)
 
+          allow(::Gitlab::EventStore).to receive(:publish)
           expect(::Gitlab::EventStore).to receive(:publish).with(project_event)
         end
 
@@ -44,9 +45,51 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
       end
     end
 
-    shared_examples_for 'does not publishes AuthorizationsChangedEvent' do
-      it 'does not publishes a AuthorizationsChangedEvent event' do
+    shared_examples_for 'publishes AuthorizationsRemovedEvent' do
+      it 'publishes a AuthorizationsRemovedEvent event with project id' do
+        project_ids.each do |project_id|
+          project_data = { project_id: project_id, user_ids: user_ids }
+          project_event = instance_double('::ProjectAuthorizations::AuthorizationsRemovedEvent', data: project_data)
+
+          allow(::ProjectAuthorizations::AuthorizationsRemovedEvent).to receive(:new)
+                                                                          .with(data: project_data)
+                                                                          .and_return(project_event)
+
+          allow(::Gitlab::EventStore).to receive(:publish)
+          expect(::Gitlab::EventStore).to receive(:publish).with(project_event)
+        end
+
+        apply_project_authorization_changes
+      end
+
+      context 'when feature flag "user_approval_rules_removal" is disabled' do
+        before do
+          stub_feature_flags(user_approval_rules_removal: false)
+        end
+
+        it 'does not publish a AuthorizationsRemovedEvent event' do
+          expect(::Gitlab::EventStore).not_to(
+            receive(:publish).with(an_instance_of(::ProjectAuthorizations::AuthorizationsRemovedEvent))
+          )
+
+          apply_project_authorization_changes
+        end
+      end
+    end
+
+    shared_examples_for 'does not publish AuthorizationsChangedEvent' do
+      it 'does not publish a AuthorizationsChangedEvent event' do
         expect(::Gitlab::EventStore).not_to receive(:publish)
+                                              .with(an_instance_of(::ProjectAuthorizations::AuthorizationsChangedEvent))
+
+        apply_project_authorization_changes
+      end
+    end
+
+    shared_examples_for 'does not publish AuthorizationsRemovedEvent' do
+      it 'does not publish a AuthorizationsRemovedEvent event' do
+        expect(::Gitlab::EventStore).not_to receive(:publish)
+                                              .with(an_instance_of(::ProjectAuthorizations::AuthorizationsRemovedEvent))
 
         apply_project_authorization_changes
       end
@@ -112,6 +155,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
 
         it_behaves_like 'logs the detail', batch_size: 2
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
 
         context 'when the GitLab installation does not have a replica database configured' do
           before do
@@ -122,6 +166,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           it_behaves_like 'inserts the rows in batches, as per the `per_batch` size, without a delay between batches'
           it_behaves_like 'does not log any detail'
           it_behaves_like 'publishes AuthorizationsChangedEvent'
+          it_behaves_like 'does not publish AuthorizationsRemovedEvent'
         end
       end
 
@@ -133,6 +178,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'inserts the rows in batches, as per the `per_batch` size, without a delay between batches'
         it_behaves_like 'does not log any detail'
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
     end
 
@@ -195,6 +241,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
 
         it_behaves_like 'logs the detail', batch_size: 2
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'publishes AuthorizationsRemovedEvent'
 
         context 'when the GitLab installation does not have a replica database configured' do
           before do
@@ -205,6 +252,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           it_behaves_like 'removes project authorizations of the users in the current project, without a delay'
           it_behaves_like 'does not log any detail'
           it_behaves_like 'publishes AuthorizationsChangedEvent'
+          it_behaves_like 'publishes AuthorizationsRemovedEvent'
         end
       end
 
@@ -216,20 +264,23 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'removes project authorizations of the users in the current project, without a delay'
         it_behaves_like 'does not log any detail'
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'publishes AuthorizationsRemovedEvent'
       end
 
       context 'when the user_ids list is empty' do
         let(:user_ids) { [] }
 
         it_behaves_like 'does not removes project authorizations of the users in the current project'
-        it_behaves_like 'does not publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
 
       context 'when the user_ids list is nil' do
         let(:user_ids) { nil }
 
         it_behaves_like 'does not removes project authorizations of the users in the current project'
-        it_behaves_like 'does not publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
     end
 
@@ -241,6 +292,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
       let_it_be(:project_4) { create(:project) }
 
       let(:project_ids) { [project_1.id, project_2.id, project_3.id] }
+      let(:user_ids) { [user.id] }
 
       let(:project_authorization_changes) do
         ProjectAuthorizations::Changes.new do |changes|
@@ -291,6 +343,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
 
         it_behaves_like 'logs the detail', batch_size: 2
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'publishes AuthorizationsRemovedEvent'
 
         context 'when the GitLab installation does not have a replica database configured' do
           before do
@@ -301,6 +354,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           it_behaves_like 'removes project authorizations of projects from the current user, without a delay'
           it_behaves_like 'does not log any detail'
           it_behaves_like 'publishes AuthorizationsChangedEvent'
+          it_behaves_like 'publishes AuthorizationsRemovedEvent'
         end
       end
 
@@ -312,20 +366,23 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'removes project authorizations of projects from the current user, without a delay'
         it_behaves_like 'does not log any detail'
         it_behaves_like 'publishes AuthorizationsChangedEvent'
+        it_behaves_like 'publishes AuthorizationsRemovedEvent'
       end
 
       context 'when the project_ids list is empty' do
         let(:project_ids) { [] }
 
         it_behaves_like 'does not removes any project authorizations from the current user'
-        it_behaves_like 'does not publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
 
       context 'when the user_ids list is nil' do
         let(:project_ids) { nil }
 
         it_behaves_like 'does not removes any project authorizations from the current user'
-        it_behaves_like 'does not publishes AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsChangedEvent'
+        it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
     end
   end

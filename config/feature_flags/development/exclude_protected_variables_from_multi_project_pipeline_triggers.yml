@@ -1,0 +1,8 @@
+---
+name: exclude_protected_variables_from_multi_project_pipeline_triggers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135899
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431266
+milestone: '16.6'
+type: development
+group: group::pipeline security
+default_enabled: false

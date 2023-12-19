@@ -6,6 +6,7 @@ import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vu
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { mockIssuable, mockRegularLabel } from '../mock_data';
 
 const createComponent = ({
@@ -168,15 +169,20 @@ describe('IssuableItem', () => {
       it('returns timestamp based on `issuable.updatedAt` when the issue is open', () => {
         wrapper = createComponent();
 
-        expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+        expect(findTimestampWrapper().attributes('title')).toBe(
+          localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+        );
       });
 
       it('returns timestamp based on `issuable.closedAt` when the issue is closed', () => {
+        const closedAt = '2020-06-18T11:30:00Z';
         wrapper = createComponent({
-          issuable: { ...mockIssuable, closedAt: '2020-06-18T11:30:00Z', state: 'closed' },
+          issuable: { ...mockIssuable, closedAt, state: 'closed' },
         });
 
-        expect(findTimestampWrapper().attributes('title')).toBe('Jun 18, 2020 11:30am UTC');
+        expect(findTimestampWrapper().attributes('title')).toBe(
+          localeDateFormat.asDateTimeFull.format(closedAt),
+        );
       });
 
       it('returns timestamp based on `issuable.updatedAt` when the issue is closed but `issuable.closedAt` is undefined', () => {
@@ -184,7 +190,9 @@ describe('IssuableItem', () => {
           issuable: { ...mockIssuable, closedAt: undefined, state: 'closed' },
         });
 
-        expect(findTimestampWrapper().attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+        expect(findTimestampWrapper().attributes('title')).toBe(
+          localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+        );
       });
     });
 
@@ -409,7 +417,9 @@ describe('IssuableItem', () => {
       const createdAtEl = wrapper.find('[data-testid="issuable-created-at"]');
 
       expect(createdAtEl.exists()).toBe(true);
-      expect(createdAtEl.attributes('title')).toBe('Jun 29, 2020 1:52pm UTC');
+      expect(createdAtEl.attributes('title')).toBe(
+        localeDateFormat.asDateTimeFull.format(mockIssuable.createdAt),
+      );
       expect(createdAtEl.text()).toBe(wrapper.vm.createdAt);
     });
 
@@ -535,7 +545,9 @@ describe('IssuableItem', () => {
 
       const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
 
-      expect(timestampEl.attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      expect(timestampEl.attributes('title')).toBe(
+        localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+      );
       expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
     });
 
@@ -549,13 +561,16 @@ describe('IssuableItem', () => {
       });
 
       it('renders issuable closedAt info and does not render updatedAt info', () => {
+        const closedAt = '2022-06-18T11:30:00Z';
         wrapper = createComponent({
-          issuable: { ...mockIssuable, closedAt: '2022-06-18T11:30:00Z', state: 'closed' },
+          issuable: { ...mockIssuable, closedAt, state: 'closed' },
         });
 
         const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
 
-        expect(timestampEl.attributes('title')).toBe('Jun 18, 2022 11:30am UTC');
+        expect(timestampEl.attributes('title')).toBe(
+          localeDateFormat.asDateTimeFull.format(closedAt),
+        );
         expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
       });
     });

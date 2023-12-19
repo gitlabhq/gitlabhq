@@ -20,17 +20,13 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
 
   subject { described_class.new(link, user).execute(group_link_params) }
 
-  shared_examples_for 'returns not_found' do
-    it do
+  context 'when the user does not have proper permissions to update a project group link' do
+    it 'returns 404 not found' do
       result = subject
 
       expect(result[:status]).to eq(:error)
       expect(result[:reason]).to eq(:not_found)
     end
-  end
-
-  context 'when the user does not have proper permissions to update a project group link' do
-    it_behaves_like 'returns not_found'
   end
 
   context 'when user has proper permissions to update a project group link' do
@@ -90,6 +86,86 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
           expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).not_to receive(:perform_async)
 
           subject
+        end
+      end
+
+      context 'updating a link with OWNER access' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        shared_examples_for 'returns :forbidden' do
+          it do
+            expect do
+              result = subject
+
+              expect(result[:status]).to eq(:error)
+              expect(result[:reason]).to eq(:forbidden)
+            end.to not_change { link.expires_at }.and not_change { link.group_access }
+          end
+        end
+
+        context 'updating expires_at' do
+          let(:group_link_params) do
+            { expires_at: 7.days.from_now }
+          end
+
+          it_behaves_like 'returns :forbidden'
+        end
+
+        context 'updating group_access' do
+          let(:group_link_params) do
+            { group_access: Gitlab::Access::MAINTAINER }
+          end
+
+          it_behaves_like 'returns :forbidden'
+        end
+
+        context 'updating both expires_at and group_access' do
+          it_behaves_like 'returns :forbidden'
+        end
+      end
+    end
+
+    context 'when the user is an OWNER in the project' do
+      before do
+        project.add_owner(user)
+      end
+
+      context 'updating expires_at' do
+        let(:group_link_params) do
+          { expires_at: 7.days.from_now.to_date }
+        end
+
+        it 'updates existing link' do
+          expect do
+            result = subject
+
+            expect(result[:status]).to eq(:success)
+          end.to change { link.reload.expires_at }.to(group_link_params[:expires_at])
+        end
+      end
+
+      context 'updating group_access' do
+        let(:group_link_params) do
+          { group_access: Gitlab::Access::MAINTAINER }
+        end
+
+        it 'updates existing link' do
+          expect do
+            result = subject
+
+            expect(result[:status]).to eq(:success)
+          end.to change { link.reload.group_access }.to(group_link_params[:group_access])
+        end
+      end
+
+      context 'updating both expires_at and group_access' do
+        it 'updates existing link' do
+          expect do
+            result = subject
+
+            expect(result[:status]).to eq(:success)
+          end.to change { link.reload.group_access }.to(group_link_params[:group_access])
+            .and change { link.reload.expires_at }.to(group_link_params[:expires_at])
         end
       end
     end

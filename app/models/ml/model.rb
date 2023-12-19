@@ -18,6 +18,7 @@ module Ml
     belongs_to :project
     belongs_to :user
     has_many :versions, class_name: 'Ml::ModelVersion'
+    has_many :candidates, -> { without_model_version }, class_name: 'Ml::Candidate', through: :default_experiment
     has_many :metadata, class_name: 'Ml::ModelMetadata'
     has_one :latest_version, -> { latest_by_model }, class_name: 'Ml::ModelVersion', inverse_of: :model
 
@@ -30,6 +31,10 @@ module Ml
     }
     scope :by_name, ->(name) { where("ml_models.name LIKE ?", "%#{sanitize_sql_like(name)}%") } # rubocop:disable GitlabSecurity/SqlInjection
     scope :by_project, ->(project) { where(project_id: project.id) }
+
+    def all_packages
+      Packages::MlModel::Package.where(project: project, id: versions.select(:package_id))
+    end
 
     def valid_default_experiment?
       return unless default_experiment

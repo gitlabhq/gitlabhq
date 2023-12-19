@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting GitLab Pages administration **(FREE SELF)**
@@ -170,9 +170,8 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Applications > GitLab Pages**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Applications > GitLab Pages**.
 1. Edit the application.
 1. Under **Scopes**, ensure that the `api` scope is selected.
 1. Save your changes.
@@ -184,7 +183,7 @@ this setting needs to be configured on the main GitLab server.
 
 If the wildcard DNS [prerequisite](index.md#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
 
-1. [Move](../../user/project/settings/index.md#transfer-a-project-to-another-namespace)
+1. [Move](../../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](index.md#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
@@ -214,8 +213,7 @@ You may see this error if `pages_external_url` was updated at some point of time
 
 1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. Select **Applications** and then **Add new application**.
    1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that
       `pages_external_url` is configured to use.

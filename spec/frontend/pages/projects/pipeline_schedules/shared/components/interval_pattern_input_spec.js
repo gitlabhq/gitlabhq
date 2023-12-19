@@ -7,14 +7,15 @@ describe('Interval Pattern Input Component', () => {
   let oldWindowGl;
   let wrapper;
 
+  const mockMinute = 3;
   const mockHour = 4;
   const mockWeekDayIndex = 1;
   const mockDay = 1;
 
   const cronIntervalPresets = {
-    everyDay: `0 ${mockHour} * * *`,
-    everyWeek: `0 ${mockHour} * * ${mockWeekDayIndex}`,
-    everyMonth: `0 ${mockHour} ${mockDay} * *`,
+    everyDay: `${mockMinute} ${mockHour} * * *`,
+    everyWeek: `${mockMinute} ${mockHour} * * ${mockWeekDayIndex}`,
+    everyMonth: `${mockMinute} ${mockHour} ${mockDay} * *`,
   };
   const customKey = 'custom';
   const everyDayKey = 'everyDay';
@@ -40,6 +41,7 @@ describe('Interval Pattern Input Component', () => {
       propsData: { ...props },
       data() {
         return {
+          randomMinute: data?.minute || mockMinute,
           randomHour: data?.hour || mockHour,
           randomWeekDayIndex: mockWeekDayIndex,
           randomDay: mockDay,
@@ -108,12 +110,12 @@ describe('Interval Pattern Input Component', () => {
 
   describe('formattedTime computed property', () => {
     it.each`
-      desc                                                                                 | hour  | expectedValue
-      ${'returns a time in the afternoon if the value of `random time` is higher than 12'} | ${13} | ${'1:00pm'}
-      ${'returns a time in the morning if the value of `random time` is lower than 12'}    | ${11} | ${'11:00am'}
-      ${'returns "12:00pm" if the value of `random time` is exactly 12'}                   | ${12} | ${'12:00pm'}
-    `('$desc', ({ hour, expectedValue }) => {
-      createWrapper({}, { hour });
+      desc                                                                                                    | hour  | minute | expectedValue
+      ${'returns a time in the afternoon if the value of `random time` is higher than 12'}                    | ${13} | ${7}   | ${'1:07pm'}
+      ${'returns a time in the morning if the value of `random time` is lower than 12'}                       | ${11} | ${30}  | ${'11:30am'}
+      ${'returns "12:05pm" if the value of `random time` is exactly 12 and the value of random minutes is 5'} | ${12} | ${5}   | ${'12:05pm'}
+    `('$desc', ({ hour, minute, expectedValue }) => {
+      createWrapper({}, { hour, minute });
 
       expect(wrapper.vm.formattedTime).toBe(expectedValue);
     });
@@ -128,9 +130,9 @@ describe('Interval Pattern Input Component', () => {
       const labels = findAllLabels().wrappers.map((el) => trimText(el.text()));
 
       expect(labels).toEqual([
-        'Every day (at 4:00am)',
-        'Every week (Monday at 4:00am)',
-        'Every month (Day 1 at 4:00am)',
+        'Every day (at 4:03am)',
+        'Every week (Monday at 4:03am)',
+        'Every month (Day 1 at 4:03am)',
         'Custom',
       ]);
     });

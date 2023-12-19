@@ -81,8 +81,7 @@ export default {
   <div
     class="gl-display-flex"
     :class="{
-      'gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline': level === 2,
-      'gl-align-items-center': level === 3,
+      'gl-border-t gl-py-3 gl-pl-7': level === 2,
     }"
   >
     <status-icon

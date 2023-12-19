@@ -1,11 +1,21 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, concepts, howto
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Development guide for GitLab CI/CD templates
+
+NOTE:
+With the introduction of the [CI/CD Catalog](../../ci/components/index.md#cicd-catalog),
+GitLab is no longer accepting contributions of new CI/CD templates to the codebase. Instead,
+we encourage team members to create [CI/CD components](../../ci/components/index.md)
+for the catalog. This transition enhances the modularity and maintainability of our
+shared CI/CD resources, and avoids the complexities of contributing new CI/CD templates.
+If you need to update an existing template, you must also update the matching CI/CD component.
+If no component exists that matches the CI/CD template yet, consider creating the matching component.
+This ensures that template and component functionality remain in sync, aligning with
+our new development practices.
 
 This document explains how to develop [GitLab CI/CD templates](../../ci/examples/index.md#cicd-templates).
 
@@ -285,7 +295,7 @@ the user's `.gitlab-ci.yml` immediately causes a lint error because there
 are no such jobs named `performance` in the included template anymore. Therefore,
 users have to fix their `.gitlab-ci.yml` that could annoy their workflow.
 
-Please read [versioning](#versioning) section for introducing breaking change safely.
+Read [versioning](#versioning) section for introducing breaking change safely.
 
 ## Versioning
 
@@ -378,7 +388,7 @@ Each CI/CD template must be tested to make sure that it's safe to be published.
 ### Manual QA
 
 It's always good practice to test the template in a minimal demo project.
-To do so, please follow the following steps:
+To do so, follow the following steps:
 
 1. Create a public sample project on <https://gitlab.com>.
 1. Add a `.gitlab-ci.yml` to the project with the proposed template.
@@ -482,6 +492,6 @@ If you're unsure if it's secure or not, you must ask security experts for cross-
 
 After your CI/CD template MR is created and labeled with `ci::templates`, DangerBot
 suggests one reviewer and one maintainer that can review your code. When your merge
-request is ready for review, please [mention](../../user/discussions/index.md#mentions)
+request is ready for review, [mention](../../user/discussions/index.md#mentions)
 the reviewer and ask them to review your CI/CD template changes. See details in the merge request that added
 [a DangerBot task for CI/CD template MRs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44688).

@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Duo Chat
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GitLab Duo Chat
@@ -14,7 +14,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
 1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
 1. Ensure that your current branch is up-to-date with `master`.
-1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
+1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
 
 ## Working with GitLab Duo Chat
 
@@ -85,7 +85,7 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat against real LLMs
+## Testing GitLab Duo Chat against real LLMs locally
 
 Because success of answers to user questions in GitLab Duo Chat heavily depends
 on toolchain and prompts of each tool, it's common that even a minor change in a
@@ -101,7 +101,7 @@ export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
 export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
 export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
 
-REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb
+REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
 When you need to update the test questions that require documentation embeddings,
@@ -109,20 +109,95 @@ make sure a new fixture is generated and committed together with the change.
 
 ## Running the rspecs tagged with `real_ai_request`
 
-The rspecs tagged with the metadata `real_ai_request` can be run in GitLab project's CI by triggering
-`rspec-ee unit gitlab-duo-chat`.
-The former runs with Vertex APIs enabled. The CI jobs are optional and allowed to fail to account for
-the non-deterministic nature of LLM responses.
+The following CI jobs for GitLab project run the rspecs tagged with `real_ai_request`:
+
+- `rspec-ee unit gitlab-duo-chat-zeroshot`:
+   the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
+   The job is optionally triggered and allowed to fail.
+
+- `rspec-ee unit gitlab-duo-chat-qa`:
+   The job runs the QA evaluation tests in
+   `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
+   The job is optionally triggered and allowed to fail.
+   Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+
+- `rspec-ee unit gitlab-duo-chat-qa-fast`:
+  The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
+  The job is always run and not allowed to fail. Although there's a chance that the QA test still might fail,
+  it is cheap and fast to run and intended to prevent a regression in the QA test helpers.
+
+- `rspec-ee unit gitlab-duo pg14`:
+  This job runs tests to ensure that the GitLab Duo features are functional without running into system errors.
+  The job is always run and not allowed to fail.
+  This job does NOT conduct evaluations. The quality of the feature is tested in the other jobs such as QA jobs.
 
 ### Management of credentials and API keys for CI jobs
 
 All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)
 
 The exception is GCP credentials as they contain characters that prevent them from being masked.
-Because `rspec-ee unit gitlab-duo-chat` needs to run on MR branches, GCP credentials cannot be added as a protected variable
+Because the CI jobs need to run on MR branches, GCP credentials cannot be added as a protected variable
 and must be added as a regular CI variable.
 For security, the GCP credentials and the associated project added to
 GitLab project's CI must not be able to access any production infrastructure and sandboxed.
+
+### GitLab Duo Chat QA Evaluation Test
+
+Evaluation of a natural language generation (NLG) system such as
+GitLab Duo Chat is a rapidly evolving area with many unanswered questions and ambiguities.
+
+A practical working assumption is LLMs can generate a reasonable answer when given a clear question and a context.
+With the assumption, we are exploring using LLMs as evaluators
+to determine the correctness of a sample of questions
+to track the overall accuracy of GitLab Duo Chat's responses and detect regressions in the feature.
+
+For the discussions related to the topic,
+see [the merge request](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/431)
+and [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427251).
+
+The current QA evaluation test consists of the following components.
+
+#### Epic and issue fixtures
+
+The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
+The internal notes were excluded when they were sampled. The fixtures have been commited into the canonical `gitlab` repository.
+See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used to create the fixtures.
+
+#### RSpec and helpers
+
+1. [The RSpec file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb)
+  and the included helpers invoke the Chat service, an internal interface with the question.
+
+1. After collecting the Chat service's answer,
+  the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
+  a LLM to grade the correctness of the answer based on the question and a context.
+  The context is simply a JSON serialization of the issue or epic being asked about in each question.
+
+1. The evaluation prompt is sent to two LLMs, Claude and Vertex.
+
+1. The evaluation responses of the LLMs are saved as JSON files.
+
+1. For each question, RSpec will regex-match for `CORRECT` or `INCORRECT`.
+
+#### Collection and tracking of QA evaluations via CI/CD automation
+
+The `gitlab` project's CI configurations have been setup to
+run the RSpec,
+collect the evaluation response as artifacts
+and execute [a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
+that automates collection and tracking of evaluations.
+
+When `rspec-ee unit gitlab-duo-chat-qa` job runs in a pipeline for a merge request,
+the reporter script uses the evaluations saved as CI artifacts
+to generate a Markdown report and posts it as a note in the merge request.
+
+When `rspec-ee unit gitlab-duo-chat-qa` is run in a pipeline for a commit on `master` branch,
+the reporter script instead
+posts the generated report as an issue,
+saves the evaluations artfacts as a snippet,
+and updates the tracking issue in
+[`gitlab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
+in the project [`gitlab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
 ## GraphQL Subscription
 
@@ -134,3 +209,14 @@ We therefore need to broadcast messages to multiple clients to keep them in sync
 
 Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
 However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+
+## Testing GitLab Duo Chat in production-like environments
+
+GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
+[Staging Ref](https://staging-ref.gitlab.com/) GitLab environments.
+
+Because GitLab Duo Chat is currently only available to members of groups in the
+Ultimate tier, Staging Ref may be an easier place to test changes as a GitLab
+team member because
+[you can make yourself an instance Admin in Staging Ref](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
+and, as an Admin, easily create licensed groups for testing.

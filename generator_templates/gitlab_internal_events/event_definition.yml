@@ -7,8 +7,8 @@ property_description:
 value_description:
 extra_properties:
 identifiers:<%= event_identifiers %>
-product_section: <%= options.fetch(:section) %>
-product_stage: <%= options.fetch(:stage) %>
+product_section: <%= Gitlab::Analytics::GroupFetcher.section_text(options.fetch(:group)) %>
+product_stage: <%= Gitlab::Analytics::GroupFetcher.stage_text(options.fetch(:group)) %>
 product_group: <%= options.fetch(:group) %>
 milestone: "<%= milestone %>"
 introduced_by_url: <%= options.fetch(:mr) %>

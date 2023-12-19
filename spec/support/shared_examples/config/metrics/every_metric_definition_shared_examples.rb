@@ -120,29 +120,15 @@ RSpec.shared_examples 'every metric definition' do
     end
 
     let(:ignored_classes) do
-      [
-        Gitlab::Usage::Metrics::Instrumentations::IssuesWithAlertManagementAlertsMetric,
-        Gitlab::Usage::Metrics::Instrumentations::IssuesWithPrometheusAlertEvents
-      ].freeze
-    end
-
-    let(:removed_classes) do
-      [
-        Gitlab::Usage::Metrics::Instrumentations::InProductMarketingEmailCtaClickedMetric,
-        Gitlab::Usage::Metrics::Instrumentations::InProductMarketingEmailSentMetric
-      ].freeze
-    end
-
-    def metric_not_used?(constant)
-      parent_metric_classes.include?(constant) ||
-        ignored_classes.include?(constant) ||
-        removed_classes.include?(constant)
+      Gitlab::Usage::Metrics::Instrumentations::IssuesCreatedFromAlertsMetric::ISSUES_FROM_ALERTS_METRICS +
+        Gitlab::Usage::Metrics::Instrumentations::UniqueUsersAllImportsMetric::IMPORTS_METRICS
     end
 
     def assert_uses_all_nested_classes(parent_module)
       parent_module.constants(false).each do |const_name|
         constant = parent_module.const_get(const_name, false)
-        next if metric_not_used?(constant)
+        next if parent_metric_classes.include?(constant) ||
+          ignored_classes.include?(constant)
 
         case constant
         when Class

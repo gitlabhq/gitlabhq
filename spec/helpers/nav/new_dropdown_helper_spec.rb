@@ -84,7 +84,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_project',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  testid: 'global_new_project_link'
+                  testid: 'global-new-project-link'
                 }
               )
             )
@@ -107,7 +107,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_group',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  testid: 'global_new_group_link'
+                  testid: 'global-new-group-link'
                 }
               )
             )
@@ -130,7 +130,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                   track_action: 'click_link_new_snippet_parent',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top',
-                  testid: 'global_new_snippet_link'
+                  testid: 'global-new-snippet-link'
                 }
               )
             )

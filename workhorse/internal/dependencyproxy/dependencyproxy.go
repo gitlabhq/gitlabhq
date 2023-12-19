@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"os"
+	"time"
 
 	"gitlab.com/gitlab-org/labkit/log"
 
@@ -13,8 +16,12 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
 
+const dialTimeout = 10 * time.Second
+const responseHeaderTimeout = 10 * time.Second
+
+var httpTransport = transport.NewRestrictedTransport(transport.WithDialTimeout(dialTimeout), transport.WithResponseHeaderTimeout(responseHeaderTimeout))
 var httpClient = &http.Client{
-	Transport: transport.NewRestrictedTransport(),
+	Transport: httpTransport,
 }
 
 type Injector struct {
@@ -70,7 +77,13 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 
 	dependencyResponse, err := p.fetchUrl(r.Context(), params)
 	if err != nil {
-		fail.Request(w, r, err)
+		status := http.StatusBadGateway
+
+		if os.IsTimeout(err) {
+			status = http.StatusGatewayTimeout
+		}
+
+		fail.Request(w, r, err, fail.WithStatus(status))
 		return
 	}
 	defer dependencyResponse.Body.Close()
@@ -145,10 +158,30 @@ func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, or
 func (p *Injector) unpackParams(sendData string) (*entryParams, error) {
 	var params entryParams
 	if err := p.Unpack(&params, sendData); err != nil {
-		return nil, fmt.Errorf("dependency proxy: unpack sendData: %v", err)
+		return nil, fmt.Errorf("dependency proxy: unpack sendData: %w", err)
+	}
+
+	if err := p.validateParams(params); err != nil {
+		return nil, fmt.Errorf("dependency proxy: invalid params: %w", err)
 	}
 
 	return &params, nil
+}
+
+func (p *Injector) validateParams(params entryParams) error {
+	var uploadMethod = params.UploadConfig.Method
+	if uploadMethod != "" && uploadMethod != http.MethodPost && uploadMethod != http.MethodPut {
+		return fmt.Errorf("invalid upload method %s", uploadMethod)
+	}
+
+	var uploadUrl = params.UploadConfig.Url
+	if uploadUrl != "" {
+		if _, err := url.ParseRequestURI(uploadUrl); err != nil {
+			return fmt.Errorf("invalid upload url %w", err)
+		}
+	}
+
+	return nil
 }
 
 func (p *Injector) uploadMethodFrom(params *entryParams) string {

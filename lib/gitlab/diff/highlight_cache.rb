@@ -185,17 +185,14 @@ module Gitlab
       def read_cache
         return {} unless file_paths.any?
 
-        results = []
         cache_key = key # Moving out redis calls for feature flags out of redis.pipelined
 
-        with_redis do |redis|
+        results, _ = with_redis do |redis|
           redis.pipelined do |pipeline|
-            results = pipeline.hmget(cache_key, file_paths)
+            pipeline.hmget(cache_key, file_paths)
             pipeline.expire(key, EXPIRATION)
           end
         end
-
-        results = results.value
 
         record_hit_ratio(results)
 

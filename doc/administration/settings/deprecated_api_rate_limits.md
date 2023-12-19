@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Deprecated API rate limits **(FREE SELF)**
@@ -28,14 +27,13 @@ the general user and IP rate limits for requests to deprecated endpoints. You ca
 and IP rate limits already in place, and increase or decrease the rate limits
 for deprecated API endpoints. No other new features are provided by this override.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To override the general user and IP rate limits for requests to deprecated API endpoints:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Deprecated API Rate Limits**.
 1. Select the checkboxes for the types of rate limits you want to enable:

@@ -26,6 +26,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
+    it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
   end
 
   describe 'validations' do
@@ -161,6 +162,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
+
+    it { is_expected.to validate_inclusion_of(:can_create_organization).in_array([true, false]) }
 
     it { is_expected.to validate_inclusion_of(:allow_project_creation_for_guest_and_below).in_array([true, false]) }
 
@@ -733,6 +736,24 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         end
 
         it_behaves_like 'usage ping enabled'
+      end
+    end
+
+    describe '#repository_storages_with_default_weight' do
+      context 'with no extra storage set-up in the config file', fips_mode: false do
+        it 'keeps existing key restrictions' do
+          expect(setting.repository_storages_with_default_weight).to eq({ 'default' => 100 })
+        end
+      end
+
+      context 'with extra storage set-up in the config file', fips_mode: false do
+        before do
+          stub_storage_settings({ 'default' => {}, 'custom' => {} })
+        end
+
+        it 'keeps existing key restrictions' do
+          expect(setting.repository_storages_with_default_weight).to eq({ 'default' => 100, 'custom' => 0 })
+        end
       end
     end
 
@@ -1321,17 +1342,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(subject.errors.messages[:default_group_visibility].first).to eq("cannot be set to a restricted visibility level")
         expect(subject.errors.messages[:default_project_visibility].first).to eq("cannot be set to a restricted visibility level")
       end
-
-      context 'when prevent_visibility_restriction FF is disabled' do
-        before do
-          stub_feature_flags(prevent_visibility_restriction: false)
-        end
-
-        it { is_expected.to allow_value(10).for(:default_group_visibility) }
-        it { is_expected.to allow_value(10).for(:default_project_visibility) }
-        it { is_expected.to allow_value(20).for(:default_group_visibility) }
-        it { is_expected.to allow_value(20).for(:default_project_visibility) }
-      end
     end
 
     describe 'sentry_clientside_traces_sample_rate' do
@@ -1340,6 +1350,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           .is_greater_than_or_equal_to(0)
           .is_less_than_or_equal_to(1)
           .with_message("must be a value between 0 and 1")
+      end
+    end
+
+    describe 'bulk_import_concurrent_pipeline_batch_limit' do
+      it do
+        is_expected.to validate_numericality_of(:bulk_import_concurrent_pipeline_batch_limit)
+         .is_greater_than(0)
       end
     end
   end
@@ -1658,17 +1675,17 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     context 'with plaintext token only' do
-      let(:token) { '' }
+      let(:plaintext_token) { Devise.friendly_token(20) }
 
-      it 'ignores the plaintext token' do
+      it 'encrypts the plaintext token' do
         subject
 
-        described_class.update_all(static_objects_external_storage_auth_token: 'Test')
+        described_class.update!(static_objects_external_storage_auth_token: plaintext_token)
 
         setting.reload
         expect(setting[:static_objects_external_storage_auth_token]).to be_nil
-        expect(setting[:static_objects_external_storage_auth_token_encrypted]).to be_nil
-        expect(setting.static_objects_external_storage_auth_token).to be_nil
+        expect(setting[:static_objects_external_storage_auth_token_encrypted]).not_to be_nil
+        expect(setting.static_objects_external_storage_auth_token).to eq(plaintext_token)
       end
     end
   end
@@ -1722,5 +1739,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to eq(false)
     end
+  end
+
+  context 'security txt content' do
+    it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
   end
 end

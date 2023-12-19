@@ -17,8 +17,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
   let_it_be(:creator) { project.creator }
   let_it_be(:other_user) { create(:user) }
 
-  let_it_be(:top_nav_partial) { 'layouts/header/_default' }
-
   let(:user) { creator }
 
   before do
@@ -156,28 +154,70 @@ RSpec.describe IdeController, feature_category: :web_ide do
         end
       end
 
-      # This indirectly tests that `minimal: true` was passed to the fullscreen layout
-      describe 'layout' do
-        where(:ff_state, :expect_top_nav) do
-          false | true
-          true  | false
+      describe 'legacy Web IDE' do
+        before do
+          stub_feature_flags(vscode_web_ide: false)
         end
 
-        with_them do
-          before do
-            stub_feature_flags(vscode_web_ide: ff_state)
+        it 'uses application layout' do
+          subject
 
-            subject
-          end
-
-          it 'handles rendering top nav' do
-            if expect_top_nav
-              expect(response).to render_template(top_nav_partial)
-            else
-              expect(response).not_to render_template(top_nav_partial)
-            end
-          end
+          expect(response).to render_template('layouts/application')
         end
+
+        it 'does not create oauth application' do
+          expect(Doorkeeper::Application).not_to receive(:new)
+
+          subject
+
+          expect(web_ide_oauth_application).to be_nil
+        end
+      end
+
+      describe 'vscode IDE' do
+        before do
+          stub_feature_flags(vscode_web_ide: true)
+        end
+
+        it 'uses fullscreen layout' do
+          subject
+
+          expect(response).to render_template('layouts/fullscreen')
+        end
+      end
+
+      describe 'with web_ide_oauth flag off' do
+        before do
+          stub_feature_flags(web_ide_oauth: false)
+        end
+
+        it 'does not create oauth application' do
+          expect(Doorkeeper::Application).not_to receive(:new)
+
+          subject
+
+          expect(web_ide_oauth_application).to be_nil
+        end
+      end
+
+      it 'ensures web_ide_oauth_application' do
+        expect(Doorkeeper::Application).to receive(:new).and_call_original
+
+        subject
+
+        expect(web_ide_oauth_application).not_to be_nil
+        expect(web_ide_oauth_application[:name]).to eq('GitLab Web IDE')
+      end
+
+      it 'when web_ide_oauth_application already exists, does not create new one' do
+        existing_app = create(:oauth_application, owner_id: nil, owner_type: nil)
+
+        stub_application_setting({ web_ide_oauth_application: existing_app })
+        expect(Doorkeeper::Application).not_to receive(:new)
+
+        subject
+
+        expect(web_ide_oauth_application).to eq(existing_app)
       end
     end
 
@@ -200,5 +240,49 @@ RSpec.describe IdeController, feature_category: :web_ide do
         expect(find_csp_directive('worker-src')).to include("http://www.example.com/gitlab/assets/webpack/")
       end
     end
+  end
+
+  describe '#oauth_redirect', :aggregate_failures do
+    subject(:oauth_redirect) { get '/-/ide/oauth_redirect' }
+
+    it 'with no web_ide_oauth_application, returns not_found' do
+      oauth_redirect
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'with web_ide_oauth_application set' do
+      before do
+        stub_application_setting({
+          web_ide_oauth_application: create(:oauth_application, owner_id: nil, owner_type: nil)
+        })
+      end
+
+      it 'returns ok and renders view' do
+        oauth_redirect
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'with vscode_web_ide flag off, returns not_found' do
+        stub_feature_flags(vscode_web_ide: false)
+
+        oauth_redirect
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'with web_ide_oauth flag off, returns not_found' do
+        stub_feature_flags(web_ide_oauth: false)
+
+        oauth_redirect
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  def web_ide_oauth_application
+    ::Gitlab::CurrentSettings.current_application_settings.web_ide_oauth_application
   end
 end

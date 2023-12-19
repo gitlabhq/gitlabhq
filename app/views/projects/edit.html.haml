@@ -46,7 +46,7 @@
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
       %p.gl-text-secondary
-        = s_('ProjectSettings|Customize this project\'s badges.')
+        = s_('ProjectSettings|Add badges to display information about this project.')
         = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
     .settings-content
       = render 'shared/badges/badge_settings'
@@ -90,16 +90,18 @@
           .gl-new-card-title-wrapper
             %h4.gl-new-card-title.warning-title= _('Change path')
           %p.gl-new-card-description
-            - link = link_to('', help_page_path('user/project/settings/index', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
+            - link = link_to('', help_page_path('user/project/working_with_projects', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
             = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
         - c.with_body do
           = render 'projects/errors'
           = gitlab_ui_form_for @project do |f|
             .form-group
-              %p
-                %span.gl-font-weight-bold= _("Be careful. Renaming a project's repository can have unintended side effects.")
-                = _('You will need to update your local repositories to point to the new location.')
+              %ul
+                %li= _("Be careful. Renaming a project's repository can have unintended side effects.")
+                %li= _('You will need to update your local repositories to point to the new location.')
+                - if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+                  %li= s_('ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried.')
               - if @project.deployment_platform.present?
                 %p= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
               = f.label :path, _('Path'), class: 'label-bold'

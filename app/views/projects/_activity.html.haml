@@ -5,8 +5,8 @@
   .controls.gl-display-flex
     = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'd-none d-sm-inline-flex has-tooltip', icon: 'rss'
     - if is_project_overview && can?(current_user, :download_code, @project)
-      .project-clone-holder.d-none.d-md-inline-flex.gl-ml-2
-        = render "projects/buttons/clone", dropdown_class: 'dropdown-menu-right'
+      .project-code-holder.d-none.d-md-inline-flex.gl-ml-2
+        = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref
 
 .content_list.project-activity{ :"data-href" => activity_project_path(@project) }
 .loading

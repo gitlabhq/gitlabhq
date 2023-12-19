@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { readFileAsDataURL } from '~/lib/utils/file_utility';
 import axios from '~/lib/utils/axios_utils';
 import ProfileEditApp from '~/profile/edit/components/profile_edit_app.vue';
 import UserAvatar from '~/profile/edit/components/user_avatar.vue';
@@ -103,6 +102,8 @@ describe('Profile Edit App', () => {
     });
 
     it('syncs header avatars', async () => {
+      jest.spyOn(document, 'dispatchEvent');
+      jest.spyOn(URL, 'createObjectURL');
       mockAxios.onPut(stubbedProfilePath).reply(200, {
         message: successMessage,
       });
@@ -112,7 +113,8 @@ describe('Profile Edit App', () => {
 
       await waitForPromises();
 
-      expect(readFileAsDataURL).toHaveBeenCalledWith(mockAvatarFile);
+      expect(URL.createObjectURL).toHaveBeenCalledWith(mockAvatarFile);
+      expect(document.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('userAvatar:update'));
     });
 
     it('contains changes from the status form', async () => {

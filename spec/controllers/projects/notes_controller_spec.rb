@@ -536,7 +536,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
       context 'when creating a note with quick actions' do
         context 'with commands that return changes' do
-          let(:note_text) { "/award :thumbsup:\n/estimate 1d\n/spend 3h" }
+          let(:note_text) { "/react :thumbsup:\n/estimate 1d\n/spend 3h" }
           let(:extra_request_params) { { format: :json } }
 
           it 'includes changes in commands_changes' do
@@ -551,7 +551,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
             create!
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response['command_names']).to include('award', 'estimate', 'spend')
+            expect(json_response['command_names']).to include('react', 'estimate', 'spend')
           end
         end
 

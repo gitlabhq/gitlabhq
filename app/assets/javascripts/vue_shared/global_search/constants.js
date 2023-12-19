@@ -1,11 +1,10 @@
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const AUTOCOMPLETE_ERROR_MESSAGE = s__(
   'GlobalSearch|There was an error fetching search autocomplete suggestions.',
 );
 
 export const ALL_GITLAB = __('All GitLab');
-export const SEARCH_GITLAB = s__('GlobalSearch|Search GitLab');
 export const PLACES = s__('GlobalSearch|Places');
 
 export const COMMAND_PALETTE = s__('GlobalSearch|Command palette');
@@ -24,17 +23,9 @@ export const SEARCH_DESCRIBED_BY_UPDATED = s__(
 );
 export const SEARCH_RESULTS_LOADING = s__('GlobalSearch|Search results are loading');
 export const SEARCH_RESULTS_SCOPE = s__('GlobalSearch|in %{scope}');
-export const KBD_HELP = sprintf(
-  s__('GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search'),
-  { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
-  false,
-);
 export const MIN_SEARCH_TERM = s__(
   'GlobalSearch|The search term must be at least 3 characters long.',
 );
-
-export const SCOPED_SEARCH_ITEM_ARIA_LABEL = s__('GlobalSearch| %{search} %{description} %{scope}');
-
 export const MSG_ISSUES_ASSIGNED_TO_ME = s__('GlobalSearch|Issues assigned to me');
 
 export const MSG_ISSUES_IVE_CREATED = s__("GlobalSearch|Issues I've created");
@@ -76,8 +67,6 @@ export const SEARCH_RESULTS_ORDER = [
   SETTINGS_CATEGORY,
   HELP_CATEGORY,
 ];
-export const DROPDOWN_ORDER = SEARCH_RESULTS_ORDER;
-
 export const SEARCH_LABELS = s__('GlobalSearch|Search labels');
 
 export const DROPDOWN_HEADER = s__('GlobalSearch|Labels');

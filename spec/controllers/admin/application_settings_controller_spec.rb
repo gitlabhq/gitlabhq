@@ -258,6 +258,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
       it_behaves_like 'updates boolean attribute', :user_defaults_to_private_profile
       it_behaves_like 'updates boolean attribute', :can_create_group
+      it_behaves_like 'updates boolean attribute', :can_create_organization
       it_behaves_like 'updates boolean attribute', :admin_mode
       it_behaves_like 'updates boolean attribute', :require_admin_approval_after_user_signup
       it_behaves_like 'updates boolean attribute', :remember_me_enabled
@@ -373,46 +374,6 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
           expect(response).to redirect_to(general_admin_application_settings_path)
           expect(application_setting.max_terraform_state_size_bytes).to eq(123)
-        end
-      end
-    end
-
-    describe 'user_email_lookup_limit aliasing' do
-      let(:application_setting) { ApplicationSetting.current }
-      let(:user_email_lookup_limit) { 8675 }
-      let(:search_rate_limit) { 309 }
-
-      context 'when search_rate_limit is specified' do
-        let(:settings_params) do
-          {
-            user_email_lookup_limit: user_email_lookup_limit,
-            search_rate_limit: search_rate_limit
-          }
-        end
-
-        it 'updates search_rate_limit with correct value' do
-          expect(application_setting.search_rate_limit).not_to eq user_email_lookup_limit
-          expect(application_setting.search_rate_limit).not_to eq search_rate_limit
-
-          put :update, params: { application_setting: settings_params }
-
-          expect(application_setting.reload.search_rate_limit).to eq search_rate_limit
-        end
-      end
-
-      context 'when search_rate_limit is not specified' do
-        let(:settings_params) do
-          {
-            user_email_lookup_limit: search_rate_limit
-          }
-        end
-
-        it 'applies user_email_lookup_limit value to search_rate_limit' do
-          expect(application_setting.search_rate_limit).not_to eq search_rate_limit
-
-          put :update, params: { application_setting: settings_params }
-
-          expect(application_setting.reload.search_rate_limit).to eq search_rate_limit
         end
       end
     end

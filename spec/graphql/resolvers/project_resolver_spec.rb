@@ -13,7 +13,7 @@ RSpec.describe Resolvers::ProjectResolver do
     it 'batch-resolves projects by full path' do
       paths = [project1.full_path, project2.full_path]
 
-      result = batch_sync(max_queries: 1) do
+      result = batch_sync(max_queries: 3) do
         paths.map { |path| resolve_project(path) }
       end
 

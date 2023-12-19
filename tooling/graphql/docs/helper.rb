@@ -42,7 +42,7 @@ module Tooling
       CONNECTION_NOTE = <<~MD
         This field returns a [connection](#connections). It accepts the
         four standard [pagination arguments](#connection-pagination-arguments):
-        `before: String`, `after: String`, `first: Int`, `last: Int`.
+        `before: String`, `after: String`, `first: Int`, and `last: Int`.
       MD
 
       # Helper with functions to be used by HAML templates
@@ -57,7 +57,7 @@ module Tooling
             ---
             stage: Manage
             group: Import and Integrate
-            info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+            info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
             ---
 
             <!---

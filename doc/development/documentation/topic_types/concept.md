@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Concept topic type
@@ -18,6 +18,8 @@ Think of everything someone might want to know if they've never heard of this co
 Don't tell them **how** to do this thing. Tell them **what it is**.
 
 If you start describing another concept, start a new concept and link to it.
+
+## Format
 
 Concepts should be in this format:
 

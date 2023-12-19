@@ -54,7 +54,7 @@ class GenerateFailedPackageAndTestMrMessage
     investigated to guarantee this backport complies with the Quality standards.
 
     Ping your team's associated Software Engineer in Test (SET) to confirm the failures are unrelated to the merge request.
-    If there's no SET assigned, ask for assistance on the `#quality` Slack channel.
+    If there's no SET assigned, ask for assistance on the `#test-platform` Slack channel.
     MARKDOWN
   end
 

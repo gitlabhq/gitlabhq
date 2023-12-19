@@ -151,6 +151,10 @@ module Types
       null: true,
       description: 'Number of open issues for the project.'
 
+    field :open_merge_requests_count, GraphQL::Types::Int,
+      null: true,
+      description: 'Number of open merge requests for the project.'
+
     field :allow_merge_on_skipped_pipeline, GraphQL::Types::Boolean,
       null: true,
       description: 'If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of ' \
@@ -249,6 +253,13 @@ module Types
       description: 'Work items of the project.',
       extras: [:lookahead],
       resolver: Resolvers::WorkItemsResolver
+
+    field :work_item_state_counts,
+      Types::WorkItemStateCountsType,
+      null: true,
+      alpha: { milestone: '16.7' },
+      description: 'Counts of work items by state for the project.',
+      resolver: Resolvers::WorkItemStateCountsResolver
 
     field :issue_status_counts,
       Types::IssueStatusCountsType,
@@ -647,6 +658,11 @@ module Types
       description: 'Detailed import status of the project.',
       method: :import_state
 
+    field :value_streams,
+      description: 'Value streams available to the project.',
+      null: true,
+      resolver: Resolvers::Analytics::CycleAnalytics::ValueStreamsResolver
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
@@ -675,6 +691,19 @@ module Types
       end
     end
 
+    [:issues, :forking, :merge_requests].each do |feature|
+      field_name = "#{feature}_access_level"
+      feature_name = feature.to_s.tr("_", " ")
+
+      field field_name, Types::ProjectFeatureAccessLevelType,
+        null: true,
+        description: "Access level required for #{feature_name} access."
+
+      define_method field_name do
+        project.project_feature&.access_level(feature)
+      end
+    end
+
     markdown_field :description_html, null: true
 
     def avatar_url
@@ -687,6 +716,12 @@ module Types
 
     def open_issues_count
       BatchLoader::GraphQL.wrap(object.open_issues_count) if object.feature_available?(:issues, context[:current_user])
+    end
+
+    def open_merge_requests_count
+      return unless object.feature_available?(:merge_requests, context[:current_user])
+
+      BatchLoader::GraphQL.wrap(object.open_merge_requests_count)
     end
 
     def forks_count

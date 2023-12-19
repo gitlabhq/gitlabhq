@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Projects API **(FREE ALL)**
@@ -240,6 +240,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
+    "ci_restrict_pipeline_cancellation_role": "developer",
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
@@ -280,6 +281,9 @@ When the user is authenticated and `simple` is not set this returns something li
 ]
 ```
 
+NOTE:
+`last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity) and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+
 You can filter by [custom attributes](custom_attributes.md) with:
 
 ```plaintext
@@ -308,7 +312,7 @@ Keyset pagination supports only `order_by=id`. Other sorting options aren't avai
 Get a list of visible projects owned by the given user. When accessed without
 authentication, only public projects are returned.
 
-Prerequisite:
+Prerequisites:
 
 - To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
 
@@ -413,6 +417,7 @@ GET /users/:user_id/projects
     "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
+    "ci_restrict_pipeline_cancellation_role": "developer",
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -532,6 +537,7 @@ GET /users/:user_id/projects
     "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
+    "ci_restrict_pipeline_cancellation_role": "developer",
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1202,6 +1208,7 @@ GET /projects/:id
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
+  "ci_restrict_pipeline_cancellation_role": "developer",
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1471,7 +1478,8 @@ Refer to the [Events API documentation](events.md#list-a-projects-visible-events
 
 ## Create project
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Creates a new project owned by the authenticated user.
 
@@ -1510,7 +1518,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `build_timeout`                                             | integer | No | The maximum amount of time, in seconds, that a job can run. |
 | `builds_access_level`                                       | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string  | No | The path to CI configuration file. |
-| `container_expiration_policy_attributes`                    | hash    | No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [Container Registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n` and `older_than` values. |
+| `container_expiration_policy_attributes`                    | hash    | No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). See the [container registry](../user/packages/container_registry/reduce_container_registry_storage.md#use-the-cleanup-policy-api) documentation for more information on `cadence`, `keep_n` and `older_than` values. |
 | `container_registry_access_level`                           | string  | No | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `container_registry_enabled`                                | boolean | No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
@@ -1547,6 +1555,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1570,7 +1579,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 
 ## Create project for user
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Creates a new project owned by the specified user. Available only for administrators.
 
@@ -1636,6 +1646,7 @@ POST /projects/user/:user_id
 | `infrastructure_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `model_experiments_access_level`                            | string  | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1661,7 +1672,8 @@ POST /projects/user/:user_id
 
 ## Edit project
 
-> `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 
 Updates an existing project.
 
@@ -1743,6 +1755,7 @@ Supported attributes:
 | `packages_enabled`                                          | boolean        | No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                      | string         | No | Custom repository name for the project. By default generated based on name. |
+| `prevent_merge_without_jira_issue` **(PREMIUM ALL)**        | boolean        | No | Set whether merge requests require an associated issue from Jira.
 | `printing_merge_request_link_enabled`                       | boolean        | No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean        | No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string         | No | One of `disabled`, `private`, or `enabled`. |
@@ -1750,6 +1763,7 @@ Supported attributes:
 | `feature_flags_access_level`                                | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `infrastructure_access_level`                               | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                      | string         | No | One of `disabled`, `private`, or `enabled`. |
+| `model_registry_access_level`                               | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean        | No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string         | No | Which storage shard the repository is on. _(administrators only)_ |
@@ -2311,6 +2325,7 @@ Example response:
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
+  "ci_restrict_pipeline_cancellation_role": "developer",
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2443,6 +2458,7 @@ Example response:
   "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
+  "ci_restrict_pipeline_cancellation_role": "developer",
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2481,7 +2497,7 @@ This endpoint:
   merge requests).
 - In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) and later, on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
-  [delayed project deletion](../user/project/settings/index.md#delayed-project-deletion)
+  [delayed project deletion](../user/project/working_with_projects.md#delayed-project-deletion)
   is applied if enabled.
 - From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
   [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
@@ -2913,6 +2929,7 @@ GET /projects/:id/push_rule
   "file_name_regex": "",
   "max_file_size": 5,
   "commit_committer_check": false,
+  "commit_committer_name_check": false,
   "reject_unsigned_commits": false
 }
 ```
@@ -2931,10 +2948,11 @@ POST /projects/:id/push_rule
 | `author_email_regex`                    | string         | No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`           | boolean        | No | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |
-| `file_name_regex`                       | string         | No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `file_name_regex`                       | string         | No | All committed file names must **not** match this, for example `(jar|exe)$`. |
 | `max_file_size`                         | integer        | No | Maximum file size (MB). |
 | `member_check`                          | boolean        | No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | No | GitLab rejects any files that are likely to contain secrets. |
@@ -2954,10 +2972,11 @@ PUT /projects/:id/push_rule
 | `author_email_regex`                    | string         | No | All commit author emails must match this, for example `@my-company.com$`. |
 | `branch_name_regex`                     | string         | No | All branch names must match this, for example `(feature|hotfix)\/*`. |
 | `commit_committer_check`                | boolean        | No | Users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`           | boolean        | No | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex`         | string         | No | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`                  | string         | No | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`                       | boolean        | No | Deny deleting a tag. |
-| `file_name_regex`                       | string         | No | All committed filenames must **not** match this, for example `(jar|exe)$`. |
+| `file_name_regex`                       | string         | No | All committed file names must **not** match this, for example `(jar|exe)$`. |
 | `max_file_size`                         | integer        | No | Maximum file size (MB). |
 | `member_check`                          | boolean        | No | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`                       | boolean        | No | GitLab rejects any files that are likely to contain secrets. |
@@ -2967,8 +2986,7 @@ PUT /projects/:id/push_rule
 
 > Moved to GitLab Premium in 13.9.
 
-Removes a push rule from a project. This method is idempotent and can be
-called multiple times. Either the push rule is available or not.
+Removes a push rule from a project.
 
 ```plaintext
 DELETE /projects/:id/push_rule
@@ -3026,7 +3044,7 @@ Example response:
 
 > The `_links.cluster_agents` attribute in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 14.10.
 
-See the [Project documentation](../user/project/settings/index.md#transfer-a-project-to-another-namespace)
+See the [Project documentation](../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace)
 for prerequisites to transfer a project.
 
 ```plaintext

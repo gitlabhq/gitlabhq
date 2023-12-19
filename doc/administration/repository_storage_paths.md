@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Repository storage **(FREE SELF)**
@@ -66,9 +66,8 @@ Administrators can look up a project's hashed path from its name or ID using:
 
 To look up a project's hash path in the Admin Area:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Projects** and select the project.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Projects** and select the project.
 1. Locate the **Relative path** field. The value is similar to:
 
    ```plaintext
@@ -180,7 +179,7 @@ Files stored in an S3-compatible endpoint can have the same advantages as
 #### Avatars
 
 Each file is stored in a directory that matches the `id` assigned to it in the database. The
-filename is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
+file name is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
 destroyed and a new one takes place with a different `id`.
 
 #### CI/CD artifacts
@@ -205,10 +204,9 @@ LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-
 
 After you configure multiple repository storages, you can choose where new repositories are stored:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Repository** and expand the **Repository storage**
-   section.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Repository**.
+1. Expand **Repository storage**.
 1. Enter values in the **Storage nodes for new repositories** fields.
 1. Select **Save changes**.
 

@@ -46,7 +46,7 @@ describe('Ref selector component', () => {
   let commitApiCallSpy;
   let requestSpies;
 
-  const createComponent = (mountOverrides = {}, propsData = {}) => {
+  const createComponent = ({ overrides = {}, propsData = {} } = {}) => {
     wrapper = mountExtended(
       RefSelector,
       merge(
@@ -64,7 +64,7 @@ describe('Ref selector component', () => {
           },
           store: createStore(),
         },
-        mountOverrides,
+        overrides,
       ),
     );
   };
@@ -211,7 +211,7 @@ describe('Ref selector component', () => {
       const id = 'git-ref';
 
       beforeEach(() => {
-        createComponent({ attrs: { id } });
+        createComponent({ overrides: { attrs: { id } } });
 
         return waitForRequests();
       });
@@ -326,7 +326,7 @@ describe('Ref selector component', () => {
     describe('branches', () => {
       describe('when the branches search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { useSymbolicRefNames: true });
+          createComponent({ propsData: { useSymbolicRefNames: true } });
 
           return waitForRequests();
         });
@@ -389,7 +389,7 @@ describe('Ref selector component', () => {
     describe('tags', () => {
       describe('when the tags search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { useSymbolicRefNames: true });
+          createComponent({ propsData: { useSymbolicRefNames: true } });
 
           return waitForRequests();
         });
@@ -569,6 +569,20 @@ describe('Ref selector component', () => {
         });
       });
     });
+
+    describe('disabled', () => {
+      it('does not disable the dropdown', () => {
+        createComponent();
+        expect(findListbox().props('disabled')).toBe(false);
+      });
+
+      it('disables the dropdown', async () => {
+        createComponent({ propsData: { disabled: true } });
+        expect(findListbox().props('disabled')).toBe(true);
+        await selectFirstBranch();
+        expect(wrapper.emitted('input')).toBeUndefined();
+      });
+    });
   });
 
   describe('with non-default ref types', () => {
@@ -691,9 +705,7 @@ describe('Ref selector component', () => {
     });
 
     beforeEach(() => {
-      createComponent({
-        scopedSlots: { footer: createFooter },
-      });
+      createComponent({ overrides: { scopedSlots: { footer: createFooter } } });
 
       updateQuery('abcd1234');
 

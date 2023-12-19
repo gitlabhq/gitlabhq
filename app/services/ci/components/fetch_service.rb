@@ -24,7 +24,7 @@ module Ci
         component_path = component_path_class.new(address: address)
         result = component_path.fetch_content!(current_user: current_user)
 
-        if result
+        if result&.content
           ServiceResponse.success(payload: {
             content: result.content,
             path: result.path,

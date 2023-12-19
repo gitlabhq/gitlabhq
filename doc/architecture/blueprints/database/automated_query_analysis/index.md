@@ -4,7 +4,7 @@ creation-date: "2023-02-08"
 authors: [ "@mattkasa", "@jon_jenkins" ]
 coach: "@DylanGriffith"
 approvers: [ "@rogerwoo", "@alexives" ]
-owning-stage: "~devops::data_stores"
+owning-stage: "~devops::data stores"
 participating-stages: []
 ---
 

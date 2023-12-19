@@ -1,8 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rate limits
@@ -15,7 +14,7 @@ You can change network settings to limit the rate of connections with your insta
 - [Incident management](incident_management_rate_limits.md)
 - [Issue creation](rate_limit_on_issues_creation.md)
 - [Note creation](rate_limit_on_notes_creation.md)
-- [Package Registry](package_registry_rate_limits.md)
+- [Package registry](package_registry_rate_limits.md)
 - [Pipeline creation](rate_limit_on_pipelines_creation.md)
 - [Projects API](rate_limit_on_projects_api.md)
 - [Raw endpoints](rate_limits_on_raw_endpoints.md)

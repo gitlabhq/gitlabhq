@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Mattermost slash commands **(FREE ALL)**
@@ -67,8 +67,7 @@ To get configuration values from GitLab:
 
 1. In a different browser tab, sign in to
    GitLab as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**. GitLab displays potential values for Mattermost settings.
 1. Copy the **Request URL** value. All other values are suggestions.
@@ -109,7 +108,7 @@ Your slash command can now communicate with your GitLab project.
 
 ## Connect your GitLab account to Mattermost
 
-Prerequisite:
+Prerequisites:
 
 - To run [slash commands](gitlab_slack_application.md#slash-commands), you must have
   [permission](../../permissions.md#project-members-permissions) to

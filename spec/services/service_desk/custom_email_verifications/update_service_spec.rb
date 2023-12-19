@@ -14,7 +14,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
     let(:service) { described_class.new(project: settings.project, params: { mail: mail_object }) }
 
-    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
     let(:error_parameter_missing) { s_('ServiceDesk|Service Desk setting or verification object missing') }
     let(:error_already_finished) { s_('ServiceDesk|Custom email address has already been verified.') }
     let(:error_already_failed) do
@@ -28,6 +27,9 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     before do
       allow(message_delivery).to receive(:deliver_later)
       allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
+
+      stub_incoming_email_setting(enabled: true, address: 'support+%{key}@example.com')
+      stub_service_desk_email_setting(enabled: true, address: 'contact+%{key}@example.com')
     end
 
     shared_examples 'a failing verification process' do |expected_error_identifier|
@@ -86,26 +88,6 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
       expect(settings).not_to be_custom_email_enabled
     end
 
-    context 'when feature flag :service_desk_custom_email is disabled' do
-      let(:expected_error_message) { error_feature_flag_disabled }
-
-      before do
-        stub_feature_flags(service_desk_custom_email: false)
-      end
-
-      it 'exits early' do
-        expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
-
-        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
-          error_message: expected_error_message
-        )).once
-
-        response = service.execute
-
-        expect(response).to be_error
-      end
-    end
-
     context 'when verification exists' do
       let!(:verification) { create(:service_desk_custom_email_verification, project: project) }
 
@@ -139,7 +121,34 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
           verification.update!(token: 'ZROT4ZZXA-Y6') # token from email fixture
         end
 
-        let(:email_raw) { email_fixture('emails/service_desk_custom_email_address_verification.eml') }
+        let(:service_desk_address) { project.service_desk_incoming_address }
+        let(:verification_address) { 'custom-support-email+verify@example.com' }
+        let(:verification_token) { 'ZROT4ZZXA-Y6' }
+        let(:shared_email_raw) do
+          <<~EMAIL
+          From: Flight Support <custom-support-email@example.com>
+          Subject: Verify custom email address custom-support-email@example.com for Flight
+          Auto-Submitted: no
+
+
+          This email is auto-generated. It verifies the ownership of the entered Service Desk custom email address and
+          correct functionality of email forwarding.
+
+          Verification token: #{verification_token}
+          --
+
+          You're receiving this email because of your account on 127.0.0.1.
+          EMAIL
+        end
+
+        let(:email_raw) do
+          <<~EMAIL
+          Delivered-To: #{service_desk_address}
+          To: #{verification_address}
+          #{shared_email_raw}
+          EMAIL
+        end
+
         let(:mail_object) { Mail::Message.new(email_raw) }
 
         it 'verifies and sends result emails' do
@@ -179,6 +188,38 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
           end
 
           it_behaves_like 'a failing verification process', 'mail_not_received_within_timeframe'
+        end
+
+        context 'and service desk address from service_desk_email was used as forwarding target' do
+          let(:service_desk_address) { project.service_desk_alias_address }
+
+          it_behaves_like 'a failing verification process', 'incorrect_forwarding_target'
+
+          context 'when multiple Delivered-To headers are present' do
+            let(:email_raw) do
+              <<~EMAIL
+              Delivered-To: other@example.com
+              Delivered-To: #{service_desk_address}
+              To: #{verification_address}
+              #{shared_email_raw}
+              EMAIL
+            end
+
+            it_behaves_like 'a failing verification process', 'incorrect_forwarding_target'
+          end
+
+          context 'when multiple To headers are present' do
+            # Microsoft Exchange forwards emails this way when forwarding
+            # to an external email address using a transport rule
+            let(:email_raw) do
+              <<~EMAIL
+              To: #{service_desk_address}, #{verification_address}
+              #{shared_email_raw}
+              EMAIL
+            end
+
+            it_behaves_like 'a failing verification process', 'incorrect_forwarding_target'
+          end
         end
 
         context 'when already verified' do

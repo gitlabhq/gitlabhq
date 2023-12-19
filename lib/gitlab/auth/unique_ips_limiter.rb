@@ -30,13 +30,11 @@ module Gitlab
           key = "#{USER_UNIQUE_IPS_PREFIX}:#{user_id}"
 
           Gitlab::Redis::SharedState.with do |redis|
-            unique_ips_count = nil
             redis.multi do |r|
               r.zadd(key, time, ip)
               r.zremrangebyscore(key, 0, time - config.unique_ips_limit_time_window)
-              unique_ips_count = r.zcard(key)
-            end
-            unique_ips_count.value
+              r.zcard(key)
+            end.last
           end
         end
       end

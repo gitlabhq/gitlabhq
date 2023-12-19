@@ -20,7 +20,6 @@ export const TRIGGER_ELEMENT_WITH_EMOJI = 'text-emoji';
 export const TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI = 'dropdown-text-emoji';
 export const TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN = 'dropdown-text';
 export const INVITE_MEMBER_MODAL_TRACKING_CATEGORY = 'invite_members_modal';
-export const TRIGGER_DEFAULT_QA_SELECTOR = 'invite_members_button';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY = 'invite_project_members_modal';
 export const IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL = 'project-members-page';
 export const MEMBERS_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite members');
@@ -40,7 +39,7 @@ export const MEMBERS_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
 export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
   "InviteMembersModal|Congratulations on creating your project, you're almost there!",
 );
-export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username or email address');
+export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
 export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');

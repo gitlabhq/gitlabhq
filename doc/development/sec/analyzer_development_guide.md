@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Sec section analyzer development
@@ -226,7 +226,7 @@ After the above steps have been completed, the automatic release process execute
 
 ### Steps to perform after releasing an analyzer
 
-1. After a new version of the analyzer Docker image has been tagged and deployed, please test it with the corresponding test project.
+1. After a new version of the analyzer Docker image has been tagged and deployed, test it with the corresponding test project.
 1. Announce the release on the relevant group Slack channel. Example message:
 
     > FYI I've just released `ANALYZER_NAME` `ANALYZER_VERSION`. `LINK_TO_RELEASE`

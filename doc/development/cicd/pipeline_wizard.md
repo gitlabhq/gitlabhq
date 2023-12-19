@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Incubation Engineering
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Pipeline Wizard
@@ -133,8 +133,7 @@ is planned to add the ability to create a MR from here.
   should be committed to
 - `default-branch` (required): The branch that will be pre-selected during
   the commit step. This can be changed by the user.
-- `default-filename` (optional, default: `.gitlab-ci.yml`): The Filename
-  to be used for the file. This can be overridden in the template file.
+- `default-filename` (optional, default: `.gitlab-ci.yml`): The file name to be used for the file. This can be overridden in the template file.
 
 ### Events
 

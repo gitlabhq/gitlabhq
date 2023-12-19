@@ -1,17 +1,18 @@
-query getCiCatalogResourceComponents($id: CiCatalogResourceID!) {
-  ciCatalogResource(id: $id) {
+query getCiCatalogResourceComponents($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
     id
-    components @client {
-      nodes {
-        id
-        name
-        description
-        path
-        inputs {
-          nodes {
+    webPath
+    latestVersion {
+      id
+      components {
+        nodes {
+          id
+          name
+          path
+          inputs {
             name
-            defaultValue
             required
+            default
           }
         }
       }

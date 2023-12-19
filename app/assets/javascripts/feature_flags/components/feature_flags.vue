@@ -50,12 +50,13 @@ export default {
       'instanceId',
       'isRotating',
       'hasRotateError',
+      'rotateEndpoint',
     ]),
     topAreaBaseClasses() {
       return ['gl-display-flex', 'gl-flex-direction-column'];
     },
     canUserRotateToken() {
-      return this.rotateInstanceIdPath !== '';
+      return this.rotateEndpoint !== '';
     },
     shouldRenderPagination() {
       return (

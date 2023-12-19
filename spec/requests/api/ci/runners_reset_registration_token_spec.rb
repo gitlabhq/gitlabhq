@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
+RSpec.describe API::Ci::Runners, feature_category: :fleet_visibility do
   let_it_be(:admin_mode) { false }
 
   subject { post api("#{prefix}/runners/reset_registration_token", user, admin_mode: admin_mode) }

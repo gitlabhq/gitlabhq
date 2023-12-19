@@ -54,14 +54,10 @@ To learn how to create better OKRs and how we use them at GitLab, see the
 
 ## Create an objective
 
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
 To create an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Plan > Issues**.
+1. Select **Plan > Issues**.
 1. In the upper-right corner, next to **New issue**, select the down arrow **{chevron-lg-down}** and then select **New objective**.
 1. Select **New objective** again.
 1. Enter the objective title.
@@ -71,28 +67,20 @@ To create a key result, [add it as a child](#add-a-child-key-result) to an exist
 
 ## View an objective
 
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
 To view an objective:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Plan > Issues**.
+1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = objective`.
 1. Select the title of an objective from the list.
 
 ## View a key result
 
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
 To view a key result:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Plan > Issues**.
+1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = key_result`.
 1. Select the title of a key result from the list.
@@ -126,12 +114,12 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
+You can view all the [system notes](project/system_notes.md) related to the OKR. By default they are sorted by **Oldest first**.
 You can always change the sorting order to **Newest first**, which is remembered across sessions.
 
 ## Comments and threads
 
-You can add [comments](discussions/index.md) and reply to threads in tasks.
+You can add [comments](discussions/index.md) and reply to threads in OKRs.
 
 ## Assign users
 
@@ -403,7 +391,7 @@ To turn off a check-in reminder, enter:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the project.
 - The parent objective and child OKR must belong to the same project.
@@ -431,6 +419,15 @@ leaking out.
 By default, OKRs are public.
 You can make an OKR confidential when you create or edit it.
 
+#### In a new OKR
+
+When you create a new objective, a checkbox right below the text area is available to mark the
+OKR as confidential.
+
+Select that checkbox and then select **Create objective** or **Create key result** to create the OKR.
+
+#### In an existing OKR
+
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
@@ -443,20 +440,11 @@ Prerequisites:
   - To add child objectives or key results to a confidential objective, you must first make them
     confidential.
 
-#### In a new OKR
-
-When you create a new objective, a checkbox right below the text area is available to mark the
-OKR as confidential.
-
-Check that box and select **Create objective** or **Create key result** to create the OKR.
-
-#### In an existing OKR
-
 To change the confidentiality of an existing OKR:
 
 1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
-1. Select **Turn on confidentiality**.
+1. Select **Turn on confidentiality** or **Turn off confidentiality**.
 
 ### Who can see confidential OKRs
 
@@ -504,16 +492,16 @@ When enabled, OKRs use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-![OKR two column view](img/objective_two_column_view_v16_2.png)
+![OKR two column view](img/objective_two_column_view_v16_7.png)
 
 ## Linked items in OKRs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Enabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
+On GitLab.com, this feature is available.
 
 Linked items are a bi-directional relationship and appear in a block below
 the Child objectives and key results. You can link an objective, key result, or a task in the same project with each other.
@@ -522,18 +510,18 @@ The relationship only shows up in the UI if the user can see both items.
 
 ### Add a linked item
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Guest role for the project.
 
 To link an item to an objective or key result:
 
 1. In the **Linked items** section of an objective or key result,
-   select the **Add** button.
+   select **Add**.
 1. Select the relationship between the two items. Either:
-   - **relates to**
-   - **blocks**
-   - **is blocked by**
+   - **Relates to**
+   - **Blocks**
+   - **Is blocked by**
 1. Enter the search text of the item.
 1. When you have added all the items to be linked, select **Add** below the search box.
 
@@ -544,7 +532,7 @@ them categorized so their relationships can be better understood visually.
 
 ### Remove a linked item
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Guest role for the project.
 

@@ -12,7 +12,8 @@ time_frame: 28d
 data_source: database
 data_category: operational
 instrumentation_class: CountCiInternalPipelinesMetric
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 distribution:
 - ce
 - ee

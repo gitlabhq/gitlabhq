@@ -44,7 +44,9 @@ rails-production-server-boot-puma-cng:
   extends:
     - .rails-production-server-boot
   script:
-    - curl --silent https://gitlab.com/gitlab-org/build/CNG/-/raw/master/gitlab-webservice/configuration/puma.rb > config/puma.rb
+    - define_trigger_branch_in_build_env
+    - echo "TRIGGER_BRANCH is defined as ${TRIGGER_BRANCH}"
+    - curl --silent "https://gitlab.com/gitlab-org/build/CNG/-/raw/${TRIGGER_BRANCH}/gitlab-webservice/configuration/puma.rb" > config/puma.rb
     - sed --in-place "s:/srv/gitlab:${PWD}:" config/puma.rb
     - bundle exec puma --environment production --config config/puma.rb &
     - sleep 40  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
@@ -75,5 +77,5 @@ qa:selectors:
 qa:selectors-as-if-foss:
   extends:
     - qa:selectors
-    - .qa:rules:as-if-foss
+    - .qa:rules:selectors-as-if-foss
     - .as-if-foss

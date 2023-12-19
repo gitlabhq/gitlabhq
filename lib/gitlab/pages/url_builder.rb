@@ -14,6 +14,7 @@ module Gitlab
       end
 
       def pages_url(with_unique_domain: false)
+        return namespace_in_path_url(with_unique_domain && unique_domain_enabled?) if config.namespace_in_path
         return unique_url if with_unique_domain && unique_domain_enabled?
 
         project_path_url = "#{config.protocol}://#{project_path}".downcase
@@ -29,6 +30,7 @@ module Gitlab
 
       def unique_host
         return unless unique_domain_enabled?
+        return if config.namespace_in_path
 
         URI(unique_url).host
       end
@@ -40,9 +42,11 @@ module Gitlab
       def artifact_url(artifact, job)
         return unless artifact_url_available?(artifact, job)
 
+        host_url = config.namespace_in_path ? "#{pages_base_url}/#{project_namespace}" : namespace_url
+
         format(
           ARTIFACT_URL,
-          host: namespace_url,
+          host: host_url,
           project_path: project_path,
           job_id: job.id,
           artifact_path: artifact.path)
@@ -65,6 +69,21 @@ module Gitlab
 
       def unique_url
         @unique_url ||= url_for(project.project_setting.pages_unique_domain)
+      end
+
+      def pages_base_url
+        @pages_url ||= URI(config.url)
+          .tap { |url| url.port = config.port }
+          .to_s
+          .downcase
+      end
+
+      def namespace_in_path_url(with_unique_domain)
+        if with_unique_domain
+          "#{pages_base_url}/#{project.project_setting.pages_unique_domain}".downcase
+        else
+          "#{pages_base_url}/#{project_namespace}/#{project_path}".downcase
+        end
       end
 
       def url_for(subdomain)

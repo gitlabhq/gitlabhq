@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # SAML SSO for self-managed GitLab instances **(FREE SELF)**
@@ -39,12 +38,14 @@ For more information on:
    gitlab_rails['omniauth_block_auto_created_users'] = false
    ```
 
-1. Optional. You can automatically link SAML users with existing GitLab users if their
-   email addresses match by adding the following setting in `/etc/gitlab/gitlab.rb`:
+1. Optional. You should automatically link a first-time SAML sign-in with existing GitLab users if their
+   email addresses match. To do this, add the following setting in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
    ```
+
+   Only the GitLab account's primary email address is matched against the email in the SAML response.
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
@@ -716,12 +717,17 @@ your provider's support.
 
 ### Configure assertions
 
-| Field           | Supported default keys |
-|-----------------|------------------------|
-| Email (required)| `email`, `mail`        |
-| Full Name       | `name`                 |
-| First Name      | `first_name`, `firstname`, `firstName` |
-| Last Name       | `last_name`, `lastname`, `lastName`    |
+> Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
+
+NOTE:
+The attributes are case-sensitive.
+
+| Field           | Supported default keys                                                                                                                                                         |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Email (required)| `email`, `mail`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`                  |
+| Full Name       | `name`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/name`                                           |
+| First Name      | `first_name`, `firstname`, `firstName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname` |
+| Last Name       | `last_name`, `lastname`, `lastName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`   |
 
 See [`attribute_statements`](#map-saml-response-attribute-names) for:
 

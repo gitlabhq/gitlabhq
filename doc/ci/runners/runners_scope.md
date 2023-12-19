@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Manage runners **(FREE ALL)**
@@ -40,7 +39,7 @@ If you are using GitLab.com:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -48,9 +47,8 @@ When you create a runner, it is assigned a runner authentication token that you 
 
 To create a shared runner:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
 1. Select **New instance runner**.
 1. Select the operating system where GitLab Runner is installed.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
@@ -65,7 +63,7 @@ To create a shared runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for a limited period of time during registration. After you register the runner,
@@ -78,14 +76,13 @@ The ability to pass a runner registration token, and support for certain configu
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
 To create a shared runner:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
 1. Select **Register an instance runner**.
 1. Copy the registration token.
@@ -93,14 +90,13 @@ To create a shared runner:
 
 ### Pause or resume a shared runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
 You can pause a runner so that it does not accept jobs from groups and projects in the GitLab instance.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or filter the runner list.
 1. In the runner list, to the right of the runner:
@@ -109,7 +105,7 @@ You can pause a runner so that it does not accept jobs from groups and projects 
 
 ### Delete shared runners
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
@@ -119,8 +115,7 @@ jobs, you can [pause](#pause-or-resume-a-shared-runner) the runner instead.
 
 To delete a single or multiple shared runners:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the shared runner:
@@ -263,7 +258,7 @@ To create a group runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for only a short period of time during registration.
@@ -295,7 +290,7 @@ how to [register a runner](https://docs.gitlab.com/runner/register/#register-wit
 
 > Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
 
@@ -324,7 +319,7 @@ those in other groups:
 
 ### Pause or resume a group runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
@@ -342,7 +337,7 @@ instance. If you pause a group runner that is used by multiple projects, the run
 
 > Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
@@ -365,7 +360,7 @@ To delete a single or multiple group runners:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -457,7 +452,7 @@ To create a project runner:
    - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
 
-You can also [use the API](../../api/users.md#create-a-runner) to create a runner.
+You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
 NOTE:
 The runner authentication token displays in the UI for only a short period of time during registration.
@@ -469,7 +464,7 @@ The ability to pass a runner registration token, and support for certain configu
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -487,7 +482,7 @@ The runner is now enabled for the project.
 
 ### Pause or resume a project runner
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator, or have the Maintainer role for the project.
 
@@ -588,9 +583,8 @@ runners are considered.
 queued for longer than the median value, and half of the jobs queued for less than the
 median value.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
 1. Select **View metrics**.
 
 ## Determine which runners need to be upgraded **(ULTIMATE ALL)**
@@ -607,8 +601,7 @@ To determine which runners need to be upgraded:
      1. On the left sidebar, select **Search or go to** and find your group.
      1. Select **Build > Runners**.
    - For the instance:
-     1. On the left sidebar, select **Search or go to**.
-     1. Select **Admin Area**.
+     1. On the left sidebar, at the bottom, select **Admin Area**.
      1. Select **CI/CD > Runners**.
 
 1. Above the list of runners, view the status:
@@ -631,15 +624,14 @@ different places.
 
 ### Determine the IP address of a shared runner
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To determine the IP address of a shared runner:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
 ![shared runner IP address](img/shared_runner_ip_address_14_5.png)

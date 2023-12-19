@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Merge request approvals API **(PREMIUM ALL)**
@@ -1039,7 +1039,7 @@ Supported attributes:
 | Attribute           | Type              | Required               | Description                                                                                                                                                                                            |
 |---------------------|-------------------|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding).                                                                                                                          |
-| `approval_password` | string            | No | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. |
+| `approval_password` | string            | No | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. |
 | `merge_request_iid` | integer           | Yes | The IID of the merge request.                                                                                                                                                                          |
 | `sha`               | string            | No | The `HEAD` of the merge request.                                                                                                                                                                       |
 

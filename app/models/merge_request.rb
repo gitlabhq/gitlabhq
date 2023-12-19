@@ -36,6 +36,7 @@ class MergeRequest < ApplicationRecord
   self.reactive_cache_work_type = :no_dependency
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
+  CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -1572,6 +1573,10 @@ class MergeRequest < ApplicationRecord
     project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
   end
 
+  def allow_merge_without_pipeline?
+    project.allow_merge_without_pipeline?(inherit_group_setting: true)
+  end
+
   def only_allow_merge_if_all_discussions_are_resolved?
     project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
   end
@@ -1579,6 +1584,7 @@ class MergeRequest < ApplicationRecord
   def mergeable_ci_state?
     return true unless only_allow_merge_if_pipeline_succeeds?
     return false unless actual_head_pipeline
+
     return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
 
     actual_head_pipeline.success?
@@ -1706,6 +1712,8 @@ class MergeRequest < ApplicationRecord
     actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
+  # rubocop: disable Metrics/AbcSize
+  # Delete a rubocop annotation once FF truncate_ci_merge_request_description is cleaned up
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
@@ -1717,6 +1725,15 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME', value: target_branch.to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED', value: ProtectedBranch.protected?(target_project, target_branch).to_s)
       variables.append(key: 'CI_MERGE_REQUEST_TITLE', value: title)
+
+      if ::Feature.enabled?(:truncate_ci_merge_request_description)
+        mr_description, mr_description_truncated = truncate_mr_description
+        variables.append(key: 'CI_MERGE_REQUEST_DESCRIPTION', value: mr_description)
+        variables.append(key: 'CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED', value: mr_description_truncated)
+      else
+        variables.append(key: 'CI_MERGE_REQUEST_DESCRIPTION', value: description)
+      end
+
       variables.append(key: 'CI_MERGE_REQUEST_ASSIGNEES', value: assignee_username_list) if assignees.present?
       variables.append(key: 'CI_MERGE_REQUEST_MILESTONE', value: milestone.title) if milestone
       variables.append(key: 'CI_MERGE_REQUEST_LABELS', value: label_names.join(',')) if labels.present?
@@ -1724,6 +1741,8 @@ class MergeRequest < ApplicationRecord
       variables.concat(source_project_variables)
     end
   end
+  # rubocop: enable Metrics/AbcSize
+  # Delete a rubocop annotation once FF truncate_ci_merge_request_description is cleaned up
 
   def compare_test_reports
     unless has_test_reports?
@@ -2167,15 +2186,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def current_patch_id_sha
-    return merge_request_diff.patch_id_sha if merge_request_diff.patch_id_sha.present?
-
-    base_sha = diff_refs&.base_sha
-    head_sha = diff_refs&.head_sha
-
-    return unless base_sha && head_sha
-    return if base_sha == head_sha
-
-    project.repository.get_patch_id(base_sha, head_sha)
+    merge_request_diff.get_patch_id_sha
   end
 
   private
@@ -2251,6 +2262,14 @@ class MergeRequest < ApplicationRecord
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, actual_head_pipeline).has_data?
     else
       !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+    end
+  end
+
+  def truncate_mr_description
+    if description && description.length > CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH
+      [description.truncate(CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH), 'true']
+    else
+      [description, 'false']
     end
   end
 end

@@ -10,7 +10,7 @@ RSpec.shared_examples 'board lists create mutation' do
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
   let(:list_create_params) { {} }
 
-  subject { mutation.resolve(board_id: board.to_global_id.to_s, **list_create_params) }
+  subject { mutation.resolve(board_id: board.to_global_id, **list_create_params) }
 
   describe '#ready?' do
     it 'raises an error if required arguments are missing' do

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Linked issues **(FREE ALL)**
@@ -75,7 +75,7 @@ Access our [permissions](../../permissions.md) page for more information.
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.
 
-Issues that block other issues have an icon (**{issue-block}**) next to their title, shown in the
+Issues blocked by other issues have an icon (**{issue-block}**) next to their title, shown in the
 issue lists and [boards](../issue_board.md).
 The icon disappears when the blocking issue is closed or their relationship is changed or
 [removed](#remove-a-linked-issue).

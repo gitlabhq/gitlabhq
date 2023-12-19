@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresIndex do
+RSpec.describe Gitlab::Database::PostgresIndex, feature_category: :database do
   let(:schema) { 'public' }
   let(:name) { 'foo_idx' }
   let(:identifier) { "#{schema}.#{name}" }
@@ -13,6 +13,9 @@ RSpec.describe Gitlab::Database::PostgresIndex do
       CREATE UNIQUE INDEX bar_key ON public.users (id);
 
       CREATE TABLE _test_gitlab_main_example_table (id serial primary key);
+
+      CREATE TABLE _test_partitioned (id bigserial primary key not null) PARTITION BY LIST (id);
+      CREATE TABLE _test_partitioned_1 PARTITION OF _test_partitioned FOR VALUES IN (1);
     SQL
   end
 
@@ -25,8 +28,8 @@ RSpec.describe Gitlab::Database::PostgresIndex do
   it { is_expected.to be_a Gitlab::Database::SharedModel }
 
   describe '.reindexing_support' do
-    it 'only non partitioned indexes' do
-      expect(described_class.reindexing_support).to all(have_attributes(partitioned: false))
+    it 'includes partitioned indexes' do
+      expect(described_class.reindexing_support.where("name = '_test_partitioned_1_pkey'")).not_to be_empty
     end
 
     it 'only indexes that dont serve an exclusion constraint' do

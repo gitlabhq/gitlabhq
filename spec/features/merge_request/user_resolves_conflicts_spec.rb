@@ -96,6 +96,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       before do
         visit project_merge_request_path(project, merge_request)
+
+        click_button 'Expand merge checks'
       end
 
       it 'shows a link to the conflict resolution page' do
@@ -127,6 +129,9 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       before do
         visit project_merge_request_path(project, merge_request)
+
+        click_button 'Expand merge checks'
+
         click_link('conflicts', href: %r{/conflicts\Z})
       end
 
@@ -169,6 +174,9 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
 
       before do
         visit project_merge_request_path(project, merge_request)
+
+        click_button 'Expand merge checks'
+
         click_link('conflicts', href: %r{/conflicts\Z})
       end
 
@@ -193,6 +201,8 @@ RSpec.describe 'Merge request > User resolves conflicts', :js, feature_category:
         project.add_developer(user)
         sign_in(user)
         visit project_merge_request_path(project, merge_request)
+
+        click_button 'Expand merge checks'
       end
 
       it 'does not show a link to the conflict resolution page' do

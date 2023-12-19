@@ -128,6 +128,7 @@ describe('InviteMembersModal', () => {
   });
 
   const findModal = () => wrapper.findComponent(GlModal);
+  const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
@@ -167,6 +168,22 @@ describe('InviteMembersModal', () => {
     findMembersSelect().vm.$emit('token-remove', val);
     await nextTick();
   };
+
+  describe('passes correct props to InviteModalBase', () => {
+    it('set defaultMemberRoleId', () => {
+      createInviteMembersToProjectWrapper();
+
+      expect(findBase().props('defaultMemberRoleId')).toBeNull();
+    });
+
+    it('set accessLevel', () => {
+      createInviteMembersToProjectWrapper();
+
+      expect(findBase().props('accessLevels')).toMatchObject({
+        validRoles: propsData.accessLevels,
+      });
+    });
+  });
 
   describe('rendering with tracking considerations', () => {
     describe('when inviting to a project', () => {

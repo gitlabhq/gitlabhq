@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.shared_examples 'validate path globs' do |path_globs|
-  it 'returns an array of path globs' do
-    expect(path_globs).to be_an(Array)
-    expect(path_globs).to all(be_an(Pathname))
-  end
-end
-
 RSpec.shared_examples 'validate schema data' do |tables_and_views|
   it 'all tables and views have assigned a known gitlab_schema' do
     expect(tables_and_views).to all(
@@ -88,32 +81,6 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         end
       end
     end
-
-    it 'all tables and views are unique' do
-      table_and_view_names = described_class.build_dictionary('')
-      table_and_view_names += described_class.build_dictionary('views')
-
-      # ignore gitlab_internal due to `ar_internal_metadata`, `schema_migrations`
-      table_and_view_names = table_and_view_names
-        .reject { |database_dictionary| database_dictionary.schema?('gitlab_internal') }
-
-      duplicated_tables = table_and_view_names
-        .group_by(&:key_name)
-        .select { |_, schemas| schemas.count > 1 }
-        .keys
-
-      expect(duplicated_tables).to be_empty, \
-        "Duplicated table(s) #{duplicated_tables.to_a} found in #{described_class}.views_and_tables_to_schema. " \
-        "Any duplicated table must be removed from db/docs/ or ee/db/docs/. " \
-        "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
-    end
-  end
-
-  describe '.dictionary_path_globs' do
-    include_examples 'validate path globs', described_class.dictionary_path_globs('')
-    include_examples 'validate path globs', described_class.dictionary_path_globs('views')
-    include_examples 'validate path globs', described_class.dictionary_path_globs('deleted_views')
-    include_examples 'validate path globs', described_class.dictionary_path_globs('deleted_tables')
   end
 
   describe '.tables_to_schema' do
@@ -304,6 +271,18 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       with_them do
         it { expect(described_class.cross_foreign_key_allowed?(schemas, tables)).to eq(result) }
       end
+    end
+  end
+
+  describe '.cell_local?' do
+    it 'is true for cell local tables and false otherwise' do
+      expect(described_class.cell_local?('gitlab_ci')).to eq(true)
+      expect(described_class.cell_local?('gitlab_pm')).to eq(true)
+      expect(described_class.cell_local?('gitlab_main_cell')).to eq(true)
+      expect(described_class.cell_local?('gitlab_main')).to eq(false)
+      expect(described_class.cell_local?('gitlab_main_clusterwide')).to eq(false)
+      expect(described_class.cell_local?('gitlab_shared')).to eq(false)
+      expect(described_class.cell_local?('gitlab_internal')).to eq(false)
     end
   end
 end

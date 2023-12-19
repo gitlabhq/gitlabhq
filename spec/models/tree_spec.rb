@@ -2,69 +2,58 @@
 
 require 'spec_helper'
 
-RSpec.describe Tree do
-  let_it_be(:repository) { create(:project, :repository).repository }
-
-  let(:sha) { repository.root_ref }
-
+RSpec.describe Tree, feature_category: :source_code_management do
   subject(:tree) { described_class.new(repository, '54fcc214') }
 
+  let_it_be(:repository) { create(:project, :repository).repository }
+
   describe '#readme' do
+    subject { tree.readme }
+
     before do
-      stub_const('FakeBlob', Class.new)
-      FakeBlob.class_eval do
-        attr_reader :name
+      allow(tree).to receive(:blobs).and_return(files)
+    end
 
-        def initialize(name)
-          @name = name
-        end
+    context 'when repository does not contains a README file' do
+      let(:files) { [fake_blob('file'), fake_blob('license'), fake_blob('copying')] }
 
-        def readme?
-          name =~ /^readme/i
+      it { is_expected.to be_nil }
+    end
+
+    context 'when repository does not contains a previewable README file' do
+      let(:files) { [fake_blob('file'), fake_blob('README.pages'), fake_blob('README.png')] }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when repository contains a previewable README file' do
+      let(:files) { [fake_blob('README.png'), fake_blob('README'), fake_blob('file')] }
+
+      it { is_expected.to have_attributes(name: 'README') }
+    end
+
+    context 'when repository contains more than one README file' do
+      let(:files) { [fake_blob('file'), fake_blob('README.md'), fake_blob('README.asciidoc')] }
+
+      it 'returns first previewable README' do
+        is_expected.to have_attributes(name: 'README.md')
+      end
+
+      context 'when only plain-text READMEs' do
+        let(:files) { [fake_blob('file'), fake_blob('README'), fake_blob('README.txt')] }
+
+        it 'returns first plain text README' do
+          is_expected.to have_attributes(name: 'README')
         end
       end
     end
 
-    it 'returns nil when repository does not contains a README file' do
-      files = [FakeBlob.new('file'), FakeBlob.new('license'), FakeBlob.new('copying')]
-      expect(subject).to receive(:blobs).and_return(files)
+    context 'when the repository has a previewable and plain text READMEs' do
+      let(:files) { [fake_blob('file'), fake_blob('README'), fake_blob('README.md')] }
 
-      expect(subject.readme).to eq nil
-    end
-
-    it 'returns nil when repository does not contains a previewable README file' do
-      files = [FakeBlob.new('file'), FakeBlob.new('README.pages'), FakeBlob.new('README.png')]
-      expect(subject).to receive(:blobs).and_return(files)
-
-      expect(subject.readme).to eq nil
-    end
-
-    it 'returns README when repository contains a previewable README file' do
-      files = [FakeBlob.new('README.png'), FakeBlob.new('README'), FakeBlob.new('file')]
-      expect(subject).to receive(:blobs).and_return(files)
-
-      expect(subject.readme.name).to eq 'README'
-    end
-
-    it 'returns first previewable README when repository contains more than one' do
-      files = [FakeBlob.new('file'), FakeBlob.new('README.md'), FakeBlob.new('README.asciidoc')]
-      expect(subject).to receive(:blobs).and_return(files)
-
-      expect(subject.readme.name).to eq 'README.md'
-    end
-
-    it 'returns first plain text README when repository contains more than one' do
-      files = [FakeBlob.new('file'), FakeBlob.new('README'), FakeBlob.new('README.txt')]
-      expect(subject).to receive(:blobs).and_return(files)
-
-      expect(subject.readme.name).to eq 'README'
-    end
-
-    it 'prioritizes previewable README file over one in plain text' do
-      files = [FakeBlob.new('file'), FakeBlob.new('README'), FakeBlob.new('README.md')]
-      expect(subject).to receive(:blobs).and_return(files)
-
-      expect(subject.readme.name).to eq 'README.md'
+      it 'prefers previewable README file' do
+        is_expected.to have_attributes(name: 'README.md')
+      end
     end
   end
 
@@ -72,5 +61,11 @@ RSpec.describe Tree do
     subject { tree.cursor }
 
     it { is_expected.to be_an_instance_of(Gitaly::PaginationCursor) }
+  end
+
+  private
+
+  def fake_blob(name)
+    instance_double(Gitlab::Git::Blob, name: name)
   end
 end

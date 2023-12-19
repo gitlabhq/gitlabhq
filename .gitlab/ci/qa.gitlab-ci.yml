@@ -53,23 +53,20 @@ qa:internal-as-if-foss:
     - .qa:rules:internal-as-if-foss
     - .as-if-foss
 
-qa:master-auto-quarantine-dequarantine:
-  extends:
-    - .qa-job-base
-  rules:
-    - if: '$QA_TRIGGER_AUTO_QUARANTINE =~ /true|yes|1/i'
-  script:
-    - bundle exec confiner -r .confiner/master.yml
-  allow_failure: true
-
-qa:update-qa-cache:
+cache-qa-gems:
   extends:
     - .qa-job-base
     - .qa-cache-push
-    - .shared:rules:update-cache
+    - .qa:rules:update-gem-cache
   stage: prepare
   script:
     - echo "Cache has been updated and ready to be uploaded."
+
+# E2E runners have separate infra setup and different cache bucket
+cache-qa-gems-e2e-runners:
+  extends: cache-qa-gems
+  tags:
+    - e2e
 
 trigger-omnibus:
   stage: qa

@@ -3,7 +3,7 @@
 import { GlButton, GlModal, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import ListItem from './list_item.vue';
 
 export default {
@@ -55,11 +55,6 @@ export default {
     },
   },
   computed: {
-    titleText() {
-      if (!this.title) return __('Changes');
-
-      return sprintf(__('%{title} changes'), { title: this.title });
-    },
     filesLength() {
       return this.fileList.length;
     },
@@ -84,7 +79,7 @@ export default {
   <div class="ide-commit-list-container">
     <header class="multi-file-commit-panel-header gl-display-flex gl-mb-0">
       <div class="gl-display-flex gl-align-items-center flex-fill">
-        <strong> {{ titleText }} </strong>
+        <strong> {{ __('Changes') }} </strong>
         <div class="gl-display-flex gl-ml-auto">
           <gl-button
             v-if="!stagedList"

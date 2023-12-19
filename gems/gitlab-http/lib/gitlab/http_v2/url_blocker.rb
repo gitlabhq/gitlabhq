@@ -7,6 +7,7 @@ require_relative 'url_allowlist'
 module Gitlab
   module HTTP_V2
     class UrlBlocker
+      GETADDRINFO_TIMEOUT_SECONDS = 15
       BlockedUrlError = Class.new(StandardError)
       HTTP_PROXY_ENV_VARS = %w[http_proxy https_proxy HTTP_PROXY HTTPS_PROXY].freeze
 
@@ -192,9 +193,13 @@ module Gitlab
         #
         # @return [Array<Addrinfo>]
         def get_address_info(uri)
-          Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
-            addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
+          Timeout.timeout(GETADDRINFO_TIMEOUT_SECONDS) do
+            Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
+              addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
+            end
           end
+        rescue Timeout::Error => e
+          raise Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, e.message
         rescue ArgumentError => e
           # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
           raise unless e.message.include?('hostname too long')

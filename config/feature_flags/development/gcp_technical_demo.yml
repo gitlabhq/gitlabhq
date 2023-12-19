@@ -1,0 +1,8 @@
+---
+name: gcp_technical_demo
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139802
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434685
+milestone: '16.7'
+type: development
+group: group::container registry
+default_enabled: false

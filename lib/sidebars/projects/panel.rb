@@ -42,9 +42,9 @@ module Sidebars
       end
 
       def third_party_wiki_menu
-        wiki_menu_list = [::Sidebars::Projects::Menus::ConfluenceMenu, ::Sidebars::Projects::Menus::ShimoMenu]
+        return unless ::Sidebars::Projects::Menus::ConfluenceMenu.new(context).render?
 
-        wiki_menu_list.find { |wiki_menu| wiki_menu.new(context).render? }
+        ::Sidebars::Projects::Menus::ConfluenceMenu
       end
     end
   end

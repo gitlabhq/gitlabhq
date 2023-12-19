@@ -25,6 +25,9 @@ class Release < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true
 
   before_create :set_released_at
+  # TODO: Remove this callback after catalog_resource.released_at is denormalized. See https://gitlab.com/gitlab-org/gitlab/-/issues/430117.
+  after_update :update_catalog_resource, if: -> { project.catalog_resource && saved_change_to_released_at? }
+  after_destroy :update_catalog_resource, if: -> { project.catalog_resource }
 
   validates :project, :tag, presence: true
   validates :author_id, presence: true, on: :create
@@ -34,6 +37,10 @@ class Release < ApplicationRecord
   validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, if: :description_changed?
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validates :links, nested_attributes_duplicates: { scope: :release, child_attributes: %i[name url filepath] }
+
+  # All releases should have tags, but because of existing invalid data, we need a work around so that presenters don't
+  # fail to generate URLs on release related pages
+  scope :tagged, -> { where.not(tag: [nil, '']) }
 
   scope :sorted, -> { order(released_at: :desc) }
   scope :preloaded, -> {
@@ -47,6 +54,8 @@ class Release < ApplicationRecord
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
   scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
   scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }
+  scope :for_projects, ->(projects) { where(project_id: projects) }
+  scope :by_tag, ->(tag) { where(tag: tag) }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
@@ -167,6 +176,10 @@ class Release < ApplicationRecord
     else
       order_created_desc
     end
+  end
+
+  def update_catalog_resource
+    project.catalog_resource.update_latest_released_at!
   end
 end
 

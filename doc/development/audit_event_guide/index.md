@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Audit event development guidelines
@@ -23,7 +23,7 @@ While any events could trigger an Audit Event, not all events should. In general
 - Are tracking information for product feature adoption.
 - Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/govern/compliance/audit-events/#what-is-not-planned-right-now).
 
-If you have any questions, please reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
+If you have any questions, reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
 
 ## Audit Event Schemas
 
@@ -199,7 +199,7 @@ In addition to recording to the database, we also write these events to
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367847) in GitLab 15.4.
 
-All new audit events must have a type definition stored in `config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
+All new audit events must have a type definition stored in `config/audit_events/types/` or `ee/config/audit_events/types/` that contains a single source of truth for every auditable event in GitLab.
 
 ### Add a new audit event type
 
@@ -244,7 +244,7 @@ to check if the documentation is up-to-date.
 ## Event streaming
 
 All events where the entity is a `Group` or `Project` are recorded in the audit log, and also streamed to one or more
-[event streaming destinations](../../administration/audit_event_streaming.md). When the entity is a:
+[event streaming destinations](../../administration/audit_event_streaming/index.md). When the entity is a:
 
 - `Group`, events are streamed to the group's root ancestor's event streaming destinations.
 - `Project`, events are streamed to the project's root ancestor's event streaming destinations.

@@ -130,9 +130,7 @@ class IssuableFinder
   end
 
   def filter_items(items)
-    # Selection by group is already covered by `by_project` and `projects` for project-based issuables
-    # Group-based issuables have their own group filter methods
-    items = by_project(items)
+    items = by_parent(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
@@ -313,7 +311,7 @@ class IssuableFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def by_project(items)
+  def by_parent(items)
     # When finding issues for multiple projects it's more efficient
     # to use a JOIN instead of running a sub-query
     # See https://gitlab.com/gitlab-org/gitlab/-/commit/8591cc02be6b12ed60f763a5e0147f2cbbca99e1

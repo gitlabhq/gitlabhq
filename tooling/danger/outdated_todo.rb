@@ -8,10 +8,11 @@ module Tooling
         spec/support/rspec_order_todo.yml
       ].freeze
 
-      def initialize(filenames, context:, todos: TODOS_GLOBS)
+      def initialize(filenames, context:, todos: TODOS_GLOBS, allow_fail: false)
         @filenames = filenames
         @context = context
         @todos_globs = todos
+        @allow_fail = allow_fail
       end
 
       def check
@@ -22,17 +23,23 @@ module Tooling
 
       private
 
-      attr_reader :filenames, :context
+      attr_reader :filenames, :context, :allow_fail
 
       def check_filename(filename)
         mentions = all_mentions_for(filename)
 
         return if mentions.empty?
 
-        context.warn <<~MESSAGE
+        message = <<~MESSAGE
           `#{filename}` was removed but is mentioned in:
           #{mentions.join("\n")}
         MESSAGE
+
+        if allow_fail
+          context.fail message
+        else
+          context.warn message
+        end
       end
 
       def all_mentions_for(filename)

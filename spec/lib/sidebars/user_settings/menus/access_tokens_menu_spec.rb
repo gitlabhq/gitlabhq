@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::UserSettings::Menus::AccessTokensMenu, feature_category: :navigation do
   it_behaves_like 'User settings menu',
-    link: '/-/profile/personal_access_tokens',
+    link: '/-/user_settings/personal_access_tokens',
     title: _('Access Tokens'),
     icon: 'token',
     active_routes: { controller: :personal_access_tokens }

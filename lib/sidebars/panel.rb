@@ -74,22 +74,6 @@ module Sidebars
       context.container
     end
 
-    # Auxiliar method that helps with the migration from
-    # regular views to the new logic
-    def render_raw_scope_menu_partial
-      # No-op
-    end
-
-    # Auxiliar method that helps with the migration from
-    # regular views to the new logic.
-    #
-    # Any menu inside this partial will be added after
-    # all the menus added in the `configure_menus`
-    # method.
-    def render_raw_menus_partial
-      # No-op
-    end
-
     private
 
     override :index_of

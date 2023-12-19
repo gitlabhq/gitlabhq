@@ -18,6 +18,18 @@ export default {
       required: false,
       default: false,
     },
+    useH1: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+  computed: {
+    headerClasses() {
+      return this.useH1
+        ? 'gl-w-full gl-font-size-h-display gl-m-0!'
+        : 'gl-font-weight-normal gl-sm-font-weight-bold gl-mb-1 gl-mt-0 gl-w-full';
+    },
   },
   methods: {
     handleBlur({ target }) {
@@ -39,9 +51,10 @@ export default {
 </script>
 
 <template>
-  <h2
-    class="gl-font-weight-normal gl-sm-font-weight-bold gl-mb-1 gl-mt-0 gl-w-full"
-    :class="{ 'gl-cursor-text': disabled }"
+  <component
+    :is="useH1 ? 'h1' : 'h2'"
+    class="gl-w-full"
+    :class="[{ 'gl-cursor-text': disabled }, headerClasses]"
     aria-labelledby="item-title"
   >
     <span
@@ -64,5 +77,5 @@ export default {
       @keydown.meta.b.prevent
       >{{ title }}</span
     >
-  </h2>
+  </component>
 </template>

@@ -3,10 +3,6 @@
 module AvatarsHelper
   DEFAULT_AVATAR_PATH = 'no_avatar.png'
 
-  def project_icon(project, options = {})
-    source_icon(project, options)
-  end
-
   def group_icon(group, options = {})
     source_icon(group, options)
   end
@@ -59,11 +55,13 @@ module AvatarsHelper
   end
 
   def author_avatar(commit_or_event, options = {})
+    css_class = options[:css_class] || "gl-display-none gl-sm-display-inline-block"
+
     user_avatar(options.merge({
       user: commit_or_event.author,
       user_name: commit_or_event.author_name,
       user_email: commit_or_event.author_email,
-      css_class: 'd-none d-sm-inline-block'
+      css_class: css_class
     }))
   end
 

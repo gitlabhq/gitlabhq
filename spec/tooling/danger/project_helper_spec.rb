@@ -8,7 +8,7 @@ require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'
 
-RSpec.describe Tooling::Danger::ProjectHelper do
+RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
   include StubENV
   include_context "with dangerfile"
 
@@ -130,6 +130,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'lib/gitlab/background_migration.rb'                                             | [:database, :backend]
       'lib/gitlab/background_migration/foo'                                            | [:database, :backend]
       'ee/lib/gitlab/background_migration/foo'                                         | [:database, :backend]
+      'ee/lib/ee/gitlab/background_migration/foo'                                      | [:database, :backend]
       'lib/gitlab/database.rb'                                                         | [:database, :backend]
       'lib/gitlab/database/foo'                                                        | [:database, :backend]
       'ee/lib/gitlab/database/foo'                                                     | [:database, :backend]
@@ -238,7 +239,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       it { is_expected.to eq(expected_categories) }
     end
 
-    context 'having specific changes' do
+    context 'when having specific changes' do
       where(:expected_categories, :patch, :changed_files) do
         [:analytics_instrumentation]                      | '+data-track-action'                           | ['components/welcome.vue']
         [:analytics_instrumentation]                      | '+ data: { track_label:'                       | ['admin/groups/_form.html.haml']

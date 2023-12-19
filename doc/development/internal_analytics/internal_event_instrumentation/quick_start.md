@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Quick start for Internal Event Tracking
@@ -17,36 +17,17 @@ In order to instrument your code with Internal Events Tracking you need to do th
 
 ## Defining event and metrics
 
-<div class="video-fallback">
-  See the video about <a href="https://www.youtube.com/watch?v=QICKWznLyy0">adding events and metrics using the generator</a>
-</div>
-<figure class="video_container">
-  <iframe src="https://www.youtube-nocookie.com/embed/QICKWznLyy0" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-
-To create an event and metric definitions you can use the `internal_events` generator.
-
-This example creates an event definition for an event called `project_created` and two metric definitions, which are aggregated every 7 and 28 days.
+To create event and/or metric definitions, use the `internal_events` generator from the `gitlab` directory:
 
 ```shell
-bundle exec rails generate gitlab:analytics:internal_events \
---time_frames=7d 28d \
---group=project_management \
---stage=plan \
---section=dev \
---event=project_created \
---unique=user.id \
---mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
+ruby scripts/internal_events/cli.rb
 ```
 
-Where:
-
-- `time_frames`: Valid options are `7d` and `28d` if you provide a `unique` value and `all` for metrics without `unique`. We are working to make `7d` and `28d` work for metrics with `all` time frame in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411264).
-- `unique`: Valid options are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We [are actively working](https://gitlab.com/gitlab-org/gitlab/-/issues/411255) on a way to define uniqueness on arbitrary properties sent with the event, such as `merge_request.id`.
+This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
 
 ## Trigger events
 
-Triggering an event and thereby updating a metric is slightly different on backend and frontend. Please refer to the relevant section below.
+Triggering an event and thereby updating a metric is slightly different on backend and frontend. Refer to the relevant section below.
 
 ### Backend tracking
 
@@ -54,16 +35,26 @@ To trigger an event, call the `Gitlab::InternalEvents.track_event` method with t
 
 ```ruby
 Gitlab::InternalEvents.track_event(
-        "i_code_review_user_apply_suggestion",
-        user: user,
-        namespace: namespace,
-        project: project
-        )
+  "i_code_review_user_apply_suggestion",
+  user: user,
+  namespace: namespace,
+  project: project
+)
 ```
 
 This method automatically increments all RedisHLL metrics relating to the event `i_code_review_user_apply_suggestion`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
 
+If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.
+
+It is encouraged to fill out as many of `user`, `namespace` and `project` as possible as it increases the data quality and make it easier to define metrics in the future.
+
+If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
+
 ### Frontend tracking
+
+Any frontend tracking call automatically passes the values `user.id`, `namespace.id`, and `project.id` from the current context of the page.
+
+If you need to pass any further properties, such as `extra`, `context`, `label`, `property`, and `value`, you can use the [deprecated snowplow implementation](https://docs.gitlab.com/16.4/ee/development/internal_analytics/snowplow/implementation.html). In this case, let us know about your specific use-case in our [feedback issue for Internal Events](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/internal/-/issues/690).
 
 #### Vue components
 
@@ -147,28 +138,4 @@ Sometimes we want to send internal events when the component is rendered or load
 ```haml
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
-```
-
-### Props
-
-Apart from `eventName`, the `trackEvent` method also supports `extra` and `context` props.
-
-`extra`: Use this property to append supplementary information to GitLab standard context.
-`context`: Use this property to attach an additional context, if needed.
-
-The following example shows how to use the `extra` and `context` props with the `trackEvent` method:
-
-```javascript
-this.trackEvent('i_code_review_user_apply_suggestion', {
-  extra: {
-    projectId : 123,
-  },
-  context: {
-    schema: 'iglu:com.gitlab/design_management_context/jsonschema/1-0-0',
-    data: {
-      'design-version-number': '1.0.0',
-      'design-is-current-version': '1.0.1',
-    },
-  },
-});
 ```

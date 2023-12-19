@@ -12,7 +12,7 @@ require 'open3'
 module Tooling
   class GettextExtractor < GetText::Tools::XGetText
     class HamlParser < GetText::RubyParser
-      require 'hamlit'
+      require 'hamlit/engine'
       def parse_source(source)
         super(Hamlit::Engine.new.call(source))
       end

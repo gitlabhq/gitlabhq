@@ -9,7 +9,7 @@ module Onboarding
     def after_sign_up_path
       if onboarding_status.single_invite?
         flash[:notice] = helpers.invite_accepted_notice(onboarding_status.last_invited_member)
-        onboarding_status.last_invited_member_source.activity_path
+        polymorphic_path(onboarding_status.last_invited_member_source)
       else
         # Invites will come here if there is more than 1.
         path_for_signed_in_user
@@ -17,13 +17,13 @@ module Onboarding
     end
 
     def path_for_signed_in_user
-      stored_location_for(:user) || last_member_activity_path
+      stored_location_for(:user) || last_member_source_path
     end
 
-    def last_member_activity_path
+    def last_member_source_path
       return dashboard_projects_path unless onboarding_status.last_invited_member_source.present?
 
-      onboarding_status.last_invited_member_source.activity_path
+      polymorphic_path(onboarding_status.last_invited_member_source)
     end
   end
 end

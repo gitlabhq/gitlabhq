@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating from GitHub Actions **(FREE ALL)**
@@ -467,7 +466,7 @@ Some key details about runners:
 
 - Runners can be [configured](../runners/runners_scope.md) to be shared across an instance,
   a group, or dedicated to a single project.
-- You can use the [`tags` keyword](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run)
+- You can use the [`tags` keyword](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
 - GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).

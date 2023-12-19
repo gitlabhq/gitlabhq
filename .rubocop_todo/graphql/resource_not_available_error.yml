@@ -32,7 +32,6 @@ Graphql/ResourceNotAvailableError:
     - 'app/graphql/types/container_repository_type.rb'
     - 'ee/app/graphql/mutations/ai/action.rb'
     - 'ee/app/graphql/mutations/audit_events/instance_external_audit_event_destinations/base.rb'
-    - 'ee/app/graphql/mutations/ci/ai/generate_config.rb'
     - 'ee/app/graphql/mutations/issues/set_escalation_policy.rb'
     - 'ee/app/graphql/mutations/projects/set_locked.rb'
     - 'ee/app/graphql/resolvers/incident_management/oncall_shifts_resolver.rb'

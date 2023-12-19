@@ -79,6 +79,8 @@ export const contextSwitcherLinks = [
 
 export const sidebarData = {
   is_logged_in: true,
+  is_admin: false,
+  admin_url: '/admin',
   current_menu_items: [],
   current_context: {},
   current_context_header: 'Your work',
@@ -188,6 +190,26 @@ export const userMenuMockData = {
   canary_toggle_com_url: 'https://next.gitlab.com',
 };
 
+export const frecentGroupsMock = [
+  {
+    id: 'gid://gitlab/Group/1',
+    name: 'Frecent group 1',
+    namespace: 'Frecent Namespace 1',
+    webUrl: '/frecent-namespace-1/frecent-group-1',
+    avatarUrl: '/uploads/-/avatar1.png',
+  },
+];
+
+export const frecentProjectsMock = [
+  {
+    id: 'gid://gitlab/Project/1',
+    name: 'Frecent project 1',
+    namespace: 'Frecent Namespace 1 / Frecent project 1',
+    webUrl: '/frecent-namespace-1/frecent-project-1',
+    avatarUrl: '/uploads/-/avatar1.png',
+  },
+];
+
 export const cachedFrequentProjects = JSON.stringify([
   {
     id: 1,
@@ -283,3 +305,32 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 3,
   },
 ]);
+
+export const unsortedFrequentItems = [
+  { id: 1, frequency: 12, lastAccessedOn: 1491400843391 },
+  { id: 2, frequency: 14, lastAccessedOn: 1488240890738 },
+  { id: 3, frequency: 44, lastAccessedOn: 1497675908472 },
+  { id: 4, frequency: 8, lastAccessedOn: 1497979281815 },
+  { id: 5, frequency: 34, lastAccessedOn: 1488089211943 },
+  { id: 6, frequency: 14, lastAccessedOn: 1493517292488 },
+  { id: 7, frequency: 42, lastAccessedOn: 1486815299875 },
+  { id: 8, frequency: 33, lastAccessedOn: 1500762279114 },
+  { id: 10, frequency: 46, lastAccessedOn: 1483251641543 },
+];
+
+/**
+ * This const has a specific order which tests authenticity
+ * of `getTopFrequentItems` method so
+ * DO NOT change order of items in this const.
+ */
+export const sortedFrequentItems = [
+  { id: 10, frequency: 46, lastAccessedOn: 1483251641543 },
+  { id: 3, frequency: 44, lastAccessedOn: 1497675908472 },
+  { id: 7, frequency: 42, lastAccessedOn: 1486815299875 },
+  { id: 5, frequency: 34, lastAccessedOn: 1488089211943 },
+  { id: 8, frequency: 33, lastAccessedOn: 1500762279114 },
+  { id: 6, frequency: 14, lastAccessedOn: 1493517292488 },
+  { id: 2, frequency: 14, lastAccessedOn: 1488240890738 },
+  { id: 1, frequency: 12, lastAccessedOn: 1491400843391 },
+  { id: 4, frequency: 8, lastAccessedOn: 1497979281815 },
+];

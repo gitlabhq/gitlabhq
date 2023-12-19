@@ -1,0 +1,6 @@
+query runnerJobCount($id: CiRunnerID!) {
+  runner(id: $id) {
+    id
+    jobCount
+  }
+}

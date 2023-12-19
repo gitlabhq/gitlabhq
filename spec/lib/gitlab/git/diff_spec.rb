@@ -50,7 +50,7 @@ EOT
         let(:diff) { described_class.new(@raw_diff_hash) }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash)
+          expect(diff.to_hash).to eq(@raw_diff_hash.merge(generated: nil))
         end
 
         it 'does not prune the diff' do
@@ -87,7 +87,7 @@ EOT
         let(:raw_patch) { @raw_diff_hash[:diff] }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash)
+          expect(diff.to_hash).to eq(@raw_diff_hash.merge(generated: nil))
         end
 
         it 'does not prune the diff' do
@@ -156,6 +156,31 @@ EOT
           expect(diff).to be_collapsed
         end
       end
+
+      context 'when the file is set as generated' do
+        let(:diff) { described_class.new(gitaly_diff, generated: true, expanded: expanded) }
+        let(:raw_patch) { 'some text' }
+
+        context 'when expanded is set to false' do
+          let(:expanded) { false }
+
+          it 'will be marked as generated and collapsed' do
+            expect(diff).to be_generated
+            expect(diff).to be_collapsed
+            expect(diff.diff).to be_empty
+          end
+        end
+
+        context 'when expanded is set to true' do
+          let(:expanded) { true }
+
+          it 'will still be marked as generated, but not as collapsed' do
+            expect(diff).to be_generated
+            expect(diff).not_to be_collapsed
+            expect(diff.diff).not_to be_empty
+          end
+        end
+      end
     end
 
     context 'using a Gitaly::CommitDelta' do
@@ -173,7 +198,7 @@ EOT
       let(:diff) { described_class.new(commit_delta) }
 
       it 'initializes the diff' do
-        expect(diff.to_hash).to eq(@raw_diff_hash.merge(diff: ''))
+        expect(diff.to_hash).to eq(@raw_diff_hash.merge(diff: '', generated: nil))
       end
 
       it 'is not too large' do

@@ -1,8 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Project and group visibility **(FREE ALL)**
@@ -35,7 +34,7 @@ For internal projects, **any authenticated user**, including users with the Gues
 
 Only internal members can view internal content.
 
-[External users](admin_area/external_users.md) cannot clone the project.
+[External users](../administration/external_users.md) cannot clone the project.
 
 Internal groups can have internal or private subgroups.
 
@@ -63,16 +62,30 @@ then `/public` is visible only to authenticated users.
 
 You can change the visibility of a project.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for a project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Change **Project visibility** to either **Private**, **Internal**, or **Public**.
+1. From the **Project visibility** dropdown list, select an option.
    The visibility setting for a project must be at least as restrictive
    as the visibility of its parent group.
+1. Select **Save changes**.
+
+## Change the visibility of individual features in a project
+
+You can change the visibility of individual features in a project.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. To enable or disable a feature, turn on or off the feature toggle.
 1. Select **Save changes**.
 
 ## Change group visibility
@@ -87,9 +100,9 @@ Prerequisites:
   to private if a subgroup or project in that group is public.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Naming, visibility**.
-1. Under **Visibility level** select either **Private**, **Internal**, or **Public**.
+1. For **Visibility level**, select an option.
    The visibility setting for a project must be at least as restrictive
    as the visibility of its parent group.
 1. Select **Save changes**.
@@ -100,10 +113,6 @@ Administrators can restrict which visibility levels users can choose when they c
 This setting can help prevent users from publicly exposing their repositories by accident.
 
 For more information, see [Restrict visibility levels](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels).
-
-## Related topics
-
-- [Change the visibility of features](project/working_with_projects.md#change-the-visibility-of-individual-features-in-a-project)
 
 <!-- ## Troubleshooting
 

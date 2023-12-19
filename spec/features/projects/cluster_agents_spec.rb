@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ClusterAgents', :js, feature_category: :groups_and_projects do
+RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management do
   let_it_be(:token) { create(:cluster_agent_token, description: 'feature test token') }
 
   let(:agent) { token.agent }
@@ -12,7 +12,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :groups_and_projects do
   before do
     allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
     allow_next_instance_of(Gitlab::Kas::Client) do |client|
-      allow(client).to receive(:get_connected_agents).and_return([])
+      allow(client).to receive(:get_connected_agents_by_agent_ids).and_return([])
     end
 
     gitlab_sign_in(user)

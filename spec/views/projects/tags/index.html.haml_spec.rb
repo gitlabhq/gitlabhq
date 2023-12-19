@@ -49,34 +49,6 @@ RSpec.describe 'projects/tags/index.html.haml' do
     end
   end
 
-  context 'when the most recent build for a tag has artifacts' do
-    let!(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
-
-    it 'renders the Artifacts section in the download list' do
-      render
-      expect(rendered).to have_selector('li', text: 'Artifacts')
-    end
-
-    it 'renders artifact download links' do
-      render
-      expect(rendered).to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
-    end
-  end
-
-  context 'when the most recent build for a tag has expired artifacts' do
-    let!(:build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }
-
-    it 'does not render the Artifacts section in the download list' do
-      render
-      expect(rendered).not_to have_selector('li', text: 'Artifacts')
-    end
-
-    it 'does not render artifact download links' do
-      render
-      expect(rendered).not_to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
-    end
-  end
-
   context 'build stats' do
     let(:tag) { 'v1.0.0' }
     let(:page) { Capybara::Node::Simple.new(rendered) }
@@ -92,13 +64,12 @@ RSpec.describe 'projects/tags/index.html.haml' do
       render
 
       expect(page.find('.tags .content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
-      expect(page.all('.tags .content-list li')).to all(have_css('svg.s16'))
     end
 
     it 'shows no build status or placeholder when no pipelines present' do
       render
 
-      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s16'
+      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
 
     it 'shows no build status or placeholder when pipelines are private' do
@@ -107,7 +78,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.all('.tags .content-list li')).not_to have_css 'svg.s16'
+      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
   end
 

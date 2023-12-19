@@ -9,7 +9,7 @@ module Projects
     private
 
     def track_repository(destination_storage_name)
-      project.update!(repository_storage: destination_storage_name)
+      project.update_column(:repository_storage, destination_storage_name)
 
       # Connect project to pool repository from the new shard
       project.swap_pool_repository!
@@ -18,7 +18,7 @@ module Projects
       project.track_project_repository
 
       # Link repository from the new shard to pool repository from the new shard
-      project.link_pool_repository if replicate_object_pool_on_move_ff_enabled?
+      project.link_pool_repository
     end
 
     def mirror_repositories
@@ -36,7 +36,6 @@ module Projects
     end
 
     def mirror_object_pool(destination_storage_name)
-      return unless replicate_object_pool_on_move_ff_enabled?
       return unless project.repository_exists?
 
       pool_repository = project.pool_repository
@@ -91,10 +90,6 @@ module Projects
         disk_path: pool_repository.disk_path,
         state: 'ready'
       )
-    end
-
-    def replicate_object_pool_on_move_ff_enabled?
-      Feature.enabled?(:replicate_object_pool_on_move, project)
     end
   end
 end

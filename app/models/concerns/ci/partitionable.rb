@@ -19,47 +19,15 @@ module Ci
     extend ActiveSupport::Concern
     include ::Gitlab::Utils::StrongMemoize
 
-    module Testing
-      InclusionError = Class.new(StandardError)
-
-      PARTITIONABLE_MODELS = %w[
-        CommitStatus
-        Ci::BuildMetadata
-        Ci::BuildNeed
-        Ci::BuildReportResult
-        Ci::BuildRunnerSession
-        Ci::BuildTraceChunk
-        Ci::BuildTraceMetadata
-        Ci::BuildPendingState
-        Ci::JobAnnotation
-        Ci::JobArtifact
-        Ci::JobVariable
-        Ci::Pipeline
-        Ci::PendingBuild
-        Ci::RunningBuild
-        Ci::RunnerManagerBuild
-        Ci::PipelineVariable
-        Ci::Sources::Pipeline
-        Ci::Stage
-        Ci::UnitTestFailure
-      ].freeze
-
-      def self.check_inclusion(klass)
-        return if PARTITIONABLE_MODELS.include?(klass.name)
-
-        raise Partitionable::Testing::InclusionError,
-          "#{klass} must be included in PARTITIONABLE_MODELS"
-
-      rescue InclusionError => e
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-      end
-    end
-
     included do
       Partitionable::Testing.check_inclusion(self)
 
       before_validation :set_partition_id, on: :create
       validates :partition_id, presence: true
+
+      scope :in_partition, ->(id) do
+        where(partition_id: (id.respond_to?(:partition_id) ? id.partition_id : id))
+      end
 
       def set_partition_id
         return if partition_id_changed? && partition_id.present?
@@ -106,7 +74,9 @@ module Ci
 
         partitioned_by :partition_id,
           strategy: :ci_sliding_list,
-          next_partition_if: proc { false },
+          next_partition_if: ->(latest_partition) do
+            latest_partition.blank? || Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.value
+          end,
           detach_partition_if: proc { false },
           # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
           # Therefore, let's start with 1.week and see how it'd go.

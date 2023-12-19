@@ -6,6 +6,7 @@ export const STATUS_MERGED = 'merged';
 export const STATUS_OPEN = 'opened';
 export const STATUS_REOPENED = 'reopened';
 export const STATUS_LOCKED = 'locked';
+export const STATUS_EMPTY = 'empty';
 
 export const TITLE_LENGTH_MAX = 255;
 

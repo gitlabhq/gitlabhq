@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Fast lookup of authorized SSH keys in the database **(FREE SELF)**
@@ -121,9 +121,8 @@ users as long as a large file exists.
 
 To disable writes to the `authorized_keys` file:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Performance optimization**.
 1. Clear the **Use authorized_keys file to authenticate SSH keys** checkbox.
 1. Select **Save changes**.
@@ -141,8 +140,7 @@ This overview is brief. Refer to the above instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.
    1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.

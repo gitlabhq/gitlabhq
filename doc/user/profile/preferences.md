@@ -1,8 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Profile preferences **(FREE ALL)**
@@ -272,16 +271,20 @@ To use exact times on the GitLab UI:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
 
-You can customize the format used to display times of activities on your group and project overview pages and user profiles. You can display times as:
+You can customize the format used to display times of activities on your group and project overview pages and user
+profiles. You can display times as:
 
 - 12 hour format. For example: `2:34 PM`.
 - 24 hour format. For example: `14:34`.
 
+You can also follow your system's setting.
+
 To customize the time format:
 
 1. On the left sidebar, select your avatar.
-1. Select **Preferences** > **Time preferences**.
-1. In **Time format**, select either the **12-hour** or **24-hour** option.
+1. Select **Preferences**.
+1. Go to the **Time preferences** section.
+1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
 ## User identities in CI job JSON web tokens
@@ -315,13 +318,15 @@ To access your **Followers** and **Following** tabs:
 - On the left sidebar, select your avatar > select your name or username.
 - Select **Followers** or **Following**.
 
-## Enable Code Suggestions
+## Enable Code Suggestions **(FREE SAAS)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. Available to a percentage of users.
 
-Code Suggestions are disabled by default at the user account level.
+A percentage of users can use Code Suggestions without any additional configuration.
 
-To update this setting:
+If the following options are available to you, it means you are **not** part of the percentage of users
+and you must manually enable Code Suggestions for your account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -329,7 +334,7 @@ To update this setting:
 1. Select **Save changes**.
 
 NOTE:
-If Code Suggestions are disabled [for any groups that you belong to](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
+If Code Suggestions are disabled [for any groups that you belong to](../../user/group/manage.md#enable-code-suggestions-for-a-group), then you cannot enable them for yourself. (Your setting has no effect.)
 
 ## Integrate your GitLab instance with third-party services
 

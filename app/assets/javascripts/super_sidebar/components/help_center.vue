@@ -14,9 +14,6 @@ import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
 import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, helpCenterState } from '../constants';
 
-// Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET = -4;
-
 export default {
   components: {
     GlBadge,
@@ -50,6 +47,7 @@ export default {
     return {
       showWhatsNewNotification: this.shouldShowWhatsNewNotification(),
       helpCenterState,
+      toggleWhatsNewDrawer: null,
     };
   },
   computed: {
@@ -180,12 +178,11 @@ export default {
       this.showWhatsNewNotification = false;
 
       if (!this.toggleWhatsNewDrawer) {
-        const appEl = document.getElementById('whats-new-app');
         const { default: toggleWhatsNewDrawer } = await import(
           /* webpackChunkName: 'whatsNewApp' */ '~/whats_new'
         );
         this.toggleWhatsNewDrawer = toggleWhatsNewDrawer;
-        this.toggleWhatsNewDrawer(appEl);
+        this.toggleWhatsNewDrawer(this.sidebarData.whats_new_version_digest);
       } else {
         this.toggleWhatsNewDrawer();
       }
@@ -204,7 +201,7 @@ export default {
       });
     },
   },
-  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET, crossAxis: DROPDOWN_X_OFFSET },
+  dropdownOffset: { mainAxis: DROPDOWN_Y_OFFSET },
 };
 </script>
 
@@ -215,7 +212,11 @@ export default {
     @hidden="trackDropdownToggle(false)"
   >
     <template #toggle>
-      <gl-button category="tertiary" icon="question-o" class="btn-with-notification">
+      <gl-button
+        category="tertiary"
+        icon="question-o"
+        class="super-sidebar-help-center-toggle btn-with-notification"
+      >
         <span
           v-if="showWhatsNewNotification"
           data-testid="notification-dot"
@@ -250,7 +251,7 @@ export default {
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
           {{ item.text }}
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-purple-600" />
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-gray-500" />
         </span>
       </template>
     </gl-disclosure-dropdown-group>

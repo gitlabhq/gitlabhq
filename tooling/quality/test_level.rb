@@ -18,7 +18,6 @@ module Quality
       unit: %w[
         bin
         channels
-        click_house
         components
         config
         contracts
@@ -34,6 +33,7 @@ module Quality
         haml_lint
         helpers
         initializers
+        keeps
         lib
         metrics_server
         models

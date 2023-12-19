@@ -26,6 +26,18 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
     end
   end
 
+  shared_examples_for 'when a release is tagless' do
+    # There shouldn't be tags in this state, but because some exist in production and cause page loading errors, this
+    # test exists. We can test empty string but not the nil value since there is a not null constraint at the database
+    # level.
+    it 'does not return the tagless release' do
+      empty_string_tag = create(:release, project: project, tag: 'v99.0.0')
+      empty_string_tag.update_column(:tag, '')
+
+      expect(subject).not_to include(empty_string_tag)
+    end
+  end
+
   shared_examples_for 'preload' do
     it 'preloads associations' do
       expect(Release).to receive(:preloaded).once.and_call_original
@@ -89,6 +101,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
 
       it_behaves_like 'preload'
       it_behaves_like 'when a tag parameter is passed'
+      it_behaves_like 'when a release is tagless'
     end
   end
 
@@ -132,6 +145,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
 
       it_behaves_like 'preload'
       it_behaves_like 'when a tag parameter is passed'
+      it_behaves_like 'when a release is tagless'
 
       context 'with sorting parameters' do
         it 'sorted by released_at in descending order by default' do
@@ -223,6 +237,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
       end
 
       it_behaves_like 'preload'
+      it_behaves_like 'when a release is tagless'
     end
   end
 end

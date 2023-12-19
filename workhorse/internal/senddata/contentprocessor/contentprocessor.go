@@ -2,7 +2,6 @@ package contentprocessor
 
 import (
 	"bytes"
-	"io"
 	"net/http"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
@@ -30,7 +29,7 @@ func SetContentHeaders(h http.Handler) http.Handler {
 			status: http.StatusOK,
 		}
 
-		defer cd.flush()
+		defer cd.Flush()
 
 		h.ServeHTTP(cd, r)
 	})
@@ -71,7 +70,8 @@ func (cd *contentDisposition) flushBuffer() error {
 	if cd.buf.Len() > 0 {
 		cd.writeContentHeaders()
 		cd.WriteHeader(cd.status)
-		_, err := io.Copy(cd.rw, cd.buf)
+		_, err := cd.rw.Write(cd.buf.Bytes())
+		cd.buf.Reset()
 		return err
 	}
 
@@ -121,6 +121,20 @@ func (cd *contentDisposition) isUnbuffered() bool {
 	return cd.flushed || !cd.active
 }
 
-func (cd *contentDisposition) flush() {
-	cd.flushBuffer()
+func (cd *contentDisposition) Flush() {
+	cd.FlushError()
+}
+
+// FlushError lets http.ResponseController to be used to flush the underlying http.ResponseWriter.
+func (cd *contentDisposition) FlushError() error {
+	err := cd.flushBuffer()
+	if err != nil {
+		return err
+	}
+	return http.NewResponseController(cd.rw).Flush()
+}
+
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (cd *contentDisposition) Unwrap() http.ResponseWriter {
+	return cd.rw
 }

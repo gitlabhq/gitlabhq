@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issue analytics for groups **(PREMIUM ALL)**
@@ -16,7 +15,7 @@ prior.
 To access the chart:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Analyze > Issue analytics**.
+1. Select **Analyze > Issue analytics**.
 
 You can also access the chart from the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) through the **New issues** drill-down report.
 
@@ -50,7 +49,7 @@ available. This feature is not ready for production use.
 Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
 
-![Issues opened and closed per month](img/issues_closed_analytics_v16_4.png)
+![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)
 
 ## Drill into the information
 

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Protected branches **(FREE ALL)**
@@ -42,6 +42,9 @@ When a branch is protected, the default behavior enforces these restrictions on 
    protected at both the group and project levels, force push settings configured
    for that branch at the project level are ignored. All other protections continue
    to use project level settings.
+
+You can implement a [scan result policy](../application_security/policies/scan-result-policies.md#approval_settings)
+to prevent protected branches being unprotected or deleted.
 
 ### When a branch matches multiple rules
 
@@ -128,7 +131,7 @@ specific branch is configured with **Allowed to force push** settings at both th
 group and project levels, the **Allowed to force push** setting at the _project_ level
 is ignored in favor of the group level setting.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role in the group.
 
@@ -153,7 +156,7 @@ If more than one rule applies to a branch, the _most permissive_ rule controls
 how the branch behaves. For merge controls to work properly, set
 **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 
@@ -264,7 +267,7 @@ Deploy keys are not available in the **Allowed to merge** dropdown list.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15611) in GitLab 13.10 [with a flag](../../administration/feature_flags.md) named `allow_force_push_to_protected_branches`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323431) in GitLab 14.0. Feature flag `allow_force_push_to_protected_branches` removed.
 
-You can allow [force pushes](../../topics/git/git_rebase.md#force-push) to
+You can allow [force pushes](../../topics/git/git_rebase.md#force-pushing) to
 protected branches.
 
 To protect a new branch and enable force push:
@@ -359,6 +362,10 @@ Thus, they can skip merge request approval rules, Code Owners included.
 
 The permission to merge or push to protected branches defines
 whether or not a user can run CI/CD pipelines and execute actions on jobs.
+
+Because [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md) run on the source
+branch, a pipeline isn't created if the user opening a merge request does not have permission to merge
+or push to the source branch.
 
 See [Security on protected branches](../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.

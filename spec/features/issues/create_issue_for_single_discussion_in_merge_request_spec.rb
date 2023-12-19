@@ -57,6 +57,8 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     context 'creating the issue' do
       before do
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+
         find(resolve_discussion_selector, match: :first).click
       end
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab.com settings **(FREE SAAS)**
@@ -191,7 +191,7 @@ the related documentation.
 ## Package registry limits
 
 The [maximum file size](../../administration/instance_limits.md#file-size-limits)
-for a package uploaded to the [GitLab Package Registry](../../user/packages/package_registry/index.md)
+for a package uploaded to the [GitLab package registry](../../user/packages/package_registry/index.md)
 varies by format:
 
 | Package type | GitLab.com |
@@ -214,6 +214,7 @@ the default value [is the same as for self-managed instances](../../administrati
 |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
 | [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit)                                                                                                 | 10 GB              |
 | [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                                                                                                                          | 5 GiB              |
+| [Maximum export size](../project/settings/import_export.md#export-a-project-and-its-data)                                                                                                                          | 40 GiB              |
 | [Maximum remote file size for imports from external object storages](../../administration/settings/import_and_export_settings.md#maximum-remote-file-size-for-imports)                                             | 10 GiB             |
 | [Maximum download file size when importing from source GitLab instances by direct transfer](../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer) | 5 GiB              |
 | Maximum attachment size                                                                                                                                                                                            | 100 MiB            |
@@ -390,7 +391,7 @@ user confirmation, user sign in, and password reset.
 [User and IP rate limits](../../administration/settings/user_and_ip_rate_limits.md#response-headers)
 includes a list of the headers responded to blocked requests.
 
-See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
+See [Protected Paths](../../administration/settings/protected_paths.md) for more details.
 
 ### IP blocks
 
@@ -421,6 +422,11 @@ This limit:
 - Does not apply to JWT requests authenticated by `gitlab-ci-token`.
 
 No response headers are provided.
+
+`git` requests over `https` always send an unauthenticated request first, which for private repositories results in a `401` error.
+`git` then attempts an authenticated request with a username, password, or access token (if available).
+These requests might lead to a temporary IP block if too many requests are sent simultaneously.
+To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
 
 ### Pagination response headers
 
@@ -463,7 +469,7 @@ used on GitLab.com.
 
 Per-repository Gitaly RPC concurrency and queuing limits are configured for different types of Git operations such as `git clone`. When these limits are exceeded, a `fatal: remote error: GitLab is currently unable to handle this request due to load` message is returned to the client.
 
-For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/configure_gitaly.md#limit-rpc-concurrency).
+For administrator documentation, see [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
 ## GitLab.com logging
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Vue
@@ -39,9 +39,9 @@ In the past, we added interactivity to the page piece-by-piece, adding multiple 
 - multiple applications lead to unpredictable user experience, increased page complexity, harder debugging process;
 - the way apps communicate with each other affects Web Vitals numbers.
 
-Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, please make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, please feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
+Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
 
-If you still need to add a new application, please make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
+If you still need to add a new application, make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
 
 ## Vue architecture
 
@@ -860,7 +860,7 @@ component under test, with the `computed` property, for example). Remember to us
 We should test for events emitted in response to an action in our component. This testing
 verifies the correct events are being fired with the correct arguments.
 
-For any DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
+For any native DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
 to fire out event.
 
 ```javascript
@@ -891,6 +891,20 @@ it('should fire the itemClicked event', () => {
 
 We should verify an event has been fired by asserting against the result of the
 [`emitted()`](https://v1.test-utils.vuejs.org/api/wrapper/#emitted) method.
+
+It is a good practice to prefer to use `vm.$emit` over `trigger` when emitting events from child components.
+
+Using `trigger` on the component means we treat it as a white box: we assume that the root element of child component has a native `click` event. Also, some tests fail in Vue3 mode when using `trigger` on child components.
+
+   ```javascript
+   const findButton = () => wrapper.findComponent(GlButton);
+
+   // bad
+   findButton().trigger('click');
+
+   // good
+   findButton().vm.$emit('click');
+   ```
 
 ## Vue.js Expert Role
 

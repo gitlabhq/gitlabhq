@@ -46,10 +46,9 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     where(:integration) do
       # The Project Integrations API supports all integrations except:
       # - The GitLab Slack Application integration, as it must be installed via the UI.
-      # - Shimo and ZenTao integrations, as new integrations are blocked from being created.
+      # - ZenTao integration, as new integration is blocked from being created.
       unavailable_integration_names = [
         Integrations::GitlabSlackApplication.to_param,
-        Integrations::Shimo.to_param,
         Integrations::Zentao.to_param
       ]
 

@@ -1,8 +1,0 @@
----
-name: hide_unaccessible_saml_branches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122972
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419594
-milestone: '16.2'
-type: development
-group: group::code review
-default_enabled: false

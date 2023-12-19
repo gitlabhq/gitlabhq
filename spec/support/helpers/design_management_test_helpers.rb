@@ -6,15 +6,15 @@ module DesignManagementTestHelpers
   end
 
   def delete_designs(*designs)
-    act_on_designs(designs) { ::DesignManagement::Action.deletion }
+    act_on_designs(designs) { DesignManagement::Action.deletion }
   end
 
   def restore_designs(*designs)
-    act_on_designs(designs) { ::DesignManagement::Action.creation }
+    act_on_designs(designs) { DesignManagement::Action.creation }
   end
 
   def modify_designs(*designs)
-    act_on_designs(designs) { ::DesignManagement::Action.modification }
+    act_on_designs(designs) { DesignManagement::Action.modification }
   end
 
   def path_for_design(design)

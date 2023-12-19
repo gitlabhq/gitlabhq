@@ -35,7 +35,7 @@ module Types
           description: 'URL to the file along with line number.'
 
         field :engine_name, GraphQL::Types::String,
-          null: false,
+          null: true,
           description: 'Code quality plugin that reported the degradation.'
       end
       # rubocop: enable Graphql/AuthorizeTypes

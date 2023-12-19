@@ -23,7 +23,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
     it 'are not displayed when issue does not have work item children', :aggregate_failures do
       page.within('[data-testid="work-item-links"]') do
-        expect(find('[data-testid="links-empty"]')).to have_content(_('No tasks are currently assigned.'))
+        expect(find('[data-testid="links-empty"]')).to have_content(_('No child items are currently assigned.'))
         expect(page).not_to have_selector('[data-testid="add-links-form"]')
         expect(page).not_to have_selector('[data-testid="links-child"]')
       end

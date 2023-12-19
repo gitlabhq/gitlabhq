@@ -2,9 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
-import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
@@ -27,6 +25,7 @@ import NotesFilters from './notes_filters.vue';
 import CommitsFilters from './commits_filters.vue';
 import MilestonesFilters from './milestones_filters.vue';
 import WikiBlobsFilters from './wiki_blobs_filters.vue';
+import AllScopesStartFilters from './all_scopes_start_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -37,18 +36,23 @@ export default {
     ProjectsFilters,
     NotesFilters,
     WikiBlobsFilters,
-    ScopeLegacyNavigation,
     ScopeSidebarNavigation,
     SidebarPortal,
     DomElementListener,
-    SmallScreenDrawerNavigation,
     CommitsFilters,
     MilestonesFilters,
+    AllScopesStartFilters,
   },
   mixins: [glFeatureFlagsMixin()],
+  props: {
+    headerText: {
+      required: false,
+      type: String,
+      default: '',
+    },
+  },
   computed: {
-    // useSidebarNavigation refers to whether the new left sidebar navigation is enabled
-    ...mapState(['useSidebarNavigation', 'searchType']),
+    ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
     showIssuesFilters() {
       return this.currentScope === SCOPE_ISSUES;
@@ -72,16 +76,7 @@ export default {
       return this.currentScope === SCOPE_MILESTONES;
     },
     showWikiBlobsFilters() {
-      return (
-        this.currentScope === SCOPE_WIKI_BLOBS &&
-        this.glFeatures?.searchProjectWikisHideArchivedProjects
-      );
-    },
-    showScopeNavigation() {
-      // showScopeNavigation refers to whether the scope navigation should be shown
-      // while the legacy navigation is being used and there are no search results
-      // the scope navigation has to be hidden
-      return Boolean(this.currentScope);
+      return this.currentScope === SCOPE_WIKI_BLOBS;
     },
   },
   methods: {
@@ -93,9 +88,16 @@ export default {
 </script>
 
 <template>
-  <section v-if="useSidebarNavigation">
+  <section>
     <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFiltersFromSidebar" />
     <sidebar-portal>
+      <all-scopes-start-filters />
+      <div
+        v-if="headerText"
+        class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
+      >
+        {{ headerText }}
+      </div>
       <scope-sidebar-navigation />
       <issues-filters v-if="showIssuesFilters" />
       <merge-requests-filters v-if="showMergeRequestFilters" />
@@ -106,33 +108,5 @@ export default {
       <milestones-filters v-if="showMilestonesFilters" />
       <wiki-blobs-filters v-if="showWikiBlobsFilters" />
     </sidebar-portal>
-  </section>
-
-  <section
-    v-else-if="showScopeNavigation"
-    class="gl-display-flex gl-flex-direction-column gl-lg-mr-0 gl-md-mr-5 gl-lg-mb-6 gl-lg-mt-5"
-  >
-    <div class="search-sidebar gl-display-none gl-lg-display-block">
-      <scope-legacy-navigation />
-      <issues-filters v-if="showIssuesFilters" />
-      <merge-requests-filters v-if="showMergeRequestFilters" />
-      <blobs-filters v-if="showBlobFilters" />
-      <projects-filters v-if="showProjectsFilters" />
-      <notes-filters v-if="showNotesFilters" />
-      <commits-filters v-if="showCommitsFilters" />
-      <milestones-filters v-if="showMilestonesFilters" />
-      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
-    </div>
-    <small-screen-drawer-navigation class="gl-lg-display-none">
-      <scope-legacy-navigation />
-      <issues-filters v-if="showIssuesFilters" />
-      <merge-requests-filters v-if="showMergeRequestFilters" />
-      <blobs-filters v-if="showBlobFilters" />
-      <projects-filters v-if="showProjectsFilters" />
-      <notes-filters v-if="showNotesFilters" />
-      <commits-filters v-if="showCommitsFilters" />
-      <milestones-filters v-if="showMilestonesFilters" />
-      <wiki-blobs-filters v-if="showWikiBlobsFilters" />
-    </small-screen-drawer-navigation>
   </section>
 </template>

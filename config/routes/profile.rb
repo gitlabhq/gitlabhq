@@ -5,8 +5,8 @@ devise_for :emails, path: 'profile/emails', controllers: { confirmations: :confi
 
 resource :profile, only: [:show, :update] do
   member do
-    get :audit_log
-    get :applications, to: 'oauth/applications#index'
+    get :audit_log, to: redirect('-/user_settings/authentication_log')
+    get :applications, to: redirect('-/user_settings/applications')
 
     put :reset_incoming_email_token
     put :reset_feed_token
@@ -34,12 +34,6 @@ resource :profile, only: [:show, :update] do
       end
     end
 
-    resource :password, only: [:new, :create, :edit, :update] do
-      member do
-        put :reset
-      end
-    end
-
     resource :slack, only: [:edit] do
       member do
         get :slack_link
@@ -61,7 +55,7 @@ resource :profile, only: [:show, :update] do
         put :revoke
       end
     end
-    resources :active_sessions, only: [:index, :destroy]
+
     resources :emails, only: [:index, :create, :destroy] do
       member do
         put :resend_confirmation_instructions
@@ -75,12 +69,6 @@ resource :profile, only: [:show, :update] do
     end
 
     resource :avatar, only: [:destroy]
-
-    resources :personal_access_tokens, only: [:index, :create] do
-      member do
-        put :revoke
-      end
-    end
 
     resource :two_factor_auth, only: [:show, :create, :destroy] do
       member do

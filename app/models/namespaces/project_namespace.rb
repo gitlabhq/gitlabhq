@@ -2,6 +2,8 @@
 
 module Namespaces
   class ProjectNamespace < Namespace
+    self.allow_legacy_sti_class = true
+
     # These aliases are added to make it easier to sync parent/parent_id attribute with
     # project.namespace/project.namespace_id attribute.
     #

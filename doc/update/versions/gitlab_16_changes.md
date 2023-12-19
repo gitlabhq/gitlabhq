@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab 16 changes **(FREE SELF)**
@@ -16,6 +16,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 15.11
 
+- [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
   [Long-running user type data change](#long-running-user-type-data-change).
 - Other installations can skip 16.0, 16.1, and 16.2 as the first required stop on the upgrade path is 16.3. Review the notes for those intermediate
@@ -30,9 +31,57 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+## 16.7.0
+
+### Linux package installations
+
+Specific information applies to Linux package installations:
+
+- As of GitLab 16.7, PostgreSQL 14 is the default version installed with the Linux package.
+  During a package upgrade, the database isn't upgraded to PostgreSQL 14.
+  If you want to upgrade to PostgreSQL 14, [you must do it manually](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+
+  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
+  for future releases.
+
+  If you want to use PostgreSQL 13, you must set `postgresql['version'] = 13` in `/etc/gitlab/gitlab.rb`.
+
+## 16.6.0
+
+- Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
+
 ## 16.5.0
 
 - Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- A regression may sometimes cause an [HTTP 500 error when navigating a group](https://gitlab.com/gitlab-org/gitlab/-/issues/431659). Upgrading to GitLab 16.6 or later resolves the issue.
+- A regression may cause [Unselected Advanced Search facets to not load](https://gitlab.com/gitlab-org/gitlab/-/issues/428246). Upgrading to 16.6 or later resolves the issue.
+
+### Linux package installations
+
+- SSH clone URLs can be customized by setting `gitlab_rails['gitlab_ssh_host']`
+  in `/etc/gitlab/gitlab.rb`. This setting must now be a
+  [valid hostname](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132238).
+  Previously, it could be an arbitrary string that was used to show a
+  custom hostname and port in the repository clone URL.
+
+  For example, prior to GitLab 16.5, the following setting worked:
+
+  ```ruby
+  gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com:2222"
+  ```
+
+  Starting with GitLab 16.5, the hostname and port must be specified separately:
+
+  ```ruby
+  gitlab_rails['gitlab_ssh_host'] = "gitlab.example.com"
+  gitlab_rails['gitlab_shell_ssh_port'] = 2222
+  ```
+
+  After you change the setting, make sure to reconfigure GitLab:
+
+  ```shell
+  sudo gitlab-ctl reconfigure
+  ```
 
 ### Geo installations
 
@@ -58,7 +107,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -70,11 +119,23 @@ Specific information applies to installations using Geo:
   ```
 
   **Affected releases**:
- 
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
+  | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
+
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
   | Affected minor releases | Affected patch releases | Fixed in |
   | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
   | 16.4   | All    | None   |
-  | 16.5   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
 
 ## 16.4.0
 
@@ -119,7 +180,7 @@ Specific information applies to installations using Geo:
 
   To find out if a push rule belongs to a project, group, or instance, run this script
   in the [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
-  
+
   ```ruby
   # replace `delete_branch_regex` with a name of the field used in constraint
   long_rules = PushRule.where("length(delete_branch_regex) > 511")
@@ -176,7 +237,7 @@ Specific information applies to installations using Geo:
 
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
-- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive. 
+- [Object storage verification](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#geo-verifies-object-storage) was added in GitLab 16.4. Due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429242) some Geo installations are reporting high memory usage which can lead to the GitLab application on the primary becoming unresponsive.
 
   Your installation may be impacted if you have configured it to use [object storage](../../administration/object_storage.md) and have enabled [GitLab-managed object storage replication](../../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication)
 
@@ -188,11 +249,11 @@ Specific information applies to installations using Geo:
   ```
 
   **Affected releases**:
- 
+
   | Affected minor releases | Affected patch releases | Fixed in |
-  | ------ | ------ | ------ |
-  | 16.4   | All    | None   |
-  | 16.5   | All    | None   |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    | 16.4.0 - 16.4.2         | 16.4.3   |
+  | 16.5                    | 16.5.0 - 16.5.1         | 16.5.2   |
 
 - An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
 
@@ -203,6 +264,18 @@ Specific information applies to installations using Geo:
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
 
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
+  | 16.4   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
 ## 16.3.0
 
 - **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
@@ -212,8 +285,8 @@ Specific information applies to installations using Geo:
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
 
-  - [Container Registry](../../administration/packages/container_registry.md)
-  - [Gitaly](../../administration/gitaly/configure_gitaly.md#enable-tls-support)
+  - [Container registry](../../administration/packages/container_registry.md)
+  - [Gitaly](../../administration/gitaly/tls_support.md)
   - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates)
   - [Workhorse](../../development/workhorse/configuration.md#tls-support)
 
@@ -298,6 +371,18 @@ Specific information applies to installations using Geo:
   | ------ | ------ | ------ |
   | 16.3   | 16.3.0 - 16.3.5    | 16.3.6   |
   | 16.4   | 16.4.0 - 16.4.1    | 16.4.2   |
+
+- After [Group Wiki](../../user/project/wiki/group.md) verification was added in GitLab 16.3, missing Group Wiki repositories are being incorrectly flagged as failing verification. This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for these Group Wiki repositories.
+
+  See details of the problem and workaround in issue [#426571](https://gitlab.com/gitlab-org/gitlab/-/issues/426571)
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ------ | ------ | ------ |
+  | 16.3   | All    | None   |
+  | 16.4   | All    | None   |
+  | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
 
 ## 16.2.0
 
@@ -471,7 +556,11 @@ by this issue.
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-- Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix). 
+  - The second database connection can be disabled:
+    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
+    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
+- Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 ### Linux package installations
 

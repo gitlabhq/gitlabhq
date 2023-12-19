@@ -1,8 +1,7 @@
 ---
-type: concepts, howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Personal access tokens **(FREE ALL)**
@@ -69,7 +68,7 @@ list of scopes. To do this, you can append a `name` parameter and a list of comm
 to the URL. For example:
 
 ```plaintext
-https://gitlab.example.com/-/profile/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
+https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
 ```
 
 WARNING:
@@ -83,7 +82,8 @@ At any time, you can revoke a personal access token.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. In the **Active personal access tokens** area, next to the key, select **Revoke**.
+1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
+1. On the confirmation dialog, select **Revoke**.
 
 ## View the last time a token was used
 
@@ -100,7 +100,8 @@ To view the last time a token was used:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. In the **Active personal access tokens** area, next to the key, view the **Last Used** date.
+1. In the **Active personal access tokens** area, view the **Last Used** date for
+   the relevant token.
 
 ## Personal access token scopes
 
@@ -110,23 +111,23 @@ To view the last time a token was used:
 
 A personal access token can perform actions based on the assigned scopes.
 
-| Scope              | Access |
-|--------------------|--------|
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
-| `read_user`        | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md). |
-| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.) |
-| `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |
-| `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API). |
-| `read_registry`    | Grants read-only (pull) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. |
-| `write_registry`   | Grants read-write (push) access to a [Container Registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the Container Registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
-| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
-| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
-| `create_runner`    | Grants permission to create runners. |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo. |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                   |
+| Scope              | Access                                                                                                                                                                                                                                                                                                             |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.                                                                                                                                                           |
+| `read_user`        | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md).                                                                            |
+| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.)                                                                                                   |
+| `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.                                                                                                                                                                                                       |
+| `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).                                                                                                                                                                                                              |
+| `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.                                                                                               |
+| `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28958) in GitLab 12.10.) |
+| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
+| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.)                                                                                                                             |
+| `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                                                    |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
 
 WARNING:
-If you enabled [external authorization](../admin_area/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
+If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
 ## When personal access tokens expire
 
@@ -141,33 +142,32 @@ Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
   [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
   If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
 
-### Service Accounts
+### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date.
+You can [create a personal access token for a service account](../../api/groups.md#create-personal-access-token-for-service-account-user) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
 NOTE:
 Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
 
 #### GitLab.com
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role in the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Permissions and group features**.
+1. Select **Settings > General > Permissions and group features**.
 1. Clear the **Service account token expiration** checkbox.
 
 You can now create personal access tokens for a service account user with no expiry date.
 
 #### Self-managed GitLab
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.
@@ -179,7 +179,7 @@ You can now create personal access tokens for a service account user with no exp
 You can create a predetermined personal access token
 as part of your tests or automation.
 
-Prerequisite:
+Prerequisites:
 
 - You need sufficient access to run a
   [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
@@ -219,7 +219,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 You can programmatically revoke a personal access token
 as part of your tests or automation.
 
-Prerequisite:
+Prerequisites:
 
 - You need sufficient access to run a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
   for your GitLab instance.

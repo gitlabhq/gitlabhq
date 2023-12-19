@@ -6,23 +6,32 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as UserApi from '~/api/user_api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { VALID_TOKEN_BACKGROUND, INVALID_TOKEN_BACKGROUND } from '~/invite_members/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const label = 'testgroup';
 const placeholder = 'Search for a member';
+const rootGroupId = '31';
 const user1 = { id: 1, name: 'John Smith', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Jane Doe', username: 'two_2', avatar_url: '' };
 const allUsers = [user1, user2];
+const handleEnterSpy = jest.fn();
 
-const createComponent = (props) => {
+const createComponent = (props = {}, glFeatures = {}) => {
   return shallowMount(MembersTokenSelect, {
     propsData: {
       ariaLabelledby: label,
       invalidMembers: {},
       placeholder,
+      rootGroupId,
       ...props,
     },
+    provide: { glFeatures },
     stubs: {
-      GlTokenSelector: stubComponent(GlTokenSelector),
+      GlTokenSelector: stubComponent(GlTokenSelector, {
+        methods: {
+          handleEnter: handleEnterSpy,
+        },
+      }),
     },
   });
 };
@@ -84,22 +93,10 @@ describe('MembersTokenSelect', () => {
       wrapper = createComponent();
     });
 
-    describe('when input is focused for the first time (modal auto-focus)', () => {
-      it('does not call the API', async () => {
-        findTokenSelector().vm.$emit('focus');
-
-        await waitForPromises();
-
-        expect(UserApi.getUsers).not.toHaveBeenCalled();
-      });
-    });
-
     describe('when input is manually focused', () => {
       it('calls the API and sets dropdown items as request result', async () => {
         const tokenSelector = findTokenSelector();
 
-        tokenSelector.vm.$emit('focus');
-        tokenSelector.vm.$emit('blur');
         tokenSelector.vm.$emit('focus');
 
         await waitForPromises();
@@ -173,6 +170,29 @@ describe('MembersTokenSelect', () => {
           });
         });
       });
+
+      describe('when API search fails', () => {
+        beforeEach(() => {
+          jest.spyOn(Sentry, 'captureException');
+          jest.spyOn(UserApi, 'getUsers').mockRejectedValue('error');
+        });
+
+        it('reports to sentry', async () => {
+          tokenSelector.vm.$emit('text-input', 'Den');
+
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith('error');
+        });
+      });
+
+      it('allows tab to function as enter', () => {
+        tokenSelector.vm.$emit('text-input', 'username');
+
+        tokenSelector.vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'Tab' }));
+
+        expect(handleEnterSpy).toHaveBeenCalled();
+      });
     });
 
     describe('when user is selected', () => {
@@ -215,31 +235,45 @@ describe('MembersTokenSelect', () => {
     });
   });
 
-  describe('when component is mounted for a group using a saml provider', () => {
+  describe('when component is mounted for a group using a SAML provider', () => {
     const searchParam = 'name';
-    const samlProviderId = 123;
-    let resolveApiRequest;
 
     beforeEach(() => {
-      jest.spyOn(UserApi, 'getUsers').mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolveApiRequest = resolve;
-          }),
-      );
+      jest.spyOn(UserApi, 'getGroupUsers').mockResolvedValue({ data: allUsers });
 
-      wrapper = createComponent({ filterId: samlProviderId, usersFilter: 'saml_provider_id' });
+      wrapper = createComponent({ usersFilter: 'saml_provider_id' }, { groupUserSaml: true });
 
       findTokenSelector().vm.$emit('text-input', searchParam);
     });
 
-    it('calls the API with the saml provider ID param', () => {
-      resolveApiRequest({ data: allUsers });
-
-      expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
+    it('calls the group API with correct parameters', () => {
+      expect(UserApi.getGroupUsers).toHaveBeenCalledWith(searchParam, rootGroupId, {
         active: true,
-        without_project_bots: true,
-        saml_provider_id: samlProviderId,
+        include_saml_users: true,
+        include_service_accounts: true,
+      });
+    });
+  });
+
+  describe('when group_user_saml feature flag is disabled', () => {
+    describe('when component is mounted for a group using a SAML provider', () => {
+      const searchParam = 'name';
+      const samlProviderId = 123;
+
+      beforeEach(() => {
+        jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
+
+        wrapper = createComponent({ filterId: samlProviderId, usersFilter: 'saml_provider_id' });
+
+        findTokenSelector().vm.$emit('text-input', searchParam);
+      });
+
+      it('calls the API with the saml provider ID param', () => {
+        expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
+          active: true,
+          without_project_bots: true,
+          saml_provider_id: samlProviderId,
+        });
       });
     });
   });

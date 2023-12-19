@@ -1,0 +1,6 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Exclude:
+    - 'Gemfile'

@@ -8,14 +8,6 @@ module SidebarsHelper
     sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
   end
 
-  def sidebar_qa_selector(object)
-    sidebar_attributes_for_object(object).fetch(:sidebar_qa_selector, nil)
-  end
-
-  def scope_qa_menu_item(object)
-    sidebar_attributes_for_object(object).fetch(:scope_qa_menu_item, nil)
-  end
-
   def scope_avatar_classes(object)
     %w[avatar-container rect-avatar s32].tap do |klasses|
       klass = sidebar_attributes_for_object(object).fetch(:scope_avatar_class, nil)
@@ -72,8 +64,10 @@ module SidebarsHelper
   def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
     super_sidebar_logged_out_context(panel: panel, panel_type: panel_type).merge({
       is_logged_in: true,
+      is_admin: user.can_admin_all_resources?,
       name: user.name,
       username: user.username,
+      admin_url: admin_root_url,
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),
       link_to_profile: user_path(user),
@@ -265,8 +259,6 @@ module SidebarsHelper
   def sidebar_project_attributes
     {
       tracking_attrs: sidebar_project_tracking_attrs,
-      sidebar_qa_selector: 'project_sidebar',
-      scope_qa_menu_item: 'Project scope',
       scope_avatar_class: 'project_avatar'
     }
   end
@@ -274,8 +266,6 @@ module SidebarsHelper
   def sidebar_group_attributes
     {
       tracking_attrs: sidebar_group_tracking_attrs,
-      sidebar_qa_selector: 'group_sidebar',
-      scope_qa_menu_item: 'Group scope',
       scope_avatar_class: 'group_avatar'
     }
   end

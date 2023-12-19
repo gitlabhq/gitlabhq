@@ -1,0 +1,28 @@
+query getModelCandidates(
+  $id: MlModelID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  mlModel(id: $id) {
+    id
+    candidates(after: $after, before: $before, first: $first, last: $last) {
+      count
+      nodes {
+        id
+        name
+        createdAt
+        _links {
+          showPath
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

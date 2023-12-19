@@ -14,7 +14,6 @@ class ProfilesController < Profiles::ApplicationController
   feature_category :user_profile, [:show, :update, :reset_incoming_email_token, :reset_feed_token,
                             :reset_static_object_token, :update_username]
 
-  feature_category :system_access, [:audit_log]
   urgency :low, [:show, :update]
 
   def show
@@ -43,7 +42,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = s_("Profiles|Incoming email token was successfully reset")
 
-    redirect_to profile_personal_access_tokens_path
+    redirect_to user_settings_personal_access_tokens_path
   end
 
   def reset_feed_token
@@ -53,7 +52,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = s_('Profiles|Feed token was successfully reset')
 
-    redirect_to profile_personal_access_tokens_path
+    redirect_to user_settings_personal_access_tokens_path
   end
 
   def reset_static_object_token
@@ -61,19 +60,9 @@ class ProfilesController < Profiles::ApplicationController
       user.reset_static_object_token!
     end
 
-    redirect_to profile_personal_access_tokens_path,
+    redirect_to user_settings_personal_access_tokens_path,
       notice: s_('Profiles|Static object token was successfully reset')
   end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def audit_log
-    @events = AuthenticationEvent.where(user: current_user)
-      .order("created_at DESC")
-      .page(params[:page])
-
-    Gitlab::Tracking.event(self.class.name, 'search_audit_event', user: current_user)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def update_username
     result = Users::UpdateService.new(current_user, user: @user, username: username_param).execute

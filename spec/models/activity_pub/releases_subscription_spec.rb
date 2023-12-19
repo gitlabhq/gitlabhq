@@ -55,23 +55,37 @@ RSpec.describe ActivityPub::ReleasesSubscription, type: :model, feature_category
     end
   end
 
-  describe '.find_by_subscriber_url' do
+  describe '.find_by_project_and_subscriber' do
     let_it_be(:subscription) { create(:activity_pub_releases_subscription) }
 
     it 'returns a record if arguments match' do
-      result = described_class.find_by_subscriber_url(subscription.subscriber_url)
+      result = described_class.find_by_project_and_subscriber(subscription.project_id,
+        subscription.subscriber_url)
 
       expect(result).to eq(subscription)
     end
 
-    it 'returns a record if arguments match case insensitively' do
-      result = described_class.find_by_subscriber_url(subscription.subscriber_url.upcase)
+    it 'returns a record if subscriber url matches case insensitively' do
+      result = described_class.find_by_project_and_subscriber(subscription.project_id,
+        subscription.subscriber_url.upcase)
 
       expect(result).to eq(subscription)
+    end
+
+    it 'returns nil if project and url do not match' do
+      result = described_class.find_by_project_and_subscriber(0, 'I really should not exist')
+
+      expect(result).to be(nil)
     end
 
     it 'returns nil if project does not match' do
-      result = described_class.find_by_subscriber_url('I really should not exist')
+      result = described_class.find_by_project_and_subscriber(0, subscription.subscriber_url)
+
+      expect(result).to be(nil)
+    end
+
+    it 'returns nil if url does not match' do
+      result = described_class.find_by_project_and_subscriber(subscription.project_id, 'I really should not exist')
 
       expect(result).to be(nil)
     end

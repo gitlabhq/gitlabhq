@@ -48,7 +48,7 @@ module Types
                      required: true,
                      description: 'Global ID of the container repository.'
           end
-    field :current_user, Types::UserType,
+    field :current_user, Types::CurrentUserType,
           null: true,
           description: "Get information about current user."
     field :design_management, Types::DesignManagementType,
@@ -57,12 +57,10 @@ module Types
     field :echo, resolver: Resolvers::EchoResolver
     field :frecent_groups, [Types::GroupType],
       resolver: Resolvers::Users::FrecentGroupsResolver,
-      description: "A user's frecently visited groups. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.",
-      alpha: { milestone: '16.6' }
+      description: "A user's frecently visited groups"
     field :frecent_projects, [Types::ProjectType],
       resolver: Resolvers::Users::FrecentProjectsResolver,
-      description: "A user's frecently visited projects. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.",
-      alpha: { milestone: '16.6' }
+      description: "A user's frecently visited projects"
     field :gitpod_enabled, GraphQL::Types::Boolean,
           null: true,
           description: "Whether Gitpod is enabled in application settings."
@@ -211,6 +209,19 @@ module Types
           alpha: { milestone: '16.3' },
           description: 'Abuse report labels.',
           resolver: Resolvers::AbuseReportLabelsResolver
+
+    field :ml_model, ::Types::Ml::ModelType,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Find machine learning models.',
+          resolver: Resolvers::Ml::ModelDetailResolver
+
+    field :work_items_by_reference,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Find work items by their reference.',
+          extras: [:lookahead],
+          resolver: Resolvers::WorkItemReferencesResolver
 
     def design_management
       DesignManagementObject.new(nil)

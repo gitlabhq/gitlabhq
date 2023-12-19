@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Locked users **(FREE SELF)**
@@ -38,9 +37,8 @@ If 2FA is enabled, users are locked after three failed sign-in attempts. Account
 
 ## Unlock a user from the Admin Area
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Users**.
 1. Use the search bar to find the locked user.
 1. From the **User administration** dropdown list, select **Unlock**.
 

@@ -2,17 +2,18 @@
 import { GlToast, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/alert';
-import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
+import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isUserBusy, computedClearStatusAfterValue } from './utils';
-import { AVAILABILITY_STATUS } from './constants';
+import { AVAILABILITY_STATUS, SET_STATUS_MODAL_ID } from './constants';
 import SetStatusForm from './set_status_form.vue';
 
 Vue.use(GlToast);
 
 export default {
+  SET_STATUS_MODAL_ID,
   components: {
     GlModal,
     SetStatusForm,
@@ -29,11 +30,13 @@ export default {
     },
     currentEmoji: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     currentMessage: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     currentAvailability: {
       type: String,
@@ -51,7 +54,6 @@ export default {
       defaultEmojiTag: '',
       emoji: this.currentEmoji,
       message: this.currentMessage,
-      modalId: 'set-user-status-modal',
       availability: isUserBusy(this.currentAvailability),
       clearStatusAfter: null,
     };
@@ -65,11 +67,11 @@ export default {
     },
   },
   mounted() {
-    this.$root.$emit(BV_SHOW_MODAL, this.modalId);
+    this.$emit('mounted');
   },
   methods: {
     closeModal() {
-      this.$root.$emit(BV_HIDE_MODAL, this.modalId);
+      this.$root.$emit(BV_HIDE_MODAL, SET_STATUS_MODAL_ID);
     },
     removeStatus() {
       this.availability = false;
@@ -132,7 +134,7 @@ export default {
 <template>
   <gl-modal
     :title="s__('SetStatusModal|Set a status')"
-    :modal-id="modalId"
+    :modal-id="$options.SET_STATUS_MODAL_ID"
     :action-primary="$options.actionPrimary"
     :action-secondary="$options.actionSecondary"
     modal-class="set-user-status-modal"

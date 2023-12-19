@@ -1184,8 +1184,8 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
   context 'with loose foreign key on members.user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:user) }
-      let!(:model) { create(:group_member, user: parent) }
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:group_member, user: parent) }
     end
   end
 end

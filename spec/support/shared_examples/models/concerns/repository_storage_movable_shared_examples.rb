@@ -68,7 +68,7 @@ RSpec.shared_examples 'handles repository moves' do
 
   describe 'state transitions' do
     before do
-      stub_storage_settings('test_second_storage' => { 'path' => 'tmp/tests/extra_storage' })
+      stub_storage_settings('test_second_storage' => {})
     end
 
     context 'when in the default state' do

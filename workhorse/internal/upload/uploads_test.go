@@ -232,20 +232,7 @@ func TestUploadProcessingField(t *testing.T) {
 func TestUploadingMultipleFiles(t *testing.T) {
 	testhelper.ConfigureSecret()
 
-	var buffer bytes.Buffer
-
-	writer := multipart.NewWriter(&buffer)
-	for i := 0; i < 11; i++ {
-		_, err := writer.CreateFormFile(fmt.Sprintf("file %v", i), "my.file")
-		require.NoError(t, err)
-	}
-	require.NoError(t, writer.Close())
-
-	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
-	require.NoError(t, err)
-	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
-
-	response := httptest.NewRecorder()
+	httpRequest, response := setupMultipleFiles(t)
 
 	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &testFormProcessor{})
 
@@ -351,6 +338,45 @@ func TestBadMultipartHeader(t *testing.T) {
 
 	// Invalid header: missing boundary
 	httpRequest.Header.Set("Content-Type", "multipart/form-data")
+
+	response := httptest.NewRecorder()
+	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &SavedFileTracker{Request: httpRequest})
+	require.Equal(t, 400, response.Code)
+}
+
+func TestUnauthorizedMultipartHeader(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	httpRequest, response := setupMultipleFiles(t)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	defer ts.Close()
+
+	api := api.NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	interceptMultipartFiles(response, httpRequest, nilHandler, &testFormProcessor{}, &apiAuthorizer{api}, &DefaultPreparer{})
+
+	require.Equal(t, 401, response.Code)
+	require.Equal(t, "401 Unauthorized\n", response.Body.String())
+}
+
+func TestMalformedMimeHeader(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	h := make(textproto.MIMEHeader)
+	h.Set("Invalid Header Line\r\nContent-Type", "text/plain\r\n\r\n")
+
+	buffer := &bytes.Buffer{}
+	writer := multipart.NewWriter(buffer)
+	file, err := writer.CreatePart(h)
+	require.NoError(t, err)
+	fmt.Fprint(file, "test")
+	writer.Close()
+
+	httpRequest, err := http.NewRequest("POST", "/example", buffer)
+	require.NoError(t, err)
+	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
 	response := httptest.NewRecorder()
 	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &SavedFileTracker{Request: httpRequest})
@@ -548,4 +574,23 @@ func testInterceptMultipartFiles(t *testing.T, w http.ResponseWriter, r *http.Re
 	preparer := &DefaultPreparer{}
 
 	interceptMultipartFiles(w, r, h, filter, fa, preparer)
+}
+
+func setupMultipleFiles(t *testing.T) (*http.Request, *httptest.ResponseRecorder) {
+	var buffer bytes.Buffer
+
+	t.Helper()
+
+	writer := multipart.NewWriter(&buffer)
+	for i := 0; i < 11; i++ {
+		_, err := writer.CreateFormFile(fmt.Sprintf("file %v", i), "my.file")
+		require.NoError(t, err)
+	}
+	require.NoError(t, writer.Close())
+
+	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
+	require.NoError(t, err)
+	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+	return httpRequest, httptest.NewRecorder()
 }

@@ -10,8 +10,10 @@ module Ci
 
     included do
       has_one :metadata,
+        ->(build) { where(partition_id: build.partition_id) },
         class_name: 'Ci::BuildMetadata',
         foreign_key: :build_id,
+        partition_foreign_key: :partition_id,
         inverse_of: :build,
         autosave: true
 
@@ -26,9 +28,7 @@ module Ci
       before_validation :ensure_metadata, on: :create
 
       scope :with_project_and_metadata, -> do
-        if Feature.enabled?(:non_public_artifacts, type: :development)
-          joins(:metadata).includes(:metadata).preload(:project)
-        end
+        joins(:metadata).includes(:metadata).preload(:project)
       end
     end
 

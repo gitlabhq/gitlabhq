@@ -40,13 +40,10 @@ module ApplicationSettingsHelper
   def storage_weights
     # Instead of using a `Struct` we could wrap this into an object.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/358419
-    weights = Struct.new(*Gitlab.config.repositories.storages.keys.map(&:to_sym))
+    storages_weighted = @application_setting.repository_storages_with_default_weight
 
-    values = Gitlab.config.repositories.storages.keys.map do |storage|
-      @application_setting.repository_storages_weighted[storage] || 0
-    end
-
-    weights.new(*values)
+    weights = Struct.new(*storages_weighted.keys.map(&:to_sym))
+    weights.new(*storages_weighted.values)
   end
 
   def all_protocols_enabled?
@@ -500,6 +497,7 @@ module ApplicationSettingsHelper
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
       :can_create_group,
+      :bulk_import_concurrent_pipeline_batch_limit,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
       :allow_runner_registration_token,
@@ -512,7 +510,8 @@ module ApplicationSettingsHelper
       :gitlab_shell_operation_limit,
       :namespace_aggregation_schedule_lease_duration_in_seconds,
       :ci_max_total_yaml_size_bytes,
-      :project_jobs_api_rate_limit
+      :project_jobs_api_rate_limit,
+      :security_txt_content
     ].tap do |settings|
       next if Gitlab.com?
 

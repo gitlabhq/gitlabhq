@@ -8,6 +8,7 @@ import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_not
 import abuseReportNotesQuery from '~/admin/abuse_report/graphql/notes/abuse_report_notes.query.graphql';
 import AbuseReportNotes from '~/admin/abuse_report/components/abuse_report_notes.vue';
 import AbuseReportDiscussion from '~/admin/abuse_report/components/notes/abuse_report_discussion.vue';
+import AbuseReportAddNote from '~/admin/abuse_report/components/notes/abuse_report_add_note.vue';
 
 import { mockAbuseReport, mockNotesByIdResponse } from '../mock_data';
 
@@ -24,6 +25,7 @@ describe('Abuse Report Notes', () => {
 
   const findSkeletonLoaders = () => wrapper.findAllComponents(SkeletonLoadingContainer);
   const findAbuseReportDiscussions = () => wrapper.findAllComponents(AbuseReportDiscussion);
+  const findAbuseReportAddNote = () => wrapper.findComponent(AbuseReportAddNote);
 
   const createComponent = ({
     queryHandler = notesQueryHandler,
@@ -76,6 +78,16 @@ describe('Abuse Report Notes', () => {
       expect(findAbuseReportDiscussions().at(1).props()).toMatchObject({
         abuseReportId: mockAbuseReportId,
         discussion: discussions[1].notes.nodes,
+      });
+    });
+
+    it('should show the comment form', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(true);
+
+      expect(findAbuseReportAddNote().props()).toMatchObject({
+        abuseReportId: mockAbuseReportId,
+        discussionId: '',
+        isNewDiscussion: true,
       });
     });
   });

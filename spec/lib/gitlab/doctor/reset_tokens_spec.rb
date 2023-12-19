@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :runner_fleet do
+RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility do
   let(:logger) { instance_double('Logger') }
   let(:model_names) { %w[Project Group] }
   let(:token_names) { %w[runners_token] }

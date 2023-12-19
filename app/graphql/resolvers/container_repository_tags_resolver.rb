@@ -17,7 +17,7 @@ module Resolvers
     alias_method :container_repository, :object
 
     def resolve(sort:, **filters)
-      if container_repository.migrated? && Feature.enabled?(:use_repository_list_tags_on_graphql, container_repository.project)
+      if container_repository.migrated?
         page_size = [filters[:first], filters[:last]].map(&:to_i).max
 
         result = container_repository.tags_page(

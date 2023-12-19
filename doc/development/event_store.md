@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GitLab EventStore
@@ -184,7 +184,7 @@ Changes to the schema require multiple rollouts. While the new version is being 
 - Existing subscribers can consume events using the old version.
 - Events get persisted in the Sidekiq queue as job arguments, so we could have 2 versions of the schema during deployments.
 
-As changing the schema ultimately impacts the Sidekiq arguments, please refer to our
+As changing the schema ultimately impacts the Sidekiq arguments, refer to our
 [Sidekiq style guide](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker) with regards to multiple rollouts.
 
 #### Add properties
@@ -277,6 +277,10 @@ declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.
 
+NOTE:
+Before creating a subscription, make sure that the worker is already deployed to GitLab.com as the
+newly introduced workers are [not compatible with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
+
 ### Conditional dispatch of events
 
 A subscription can specify a condition when to accept an event:
@@ -314,6 +318,26 @@ The `delay` parameter switches the dispatching of the event to use `perform_in` 
 on the subscriber Sidekiq worker, instead of `perform_async`.
 
 This technique is useful when publishing many events and leverage the Sidekiq deduplication.
+
+### Publishing group of events
+
+In some scenarios we publish multiple events of same type in a single business transaction.
+This puts additional load to Sidekiq by invoking a job for each event. In such cases, we can
+publish a group of events by calling `Gitlab::EventStore.publish_group`. This method accepts an
+array of events of similar type. By default the subscriber worker receives a group of max 10 events,
+but this can be configured by defining `group_size` parameter while creating the subscription.
+The number of published events are dispatched to the subscriber in batches based on the
+configured `group_size`. If the number of groups exceeds 100, we schedule each group with a delay
+of 10 seconds, to reduce the load on Sidekiq.
+
+```ruby
+store.subscribe ::Security::RefreshProjectPoliciesWorker,
+  to: ::ProjectAuthorizations::AuthorizationsChangedEvent,
+  delay: 1.minute,
+  group_size: 25
+```
+
+The `handle_event` method in the subscriber worker is called for each of the events in the group.
 
 ## Testing
 

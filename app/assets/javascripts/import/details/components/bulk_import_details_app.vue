@@ -1,10 +1,14 @@
 <script>
-import { __ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
+import { getParameterValues } from '~/lib/utils/url_utility';
+
 import ImportDetailsTable from '~/import/details/components/import_details_table.vue';
 
 export default {
   name: 'BulkImportDetailsApp',
-  components: { ImportDetailsTable },
+  components: {
+    ImportDetailsTable,
+  },
 
   fields: [
     {
@@ -28,12 +32,25 @@ export default {
   ],
 
   LOCAL_STORAGE_KEY: 'gl-bulk-import-details-page-size',
+
+  gitlabLogo: window.gon.gitlab_logo,
+
+  computed: {
+    title() {
+      const id = getParameterValues('entity_id')[0];
+
+      return sprintf(s__('BulkImport|Items that failed to be imported for %{id}'), { id });
+    },
+  },
 };
 </script>
 
 <template>
   <div>
-    <h1>{{ s__('Import|GitLab Migration details') }}</h1>
+    <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
+      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+      <span>{{ title }}</span>
+    </h1>
 
     <import-details-table
       bulk-import

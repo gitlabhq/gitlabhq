@@ -1,4 +1,4 @@
-- title: "Internal Container Registry API tag deletion endpoint"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
+- title: "Internal container registry API tag deletion endpoint"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
   announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
@@ -8,7 +8,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
 
-    Tag deletion is an important function, so we added a tag deletion operation to the GitLab Container Registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
+    Tag deletion is an important function, so we added a tag deletion operation to the GitLab container registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
 
     Since then, the OCI Distribution Spec has had some updates and it now has a tag delete operation, using the [`DELETE /v2/<name>/manifests/<tag>` endpoint](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#deleting-tags).
 
@@ -16,6 +16,6 @@
 
     Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, and it will be removed in GitLab 17.0.
 
-    This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
+    This endpoint is used by the **internal** container registry application API, not the public [GitLab container registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
 
     If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.

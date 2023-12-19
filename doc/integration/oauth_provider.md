@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure GitLab as an OAuth 2.0 authentication identity provider
@@ -75,9 +75,8 @@ To create a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Applications**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Applications**.
 1. Select **New application**.
 
 When creating application in the **Admin Area** , mark it as **trusted**.
@@ -99,7 +98,7 @@ different actions. See the following table for all available scopes.
 
 | Scope              | Description |
 |--------------------| ----------- |
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
+| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API. |

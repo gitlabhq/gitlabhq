@@ -6,14 +6,26 @@ import OrganizationSettings from '~/organizations/settings/general/components/or
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import { FORM_FIELD_NAME, FORM_FIELD_ID } from '~/organizations/shared/constants';
-import resolvers from '~/organizations/shared/graphql/resolvers';
-import { createAlert, VARIANT_INFO } from '~/alert';
+import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
+import {
+  organizationUpdateResponse,
+  organizationUpdateResponseWithErrors,
+} from '~/organizations/mock_data';
+import { createAlert } from '~/alert';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
+import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 
 Vue.use(VueApollo);
-jest.useFakeTimers();
 jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrlWithAlerts: jest.fn(),
+}));
+
+useMockLocationHelper();
 
 describe('OrganizationSettings', () => {
   let wrapper;
@@ -26,8 +38,12 @@ describe('OrganizationSettings', () => {
     },
   };
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
-    mockApollo = createMockApollo([], mockResolvers);
+  const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
+
+  const createComponent = ({
+    handlers = [[organizationUpdateMutation, successfulResponseHandler]],
+  } = {}) => {
+    mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(OrganizationSettings, {
       provide: defaultProvide,
@@ -66,13 +82,11 @@ describe('OrganizationSettings', () => {
   describe('when form is submitted', () => {
     describe('when API is loading', () => {
       beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            updateOrganization: jest.fn().mockReturnValueOnce(new Promise(() => {})),
-          },
-        };
-
-        createComponent({ mockResolvers });
+        createComponent({
+          handlers: [
+            [organizationUpdateMutation, jest.fn().mockReturnValueOnce(new Promise(() => {}))],
+          ],
+        });
 
         await submitForm();
       });
@@ -86,39 +100,65 @@ describe('OrganizationSettings', () => {
       beforeEach(async () => {
         createComponent();
         await submitForm();
-        jest.runAllTimers();
         await waitForPromises();
       });
 
-      it('displays info alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'Organization was successfully updated.',
-          variant: VARIANT_INFO,
+      it('calls mutation with correct variables and displays info alert', () => {
+        expect(successfulResponseHandler).toHaveBeenCalledWith({
+          input: {
+            id: 'gid://gitlab/Organizations::Organization/1',
+            name: 'Foo bar',
+          },
         });
+        expect(visitUrlWithAlerts).toHaveBeenCalledWith(window.location.href, [
+          {
+            id: 'organization-successfully-updated',
+            message: 'Organization was successfully updated.',
+            variant: 'info',
+          },
+        ]);
       });
     });
 
     describe('when API request is not successful', () => {
-      const error = new Error();
+      describe('when there is a network error', () => {
+        const error = new Error();
 
-      beforeEach(async () => {
-        const mockResolvers = {
-          Mutation: {
-            updateOrganization: jest.fn().mockRejectedValueOnce(error),
-          },
-        };
+        beforeEach(async () => {
+          createComponent({
+            handlers: [[organizationUpdateMutation, jest.fn().mockRejectedValue(error)]],
+          });
+          await submitForm();
+          await waitForPromises();
+        });
 
-        createComponent({ mockResolvers });
-        await submitForm();
-        jest.runAllTimers();
-        await waitForPromises();
+        it('displays error alert', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'An error occurred updating your organization. Please try again.',
+            error,
+            captureError: true,
+          });
+        });
       });
 
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred updating your organization. Please try again.',
-          error,
-          captureError: true,
+      describe('when there are GraphQL errors', () => {
+        beforeEach(async () => {
+          createComponent({
+            handlers: [
+              [
+                organizationUpdateMutation,
+                jest.fn().mockResolvedValue(organizationUpdateResponseWithErrors),
+              ],
+            ],
+          });
+          await submitForm();
+          await waitForPromises();
+        });
+
+        it('displays form errors alert', () => {
+          expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
+            organizationUpdateResponseWithErrors.data.organizationUpdate.errors,
+          );
         });
       });
     });

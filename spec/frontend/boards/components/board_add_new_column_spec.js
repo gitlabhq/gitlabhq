@@ -1,14 +1,11 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumn from '~/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
-import defaultState from '~/boards/stores/state';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import boardLabelsQuery from '~/boards/graphql/board_labels.query.graphql';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
@@ -19,7 +16,6 @@ import {
   boardListsQueryResponse,
 } from '../mock_data';
 
-Vue.use(Vuex);
 Vue.use(VueApollo);
 
 describe('BoardAddNewColumn', () => {
@@ -39,22 +35,8 @@ describe('BoardAddNewColumn', () => {
     findDropdown().vm.$emit('select', id);
   };
 
-  const createStore = ({ actions = {}, getters = {}, state = {} } = {}) => {
-    return new Vuex.Store({
-      state: {
-        ...defaultState,
-        ...state,
-      },
-      actions,
-      getters,
-    });
-  };
-
   const mountComponent = ({
     selectedId,
-    labels = [],
-    getListByLabelId = jest.fn(),
-    actions = {},
     provide = {},
     lists = {},
     labelsHandler = labelsQueryHandler,
@@ -83,26 +65,12 @@ describe('BoardAddNewColumn', () => {
           selectedId,
         };
       },
-      store: createStore({
-        actions: {
-          fetchLabels: jest.fn(),
-          ...actions,
-        },
-        getters: {
-          getListByLabelId: () => getListByLabelId,
-        },
-        state: {
-          labels,
-          labelsLoading: false,
-        },
-      }),
       provide: {
         scopedLabelsAvailable: true,
         isEpicBoard: false,
         issuableType: 'issue',
         fullPath: 'gitlab-org/gitlab',
         boardType: 'project',
-        isApolloBoard: false,
         ...provide,
       },
       stubs: {
@@ -126,149 +94,94 @@ describe('BoardAddNewColumn', () => {
     cacheUpdates.setError = jest.fn();
   });
 
-  describe('Add list button', () => {
-    it('calls addList', async () => {
-      const getListByLabelId = jest.fn().mockReturnValue(null);
-      const highlightList = jest.fn();
-      const createList = jest.fn();
+  describe('when list is new', () => {
+    beforeEach(() => {
+      mountComponent({ selectedId: mockLabelList.label.id });
+    });
 
-      mountComponent({
-        labels: [mockLabelList.label],
-        selectedId: mockLabelList.label.id,
-        getListByLabelId,
-        actions: {
-          createList,
-          highlightList,
-        },
-      });
+    it('fetches labels and adds list', async () => {
+      findDropdown().vm.$emit('show');
+
+      await nextTick();
+      expect(labelsQueryHandler).toHaveBeenCalled();
+
+      selectLabel(mockLabelList.label.id);
 
       findAddNewColumnForm().vm.$emit('add-list');
 
       await nextTick();
 
-      expect(highlightList).not.toHaveBeenCalled();
-      expect(createList).toHaveBeenCalledWith(expect.anything(), {
+      expect(wrapper.emitted('highlight-list')).toBeUndefined();
+      expect(createBoardListQueryHandler).toHaveBeenCalledWith({
         labelId: mockLabelList.label.id,
+        boardId: 'gid://gitlab/Board/1',
+      });
+    });
+  });
+
+  describe('when list already exists in board', () => {
+    beforeEach(() => {
+      mountComponent({
+        lists: {
+          [mockLabelList.id]: mockLabelList,
+        },
+        selectedId: mockLabelList.label.id,
       });
     });
 
     it('highlights existing list if trying to re-add', async () => {
-      const getListByLabelId = jest.fn().mockReturnValue(mockLabelList);
-      const highlightList = jest.fn();
-      const createList = jest.fn();
+      findDropdown().vm.$emit('show');
 
-      mountComponent({
-        labels: [mockLabelList.label],
-        selectedId: mockLabelList.label.id,
-        getListByLabelId,
-        actions: {
-          createList,
-          highlightList,
-        },
-      });
+      await nextTick();
+      expect(labelsQueryHandler).toHaveBeenCalled();
+
+      selectLabel(mockLabelList.label.id);
 
       findAddNewColumnForm().vm.$emit('add-list');
 
-      await nextTick();
+      await waitForPromises();
 
-      expect(highlightList).toHaveBeenCalledWith(expect.anything(), mockLabelList.id);
-      expect(createList).not.toHaveBeenCalled();
+      expect(wrapper.emitted('highlight-list')).toEqual([[mockLabelList.id]]);
+      expect(createBoardListQueryHandler).not.toHaveBeenCalledWith();
     });
   });
 
-  describe('Apollo boards', () => {
-    describe('when list is new', () => {
-      beforeEach(() => {
-        mountComponent({ selectedId: mockLabelList.label.id, provide: { isApolloBoard: true } });
-      });
-
-      it('fetches labels and adds list', async () => {
-        findDropdown().vm.$emit('show');
-
-        await nextTick();
-        expect(labelsQueryHandler).toHaveBeenCalled();
-
-        selectLabel(mockLabelList.label.id);
-
-        findAddNewColumnForm().vm.$emit('add-list');
-
-        await nextTick();
-
-        expect(wrapper.emitted('highlight-list')).toBeUndefined();
-        expect(createBoardListQueryHandler).toHaveBeenCalledWith({
-          labelId: mockLabelList.label.id,
-          boardId: 'gid://gitlab/Board/1',
-        });
+  describe('when fetch labels query fails', () => {
+    beforeEach(() => {
+      mountComponent({
+        labelsHandler: labelsQueryHandlerFailure,
       });
     });
 
-    describe('when list already exists in board', () => {
-      beforeEach(() => {
-        mountComponent({
-          lists: {
-            [mockLabelList.id]: mockLabelList,
-          },
-          selectedId: mockLabelList.label.id,
-          provide: { isApolloBoard: true },
-        });
-      });
+    it('sets error', async () => {
+      findDropdown().vm.$emit('show');
 
-      it('highlights existing list if trying to re-add', async () => {
-        findDropdown().vm.$emit('show');
+      await waitForPromises();
+      expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+  });
 
-        await nextTick();
-        expect(labelsQueryHandler).toHaveBeenCalled();
-
-        selectLabel(mockLabelList.label.id);
-
-        findAddNewColumnForm().vm.$emit('add-list');
-
-        await waitForPromises();
-
-        expect(wrapper.emitted('highlight-list')).toEqual([[mockLabelList.id]]);
-        expect(createBoardListQueryHandler).not.toHaveBeenCalledWith();
+  describe('when create list mutation fails', () => {
+    beforeEach(() => {
+      mountComponent({
+        selectedId: mockLabelList.label.id,
+        createHandler: createBoardListQueryHandlerFailure,
       });
     });
 
-    describe('when fetch labels query fails', () => {
-      beforeEach(() => {
-        mountComponent({
-          provide: { isApolloBoard: true },
-          labelsHandler: labelsQueryHandlerFailure,
-        });
-      });
+    it('sets error', async () => {
+      findDropdown().vm.$emit('show');
 
-      it('sets error', async () => {
-        findDropdown().vm.$emit('show');
+      await nextTick();
+      expect(labelsQueryHandler).toHaveBeenCalled();
 
-        await waitForPromises();
-        expect(cacheUpdates.setError).toHaveBeenCalled();
-      });
-    });
+      selectLabel(mockLabelList.label.id);
 
-    describe('when create list mutation fails', () => {
-      beforeEach(() => {
-        mountComponent({
-          selectedId: mockLabelList.label.id,
-          provide: { isApolloBoard: true },
-          createHandler: createBoardListQueryHandlerFailure,
-        });
-      });
+      findAddNewColumnForm().vm.$emit('add-list');
 
-      it('sets error', async () => {
-        findDropdown().vm.$emit('show');
+      await waitForPromises();
 
-        await nextTick();
-        expect(labelsQueryHandler).toHaveBeenCalled();
-
-        selectLabel(mockLabelList.label.id);
-
-        findAddNewColumnForm().vm.$emit('add-list');
-
-        await waitForPromises();
-
-        expect(cacheUpdates.setError).toHaveBeenCalled();
-      });
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 });

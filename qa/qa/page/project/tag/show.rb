@@ -6,16 +6,16 @@ module QA
       module Tag
         class Show < Page::Base
           view 'app/views/projects/tags/show.html.haml' do
-            element :tag_name_content
-            element :tag_message_content
+            element 'tag-name-content'
+            element 'tag-message-content'
           end
 
           def has_tag_name?(text)
-            has_element?(:tag_name_content, text: text)
+            has_element?('tag-name-content', text: text)
           end
 
           def has_tag_message?(text)
-            has_element?(:tag_message_content, text: text)
+            has_element?('tag-message-content', text: text)
           end
         end
       end

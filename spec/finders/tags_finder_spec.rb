@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe TagsFinder do
+RSpec.describe TagsFinder, feature_category: :source_code_management do
+  subject(:tags_finder) { described_class.new(repository, params) }
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:repository) { project.repository }
+
+  let(:params) { {} }
 
   def load_tags(params, gitaly_pagination: false)
     described_class.new(repository, params).execute(gitaly_pagination: gitaly_pagination)
@@ -207,6 +211,60 @@ RSpec.describe TagsFinder do
         tags_finder = described_class.new(repository, {})
 
         expect { tags_finder.execute }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+  end
+
+  describe '#next_cursor' do
+    subject { tags_finder.next_cursor }
+
+    it 'always nil before #execute call' do
+      is_expected.to be_nil
+    end
+
+    context 'after #execute' do
+      context 'with gitaly pagination' do
+        before do
+          tags_finder.execute(gitaly_pagination: true)
+        end
+
+        context 'without pagination params' do
+          it { is_expected.to be_nil }
+        end
+
+        context 'with pagination params' do
+          let(:params) { { per_page: 5 } }
+
+          it { is_expected.to be_present }
+
+          context 'when all objects can be returned on the same page' do
+            let(:params) { { per_page: 100 } }
+
+            it { is_expected.to be_present }
+          end
+        end
+      end
+
+      context 'without gitaly pagination' do
+        before do
+          tags_finder.execute(gitaly_pagination: false)
+        end
+
+        context 'without pagination params' do
+          it { is_expected.to be_nil }
+        end
+
+        context 'with pagination params' do
+          let(:params) { { per_page: 5 } }
+
+          it { is_expected.to be_nil }
+
+          context 'when all objects can be returned on the same page' do
+            let(:params) { { per_page: 100 } }
+
+            it { is_expected.to be_nil }
+          end
+        end
       end
     end
   end

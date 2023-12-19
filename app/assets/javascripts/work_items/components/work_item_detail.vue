@@ -1,15 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import {
-  GlAlert,
-  GlSkeletonLoader,
-  GlLoadingIcon,
-  GlIcon,
-  GlButton,
-  GlTooltipDirective,
-  GlEmptyState,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -17,7 +8,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
@@ -27,7 +17,6 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
@@ -35,7 +24,6 @@ import {
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { findHierarchyWidgetChildren } from '../utils';
@@ -51,7 +39,8 @@ import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
-import WorkItemTypeIcon from './work_item_type_icon.vue';
+import WorkItemStickyHeader from './work_item_sticky_header.vue';
+import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 
 export default {
   i18n,
@@ -62,9 +51,7 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlLoadingIcon,
     GlSkeletonLoader,
-    GlIcon,
     GlEmptyState,
     WorkItemActions,
     WorkItemTodos,
@@ -73,14 +60,13 @@ export default {
     WorkItemAwardEmoji,
     WorkItemTitle,
     WorkItemAttributesWrapper,
-    WorkItemTypeIcon,
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
     AbuseCategorySelector,
-    GlIntersectionObserver,
-    ConfidentialityBadge,
     WorkItemRelationships,
+    WorkItemStickyHeader,
+    WorkItemAncestors,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -91,11 +77,6 @@ export default {
       default: false,
     },
     workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    workItemParentId: {
       type: String,
       required: false,
       default: null,
@@ -175,9 +156,6 @@ export default {
     workItemTypeId() {
       return this.workItem.workItemType?.id;
     },
-    workItemBreadcrumbReference() {
-      return this.workItemType ? `#${this.workItem.iid}` : '';
-    },
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
@@ -190,34 +168,14 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
-    projectFullPath() {
-      return this.workItem.namespace?.fullPath;
-    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
-    parentWorkItemType() {
-      return this.parentWorkItem?.workItemType?.name;
-    },
-    parentWorkItemIconName() {
-      return this.parentWorkItem?.workItemType?.iconName;
-    },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
-    },
-    parentWorkItemReference() {
-      return this.parentWorkItem ? `${this.parentWorkItem.title} #${this.parentWorkItem.iid}` : '';
-    },
-    parentUrl() {
-      // Once more types are moved to have Work Items involved
-      // we need to handle this properly.
-      if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
-        return `../../-/issues/${this.parentWorkItem?.iid}`;
-      }
-      return this.parentWorkItem?.webUrl;
     },
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
@@ -235,7 +193,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_CURRENT_USER_TODOS);
     },
     showWorkItemCurrentUserTodos() {
-      return this.$options.isLoggedIn && this.workItemCurrentUserTodos;
+      return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
     },
     currentUserTodos() {
       return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
@@ -284,6 +242,12 @@ export default {
         'gl-display-none gl-sm-display-block!': this.parentWorkItem,
       };
     },
+    headerWrapperClass() {
+      return {
+        'flex-wrap': this.parentWorkItem,
+        'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
+      };
+    },
   },
   mounted() {
     if (this.modalWorkItemIid) {
@@ -299,34 +263,21 @@ export default {
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
-      let updateMutation = updateWorkItemMutation;
-      let inputVariables = {
-        id: this.workItem.id,
-        confidential: confidentialStatus,
-      };
-
-      if (this.parentWorkItem) {
-        updateMutation = updateWorkItemTaskMutation;
-        inputVariables = {
-          id: this.parentWorkItem.id,
-          taskData: {
-            id: this.workItem.id,
-            confidential: confidentialStatus,
-          },
-        };
-      }
 
       this.$apollo
         .mutate({
-          mutation: updateMutation,
+          mutation: updateWorkItemMutation,
           variables: {
-            input: inputVariables,
+            input: {
+              id: this.workItem.id,
+              confidential: confidentialStatus,
+            },
           },
         })
         .then(
           ({
             data: {
-              workItemUpdate: { errors, workItem, task },
+              workItemUpdate: { errors, workItem },
             },
           }) => {
             if (errors?.length) {
@@ -334,7 +285,7 @@ export default {
             }
 
             this.$emit('workItemUpdated', {
-              confidential: workItem?.confidential || task?.confidential,
+              confidential: workItem?.confidential,
             });
           },
         )
@@ -430,38 +381,8 @@ export default {
             @click="$emit('close')"
           />
         </div>
-        <div
-          class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
-        >
-          <ul
-            v-if="parentWorkItem"
-            class="list-unstyled gl-display-flex gl-min-w-0 gl-mr-auto gl-mb-0 gl-z-index-0"
-            data-testid="work-item-parent"
-          >
-            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-min-w-0">
-              <gl-button
-                v-gl-tooltip.hover
-                class="gl-text-truncate"
-                :icon="parentWorkItemIconName"
-                category="tertiary"
-                :href="parentUrl"
-                :title="parentWorkItemReference"
-                @click="openInModal({ event: $event, modalWorkItem: parentWorkItem })"
-                >{{ parentWorkItemReference }}</gl-button
-              >
-              <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
-            </li>
-            <li
-              class="gl-px-4 gl-py-3 gl-line-height-0 gl-display-flex gl-align-items-center gl-overflow-hidden gl-flex-shrink-0"
-            >
-              <work-item-type-icon
-                :work-item-icon-name="workItemIconName"
-                :work-item-type="workItemType"
-                show-text
-              />
-              {{ workItemBreadcrumbReference }}
-            </li>
-          </ul>
+        <div :class="headerWrapperClass">
+          <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
           <div
             v-if="!error && !workItemLoading"
             :class="titleClassHeader"
@@ -474,17 +395,18 @@ export default {
               :work-item-id="workItem.id"
               :work-item-title="workItem.title"
               :work-item-type="workItemType"
-              :work-item-parent-id="workItemParentId"
               :can-update="canUpdate"
               @error="updateError = $event"
             />
           </div>
-          <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-gap-3">
+          <div
+            class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
+          >
             <work-item-todos
               v-if="showWorkItemCurrentUserTodos"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-fullpath="projectFullPath"
+              :work-item-fullpath="fullPath"
               :current-user-todos="currentUserTodos"
               @error="updateError = $event"
             />
@@ -502,7 +424,6 @@ export default {
               :work-item-create-note-email="workItem.createNoteEmail"
               :is-modal="isModal"
               :work-item-state="workItem.state"
-              :work-item-parent-id="workItemParentId"
               @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
@@ -527,8 +448,8 @@ export default {
             :work-item-id="workItem.id"
             :work-item-title="workItem.title"
             :work-item-type="workItemType"
-            :work-item-parent-id="workItemParentId"
             :can-update="canUpdate"
+            :use-h1="!isModal"
             @error="updateError = $event"
           />
           <work-item-created-updated
@@ -537,62 +458,24 @@ export default {
             :update-in-progress="updateInProgress"
           />
         </div>
-        <gl-intersection-observer
+        <work-item-sticky-header
           v-if="showIntersectionObserver"
-          @appear="hideStickyHeader"
-          @disappear="showStickyHeader"
-        >
-          <transition name="issuable-header-slide">
-            <div
-              v-if="isStickyHeaderShowing"
-              class="issue-sticky-header gl-fixed gl-bg-white gl-border-b gl-z-index-3 gl-py-2"
-              data-testid="work-item-sticky-header"
-            >
-              <div
-                class="gl-align-items-center gl-mx-auto gl-px-5 gl-display-flex gl-max-w-container-xl"
-              >
-                <span class="gl-text-truncate gl-font-weight-bold gl-pr-3 gl-mr-auto">
-                  {{ workItem.title }}
-                </span>
-                <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
-                <confidentiality-badge
-                  v-if="workItem.confidential"
-                  class="gl-mr-3"
-                  :issuable-type="workItemType"
-                  :workspace-type="$options.WORKSPACE_PROJECT"
-                />
-                <work-item-todos
-                  v-if="showWorkItemCurrentUserTodos"
-                  :work-item-id="workItem.id"
-                  :work-item-iid="workItemIid"
-                  :work-item-fullpath="projectFullPath"
-                  :current-user-todos="currentUserTodos"
-                  @error="updateError = $event"
-                />
-                <work-item-actions
-                  :full-path="fullPath"
-                  :work-item-id="workItem.id"
-                  :subscribed-to-notifications="workItemNotificationsSubscribed"
-                  :work-item-type="workItemType"
-                  :work-item-type-id="workItemTypeId"
-                  :can-delete="canDelete"
-                  :can-update="canUpdate"
-                  :is-confidential="workItem.confidential"
-                  :is-parent-confidential="parentWorkItemConfidentiality"
-                  :work-item-reference="workItem.reference"
-                  :work-item-create-note-email="workItem.createNoteEmail"
-                  :is-modal="isModal"
-                  @deleteWorkItem="
-                    $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
-                  "
-                  @toggleWorkItemConfidentiality="toggleConfidentiality"
-                  @error="updateError = $event"
-                  @promotedToObjective="$emit('promotedToObjective', workItemIid)"
-                />
-              </div>
-            </div>
-          </transition>
-        </gl-intersection-observer>
+          :current-user-todos="currentUserTodos"
+          :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+          :parent-work-item-confidentiality="parentWorkItemConfidentiality"
+          :update-in-progress="updateInProgress"
+          :full-path="fullPath"
+          :is-modal="isModal"
+          :work-item="workItem"
+          :is-sticky-header-showing="isStickyHeaderShowing"
+          :work-item-notifications-subscribed="workItemNotificationsSubscribed"
+          @hideStickyHeader="hideStickyHeader"
+          @showStickyHeader="showStickyHeader"
+          @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
+          @toggleWorkItemConfidentiality="toggleConfidentiality"
+          @error="updateError = $event"
+          @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+        />
         <div
           data-testid="work-item-overview"
           :class="{ 'work-item-overview': workItemsMvc2Enabled }"
@@ -603,7 +486,6 @@ export default {
               class="gl-border-b"
               :full-path="fullPath"
               :work-item="workItem"
-              :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
             <work-item-description
@@ -617,7 +499,7 @@ export default {
             <work-item-award-emoji
               v-if="workItemAwardEmoji"
               :work-item-id="workItem.id"
-              :work-item-fullpath="projectFullPath"
+              :work-item-fullpath="fullPath"
               :award-emoji="workItemAwardEmoji.awardEmoji"
               :work-item-iid="workItemIid"
               @error="updateError = $event"
@@ -640,7 +522,7 @@ export default {
               v-if="showWorkItemLinkedItems"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-full-path="projectFullPath"
+              :work-item-full-path="fullPath"
               :work-item-type="workItem.workItemType.name"
               @showModal="openInModal"
             />
@@ -656,6 +538,7 @@ export default {
               :report-abuse-path="reportAbusePath"
               :is-work-item-confidential="workItem.confidential"
               class="gl-pt-5"
+              :use-h2="!isModal"
               @error="updateError = $event"
               @has-notes="updateHasNotes"
               @openReportAbuse="openReportAbuseDrawer"
@@ -677,7 +560,6 @@ export default {
             <work-item-attributes-wrapper
               :full-path="fullPath"
               :work-item="workItem"
-              :work-item-parent-id="workItemParentId"
               @error="updateError = $event"
             />
           </aside>

@@ -8,19 +8,16 @@ module Pajamas
     # @param button_text text
     # @param button_link text
     # @param content textarea
-    # @param embedded toggle
     # @param variant select {{ Pajamas::BannerComponent::VARIANT_OPTIONS }}
     def default(
       button_text: "Learn more",
       button_link: "https://about.gitlab.com/",
       content: "Add your message here.",
-      embedded: false,
       variant: :promotion
     )
       render(Pajamas::BannerComponent.new(
                button_text: button_text,
                button_link: button_link,
-               embedded: embedded,
                svg_path: "illustrations/autodevops.svg",
                variant: variant
              )) do |c|

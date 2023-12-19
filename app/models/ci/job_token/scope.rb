@@ -54,10 +54,7 @@ module Ci
         # if the setting is disabled any project is considered to be in scope.
         return true unless current_project.ci_outbound_job_token_scope_enabled?
 
-        if !accessed_project.private? &&
-            Feature.enabled?(:restrict_ci_job_token_for_public_and_internal_projects, accessed_project)
-          return true
-        end
+        return true unless accessed_project.private?
 
         outbound_allowlist.includes?(accessed_project)
       end

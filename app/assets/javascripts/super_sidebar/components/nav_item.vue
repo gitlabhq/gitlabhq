@@ -223,20 +223,24 @@ export default {
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
+      class="super-sidebar-nav-item gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
-        class="active-indicator gl-bg-blue-500 gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
+        class="active-indicator gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         :style="activeIndicatorStyle"
         data-testid="active-indicator"
       ></div>
       <div v-if="!isFlyout" class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
+          <gl-icon
+            v-if="item.icon"
+            :name="item.icon"
+            class="super-sidebar-nav-item-icon gl-m-auto"
+          />
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
@@ -264,7 +268,6 @@ export default {
           v-if="hasPill"
           size="sm"
           variant="neutral"
-          class="gl-bg-t-gray-a-08!"
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"

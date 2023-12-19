@@ -208,21 +208,42 @@ module GroupsHelper
   end
 
   def access_level_roles_user_can_assign(group)
-    return {} unless current_user
-    return group.access_level_roles if current_user.can_admin_all_resources?
+    max_access_level = group.max_member_access_for_user(current_user)
+    group.access_level_roles.select do |_name, access_level|
+      access_level <= max_access_level
+    end
+  end
 
-    max_access_level = group.highest_group_member(current_user)&.access_level
+  def groups_projects_more_actions_dropdown_data(source)
+    model_name = source.model_name.to_s.downcase
+    dropdown_data = {
+      is_group: source.is_a?(Group).to_s,
+      id: source.id
+    }
 
-    return {} unless max_access_level
+    return dropdown_data unless current_user
 
-    GroupMember.access_level_roles.select { |_k, v| v <= max_access_level }
+    if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id)) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      dropdown_data[:leave_path] = polymorphic_path([:leave, source, :members])
+      dropdown_data[:leave_confirm_message] = leave_confirmation_message(source)
+    elsif source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
+      if can?(current_user, :withdraw_member_access_request, requester)
+        dropdown_data[:withdraw_path] = polymorphic_path([:leave, source, :members])
+        dropdown_data[:withdraw_confirm_message] = remove_member_message(requester)
+      end
+    elsif source.request_access_enabled && can?(current_user, :request_access, source)
+      dropdown_data[:request_access_path] = polymorphic_path([:request_access, source, :members])
+    end
+
+    dropdown_data
   end
 
   private
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
-      icon = group_icon(group, alt: group.name, class: "avatar-tile", width: 15, height: 15) if group.try(:avatar_url) || show_avatar
+      icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16) if group.try(:avatar_url) || show_avatar
       [icon, simple_sanitize(group.name)].join.html_safe
     end
   end

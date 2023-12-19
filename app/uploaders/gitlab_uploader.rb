@@ -76,6 +76,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
     file.present?
   end
 
+  def empty_size?
+    size == 0
+  end
+
   def cache_dir
     File.join(root, base_dir, 'tmp/cache')
   end

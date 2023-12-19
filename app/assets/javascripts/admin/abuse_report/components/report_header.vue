@@ -53,7 +53,7 @@ export default {
 
 <template>
   <header
-    class="gl-py-4 gl-border-b gl-display-flex gl-justify-content-space-between gl-xs-flex-direction-column"
+    class="gl-py-4 gl-border-b gl-display-flex gl-justify-content-space-between gl-flex-direction-column gl-sm-flex-direction-row"
   >
     <div class="gl-display-flex gl-align-items-center gl-gap-3">
       <gl-badge :variant="badgeVariant" :aria-label="badgeText">
@@ -67,7 +67,7 @@ export default {
       <gl-link :href="user.path"> @{{ user.username }} </gl-link>
     </div>
     <nav
-      class="gl-display-flex gl-sm-align-items-center gl-mt-4 gl-sm-mt-0 gl-xs-flex-direction-column"
+      class="gl-display-flex gl-sm-align-items-center gl-mt-4 gl-sm-mt-0 gl-flex-direction-column gl-sm-flex-direction-row"
     >
       <gl-button :href="user.adminPath">
         {{ $options.i18n.adminProfile }}

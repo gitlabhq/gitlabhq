@@ -241,29 +241,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       )
     end
 
-    it 'includes import gmau usage data' do
-      for_defined_days_back do
-        user = create(:user)
-        group = create(:group)
-
-        group.add_owner(user)
-
-        create(:project, import_type: :github, creator_id: user.id)
-        create(:jira_import_state, :finished, project: create(:project, creator_id: user.id))
-        create(:issue_csv_import, user: user)
-        create(:group_import_state, group: group, user: user)
-        create(:bulk_import, user: user)
-      end
-
-      expect(described_class.usage_activity_by_stage_manage({})).to include(
-        unique_users_all_imports: 10
-      )
-
-      expect(described_class.usage_activity_by_stage_manage(described_class.monthly_time_range_db_params)).to include(
-        unique_users_all_imports: 5
-      )
-    end
-
     it 'includes imports usage data', :clean_gitlab_redis_cache do
       for_defined_days_back do
         user = create(:user)
@@ -366,7 +343,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:issue, project: project, author: Users::Internal.support_bot)
         create(:note, project: project, noteable: issue, author: user)
         create(:todo, project: project, target: issue, author: user)
-        create(:jira_integration, :jira_cloud_service, active: true, project: create(:project, :jira_dvcs_cloud, creator: user))
         create(:jira_integration, active: true, project: create(:project, :jira_dvcs_server, creator: user))
       end
 
@@ -377,7 +353,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         service_desk_enabled_projects: 2,
         service_desk_issues: 2,
         projects_jira_active: 2,
-        projects_jira_dvcs_cloud_active: 2,
         projects_jira_dvcs_server_active: 2
       )
       expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(
@@ -387,7 +362,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         service_desk_enabled_projects: 1,
         service_desk_issues: 1,
         projects_jira_active: 1,
-        projects_jira_dvcs_cloud_active: 1,
         projects_jira_dvcs_server_active: 1
       )
     end
@@ -590,67 +564,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
   end
 
   context 'when not relying on database records' do
-    describe '.features_usage_data_ce' do
-      subject { described_class.features_usage_data_ce }
-
-      it 'gathers feature usage data', :aggregate_failures do
-        expect(subject[:instance_auto_devops_enabled]).to eq(Gitlab::CurrentSettings.auto_devops_enabled?)
-        expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
-        expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
-        expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
-        expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
-        expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
-        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
-        expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
-        expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
-        expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
-        expect(subject[:grafana_link_enabled]).to eq(Gitlab::CurrentSettings.grafana_enabled?)
-        expect(subject[:gitpod_enabled]).to eq(Gitlab::CurrentSettings.gitpod_enabled?)
-      end
-
-      context 'with embedded Prometheus' do
-        it 'returns true when embedded Prometheus is enabled' do
-          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(true)
-
-          expect(subject[:prometheus_enabled]).to eq(true)
-        end
-
-        it 'returns false when embedded Prometheus is disabled' do
-          allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
-
-          expect(subject[:prometheus_enabled]).to eq(false)
-        end
-      end
-
-      context 'with embedded grafana' do
-        it 'returns true when embedded grafana is enabled' do
-          stub_application_setting(grafana_enabled: true)
-
-          expect(subject[:grafana_link_enabled]).to eq(true)
-        end
-
-        it 'returns false when embedded grafana is disabled' do
-          stub_application_setting(grafana_enabled: false)
-
-          expect(subject[:grafana_link_enabled]).to eq(false)
-        end
-      end
-
-      context 'with Gitpod' do
-        it 'returns true when is enabled' do
-          stub_application_setting(gitpod_enabled: true)
-
-          expect(subject[:gitpod_enabled]).to eq(true)
-        end
-
-        it 'returns false when is disabled' do
-          stub_application_setting(gitpod_enabled: false)
-
-          expect(subject[:gitpod_enabled]).to eq(false)
-        end
-      end
-    end
-
     describe '.components_usage_data' do
       subject { described_class.components_usage_data }
 

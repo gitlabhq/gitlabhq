@@ -29,7 +29,13 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   end
 
   def allowed_update_attributes
-    %i[issue_template_key outgoing_name project_key add_external_participants_from_cc]
+    %i[
+      issue_template_key
+      outgoing_name
+      project_key
+      reopen_issue_on_external_participant_note
+      add_external_participants_from_cc
+    ]
   end
 
   def service_desk_attributes
@@ -42,6 +48,7 @@ class Projects::ServiceDeskController < Projects::ApplicationController
       template_file_missing: service_desk_settings&.issue_template_missing?,
       outgoing_name: service_desk_settings&.outgoing_name,
       project_key: service_desk_settings&.project_key,
+      reopen_issue_on_external_participant_note: service_desk_settings&.reopen_issue_on_external_participant_note,
       add_external_participants_from_cc: service_desk_settings&.add_external_participants_from_cc
     }
   end

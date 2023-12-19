@@ -214,6 +214,19 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       end
     end
 
+    context 'when resolving runs into a timeout' do
+      let(:import_url) { 'http://example.com' }
+
+      before do
+        stub_const("#{described_class}::GETADDRINFO_TIMEOUT_SECONDS", 1)
+        allow(Addrinfo).to receive(:getaddrinfo) { sleep 2 }
+      end
+
+      it 'raises an error due to DNS timeout' do
+        expect { subject }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError, "execution expired")
+      end
+    end
+
     context 'when the URL hostname is a domain' do
       context 'when domain can be resolved' do
         let(:import_url) { 'https://example.org' }

@@ -1,0 +1,8 @@
+---
+name: truncate_ci_merge_request_description
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139605
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435099
+milestone: '16.7'
+type: development
+group: group::pipeline security
+default_enabled: false

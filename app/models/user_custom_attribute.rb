@@ -21,6 +21,9 @@ class UserCustomAttribute < ApplicationRecord
   AUTO_BANNED_BY = 'auto_banned_by'
   IDENTITY_VERIFICATION_PHONE_EXEMPT = 'identity_verification_phone_exempt'
   IDENTITY_VERIFICATION_EXEMPT = 'identity_verification_exempt'
+  DELETED_OWN_ACCOUNT_AT = 'deleted_own_account_at'
+  SKIPPED_ACCOUNT_DELETION_AT = 'skipped_account_deletion_at'
+  ASSUMED_HIGH_RISK_REASON = 'assumed_high_risk_reason'
 
   class << self
     def upsert_custom_attributes(custom_attributes)
@@ -44,34 +47,64 @@ class UserCustomAttribute < ApplicationRecord
     def set_banned_by_abuse_report(abuse_report)
       return unless abuse_report
 
-      custom_attribute = { user_id: abuse_report.user.id, key: AUTO_BANNED_BY_ABUSE_REPORT_ID, value: abuse_report.id }
-
-      upsert_custom_attributes([custom_attribute])
+      upsert_custom_attribute(
+        user_id: abuse_report.user.id,
+        key: AUTO_BANNED_BY_ABUSE_REPORT_ID,
+        value: abuse_report.id
+      )
     end
 
     def set_banned_by_spam_log(spam_log)
       return unless spam_log
 
-      custom_attribute = { user_id: spam_log.user_id, key: AUTO_BANNED_BY_SPAM_LOG_ID, value: spam_log.id }
-      upsert_custom_attributes([custom_attribute])
+      upsert_custom_attribute(user_id: spam_log.user_id, key: AUTO_BANNED_BY_SPAM_LOG_ID, value: spam_log.id)
     end
 
     def set_trusted_by(user:, trusted_by:)
       return unless user && trusted_by
 
-      custom_attribute = {
+      upsert_custom_attribute(
         user_id: user.id,
         key: UserCustomAttribute::TRUSTED_BY,
         value: "#{trusted_by.username}/#{trusted_by.id}+#{Time.current}"
-      }
+      )
+    end
 
-      upsert_custom_attributes([custom_attribute])
+    def set_deleted_own_account_at(user)
+      return unless user
+
+      upsert_custom_attribute(user_id: user.id, key: DELETED_OWN_ACCOUNT_AT, value: Time.zone.now.to_s)
+    end
+
+    def set_skipped_account_deletion_at(user)
+      return unless user
+
+      upsert_custom_attribute(user_id: user.id, key: SKIPPED_ACCOUNT_DELETION_AT, value: Time.zone.now.to_s)
+    end
+
+    def set_assumed_high_risk_reason(user:, reason:)
+      return unless user
+      return unless reason
+
+      upsert_custom_attribute(user_id: user.id, key: ASSUMED_HIGH_RISK_REASON, value: reason)
     end
 
     private
 
     def blocked_users
       by_key('blocked_at').by_updated_at(Date.yesterday.all_day)
+    end
+
+    def upsert_custom_attribute(user_id:, key:, value:)
+      return unless user_id && key && value
+
+      custom_attribute = {
+        user_id: user_id,
+        key: key,
+        value: value
+      }
+
+      upsert_custom_attributes([custom_attribute])
     end
   end
 end

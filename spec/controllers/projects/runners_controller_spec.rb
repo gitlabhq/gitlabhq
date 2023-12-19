@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
+RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }

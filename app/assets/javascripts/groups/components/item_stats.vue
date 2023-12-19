@@ -68,7 +68,7 @@ export default {
       css-class="project-stars"
       icon-name="star"
     />
-    <div v-if="isProject" class="last-updated">
+    <div v-if="isProject" class="last-updated gl-font-sm">
       <time-ago-tooltip :time="item.lastActivityAt" tooltip-placement="bottom" />
     </div>
   </div>

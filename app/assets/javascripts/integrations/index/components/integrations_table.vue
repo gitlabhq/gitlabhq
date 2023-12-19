@@ -117,11 +117,7 @@ export default {
     </template>
 
     <template #cell(title)="{ item }">
-      <gl-avatar-link
-        :href="item.edit_path"
-        :title="item.title"
-        :data-qa-selector="`${item.name}_link`"
-      >
+      <gl-avatar-link :href="item.edit_path" :title="item.title" :data-testid="`${item.name}-link`">
         <gl-avatar-labeled
           :label="item.title"
           :sub-label="item.description"

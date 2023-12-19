@@ -1,17 +1,31 @@
 {
   "type": "object",
-  "required": ["tags"],
-  "allOf": [{ "$ref": "./container_repository.json" }],
+  "required": [
+    "tags"
+  ],
+  "allOf": [
+    {
+      "$ref": "./container_repository.json"
+    }
+  ],
   "properties": {
     "tags": {
       "type": "object",
-      "required": ["nodes"],
+      "required": [
+        "nodes"
+      ],
       "properties": {
         "nodes": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "path", "location", "canDelete"],
+            "required": [
+              "name",
+              "path",
+              "location",
+              "canDelete",
+              "userPermissions"
+            ],
             "properties": {
               "name": {
                 "type": "string"
@@ -39,6 +53,15 @@
               },
               "canDelete": {
                 "type": "boolean"
+              },
+              "userPermissions": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "destroyContainerRepositoryTag": {
+                    "type": "boolean"
+                  }
+                }
               }
             }
           }

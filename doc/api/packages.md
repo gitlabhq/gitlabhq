@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Packages API **(FREE ALL)**
@@ -91,7 +91,7 @@ GET /groups/:id/packages
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
 | `id`                  | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `exclude_subgroups`   | boolean        | false    | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
+| `exclude_subgroups`   | boolean        | no       | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. |
@@ -263,7 +263,7 @@ GET /projects/:id/packages/:package_id/package_files
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/4/package_files"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"
 ```
 
 Example response:

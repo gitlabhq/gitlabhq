@@ -1,18 +1,15 @@
 <script>
-import {
-  GlForm,
-  GlFormFields,
-  GlButton,
-  GlFormInputGroup,
-  GlFormInput,
-  GlInputGroupText,
-  GlTruncate,
-} from '@gitlab/ui';
+import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '../constants';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_ID,
+  FORM_FIELD_PATH,
+  FORM_FIELD_PATH_VALIDATORS,
+} from '../constants';
+import OrganizationUrlField from './organization_url_field.vue';
 
 export default {
   name: 'NewEditForm',
@@ -20,17 +17,13 @@ export default {
     GlForm,
     GlFormFields,
     GlButton,
-    GlFormInputGroup,
-    GlFormInput,
-    GlInputGroupText,
-    GlTruncate,
+    OrganizationUrlField,
   },
   i18n: {
     cancel: __('Cancel'),
-    pathPlaceholder: s__('Organization|my-organization'),
   },
   formId: 'new-organization-form',
-  inject: ['organizationsPath', 'rootUrl'],
+  inject: ['organizationsPath'],
   props: {
     loading: {
       type: Boolean,
@@ -71,9 +64,6 @@ export default {
     };
   },
   computed: {
-    baseUrl() {
-      return joinPaths(this.rootUrl, this.organizationsPath, '/');
-    },
     fields() {
       const fields = {
         [FORM_FIELD_NAME]: {
@@ -103,13 +93,7 @@ export default {
         },
         [FORM_FIELD_PATH]: {
           label: s__('Organization|Organization URL'),
-          validators: [
-            formValidators.required(s__('Organization|Organization URL is required.')),
-            formValidators.factory(
-              s__('Organization|Organization URL must be a minimum of two characters.'),
-              (val) => val.length >= 2,
-            ),
-          ],
+          validators: FORM_FIELD_PATH_VALIDATORS,
           groupAttrs: {
             class: 'gl-w-full',
           },
@@ -156,22 +140,13 @@ export default {
       @submit="$emit('submit', formValues)"
     >
       <template #input(path)="{ id, value, validation, input, blur }">
-        <gl-form-input-group>
-          <template #prepend>
-            <gl-input-group-text class="organization-root-path">
-              <gl-truncate :text="baseUrl" position="middle" />
-            </gl-input-group-text>
-          </template>
-          <gl-form-input
-            v-bind="validation"
-            :id="id"
-            :value="value"
-            :placeholder="$options.i18n.pathPlaceholder"
-            class="gl-h-auto! gl-md-form-input-lg"
-            @input="onPathInput($event, input)"
-            @blur="blur"
-          />
-        </gl-form-input-group>
+        <organization-url-field
+          :id="id"
+          :value="value"
+          :validation="validation"
+          @input="onPathInput($event, input)"
+          @blur="blur"
+        />
       </template>
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">

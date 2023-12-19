@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Tutorial: Create Jira credentials **(FREE ALL)**
@@ -15,7 +15,7 @@ To create Jira credentials, here's what we're going to do:
 1. [Create a Jira group for the user](#create-a-jira-group-for-the-user).
 1. [Create a permission scheme for the group](#create-a-permission-scheme-for-the-group).
 
-Prerequisite:
+Prerequisites:
 
 - You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
 

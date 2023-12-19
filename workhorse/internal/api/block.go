@@ -60,3 +60,8 @@ func (b *blocker) WriteHeader(status int) {
 func (b *blocker) flush() {
 	b.WriteHeader(http.StatusOK)
 }
+
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (b *blocker) Unwrap() http.ResponseWriter {
+	return b.rw
+}

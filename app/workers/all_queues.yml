@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:ci_catalog_resources_process_sync_events
+  :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
@@ -275,7 +284,7 @@
   :tags: []
 - :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
   :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -284,7 +293,7 @@
   :tags: []
 - :name: cronjob:ci_runners_stale_machines_cleanup_cron
   :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1749,6 +1758,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_cleanup:packages_nuget_cleanup_stale_symbols
+  :worker_name: Packages::Nuget::CleanupStaleSymbolsWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry
@@ -2041,7 +2059,7 @@
   :worker_name: PipelineMetricsWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 3
   :idempotent: false
@@ -2291,6 +2309,15 @@
   :tags: []
 - :name: abuse_spam_abuse_events
   :worker_name: Abuse::SpamAbuseEventsWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: abuse_trust_score
+  :worker_name: Abuse::TrustScoreWorker
   :feature_category: :instance_resiliency
   :has_external_dependencies: false
   :urgency: :low
@@ -2559,6 +2586,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_server_import_stage_import_users
+  :worker_name: Gitlab::BitbucketServerImport::Stage::ImportUsersWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bulk_import
   :worker_name: BulkImportWorker
   :feature_category: :importers
@@ -2636,7 +2672,7 @@
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :memory
   :weight: 1
   :idempotent: true
   :tags: []
@@ -2646,6 +2682,15 @@
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: bulk_imports_transform_references
+  :worker_name: BulkImports::TransformReferencesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
   :tags: []
@@ -2703,6 +2748,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_low_urgency_cancel_redundant_pipelines
+  :worker_name: Ci::LowUrgencyCancelRedundantPipelinesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
   :feature_category: :mobile_devops
@@ -2714,7 +2768,7 @@
   :tags: []
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
-  :feature_category: :runner_fleet
+  :feature_category: :fleet_visibility
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3458,6 +3512,15 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: pages_deactivate_mr_deployments
+  :worker_name: Pages::DeactivateMrDeploymentsWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: pages_domain_ssl_renewal
   :worker_name: PagesDomainSslRenewalWorker

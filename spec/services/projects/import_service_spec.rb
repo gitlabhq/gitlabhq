@@ -183,81 +183,6 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             expect(result[:status]).to eq :error
             expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository [FILTERED]"
           end
-
-          context 'when bitbucket_parallel_importer feature flag is disabled' do
-            before do
-              stub_feature_flags(bitbucket_parallel_importer: false)
-            end
-
-            it 'succeeds if repository import is successful' do
-              expect(project.repository).to receive(:import_repository).and_return(true)
-              expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
-                expect(importer).to receive(:execute).and_return(true)
-              end
-
-              expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
-                expect(service).to receive(:execute).and_return(status: :success)
-              end
-
-              result = subject.execute
-
-              expect(result[:status]).to eq :success
-            end
-
-            it 'fails if repository import fails' do
-              expect(project.repository)
-                .to receive(:import_repository)
-                .with('https://bitbucket.org/vim/vim.git', resolved_address: '')
-                .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
-
-              result = subject.execute
-
-              expect(result[:status]).to eq :error
-              expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository [FILTERED]"
-            end
-
-            context 'when lfs import fails' do
-              it 'logs the error' do
-                error_message = 'error message'
-
-                expect(project.repository).to receive(:import_repository).and_return(true)
-
-                expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
-                  expect(importer).to receive(:execute).and_return(true)
-                end
-
-                expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
-                  expect(service).to receive(:execute).and_return(status: :error, message: error_message)
-                end
-
-                expect(Gitlab::AppLogger).to receive(:error).with("The Lfs import process failed. #{error_message}")
-
-                subject.execute
-              end
-            end
-
-            context 'when repository import scheduled' do
-              before do
-                expect(project.repository).to receive(:import_repository).and_return(true)
-                allow(subject).to receive(:import_data)
-              end
-
-              it 'downloads lfs objects if lfs_enabled is enabled for project' do
-                allow(project).to receive(:lfs_enabled?).and_return(true)
-
-                expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute)
-
-                subject.execute
-              end
-
-              it 'does not download lfs objects if lfs_enabled is not enabled for project' do
-                allow(project).to receive(:lfs_enabled?).and_return(false)
-                expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
-
-                subject.execute
-              end
-            end
-          end
         end
       end
     end
@@ -352,13 +277,53 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
       end
     end
 
+    context 'when import is a local request' do
+      before do
+        project.import_url = "http://127.0.0.1/group/project"
+      end
+
+      context 'when local network requests are enabled' do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+        end
+
+        it 'returns an error' do
+          expect(project.repository).not_to receive(:import_repository)
+          expect(subject.execute).to include(
+            status: :error,
+            message: end_with('Requests to localhost are not allowed')
+          )
+        end
+
+        context 'when environment is development' do
+          before do
+            stub_rails_env('development')
+          end
+
+          it 'imports successfully' do
+            expect(project.repository)
+              .to receive(:import_repository)
+              .and_return(true)
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+      end
+    end
+
     context 'when DNS rebind protection is disabled' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:dns_rebinding_protection_enabled?).and_return(false)
         project.import_url = "https://example.com/group/project"
 
         allow(Gitlab::UrlBlocker).to receive(:validate!)
-          .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: false)
+          .with(
+            project.import_url,
+            ports: Project::VALID_IMPORT_PORTS,
+            schemes: Project::VALID_IMPORT_PROTOCOLS,
+            allow_local_network: false,
+            allow_localhost: false,
+            dns_rebind_protection: false
+          )
           .and_return([Addressable::URI.parse("https://example.com/group/project"), nil])
       end
 
@@ -386,7 +351,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "https://example.com/group/project"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("https://172.16.123.1/group/project"), 'example.com'])
         end
 
@@ -407,7 +379,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             project.import_url = 'https://gitlab.com/gitlab-org/gitlab-development-kit'
 
             allow(Gitlab::UrlBlocker).to receive(:validate!)
-             .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+              .with(
+                project.import_url,
+                ports: Project::VALID_IMPORT_PORTS,
+                schemes: Project::VALID_IMPORT_PROTOCOLS,
+                allow_local_network: false,
+                allow_localhost: false,
+                dns_rebind_protection: true
+              )
              .and_return([Addressable::URI.parse('https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]/gitlab-org/gitlab-development-kit'), 'gitlab.com'])
           end
 
@@ -430,7 +409,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "http://example.com/group/project"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("http://172.16.123.1/group/project"), 'example.com'])
         end
 
@@ -452,7 +438,14 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           project.import_url = "git://example.com/group/project.git"
 
           allow(Gitlab::UrlBlocker).to receive(:validate!)
-            .with(project.import_url, ports: Project::VALID_IMPORT_PORTS, schemes: Project::VALID_IMPORT_PROTOCOLS, dns_rebind_protection: true)
+            .with(
+              project.import_url,
+              ports: Project::VALID_IMPORT_PORTS,
+              schemes: Project::VALID_IMPORT_PROTOCOLS,
+              allow_local_network: false,
+              allow_localhost: false,
+              dns_rebind_protection: true
+            )
             .and_return([Addressable::URI.parse("git://172.16.123.1/group/project"), 'example.com'])
         end
 

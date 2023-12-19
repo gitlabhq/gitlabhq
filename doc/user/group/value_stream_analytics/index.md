@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Value stream analytics **(FREE ALL)**
@@ -208,9 +207,10 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 > - Filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13216) in GitLab 13.3
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 > - Predefined date ranges dropdown list [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408656/) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. Disabled by default.
+> - Predefined date ranges dropdown list [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433149) in GitLab 16.7.
 
 FLAG:
-On self-managed GitLab, by default the predefined date ranges dropdown list feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default the predefined date ranges dropdown list feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. On GitLab.com, this feature is available.
 
 Prerequisites:
 
@@ -302,7 +302,7 @@ In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on
 
 ## View lifecycle and DORA metrics
 
-Prerequisite:
+Prerequisites:
 
 - To view deployment metrics, you must have a
 [production environment configured](#how-value-stream-analytics-identifies-the-production-environment).

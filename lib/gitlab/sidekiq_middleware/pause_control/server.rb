@@ -4,8 +4,8 @@ module Gitlab
   module SidekiqMiddleware
     module PauseControl
       class Server
-        def call(worker_class, job, _queue, &block)
-          ::Gitlab::SidekiqMiddleware::PauseControl::StrategyHandler.new(worker_class, job).perform(&block)
+        def call(worker, job, _queue, &block)
+          ::Gitlab::SidekiqMiddleware::PauseControl::StrategyHandler.new(worker, job).perform(&block)
         end
       end
     end

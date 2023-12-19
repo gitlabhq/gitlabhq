@@ -40,16 +40,6 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
   end
 
-  describe '.filesystem_id_from_disk' do
-    it 'catches errors' do
-      [Errno::ENOENT, Errno::EACCES, JSON::ParserError].each do |error|
-        stub_file_read(described_class.storage_metadata_file_path('default'), error: error)
-
-        expect(described_class.filesystem_id_from_disk('default')).to be_nil
-      end
-    end
-  end
-
   describe '.filesystem_id' do
     it 'returns an empty string when the relevant storage status is not found in the response' do
       response = double("response")
@@ -357,19 +347,6 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect do
           described_class.stub(:commit_service, 'default')
         end.to raise_error(/Unsupported Gitaly address/i)
-      end
-    end
-  end
-
-  describe '.can_use_disk?' do
-    it 'properly caches a false result' do
-      # spec_helper stubs this globally
-      allow(described_class).to receive(:can_use_disk?).and_call_original
-      expect(described_class).to receive(:filesystem_id).once
-      expect(described_class).to receive(:filesystem_id_from_disk).once
-
-      2.times do
-        described_class.can_use_disk?('unknown')
       end
     end
   end
@@ -917,6 +894,22 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
     context 'when RequestStore is not activated' do
       it_behaves_like 'with_feature_flag_actor'
+    end
+  end
+
+  describe '.execute' do
+    subject(:execute) do
+      described_class.execute('default', :ref_service, :find_local_branches, Gitaly::FindLocalBranchesRequest.new,
+        remote_storage: nil, timeout: 10.seconds)
+    end
+
+    it 'raises an exception when running within a concurrent Ruby thread' do
+      Thread.current[:restrict_within_concurrent_ruby] = true
+
+      expect { execute }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
+        "Cannot run 'gitaly' if running from `Concurrent::Promise`.")
+
+      Thread.current[:restrict_within_concurrent_ruby] = nil
     end
   end
 end

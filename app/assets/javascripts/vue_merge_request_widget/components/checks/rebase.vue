@@ -65,8 +65,9 @@ export default {
     },
     showRebaseWithoutPipeline() {
       return (
-        !this.mr.onlyAllowMergeIfPipelineSucceeds ||
-        (this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.allowMergeOnSkippedPipeline)
+        this.state.userPermissions.pushToSourceBranch &&
+        (!this.mr.onlyAllowMergeIfPipelineSucceeds ||
+          (this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.allowMergeOnSkippedPipeline))
       );
     },
     isForkMergeRequest() {
@@ -85,10 +86,8 @@ export default {
       );
     },
     tertiaryActionsButtons() {
-      if (this.check.result === 'success') return [];
-
       return [
-        {
+        this.state.userPermissions.pushToSourceBranch && {
           text: s__('mrWidget|Rebase'),
           loading: this.isMakingRequest || this.rebaseInProgress,
           testId: 'standard-rebase-button',

@@ -5,7 +5,7 @@ ENV GITLAB_LICENSE_MODE=test \
 
 # Clone GDK at specific sha and bootstrap packages
 #
-ARG GDK_SHA=e2e32c98ef2874a3bd13af00e0085f8299ff3288
+ARG GDK_SHA=768deeebc94e37ba103dfec8102e794ba0f22c4e
 RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
@@ -106,6 +106,6 @@ ENTRYPOINT [ "/home/gdk/entrypoint" ]
 CMD [ "gdk", "tail" ]
 
 HEALTHCHECK --interval=10s --timeout=1s --start-period=5s --retries=17 \
-    CMD curl --fail http://0.0.0.0:3000/users/sign_in || exit 1
+    CMD curl --fail http://gdk.test:3000/users/sign_in || exit 1
 
 EXPOSE 3000

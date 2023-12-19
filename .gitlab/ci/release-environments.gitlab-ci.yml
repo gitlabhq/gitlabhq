@@ -20,4 +20,7 @@ start-release-environments-pipeline:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
   trigger:
     strategy: depend
-    include: .gitlab/ci/release-environments/main.gitlab-ci.yml
+    include:
+      - project: 'gitlab-org/gitlab'
+        ref: 'master'
+        file: '.gitlab/ci/release-environments/main.gitlab-ci.yml'

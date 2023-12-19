@@ -9,6 +9,8 @@
 class LegacyDiffNote < Note
   include NoteOnDiff
 
+  self.allow_legacy_sti_class = true
+
   serialize :st_diff # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :line_code, presence: true, line_code: true

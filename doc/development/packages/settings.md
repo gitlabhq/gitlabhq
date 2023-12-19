@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Package Settings
@@ -10,7 +10,7 @@ This page includes an exhaustive list of settings related to and maintained by t
 
 ## Instance Settings
 
-### Package Registry
+### Package registry
 
 Setting | Table | Description
 ------- | ----- | -----------
@@ -36,7 +36,7 @@ Setting | Table | Description
 `terraform_module_max_file_size` | `plan_limits` | Maximum file size for a Terraform package file.
 `helm_max_file_size` | `plan_limits` | Maximum file size for a Helm package file.
 
-### Container Registry
+### Container registry
 
 Setting | Table | Description
 ------- | ----- | -----------
@@ -51,7 +51,7 @@ Setting | Table | Description
 `container_registry_expiration_policies_caching` | `application_settings` | Enable or disable tag creation timestamp caching during execution of cleanup policies.
 `container_registry_import_max_tags_count` | `application_settings` | Defines what is a the maximum amount of tags that we accept to migrate.
 `container_registry_import_max_retries` | `application_settings` | The maximum amount of retries done on a migration that is aborted.
-`container_registry_import_start_max_retries` | `application_settings` | The maximum amount of requests to start an import step that is sent to the Container Registry API.
+`container_registry_import_start_max_retries` | `application_settings` | The maximum amount of requests to start an import step that is sent to the container registry API.
 `container_registry_import_max_step_duration` | `application_settings` | The maximum amount of seconds before an ongoing migration is considered as stale.
 `container_registry_import_target_plan` | `application_settings` | The target subscription plan on which we're intend to pick container repositories.
 `container_registry_import_created_before` | `application_settings` | Only image repositories created before this timestamp are eligible for the migration.
@@ -69,6 +69,7 @@ Setting | Table | Description
 `generic_duplicate_exception_regex` | `namespace_package_settings` | Regex defining generic packages that are allowed to be duplicate when duplicates are not allowed.
 `nuget_duplicates_allowed` | `namespace_package_settings` | Allow or prevent duplicate NuGet packages.
 `nuget_duplicate_exception_regex` | `namespace_package_settings` | Regex defining NuGet packages that are allowed to be duplicate when duplicates are not allowed.
+`nuget_symbol_server_enabled` | `namespace_package_settings` | Enable or disable the NuGet symbol server.
 Dependency Proxy Cleanup Policies - `ttl` | `dependency_proxy_image_ttl_group_policies` | Number of days to retain an unused Dependency Proxy file before it is removed.
 Dependency Proxy - `enabled` | `dependency_proxy_image_ttl_group_policies` | Enable or disable the Dependency Proxy cleanup policy.
 

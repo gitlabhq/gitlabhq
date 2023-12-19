@@ -43,6 +43,8 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
         expect(snippet).not_to be_repository_read_only
         expect(snippet.repository_storage).to eq(destination)
         expect(snippet.snippet_repository.shard_name).to eq(destination)
+        expect(repository_storage_move.reload).to be_finished
+        expect(repository_storage_move.error_message).to be_nil
       end
     end
 
@@ -66,7 +68,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
       it 'unmarks the repository as read-only without updating the repository storage' do
         expect(snippet_repository_double).to receive(:replicate)
           .with(snippet.repository.raw)
-          .and_raise(Gitlab::Git::CommandError)
+          .and_raise(Gitlab::Git::CommandError, 'Boom')
         expect(snippet_repository_double).to receive(:remove)
 
         expect do
@@ -76,6 +78,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
         expect(snippet).not_to be_repository_read_only
         expect(snippet.repository_storage).to eq('default')
         expect(repository_storage_move).to be_failed
+        expect(repository_storage_move.error_message).to eq('Boom')
       end
     end
 

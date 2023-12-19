@@ -1,8 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Subscribe to GitLab **(PREMIUM ALL)**
@@ -10,7 +9,7 @@ type: index, reference
 Choose and manage the subscription that's right for you and your organization.
 
 - [Choose a subscription](choosing_subscription.md)
-- [Compare self-managed to SaaS](../install/migrate/compare_sm_to_saas.md)
+- [Compare self-managed to SaaS](choosing_subscription.md)
 - [GitLab SaaS](gitlab_com/index.md)
 - [GitLab self-managed](self_managed/index.md)
 - [GitLab Dedicated](gitlab_dedicated/index.md)

@@ -1,3 +1,4 @@
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl from '~/namespaces/leave_by_url';
@@ -8,6 +9,7 @@ import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initForksButton from '~/forks/init_forks_button';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import InitMoreActionsDropdown from '~/groups_projects/init_more_actions_dropdown';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
@@ -34,11 +36,9 @@ if (document.querySelector('.project-show-activity')) {
     .catch(() => {});
 }
 
-leaveByUrl('project');
-
 initVueNotificationsDropdown();
 
-new ShortcutsNavigation(); // eslint-disable-line no-new
+addShortcutsExtension(ShortcutsNavigation);
 
 initUploadFileTrigger();
 initClustersDeprecationAlert();
@@ -61,3 +61,5 @@ if (document.querySelector('.js-autodevops-banner')) {
 }
 
 initForksButton();
+InitMoreActionsDropdown();
+leaveByUrl('project');

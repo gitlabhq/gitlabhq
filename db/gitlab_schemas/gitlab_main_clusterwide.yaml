@@ -19,3 +19,4 @@ allow_cross_foreign_keys:
   # temporarily allow FKs between clusterwide till all tables
   # are moved to either _clusterwide or _cell
   - gitlab_main
+cell_local: false

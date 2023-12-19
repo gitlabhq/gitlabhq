@@ -35,7 +35,7 @@ module DesignManagement
     attr_reader :files
 
     def upload_designs!
-      ::DesignManagement::Version.with_lock(project.id, repository) do
+      DesignManagement::Version.with_lock(project.id, repository) do
         actions = build_actions
 
         [

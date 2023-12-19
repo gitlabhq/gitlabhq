@@ -54,14 +54,6 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       it_behaves_like 'does not enqueue a worker to sync a metadata cache'
 
-      context 'when npm_metadata_cache disabled' do
-        before do
-          stub_feature_flags(npm_metadata_cache: false)
-        end
-
-        it_behaves_like 'generates metadata response "on-the-fly"'
-      end
-
       context 'when metadata cache file does not exist' do
         before do
           FileUtils.rm_rf(npm_metadata_cache.file.path)

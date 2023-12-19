@@ -11,7 +11,6 @@ milestone: "13.6"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/229918
 time_frame: 7d
 data_source: internal_events
-instrumentation_class: RedisHLLMetric
 options:
   events:
   - g_project_management_issue_title_changed

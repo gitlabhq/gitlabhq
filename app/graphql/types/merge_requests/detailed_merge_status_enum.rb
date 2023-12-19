@@ -48,6 +48,9 @@ module Types
       value 'PREPARING',
             value: :preparing,
             description: 'Merge request diff is being created.'
+      value 'JIRA_ASSOCIATION',
+            value: :jira_association_missing,
+            description: 'Either the title or description must reference a Jira issue.'
     end
   end
 end

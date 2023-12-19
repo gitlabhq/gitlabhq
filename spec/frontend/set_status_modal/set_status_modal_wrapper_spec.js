@@ -131,12 +131,12 @@ describe('SetStatusModalWrapper', () => {
 
     beforeEach(async () => {
       await initEmojiMock();
-      wrapper = createComponent({ currentClearStatusAfter: '2022-12-06 11:00:00 UTC' });
+      wrapper = createComponent({ currentClearStatusAfter: '2022-12-06T11:00:00Z' });
       return initModal();
     });
 
     it('displays date and time that status will expire in dropdown toggle button', () => {
-      expect(wrapper.findByRole('button', { name: 'Dec 6, 2022 11:00am' }).exists()).toBe(true);
+      expect(wrapper.findByRole('button', { name: 'Dec 6, 2022, 11:00 AM' }).exists()).toBe(true);
     });
   });
 

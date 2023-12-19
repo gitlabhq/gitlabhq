@@ -240,9 +240,15 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
 
       # Since we're not batching alert queries across projects,
       # we have to account for that.
-      # 1 for both projects, 1 for alerts in each project == 3
+      # 1 for routes to find routes.source_id of projects matching paths
+      # 1 for projects belonging to the above routes
+      # 1 for preloading routes of the projects
+      # 1 for loading the namespaces associated to the project
+      # 1 for loading the routes associated with the namespace
+      # 1x2 for alerts in each project
+      # Total == 7
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      max_count += 2
+      max_count += 6
 
       expect do
         reference_filter(markdown)

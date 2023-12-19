@@ -7,7 +7,6 @@ import {
   GlCollapsibleListbox,
   GlLink,
   GlSprintf,
-  GlAlert,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isAbsolute } from '~/lib/utils/url_utility';
@@ -19,9 +18,9 @@ import {
 import csrf from '~/lib/utils/csrf';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import getNamespacesQuery from '../graphql/queries/k8s_namespaces.query.graphql';
 import getUserAuthorizedAgents from '../graphql/queries/user_authorized_agents.query.graphql';
 import EnvironmentFluxResourceSelector from './environment_flux_resource_selector.vue';
+import EnvironmentNamespaceSelector from './environment_namespace_selector.vue';
 
 export default {
   components: {
@@ -32,8 +31,8 @@ export default {
     GlCollapsibleListbox,
     GlLink,
     GlSprintf,
-    GlAlert,
     EnvironmentFluxResourceSelector,
+    EnvironmentNamespaceSelector,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -72,8 +71,6 @@ export default {
     urlFeedback: __('The URL should start with http:// or https://'),
     agentLabel: s__('Environments|GitLab agent'),
     agentHelpText: s__('Environments|Select agent'),
-    namespaceLabel: s__('Environments|Kubernetes namespace (optional)'),
-    namespaceHelpText: s__('Environments|Select namespace'),
     save: __('Save'),
     cancel: __('Cancel'),
     reset: __('Reset'),
@@ -93,34 +90,8 @@ export default {
       selectedAgentId: this.environment.clusterAgentId,
       agentSearchTerm: '',
       selectedNamespace: this.environment.kubernetesNamespace,
-      k8sNamespaces: [],
-      namespaceSearchTerm: '',
       kubernetesError: '',
     };
-  },
-  apollo: {
-    k8sNamespaces: {
-      query: getNamespacesQuery,
-      skip() {
-        return !this.showNamespaceSelector;
-      },
-      variables() {
-        return {
-          configuration: this.k8sAccessConfiguration,
-        };
-      },
-      update(data) {
-        return data?.k8sNamespaces || [];
-      },
-      error(error) {
-        this.kubernetesError = error.message;
-      },
-      result(result) {
-        if (!result?.error && !result.errors?.length) {
-          this.kubernetesError = null;
-        }
-      },
-    },
   },
   computed: {
     loadingNamespacesList() {
@@ -161,25 +132,8 @@ export default {
         item.text.toLowerCase().includes(lowerCasedSearchTerm),
       );
     },
-    namespacesList() {
-      return this.k8sNamespaces.map((item) => {
-        return {
-          value: item.metadata.name,
-          text: item.metadata.name,
-        };
-      });
-    },
-    filteredNamespacesList() {
-      const lowerCasedSearchTerm = this.namespaceSearchTerm.toLowerCase();
-      return this.namespacesList.filter((item) =>
-        item.text.toLowerCase().includes(lowerCasedSearchTerm),
-      );
-    },
     showNamespaceSelector() {
       return Boolean(this.selectedAgentId);
-    },
-    namespaceDropdownToggleText() {
-      return this.selectedNamespace || this.$options.i18n.namespaceHelpText;
     },
     showFluxResourceSelector() {
       return Boolean(this.selectedNamespace && this.selectedAgentId);
@@ -238,9 +192,6 @@ export default {
         kubernetesNamespace: null,
         fluxResourcePath: null,
       });
-    },
-    onNamespaceSearch(search) {
-      this.namespaceSearchTerm = search;
     },
   },
 };
@@ -334,34 +285,14 @@ export default {
           />
         </gl-form-group>
 
-        <gl-form-group
+        <environment-namespace-selector
           v-if="showNamespaceSelector"
-          :label="$options.i18n.namespaceLabel"
-          label-for="environment_namespace"
-        >
-          <gl-alert v-if="kubernetesError" variant="warning" :dismissible="false" class="gl-mb-5">
-            {{ kubernetesError }}
-          </gl-alert>
-          <gl-collapsible-listbox
-            v-else
-            id="environment_namespace"
-            v-model="selectedNamespace"
-            class="gl-w-full"
-            data-testid="namespace-selector"
-            block
-            :items="filteredNamespacesList"
-            :loading="loadingNamespacesList"
-            :toggle-text="namespaceDropdownToggleText"
-            :header-text="$options.i18n.namespaceHelpText"
-            :reset-button-label="$options.i18n.reset"
-            :searchable="true"
-            @search="onNamespaceSearch"
-            @select="
-              onChange({ ...environment, kubernetesNamespace: $event, fluxResourcePath: null })
-            "
-            @reset="onChange({ ...environment, kubernetesNamespace: null })"
-          />
-        </gl-form-group>
+          :namespace="selectedNamespace"
+          :configuration="k8sAccessConfiguration"
+          @change="
+            onChange({ ...environment, kubernetesNamespace: $event, fluxResourcePath: null })
+          "
+        />
 
         <environment-flux-resource-selector
           v-if="showFluxResourceSelector"

@@ -38,7 +38,6 @@ RSpec.describe GitlabSchema.types['ServiceType'] do
       PUMBLE_SERVICE
       PUSHOVER_SERVICE
       REDMINE_SERVICE
-      SHIMO_SERVICE
       SLACK_SERVICE
       SLACK_SLASH_COMMANDS_SERVICE
       TEAMCITY_SERVICE

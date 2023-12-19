@@ -2573,7 +2573,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     RSpec.shared_examples 'CI_JOB_TOKEN enforces the expected permissions' do
       with_them do
         let(:current_user) { public_send(user_role) }
-        let(:project) { public_send("#{project_visibility}_project") }
+        let(:project) { public_project }
         let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
         let(:scope_project) do
@@ -2607,20 +2607,19 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    # Remove project_visibility on FF restrict_ci_job_token_for_public_and_internal_projects cleanup
-    where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
-      :public | :reporter | false | :same      | true  | true
-      :public | :reporter | true  | :same      | true  | true
-      :public | :reporter | false | :same      | false | true
-      :public | :reporter | false | :different | true  | false
-      :public | :reporter | true  | :different | true  | false
-      :public | :reporter | false | :different | false | true
-      :public | :guest    | false | :same      | true  | true
-      :public | :guest    | true  | :same      | true  | true
-      :public | :guest    | false | :same      | false | true
-      :public | :guest    | false | :different | true  | false
-      :public | :guest    | true  | :different | true  | false
-      :public | :guest    | false | :different | false | true
+    where(:user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
+      :reporter | false | :same      | true  | true
+      :reporter | true  | :same      | true  | true
+      :reporter | false | :same      | false | true
+      :reporter | false | :different | true  | false
+      :reporter | true  | :different | true  | false
+      :reporter | false | :different | false | true
+      :guest    | false | :same      | true  | true
+      :guest    | true  | :same      | true  | true
+      :guest    | false | :same      | false | true
+      :guest    | false | :different | true  | false
+      :guest    | true  | :different | true  | false
+      :guest    | false | :different | false | true
     end
 
     include_examples "CI_JOB_TOKEN enforces the expected permissions"
@@ -2663,60 +2662,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
           permissions.each { |p| expect_disallowed(p) }
         end
-
-        context "with restrict_ci_job_token_for_public_and_internal_projects disabled" do
-          before do
-            stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
-          end
-
-          it 'allows all permissions for private' do
-            project.project_feature.update!("#{feature}_access_level": ProjectFeature::PRIVATE)
-
-            permissions.each { |p| expect_allowed(p) }
-          end
-        end
       end
-    end
-
-    context "with FF restrict_ci_job_token_for_public_and_internal_projects disabled" do
-      before do
-        stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
-      end
-
-      where(:project_visibility, :user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
-        :private  | :reporter | false | :same      | true  | true
-        :private  | :reporter | false | :same      | false | true
-        :private  | :reporter | false | :different | true  | false
-        :private  | :reporter | false | :different | false | true
-        :private  | :guest    | false | :same      | true  | true
-        :private  | :guest    | false | :same      | false | true
-        :private  | :guest    | false | :different | true  | false
-        :private  | :guest    | false | :different | false | true
-
-        :internal | :reporter | false | :same      | true  | true
-        :internal | :reporter | true  | :same      | true  | true
-        :internal | :reporter | false | :same      | false | true
-        :internal | :reporter | false | :different | true  | true
-        :internal | :reporter | true  | :different | true  | false
-        :internal | :reporter | false | :different | false | true
-        :internal | :guest    | false | :same      | true  | true
-        :internal | :guest    | true  | :same      | true  | true
-        :internal | :guest    | false | :same      | false | true
-        :internal | :guest    | false | :different | true  | true
-        :internal | :guest    | true  | :different | true  | false
-        :internal | :guest    | false | :different | false | true
-
-        :public   | :reporter | false | :same      | true  | true
-        :public   | :reporter | false | :same      | false | true
-        :public   | :reporter | false | :different | true  | true
-        :public   | :reporter | false | :different | false | true
-        :public   | :guest    | false | :same      | true  | true
-        :public   | :guest    | false | :same      | false | true
-        :public   | :guest    | false | :different | true  | true
-        :public   | :guest    | false | :different | false | true
-      end
-
-      include_examples "CI_JOB_TOKEN enforces the expected permissions"
     end
   end
 
@@ -3321,37 +3267,46 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'read_model_registry' do
-    let(:project_with_feature) { project }
-    let(:current_user) { owner }
+    using RSpec::Parameterized::TableSyntax
 
-    before do
-      stub_feature_flags(model_registry: false)
-      stub_feature_flags(model_registry: project_with_feature) if project_with_feature
+    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:guest)      | Featurable::ENABLED  | true
+      true  | ref(:guest)      | Featurable::PRIVATE  | true
+      true  | ref(:guest)      | Featurable::DISABLED | false
+      true  | ref(:non_member) | Featurable::ENABLED  | true
+      true  | ref(:non_member) | Featurable::PRIVATE  | false
+      true  | ref(:non_member) | Featurable::DISABLED | false
     end
+    with_them do
+      before do
+        stub_feature_flags(model_registry: feature_flag_enabled)
+        project.project_feature.update!(model_registry_access_level: access_level)
+      end
 
-    context 'feature flag is enabled' do
-      specify { is_expected.to be_allowed(:read_model_registry) }
-    end
-
-    context 'feature flag is disabled' do
-      let(:project_with_feature) { nil }
-
-      specify { is_expected.not_to be_allowed(:read_model_registry) }
+      if params[:allowed]
+        it { expect_allowed(:read_model_registry) }
+      else
+        it { expect_disallowed(:read_model_registry) }
+      end
     end
   end
 
   describe 'write_model_registry' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:ff_model_registry_enabled, :current_user, :allowed) do
-      true  | ref(:reporter)   | true
-      true  | ref(:guest)      | false
-      false | ref(:owner)      | false
+    where(:feature_flag_enabled, :current_user, :access_level, :allowed) do
+      false | ref(:owner)      | Featurable::ENABLED  | false
+      true  | ref(:reporter)   | Featurable::ENABLED  | true
+      true  | ref(:reporter)   | Featurable::PRIVATE  | true
+      true  | ref(:reporter)   | Featurable::DISABLED | false
+      true  | ref(:guest)      | Featurable::ENABLED  | false
+      true  | ref(:non_member) | Featurable::ENABLED  | false
     end
     with_them do
       before do
-        stub_feature_flags(model_registry: false)
-        stub_feature_flags(model_registry: project) if ff_model_registry_enabled
+        stub_feature_flags(model_registry: feature_flag_enabled)
+        project.project_feature.update!(model_registry_access_level: access_level)
       end
 
       if params[:allowed]

@@ -4,7 +4,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
-import { formatJobCount, tableField } from '../utils';
+import { tableField } from '../utils';
 import RunnerBulkDelete from './runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
@@ -94,9 +94,6 @@ export default {
     },
     onDeleted(event) {
       this.$emit('deleted', event);
-    },
-    formatJobCount(jobCount) {
-      return formatJobCount(jobCount);
     },
     runnerTrAttr(runner) {
       if (runner) {

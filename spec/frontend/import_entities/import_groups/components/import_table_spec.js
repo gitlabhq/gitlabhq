@@ -9,9 +9,12 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK, HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
+
 import { STATUSES } from '~/import_entities/constants';
-import { i18n, ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
+import { ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
+import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
+import ImportHistoryLink from '~/import_entities/import_groups/components//import_history_link.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -39,6 +42,7 @@ describe('import table', () => {
     generateFakeEntry({ id: 1, status: STATUSES.NONE }),
     generateFakeEntry({ id: 2, status: STATUSES.FINISHED }),
     generateFakeEntry({ id: 3, status: STATUSES.NONE }),
+    generateFakeEntry({ id: 4, status: STATUSES.FINISHED, hasFailures: true }),
   ];
 
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
@@ -64,6 +68,7 @@ describe('import table', () => {
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
+  const findAllImportStatuses = () => wrapper.findAllComponents(ImportStatus);
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
@@ -144,7 +149,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      expect(wrapper.findComponent(GlEmptyState).props().title).toBe(i18n.NO_GROUPS_FOUND);
+      expect(wrapper.findComponent(GlEmptyState).props().title).toBe('No groups found');
     });
   });
 
@@ -159,6 +164,38 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(wrapper.findAll('tbody tr')).toHaveLength(FAKE_GROUPS.length);
+  });
+
+  it('renders correct import status for each group', async () => {
+    const expectedStatuses = ['Not started', 'Complete', 'Not started', 'Partially completed'];
+
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: FAKE_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+    });
+    await waitForPromises();
+
+    expect(findAllImportStatuses().wrappers.map((w) => w.text())).toEqual(expectedStatuses);
+  });
+
+  it('renders import history link for imports with id', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: FAKE_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+    });
+    await waitForPromises();
+
+    const importHistoryLinks = wrapper.findAllComponents(ImportHistoryLink);
+
+    expect(importHistoryLinks).toHaveLength(2);
+    expect(importHistoryLinks.at(0).props('id')).toBe(FAKE_GROUPS[1].id);
+    expect(importHistoryLinks.at(1).props('id')).toBe(FAKE_GROUPS[3].id);
   });
 
   it('correctly maintains root namespace as last import target', async () => {
@@ -260,6 +297,42 @@ describe('import table', () => {
     });
   });
 
+  describe('when importGroup query is using stale data from LocalStorageCache', () => {
+    it('displays error', async () => {
+      const mockMutationWithProgressInvalid = jest.fn().mockResolvedValue({
+        __typename: 'ClientBulkImportSourceGroup',
+        id: 1,
+        lastImportTarget: { id: 1, targetNamespace: 'root', newName: 'group1' },
+        progress: {
+          __typename: 'ClientBulkImportProgress',
+          id: null,
+          status: 'failed',
+          message: '',
+        },
+      });
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [FAKE_GROUP],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+        importGroups: mockMutationWithProgressInvalid,
+      });
+
+      await waitForPromises();
+      await findRowImportDropdownAtIndex(0).trigger('click');
+      await waitForPromises();
+
+      expect(mockMutationWithProgressInvalid).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Importing the group failed.',
+        captureError: true,
+        error: expect.any(Error),
+      });
+    });
+  });
+
   it('displays error if importing group fails', async () => {
     createComponent({
       bulkImportSourceGroups: () => ({
@@ -276,11 +349,11 @@ describe('import table', () => {
     await findRowImportDropdownAtIndex(0).trigger('click');
     await waitForPromises();
 
-    expect(createAlert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: i18n.ERROR_IMPORT,
-      }),
-    );
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'Importing the group failed.',
+      captureError: true,
+      error: expect.any(Error),
+    });
   });
 
   it('displays inline error if importing group reports rate limit', async () => {
@@ -302,7 +375,9 @@ describe('import table', () => {
     await waitForPromises();
 
     expect(createAlert).not.toHaveBeenCalled();
-    expect(wrapper.find('tbody tr').text()).toContain(i18n.ERROR_TOO_MANY_REQUESTS);
+    expect(wrapper.find('tbody tr').text()).toContain(
+      'Over six imports in one minute were attempted. Wait at least one minute and try again.',
+    );
   });
 
   it('displays inline error if backend returns validation error', async () => {
@@ -316,6 +391,7 @@ describe('import table', () => {
         __typename: 'ClientBulkImportProgress',
         id: null,
         status: 'failed',
+        hasFailures: true,
         message: mockValidationError,
       },
     });

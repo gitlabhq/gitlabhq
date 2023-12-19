@@ -4,20 +4,24 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
   include GraphqlHelpers
+  include WorkhorseHelpers
 
   let_it_be(:user) { create(:user) }
 
   let(:mutation) { graphql_mutation(:organization_create, params) }
   let(:name) { 'Name' }
   let(:path) { 'path' }
+  let(:description) { nil }
+  let(:avatar) { fixture_file_upload("spec/fixtures/dk.png") }
   let(:params) do
     {
       name: name,
-      path: path
+      path: path,
+      avatar: avatar
     }
   end
 
-  subject(:create_organization) { post_graphql_mutation(mutation, current_user: current_user) }
+  subject(:create_organization) { post_graphql_mutation_with_uploads(mutation, current_user: current_user) }
 
   it { expect(described_class).to require_graphql_authorizations(:create_organization) }
 
@@ -27,6 +31,7 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
 
   context 'when the user does not have permission' do
     let(:current_user) { nil }
+    let(:avatar) { nil }
 
     it_behaves_like 'a mutation that returns a top-level access error'
 
@@ -48,17 +53,35 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
       end
     end
 
-    it 'creates an organization' do
-      expect { create_organization }.to change { Organizations::Organization.count }.by(1)
+    shared_examples 'creating an organization' do
+      it 'creates an organization' do
+        expect { create_organization }.to change { Organizations::Organization.count }.by(1)
+      end
+
+      it 'returns the new organization' do
+        create_organization
+
+        expect(graphql_data_at(:organization_create, :organization)).to match a_hash_including(
+          'name' => name,
+          'path' => path,
+          'description' => description
+        )
+      end
     end
 
-    it 'returns the new organization' do
-      create_organization
+    context 'with description' do
+      let(:description) { 'Organization description' }
+      let(:params) do
+        {
+          name: name,
+          path: path,
+          description: description
+        }
+      end
 
-      expect(graphql_data_at(:organization_create, :organization)).to match a_hash_including(
-        'name' => name,
-        'path' => path
-      )
+      include_examples 'creating an organization'
     end
+
+    include_examples 'creating an organization'
   end
 end

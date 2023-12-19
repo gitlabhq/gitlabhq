@@ -53,11 +53,11 @@ RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns, feature_category: :data
         expect(subject.execute).to eq(
           [
             ['Testing::A', {
-              'unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0'),
-              'also_unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-02-01'), '12.1')
+              'unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0', false),
+              'also_unused' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-02-01'), '12.1', false)
             }],
             ['Testing::B', {
-              'other' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0')
+              'other' => IgnorableColumns::ColumnIgnore.new(Date.parse('2019-01-01'), '12.0', false)
             }]
           ])
       end

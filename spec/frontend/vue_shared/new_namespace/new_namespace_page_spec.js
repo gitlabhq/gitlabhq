@@ -116,21 +116,23 @@ describe('Experimental new namespace creation app', () => {
     expect(findLegacyContainer().exists()).toBe(true);
   });
 
-  describe.each`
-    featureFlag | isSuperSidebarCollapsed | isToggleVisible
-    ${true}     | ${true}                 | ${true}
-    ${true}     | ${false}                | ${false}
-    ${false}    | ${true}                 | ${false}
-    ${false}    | ${false}                | ${false}
-  `('Super sidebar toggle', ({ featureFlag, isSuperSidebarCollapsed, isToggleVisible }) => {
-    beforeEach(() => {
-      sidebarState.isCollapsed = isSuperSidebarCollapsed;
-      gon.use_new_navigation = featureFlag;
-      createComponent();
+  describe('SuperSidebarToggle', () => {
+    describe('when collapsed', () => {
+      it('shows sidebar toggle', () => {
+        sidebarState.isCollapsed = true;
+        createComponent();
+
+        expect(findSuperSidebarToggle().exists()).toBe(true);
+      });
     });
 
-    it(`${isToggleVisible ? 'is visible' : 'is not visible'}`, () => {
-      expect(findSuperSidebarToggle().exists()).toBe(isToggleVisible);
+    describe('when not collapsed', () => {
+      it('does not show sidebar toggle', () => {
+        sidebarState.isCollapsed = false;
+        createComponent();
+
+        expect(findSuperSidebarToggle().exists()).toBe(false);
+      });
     });
   });
 
@@ -170,17 +172,10 @@ describe('Experimental new namespace creation app', () => {
   });
 
   describe('top bar', () => {
-    it('adds "top-bar-fixed" and "container-fluid" classes when new navigation enabled', () => {
-      gon.use_new_navigation = true;
+    it('has "top-bar-fixed" and "container-fluid" classes', () => {
       createComponent();
 
       expect(findTopBar().classes()).toEqual(['top-bar-fixed', 'container-fluid']);
-    });
-
-    it('does not add classes when new navigation is not enabled', () => {
-      createComponent();
-
-      expect(findTopBar().classes()).toEqual([]);
     });
   });
 });

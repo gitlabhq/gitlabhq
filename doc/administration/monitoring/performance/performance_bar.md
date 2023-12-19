@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Cloud Connector
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Performance bar **(FREE SELF)**
@@ -107,11 +107,9 @@ The performance bar is disabled by default for non-administrators. To enable it
 for a given group:
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Metrics and profiling**
-   (`admin/application_settings/metrics_and_profiling`), and expand
-   **Profiling - Performance bar**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
+1. Expand **Profiling - Performance bar**.
 1. Select **Allow non-administrators access to the performance bar**.
 1. In the **Allow access to members of the following group** field, provide the full path of the
    group allowed to access the performance.

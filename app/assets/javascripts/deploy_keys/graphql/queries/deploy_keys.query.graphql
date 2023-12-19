@@ -1,0 +1,26 @@
+query getDeployKeys($projectPath: ID!, $scope: DeployKeysScope, $page: Integer) {
+  project(fullPath: $projectPath) {
+    id
+    deployKeys(scope: $scope, page: $page) @client {
+      id
+      title
+      fingerprintSha256
+      fingerprint
+      editPath
+      destroyedWhenOrphaned
+      almostOrphaned
+      expiresAt
+      createdAt
+      enablePath
+      disablePath
+      deployKeysProjects {
+        canPush
+        project {
+          id
+          fullPath
+          fullName
+        }
+      }
+    }
+  }
+}

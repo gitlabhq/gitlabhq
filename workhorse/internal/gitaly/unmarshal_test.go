@@ -3,9 +3,9 @@ package gitaly
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestUnmarshalJSON(t *testing.T) {

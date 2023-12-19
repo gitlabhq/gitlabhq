@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab for Jira Cloud app **(FREE ALL)**
@@ -14,6 +14,11 @@ With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/
 You can use the GitLab for Jira Cloud app to link top-level groups or subgroups. It's not possible to directly link projects or personal namespaces.
 
 To set up the GitLab for Jira Cloud app on GitLab.com, [install the GitLab for Jira Cloud app](#install-the-gitlab-for-jira-cloud-app).
+
+After you set up the app, you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-project-toolchain-in-jira)
+developed and maintained by Atlassian to [link GitLab repositories to Jira projects](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature).
+The project toolchain does not affect how development information is synced between GitLab and Jira Cloud.
+
 For Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
 
 ## GitLab data synced to Jira
@@ -97,7 +102,7 @@ and the access token is stored encrypted with `AES256-GCM` on GitLab.
 
 When configuring the GitLab for Jira Cloud app on GitLab.com, you might encounter the following issues.
 
-For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md#troubleshooting).
+For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
 ### `Failed to link group`
 

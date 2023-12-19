@@ -128,6 +128,11 @@ module Gitlab
           @exception_counter.increment({ storage: storage_key, exception: ex.class.to_s })
         end
 
+        def instance_count_connection_exception(ex)
+          @connection_exception_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_connection_exceptions_total, 'Client side Redis connection exception count, per Redis server, per exception class')
+          @connection_exception_counter.increment({ storage: storage_key, exception: ex.class.to_s })
+        end
+
         def instance_count_cluster_redirection(ex)
           # This metric is meant to give a client side view of how often are commands
           # redirected to the right node, especially during resharding..

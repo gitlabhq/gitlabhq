@@ -31,7 +31,8 @@ module Onboarding
       :secure_coverage_fuzzing_run,
       :secure_api_fuzzing_run,
       :secure_cluster_image_scanning_run,
-      :license_scanning_run
+      :license_scanning_run,
+      :promote_ultimate_features
     ].freeze
 
     scope :incomplete_actions, ->(actions) do
@@ -101,10 +102,6 @@ module Onboarding
       def root_namespace?(namespace)
         namespace&.root?
       end
-    end
-
-    def number_of_completed_actions
-      attributes.extract!(*ACTIONS.map { |action| self.class.column_name(action).to_s }).compact!.size
     end
 
     private

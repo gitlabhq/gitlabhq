@@ -122,7 +122,7 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def project_id
-          @project_id ||= Project.where_full_path_in([full_path]).pluck(:id)
+          @project_id ||= Project.where_full_path_in([full_path], use_includes: false).pluck(:id)
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end

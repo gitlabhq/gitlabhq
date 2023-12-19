@@ -52,7 +52,7 @@ export default {
         :key="index"
         :emojis="emojiGroup"
         :render-group="renderGroup"
-        :click-emoji="(emoji) => onClick(emoji)"
+        @emoji-click="onClick"
       />
     </template>
     <p v-else>

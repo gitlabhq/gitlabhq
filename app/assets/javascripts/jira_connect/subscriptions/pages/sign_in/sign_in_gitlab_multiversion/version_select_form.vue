@@ -11,6 +11,7 @@ import { __, s__ } from '~/locale';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
 import SelfManagedAlert from './self_managed_alert.vue';
+import DotComAlert from './dot_com_alert.vue';
 import SetupInstructions from './setup_instructions.vue';
 
 const RADIO_OPTIONS = {
@@ -30,6 +31,7 @@ export default {
     GlFormRadio,
     GlButton,
     SelfManagedAlert,
+    DotComAlert,
     SetupInstructions,
   },
   props: {
@@ -113,6 +115,7 @@ export default {
         </gl-form-radio>
       </gl-form-radio-group>
       <self-managed-alert v-if="isSelfManagedSelected" />
+      <dot-com-alert v-else />
 
       <div class="gl-display-flex gl-justify-content-end gl-mt-5">
         <gl-button variant="confirm" type="submit" :loading="loading" data-testid="submit-button">{{

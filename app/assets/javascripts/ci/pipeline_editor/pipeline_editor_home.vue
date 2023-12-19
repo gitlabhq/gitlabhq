@@ -2,7 +2,6 @@
 import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import JobAssistantDrawer from 'jh_else_ce/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
@@ -18,9 +17,6 @@ import {
   EDITOR_APP_DRAWER_AI_ASSISTANT,
   EDITOR_APP_DRAWER_NONE,
 } from './constants';
-
-const AiAssistantDrawer = () =>
-  import('ee_component/ci/pipeline_editor/components/ai_assistant_drawer.vue');
 
 export default {
   EDITOR_APP_DRAWER_HELP,
@@ -45,13 +41,11 @@ export default {
     GlModal,
     PipelineEditorDrawer,
     JobAssistantDrawer,
-    AiAssistantDrawer,
     PipelineEditorFileNav,
     PipelineEditorFileTree,
     PipelineEditorHeader,
     PipelineEditorTabs,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -104,9 +98,6 @@ export default {
     },
     showJobAssistantDrawer() {
       return this.currentDrawer === EDITOR_APP_DRAWER_JOB_ASSISTANT;
-    },
-    showAiAssistantDrawer() {
-      return this.currentDrawer === EDITOR_APP_DRAWER_AI_ASSISTANT;
     },
   },
   mounted() {
@@ -189,7 +180,6 @@ export default {
           :is-new-ci-config-file="isNewCiConfigFile"
           :show-help-drawer="showHelpDrawer"
           :show-job-assistant-drawer="showJobAssistantDrawer"
-          :show-ai-assistant-drawer="showAiAssistantDrawer"
           v-on="$listeners"
           @switch-drawer="switchDrawer"
           @set-current-tab="setCurrentTab"
@@ -220,12 +210,6 @@ export default {
       :is-visible="showJobAssistantDrawer"
       :z-index="drawerIndex[$options.EDITOR_APP_DRAWER_JOB_ASSISTANT]"
       v-on="$listeners"
-      @switch-drawer="switchDrawer"
-    />
-    <ai-assistant-drawer
-      v-if="glFeatures.aiCiConfigGenerator"
-      :is-visible="showAiAssistantDrawer"
-      :z-index="drawerIndex[$options.EDITOR_APP_DRAWER_AI_ASSISTANT]"
       @switch-drawer="switchDrawer"
     />
   </div>

@@ -1,0 +1,27 @@
+gitlab_ci:
+  rspec:
+    services:
+      - name: docker:dind
+        docker:
+          platform: amd64
+    script: echo Hello World
+
+request_response:
+  image: null
+  steps:
+    - name: script
+      script: ["echo Hello World"]
+      timeout: 3600
+      when: on_success
+      allow_failure: false
+  services:
+    - name: docker:dind
+      alias: null
+      command: null
+      entrypoint: null
+      executor_opts:
+        docker:
+          platform: amd64
+      ports: []
+      pull_policy: null
+      variables: []

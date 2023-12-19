@@ -24,6 +24,7 @@ module API
         expose :delete_api_path, if: ->(object, options) { Ability.allowed?(options[:user], :admin_container_image, object) },
                                  documentation: { type: 'string', example: 'delete/api/path' }
         expose :size, if: -> (_, options) { options[:size] }, documentation: { type: 'integer', example: 12345 }
+        expose :status, documentation: { type: 'string', example: 'delete_scheduled' }
 
         private
 

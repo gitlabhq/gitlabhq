@@ -75,7 +75,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
 
   describe '.data_consistency' do
     context 'with invalid data_consistency' do
-      it 'raise exception' do
+      it 'raises exception' do
         expect { worker.data_consistency(:invalid) }
           .to raise_error('Invalid data consistency: invalid')
       end

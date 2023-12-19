@@ -252,12 +252,7 @@ export default {
             class="gl-w-6 gl-h-6 gl-display-flex gl-align-items-center"
           />
 
-          <gl-link
-            data-qa-selector="cluster"
-            :data-qa-cluster-name="item.name"
-            :href="item.path"
-            class="gl-px-3"
-          >
+          <gl-link :href="item.path" class="gl-px-3">
             {{ item.name }}
           </gl-link>
 

@@ -5,9 +5,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { organizations } from '~/organizations/mock_data';
-import resolvers from '~/organizations/shared/graphql/resolvers';
-import organizationsQuery from '~/organizations/index/graphql/organizations.query.graphql';
+import { DEFAULT_PER_PAGE } from '~/api';
+import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
+import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/organizations/index/components/app.vue';
 import OrganizationsView from '~/organizations/index/components/organizations_view.vue';
 import { MOCK_NEW_ORG_URL } from '../mock_data';
@@ -20,8 +20,27 @@ describe('OrganizationsIndexApp', () => {
   let wrapper;
   let mockApollo;
 
-  const createComponent = (mockResolvers = resolvers) => {
-    mockApollo = createMockApollo([[organizationsQuery, mockResolvers]]);
+  const organizations = {
+    nodes,
+    pageInfo,
+  };
+
+  const organizationEmpty = {
+    nodes: [],
+    pageInfo: pageInfoEmpty,
+  };
+
+  const successHandler = jest.fn().mockResolvedValue({
+    data: {
+      currentUser: {
+        id: 'gid://gitlab/User/1',
+        organizations,
+      },
+    },
+  });
+
+  const createComponent = (handler = successHandler) => {
+    mockApollo = createMockApollo([[organizationsQuery, handler]]);
 
     wrapper = shallowMountExtended(OrganizationsIndexApp, {
       apolloProvider: mockApollo,
@@ -35,53 +54,168 @@ describe('OrganizationsIndexApp', () => {
     mockApollo = null;
   });
 
+  // Finders
   const findOrganizationHeaderText = () => wrapper.findByText('Organizations');
   const findNewOrganizationButton = () => wrapper.findComponent(GlButton);
   const findOrganizationsView = () => wrapper.findComponent(OrganizationsView);
 
-  const loadingResolver = jest.fn().mockReturnValue(new Promise(() => {}));
-  const successfulResolver = (nodes) =>
-    jest.fn().mockResolvedValue({
-      data: { currentUser: { id: 1, organizations: { nodes } } },
+  // Assertions
+  const itRendersHeaderText = () => {
+    it('renders the header text', () => {
+      expect(findOrganizationHeaderText().exists()).toBe(true);
     });
-  const errorResolver = jest.fn().mockRejectedValue('error');
+  };
 
-  describe.each`
-    description                                      | mockResolver                         | headerText | newOrgLink          | loading  | orgsData         | error
-    ${'when API call is loading'}                    | ${loadingResolver}                   | ${true}    | ${MOCK_NEW_ORG_URL} | ${true}  | ${[]}            | ${false}
-    ${'when API returns successful with results'}    | ${successfulResolver(organizations)} | ${true}    | ${MOCK_NEW_ORG_URL} | ${false} | ${organizations} | ${false}
-    ${'when API returns successful without results'} | ${successfulResolver([])}            | ${false}   | ${false}            | ${false} | ${[]}            | ${false}
-    ${'when API returns error'}                      | ${errorResolver}                     | ${false}   | ${false}            | ${false} | ${[]}            | ${true}
-  `('$description', ({ mockResolver, headerText, newOrgLink, loading, orgsData, error }) => {
+  const itRendersNewOrganizationButton = () => {
+    it('render new organization button with correct link', () => {
+      expect(findNewOrganizationButton().attributes('href')).toBe(MOCK_NEW_ORG_URL);
+    });
+  };
+
+  const itDoesNotRenderErrorMessage = () => {
+    it('does not render an error message', () => {
+      expect(createAlert).not.toHaveBeenCalled();
+    });
+  };
+
+  const itDoesNotRenderHeaderText = () => {
+    it('does not render the header text', () => {
+      expect(findOrganizationHeaderText().exists()).toBe(false);
+    });
+  };
+
+  const itDoesNotRenderNewOrganizationButton = () => {
+    it('does not render new organization button', () => {
+      expect(findNewOrganizationButton().exists()).toBe(false);
+    });
+  };
+
+  describe('when API call is loading', () => {
+    beforeEach(() => {
+      createComponent(jest.fn().mockReturnValue(new Promise(() => {})));
+    });
+
+    itRendersHeaderText();
+    itRendersNewOrganizationButton();
+    itDoesNotRenderErrorMessage();
+
+    it('renders the organizations view with loading prop set to true', () => {
+      expect(findOrganizationsView().props('loading')).toBe(true);
+    });
+  });
+
+  describe('when API call is successful', () => {
     beforeEach(async () => {
-      createComponent(mockResolver);
+      createComponent();
       await waitForPromises();
     });
 
-    it(`does ${headerText ? '' : 'not '}render the header text`, () => {
-      expect(findOrganizationHeaderText().exists()).toBe(headerText);
+    itRendersHeaderText();
+    itRendersNewOrganizationButton();
+    itDoesNotRenderErrorMessage();
+
+    it('passes organizations to view component', () => {
+      expect(findOrganizationsView().props()).toMatchObject({
+        loading: false,
+        organizations,
+      });
+    });
+  });
+
+  describe('when API call is successful and returns no organizations', () => {
+    beforeEach(async () => {
+      createComponent(
+        jest.fn().mockResolvedValue({
+          data: {
+            currentUser: {
+              id: 'gid://gitlab/User/1',
+              organizations: organizationEmpty,
+            },
+          },
+        }),
+      );
+      await waitForPromises();
     });
 
-    it(`does ${newOrgLink ? '' : 'not '}render new organization button with correct link`, () => {
-      expect(
-        findNewOrganizationButton().exists() && findNewOrganizationButton().attributes('href'),
-      ).toBe(newOrgLink);
+    itDoesNotRenderHeaderText();
+    itDoesNotRenderNewOrganizationButton();
+    itDoesNotRenderErrorMessage();
+
+    it('renders view component with correct organizations and loading props', () => {
+      expect(findOrganizationsView().props()).toMatchObject({
+        loading: false,
+        organizations: organizationEmpty,
+      });
+    });
+  });
+
+  describe('when API call is not successful', () => {
+    const error = new Error();
+
+    beforeEach(async () => {
+      createComponent(jest.fn().mockRejectedValue(error));
+      await waitForPromises();
     });
 
-    it(`renders the organizations view with ${loading} loading prop`, () => {
-      expect(findOrganizationsView().props('loading')).toBe(loading);
+    itDoesNotRenderHeaderText();
+    itDoesNotRenderNewOrganizationButton();
+
+    it('renders view component with correct organizations and loading props', () => {
+      expect(findOrganizationsView().props()).toMatchObject({
+        loading: false,
+        organizations: {},
+      });
     });
 
-    it(`renders the organizations view with ${
-      orgsData ? 'correct' : 'empty'
-    } organizations array prop`, () => {
-      expect(findOrganizationsView().props('organizations')).toStrictEqual(orgsData);
+    it('renders error message', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'An error occurred loading user organizations. Please refresh the page to try again.',
+        error,
+        captureError: true,
+      });
+    });
+  });
+
+  describe('when view component emits `next` event', () => {
+    const endCursor = 'mockEndCursor';
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
     });
 
-    it(`does ${error ? '' : 'not '}render an error message`, () => {
-      return error
-        ? expect(createAlert).toHaveBeenCalled()
-        : expect(createAlert).not.toHaveBeenCalled();
+    it('calls GraphQL query with correct pageInfo variables', async () => {
+      findOrganizationsView().vm.$emit('next', endCursor);
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: DEFAULT_PER_PAGE,
+        after: endCursor,
+        last: null,
+        before: null,
+      });
+    });
+  });
+
+  describe('when view component emits `prev` event', () => {
+    const startCursor = 'mockStartCursor';
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('calls GraphQL query with correct pageInfo variables', async () => {
+      findOrganizationsView().vm.$emit('prev', startCursor);
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledWith({
+        first: null,
+        after: null,
+        last: DEFAULT_PER_PAGE,
+        before: startCursor,
+      });
     });
   });
 });

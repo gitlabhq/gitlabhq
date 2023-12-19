@@ -17,7 +17,8 @@ RSpec.describe ArtifactsHelper, feature_category: :build_artifacts do
     it 'returns expected data' do
       expect(subject).to include({
         project_path: project.full_path,
-        project_id: project.id
+        project_id: project.id,
+        job_artifacts_count_limit: 100
       })
     end
 

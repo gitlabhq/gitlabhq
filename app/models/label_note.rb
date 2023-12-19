@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LabelNote < SyntheticNote
+  self.allow_legacy_sti_class = true
+
   attr_accessor :resource_parent
   attr_reader :events
 
@@ -44,18 +46,10 @@ class LabelNote < SyntheticNote
   end
 
   def note_text(html: false)
-    added = labels_str(label_refs_by_action('add', html).uniq, prefix: 'added', suffix: added_suffix)
-    removed = labels_str(label_refs_by_action('remove', html).uniq, prefix: removed_prefix)
+    added = labels_str(label_refs_by_action('add', html).uniq, prefix: 'added')
+    removed = labels_str(label_refs_by_action('remove', html).uniq, prefix: 'removed')
 
     [added, removed].compact.join(' and ')
-  end
-
-  def removed_prefix
-    'removed'
-  end
-
-  def added_suffix
-    ''
   end
 
   # returns string containing added/removed labels including
@@ -64,7 +58,7 @@ class LabelNote < SyntheticNote
   # added ~1 ~2 + 1 deleted label
   # added 3 deleted labels
   # added ~1 ~2 labels
-  def labels_str(label_refs, prefix: '', suffix: '')
+  def labels_str(label_refs, prefix: '')
     existing_refs = label_refs.select { |ref| ref.present? }.sort
     refs_str = existing_refs.empty? ? nil : existing_refs.join(' ')
 
@@ -74,7 +68,7 @@ class LabelNote < SyntheticNote
     return unless refs_str || deleted_str
 
     label_list_str = [refs_str, deleted_str].compact.join(' + ')
-    suffix += ' label'.pluralize(deleted > 0 ? deleted : existing_refs.count)
+    suffix = ' label'.pluralize(deleted > 0 ? deleted : existing_refs.count)
 
     "#{prefix} #{label_list_str} #{suffix.squish}"
   end

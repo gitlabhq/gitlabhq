@@ -1,11 +1,9 @@
 - dropdown_location = local_assigns.fetch(:location, nil)
 - button_tooltip = local_assigns.fetch(:title, _("Show all breadcrumbs"))
 - if defined?(@breadcrumb_collapsed_links) && @breadcrumb_collapsed_links.key?(dropdown_location)
-  %li.expander
+  %li.expander.gl-breadcrumb-item
     %button.text-expander.has-tooltip.js-breadcrumbs-collapsed-expander{ type: "button", data: { container: "body" }, "aria-label": button_tooltip, title: button_tooltip }
       = sprite_icon("ellipsis_h", size: 12)
-    = sprite_icon("chevron-lg-right", size: 8, css_class: "breadcrumbs-list-angle")
   - @breadcrumb_collapsed_links[dropdown_location].each_with_index do |link, index|
-    %li{ :class => "gl-display-none! breadcrumbs-detail-item" }
+    %li.gl-breadcrumb-item{ :class => "gl-display-none!" }
       = link
-      = sprite_icon("chevron-lg-right", size: 8, css_class: "breadcrumbs-list-angle")

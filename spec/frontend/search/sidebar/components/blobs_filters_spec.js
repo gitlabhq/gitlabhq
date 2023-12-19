@@ -17,13 +17,11 @@ describe('GlobalSearch BlobsFilters', () => {
     currentScope: () => 'blobs',
   };
 
-  const createComponent = ({ initialState = {} } = {}) => {
+  const createComponent = () => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
-        useSidebarNavigation: false,
         searchType: SEARCH_TYPE_ADVANCED,
-        ...initialState,
       },
       getters: defaultGetters,
     });
@@ -35,10 +33,9 @@ describe('GlobalSearch BlobsFilters', () => {
 
   const findLanguageFilter = () => wrapper.findComponent(LanguageFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
-  const findDividers = () => wrapper.findAll('hr');
 
   beforeEach(() => {
-    createComponent({});
+    createComponent();
   });
 
   it('renders LanguageFilter', () => {
@@ -47,32 +44,5 @@ describe('GlobalSearch BlobsFilters', () => {
 
   it('renders ArchivedFilter', () => {
     expect(findArchivedFilter().exists()).toBe(true);
-  });
-
-  it('renders divider correctly', () => {
-    expect(findDividers()).toHaveLength(1);
-  });
-
-  describe('Renders correctly in new nav', () => {
-    beforeEach(() => {
-      createComponent({
-        initialState: {
-          searchType: SEARCH_TYPE_ADVANCED,
-          useSidebarNavigation: true,
-        },
-      });
-    });
-
-    it('renders correctly LanguageFilter', () => {
-      expect(findLanguageFilter().exists()).toBe(true);
-    });
-
-    it('renders correctly ArchivedFilter', () => {
-      expect(findArchivedFilter().exists()).toBe(true);
-    });
-
-    it("doesn't render dividers", () => {
-      expect(findDividers()).toHaveLength(0);
-    });
   });
 });

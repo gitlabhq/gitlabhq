@@ -73,6 +73,7 @@ module Groups
         end
       end
 
+      remove_paid_features_for_projects(old_root_ancestor_id)
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
       update_pending_builds
@@ -177,6 +178,10 @@ module Groups
       @group.save!
       # #reload is called to make sure traversal_ids are reloaded
       @group.reload # rubocop:disable Cop/ActiveRecordAssociationReload
+    end
+
+    # Overridden in EE
+    def remove_paid_features_for_projects(old_root_ancestor_id)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

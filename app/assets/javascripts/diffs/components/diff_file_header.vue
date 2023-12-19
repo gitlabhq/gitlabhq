@@ -211,19 +211,6 @@ export default {
       return this.getNoteableData.current_user.can_create_note;
     },
   },
-  watch: {
-    'idState.moreActionsShown': {
-      handler(val) {
-        const el = this.$el.closest('.vue-recycle-scroller__item-view');
-
-        if (el) {
-          // We can't add a style with Vue because of the way the virtual
-          // scroller library renders the diff files
-          el.style.zIndex = val ? '1' : null;
-        }
-      },
-    },
-  },
   methods: {
     ...mapActions('diffs', [
       'toggleFileDiscussions',

@@ -476,4 +476,33 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
       it { expect(described_class.valid_brackets?(input, allow_nested: allow_nested)).to eq(valid) }
     end
   end
+
+  describe '.restrict_within_concurrent_ruby' do
+    it 'assigns restrict_within_concurrent_ruby to the current thread and ensures it restores' do
+      expect(Thread.current[:restrict_within_concurrent_ruby]).to be_nil
+
+      described_class.restrict_within_concurrent_ruby do
+        expect(Thread.current[:restrict_within_concurrent_ruby]).to be(true)
+      end
+
+      expect(Thread.current[:restrict_within_concurrent_ruby]).to be_nil
+    end
+  end
+
+  describe '.raise_if_concurrent_ruby!' do
+    subject(:raise_if_concurrent_ruby!) { described_class.raise_if_concurrent_ruby!('test') }
+
+    it 'raises an exception when running within a concurrent Ruby thread' do
+      block = proc do
+        expect { raise_if_concurrent_ruby! }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
+          "Cannot run 'test' if running from `Concurrent::Promise`.")
+      end
+
+      described_class.restrict_within_concurrent_ruby(&block)
+    end
+
+    it 'does not raise an exception when not running within a concurrent Ruby thread' do
+      expect { raise_if_concurrent_ruby! }.not_to raise_error
+    end
+  end
 end

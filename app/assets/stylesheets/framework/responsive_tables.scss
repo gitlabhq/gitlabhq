@@ -38,7 +38,7 @@
     border: 0;
 
     &:not(:last-child) {
-      border-bottom: 1px solid $white-normal;
+      border-bottom: 1px solid $gray-50;
     }
   }
 }
@@ -69,7 +69,7 @@
     min-height: 62px;
 
     &:not(:first-child) {
-      border-top: 1px solid $white-normal;
+      border-top: 1px solid $gray-50;
     }
   }
 

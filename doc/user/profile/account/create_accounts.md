@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Creating users **(FREE SELF)**
@@ -16,9 +15,9 @@ You can create users:
 
 ## Create users on sign-in page
 
-Prerequisite:
+Prerequisites:
 
-- [Sign-up must be enabled](../../admin_area/settings/sign_up_restrictions.md).
+- [Sign-up must be enabled](../../../administration/settings/sign_up_restrictions.md).
 
 Users can create their own accounts by either:
 
@@ -27,14 +26,13 @@ Users can create their own accounts by either:
 
 ## Create users in Admin Area
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To create a user manually:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields, such as name, username, and email.

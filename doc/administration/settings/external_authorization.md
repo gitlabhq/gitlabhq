@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # External authorization control **(FREE SELF)**
@@ -45,8 +45,7 @@ Alternatively, learn where to install custom certificates by using
 
 The external authorization service can be enabled by an administrator:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **External authorization**.
 1. Complete the fields.
@@ -66,8 +65,7 @@ Prerequisites:
 
 To allow authorization with deploy tokens and keys:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **External authorization**, and:
    - Leave the service URL field empty.

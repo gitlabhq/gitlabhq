@@ -39,6 +39,15 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
     ]
   end
 
+  let(:pipeline_dotenv_variables) do
+    [
+      { key: 'PIPELINE_DOTENV_VAR1', value: 'variable 1' },
+      { key: 'PIPELINE_DOTENV_VAR2', value: 'variable 2' },
+      { key: 'PIPELINE_DOTENV_RAW_VAR3', value: '$REF1', raw: true },
+      { key: 'PIPELINE_DOTENV_INTERPOLATION_VAR4', value: 'interpolate $REF1 $REF2' }
+    ]
+  end
+
   let(:bridge) do
     instance_double(
       'Ci::Bridge',
@@ -48,7 +57,8 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
       expand_file_refs?: false,
       yaml_variables: yaml_variables,
       pipeline_variables: pipeline_variables,
-      pipeline_schedule_variables: pipeline_schedule_variables
+      pipeline_schedule_variables: pipeline_schedule_variables,
+      dependency_variables: pipeline_dotenv_variables
     )
   end
 
@@ -69,7 +79,12 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
         { key: 'PIPELINE_SCHEDULE_VAR1', value: 'variable 1' },
         { key: 'PIPELINE_SCHEDULE_VAR2', value: 'variable 2' },
         { key: 'PIPELINE_SCHEDULE_RAW_VAR3', value: '$REF1', raw: true },
-        { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR4', value: 'interpolate ref 1 ref 2' }
+        { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR4', value: 'interpolate ref 1 ref 2' },
+        { key: 'PIPELINE_DOTENV_VAR1', value: 'variable 1' },
+        { key: 'PIPELINE_DOTENV_VAR2', value: 'variable 2' },
+        { key: 'PIPELINE_DOTENV_RAW_VAR3', value: '$REF1', raw: true },
+        { key: 'PIPELINE_DOTENV_INTERPOLATION_VAR4', value: 'interpolate ref 1 ref 2' }
+
       ]
 
       expect(generator.calculate).to contain_exactly(*expected)
@@ -79,6 +94,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
       allow(bridge).to receive(:yaml_variables).and_return([])
       allow(bridge).to receive(:pipeline_variables).and_return([])
       allow(bridge).to receive(:pipeline_schedule_variables).and_return([])
+      allow(bridge).to receive(:dependency_variables).and_return([])
 
       expect(generator.calculate).to be_empty
     end
@@ -105,6 +121,10 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
         [{ key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate $REF1 $REF2 $FILE_REF3 $FILE_REF4' }]
       end
 
+      let(:pipeline_dotenv_variables) do
+        [{ key: 'PIPELINE_DOTENV_INTERPOLATION_VAR', value: 'interpolate $REF1 $REF2 $FILE_REF3 $FILE_REF4' }]
+      end
+
       context 'when expand_file_refs is true' do
         before do
           allow(bridge).to receive(:expand_file_refs?).and_return(true)
@@ -114,7 +134,8 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
           expected = [
             { key: 'INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' },
             { key: 'PIPELINE_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' },
-            { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' }
+            { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' },
+            { key: 'PIPELINE_DOTENV_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' }
           ]
 
           expect(generator.calculate).to contain_exactly(*expected)
@@ -131,6 +152,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
             { key: 'INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
             { key: 'PIPELINE_INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
             { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
+            { key: 'PIPELINE_DOTENV_INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
             { key: 'FILE_REF3', value: 'ref 3', variable_type: :file }
           ]
 

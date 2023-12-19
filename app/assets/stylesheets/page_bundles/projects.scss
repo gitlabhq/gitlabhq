@@ -235,8 +235,7 @@
 }
 
 .repository-languages-bar {
-  height: 8px;
-  margin-bottom: $gl-padding;
+  height: 0.5rem;
   background-color: var(--white, $white);
   border-radius: $border-radius-default;
 
@@ -403,18 +402,6 @@
 
     .user-access-role {
       line-height: $gl-line-height-14;
-    }
-  }
-
-  @include media-breakpoint-down(md) {
-    .avatar-container {
-      @include avatar-size(40px, 10px);
-      min-height: 40px;
-      min-width: 40px;
-
-      .identicon.s64 {
-        font-size: 16px;
-      }
     }
   }
 

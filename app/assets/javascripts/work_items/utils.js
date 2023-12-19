@@ -26,6 +26,19 @@ export const findHierarchyWidgets = (widgets) =>
 export const findHierarchyWidgetChildren = (workItem) =>
   findHierarchyWidgets(workItem?.widgets)?.children?.nodes || [];
 
+export const findHierarchyWidgetAncestors = (workItem) =>
+  findHierarchyWidgets(workItem?.widgets)?.ancestors?.nodes || [];
+
+export const formatAncestors = (workItem) =>
+  findHierarchyWidgetAncestors(workItem).map((ancestor) => ({
+    ...ancestor,
+    icon: ancestor.workItemType?.iconName,
+    href: ancestor.webUrl,
+  }));
+
+export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
+  widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
+
 const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
   return `${
     gon.relative_url_root || ''

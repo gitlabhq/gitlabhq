@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reference architecture: up to 3,000 users **(PREMIUM SELF)**
@@ -163,6 +163,8 @@ If this applies to you, we strongly recommended referring to the linked document
 Testing is done regularly via our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
 The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
 
+The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
+
 ## Setup components
 
 To set up GitLab and its components to accommodate up to 3,000 users:
@@ -224,25 +226,12 @@ The following list includes descriptions of each server and its assigned IP:
 ## Configure the external load balancer
 
 In a multi-node GitLab configuration, you'll need a load balancer to route
-traffic to the application servers. The specifics on which load balancer to use
-or its exact configuration is beyond the scope of GitLab documentation. We assume
-that if you're managing multi-node systems like GitLab, you already have a load
-balancer of choice. Some load balancer examples include HAProxy (open-source),
-F5 Big-IP LTM, and Citrix Net Scaler. This documentation outline the ports and
-protocols needed for use with GitLab.
+traffic to the application servers.
 
-This architecture has been tested and validated with [HAProxy](https://www.haproxy.org/)
-as the load balancer. Although other load balancers with similar feature sets
-could also be used, those load balancers have not been validated.
-
-The next question is how you will handle SSL in your environment.
-There are several different options:
-
-- [The application node terminates SSL](#application-node-terminates-ssl).
-- [The load balancer terminates SSL without backend SSL](#load-balancer-terminates-ssl-without-backend-ssl)
-  and communication is not secure between the load balancer and the application node.
-- [The load balancer terminates SSL with backend SSL](#load-balancer-terminates-ssl-with-backend-ssl)
-  and communication is *secure* between the load balancer and the application node.
+The specifics on which load balancer to use, or its exact configuration
+is beyond the scope of GitLab documentation. It is expected however that any
+reputable load balancer should work and as such this section will focus on the specifics of
+what to configure for your load balancer of choice.
 
 ### Balancing algorithm
 
@@ -441,7 +430,8 @@ topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service
 start the failover procedure.
 
 NOTE:
-Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
+Multi-node Redis must be deployed in an odd number of 3 nodes or more to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally,
+such as a cloud provider service.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
@@ -463,7 +453,7 @@ to be used with GitLab. The following IPs will be used as an example:
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
 - A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
-- Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+- Redis Cluster mode is specifically not supported, but Redis Standalone with HA (Redis Sentinel) **is** supported.
 
 For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 

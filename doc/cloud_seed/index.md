@@ -120,7 +120,7 @@ The following databases and versions are supported:
   - 2019: Standard, Enterprise, Express, and Web
   - 2017: Standard, Enterprise, Express, and Web
 
-Google Cloud pricing applies. Please refer to the [Cloud SQL pricing page](https://cloud.google.com/sql/pricing).
+Google Cloud pricing applies. Refer to the [Cloud SQL pricing page](https://cloud.google.com/sql/pricing).
 
 1. [Create a database instance](#create-a-database-instance)
 1. [Database setup through a background worker](#database-setup-through-a-background-worker)

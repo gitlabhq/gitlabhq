@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Managing monorepos
@@ -20,7 +20,7 @@ size.
 
 Monorepos can be large for [many reasons](https://about.gitlab.com/blog/2022/09/06/speed-up-your-monorepo-workflow-in-git/#characteristics-of-monorepos).
 
-Large repositories pose a performance risk performance when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
+Large repositories pose a performance risk when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
 
 Git itself has performance limitations when it comes to handling
 monorepos.
@@ -189,7 +189,7 @@ You might experience a `fatal: the remote end hung up unexpectedly` error when a
 - The same large repository in parallel.
 
 You can attempt to mitigate this issue by increasing the default negotiation timeout values. For more information, see
-[Configure negotiation timeouts](../../../../administration/gitaly/configure_gitaly.md#configure-negotiation-timeouts).
+[Configure the negotiation timeouts](../../../../administration/settings/gitaly_timeouts.md#configure-the-negotiation-timeouts).
 
 ## Optimize your repository
 

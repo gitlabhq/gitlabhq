@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Snippets **(FREE ALL)**
@@ -15,7 +14,7 @@ You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
 and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
 You can create and manage your snippets through the GitLab user interface, or by
-using the [GitLab Workflow VS Code extension](project/repository/vscode.md).
+using the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md).
 
 ![Example of a snippet](img/snippet_sample_v16_6.png)
 
@@ -43,20 +42,22 @@ You can create snippets in multiple ways, depending on whether you want to creat
        **New snippet**.
      - From a project: On the left sidebar, select **Create new** (**{plus}**). Below **In GitLab**, select **New snippet**.
      - From any other page: On the left sidebar, select **Create new** (**{plus}**) and then **New snippet**.
-     - If you installed the [GitLab Workflow VS Code extension](project/repository/vscode.md),
+     - If you installed the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select
      **Create new** (**{plus}**). Below **In this project**, select **New snippet**.
-1. Add a **Title** and **Description**.
-1. Name your **File** with an appropriate extension, such as `example.rb` or `index.html`.
+1. In **Title**, add a title.
+1. Optional. In **Description**, describe the snippet.
+1. In **Files**, give your file an appropriate name and extension, such as `example.rb` or `index.html`.
    Filenames with appropriate extensions display [syntax highlighting](#filenames).
    Failure to add a filename can cause a known
-   [copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870). If you don't provide a filename, GitLab [creates a name for you](#filenames).
+   [copy-pasting bug](https://gitlab.com/gitlab-org/gitlab/-/issues/22870).
+   If you do not provide a filename, GitLab [creates a name for you](#filenames).
 1. Optional. Add [multiple files](#add-or-remove-multiple-files) to your snippet.
 1. Select a visibility level, and select **Create snippet**.
 
 After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).
-In GitLab versions 13.0 and later, snippets are [versioned by default](#versioned-snippets).
+In GitLab 13.0 and later, snippets are [versioned by default](#versioned-snippets).
 
 ## Discover snippets
 
@@ -84,8 +85,7 @@ To discover all snippets visible to you in GitLab, you can:
 Project snippets are enabled and available by default. To change their
 default visibility:
 
-1. In your project,
-   go to **Settings**.
+1. In your project, go to **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section, and scroll to **Snippets**.
 1. Toggle the default visibility, and select whether snippets can be viewed by
    everyone, or only project members.
@@ -95,7 +95,7 @@ default visibility:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/239) in GitLab 13.0.
 
-In GitLab versions 13.0 and later, snippets (both personal and project snippets)
+In GitLab 13.0 and later, snippets (both personal and project snippets)
 have version control enabled by default.
 
 This means that all snippets get their own underlying repository initialized with
@@ -104,7 +104,7 @@ new commit to the default branch is recorded. Commit messages are automatically
 generated. The snippet's repository has only one branch. You can't delete this branch,
 or create other branches.
 
-Existing snippets were automatically migrated in 13.0. Their current
+Existing snippets were automatically migrated in GitLab 13.0. Their current
 content was saved as the initial commit to the snippets' repository.
 
 ## Filenames
@@ -186,9 +186,10 @@ To embed a snippet:
 1. Confirm your snippet is publicly visible:
    - *If it's a project snippet*, the project must be public.
    - The snippet is publicly visible.
-   - In **Project > Settings > Permissions**, the snippets
-     permissions are set to **Everyone with access**.
-1. In your snippet's **Embed** section, select **Copy** to copy a one-line script you can add to any website or blog post. For example:
+   - In your project, go to **Settings > General**. Expand the **Visibility, project features, permissions**
+     section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.
+1. In your snippet's **Embed** section, select **Copy** to copy a one-line script
+   you can add to any website or blog post. For example:
 
    ```html
    <script src="https://gitlab.com/namespace/project/snippets/SNIPPET_ID.js"></script>
@@ -231,7 +232,7 @@ Prerequisites:
 To do this task:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Snippets**.
+1. Select **Code > Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.
 

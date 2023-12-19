@@ -87,6 +87,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     it 'creates a draft note with quick actions' do
+      stub_commonmark_sourcepos_enabled
       create_draft_note(draft_overrides: { note: "#{user2.to_reference}\n/assign #{user.to_reference}" })
 
       expect(response).to have_gitlab_http_status(:ok)
@@ -354,6 +355,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     it 'publishes a draft note with quick actions and applies them', :sidekiq_inline do
+      stub_commonmark_sourcepos_enabled
       project.add_developer(user2)
       create(:draft_note, merge_request: merge_request, author: user, note: "/assign #{user2.to_reference}")
 

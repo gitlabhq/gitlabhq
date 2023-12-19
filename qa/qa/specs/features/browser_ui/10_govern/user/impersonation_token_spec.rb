@@ -8,7 +8,7 @@ module QA
       let!(:user) { create(:user, :hard_delete, api_client: admin_api_client) }
 
       it(
-        'can be created and revoked via the UI',
+        'can be created and revoked via the UI', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368888'
       ) do
         impersonation_token = QA::Resource::ImpersonationToken.fabricate_via_browser_ui! do |impersonation_token|

@@ -7,39 +7,48 @@ data_testids = /testid/
 deprecated_qa_selectors = /(?=qa_selector|data-qa-selector)|(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
 
 def filter_changed_lines(files, pattern)
-  lines = []
+  files_with_lines = {}
   files.each do |file|
     next if file.start_with?('spec/', 'ee/spec/', 'qa/')
 
     testid_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
     next unless testid_changed_lines.any?
 
-    lines += ["file `#{file}`:", testid_changed_lines]
+    files_with_lines[file] = testid_changed_lines
   end
-  lines
+
+  files_with_lines
 end
 
 changed_code_files = helper.changed_files(/\.(vue|haml|js|rb)$/)
 
 return if changed_code_files.empty?
 
-lines_with_testids = filter_changed_lines(changed_code_files, data_testids)
-
+lines_with_testids  = filter_changed_lines(changed_code_files, data_testids)
 deprecated_qa_class = filter_changed_lines(changed_code_files, deprecated_qa_selectors)
 
-return if (lines_with_testids + deprecated_qa_class).empty?
-
-markdown(<<~MARKDOWN)
-  ## Testid Selectors
-
-MARKDOWN
+return if lines_with_testids.empty? && deprecated_qa_class.empty?
 
 if lines_with_testids.any?
   markdown(<<~MARKDOWN)
-    The following changed lines in this MR contain testid selectors:
+    ### `testid` selectors
 
-    * #{lines_with_testids.join("\n* ")}
+    The following changed lines in this MR contain `testid` selectors:
 
+  MARKDOWN
+
+  lines_with_testids.each do |file, lines|
+    markdown(<<~MARKDOWN)
+      #### `#{file}`
+
+      ```shell
+      #{lines.join("\n")}
+      ```
+
+    MARKDOWN
+  end
+
+  markdown(<<~MARKDOWN)
     If the `e2e:package-and-test` job in the `qa` stage has run automatically, please ensure the tests are passing.
     If the job has not run, please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline are passing.
 
@@ -54,12 +63,27 @@ end
 
 if deprecated_qa_class.any?
   markdown(<<~MARKDOWN)
-    ### Deprecated data-qa-selector
+    ### Deprecated `data-qa-selector` selectors
 
-    The following lines in this MR contain deprecated data-qa-selector selectors:
+  MARKDOWN
 
-    * #{deprecated_qa_class.join("\n* ")}
+  markdown(<<~MARKDOWN)
+    The following lines in this MR contain deprecated `data-qa-selector` selectors:
 
+  MARKDOWN
+
+  deprecated_qa_class.each do |file, lines|
+    markdown(<<~MARKDOWN)
+      #### `#{file}`
+
+      ```shell
+      #{lines.join("\n")}
+      ```
+
+    MARKDOWN
+  end
+
+  markdown(<<~MARKDOWN)
     Please ensure all deprecated data-qa-selector attributes are replaced with data-testid attributes in accordance with our [Testing Guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html#data-testid-vs-data-qa-selector).
 
   MARKDOWN

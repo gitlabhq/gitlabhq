@@ -22,14 +22,14 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project.mergeRequest.userPermissions,
+      update: (data) => data.project?.mergeRequest.userPermissions || {},
     },
     state: {
       query: conflictsStateQuery,
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project.mergeRequest,
+      update: (data) => data.project?.mergeRequest || {},
     },
   },
   props: {

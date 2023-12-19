@@ -62,7 +62,7 @@ RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_pro
 
       click_link 'Invited'
 
-      page.within '[data-testid="members-filtered-search-bar"]' do
+      within_testid('members-filtered-search-bar') do
         find_field('Search invited').click
         find('input').native.send_keys('email')
         click_button 'Search'
@@ -75,7 +75,7 @@ RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_pro
       before do
         click_link 'Members'
 
-        page.within '[data-testid="members-filtered-search-bar"]' do
+        within_testid 'members-filtered-search-bar' do
           find_field('Filter members').click
           find('input').native.send_keys('test')
           click_button 'Search'

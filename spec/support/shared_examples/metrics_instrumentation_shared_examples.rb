@@ -31,11 +31,13 @@ RSpec.shared_examples 'a correct instrumented metric query' do |params|
   end
 
   before do
-    allow(metric.send(:relation).connection).to receive(:transaction_open?).and_return(false)
+    if metric.respond_to?(:relation, true) && metric.send(:relation).respond_to?(:connection)
+      allow(metric.send(:relation).connection).to receive(:transaction_open?).and_return(false)
+    end
   end
 
   it 'has correct generate query' do
-    expect(metric.to_sql).to eq(expected_query)
+    expect(metric.instrumentation).to eq(expected_query)
   end
 end
 

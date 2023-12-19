@@ -1,8 +1,7 @@
 ---
-type: howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Enforce two-factor authentication **(FREE ALL)**
@@ -34,10 +33,9 @@ You can use the UI or the API to enforce 2FA for all users.
 
 ### Use the UI
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Sign-in restrictions** section:
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Sign-in restrictions**:
    - Select **Enforce two-factor authentication** to enable this feature.
    - In **Two-factor grace period**, enter a number of hours. If you want to
      enforce 2FA on next sign-in attempt, enter `0`.

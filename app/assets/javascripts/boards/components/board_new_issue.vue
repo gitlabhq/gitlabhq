@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import { getMilestone, formatIssueInput, getBoardQuery } from 'ee_else_ce/boards/boards_util';
 import BoardNewIssueMixin from 'ee_else_ce/boards/mixins/board_new_issue';
@@ -22,7 +20,7 @@ export default {
     ProjectSelect,
   },
   mixins: [BoardNewIssueMixin],
-  inject: ['boardType', 'groupId', 'fullPath', 'isGroupBoard', 'isEpicBoard', 'isApolloBoard'],
+  inject: ['boardType', 'groupId', 'fullPath', 'isGroupBoard', 'isEpicBoard'],
   props: {
     list: {
       type: Object,
@@ -50,9 +48,6 @@ export default {
           boardId: this.boardId,
         };
       },
-      skip() {
-        return !this.isApolloBoard;
-      },
       update(data) {
         const { board } = data.workspace;
         return {
@@ -69,7 +64,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getBoardItemsByList']),
     formEventPrefix() {
       return toggleFormEventPrefix.issue;
     },
@@ -81,37 +75,19 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['addListNewIssue']),
     submit({ title }) {
       const labels = this.list.label ? [this.list.label] : [];
       const assignees = this.list.assignee ? [this.list.assignee] : [];
       const milestone = getMilestone(this.list);
 
-      if (this.isApolloBoard) {
-        return this.addNewIssueToList({
-          issueInput: {
-            title,
-            labelIds: labels?.map((l) => l.id),
-            assigneeIds: assignees?.map((a) => a?.id),
-            milestoneId: milestone?.id,
-            projectPath: this.projectPath,
-          },
-        });
-      }
-
-      const firstItemId = this.getBoardItemsByList(this.list.id)[0]?.id;
-      return this.addListNewIssue({
-        list: this.list,
+      return this.addNewIssueToList({
         issueInput: {
           title,
           labelIds: labels?.map((l) => l.id),
           assigneeIds: assignees?.map((a) => a?.id),
           milestoneId: milestone?.id,
           projectPath: this.projectPath,
-          moveAfterId: firstItemId,
         },
-      }).then(() => {
-        this.cancel();
       });
     },
     addNewIssueToList({ issueInput }) {

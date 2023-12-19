@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::StaleMachinesCleanupCronWorker, feature_category: :runner_fleet do
+RSpec.describe Ci::Runners::StaleMachinesCleanupCronWorker, feature_category: :fleet_visibility do
   let(:worker) { described_class.new }
 
   describe '#perform', :freeze_time do

@@ -1,4 +1,9 @@
-import { differenceInSeconds } from '~/lib/utils/datetime_utility';
+import {
+  calculateDeploymentStatus,
+  calculateStatefulSetStatus,
+  calculateDaemonSetStatus,
+} from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import { STATUS_READY, STATUS_FAILED } from '~/kubernetes_dashboard/constants';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
 
 export function generateServicePortsString(ports) {
@@ -12,46 +17,29 @@ export function generateServicePortsString(ports) {
     .join(', ');
 }
 
-export function getServiceAge(creationTimestamp) {
-  if (!creationTimestamp) return '';
-
-  const timeDifference = differenceInSeconds(new Date(creationTimestamp), new Date());
-
-  const seconds = Math.floor(timeDifference);
-  const minutes = Math.floor(seconds / 60) % 60;
-  const hours = Math.floor(seconds / 60 / 60) % 24;
-  const days = Math.floor(seconds / 60 / 60 / 24);
-
-  let ageString;
-  if (days > 0) {
-    ageString = `${days}d`;
-  } else if (hours > 0) {
-    ageString = `${hours}h`;
-  } else if (minutes > 0) {
-    ageString = `${minutes}m`;
-  } else {
-    ageString = `${seconds}s`;
-  }
-
-  return ageString;
-}
-
 export function getDeploymentsStatuses(items) {
   const failed = [];
   const ready = [];
+  const pending = [];
 
   items.forEach((item) => {
-    const [available, progressing] = item.status?.conditions ?? [];
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    if (available.status === 'True') {
-      ready.push(item);
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-    } else if (available.status !== 'True' && progressing.status !== 'True') {
-      failed.push(item);
+    const status = calculateDeploymentStatus(item);
+
+    switch (status) {
+      case STATUS_READY:
+        ready.push(item);
+        break;
+      case STATUS_FAILED:
+        failed.push(item);
+        break;
+      default:
+        pending.push(item);
+        break;
     }
   });
 
   return {
+    ...(pending.length && { pending }),
     ...(failed.length && { failed }),
     ...(ready.length && { ready }),
   };
@@ -59,16 +47,10 @@ export function getDeploymentsStatuses(items) {
 
 export function getDaemonSetStatuses(items) {
   const failed = items.filter((item) => {
-    return (
-      item.status?.numberMisscheduled > 0 ||
-      item.status?.numberReady !== item.status?.desiredNumberScheduled
-    );
+    return calculateDaemonSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return (
-      item.status?.numberReady === item.status?.desiredNumberScheduled &&
-      !item.status?.numberMisscheduled
-    );
+    return calculateDaemonSetStatus(item) === STATUS_READY;
   });
 
   return {
@@ -79,10 +61,10 @@ export function getDaemonSetStatuses(items) {
 
 export function getStatefulSetStatuses(items) {
   const failed = items.filter((item) => {
-    return item.status?.readyReplicas < item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return item.status?.readyReplicas === item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_READY;
   });
 
   return {
@@ -93,10 +75,10 @@ export function getStatefulSetStatuses(items) {
 
 export function getReplicaSetStatuses(items) {
   const failed = items.filter((item) => {
-    return item.status?.readyReplicas < item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_FAILED;
   });
   const ready = items.filter((item) => {
-    return item.status?.readyReplicas === item.spec?.replicas;
+    return calculateStatefulSetStatus(item) === STATUS_READY;
   });
 
   return {

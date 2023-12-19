@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
+RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
   context 'admin' do
     let_it_be(:admin) { create(:user, :admin) }
 

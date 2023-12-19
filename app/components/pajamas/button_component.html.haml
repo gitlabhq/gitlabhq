@@ -7,7 +7,11 @@
     %span.gl-button-text{ class: @button_text_classes }
       = content
 
-- if link?
+- if form?
+  -# workaround for link_to dropping snowplow tracking. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/417815
+  = button_to @href, { **@button_options, **base_attributes, class: button_class, target: @target, method: @method } do
+    = content_for :pajamas_button_content
+- elsif link?
   = link_to @href, { **@button_options, **base_attributes, class: button_class, target: @target, method: @method } do
     = content_for :pajamas_button_content
 - else

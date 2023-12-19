@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Rails request SLIs (service level indicators)
@@ -126,7 +126,7 @@ a case-by-case basis. Take the following into account:
    view. We cannot scale up the fleet fast enough to accommodate for
    the incoming slow requests alongside the regular traffic.
 
-When lowering the urgency for an existing endpoint, please involve a
+When lowering the urgency for an existing endpoint, involve a
 [Scalability team member](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/#team-members)
 in the review. We can use request rates and durations available in the
 logs to come up with a recommendation. You can pick a threshold
@@ -172,7 +172,7 @@ information in the logs to check:
    the target duration we want to set.
 
 As decreasing a threshold too much could result in alerts for the
-Apdex degradation, please also involve a Scalability team member in
+Apdex degradation, also involve a Scalability team member in
 the merge request.
 
 ## How to adjust the urgency
@@ -184,10 +184,10 @@ are available:
 
 | Urgency    | Duration in seconds | Notes                                         |
 |------------|---------------------|-----------------------------------------------|
-| `:high`    | 0.25s               |                                               |
-| `:medium`  | 0.5s                |                                               |
-| `:default` | 1s                  | The default when nothing is specified.        |
-| `:low`     | 5s                  |                                               |
+| `:high`    | [0.25s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L8)               |                                               |
+| `:medium`  | [0.5s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L9)                |                                               |
+| `:default` | [1s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L10)                  | The default when nothing is specified.        |
+| `:low`     | [5s](https://gitlab.com/gitlab-org/gitlab/-/blob/2f7a38fe48934b78f04233c4d2c81cde88a06da7/lib/gitlab/endpoint_attributes/config.rb#L11)                  |                                               |
 
 ### Rails controller
 

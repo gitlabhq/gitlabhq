@@ -69,10 +69,6 @@ module Gitlab
       end
 
       def handler
-        # This allows us to keep the watchdog running but turn it into "friendly mode" where
-        # all that happens is we collect logs and Prometheus events for fragmentation violations.
-        return Handlers::NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
-
         configuration.handler
       end
 

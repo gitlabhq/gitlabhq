@@ -11,7 +11,8 @@ RSpec.describe Admin::AbuseReportDetailsSerializer, feature_category: :insider_t
     it 'serializes an abuse report' do
       is_expected.to match_array([
         :user,
-        :report
+        :report,
+        :upload_note_attachment_path
       ])
     end
   end

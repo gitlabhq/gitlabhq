@@ -5,6 +5,7 @@ import {
   PREREQUISITES_DOC_LINK,
   OAUTH_SELF_MANAGED_DOC_LINK,
   SET_UP_INSTANCE_DOC_LINK,
+  JIRA_USER_REQUIREMENTS_DOC_LINK,
 } from '~/jira_connect/subscriptions/constants';
 
 export default {
@@ -31,6 +32,11 @@ export default {
           link: SET_UP_INSTANCE_DOC_LINK,
           checked: false,
         },
+        {
+          name: s__('JiraConnect|Jira user requirements'),
+          link: JIRA_USER_REQUIREMENTS_DOC_LINK,
+          checked: false,
+        },
       ],
     };
   },
@@ -46,11 +52,7 @@ export default {
   <div class="gl-mt-5">
     <h3>{{ s__('JiraConnect|Continue setup in GitLab') }}</h3>
     <p>
-      {{
-        s__(
-          'JiraConnect|In order to complete the set up, you’ll need to complete a few steps in GitLab:',
-        )
-      }}
+      {{ s__('JiraConnect|To complete the setup, you must follow a few steps in GitLab:') }}
     </p>
     <div class="gl-mb-5">
       <div v-for="step in requiredSteps" :key="step.name" class="gl-mb-2">

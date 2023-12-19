@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Customize pipeline configuration **(FREE ALL)**
@@ -103,19 +102,37 @@ To avoid this scenario:
 
 For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).
 
+## Restrict roles that can cancel pipelines or jobs **(PREMIUM ALL)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
+
+You can customize which roles have permission to cancel pipelines or jobs.
+
+By default, users with at least the Developer role can cancel pipelines or jobs.
+You can restrict cancellation permission to only users with at least the Maintainer role,
+or completely prevent cancellation of any pipelines or jobs.
+
+To change the permissions to cancel pipelines or jobs:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Select an option from **Minimum role required to cancel a pipeline or job**.
+1. Select **Save changes**.
+
 ## Specify a custom CI/CD configuration file
 
 > Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.
 
 GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
-directory. However, you can specify an alternate filename path, including locations outside the project.
+directory. However, you can specify an alternate file name path, including locations outside the project.
 
 To customize the path:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. In the **CI/CD configuration file** field, enter the filename. If the file:
+1. In the **CI/CD configuration file** field, enter the file name. If the file:
    - Is not in the root directory, include the path.
    - Is in a different project, include the group and project name.
    - Is on an external site, enter the full URL.
@@ -208,7 +225,7 @@ You can define how long a job can run before it times out.
 
 Jobs that exceed the timeout are marked as failed.
 
-You can override this value [for individual runners](../runners/configure_runners.md#set-maximum-job-timeout-for-a-runner).
+You can override this value [for individual runners](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 ## Pipeline badges
 

@@ -28,7 +28,6 @@ class Member < ApplicationRecord
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :member_namespace, inverse_of: :namespace_members, foreign_key: 'member_namespace_id', class_name: 'Namespace'
-  belongs_to :member_role
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
 
@@ -57,9 +56,6 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
   validate :access_level_inclusion
-  validate :validate_member_role_access_level
-  validate :validate_access_level_locked_for_member_role, on: :update
-  validate :validate_member_role_belongs_to_same_root_namespace
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -174,6 +170,8 @@ class Member < ApplicationRecord
   scope :with_user, -> (user) { where(user: user) }
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
+
+  scope :preload_user, -> { preload(:user) }
 
   scope :preload_user_and_notification_settings, -> do
     preload(user: :notification_settings)
@@ -357,7 +355,7 @@ class Member < ApplicationRecord
     end
 
     def access_for_user_ids(user_ids)
-      where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+      with_user(user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
 
     def find_by_invite_token(raw_invite_token)
@@ -512,32 +510,6 @@ class Member < ApplicationRecord
     return if access_level.in?(Gitlab::Access.all_values)
 
     errors.add(:access_level, "is not included in the list")
-  end
-
-  def validate_member_role_access_level
-    return unless member_role_id
-
-    if access_level != member_role.base_access_level
-      errors.add(:member_role_id, _("role's base access level does not match the access level of the membership"))
-    end
-  end
-
-  def validate_access_level_locked_for_member_role
-    return unless member_role_id
-    return if member_role_changed? # it is ok to change the access level when changing member role
-
-    if access_level_changed?
-      errors.add(:access_level, _("cannot be changed since member is associated with a custom role"))
-    end
-  end
-
-  def validate_member_role_belongs_to_same_root_namespace
-    return unless member_role_id
-
-    return if member_namespace.id == member_role.namespace_id
-    return if member_namespace.root_ancestor.id == member_role.namespace_id
-
-    errors.add(:member_namespace, _("must be in same hierarchy as custom role's namespace"))
   end
 
   def send_invite

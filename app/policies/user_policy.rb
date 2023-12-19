@@ -33,6 +33,7 @@ class UserPolicy < BasePolicy
     enable :read_saved_replies
     enable :read_user_email_address
     enable :admin_user_email_address
+    enable :make_profile_private
   end
 
   rule { default }.enable :read_user_profile

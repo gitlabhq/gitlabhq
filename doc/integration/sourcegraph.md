@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, how-to
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Sourcegraph **(FREE ALL)**
@@ -49,9 +48,8 @@ You can skip this step if you already have your GitLab repositories searchable i
 
 ### Configure your GitLab instance with Sourcegraph
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand the **Sourcegraph** configuration section.
 1. Check **Enable Sourcegraph**.
 1. Set the Sourcegraph URL to your Sourcegraph instance, such as `https://sourcegraph.example.com`.

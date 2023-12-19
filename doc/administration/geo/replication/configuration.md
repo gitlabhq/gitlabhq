@@ -1,8 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Geo configuration **(PREMIUM SELF)**
@@ -217,8 +216,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    ```
 
 1. Navigate to the Primary Node GitLab Instance:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
    ![Add secondary site](img/adding_a_secondary_v15_8.png)
@@ -327,9 +325,8 @@ method to be enabled. This is enabled by default, but if converting an existing 
 
 On the **primary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
    1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
@@ -341,9 +338,8 @@ On the **primary** site:
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Sites**.
 1. Verify that it's correctly identified as a **secondary** Geo site, and that
    Geo is enabled.
 

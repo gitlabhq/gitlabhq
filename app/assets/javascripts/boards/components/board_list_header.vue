@@ -8,14 +8,11 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__ } from '~/locale';
-import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -23,8 +20,6 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
 import {
-  inactiveId,
-  LIST,
   ListType,
   toggleFormEventPrefix,
   updateListQueries,
@@ -81,9 +76,6 @@ export default {
     issuableType: {
       default: TYPE_ISSUE,
     },
-    isApolloBoard: {
-      default: false,
-    },
   },
   props: {
     list: {
@@ -106,7 +98,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(['activeId']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
@@ -238,21 +229,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateList', 'setActiveId', 'toggleListCollapsed']),
     openSidebarSettings() {
-      if (this.activeId === inactiveId) {
-        sidebarEventHub.$emit('sidebar.closeAll');
-      }
-
-      if (this.isApolloBoard) {
-        this.$apollo.mutate({
-          mutation: setActiveBoardItemMutation,
-          variables: { boardItem: null },
-        });
-        this.$emit('setActiveList', this.list.id);
-      } else {
-        this.setActiveId({ id: this.list.id, sidebarType: LIST });
-      }
+      this.$apollo.mutate({
+        mutation: setActiveBoardItemMutation,
+        variables: { boardItem: null },
+      });
+      this.$emit('setActiveList', this.list.id);
 
       this.track('click_button', { label: 'list_settings' });
     },
@@ -297,33 +279,29 @@ export default {
       }
     },
     async updateListFunction(collapsed) {
-      if (this.isApolloBoard) {
-        try {
-          await this.$apollo.mutate({
-            mutation: updateListQueries[this.issuableType].mutation,
-            variables: {
-              listId: this.list.id,
-              collapsed,
-            },
-            optimisticResponse: {
-              updateBoardList: {
-                __typename: 'UpdateBoardListPayload',
-                errors: [],
-                list: {
-                  ...this.list,
-                  collapsed,
-                },
+      try {
+        await this.$apollo.mutate({
+          mutation: updateListQueries[this.issuableType].mutation,
+          variables: {
+            listId: this.list.id,
+            collapsed,
+          },
+          optimisticResponse: {
+            updateBoardList: {
+              __typename: 'UpdateBoardListPayload',
+              errors: [],
+              list: {
+                ...this.list,
+                collapsed,
               },
             },
-          });
-        } catch (error) {
-          setError({
-            error,
-            message: s__('Boards|An error occurred while updating the list. Please try again.'),
-          });
-        }
-      } else {
-        this.updateList({ listId: this.list.id, collapsed });
+          },
+        });
+      } catch (error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while updating the list. Please try again.'),
+        });
       }
     },
     /**
@@ -337,17 +315,13 @@ export default {
       return `${start} - ${due}`;
     },
     updateLocalCollapsedStatus(collapsed) {
-      if (this.isApolloBoard) {
-        this.$apollo.mutate({
-          mutation: toggleCollapsedMutations[this.issuableType].mutation,
-          variables: {
-            list: this.list,
-            collapsed,
-          },
-        });
-      } else {
-        this.toggleListCollapsed({ listId: this.list.id, collapsed });
-      }
+      this.$apollo.mutate({
+        mutation: toggleCollapsedMutations[this.issuableType].mutation,
+        variables: {
+          list: this.list,
+          collapsed,
+        },
+      });
     },
   },
 };

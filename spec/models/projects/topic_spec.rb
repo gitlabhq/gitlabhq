@@ -96,31 +96,8 @@ RSpec.describe Projects::Topic do
     end
   end
 
-  describe '#avatar_type' do
-    it "is true if avatar is image" do
-      topic.update_attribute(:avatar, 'uploads/avatar.png')
-      expect(topic.avatar_type).to be_truthy
-    end
-
-    it "is false if avatar is html page" do
-      topic.update_attribute(:avatar, 'uploads/avatar.html')
-      topic.avatar_type
-
-      expect(topic.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    context 'when avatar file is uploaded' do
-      before do
-        topic.update!(avatar: fixture_file_upload("spec/fixtures/dk.png"))
-      end
-
-      it 'shows correct avatar url' do
-        expect(topic.avatar_url).to eq(topic.avatar.url)
-        expect(topic.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, topic.avatar.url].join)
-      end
-    end
+  it_behaves_like Avatarable do
+    let(:model) { create(:topic, :with_avatar) }
   end
 
   describe '#title_or_name' do

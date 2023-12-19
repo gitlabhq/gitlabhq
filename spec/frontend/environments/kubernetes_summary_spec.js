@@ -80,16 +80,16 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
       });
 
       it.each`
-        type              | successText    | successCount | failedCount | suspendedCount | index
-        ${'Deployments'}  | ${'ready'}     | ${1}         | ${1}        | ${0}           | ${0}
-        ${'DaemonSets'}   | ${'ready'}     | ${1}         | ${2}        | ${0}           | ${1}
-        ${'StatefulSets'} | ${'ready'}     | ${2}         | ${1}        | ${0}           | ${2}
-        ${'ReplicaSets'}  | ${'ready'}     | ${1}         | ${1}        | ${0}           | ${3}
-        ${'Jobs'}         | ${'completed'} | ${2}         | ${1}        | ${0}           | ${4}
-        ${'CronJobs'}     | ${'ready'}     | ${1}         | ${1}        | ${1}           | ${5}
+        type              | successText    | successCount | failedCount | suspendedCount | pendingCount | index
+        ${'Deployments'}  | ${'ready'}     | ${1}         | ${1}        | ${0}           | ${1}         | ${0}
+        ${'DaemonSets'}   | ${'ready'}     | ${1}         | ${2}        | ${0}           | ${0}         | ${1}
+        ${'StatefulSets'} | ${'ready'}     | ${2}         | ${1}        | ${0}           | ${0}         | ${2}
+        ${'ReplicaSets'}  | ${'ready'}     | ${1}         | ${1}        | ${0}           | ${0}         | ${3}
+        ${'Jobs'}         | ${'completed'} | ${2}         | ${1}        | ${0}           | ${0}         | ${4}
+        ${'CronJobs'}     | ${'ready'}     | ${1}         | ${1}        | ${1}           | ${0}         | ${5}
       `(
         'populates view with the correct badges for workload type $type',
-        ({ type, successText, successCount, failedCount, suspendedCount, index }) => {
+        ({ type, successText, successCount, failedCount, suspendedCount, pendingCount, index }) => {
           const findAllBadges = () => findSummaryListItem(index).findAllComponents(GlBadge);
           const findBadgeByVariant = (variant) =>
             findAllBadges().wrappers.find((badge) => badge.props('variant') === variant);
@@ -100,12 +100,15 @@ describe('~/environments/components/kubernetes_summary.vue', () => {
           if (suspendedCount > 0) {
             expect(findBadgeByVariant('neutral').text()).toBe(`${suspendedCount} suspended`);
           }
+          if (pendingCount > 0) {
+            expect(findBadgeByVariant('info').text()).toBe(`${pendingCount} pending`);
+          }
         },
       );
     });
 
-    it('emits a failed event when there are failed workload types', () => {
-      expect(wrapper.emitted('failed')).toHaveLength(1);
+    it('emits a update-failed-state event when there are failed workload types', () => {
+      expect(wrapper.emitted('update-failed-state')).toEqual([[{ summary: true }]]);
     });
 
     it('emits an error message when gets an error from the cluster_client API', async () => {

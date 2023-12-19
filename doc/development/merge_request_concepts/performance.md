@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Merge Request Performance Guidelines
@@ -286,7 +286,7 @@ be clearly mentioned in the merge request description.
 **Summary:** Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
 should be executed in a **batch-style** to reduce connection overheads.
 
-For fetching rows from various tables in a batch-style, please see [Eager Loading](#eager-loading) section.
+For fetching rows from various tables in a batch-style, see [Eager Loading](#eager-loading) section.
 
 ### Example: Delete multiple files from Object Storage
 
@@ -323,7 +323,7 @@ Using [`ReactiveCaching`](../utilities.md#reactivecaching) is one of the best so
 transactions, otherwise it leads to severe contention problems
 as an open transaction basically blocks the release of a PostgreSQL backend connection.
 
-For keeping transaction as minimal as possible, please consider using `AfterCommitQueue`
+For keeping transaction as minimal as possible, consider using `AfterCommitQueue`
 module or `after_commit` AR hook.
 
 Here is [an example](https://gitlab.com/gitlab-org/gitlab/-/issues/36154#note_247228859)

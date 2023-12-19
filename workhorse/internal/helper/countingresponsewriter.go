@@ -54,3 +54,8 @@ func (c *countingResponseWriter) Count() int64 {
 func (c *countingResponseWriter) Status() int {
 	return c.status
 }
+
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (c *countingResponseWriter) Unwrap() http.ResponseWriter {
+	return c.rw
+}

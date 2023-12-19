@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # User file uploads **(FREE ALL)**
@@ -40,7 +39,7 @@ Only authenticated project members can view non-image attachments (including PDF
 
 To apply authentication requirements to image files in private or internal projects:
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 - Your project visibility settings must be **Private** or **Internal**.
@@ -61,7 +60,7 @@ You cannot select this option for public projects.
 
 You should delete an uploaded file when that file contains sensitive or confidential information. When you have deleted that file, users cannot access the file and the direct URL returns a 404 error.
 
-Project Owners and Maintainers can use the [interactive GraphiQL explorer](../api/graphql/index.md#graphiql) to access a [GraphQL endpoint](../api/graphql/reference/index.md#mutationuploaddelete) and delete an uploaded file.
+Project Owners and Maintainers can use the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) to access a [GraphQL endpoint](../api/graphql/reference/index.md#mutationuploaddelete) and delete an uploaded file.
 
 For example:
 

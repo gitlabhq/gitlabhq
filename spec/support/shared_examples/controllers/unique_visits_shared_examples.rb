@@ -13,6 +13,9 @@ RSpec.shared_examples 'tracking unique visits' do |method|
       .to receive(:track_event).with(id, values: anything)
     end
 
+    # allow other method calls in addition to the expected one
+    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+
     get method, params: request_params, format: :html
   end
 
@@ -23,6 +26,9 @@ RSpec.shared_examples 'tracking unique visits' do |method|
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
       .to receive(:track_event).with(id, values: anything)
     end
+
+    # allow other method calls in addition to the expected one
+    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
 
     stub_do_not_track('0')
 

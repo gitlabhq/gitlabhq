@@ -121,7 +121,6 @@ export default {
           v-if="item.hasTokenExposed"
           :text="item.token"
           data-testid="clipboard-btn"
-          data-qa-selector="clipboard_button"
           :title="$options.i18n.copyTrigger"
           css-class="gl-border-none gl-py-0 gl-px-2"
         />

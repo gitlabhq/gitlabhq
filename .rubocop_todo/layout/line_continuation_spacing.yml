@@ -107,7 +107,6 @@ Layout/LineContinuationSpacing:
     - 'lib/api/metrics/dashboard/annotations.rb'
     - 'lib/gitlab/auth/user_access_denied_reason.rb'
     - 'lib/gitlab/background_migration/populate_operation_visibility_permissions_from_operations.rb'
-    - 'lib/gitlab/checks/tag_check.rb'
     - 'lib/gitlab/ci/parsers/security/validators/schema_validator.rb'
     - 'lib/gitlab/database/background_migration/batched_migration_runner.rb'
     - 'lib/gitlab/database/load_balancing/sidekiq_server_middleware.rb'

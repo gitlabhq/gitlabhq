@@ -487,11 +487,6 @@ $tabs-holder-z-index: 250;
   background: var(--white, $white);
 
   > .mr-widget-section {
-    > :first-child {
-      border-top-left-radius: $border-radius-default - 1px;
-      border-top-right-radius: $border-radius-default - 1px;
-    }
-
     > :last-child,
     .deploy-heading:last-child {
       border-bottom-left-radius: $border-radius-default - 1px;
@@ -552,8 +547,13 @@ $tabs-holder-z-index: 250;
 
   .mr-widget-section:not(:first-child) > div,
   .mr-widget-section:not(:first-child) > section,
-  .mr-widget-section .mr-widget-section > div {
+  .mr-widget-section .mr-widget-section > div:not(:first-child) {
     border-top: solid 1px var(--border-color, $border-color);
+    // Avoid two lines being rendered
+    // instead of exessively adressing those
+    // edge cases we can use this as a boring
+    // solution
+    margin-top: -1px;
   }
 
   .mr-widget-alert-container + .mr-widget-section {
@@ -1056,7 +1056,7 @@ $tabs-holder-z-index: 250;
 }
 
 .merge-request-sticky-header {
-  z-index: 204;
+  z-index: $top-bar-z-index;
   height: $mr-sticky-header-height;
 }
 
@@ -1115,10 +1115,6 @@ $tabs-holder-z-index: 250;
   border-top: 1px solid var(--border-color, $border-color);
   transition: padding $gl-transition-duration-medium;
 
-  .page-with-icon-sidebar & {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-
   @media (max-width: map-get($grid-breakpoints, sm)-1) {
     padding-left: 0;
     padding-right: 0;
@@ -1126,6 +1122,10 @@ $tabs-holder-z-index: 250;
 
   .submit-review-dropdown {
     margin-left: $grid-size;
+
+    .md-header {
+      top: -$gl-spacing-scale-2;
+    }
   }
 }
 
@@ -1213,4 +1213,8 @@ $tabs-holder-z-index: 250;
     @include gl-rounded-top-left-none;
     @include gl-rounded-top-right-none;
   }
+}
+
+.merge-request-overview .md-header {
+  top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 }

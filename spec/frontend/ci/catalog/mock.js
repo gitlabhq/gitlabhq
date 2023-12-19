@@ -1,5 +1,3 @@
-import { componentsMockData } from '~/ci/catalog/constants';
-
 export const emptyCatalogResponseBody = {
   data: {
     ciCatalogResources: {
@@ -39,12 +37,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-42',
           __typename: 'CiCatalogResource',
         },
@@ -55,12 +47,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-41',
           __typename: 'CiCatalogResource',
         },
@@ -71,12 +57,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-40',
           __typename: 'CiCatalogResource',
         },
@@ -87,12 +67,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-39',
           __typename: 'CiCatalogResource',
         },
@@ -103,12 +77,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-38',
           __typename: 'CiCatalogResource',
         },
@@ -119,12 +87,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-37',
           __typename: 'CiCatalogResource',
         },
@@ -135,12 +97,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-36',
           __typename: 'CiCatalogResource',
         },
@@ -151,12 +107,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-35',
           __typename: 'CiCatalogResource',
         },
@@ -167,12 +117,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-34',
           __typename: 'CiCatalogResource',
         },
@@ -183,12 +127,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-33',
           __typename: 'CiCatalogResource',
         },
@@ -199,12 +137,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-32',
           __typename: 'CiCatalogResource',
         },
@@ -215,12 +147,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-31',
           __typename: 'CiCatalogResource',
         },
@@ -231,12 +157,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-30',
           __typename: 'CiCatalogResource',
         },
@@ -247,12 +167,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-29',
           __typename: 'CiCatalogResource',
         },
@@ -263,12 +177,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-28',
           __typename: 'CiCatalogResource',
         },
@@ -279,12 +187,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-27',
           __typename: 'CiCatalogResource',
         },
@@ -295,12 +197,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-26',
           __typename: 'CiCatalogResource',
         },
@@ -311,12 +207,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-25',
           __typename: 'CiCatalogResource',
         },
@@ -327,12 +217,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-24',
           __typename: 'CiCatalogResource',
         },
@@ -343,12 +227,6 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-23',
           __typename: 'CiCatalogResource',
         },
@@ -379,12 +257,6 @@ export const catalogSinglePageResponse = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-45',
           __typename: 'CiCatalogResource',
         },
@@ -395,12 +267,6 @@ export const catalogSinglePageResponse = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-44',
           __typename: 'CiCatalogResource',
         },
@@ -411,12 +277,6 @@ export const catalogSinglePageResponse = {
           description: 'A simple component',
           starCount: 0,
           latestVersion: null,
-          rootNamespace: {
-            id: 'gid://gitlab/Group/185',
-            fullPath: 'frontend-fixtures',
-            name: 'frontend-fixtures',
-            __typename: 'Namespace',
-          },
           webPath: '/frontend-fixtures/project-43',
           __typename: 'CiCatalogResource',
         },
@@ -434,7 +294,6 @@ export const catalogSharedDataMock = {
       icon: null,
       description: 'This is the description of the repo',
       name: 'Ruby',
-      rootNamespace: { id: 1, fullPath: '/group/project', name: 'my-dumb-project' },
       starCount: 1,
       latestVersion: {
         __typename: 'Release',
@@ -444,7 +303,7 @@ export const catalogSharedDataMock = {
         releasedAt: Date.now(),
         author: { id: 1, webUrl: 'profile/1', name: 'username' },
       },
-      webPath: 'path/to/project',
+      webPath: '/path/to/project',
     },
   },
 };
@@ -454,6 +313,7 @@ export const catalogAdditionalDetailsMock = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
+      webPath: '/twitter/project',
       openIssuesCount: 4,
       openMergeRequestsCount: 10,
       readmeHtml: '<h1>Hello world</h1>',
@@ -502,12 +362,6 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       description: `This is a component that does a bunch of stuff and is really just a number: ${i}`,
       icon: 'my-icon',
       name: `My component #${i}`,
-      rootNamespace: {
-        id: 1,
-        __typename: 'Namespace',
-        name: 'namespaceName',
-        path: 'namespacePath',
-      },
       starCount: 10,
       latestVersion: {
         __typename: 'Release',
@@ -526,13 +380,47 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
 
 export const mockCatalogResourceItem = generateResourcesNodes(1)[0];
 
+const componentsMockData = {
+  __typename: 'CiComponentConnection',
+  nodes: [
+    {
+      id: 'gid://gitlab/Ci::Component/1',
+      name: 'Ruby gal',
+      description: 'This is a pretty amazing component that does EVERYTHING ruby.',
+      path: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/2',
+      name: 'Javascript madness',
+      description: 'Adds some spice to your life.',
+      path: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      inputs: [
+        { name: 'isFun', default: 'true', required: true },
+        { name: 'RandomNumber', default: '10', required: false },
+      ],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/3',
+      name: 'Go go go',
+      description: 'When you write Go, you gotta go go go.',
+      path: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+  ],
+};
+
 export const mockComponents = {
   data: {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
-      components: {
-        ...componentsMockData,
+      webPath: '/twitter/project-1',
+      latestVersion: {
+        id: 'gid://gitlab/Version/1',
+        components: {
+          ...componentsMockData,
+        },
       },
     },
   },
@@ -543,7 +431,11 @@ export const mockComponentsEmpty = {
     ciCatalogResource: {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
-      components: [],
+      webPath: '/twitter/project-1',
+      latestVersion: {
+        id: 'gid://gitlab/Version/1',
+        components: [],
+      },
     },
   },
 };

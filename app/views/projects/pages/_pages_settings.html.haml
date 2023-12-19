@@ -24,10 +24,12 @@
     .form-group
       = f.fields_for :project_setting do |settings|
         = settings.gitlab_ui_checkbox_component :pages_multiple_versions_enabled,
-          s_('GitLabPages|Use multiple versions'),
+          s_('GitLabPages|Use multiple deployments'),
           label_options: { class: 'label-bold' }
         %p.gl-pl-6
-          = s_("GitLabPages|When enabled, you can create multiple versions of your pages site.").html_safe
+          = safe_format(s_("GitLabPages|When enabled, you can create multiple deployments of your pages site. %{docs_link_start}Learn More.%{link_end}"),
+              tag_pair(tag.a(href: help_page_path('user/project/pages/index', anchor: 'create-multiple-deployments'), target: '_blank'),
+              :docs_link_start, :link_end))
 
   .gl-mt-3
     = f.submit s_('GitLabPages|Save changes'), pajamas_button: true

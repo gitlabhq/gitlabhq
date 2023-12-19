@@ -25,7 +25,7 @@ RSpec.shared_examples 'User updates wiki page' do
     end
 
     it 'redirects back to the home edit page' do
-      page.within(:css, '.wiki-form .form-actions') do
+      page.within(:css, '[data-testid="wiki-form-actions"]') do
         click_on('Cancel')
       end
 
@@ -128,7 +128,7 @@ RSpec.shared_examples 'User updates wiki page' do
     end
 
     it 'cancels editing of a page' do
-      page.within(:css, '.wiki-form .form-actions') do
+      page.within(:css, '[data-testid="wiki-form-actions"]') do
         click_on('Cancel')
       end
 

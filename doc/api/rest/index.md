@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # REST API **(FREE ALL)**
@@ -347,13 +347,10 @@ The following table shows the possible return codes for API requests.
 
 ## Redirects
 
-> Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+> - Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
 
-FLAG:
-On GitLab.com, this feature is not available.
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../user/feature_flags.md) named `api_redirect_moved_projects`.
-
+After [path changes](../../user/project/repository/index.md#what-happens-when-a-repository-path-changes) the
 REST API can respond with a redirect and users should be able to handle such responses.
 The users should follow the redirect and repeat the request to the URI specified in the `Location` header.
 
@@ -377,7 +374,7 @@ This resource has been moved permanently to https://gitlab.example.com/api/v4/pr
 GitLab supports the following pagination methods:
 
 - Offset-based pagination. The default method and available on all endpoints except,
-  in GitLab 16.5 and later, the `\users` endpoint.
+  in GitLab 16.5 and later, the `users` endpoint.
 - Keyset-based pagination. Added to selected endpoints but being
   [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
 
@@ -386,7 +383,7 @@ For large collections, you should use keyset pagination
 
 ### Offset-based pagination
 
-> The `\users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
+> The `users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:
@@ -841,6 +838,10 @@ For questions about these integrations, use the [GitLab community forum](https:/
 ### Ruby
 
 - [Ruby wrapper and CLI for the GitLab REST API](https://github.com/NARKOZ/gitlab)
+
+### Rust
+
+- [`gitlab` crate](https://crates.io/crates/gitlab)
 
 ### Swift
 

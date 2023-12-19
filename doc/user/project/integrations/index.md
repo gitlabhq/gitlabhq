@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Project integrations **(FREE ALL)**
@@ -23,7 +23,7 @@ You can use:
 
 ## Manage group-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
@@ -64,7 +64,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove a group-level default setting
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the group.
 
@@ -79,7 +79,7 @@ Resetting a group-level default setting removes integrations that use default se
 
 ## Use instance-level or group-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -95,7 +95,7 @@ To use instance-level or group-level default settings for a project integration:
 
 ## Use custom settings for a project or group integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project or group.
 
@@ -131,7 +131,7 @@ To use custom settings for a project or group integration:
 | [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a room in Google Chat. | **{dotted-circle}** No |
-| [Harbor](harbor.md)                                                         | Use Harbor as the Container Registry for GitLab.                      | **{dotted-circle}** No |
+| [Harbor](harbor.md)                                                         | Use Harbor as the container registry for GitLab.                      | **{dotted-circle}** No |
 | [irker (IRC gateway)](irker.md)                                             | Send IRC messages.                                                    | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                                  | Run CI/CD pipelines with Jenkins.                                     | **{check-circle}** Yes |
 | JetBrains TeamCity                                                          | Run CI/CD pipelines with TeamCity.                                    | **{check-circle}** Yes |

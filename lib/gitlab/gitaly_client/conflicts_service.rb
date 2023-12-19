@@ -30,8 +30,8 @@ module Gitlab
       end
 
       def conflicts?
-        skip_content = Feature.enabled?(:skip_conflict_files_in_gitaly, type: :experiment)
-        list_conflict_files(skip_content: skip_content).any?
+        list_conflict_files(skip_content: true).any?
+
       rescue GRPC::FailedPrecondition, GRPC::Unknown
         # The server raises FailedPrecondition when it encounters
         # ConflictSideMissing, which means a conflict exists but its `theirs` or

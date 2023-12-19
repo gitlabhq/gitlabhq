@@ -4,13 +4,13 @@ group: Runner
 info: >-
   To determine the technical writer assigned to the Stage/Group associated with
   this page, see
-  https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Runner Fleet Dashboard **(ULTIMATE BETA)**
+# Runner Fleet Dashboard **(ULTIMATE EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6 behind several [feature flags](#enable-feature-flags).
 
-This feature is in [BETA](../policy/experiment-beta-support.md).
+This feature is an [Experiment](../policy/experiment-beta-support.md).
 To join the list of users testing this feature, contact us in
 [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
@@ -33,8 +33,7 @@ Prerequisites:
 
 To view the runner fleet dashboard:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Runners**.
 1. Click **Fleet dashboard**.
 
@@ -49,7 +48,7 @@ for some customers to try this feature.
 
 To test the Runner Fleet Dashboard as part of the early adopters program, you must:
 
-- Run GitLab 16.6 or above.
+- Run GitLab 16.7 or above.
 - Have an [Ultimate license](https://about.gitlab.com/pricing/).
 - Be able to run ClickHouse database. We recommend using [ClickHouse Cloud](https://clickhouse.cloud/).
 
@@ -59,6 +58,7 @@ To setup ClickHouse as the GitLab data storage:
 
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
 1. [Configure GitLab connection to Clickhouse](#configure-the-gitlab-connection-to-clickhouse).
+1. [Run ClickHouse migrations](#run-clickhouse-migrations).
 1. [Enable the feature flags](#enable-feature-flags).
 
 ### Run and configure ClickHouse
@@ -87,62 +87,6 @@ To create necessary user and database objects:
     CREATE ROLE gitlab_app;
     GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
     GRANT gitlab_app TO gitlab;
-    ```
-
-1. Connect to the `gitlab_clickhouse_main_production` database (or just switch it in the ClickHouse Cloud UI).
-
-1. To create the required database objects, execute:
-
-    ```sql
-    CREATE TABLE ci_finished_builds
-    (
-        id UInt64 DEFAULT 0,
-        project_id UInt64 DEFAULT 0,
-        pipeline_id UInt64 DEFAULT 0,
-        status LowCardinality(String) DEFAULT '',
-        created_at DateTime64(6, 'UTC') DEFAULT now(),
-        queued_at DateTime64(6, 'UTC') DEFAULT now(),
-        finished_at DateTime64(6, 'UTC') DEFAULT now(),
-        started_at DateTime64(6, 'UTC') DEFAULT now(),
-        runner_id UInt64 DEFAULT 0,
-        runner_manager_system_xid String DEFAULT '',
-        runner_run_untagged Boolean DEFAULT FALSE,
-        runner_type UInt8 DEFAULT 0,
-        runner_manager_version LowCardinality(String) DEFAULT '',
-        runner_manager_revision LowCardinality(String) DEFAULT '',
-        runner_manager_platform LowCardinality(String) DEFAULT '',
-        runner_manager_architecture LowCardinality(String) DEFAULT '',
-        duration Int64 MATERIALIZED age('ms', started_at, finished_at),
-        queueing_duration Int64 MATERIALIZED age('ms', queued_at, started_at)
-    )
-    ENGINE = ReplacingMergeTree
-    ORDER BY (status, runner_type, project_id, finished_at, id)
-    PARTITION BY toYear(finished_at);
-
-    CREATE TABLE ci_finished_builds_aggregated_queueing_delay_percentiles
-    (
-        status LowCardinality(String) DEFAULT '',
-        runner_type UInt8 DEFAULT 0,
-        started_at_bucket DateTime64(6, 'UTC') DEFAULT now(),
-
-        count_builds AggregateFunction(count),
-        queueing_duration_quantile AggregateFunction(quantile, Int64)
-    )
-    ENGINE = AggregatingMergeTree()
-    ORDER BY (started_at_bucket, status, runner_type);
-
-    CREATE MATERIALIZED VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_mv
-    TO ci_finished_builds_aggregated_queueing_delay_percentiles
-    AS
-    SELECT
-        status,
-        runner_type,
-        toStartOfInterval(started_at, INTERVAL 5 minute) AS started_at_bucket,
-
-        countState(*) as count_builds,
-        quantileState(queueing_duration) AS queueing_duration_quantile
-    FROM ci_finished_builds
-    GROUP BY status, runner_type, started_at_bucket;
     ```
 
 ### Configure the GitLab connection to ClickHouse
@@ -215,6 +159,14 @@ To verify that your connection is set up successfully:
     ```
 
    If successful, the command returns `[{"1"=>1}]`
+
+### Run ClickHouse migrations
+
+To create the required database objects execute:
+
+```shell
+sudo gitlab-rake gitlab:clickhouse:migrate
+```
 
 ### Enable feature flags
 

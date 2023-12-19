@@ -13,7 +13,6 @@ module Gitlab
     # rubocop:disable CodeReuse/ActiveRecord
     def users
       groups = group.self_and_hierarchy_intersecting_with_user_groups(current_user)
-      groups = groups.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/427108")
       members = GroupMember.where(group: groups).non_invite
 
       users = super

@@ -4,7 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 
-const userDataMock = ({ approved = false } = {}) => ({
+const userDataMock = ({ approved = false, reviewState = 'UNREVIEWED' } = {}) => ({
   id: 1,
   name: 'Root',
   state: 'active',
@@ -16,6 +16,7 @@ const userDataMock = ({ approved = false } = {}) => ({
     canUpdate: true,
     reviewed: true,
     approved,
+    reviewState,
   },
 });
 
@@ -203,5 +204,29 @@ describe('UncollapsedReviewerList component', () => {
         },
       );
     });
+  });
+
+  describe('reviewer state icons', () => {
+    it.each`
+      reviewState            | approved | icon
+      ${'UNREVIEWED'}        | ${false} | ${'dotted-circle'}
+      ${'REVIEWED'}          | ${true}  | ${'status-success'}
+      ${'REVIEWED'}          | ${false} | ${'comment'}
+      ${'REQUESTED_CHANGES'} | ${false} | ${'status-alert'}
+    `(
+      'renders $icon for reviewState:$reviewState and approved:$approved',
+      ({ reviewState, approved, icon }) => {
+        const user = userDataMock({ approved, reviewState });
+
+        createComponent(
+          {
+            users: [user],
+          },
+          { mrRequestChanges: true },
+        );
+
+        expect(wrapper.find('[data-testid="reviewer-state-icon"]').props('name')).toBe(icon);
+      },
+    );
   });
 });

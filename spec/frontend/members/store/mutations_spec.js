@@ -14,19 +14,6 @@ describe('Vuex members mutations', () => {
       };
     });
 
-    describe(types.RECEIVE_MEMBER_ROLE_SUCCESS, () => {
-      it('updates member', () => {
-        const accessLevel = { integerValue: 30, stringValue: 'Developer' };
-
-        mutations[types.RECEIVE_MEMBER_ROLE_SUCCESS](state, {
-          memberId: members[0].id,
-          accessLevel,
-        });
-
-        expect(state.members[0].accessLevel).toEqual(accessLevel);
-      });
-    });
-
     describe(types.RECEIVE_MEMBER_ROLE_ERROR, () => {
       describe('when error does not have a message', () => {
         it('shows default error message', () => {

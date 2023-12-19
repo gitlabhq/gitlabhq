@@ -281,20 +281,10 @@ RSpec.describe BuildDetailsEntity do
       end
 
       context 'when the build has non public archive type artifacts' do
-        let(:build) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+        let(:build) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
         it 'does not expose non public artifacts' do
           expect(subject.keys).not_to include(:artifact)
-        end
-
-        context 'with the non_public_artifacts feature flag disabled' do
-          before do
-            stub_feature_flags(non_public_artifacts: false)
-          end
-
-          it 'exposes artifact details' do
-            expect(subject[:artifact].keys).to include(:download_path, :browse_path, :locked)
-          end
         end
       end
     end

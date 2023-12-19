@@ -8,11 +8,9 @@ import {
 } from './keybindings';
 import ShortcutsNavigation from './shortcuts_navigation';
 
-export default class ShortcutsNetwork extends ShortcutsNavigation {
-  constructor(graph) {
-    super();
-
-    this.bindCommands([
+export default class ShortcutsNetwork {
+  constructor(shortcuts, graph) {
+    shortcuts.addAll([
       [REPO_GRAPH_SCROLL_LEFT, graph.scrollLeft],
       [REPO_GRAPH_SCROLL_RIGHT, graph.scrollRight],
       [REPO_GRAPH_SCROLL_UP, graph.scrollUp],
@@ -21,4 +19,6 @@ export default class ShortcutsNetwork extends ShortcutsNavigation {
       [REPO_GRAPH_SCROLL_BOTTOM, graph.scrollBottom],
     ]);
   }
+
+  static dependencies = [ShortcutsNavigation];
 }

@@ -12,6 +12,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
     let_it_be(:current_user) { nil }
 
     it { is_expected.to be_allowed(:read_organization) }
+    it { is_expected.to be_disallowed(:admin_organization) }
   end
 
   context 'when the user is an admin' do
@@ -34,11 +35,13 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
       create :organization_user, organization: organization, user: current_user
     end
 
-    it { is_expected.to be_allowed(:read_organization_user) }
+    it { is_expected.to be_allowed(:admin_organization) }
     it { is_expected.to be_allowed(:read_organization) }
+    it { is_expected.to be_allowed(:read_organization_user) }
   end
 
   context 'when the user is not part of the organization' do
+    it { is_expected.to be_disallowed(:admin_organization) }
     it { is_expected.to be_disallowed(:read_organization_user) }
     # All organizations are currently public, and hence they are allowed to be read
     # even if the user is not a part of the organization.

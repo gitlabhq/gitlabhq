@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Silent Mode **(FREE SELF)**
@@ -25,8 +25,7 @@ There are multiple ways to enable Silent Mode:
 
 - **Web UI**
 
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**..
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Silent Mode**, and toggle **Enable Silent Mode**.
   1. Changes are saved immediately.
@@ -55,8 +54,7 @@ There are multiple ways to disable Silent Mode:
 
 - **Web UI**
 
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Silent Mode**, and toggle **Enable Silent Mode**.
   1. Changes are saved immediately.
@@ -93,7 +91,7 @@ Outbound communications from the following features are silenced by Silent Mode.
 | [Executable integrations](../../user/project/integrations/index.md)       | The integrations are not executed.                                                                                                                                                                                                                      |
 | [Service Desk](../../user/project/service_desk/index.md)                  | Incoming emails still raise issues, but the users who sent the emails to Service Desk are not notified of issue creation or comments on their issues.                                                                                                   |
 | Outbound emails                                                           |                                                                                                                                                                                                                                                         |
-| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, please consult [GitLab Support](https://about.gitlab.com/support/). |
+| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, consult [GitLab Support](https://about.gitlab.com/support/). |
 
 ### Outbound communications that are not silenced
 

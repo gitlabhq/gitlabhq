@@ -74,7 +74,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('is collapsed by default', () => {
-      expect(findCollapse().props('visible')).toBeUndefined();
+      expect(findCollapse().props('visible')).toBe(false);
       expect(findCollapseButton().attributes('aria-label')).toBe(KubernetesOverview.i18n.expand);
       expect(findCollapseButton().props('icon')).toBe('chevron-right');
     });
@@ -88,7 +88,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
       findCollapseButton().vm.$emit('click');
       await nextTick();
 
-      expect(findCollapse().attributes('visible')).toBe('true');
+      expect(findCollapse().props('visible')).toBe(true);
       expect(findCollapseButton().attributes('aria-label')).toBe(KubernetesOverview.i18n.collapse);
       expect(findCollapseButton().props('icon')).toBe('chevron-down');
     });
@@ -149,20 +149,35 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('sets `clusterHealthStatus` as error when pods emitted a failure', async () => {
-      findKubernetesPods().vm.$emit('failed');
+      findKubernetesPods().vm.$emit('update-failed-state', { pods: true });
       await nextTick();
 
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
     });
 
     it('sets `clusterHealthStatus` as error when workload types emitted a failure', async () => {
-      findKubernetesTabs().vm.$emit('failed');
+      findKubernetesTabs().vm.$emit('update-failed-state', { summary: true });
       await nextTick();
 
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
     });
 
     it('sets `clusterHealthStatus` as success when data is loaded and no failures where emitted', () => {
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('success');
+    });
+
+    it('sets `clusterHealthStatus` as success after state update if there are no failures', async () => {
+      findKubernetesTabs().vm.$emit('update-failed-state', { summary: true });
+      findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
+      await nextTick();
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
+
+      findKubernetesTabs().vm.$emit('update-failed-state', { summary: false });
+      await nextTick();
+      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
+
+      findKubernetesTabs().vm.$emit('update-failed-state', { pods: false });
+      await nextTick();
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('success');
     });
   });

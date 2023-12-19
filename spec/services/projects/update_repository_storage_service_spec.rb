@@ -13,12 +13,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
     before do
       allow(Time).to receive(:now).and_return(time)
 
-      stub_storage_settings(
-        'test_second_storage' => {
-          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-          'path' => TestEnv::SECOND_STORAGE_PATH
-        }
-      )
+      stub_storage_settings('test_second_storage' => {})
     end
 
     context 'without wiki and design repository' do
@@ -76,6 +71,8 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('test_second_storage')
           expect(project.project_repository.shard_name).to eq('test_second_storage')
+          expect(repository_storage_move.reload).to be_finished
+          expect(repository_storage_move.error_message).to be_nil
         end
       end
 
@@ -100,6 +97,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
           expect(project).not_to be_repository_read_only
           expect(repository_storage_move.reload).to be_failed
+          expect(repository_storage_move.error_message).to eq('Boom')
         end
       end
 
@@ -126,7 +124,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
           expect(project_repository_double).to receive(:replicate)
             .with(project.repository.raw)
-            .and_raise(Gitlab::Git::CommandError)
+            .and_raise(Gitlab::Git::CommandError, 'Boom')
           expect(project_repository_double).to receive(:remove)
 
           expect do
@@ -136,6 +134,7 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
           expect(project).not_to be_repository_read_only
           expect(project.repository_storage).to eq('default')
           expect(repository_storage_move).to be_failed
+          expect(repository_storage_move.error_message).to eq('Boom')
         end
       end
 
@@ -214,29 +213,6 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             expect(new_pool_repository.source_project).to eq(project)
 
             expect(object_pool_double).to have_received(:link).with(project.repository.raw)
-          end
-
-          context 'when feature flag replicate_object_pool_on_move is disabled' do
-            before do
-              stub_feature_flags(replicate_object_pool_on_move: false)
-            end
-
-            it 'just moves the repository without the object pool' do
-              result = subject.execute
-              expect(result).to be_success
-
-              project.reload.cleanup
-
-              new_pool_repository = project.pool_repository
-
-              expect(new_pool_repository).to eq(pool_repository)
-              expect(new_pool_repository.shard).to eq(shard_default)
-              expect(new_pool_repository.state).to eq('ready')
-              expect(new_pool_repository.source_project).to eq(project)
-
-              expect(object_pool_repository_double).not_to have_received(:replicate)
-              expect(object_pool_double).not_to have_received(:link)
-            end
           end
 
           context 'when new shard has a repository pool' do

@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Push event activities limit and bulk push events **(FREE SELF)**
@@ -26,8 +25,7 @@ the activity feed.
 To modify this setting:
 
 - In the Admin Area:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
 - Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)

@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class User
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :id, :login
 

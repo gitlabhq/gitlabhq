@@ -4,7 +4,7 @@ creation-date: "2023-02-02"
 authors: [ "@nhxnguyen" ]
 coach: "@grzesiek"
 approvers: [ "@dorrino", "@nhxnguyen" ]
-owning-stage: "~devops::data_stores"
+owning-stage: "~devops::data stores"
 participating-stages: ["~section::ops", "~section::dev"]
 ---
 

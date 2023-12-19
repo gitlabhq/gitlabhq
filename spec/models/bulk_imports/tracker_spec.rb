@@ -83,5 +83,31 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
           "'InexistingPipeline' is not a valid BulkImport Pipeline"
         )
     end
+
+    context 'when using delegation methods' do
+      context 'with group pipelines' do
+        let(:entity) { create(:bulk_import_entity) }
+
+        it 'does not raise' do
+          entity.pipelines.each do |pipeline|
+            tracker = create(:bulk_import_tracker, entity: entity, pipeline_name: pipeline[:pipeline])
+            expect { tracker.abort_on_failure? }.not_to raise_error
+            expect { tracker.file_extraction_pipeline? }.not_to raise_error
+          end
+        end
+      end
+
+      context 'with project pipelines' do
+        let(:entity) { create(:bulk_import_entity, :project_entity) }
+
+        it 'does not raise' do
+          entity.pipelines.each do |pipeline|
+            tracker = create(:bulk_import_tracker, entity: entity, pipeline_name: pipeline[:pipeline])
+            expect { tracker.abort_on_failure? }.not_to raise_error
+            expect { tracker.file_extraction_pipeline? }.not_to raise_error
+          end
+        end
+      end
+    end
   end
 end

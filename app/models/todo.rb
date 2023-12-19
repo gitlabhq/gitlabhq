@@ -4,9 +4,6 @@ class Todo < ApplicationRecord
   include Sortable
   include FromUnion
   include EachBatch
-  include IgnorableColumns
-
-  ignore_column :note_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   # Time to wait for todos being removed when not visible for user anymore.
   # Prevents TODOs being removed by mistake, for example, removing access from a user
@@ -26,6 +23,7 @@ class Todo < ApplicationRecord
   MEMBER_ACCESS_REQUESTED = 10
   REVIEW_SUBMITTED = 11 # This is an EE-only feature
   OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
+  ADDED_APPROVER = 13 # This is an EE-only feature
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -39,7 +37,8 @@ class Todo < ApplicationRecord
     MERGE_TRAIN_REMOVED => :merge_train_removed,
     MEMBER_ACCESS_REQUESTED => :member_access_requested,
     REVIEW_SUBMITTED => :review_submitted,
-    OKR_CHECKIN_REQUESTED => :okr_checkin_requested
+    OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
+    ADDED_APPROVER => :added_approver
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze

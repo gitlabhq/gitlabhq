@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
@@ -179,6 +179,9 @@ To set up OneLogin as your identity provider:
 
 ### Configure assertions
 
+NOTE:
+The attributes are case-sensitive.
+
 At minimum, you must configure the following assertions:
 
 1. [NameID](#manage-user-saml-identity).
@@ -191,9 +194,6 @@ Optionally, you can pass user information to GitLab as attributes in the SAML as
   one of these.
 
 For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
-
-NOTE:
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported. For more information on configuring required attribute names in the SAML identity provider's settings, see [example group SAML and SCIM configurations](../../../user/group/saml_sso/example_saml_config.md).
 
 ### Use metadata
 
@@ -236,6 +236,8 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 
 ## Configure GitLab
 
+> Ability to set a custom role as the default membership role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417285) in GitLab 16.7.
+
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -244,9 +246,12 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
 1. In the **Default membership role** field, select the role to assign to new users.
-   The default role is **Guest**. In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523)
-   and later, group owners can set a default membership role other than **Guest**.
-   That role becomes the starting role of all users added to the group.
+   The default role is **Guest**. That role becomes the starting role of all users
+   added to the group:
+   - In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523) and
+     later, group Owners can set a default membership role other than **Guest**.
+   - In GitLab 16.7 and later, group Owners can set a [custom role](../../custom_roles.md)
+     as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.
@@ -349,25 +354,22 @@ breaks the configuration and could lock users out of the GitLab group.
 For more information on the recommended value and format for specific identity
 providers, see [set up your identity provider](#set-up-your-identity-provider).
 
-### Configure user settings from SAML response
+### Configure enterprise user settings from SAML response
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/412898) to configure only enterprise user settings in GitLab 16.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
 An existing user's attributes are updated from the SAML response values if that
-user was originally provisioned by the group. Users are provisioned by the group
-when the account was created either:
-
-- Through [SCIM](scim_setup.md).
-- By first sign-in with SAML SSO for GitLab.com groups.
+user is an [enterprise user](../../enterprise_user/index.md) of the group.
 
 #### Supported user attributes
 
-- **can_create_group** - `true` or `false` to indicate whether the user can create
+- **can_create_group** - `true` or `false` to indicate whether an enterprise user can create
   new top-level groups. Default is `true`.
-- **projects_limit** - The total number of personal projects a user can create.
+- **projects_limit** - The total number of personal projects an enterprise user can create.
   A value of `0` means the user cannot create new projects in their personal
-  namespace. Default is `10000`.
+  namespace. Default is `100000`.
 
 #### Example SAML response
 

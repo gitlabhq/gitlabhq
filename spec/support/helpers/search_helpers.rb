@@ -15,12 +15,9 @@ module SearchHelpers
     if page.has_css?('.search-page-form')
       search_form = '.search-page-form'
     # Open search modal from super sidebar
-    elsif has_testid?('super-sidebar-search-button')
+    else
       find_by_testid('super-sidebar-search-button').click
       search_form = '#super-sidebar-search-modal'
-    # Open legacy search dropdown in navigation
-    else
-      search_form = '.header-search-form'
     end
 
     page.within(search_form) do
@@ -36,6 +33,15 @@ module SearchHelpers
 
       wait_for_all_requests
     end
+  end
+
+  def submit_dashboard_search(query)
+    visit(search_path) unless page.has_css?('#dashboard_search')
+
+    search_form = page.find('input[name="search"]', match: :first)
+
+    search_form.fill_in(with: query)
+    search_form.send_keys(:enter)
   end
 
   def select_search_scope(scope)

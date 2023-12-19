@@ -97,7 +97,7 @@ token in the `--registration-token` argument:
 
 | Token type | Behavior |
 | ---------- | -------- |
-| [Registration token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
+| [Registration token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml` and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 | [Runner authentication token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 
 ### Transition period
@@ -329,9 +329,7 @@ enum column created in the `ci_runners` table.
 ### Runner creation through API
 
 Automated runner creation is possible through a new GraphQL mutation and the existing
-[`POST /runners` REST API endpoint](../../../api/runners.md#register-a-new-runner).
-The difference in the REST API endpoint is that it is modified to accept a request from an
-authorized user with a scope (instance, a group, or a project) instead of the registration token.
+[`POST /user/runners` REST API endpoint](../../../api/users.md#create-a-runner-linked-to-a-user).
 These endpoints are only available to users that are
 [allowed](../../../user/permissions.md#gitlab-cicd-permissions) to create runners at the specified
 scope.
@@ -361,8 +359,9 @@ scope.
 
 | Component        | Milestone | Issue | Changes |
 |------------------|----------:|-------|---------|
-|GitLab Runner Helm Chart| `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
-|GitLab Runner Operator| `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+| GitLab Runner Helm Chart | `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
+| GitLab Runner Operator | `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+| GitLab Runner Helm Chart | `%16.2` | Add `systemID` to Runner Helm Chart. |
 
 ### Stage 3 - Database changes
 
@@ -414,7 +413,7 @@ scope.
 | Component        | Milestone | Changes                                                                                                                                                                                                                                                                                                                            |
 |------------------|----------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | GitLab Rails app | `%16.0`   | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
-| GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
+| GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#create-an-instance-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
 | GitLab Rails app | `%16.1`   | Add runner group metadata to the runner list. |
 | GitLab Rails app |           | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
 | GitLab Rails app |           | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
@@ -441,7 +440,7 @@ scope.
 
 ## FAQ
 
-Please follow [the user documentation](../../../ci/runners/new_creation_workflow.md).
+Follow [the user documentation](../../../ci/runners/new_creation_workflow.md).
 
 ## Status
 

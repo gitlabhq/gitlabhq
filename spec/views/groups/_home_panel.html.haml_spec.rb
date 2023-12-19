@@ -9,12 +9,6 @@ RSpec.describe 'groups/_home_panel' do
     assign(:group, group)
   end
 
-  it 'renders the group ID' do
-    render
-
-    expect(rendered).to have_content("Group ID: #{group.id}")
-  end
-
   context 'admin area link' do
     it 'renders admin area link for admin' do
       allow(view).to receive(:current_user).and_return(create(:admin))

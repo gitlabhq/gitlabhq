@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure GitLab using an external PostgreSQL service **(FREE SELF)**
@@ -50,6 +50,12 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+1. Restart PostgreSQL to enable the TCP port:
+
+  ```shell
+  sudo gitlab-ctl restart
+  ```
 
 ## Troubleshooting
 

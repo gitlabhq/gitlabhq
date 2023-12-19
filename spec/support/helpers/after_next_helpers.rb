@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './next_instance_of'
+require 'gitlab/rspec/next_instance_of'
 
 module AfterNextHelpers
   class DeferredExpectation

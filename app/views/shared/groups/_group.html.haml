@@ -2,9 +2,9 @@
 - access = user&.max_member_access_for_group(group.id)
 
 %li.group-row.py-3.gl-align-items-center{ class: "gl-display-flex!" }
-  .avatar-container.rect-avatar.s40.gl-flex-shrink-0
+  .avatar-container.rect-avatar.s48.gl-flex-shrink-0
     = link_to group do
-      = group_icon(group, class: "avatar s40")
+      = render Pajamas::AvatarComponent.new(group, alt: group.name, size: 48)
   .gl-min-w-0.gl-flex-grow-1
     .title
       = link_to group.full_name, group, class: 'group-name'
@@ -17,11 +17,11 @@
         = markdown_field(group, :description)
 
   .stats.gl-text-gray-500.gl-flex-shrink-0
-    %span.gl-ml-5
-      = sprite_icon('bookmark', css_class: 'gl-vertical-align-text-bottom')
+    %span.gl-ml-5.has-tooltip{ title: _('Projects') }
+      = sprite_icon('project', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.projects.non_archived.count)
 
-    %span.gl-ml-5
+    %span.gl-ml-5.has-tooltip{ title: _('Users') }
       = sprite_icon('users', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(group.users.count)
 

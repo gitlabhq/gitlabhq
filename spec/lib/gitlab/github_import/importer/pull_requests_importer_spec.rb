@@ -93,6 +93,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'imports each note in parallel' do
       importer = described_class.new(project, client)
 
@@ -112,9 +116,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
   end
 
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
-    let(:importer) { described_class.new(project, client) }
-
     before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       page = double(:page, objects: [pull_request], number: 1)
 
       expect(client)
@@ -126,6 +129,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
         )
         .and_yield(page)
     end
+
+    let(:importer) { described_class.new(project, client) }
 
     it 'yields every pull request to the supplied block' do
       expect { |b| importer.each_object_to_import(&b) }

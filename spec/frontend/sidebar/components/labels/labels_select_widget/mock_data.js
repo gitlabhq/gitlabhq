@@ -14,6 +14,16 @@ export const mockScopedLabel = {
   textColor: '#FFFFFF',
 };
 
+export const mockLockedLabel = {
+  id: 30,
+  title: 'Bar Label',
+  description: 'Bar',
+  color: '#DADA55',
+  textColor: '#FFFFFF',
+  lockOnMerge: true,
+  lock_on_merge: true,
+};
+
 export const mockLabels = [
   mockRegularLabel,
   mockScopedLabel,

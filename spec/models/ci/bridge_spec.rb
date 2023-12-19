@@ -36,6 +36,24 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     expect(bridge).to have_one(:downstream_pipeline)
   end
 
+  describe 'no-op methods for compatibility with Ci::Build' do
+    it 'returns an empty array job_artifacts' do
+      expect(bridge.job_artifacts).to eq(Ci::JobArtifact.none)
+    end
+
+    it 'return nil for artifacts_expire_at' do
+      expect(bridge.artifacts_expire_at).to be_nil
+    end
+
+    it 'return nil for runner' do
+      expect(bridge.runner).to be_nil
+    end
+
+    it 'returns an empty TagList for tag_list' do
+      expect(bridge.tag_list).to be_a(ActsAsTaggableOn::TagList)
+    end
+  end
+
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 
@@ -595,6 +613,203 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe 'variables expansion' do
+    let(:options) do
+      {
+        trigger: {
+          project: 'my/project',
+          branch: 'master',
+          forward: { yaml_variables: true,
+                     pipeline_variables: true }.compact
+        }
+      }
+    end
+
+    let(:yaml_variables) do
+      [
+        {
+          key: 'EXPANDED_PROJECT_VAR6',
+          value: 'project value6 $PROJECT_PROTECTED_VAR'
+        },
+        {
+          key: 'EXPANDED_GROUP_VAR6',
+          value: 'group value6 $GROUP_PROTECTED_VAR'
+        },
+
+        {
+          key: 'VAR7',
+          value: 'value7 $VAR1',
+          raw: true
+        }
+      ]
+    end
+
+    let_it_be(:downstream_creator_user) { create(:user) }
+    let_it_be(:bridge_creator_user) { create(:user) }
+
+    let_it_be(:bridge_group) { create(:group) }
+    let_it_be(:downstream_group) { create(:group) }
+    let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: downstream_group) }
+    let_it_be(:project) { create(:project, :repository, :in_group, creator: bridge_creator_user, group: bridge_group) }
+    let(:bridge) { build(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+    let!(:pipeline) { create(:ci_pipeline, project: project) }
+
+    let!(:ci_variable) do
+      create(:ci_variable,
+        project: project,
+        key: 'PROJECT_PROTECTED_VAR',
+        value: 'this is a secret',
+        protected: is_variable_protected?)
+    end
+
+    let!(:ci_group_variable) do
+      create(:ci_group_variable,
+        group: bridge_group,
+        key: 'GROUP_PROTECTED_VAR',
+        value: 'this is a secret',
+        protected: is_variable_protected?)
+    end
+
+    before do
+      bridge.yaml_variables = yaml_variables
+      allow(bridge.project).to receive(:protected_for?).and_return(true)
+    end
+
+    shared_examples 'expands variables from a project downstream' do
+      it do
+        vars = bridge.downstream_variables
+        expect(vars).to include({ key: 'EXPANDED_PROJECT_VAR6', value: 'project value6 this is a secret' })
+      end
+    end
+
+    shared_examples 'expands variables from a group downstream' do
+      it do
+        vars = bridge.downstream_variables
+        expect(vars).to include({ key: 'EXPANDED_GROUP_VAR6', value: 'group value6 this is a secret' })
+      end
+    end
+
+    shared_examples 'expands project and group variables downstream' do
+      it_behaves_like 'expands variables from a project downstream'
+
+      it_behaves_like 'expands variables from a group downstream'
+    end
+
+    shared_examples 'does not expand variables from a project downstream' do
+      it do
+        vars = bridge.downstream_variables
+        expect(vars).not_to include({ key: 'EXPANDED_PROJECT_VAR6', value: 'project value6 this is a secret' })
+      end
+    end
+
+    shared_examples 'does not expand variables from a group downstream' do
+      it do
+        vars = bridge.downstream_variables
+        expect(vars).not_to include({ key: 'EXPANDED_GROUP_VAR6', value: 'group value6 this is a secret' })
+      end
+    end
+
+    shared_examples 'feature flag is disabled' do
+      before do
+        stub_feature_flags(exclude_protected_variables_from_multi_project_pipeline_triggers: false)
+      end
+
+      it_behaves_like 'expands project and group variables downstream'
+    end
+
+    shared_examples 'does not expand project and group variables downstream' do
+      it_behaves_like 'does not expand variables from a project downstream'
+
+      it_behaves_like 'does not expand variables from a group downstream'
+    end
+
+    context 'when they are protected' do
+      let!(:is_variable_protected?) { true }
+
+      context 'and downstream project group is different from bridge group' do
+        it_behaves_like 'does not expand project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and there is no downstream project' do
+        let(:downstream_project) { nil }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project equals bridge project' do
+        let(:downstream_project) { project }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project group is equal to bridge project group' do
+        let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: bridge_group) }
+
+        it_behaves_like 'expands variables from a group downstream'
+
+        it_behaves_like 'does not expand variables from a project downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project has no group' do
+        let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user) }
+
+        it_behaves_like 'does not expand project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+    end
+
+    context 'when they are not protected' do
+      let!(:is_variable_protected?) { false }
+
+      context 'and downstream project group is different from bridge group' do
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and there is no downstream project' do
+        let(:downstream_project) { nil }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project equals bridge project' do
+        let(:downstream_project) { project }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project group is equal to bridge project group' do
+        let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user, group: bridge_group) }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+
+      context 'and downstream project has no group' do
+        let_it_be(:downstream_project) { create(:project, creator: downstream_creator_user) }
+
+        it_behaves_like 'expands project and group variables downstream'
+
+        it_behaves_like 'feature flag is disabled'
+      end
+    end
+  end
+
   describe '#forward_pipeline_variables?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -824,8 +1039,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
 
     it 'creates the metadata record and assigns its partition' do
-      # the factory doesn't use any metadatable setters by default
-      # so the record will be initialized by the before_validation callback
+      # The record is initialized by the factory calling metadatable setters
+      bridge.metadata = nil
+
       expect(bridge.metadata).to be_nil
 
       expect(bridge.save!).to be_truthy

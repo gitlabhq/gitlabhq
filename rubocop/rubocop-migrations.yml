@@ -3,6 +3,7 @@ Migration/UpdateLargeTable:
   Enabled: true
   HighTrafficTables: &high_traffic_tables # size in GB (>= 10 GB on GitLab.com as of 06/2022) and/or number of records
     - :alert_management_alerts
+    - :approvals
     - :approval_merge_request_rules_users
     - :audit_events
     - :authentication_events
@@ -22,11 +23,14 @@ Migration/UpdateLargeTable:
     - :ci_refs
     - :ci_stages
     - :deployments
+    - :deployment_merge_requests
     - :description_versions
+    - :diff_note_positions
     - :error_tracking_error_events
     - :events
     - :gitlab_subscriptions
     - :gpg_signatures
+    - :pm_package_version_licenses
     - :issues
     - :label_links
     - :lfs_objects
@@ -37,24 +41,32 @@ Migration/UpdateLargeTable:
     - :merge_request_diff_files
     - :merge_request_diffs
     - :merge_request_metrics
+    - :merge_request_user_mentions
     - :merge_requests
     - :namespaces
     - :namespace_settings
     - :note_diff_files
     - :notes
+    - :oauth_access_grants
+    - :oauth_access_tokens
     - :packages_package_files
+    - :pm_package_versions
+    - :pm_package_version_licenses
     - :project_authorizations
     - :project_ci_cd_settings
     - :project_daily_statistics
     - :project_features
     - :projects
     - :project_settings
+    - :project_statistics
     - :protected_branches
     - :push_event_payloads
     - :resource_label_events
     - :resource_state_events
     - :routes
+    - :sbom_occurrences
     - :security_findings
+    - :security_scans
     - :sent_notifications
     - :system_note_metadata
     - :taggings
@@ -63,7 +75,9 @@ Migration/UpdateLargeTable:
     - :user_details
     - :user_preferences
     - :users
+    - :user_agent_details
     - :vulnerabilities
+    - :vulnerability_finding_links
     - :vulnerability_occurrence_identifiers
     - :vulnerability_occurrence_pipelines
     - :vulnerability_occurrences

@@ -587,6 +587,48 @@ entry.
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
 
+## 16.5.4 (2023-12-13)
+
+### Fixed (1 change)
+
+- [Truncate verification failure message to 255](gitlab-org/security/gitlab@640f8fa1b9ac91767b25992be646b8369fe41e09) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Prevent tag names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@2a67d2efe432eeb1264ffe3dd5e0625c364d3d4b) ([merge request](gitlab-org/security/gitlab!3747))
+- [Pass encoded file paths to router](gitlab-org/security/gitlab@7299f46a651db01f451694bf7b801ae8af672592) ([merge request](gitlab-org/security/gitlab!3736))
+- [Validate access level of user while rotating token](gitlab-org/security/gitlab@4a1ca1e3f95d858966ef1f985925c57f70923e17) ([merge request](gitlab-org/security/gitlab!3751))
+- [Fix large time_spent value causing GraphQL error `Integer out of bounds`](gitlab-org/security/gitlab@a87f5d04de526fbed7ecbf6ed8d44db356076826) ([merge request](gitlab-org/security/gitlab!3744))
+- [Restrict Protected branch access via group to direct members](gitlab-org/security/gitlab@22fd1a0d19f49c761fb20f80c326fa8658c962f7) ([merge request](gitlab-org/security/gitlab!3727))
+- [Remove the ability to fork and create MR for auditors](gitlab-org/security/gitlab@1a9d9490b3cf0e91321a90333d3f79ed275df4c0) ([merge request](gitlab-org/security/gitlab!3739))
+- [Restrict passing variables on the pipeline schedule API](gitlab-org/security/gitlab@eeb86c57a3b09b04659cb3d1300e396bdd51db58) ([merge request](gitlab-org/security/gitlab!3724))
+- [Smartcard auth: encrypt client cert in params](gitlab-org/security/gitlab@4ca907081651de95bcb392ee2ca2626dd7679f36) ([merge request](gitlab-org/security/gitlab!3730))
+
+## 16.5.3 (2023-11-30)
+
+### Security (11 changes)
+
+- [Validate adding members with higher role](gitlab-org/security/gitlab@4159a01ca7dfca9856a0ce404fcba8459382b104) ([merge request](gitlab-org/security/gitlab!3714))
+- [Enforce ref protection on pipeline schedule updates](gitlab-org/security/gitlab@4bafe829109bedb1d31f1c28eccafa425083c297) ([merge request](gitlab-org/security/gitlab!3656))
+- [Update mermaid version for DOS security fixes](gitlab-org/security/gitlab@641557519046d680bf8916a60b66c3d6020b1b88) ([merge request](gitlab-org/security/gitlab!3673))
+- [Prevent guest users from being able to add emojis in confidential issues](gitlab-org/security/gitlab@f6fe0644a285e323b0469510a69c8d01d7fbe2a7) ([merge request](gitlab-org/security/gitlab!3690))
+- [Do not run ssl cert validation if key has errors](gitlab-org/security/gitlab@dcd5a3dcafc8ec943b78b43b8898201b5a9c4de5) ([merge request](gitlab-org/security/gitlab!3661))
+- [Ensure access is checked when loading releases associated with tags](gitlab-org/security/gitlab@1d1a454147e80ea27cee382743cfff9e9041d0fe) ([merge request](gitlab-org/security/gitlab!3695))
+- [XSS and ReDoS in Markdown via Banzai pipeline of Jira](gitlab-org/security/gitlab@13cae16669e25b1f7a889ca3fdc5d08c5a6d28a2) ([merge request](gitlab-org/security/gitlab!3691))
+- [Prevent branch names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@bd18a249dbae6dc362dc5ecad26c61eb69407d78) ([merge request](gitlab-org/security/gitlab!3687))
+- [Filter out projects with disabled package registry in Composer finder](gitlab-org/security/gitlab@1d7e1de18c0ce2bf380f44aa777566dd61919a25) ([merge request](gitlab-org/security/gitlab!3682))
+- [Check max role for user for group access to protected ref](gitlab-org/security/gitlab@d3eef816a353bb0a4fb611a91c1cf0af6d9006bf) ([merge request](gitlab-org/security/gitlab!3646))
+- [Treat security policy bots as external](gitlab-org/security/gitlab@f16c6f2b80bd70d04a304b0441da2642dd32abe5) ([merge request](gitlab-org/security/gitlab!3676))
+
+## 16.5.2 (2023-11-14)
+
+### Fixed (4 changes)
+
+- [Fix assign security check permission checks](gitlab-org/gitlab@41d0d45a2abd8621ef55042eb0bc54343a48f2da) ([merge request](gitlab-org/gitlab!136434)) **GitLab Enterprise Edition**
+- [Create group wiki repo if absent when verifying on primary](gitlab-org/gitlab@0b490bdbda06febdda47b2e0e0cea1d9e52dd381) ([merge request](gitlab-org/gitlab!136243)) **GitLab Enterprise Edition**
+- [Fix broken issue rendering when initial ID is null](gitlab-org/gitlab@9f9fafbe202c5f5f591f689e295f62b01b8d40fc) ([merge request](gitlab-org/gitlab!136065))
+- [Backport artifacts page breadcrumb fixes](gitlab-org/gitlab@4f15baf84a8de9068fa5c2c6af47fc74d2a46df8) ([merge request](gitlab-org/gitlab!135195))
+
 ## 16.5.1 (2023-10-30)
 
 ### Fixed (1 change)
@@ -1272,6 +1314,38 @@ entry.
 - [Remove FF when canceling redundant pipelines](gitlab-org/gitlab@16bb8c5ff1ef7c6b1d854c71f4fec555439de210) ([merge request](gitlab-org/gitlab!131978))
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
+
+## 16.4.4 (2023-12-13)
+
+### Security (8 changes)
+
+- [Prevent tag names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@dea535057d372f313db2f3afb7928a65a3acfcf7) ([merge request](gitlab-org/security/gitlab!3748))
+- [Pass encoded file paths to router](gitlab-org/security/gitlab@435d14da6592134edc1b051be9e53a5756f37eff) ([merge request](gitlab-org/security/gitlab!3737))
+- [Validate access level of user while rotating token](gitlab-org/security/gitlab@d4e74025a0910966e4c92a117a5d1721c1d69854) ([merge request](gitlab-org/security/gitlab!3752))
+- [Fix large time_spent value causing GraphQL error `Integer out of bounds`](gitlab-org/security/gitlab@532192423ae25061c7454a47956b0d9f9ff07ffa) ([merge request](gitlab-org/security/gitlab!3753))
+- [Restrict Protected branch access via group to direct members](gitlab-org/security/gitlab@267933e624d8988ace9948804476f1c5d14fc228) ([merge request](gitlab-org/security/gitlab!3728))
+- [Remove the ability to fork and create MR for auditors](gitlab-org/security/gitlab@720c977c36a1ec349b38897b61b7fcb62e6bd1eb) ([merge request](gitlab-org/security/gitlab!3740))
+- [Restrict passing variables on the pipeline schedule API](gitlab-org/security/gitlab@ed1141076ffef659886753830b201e68c9bacf32) ([merge request](gitlab-org/security/gitlab!3725))
+- [Smartcard auth: encrypt client cert in params](gitlab-org/security/gitlab@3c1d11225878573e9de0803f0484e17764bce8ee) ([merge request](gitlab-org/security/gitlab!3731))
+
+## 16.4.3 (2023-11-30)
+
+### Fixed (1 change)
+
+- [Fix assign security check permission checks](gitlab-org/security/gitlab@68b0fe3e41199a47e5851f3f00412ba18cc61a27) **GitLab Enterprise Edition**
+
+### Security (10 changes)
+
+- [Enforce ref protection on pipeline schedule updates](gitlab-org/security/gitlab@222b8d02d95e6c33ef26bfbb69718fa73daf31bc) ([merge request](gitlab-org/security/gitlab!3657))
+- [Update mermaid version for DOS security fixes](gitlab-org/security/gitlab@91f6263eb4697e9aebe059aee46ccfe1974d481c) ([merge request](gitlab-org/security/gitlab!3672))
+- [Prevent guest users from being able to add emojis in confidential issues](gitlab-org/security/gitlab@cc233c603bc595ef60f1b7ea2fcd69ab6113a374) ([merge request](gitlab-org/security/gitlab!3689))
+- [Do not run ssl cert validation if key has errors](gitlab-org/security/gitlab@ce234f97638d9182c22636301eccae87e7af854a) ([merge request](gitlab-org/security/gitlab!3662))
+- [Ensure access is checked when loading releases associated with tags](gitlab-org/security/gitlab@fead41322a5cf79513b5e3375fb2372ca936ef10) ([merge request](gitlab-org/security/gitlab!3696))
+- [XSS and ReDoS in Markdown via Banzai pipeline of Jira](gitlab-org/security/gitlab@7d9d64aa7123287c495b6be291a9b00dc60f179e) ([merge request](gitlab-org/security/gitlab!3692))
+- [Prevent branch names starting with SHA-1 and SHA-256 values](gitlab-org/security/gitlab@f51d428a6961bf77661cffffd50face4d02c6f43) ([merge request](gitlab-org/security/gitlab!3688))
+- [Filter out projects with disabled package registry in Composer finder](gitlab-org/security/gitlab@844ddc2028fd7389beee440034a1e83a42693ba2) ([merge request](gitlab-org/security/gitlab!3683))
+- [Check max role for user for group access to protected ref](gitlab-org/security/gitlab@1f6036ab1e227d013c0d42210a9c08ac7ff231c6) ([merge request](gitlab-org/security/gitlab!3643))
+- [Treat security policy bots as external](gitlab-org/security/gitlab@b0cf61131f21381978509ab2698b9da57522e726) ([merge request](gitlab-org/security/gitlab!3677))
 
 ## 16.4.2 (2023-10-30)
 

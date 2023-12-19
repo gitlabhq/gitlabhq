@@ -17,6 +17,25 @@ module Ci
       end
     end
 
+    def unprotected_scoped_variables(
+      expose_project_variables:,
+      expose_group_variables:,
+      environment: expanded_environment_name,
+      dependencies: true)
+
+      track_duration do
+        pipeline
+          .variables_builder
+          .unprotected_scoped_variables(
+            self,
+            expose_project_variables: expose_project_variables,
+            expose_group_variables: expose_group_variables,
+            environment: environment,
+            dependencies: dependencies
+          )
+      end
+    end
+
     def track_duration
       start_time = ::Gitlab::Metrics::System.monotonic_time
       result = yield

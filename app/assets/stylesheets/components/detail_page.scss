@@ -38,18 +38,9 @@
 .detail-page-header-actions {
   flex: 0 0 auto;
 
-  &:not(.is-merge-request) {
-    @include media-breakpoint-down(xs) {
-      width: 100%;
-      margin-top: 10px;
-    }
-  }
-
-  &.is-merge-request {
-    @include media-breakpoint-down(sm) {
-      width: 100%;
-      margin-top: 10px;
-    }
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    margin-top: 10px;
   }
 }
 
@@ -62,13 +53,17 @@
     margin: 0 0 $gl-spacing-scale-4;
     color: $gl-text-color;
     padding: 0 0 0.3em;
-    border-bottom: 1px solid $white-dark;
   }
 
   .description {
     @include clearfix;
 
     margin-top: 6px;
+
+    + .edited-text {
+      display: inline-block;
+      margin-top: $gl-spacing-scale-4;
+    }
   }
 
   .author-link {

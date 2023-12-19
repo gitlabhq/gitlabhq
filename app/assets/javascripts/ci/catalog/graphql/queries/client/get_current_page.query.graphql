@@ -1,0 +1,5 @@
+query getCurrentPage {
+  page @client {
+    current
+  }
+}

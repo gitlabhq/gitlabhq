@@ -1,10 +1,10 @@
 - wiki_path = wiki_page_path(@wiki, wiki_directory)
 
-%li{ class: ['wiki-directory', active_when(params[:id] == wiki_directory.slug)], data: { testid: 'wiki-directory-content' } }
+%li{ data: { testid: 'wiki-directory-content' } }
   .gl-relative.gl-display-flex.gl-align-items-center.js-wiki-list-toggle.wiki-list{ data: { testid: 'wiki-list' } }<
     = sprite_icon('chevron-right', css_class: 'js-wiki-list-expand-button wiki-list-expand-button gl-mr-2 gl-cursor-pointer')
     = sprite_icon('chevron-down', css_class: 'js-wiki-list-collapse-button wiki-list-collapse-button gl-mr-2 gl-cursor-pointer')
-    = render Pajamas::ButtonComponent.new(icon: 'plus', href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-bg-transparent! gl-hover-bg-gray-50! gl-focus-bg-gray-50! gl-absolute gl-top-half gl-translate-y-n50 gl-cursor-pointer gl-right-3' })
+    = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-bg-transparent! gl-hover-bg-gray-50! gl-focus-bg-gray-50! gl-absolute gl-top-half gl-translate-y-n50 gl-cursor-pointer gl-right-2' })
     = link_to wiki_path, data: { testid: 'wiki-dir-page-link', qa_page_name: wiki_directory.title } do
       = wiki_directory.title
   %ul.gl-pl-8

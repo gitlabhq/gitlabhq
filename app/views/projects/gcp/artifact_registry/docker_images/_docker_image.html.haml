@@ -1,0 +1,33 @@
+.gl-display-flex.gl-flex-direction-column
+  .gl-display-flex.gl-flex-direction-column.gl-border-b-solid.gl-border-t-solid.gl-border-t-1.gl-border-b-1.gl-border-t-transparent.gl-border-b-gray-100
+    .gl-display-flex.gl-align-items-center.gl-py-3
+      .gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-justify-content-space-between.gl-align-items-stretch.gl-flex-grow-1
+        .gl-display-flex.gl-flex-direction-column.gl-mb-3.gl-sm-mb-0.gl-min-w-0.gl-flex-grow-1
+          .gl-display-flex.gl-align-items-center.gl-text-body.gl-font-weight-bold.gl-font-size-h2
+            %span.gl-text-body.gl-font-weight-bold= docker_image.short_name
+          .gl-bg-gray-50.gl-inset-border-1-gray-100.gl-rounded-base.gl-pt-6
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('information-o', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Full name: #{docker_image.name}
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('earth', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              URI:
+              %a{ href: docker_image.uri, target: 'blank', rel: 'noopener noreferrer' }= docker_image.uri
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('doc-code', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Media Type: #{docker_image.media_type}
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('archive', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Size: #{number_to_human_size(docker_image.image_size_bytes)}
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('calendar', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Built at: #{docker_image.built_at&.to_fs}
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('calendar', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Uploaded at: #{docker_image.uploaded_at&.to_fs}
+            .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+              = sprite_icon('calendar', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
+              Updated at: #{docker_image.updated_at&.to_fs}
+          - if docker_image.tags.present?
+            .gl-display-flex.gl-align-items-center.gl-text-gray-500.gl-min-h-6.gl-min-w-0.gl-flex-grow-1.gl-pt-4
+              = render partial: 'docker_image_tag', collection: docker_image.tags

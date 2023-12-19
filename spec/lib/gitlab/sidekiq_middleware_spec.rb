@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'sidekiq/testing'
 
-RSpec.describe Gitlab::SidekiqMiddleware do
+RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
   let(:job_args) { [0.01] }
   let(:disabled_sidekiq_middlewares) { [] }
   let(:chain) { Sidekiq::Middleware::Chain.new(Sidekiq) }
@@ -33,6 +33,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       configurator.call(chain)
       stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
     end
+
     it "passes through the right middlewares", :aggregate_failures do
       enabled_sidekiq_middlewares.each do |middleware|
         expect_next_instances_of(middleware, 1, true) do |middleware_instance|
@@ -68,6 +69,7 @@ RSpec.describe Gitlab::SidekiqMiddleware do
         ::Gitlab::SidekiqVersioning::Middleware,
         ::Gitlab::SidekiqStatus::ServerMiddleware,
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
+        ::ClickHouse::MigrationSupport::SidekiqMiddleware,
         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
         ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
         ::Gitlab::SidekiqMiddleware::SkipJobs

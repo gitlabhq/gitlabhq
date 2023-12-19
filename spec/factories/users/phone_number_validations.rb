@@ -7,5 +7,9 @@ FactoryBot.define do
     international_dial_code { 1 }
     phone_number { '555' }
     telesign_reference_xid { FFaker::Guid.guid }
+
+    trait(:validated) do
+      validated_at { Time.zone.now }
+    end
   end
 end

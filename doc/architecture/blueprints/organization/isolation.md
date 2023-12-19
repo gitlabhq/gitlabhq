@@ -65,7 +65,7 @@ These are:
 The major constraint these POCs were trying to overcome was that there is no standard way in the GitLab application or database to even determine what Organization (or Project or namespace) a piece of data belongs to.
 This means that the first step is to implement a standard way to efficiently find the parent Organization for any model or row in the database.
 
-The proposed solution is ensuring that every single table that exists in the `gitlab_main_cell` and `gitlab_ci_cell` (Cell-local) databases must include a valid sharding key that is either `project_id` or `namespace_id`.
+The proposed solution is ensuring that every single table that exists in the `gitlab_main_cell`, `gitlab_ci` and `gitlab_pm` (Cell-local) databases must include a valid sharding key that is a reference to `projects`, `namespaces` or `organizations`.
 At first we considered enforcing everything to have an `organization_id`, but we determined that this would be too expensive to update for customers that need to migrate large Groups out of the default Organization.
 The added benefit is that more than half of our tables already have one of these columns.
 Additionally, if we can't consistently attribute data to a top-level Group, then we won't be able to validate if a top-level Group is safe to be moved to a new Organization.
@@ -79,7 +79,7 @@ We can also use these sharding keys to help us decide whether:
 
 ## Detailed steps
 
-1. Implement developer facing documentation explaining the requirement to add these sharding keys and how they should choose between `project_id` and `namespace_id`.
+1. Implement developer facing documentation explaining the requirement to add these sharding keys and how they should choose.
 1. Add a way to declare a sharding key in `db/docs` and automatically populate it for all tables that already have a sharding key
 1. Implement automation in our CI pipelines and/or DB migrations that makes it impossible to create new tables without a sharding key.
 1. Implement a way for people to declare a desired sharding key in `db/docs` as
@@ -107,7 +107,7 @@ We can also use these sharding keys to help us decide whether:
       automated MRs for the sharding keys that can be automatically inferred
       and automate creating issues for all the sharding keys that can't be
       automatically inferred
-1. Validate that all existing `project_id` and `namespace_id` columns on all Cell-local tables can reliably be assumed to be the sharding key. This requires assigning issues to teams to confirm that these columns aren't used for some other purpose that would actually not be suitable. If there is an issue with a table we need to migrate and rename these columns, and then add a new `project_id` or `namespace_id` column with the correct sharding key.
+1. Validate that all existing sharding key columns on all Cell-local tables can reliably be assumed to be the sharding key. This requires assigning issues to teams to confirm that these columns aren't used for some other purpose that would actually not be suitable.
 1. We allow customers to create new Organizations without the option to migrate namespaces into them. All namespaces need to be newly created in their new Organization.
 1. Implement new functionality in GitLab similar to the [POC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131968), which allows a namespace owner to see if their namespace is fully isolated.
 1. Implement functionality that allows namespace owners to migrate an existing namespace from one Organization to another. Most likely this will be existing customers that want to migrate their namespace out of the default Organization into a newly created Organization. Only isolated namespaces as implemented in the previous step will be allowed to move.

@@ -1,8 +1,0 @@
----
-name: reduce_duplicate_job_key_ttl
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135910
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430345
-milestone: '16.6'
-type: development
-group: group::scalability
-default_enabled: false

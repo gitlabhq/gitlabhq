@@ -701,55 +701,35 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'with-header' do
-      using RSpec::Parameterized::TableSyntax
-
-      before do
-        allow(helper).to receive(:show_super_sidebar?).and_return(show_super_sidebar)
-        allow(helper).to receive(:current_user).and_return(current_user)
-      end
-
-      where(:show_super_sidebar, :current_user) do
-        true  | nil
-        false | ref(:user)
-        false | nil
-      end
-
-      with_them do
-        it { is_expected.to include('with-header') }
-      end
-
-      context 'when with-header should not be shown' do
-        let(:show_super_sidebar) { true }
-        let(:current_user) { user }
+      context 'when current_user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+        end
 
         it { is_expected.not_to include('with-header') }
+      end
+
+      context 'when no current_user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to include('with-header') }
       end
     end
 
     describe 'with-top-bar' do
-      context 'when show_super_sidebar? is true' do
-        context 'when @hide_top_bar_padding is false' do
-          before do
-            allow(helper).to receive(:show_super_sidebar?).and_return(true)
-            helper.instance_variable_set(:@hide_top_bar_padding, false)
-          end
-
-          it { is_expected.to include('with-top-bar') }
+      context 'when @hide_top_bar_padding is false' do
+        before do
+          helper.instance_variable_set(:@hide_top_bar_padding, false)
         end
 
-        context 'when @hide_top_bar_padding is true' do
-          before do
-            allow(helper).to receive(:show_super_sidebar?).and_return(true)
-            helper.instance_variable_set(:@hide_top_bar_padding, true)
-          end
-
-          it { is_expected.not_to include('with-top-bar') }
-        end
+        it { is_expected.to include('with-top-bar') }
       end
 
-      context 'when show_super_sidebar? is false' do
+      context 'when @hide_top_bar_padding is true' do
         before do
-          allow(helper).to receive(:show_super_sidebar?).and_return(false)
+          helper.instance_variable_set(:@hide_top_bar_padding, true)
         end
 
         it { is_expected.not_to include('with-top-bar') }

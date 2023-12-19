@@ -11,6 +11,7 @@ FactoryBot.define do
     trait(:reporter) { group_access { Gitlab::Access::REPORTER } }
     trait(:developer) { group_access { Gitlab::Access::DEVELOPER } }
     trait(:maintainer) { group_access { Gitlab::Access::MAINTAINER } }
+    trait(:owner) { group_access { Gitlab::Access::OWNER } }
 
     after(:create) do |project_group_link|
       project_group_link.run_after_commit_or_now do

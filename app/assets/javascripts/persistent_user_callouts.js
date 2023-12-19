@@ -4,7 +4,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-recovery-settings-callout',
   '.js-users-over-license-callout',
   '.js-admin-licensed-user-count-threshold',
-  '.js-buy-pipeline-minutes-notification-callout',
   '.js-token-expiry-callout',
   '.js-registration-enabled-callout',
   '.js-new-user-signups-cap-reached',
@@ -25,6 +24,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-branch-rules-info-callout',
   '.js-new-nav-for-everyone-callout',
   '.js-namespace-over-storage-users-combined-alert',
+  '.js-code-suggestions-ga-non-owner-alert',
 ];
 
 const initCallouts = () => {

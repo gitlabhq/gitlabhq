@@ -87,7 +87,8 @@ module Ci
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
         full_path: project.full_path,
-        visibility_pipeline_id_type: visibility_pipeline_id_type
+        visibility_pipeline_id_type: visibility_pipeline_id_type,
+        show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s
       }
     end
 
@@ -103,6 +104,13 @@ module Ci
       pipeline.warning_messages(limit: MAX_LIMIT).each do |warning|
         yield markdown(warning.content)
       end
+    end
+
+    def show_jenkins_ci_prompt(project)
+      return false unless can?(current_user, :create_pipeline, project)
+      return false if project.repository.gitlab_ci_yml.present?
+
+      project.repository.jenkinsfile?
     end
   end
 end

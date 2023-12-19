@@ -1,4 +1,5 @@
 import { __, sprintf } from '~/locale';
+import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { TestStatus } from '../../constants';
 
 /**
@@ -25,15 +26,27 @@ export function iconForTestStatus(status) {
       return 'status_notfound';
   }
 }
-
 export const formattedTime = (seconds = 0) => {
   if (seconds < 1) {
-    const milliseconds = seconds * 1000;
-    return sprintf(__('%{milliseconds}ms'), { milliseconds: milliseconds.toFixed(2) });
+    return sprintf(__('%{milliseconds}ms'), {
+      milliseconds: (seconds * 1000).toFixed(2),
+    });
   }
-  return sprintf(__('%{seconds}s'), { seconds: seconds.toFixed(2) });
-};
+  if (seconds < 60) {
+    return sprintf(__('%{seconds}s'), {
+      seconds: (seconds % 60).toFixed(2),
+    });
+  }
 
+  const hoursAndMinutes = stringifyTime(parseSeconds(seconds));
+  const remainingSeconds =
+    seconds % 60 >= 1
+      ? sprintf(__('%{seconds}s'), {
+          seconds: Math.floor(seconds % 60),
+        })
+      : '';
+  return `${hoursAndMinutes} ${remainingSeconds}`.trim();
+};
 export const addIconStatus = (testCase) => ({
   ...testCase,
   icon: iconForTestStatus(testCase.status),

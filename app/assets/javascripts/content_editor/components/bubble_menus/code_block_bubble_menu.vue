@@ -148,7 +148,7 @@ export default {
       <gl-button-group>
         <gl-dropdown
           category="tertiary"
-          contenteditable="false"
+          :contenteditable="false"
           boundary="viewport"
           :text="selectedLanguage.label"
           @hide="clearCustomLanguageForm"

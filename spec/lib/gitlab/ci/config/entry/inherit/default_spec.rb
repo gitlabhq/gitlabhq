@@ -31,6 +31,7 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Inherit::Default do
       false             | false
       %w[image]         | true
       %w[before_script] | false
+      '123'             | false
     end
 
     with_them do

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 <!-- vale gitlab.FutureTense = NO -->
@@ -258,7 +258,7 @@ to protect multiple branches:
    to files they work on, toggle **Require approval from code owners**.
 1. Select **Protect**.
 1. In the table of branches, find the rule marked as `Default`. (Depending on
-   your version of GitLab, this branch may be named `main` or `master`.) Set the
+   your version of GitLab, this branch might be named `main` or `master`.) Set the
    values for this branch to match the settings you used for the `1.*` rule.
 
 Your rules are now in place, even though no `1.*` branches exist yet:

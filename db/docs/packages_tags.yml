@@ -7,4 +7,6 @@ feature_categories:
 description: Package identifier tags for supported package types. See https://docs.gitlab.com/ee/user/packages/npm_registry/#add-npm-distribution-tags for an example.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20636
 milestone: '12.7'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

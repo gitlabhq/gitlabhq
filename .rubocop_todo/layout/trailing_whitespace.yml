@@ -3,8 +3,6 @@
 Layout/TrailingWhitespace:
   Exclude:
     - 'app/models/concerns/analytics/cycle_analytics/stage_event_model.rb'
-    - 'db/migrate/20220913082728_drop_index_cadence_create_iterations_automation.rb'
-    - 'db/post_migrate/20220816163444_update_start_date_for_iterations_cadences.rb'
     - 'lib/gitlab/pagination/keyset/sql_type_missing_error.rb'
     - 'spec/services/suggestions/apply_service_spec.rb'
     - 'spec/support/helpers/x509_helpers.rb'

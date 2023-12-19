@@ -3,7 +3,6 @@
 module Projects
   module ServiceDesk
     class CustomEmailController < Projects::ApplicationController
-      before_action :check_feature_flag_enabled
       before_action :authorize_admin_project!
 
       feature_category :service_desk
@@ -74,10 +73,6 @@ module Projects
           custom_email_smtp_address: setting&.custom_email_credential&.smtp_address,
           error_message: error_message
         }
-      end
-
-      def check_feature_flag_enabled
-        render_404 unless Feature.enabled?(:service_desk_custom_email, @project)
       end
     end
   end

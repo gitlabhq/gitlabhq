@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, howto
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Comments and threads **(FREE ALL)**
@@ -78,12 +77,16 @@ Notifications and mentions can be disabled in
 When you mention a group in a comment, every member of the group gets a to-do item
 added to their To-do list.
 
-1. Open the MR or issue.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For issues, select **Plan > Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
 1. Select **Comment**.
 
 A to-do item is created for all the group and subgroup members.
+
+For more information on mentioning subgroups see [Mention subgroups](../group/subgroups/index.md#mention-subgroups).
 
 ## Add a comment to a merge request diff
 
@@ -95,8 +98,9 @@ persist, even when you:
 
 To add a commit diff comment:
 
-1. To select a specific commit, on the merge request, select the **Commits** tab, select the commit
-   message. To view the latest commit, select the **Changes** tab.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests**, and find your merge request.
+1. Select the **Commits** tab, then select the commit message.
 1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
 1. Enter your comment and select **Start a review** or **Add comment now**.
@@ -149,17 +153,19 @@ If you edit an existing comment to add a user mention that wasn't there before, 
 You can prevent public comments in an issue or merge request.
 When you do, only project members can add and edit comments.
 
-Prerequisite:
+Prerequisites:
 
 - In merge requests, you must have at least the Developer role.
 - In issues, you must have at least the Reporter role.
 
 To lock an issue or merge request:
 
-1. On the right sidebar, next to **Lock discussion**, select **Edit**.
-1. On the confirmation dialog, select **Lock**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For issues, select **Plan > Issues**, and find your issue.
+1. On the top right, select **Merge request actions** or **Issue actions** (**{ellipsis_v}**), then select **Lock discussion**.
 
-Notes are added to the page details.
+A system note is added to the page details.
 
 If an issue or merge request is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
 
@@ -188,7 +194,7 @@ Prerequisites:
 
 To add an internal note:
 
-1. Start adding a new comment.
+1. On the issue or epic, in the **Comment** text box, type a comment.
 1. Below the comment, select the **Make this an internal note** checkbox.
 1. Select **Add internal note**.
 
@@ -203,7 +209,7 @@ changes ([system notes](../project/system_notes.md)). System notes include chang
 objects, or changes to labels, assignees, and the milestone.
 GitLab saves your preference, and applies it to every issue, merge request, or epic you view.
 
-1. Open the **Overview** tab in a merge request, issue, or epic.
+1. On a merge request, issue, or epic, select the **Overview** tab.
 1. On the right side of the page, from the **Sort or filter** dropdown list, select a filter:
    - **Show all activity**: Display all user comments and system notes.
    - **Show comments only**: Display only user comments.
@@ -280,12 +286,7 @@ A threaded comment is created.
 
 > - Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
 > - Resolvable threads for issues [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
-
-FLAG:
-On self-managed GitLab, resolvable threads _for issues_ are available by default.
-To hide the feature, an administrator can
-[disable the feature flag](../../administration/feature_flags.md) named `resolvable_issue_threads`.
-On GitLab.com, this feature is available.
+> - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 
 You can resolve a thread when you want to finish a conversation.
 

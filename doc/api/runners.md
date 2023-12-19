@@ -1,10 +1,12 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Runners API **(FREE ALL)**
+
+This page describes endpoints for runners registered to an instance. To create a runner linked to the current user, see [Create a runner](users.md#create-a-runner-linked-to-a-user).
 
 [Pagination](rest/index.md#pagination) is available on the following API endpoints (they return 20 items by default):
 
@@ -23,7 +25,7 @@ There are two tokens to take into account when connecting a runner with GitLab.
 | Token | Description |
 | ----- | ----------- |
 | Registration token | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/index.md). |
-| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runner API when you manually [register a runner](#register-a-new-runner) or [reset the authentication token](#reset-runners-authentication-token-by-using-the-runner-id). You can also obtain the authentication token using [Create a runner](users.md#create-a-runner) API method. |
+| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runner API when you manually [register a runner](#create-an-instance-runner) or [reset the authentication token](#reset-runners-authentication-token-by-using-the-runner-id). You can also obtain the authentication token using [Create a runner](users.md#create-a-runner-linked-to-a-user) API method. |
 
 Here's an example of how the two tokens are used in runner registration:
 
@@ -393,7 +395,6 @@ Example response:
 [
     {
         "id": 2,
-        "ip_address": "127.0.0.1",
         "status": "running",
         "stage": "test",
         "name": "test",
@@ -404,6 +405,7 @@ Example response:
         "started_at": "2017-11-16T08:51:29.000Z",
         "finished_at": "2017-11-16T08:53:29.000Z",
         "duration": 120,
+        "queued_duration": 2,
         "user": {
             "id": 1,
             "name": "John Doe2",
@@ -652,9 +654,9 @@ Example response:
 ]
 ```
 
-## Register a new runner
+## Create an instance runner
 
-Register a new runner for the instance.
+Create a runner for the instance.
 
 ```plaintext
 POST /runners

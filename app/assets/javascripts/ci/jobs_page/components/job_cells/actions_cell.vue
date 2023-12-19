@@ -84,6 +84,9 @@ export default {
     artifactDownloadPath() {
       return this.hasArtifacts.downloadPath;
     },
+    canCancelJob() {
+      return this.job.userPermissions?.cancelBuild;
+    },
     canReadJob() {
       return this.job.userPermissions?.readBuild;
     },
@@ -185,7 +188,7 @@ export default {
   <gl-button-group>
     <template v-if="canReadJob && canUpdateJob">
       <gl-button
-        v-if="isActive"
+        v-if="isActive && canCancelJob"
         v-gl-tooltip
         icon="cancel"
         :title="$options.CANCEL"

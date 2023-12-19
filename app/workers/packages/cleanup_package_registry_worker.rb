@@ -14,6 +14,7 @@ module Packages
       enqueue_package_file_cleanup_job if Packages::PackageFile.pending_destruction.exists?
       enqueue_cleanup_policy_jobs if Packages::Cleanup::Policy.runnable.exists?
       enqueue_cleanup_stale_npm_metadata_cache_job if Packages::Npm::MetadataCache.pending_destruction.exists?
+      enqueue_cleanup_stale_nuget_symbols_job if Packages::Nuget::Symbol.pending_destruction.exists?
 
       log_counts
     end
@@ -30,6 +31,10 @@ module Packages
 
     def enqueue_cleanup_stale_npm_metadata_cache_job
       Packages::Npm::CleanupStaleMetadataCacheWorker.perform_with_capacity
+    end
+
+    def enqueue_cleanup_stale_nuget_symbols_job
+      Packages::Nuget::CleanupStaleSymbolsWorker.perform_with_capacity
     end
 
     def log_counts

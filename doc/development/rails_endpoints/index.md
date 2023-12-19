@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, api
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Rails Endpoints
@@ -20,7 +19,7 @@ These Rails Endpoints:
 
 ## Proof of concept period: Feedback Request
 
-We are currently evaluating a new approach for documenting Rails endpoints. Please [check out the Feedback Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411605) and feel free to share your thoughts, suggestions, or concerns. We appreciate your participation in helping us improve the documentation!
+We are currently evaluating a new approach for documenting Rails endpoints. [Check out the Feedback Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411605) and feel free to share your thoughts, suggestions, or concerns. We appreciate your participation in helping us improve the documentation!
 
 ## SAST Scanners
 

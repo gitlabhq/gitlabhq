@@ -6,6 +6,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
+    Rake.application.rake_require 'tasks/gitlab/click_house/migration'
     Rake.application.rake_require 'tasks/gitlab/db'
     Rake.application.rake_require 'tasks/gitlab/db/lock_writes'
   end
@@ -357,6 +358,43 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         end
       end
     end
+
+    describe 'clickhouse migrations' do
+      let(:connection) { Gitlab::Database.database_base_models[:main].connection }
+      let(:main_config) { double(:config, name: 'main') }
+
+      before do
+        # stub normal migrations
+        allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
+        allow(connection).to receive(:tables).and_return(%w[table1 table2])
+        allow(Rake::Task['db:migrate']).to receive(:invoke)
+      end
+
+      it 'migrates clickhouse database' do
+        expect(Rake::Task['gitlab:clickhouse:migrate']).to receive(:invoke).with(true)
+
+        run_rake_task('gitlab:db:configure')
+      end
+
+      it 'does not run clickhouse migrations if feature flag is disabled' do
+        stub_feature_flags(run_clickhouse_migrations_automatically: false)
+
+        expect(Rake::Task['gitlab:clickhouse:migrate']).not_to receive(:invoke)
+
+        run_rake_task('gitlab:db:configure')
+      end
+
+      it 'does not fail if clickhouse is not configured' do
+        allow(::ClickHouse::Client).to receive(:configuration).and_return(::ClickHouse::Client::Configuration.new)
+
+        Rake::Task['gitlab:clickhouse:migrate'].reenable
+        Rake::Task['gitlab:clickhouse:migrate:main'].reenable
+
+        expect do
+          run_rake_task('gitlab:db:configure')
+        end.to output(/The 'main' ClickHouse database is not configured, skipping migrations/).to_stdout
+      end
+    end
   end
 
   describe 'schema inconsistencies' do
@@ -550,7 +588,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     with_them do
       it 'outputs changed message for automation after operations happen' do
-        allow(ActiveRecord::Base.connection.schema_migration).to receive(:table_exists?).and_return(schema_migration_table_exists)
+        allow(ActiveRecord::Base.connection).to receive_message_chain(:schema_migration, :table_exists?).and_return(schema_migration_table_exists)
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
         expect { run_rake_task('gitlab:db:unattended') }.to output(/^#{rake_output}$/).to_stdout
       end
@@ -738,6 +776,18 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       it 'does not create a task for the geo database' do
         expect { run_rake_task('gitlab:db:create_dynamic_partitions:geo') }
           .to raise_error(/Don't know how to build task 'gitlab:db:create_dynamic_partitions:geo'/)
+      end
+    end
+
+    context 'with jh configured' do
+      before do
+        skip 'Skipping because the jh database is not configured' unless
+          !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'jh')
+      end
+
+      it 'does not create a task for the jh database' do
+        expect { run_rake_task('gitlab:db:create_dynamic_partitions:jh') }
+          .to raise_error(/Don't know how to build task 'gitlab:db:create_dynamic_partitions:jh'/)
       end
     end
   end

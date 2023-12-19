@@ -43,10 +43,6 @@ module Mutations
           result = ::CustomerRelations::Contacts::CreateService.new(group: group, current_user: current_user, params: args).execute
           { contact: result.payload, errors: result.errors }
         end
-
-        def find_object(id:)
-          GitlabSchema.object_from_id(id, expected_type: ::Group)
-        end
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :runner_fleet do
+RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
   using RSpec::Parameterized::TableSyntax

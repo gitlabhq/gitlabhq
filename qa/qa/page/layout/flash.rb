@@ -10,12 +10,12 @@ module QA
           super
 
           base.view 'app/views/layouts/_flash.html.haml' do
-            element :flash_container
+            element 'flash-container'
           end
         end
 
         def has_notice?(message)
-          within_element(:flash_container) do
+          within_element('flash-container') do
             has_text?(message)
           end
         end

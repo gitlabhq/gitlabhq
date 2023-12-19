@@ -187,6 +187,11 @@ export default {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
     },
   },
+  watch: {
+    title() {
+      this.updateCommitMessage();
+    },
+  },
   mounted() {
     if (!this.commitMessage) this.updateCommitMessage();
 
@@ -302,7 +307,7 @@ export default {
     />
 
     <div class="row">
-      <div class="col-sm-9">
+      <div class="col-12">
         <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
           <template #description>
             <gl-icon class="gl-mr-n1" name="bulb" />
@@ -321,7 +326,6 @@ export default {
             :required="true"
             :autofocus="!pageInfo.persisted"
             :placeholder="$options.i18n.title.placeholder"
-            @input="updateCommitMessage"
           />
         </gl-form-group>
       </div>
@@ -361,8 +365,8 @@ export default {
             :drawio-enabled="drawioEnabled"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"
-            @keydown.ctrl.enter="submitFormShortcut"
-            @keydown.meta.enter="submitFormShortcut"
+            @keydown.ctrl.enter="submitFormWithShortcut"
+            @keydown.meta.enter="submitFormWithShortcut"
           />
           <div class="form-text gl-text-gray-600">
             <gl-sprintf
@@ -404,7 +408,7 @@ export default {
       </div>
     </div>
 
-    <div class="form-actions">
+    <div class="gl-display-flex gl-gap-3" data-testid="wiki-form-actions">
       <gl-button
         category="primary"
         variant="confirm"
@@ -416,7 +420,6 @@ export default {
       <gl-button
         data-testid="wiki-cancel-button"
         :href="cancelFormPath"
-        class="float-right"
         @click="isFormDirty = false"
       >
         {{ $options.i18n.cancel }}</gl-button

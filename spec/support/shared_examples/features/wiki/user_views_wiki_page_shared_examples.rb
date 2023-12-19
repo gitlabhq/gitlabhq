@@ -16,6 +16,10 @@ RSpec.shared_examples 'User views a wiki page' do
     )
   end
 
+  let(:more_actions_dropdown) do
+    find('[data-testid="wiki-more-dropdown"] button')
+  end
+
   before do
     sign_in(user)
   end
@@ -38,10 +42,12 @@ RSpec.shared_examples 'User views a wiki page' do
       expect(page).to have_content('Wiki page was successfully created.')
     end
 
-    it 'shows the history of a page that has a path' do
+    it 'shows the history of a page that has a path', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
 
       first(:link, text: 'three').click
+
+      more_actions_dropdown.click
       click_on('Page history')
 
       expect(page).to have_current_path(%r{one/two/three-test})
@@ -69,6 +75,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
       expect(page).to have_content('Wiki page was successfully updated.')
 
+      more_actions_dropdown.click
       click_on('Page history')
 
       within('.wiki-page-header') do
@@ -119,11 +126,12 @@ RSpec.shared_examples 'User views a wiki page' do
       wiki_page.update(message: 'updated home', content: 'updated [some link](other-page)') # rubocop:disable Rails/SaveBang
     end
 
-    it 'shows the page history' do
+    it 'shows the page history', :js do
       visit(wiki_page_path(wiki, wiki_page))
 
       expect(page).to have_selector('[data-testid="wiki-edit-button"]')
 
+      more_actions_dropdown.click
       click_on('Page history')
 
       expect(page).to have_content(user.name)

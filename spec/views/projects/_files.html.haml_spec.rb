@@ -35,6 +35,8 @@ RSpec.describe 'projects/_files', feature_category: :groups_and_projects do
     before do
       allow(view).to receive(:current_user).and_return(user)
       allow(user).to receive(:project_shortcut_buttons).and_return(true)
+
+      stub_feature_flags(project_overview_reorg: false)
     end
 
     it 'renders buttons' do
@@ -45,6 +47,10 @@ RSpec.describe 'projects/_files', feature_category: :groups_and_projects do
   end
 
   context 'when rendered in the project overview page and there is no current user' do
+    before do
+      stub_feature_flags(project_overview_reorg: false)
+    end
+
     it 'renders buttons' do
       render(template, is_project_overview: true)
 

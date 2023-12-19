@@ -12,6 +12,13 @@ module Gitlab
     TAG_REF_PREFIX = "refs/tags/"
     BRANCH_REF_PREFIX = "refs/heads/"
 
+    # NOTE: We don't use linguist anymore, but we'd still want to support it
+    # to be backward/GitHub compatible. Using `gitlab-*` prefixed overrides
+    # going forward would give us a better control and flexibility.
+    ATTRIBUTE_OVERRIDES = {
+      generated: %w[gitlab-generated linguist-generated]
+    }.freeze
+
     CommandError = Class.new(BaseError)
     CommitError = Class.new(BaseError)
     OSError = Class.new(BaseError)

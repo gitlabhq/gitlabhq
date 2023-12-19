@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Mattermost
@@ -79,6 +79,27 @@ mattermost_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/mattermost-nginx.key"
 where `mattermost-nginx.crt` is the SSL certificate and `mattermost-nginx.key` is the SSL key.
 
 Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the changes.
+
+## Running GitLab Mattermost with an external PostgreSQL service
+
+By default, Mattermost uses the Linux package bundled PostgreSQL service. If you want to use Mattermost with an external PostgreSQL service, it requires its own specific configuration. An existing [external PostgreSQL connection configuration used by GitLab](../../administration/postgresql/external.md) is not automatically inherited for Mattermost.
+
+1. Edit `/etc/gitlab/gitlab.rb` and specify the following configuration:
+
+   ```ruby
+   mattermost['sql_driver_name'] = 'postgres'
+   mattermost['sql_data_source'] = "user=gitlab_mattermost host=<hostname-of-postgresql-service> port=5432 sslmode=required dbname=<mattermost_production> password=<user-password>"
+   ```
+
+1. Create a PostgreSQL user matching the `user` value, and `password` value that you have defined in `mattermost['sql_data_source']`.
+1. Create a PostgreSQL database matching the `dbname` value that was used.
+1. Ensure that the `user` has permissions to the database that was created with `dbname`.
+
+1. Reconfigure GitLab and restart Mattermost to apply the changes:
+
+   ```shell
+   sudo gitlab-ctl reconfigure && sudo gitlab-ctl restart mattermost
+   ```
 
 ## Running GitLab Mattermost on its own server
 
@@ -338,6 +359,7 @@ Below is a list of Mattermost version changes for GitLab 14.0 and later:
 
 | GitLab version | Mattermost version | Notes                                                                                    |
 | :------------- | :----------------- | ---------------------------------------------------------------------------------------- |
+| 16.7           | 9.3                |                                                                                          |
 | 16.6           | 9.1                |                                                                                          |
 | 16.5           | 9.0                |                                                                                          |
 | 16.4           | 8.1                |                                                                                          |

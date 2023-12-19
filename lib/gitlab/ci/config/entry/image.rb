@@ -13,21 +13,6 @@ module Gitlab
           validations do
             validates :config, allowed_keys: IMAGEABLE_ALLOWED_KEYS
           end
-
-          def value
-            if string?
-              { name: @config }
-            elsif hash?
-              {
-                name: @config[:name],
-                entrypoint: @config[:entrypoint],
-                ports: (ports_value if ports_defined?),
-                pull_policy: pull_policy_value
-              }.compact
-            else
-              {}
-            end
-          end
         end
       end
     end

@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import sidebarEventHub from '~/super_sidebar/event_hub';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { MOCK_QUERY, MOCK_NAVIGATION, MOCK_NAVIGATION_ITEMS } from '../../mock_data';
@@ -49,6 +50,7 @@ describe('ScopeSidebarNavigation', () => {
 
   describe('scope navigation', () => {
     beforeEach(() => {
+      jest.spyOn(sidebarEventHub, '$emit');
       createComponent({ urlQuery: { ...MOCK_QUERY, search: 'test' } });
     });
 
@@ -70,6 +72,11 @@ describe('ScopeSidebarNavigation', () => {
       const { link } = MOCK_NAVIGATION[Object.keys(MOCK_NAVIGATION)[linkAtPosition]];
 
       expect(findNavItems().at(linkAtPosition).findComponent('a').attributes('href')).toBe(link);
+    });
+
+    it('always emits toggle-menu-header event', () => {
+      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('toggle-menu-header', false);
+      expect(sidebarEventHub.$emit).toHaveBeenCalledTimes(1);
     });
   });
 

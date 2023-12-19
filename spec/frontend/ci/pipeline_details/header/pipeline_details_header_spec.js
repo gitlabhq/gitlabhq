@@ -7,7 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineDetailsHeader from '~/ci/pipeline_details/header/pipeline_details_header.vue';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
@@ -15,6 +15,7 @@ import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/querie
 import {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,
+  pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
   pipelineRetryMutationResponseSuccess,
@@ -33,6 +34,9 @@ describe('Pipeline details header', () => {
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
+  const runningHandlerNoPermissions = jest
+    .fn()
+    .mockResolvedValue(pipelineHeaderRunningNoPermissions);
   const runningHandlerWithDuration = jest.fn().mockResolvedValue(pipelineHeaderRunningWithDuration);
   const failedHandler = jest.fn().mockResolvedValue(pipelineHeaderFailed);
 
@@ -65,7 +69,6 @@ describe('Pipeline details header', () => {
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
-  const findComputeMinutes = () => wrapper.findByTestId('compute-minutes');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
@@ -82,31 +85,12 @@ describe('Pipeline details header', () => {
     paths: {
       pipelinesPath: '/namespace/my-project/-/pipelines',
       fullProject: '/namespace/my-project',
-      triggeredByPath: '',
     },
   };
 
   const defaultProps = {
-    name: 'Ruby 3.0 master branch pipeline',
-    totalJobs: '50',
-    computeMinutes: '0.65',
-    yamlErrors: 'errors',
-    failureReason: 'pipeline failed',
-    badges: {
-      schedule: true,
-      trigger: false,
-      child: false,
-      latest: true,
-      mergeTrainPipeline: false,
-      mergedResultsPipeline: false,
-      invalid: false,
-      failed: false,
-      autoDevops: false,
-      detached: false,
-      stuck: false,
-    },
-    refText:
-      'Related merge request <a class="mr-iid" href="/root/ci-project/-/merge_requests/1">!1</a> to merge <a class="ref-name" href="/root/ci-project/-/commits/test">test</a>',
+    yamlErrors: '',
+    trigger: false,
   };
 
   const createMockApolloProvider = (handlers) => {
@@ -159,11 +143,11 @@ describe('Pipeline details header', () => {
     });
 
     it('displays pipeline name', () => {
-      expect(findPipelineName().text()).toBe(defaultProps.name);
+      expect(findPipelineName().text()).toBe('Build pipeline');
     });
 
     it('displays total jobs', () => {
-      expect(findTotalJobs().text()).toBe('50 Jobs');
+      expect(findTotalJobs().text()).toBe('3 Jobs');
     });
 
     it('has link to commit', () => {
@@ -178,13 +162,13 @@ describe('Pipeline details header', () => {
 
     it('displays correct badges', () => {
       expect(findAllBadges()).toHaveLength(2);
-      expect(wrapper.findByText('latest').exists()).toBe(true);
+      expect(wrapper.findByText('merged results').exists()).toBe(true);
       expect(wrapper.findByText('Scheduled').exists()).toBe(true);
       expect(wrapper.findByText('trigger token').exists()).toBe(false);
     });
 
     it('displays ref text', () => {
-      expect(findPipelineRefText()).toBe('Related merge request !1 to merge test');
+      expect(findPipelineRefText()).toBe('Related merge request !1 to merge master into feature');
     });
 
     it('displays pipeline user link with required user popover attributes', () => {
@@ -209,7 +193,7 @@ describe('Pipeline details header', () => {
     beforeEach(async () => {
       createComponent(defaultHandlers, {
         ...defaultProps,
-        badges: { ...defaultProps.badges, trigger: true },
+        trigger: true,
       });
 
       await waitForPromises();
@@ -222,7 +206,7 @@ describe('Pipeline details header', () => {
 
   describe('without pipeline name', () => {
     it('displays commit title', async () => {
-      createComponent(defaultHandlers, { ...defaultProps, name: '' });
+      createComponent([[getPipelineDetailsQuery, runningHandler]]);
 
       await waitForPromises();
 
@@ -234,22 +218,6 @@ describe('Pipeline details header', () => {
   });
 
   describe('finished pipeline', () => {
-    it('displays compute minutes when not zero', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findComputeMinutes().text()).toBe('0.65');
-    });
-
-    it('does not display compute minutes when zero', async () => {
-      createComponent(defaultHandlers, { ...defaultProps, computeMinutes: '0.0' });
-
-      await waitForPromises();
-
-      expect(findComputeMinutes().exists()).toBe(false);
-    });
-
     it('does not display created time ago', async () => {
       createComponent();
 
@@ -282,10 +250,6 @@ describe('Pipeline details header', () => {
       createComponent([[getPipelineDetailsQuery, runningHandler]]);
 
       await waitForPromises();
-    });
-
-    it('does not display compute minutes', () => {
-      expect(findComputeMinutes().exists()).toBe(false);
     });
 
     it('does not display finished time ago', () => {
@@ -374,46 +338,58 @@ describe('Pipeline details header', () => {
     });
 
     describe('cancel action', () => {
-      it('should call cancelPipeline Mutation with pipeline id', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerSuccess],
-        ]);
+      describe('with permissions', () => {
+        it('should call cancelPipeline Mutation with pipeline id', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          ]);
 
-        await waitForPromises();
+          await waitForPromises();
 
-        findCancelButton().vm.$emit('click');
+          findCancelButton().vm.$emit('click');
 
-        expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
-          id: pipelineHeaderRunning.data.project.pipeline.id,
+          expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
+            id: pipelineHeaderRunning.data.project.pipeline.id,
+          });
+          expect(findAlert().exists()).toBe(false);
         });
-        expect(findAlert().exists()).toBe(false);
+
+        it('should render cancel action tooltip', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          ]);
+
+          await waitForPromises();
+
+          expect(findCancelButton().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
+        });
+
+        it('should display error message on failure', async () => {
+          createComponent([
+            [getPipelineDetailsQuery, runningHandler],
+            [cancelPipelineMutation, cancelMutationHandlerFailed],
+          ]);
+
+          await waitForPromises();
+
+          findCancelButton().vm.$emit('click');
+
+          await waitForPromises();
+
+          expect(findAlert().exists()).toBe(true);
+        });
       });
 
-      it('should render cancel action tooltip', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerSuccess],
-        ]);
+      describe('without permissions', () => {
+        it('should not display cancel pipeline button', async () => {
+          createComponent([[getPipelineDetailsQuery, runningHandlerNoPermissions]]);
 
-        await waitForPromises();
+          await waitForPromises();
 
-        expect(findCancelButton().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
-      });
-
-      it('should display error message on failure', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, runningHandler],
-          [cancelPipelineMutation, cancelMutationHandlerFailed],
-        ]);
-
-        await waitForPromises();
-
-        findCancelButton().vm.$emit('click');
-
-        await waitForPromises();
-
-        expect(findAlert().exists()).toBe(true);
+          expect(findCancelButton().exists()).toBe(false);
+        });
       });
     });
 

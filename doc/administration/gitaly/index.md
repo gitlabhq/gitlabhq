@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Gitaly and Gitaly Cluster **(FREE SELF)**
@@ -170,6 +170,17 @@ Gitaly comes pre-configured with a Linux package installation, which is a config
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be
 best suited by using Gitaly Cluster.
+
+### Gitaly CLI
+
+The `gitaly` command is a command-line interface that provides additional subcommands for Gitaly administrators. For example,
+the Gitaly CLI is used to:
+
+- [Configure custom Git hooks](../server_hooks.md) for a repository.
+- Validate Gitaly configuration files.
+- Verify the internal Gitaly API is accessible.
+
+For more information on the other subcommands, run `gitaly --help`.
 
 ### Backing up repositories
 

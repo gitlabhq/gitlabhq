@@ -25,6 +25,21 @@ RSpec.describe Ci::GenerateCoverageReportsService, feature_category: :code_testi
         expect(subject[:status]).to eq(:parsed)
         expect(subject[:data]).to eq(files: {})
       end
+
+      context 'when there is a parsing error' do
+        before do
+          allow_next_found_instance_of(MergeRequest) do |merge_request|
+            allow(merge_request).to receive(:new_paths).and_raise(StandardError)
+          end
+        end
+
+        it 'returns status with error message and tracks the error' do
+          expect(service).to receive(:track_exception).and_call_original
+
+          expect(subject[:status]).to eq(:error)
+          expect(subject[:status_reason]).to include('An error occurred while fetching coverage reports.')
+        end
+      end
     end
 
     context 'when head pipeline does not have a coverage report artifact' do
@@ -38,6 +53,8 @@ RSpec.describe Ci::GenerateCoverageReportsService, feature_category: :code_testi
       end
 
       it 'returns status and error message' do
+        expect(service).not_to receive(:track_exception)
+
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to include('An error occurred while fetching coverage reports.')
       end
@@ -48,6 +65,8 @@ RSpec.describe Ci::GenerateCoverageReportsService, feature_category: :code_testi
       let!(:base_pipeline) { nil }
 
       it 'returns status and error message' do
+        expect(service).not_to receive(:track_exception)
+
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to include('An error occurred while fetching coverage reports.')
       end

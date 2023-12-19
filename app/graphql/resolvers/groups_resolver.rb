@@ -4,7 +4,7 @@ module Resolvers
   class GroupsResolver < BaseResolver
     include ResolvesGroups
 
-    type "Types::GroupConnection", null: true
+    type Types::GroupType.connection_type, null: true
 
     argument :search, GraphQL::Types::String,
              required: false,

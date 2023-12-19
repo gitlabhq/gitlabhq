@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import loadAwardsHandler from '~/awards_handler';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
 import { createAlert } from '~/alert';
@@ -20,7 +21,7 @@ import { initReportAbuse } from '~/projects/report_abuse';
 
 initDiffStatsDropdown();
 new ZenMode();
-new ShortcutsNavigation();
+addShortcutsExtension(ShortcutsNavigation);
 
 initCommitBoxInfo();
 

@@ -1,7 +1,21 @@
 #import "~/ci/catalog/graphql/fragments/catalog_resource.fragment.graphql"
 
-query getCatalogResources($after: String, $before: String, $first: Int = 20, $last: Int) {
-  ciCatalogResources(after: $after, before: $before, first: $first, last: $last) {
+query getCatalogResources(
+  $searchTerm: String
+  $sortValue: CiCatalogResourceSort
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+) {
+  ciCatalogResources(
+    search: $searchTerm
+    sort: $sortValue
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
     pageInfo {
       startCursor
       endCursor

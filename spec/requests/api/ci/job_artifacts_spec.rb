@@ -187,7 +187,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
         end
 
         context 'when project is public with artifacts that are non public' do
-          let(:job) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
           it 'rejects access to artifacts' do
             project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
@@ -196,21 +196,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
             get_artifact_file(artifact)
 
             expect(response).to have_gitlab_http_status(:forbidden)
-          end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-            end
-
-            it 'allows access to artifacts' do
-              project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-              project.update_column(:public_builds, true)
-
-              get_artifact_file(artifact)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
           end
         end
 
@@ -433,7 +418,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
 
         context 'when public project guest and artifacts are non public' do
           let(:api_user) { guest }
-          let(:job) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline) }
 
           before do
             project.update_column(:visibility_level,
@@ -444,17 +429,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
 
           it 'rejects access and hides existence of artifacts' do
             expect(response).to have_gitlab_http_status(:forbidden)
-          end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-              get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-            end
-
-            it 'allows access to artifacts' do
-              expect(response).to have_gitlab_http_status(:ok)
-            end
           end
         end
 
@@ -639,7 +613,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
         end
 
         context 'when project is public with non public artifacts' do
-          let(:job) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline, user: api_user) }
+          let(:job) { create(:ci_build, :private_artifacts, :with_private_artifacts_config, pipeline: pipeline, user: api_user) }
           let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
           let(:public_builds) { true }
 
@@ -650,18 +624,6 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
             expect(json_response).to have_key('message')
             expect(response.headers.to_h)
               .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
-          end
-
-          context 'with the non_public_artifacts feature flag disabled' do
-            before do
-              stub_feature_flags(non_public_artifacts: false)
-            end
-
-            it 'allows access to artifacts', :sidekiq_might_not_need_inline do
-              get_artifact_file(artifact)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
           end
         end
 

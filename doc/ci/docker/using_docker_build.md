@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use Docker to build Docker images **(FREE ALL)**
@@ -312,6 +311,63 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      DOCKER_TLS_VERIFY: 1
      DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
 
+   build:
+     stage: build
+     script:
+       - docker build -t my-docker-image .
+       - docker run my-docker-image /script/to/run/tests
+   ```
+
+##### Docker-in-Docker with TLS disabled in Kubernetes
+
+To use Docker-in-Docker with TLS disabled in Kubernetes, you must adapt the example above to:
+
+- Remove the `[[runners.kubernetes.volumes.empty_dir]]` section from the `values.yml` file.
+- Change the port from `2376` to `2375` with `DOCKER_HOST: tcp://docker:2375`.
+- Instruct Docker to start with TLS disabled with `DOCKER_TLS_CERTDIR: ""`.
+
+For example:
+
+1. Using the
+   [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), update the
+   [`values.yml` file](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/00c1a2098f303dffb910714752e9a981e119f5b5/values.yaml#L133-137):
+
+   ```yaml
+   runners:
+     config: |
+       [[runners]]
+         [runners.kubernetes]
+           image = "ubuntu:20.04"
+           privileged = true
+   ```
+
+1. You can now use `docker` in the job script. You should include the
+   `docker:24.0.5-dind` service:
+
+   ```yaml
+   default:
+     image: docker:24.0.5
+     services:
+       - docker:24.0.5-dind
+     before_script:
+       - docker info
+
+   variables:
+     # When using dind service, you must instruct Docker to talk with
+     # the daemon started inside of the service. The daemon is available
+     # with a network connection instead of the default
+     # /var/run/docker.sock socket.
+     DOCKER_HOST: tcp://docker:2375
+     #
+     # The 'docker' hostname is the alias of the service container as described at
+     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
+     # the variable must be set to tcp://localhost:2376 because of how the
+     # Kubernetes executor connects services to the job container
+     # DOCKER_HOST: tcp://localhost:2376
+     #
+     # This instructs Docker not to start over TLS.
+     DOCKER_TLS_CERTDIR: ""
    build:
      stage: build
      script:
@@ -651,11 +707,11 @@ of the following executors:
 In this example, you use Buildah to:
 
 1. Build a Docker image.
-1. Push it to [GitLab Container Registry](../../user/packages/container_registry/index.md).
+1. Push it to [GitLab container registry](../../user/packages/container_registry/index.md).
 
 In the last step, Buildah uses the `Dockerfile` under the
 root directory of the project to build the Docker image. Finally, it pushes the image to the
-project's Container Registry:
+project's container registry:
 
 ```yaml
 build:
@@ -671,7 +727,7 @@ build:
     BUILDAH_FORMAT: docker
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
-    # GitLab Container Registry credentials taken from the
+    # GitLab container registry credentials taken from the
     # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
     # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
@@ -685,10 +741,10 @@ build:
 If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
 [tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
 
-## Use the GitLab Container Registry
+## Use the GitLab container registry
 
 After you've built a Docker image, you can push it to the
-[GitLab Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
+[GitLab container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd).
 
 ## Troubleshooting
 

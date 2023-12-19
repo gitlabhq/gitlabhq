@@ -18,14 +18,6 @@ module Sidebars
           }
         end
 
-        override :extra_collapsed_container_html_options
-        def extra_collapsed_container_html_options
-          {
-            target: '_blank',
-            rel: 'noopener noreferrer'
-          }
-        end
-
         override :title
         def title
           s_('ExternalWikiService|External wiki')

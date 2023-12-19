@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Query.runners', feature_category: :runner_fleet do
+RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create_default(:user, :admin) }
@@ -35,17 +35,19 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
     end
 
     context 'with filters' do
-      shared_examples 'a working graphql query returning expected runner' do
+      shared_examples 'a working graphql query returning expected runners' do
         it_behaves_like 'a working graphql query' do
           before do
             post_graphql(query, current_user: current_user)
           end
         end
 
-        it 'returns expected runner' do
+        it 'returns expected runners' do
           post_graphql(query, current_user: current_user)
 
-          expect(runners_graphql_data['nodes']).to contain_exactly(a_graphql_entity_for(expected_runner))
+          expect(runners_graphql_data['nodes']).to contain_exactly(
+            *Array(expected_runners).map { |expected_runner| a_graphql_entity_for(expected_runner) }
+          )
         end
 
         it 'does not execute more queries per runner', :aggregate_failures do
@@ -95,24 +97,36 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
           let(:runner_type) { 'INSTANCE_TYPE' }
           let(:status) { 'ACTIVE' }
 
-          let!(:expected_runner) { instance_runner }
+          let(:expected_runners) { instance_runner }
 
-          it_behaves_like 'a working graphql query returning expected runner'
+          it_behaves_like 'a working graphql query returning expected runners'
         end
 
         context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
           let(:runner_type) { 'PROJECT_TYPE' }
           let(:status) { 'NEVER_CONTACTED' }
 
-          let!(:expected_runner) { project_runner }
+          let(:expected_runners) { project_runner }
 
-          it_behaves_like 'a working graphql query returning expected runner'
+          it_behaves_like 'a working graphql query returning expected runners'
         end
       end
 
       context 'when filtered on version prefix' do
-        let_it_be(:version_runner) { create(:ci_runner, :project, active: false, description: 'Runner with machine') }
-        let_it_be(:version_runner_machine) { create(:ci_runner_machine, runner: version_runner, version: '15.11.0') }
+        let_it_be(:runner_15_10_1) { create_ci_runner(version: '15.10.1') }
+
+        let_it_be(:runner_15_11_0) { create_ci_runner(version: '15.11.0') }
+        let_it_be(:runner_15_11_1) { create_ci_runner(version: '15.11.1') }
+
+        let_it_be(:runner_16_1_0) { create_ci_runner(version: '16.1.0') }
+
+        let(:fields) do
+          <<~QUERY
+            nodes {
+              id
+            }
+          QUERY
+        end
 
         let(:query) do
           %(
@@ -124,12 +138,44 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
           )
         end
 
-        context 'version_prefix is "15."' do
+        context 'when version_prefix is "15."' do
           let(:version_prefix) { '15.' }
 
-          let!(:expected_runner) { version_runner }
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) { [runner_15_10_1, runner_15_11_0, runner_15_11_1] }
+          end
+        end
 
-          it_behaves_like 'a working graphql query returning expected runner'
+        context 'when version_prefix is "15.11."' do
+          let(:version_prefix) { '15.11.' }
+
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) { [runner_15_11_0, runner_15_11_1] }
+          end
+        end
+
+        context 'when version_prefix is "15.11.0"' do
+          let(:version_prefix) { '15.11.0' }
+
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) { runner_15_11_0 }
+          end
+        end
+
+        context 'when version_prefix is not digits' do
+          let(:version_prefix) { 'a.b' }
+
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) do
+              [instance_runner, project_runner, runner_15_10_1, runner_15_11_0, runner_15_11_1, runner_16_1_0]
+            end
+          end
+        end
+
+        def create_ci_runner(args = {}, version:)
+          create(:ci_runner, :project, **args).tap do |runner|
+            create(:ci_runner_machine, runner: runner, version: version)
+          end
         end
       end
     end

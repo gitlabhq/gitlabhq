@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
+
   let(:definitions) do
     Class.new do
       include Gitlab::QuickActions::Dsl
 
-      command(:reopen, :open) {}
+      command(:reopen, :open, :close) {}
       command(:assign) {}
-      command(:labels) {}
+      command(:label) {}
       command(:power) {}
       command(:noop_command)
       substitution(:substitution) { 'foo' }
@@ -44,7 +46,7 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
     it 'extracts command' do
       msg, commands = extractor.extract_commands(original_msg)
 
-      expect(commands).to eq [['labels', '~foo ~"bar baz" label']]
+      expect(commands).to match_array [['label', '~foo ~"bar baz" label']]
       expect(msg).to eq final_msg
     end
   end
@@ -137,42 +139,42 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
     describe 'command with multiple arguments' do
       context 'at the start of content' do
         it_behaves_like 'command with multiple arguments' do
-          let(:original_msg) { %(/labels ~foo ~"bar baz" label\nworld) }
+          let(:original_msg) { %(/label ~foo ~"bar baz" label\nworld) }
           let(:final_msg) { "world" }
         end
       end
 
       context 'in the middle of content' do
         it_behaves_like 'command with multiple arguments' do
-          let(:original_msg) { %(hello\n/labels ~foo ~"bar baz" label\nworld) }
+          let(:original_msg) { %(hello\n/label ~foo ~"bar baz" label\nworld) }
           let(:final_msg) { "hello\nworld" }
         end
       end
 
       context 'in the middle of a line' do
         it 'does not extract command' do
-          msg = %(hello\nworld /labels ~foo ~"bar baz" label)
+          msg = %(hello\nworld /label ~foo ~"bar baz" label)
           msg, commands = extractor.extract_commands(msg)
 
           expect(commands).to be_empty
-          expect(msg).to eq %(hello\nworld /labels ~foo ~"bar baz" label)
+          expect(msg).to eq %(hello\nworld /label ~foo ~"bar baz" label)
         end
       end
 
       context 'at the end of content' do
         it_behaves_like 'command with multiple arguments' do
-          let(:original_msg) { %(hello\n/labels ~foo ~"bar baz" label) }
+          let(:original_msg) { %(hello\n/label ~foo ~"bar baz" label) }
           let(:final_msg) { "hello" }
         end
       end
 
       context 'when argument is not separated with a space' do
         it 'does not extract command' do
-          msg = %(hello\n/labels~foo ~"bar baz" label\nworld)
+          msg = %(hello\n/label~foo ~"bar baz" label\nworld)
           msg, commands = extractor.extract_commands(msg)
 
           expect(commands).to be_empty
-          expect(msg).to eq %(hello\n/labels~foo ~"bar baz" label\nworld)
+          expect(msg).to eq %(hello\n/label~foo ~"bar baz" label\nworld)
         end
       end
     end
@@ -291,6 +293,22 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       expect(msg).to eq "hello\nworld"
     end
 
+    it 'extracts command when between HTML comment and HTML tags' do
+      msg = <<~MSG.strip
+        <!-- this is a comment -->
+
+        /label ~bug
+
+        <p>
+        </p>
+      MSG
+
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to match_array [['label', '~bug']]
+      expect(msg).to eq "<!-- this is a comment -->\n\n<p>\n</p>"
+    end
+
     it 'does not alter original content if no command is found' do
       msg = 'Fixes #123'
       msg, commands = extractor.extract_commands(msg)
@@ -300,89 +318,57 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
     end
 
     it 'does not get confused if command comes before an inline code' do
-      msg = "/reopen\n`some inline code`\n/labels ~a\n`more inline code`"
+      msg = "/reopen\n`some inline code`\n/label ~a\n`more inline code`"
       msg, commands = extractor.extract_commands(msg)
 
-      expect(commands).to eq([['reopen'], ['labels', '~a']])
+      expect(commands).to match_array([['reopen'], ['label', '~a']])
       expect(msg).to eq "`some inline code`\n`more inline code`"
     end
 
-    it 'does not get confused if command comes before a blockcode' do
-      msg = "/reopen\n```\nsome blockcode\n```\n/labels ~a\n```\nmore blockcode\n```"
+    it 'does not get confused if command comes before a code block' do
+      msg = "/reopen\n```\nsome blockcode\n```\n/label ~a\n```\nmore blockcode\n```"
       msg, commands = extractor.extract_commands(msg)
 
-      expect(commands).to eq([['reopen'], ['labels', '~a']])
+      expect(commands).to match_array([['reopen'], ['label', '~a']])
       expect(msg).to eq "```\nsome blockcode\n```\n```\nmore blockcode\n```"
     end
 
-    it 'does not extract commands inside a blockcode' do
-      msg = "Hello\r\n```\r\nThis is some text\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
+    context 'does not extract commands inside' do
+      where(:description, :text) do
+        'block HTML tags'               | "Hello\r\n<div>\r\nText\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
+        'inline html on seperated rows' | "Text\r\n<b>\r\n/close\r\n</b>"
+        'HTML comments'                 | "<!--\n/assign @user\n-->"
+        'blockquotes'                   | "> Text\r\n/reopen"
+        'multiline blockquotes'         | "Hello\r\n\r\n>>>\r\nText\r\n/close\r\n/assign @user\r\n>>>\r\n\r\nWorld"
+        'code blocks'                   | "Hello\r\n```\r\nText\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
+        'inline code on seperated rows' | "Hello `Text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+      end
 
-      expect(commands).to be_empty
-      expect(msg).to eq expected
-    end
+      with_them do
+        specify do
+          expected = text.delete("\r")
+          msg, commands = extractor.extract_commands(text)
 
-    it 'does not extract commands inside a blockquote' do
-      msg = "Hello\r\n>>>\r\nThis is some text\r\n/close\r\n/assign @user\r\n>>>\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
-
-      expect(commands).to be_empty
-      expect(msg).to eq expected
-    end
-
-    it 'does not extract commands inside a HTML tag' do
-      msg = "Hello\r\n<div>\r\nThis is some text\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
-
-      expect(commands).to be_empty
-      expect(msg).to eq expected
-    end
-
-    it 'does not extract commands in multiline inline code on seperated rows' do
-      msg = "Hello\r\n`\r\nThis is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
-
-      expect(commands).to be_empty
-      expect(msg).to eq expected
-    end
-
-    it 'does not extract commands in multiline inline code starting from text' do
-      msg = "Hello `This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
-
-      expect(commands).to be_empty
-      expect(msg).to eq expected
-    end
-
-    it 'does not extract commands in inline code' do
-      msg = "`This is some text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
-      expected = msg.delete("\r")
-      msg, commands = extractor.extract_commands(msg)
-
-      expect(commands).to be_empty
-      expect(msg).to eq expected
+          expect(commands).to be_empty
+          expect(msg).to eq expected
+        end
+      end
     end
 
     it 'limits to passed commands when they are passed' do
       msg = <<~MSG.strip
       Hello, we should only extract the commands passed
       /reopen
-      /labels hello world
+      /label hello world
       /power
       MSG
       expected_msg = <<~EXPECTED.strip
       Hello, we should only extract the commands passed
       /power
       EXPECTED
-      expected_commands = [['reopen'], ['labels', 'hello world']]
+      expected_commands = [['reopen'], ['label', 'hello world']]
 
-      msg, commands = extractor.extract_commands(msg, only: [:open, :labels])
+      msg, commands = extractor.extract_commands(msg, only: [:open, :label])
 
       expect(commands).to eq(expected_commands)
       expect(msg).to eq expected_msg
@@ -398,14 +384,13 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
   end
 
   describe '#redact_commands' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:text, :expected) do
-      "hello\n/labels ~label1 ~label2\nworld" | "hello\n`/labels ~label1 ~label2`\nworld"
-      "hello\n/open\n/labels ~label1\nworld"  | "hello\n`/open`\n`/labels ~label1`\nworld"
-      "hello\n/reopen\nworld"                 | "hello\n`/reopen`\nworld"
-      "/reopen\nworld"                        | "`/reopen`\nworld"
-      "hello\n/open"                          | "hello\n`/open`"
+      "hello\n/label ~label1 ~label2\nworld" | "hello\n`/label ~label1 ~label2`\nworld"
+      "hello\n/open\n/label ~label1\nworld"  | "hello\n`/open`\n`/label ~label1`\nworld"
+      "hello\n/reopen\nworld"                | "hello\n`/reopen`\nworld"
+      "/reopen\nworld"                       | "`/reopen`\nworld"
+      "hello\n/open"                         | "hello\n`/open`"
+      "<!--\n/assign @user\n-->"             | "<!--\n/assign @user\n-->"
     end
 
     with_them do

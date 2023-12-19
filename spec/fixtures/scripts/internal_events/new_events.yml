@@ -1,0 +1,183 @@
+- description: Creates a new event and flows directly into metric creation
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select: [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "y\n" # Create file
+    - "1\n" # Select: Create Metric --- define a new metric
+    - "\e[A" # Arrow up to: Total count of events
+    - "\n" # Select: Total count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "1\n" # Select: Copy & continue
+    - "y\n" # Create file
+    - "2\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+
+- description: Requires description & action before continuing
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "\n" # Attempt to skip writing description --> should get help message
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "\n" # Attempt to skip naming action --> should get help message
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select [free, premium, ultimate]
+    - "y\n" # Create file
+    - "3\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+
+- description: Does not allow existing events for action
+  inputs:
+    files:
+      - path: config/events/internal_events_cli_used.yml
+        content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer closes Internal Event CLI\n" # Submit description
+    - "internal_events_cli_used\n" # Submit already-existing action name
+    - "internal_events_cli_closed\n" # Submit alterred action name
+    - "1\n" # Select [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select [free, premium, ultimate]
+    - "y\n" # Create file
+    - "3\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_closed.yml
+      content: spec/fixtures/scripts/internal_events/events/secondary_event_with_identifiers.yml
+
+- description: Creates a new event without identifiers
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Internal Event CLI is opened\n" # Submit description
+    - "internal_events_cli_opened\n" # Submit action name
+    - "6\n" # Select: None
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "2\n" # Select [premium, ultimate]
+    - "y\n" # Create file
+    - "3\n" # Exit
+  outputs:
+    files:
+    - path: ee/config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
+
+- description: Smashing the keyboard/return creates an event & metrics with the most common attributes, then shows usage
+  inputs:
+    keystrokes:
+    - "\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "random event string\n" # Submit keyboard-smashing description
+    - "random_name\n" # Submit keyboard-smashing action name
+    - "\n" # Select: [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "\n" # Select core_platform:manage:import_and_integrate
+    - "\n" # Select [free, premium, ultimate]
+    - "\n" # Create file
+    - "\n" # Select: Create Metric --- define a new metric
+    - "\n" # Select: Weekly/Monthly count of unique users
+    - "random metric string\n" # Submit keyboard-smashing description
+    - "\n" # Accept weekly description for monthly
+    - "\n" # Select: Copy & continue
+    - "\n" # Skip URL
+    - "\n" # Create file
+    - "\n" # Create file
+    - "\n" # Select: View Usage -- look at code examples
+    - "\n" # Select: Ruby/Rails
+    - "8\n" # Exit
+  outputs:
+    files:
+    - path: config/events/random_name.yml
+      content: spec/fixtures/scripts/internal_events/events/keyboard_smashed_event.yml
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_random_name_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_28d.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_random_name_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_7d.yml
+
+- description: Creates an event after helping the user figure out next steps
+  inputs:
+    keystrokes:
+    - "4\n" # Enum-select: ...am I in the right place?
+    - "y\n" # Yes --> Are you trying to track customer usage of a GitLab feature?
+    - "y\n" # Yes --> Can usage for the feature be measured by tracking a specific user action?
+    - "n\n" # No --> Is the event already tracked?
+    - "y\n" # Yes --> Ready to start?
+    - "Internal Event CLI is opened\n" # Submit description
+    - "internal_events_cli_opened\n" # Submit action name
+    - "6\n" # Select: None
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "2\n" # Select [premium, ultimate]
+    - "y\n" # Create file
+    - "3\n" # Exit
+  outputs:
+    files:
+    - path: ee/config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
+
+- description: Creates a new event and flows directly into usage examples
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select: [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "y\n" # Create file
+    - "2\n" # Select: View Usage
+    - "8\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+
+- description: Skips event creation, then saves event & flows directly into metric creation
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select: [namespace, project, user]
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "n\n" # Create file
+    - "1\n" # Select: Save event & create Metric --- define a new metric
+    - "\e[A" # Arrow up to: Total count of events
+    - "\n" # Select: Total count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "1\n" # Select: Copy & continue
+    - "y\n" # Create file
+    - "2\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml

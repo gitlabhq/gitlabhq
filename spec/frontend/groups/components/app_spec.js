@@ -1,12 +1,10 @@
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import appComponent from '~/groups/components/app.vue';
-import groupFolderComponent from '~/groups/components/group_folder.vue';
-import groupItemComponent from 'jh_else_ce/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
@@ -67,8 +65,6 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     mock = new AxiosMockAdapter(axios);
     mock.onGet('/dashboard/groups.json').reply(HTTP_STATUS_OK, mockGroups);
-    Vue.component('GroupFolder', groupFolderComponent);
-    Vue.component('GroupItem', groupItemComponent);
     setWindowLocation('?filter=foobar');
 
     document.body.innerHTML = `

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # PyPI API **(FREE ALL)**
@@ -13,7 +13,7 @@ This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install PyPI packages from the GitLab
-package registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md).
+Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
@@ -152,7 +152,7 @@ GET projects/:id/packages/pypi/files/:sha256/:file_identifier
 | --------- | ---- | -------- | ----------- |
 | `id`              | string | yes | The ID or full path of the project. |
 | `sha256`          | string | yes | PyPI package file sha256 check sum. |
-| `file_identifier` | string | yes | The PyPI package filename. |
+| `file_identifier` | string | yes | The PyPI package file name. |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"

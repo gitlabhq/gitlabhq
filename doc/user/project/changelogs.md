@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, api
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Changelogs **(FREE ALL)**
@@ -72,7 +71,7 @@ in the API documentation.
 
 Prerequisites:
 
-- You have installed and configured the [GitLab CLI](../../integration/glab/index.md),
+- You have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md),
   version 1.30.0 or later.
 - Your repository's tag naming schema matches
   [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).

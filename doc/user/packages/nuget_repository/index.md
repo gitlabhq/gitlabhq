@@ -1,19 +1,19 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# NuGet packages in the Package Registry **(FREE ALL)**
+# NuGet packages in the package registry **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 > - Symbol package support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
 
-Publish NuGet packages in your project's Package Registry. Then, install the
+Publish NuGet packages in your project's package registry. Then, install the
 packages whenever you need to use them as a dependency.
 
-The Package Registry works with:
+The package registry works with:
 
 - [NuGet CLI](https://learn.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
 - [.NET Core CLI](https://learn.microsoft.com/en-us/dotnet/core/tools/)
@@ -37,18 +37,18 @@ To use the GitLab endpoint for NuGet Packages, choose an option:
 
 Some features such as [publishing](#publish-a-nuget-package) a package are only available on the project-level endpoint.
 
-When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 most recent versions.
+When asking for versions of a given NuGet package name, the GitLab package registry returns a maximum of 300 most recent versions.
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
 WARNING:
-Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint.
+Because of how NuGet handles credentials, the package registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
 
-## Add the Package Registry as a source for NuGet packages
+## Add the package registry as a source for NuGet packages
 
-To publish and install packages to the Package Registry, you must add the
-Package Registry as a source for your packages.
+To publish and install packages to the package registry, you must add the
+package registry as a source for your packages.
 
 Prerequisites:
 
@@ -76,10 +76,10 @@ You can now add a new source to NuGet with:
 
 #### Project-level endpoint
 
-A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is required to publish NuGet packages to the package registry.
 A project-level endpoint is also required to install NuGet packages from a project.
 
-To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the package registry as a source with `nuget`:
 
 ```shell
 nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
@@ -97,7 +97,7 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/proje
 
 To install a NuGet package from a group, use a group-level endpoint.
 
-To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with `nuget`:
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the package registry as a source with `nuget`:
 
 ```shell
 nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json" -UserName <gitlab_username or deploy_token_username> -Password <gitlab_personal_access_token or deploy_token>
@@ -115,10 +115,10 @@ nuget source Add -Name "GitLab" -Source "https://gitlab.example.com/api/v4/group
 
 #### Project-level endpoint
 
-A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is required to publish NuGet packages to the package registry.
 A project-level endpoint is also required to install NuGet packages from a project.
 
-To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the package registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
 1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
@@ -146,7 +146,7 @@ If you get a warning, ensure that the **Source**, **Username**, and
 
 To install a package from a group, use a group-level endpoint.
 
-To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the package registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
 1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
@@ -174,11 +174,11 @@ If you get a warning, ensure that the **Source**, **Username**, and
 
 #### Project-level endpoint
 
-A project-level endpoint is required to publish NuGet packages to the Package Registry.
+A project-level endpoint is required to publish NuGet packages to the package registry.
 A project-level endpoint is also required to install NuGet packages from a project.
 
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages)
-NuGet endpoint, add the Package Registry as a source with `nuget`:
+NuGet endpoint, add the package registry as a source with `nuget`:
 
 ```shell
 dotnet nuget add source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json" --name <source_name> --username <gitlab_username or deploy_token_username> --password <gitlab_personal_access_token or deploy_token>
@@ -198,7 +198,7 @@ dotnet nuget add source "https://gitlab.example.com/api/v4/projects/10/packages/
 To install a NuGet package from a group, use a group-level endpoint.
 
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages)
-NuGet endpoint, add the Package Registry as a source with `nuget`:
+NuGet endpoint, add the package registry as a source with `nuget`:
 
 ```shell
 dotnet nuget add source "https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json" --name <source_name> --username <gitlab_username or deploy_token_username> --password <gitlab_personal_access_token or deploy_token>
@@ -219,10 +219,10 @@ dotnet nuget add source "https://gitlab.example.com/api/v4/groups/23/-/packages/
 
 A project-level endpoint is required to:
 
-- Publish NuGet packages to the Package Registry.
+- Publish NuGet packages to the package registry.
 - Install NuGet packages from a project.
 
-To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) package registry as a source for .NET:
 
 1. In the root of your project, create a file named `nuget.config`.
 1. Add this content:
@@ -254,7 +254,7 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package 
 
 To install a package from a group, use a group-level endpoint.
 
-To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for .NET:
+To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) package registry as a source for .NET:
 
 1. In the root of your project, create a file named `nuget.config`.
 1. Add this content:
@@ -288,11 +288,11 @@ You can add a source feed with the Chocolatey CLI. If you use Chocolatey CLI v1.
 
 #### Configure a project-level endpoint
 
-You need a project-level endpoint to publish NuGet packages to the Package Registry.
+You need a project-level endpoint to publish NuGet packages to the package registry.
 
-To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for Chocolatey:
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) package registry as a source for Chocolatey:
 
-- Add the Package Registry as a source with `choco`:
+- Add the package registry as a source with `choco`:
 
   ```shell
   choco source add -n=gitlab -s "'https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/v2'" -u=<gitlab_username or deploy_token_username> -p=<gitlab_personal_access_token or deploy_token>
@@ -300,13 +300,13 @@ To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package 
 
 ## Publish a NuGet package
 
-Prerequisite:
+Prerequisites:
 
 - Set up the [source](#add-the-package-registry-as-a-source-for-nuget-packages) with a [project-level endpoint](#use-the-gitlab-endpoint-for-nuget-packages).
 
 When publishing packages:
 
-- The Package Registry on GitLab.com can store up to 5 GB of content.
+- The package registry on GitLab.com can store up to 5 GB of content.
   This limit is [configurable for self-managed GitLab instances](../../../administration/instance_limits.md#package-registry-limits).
 - If you publish the same package with the same version multiple times, each
   consecutive upload is saved as a separate file. When installing a package,
@@ -362,7 +362,7 @@ dotnet nuget push <package_file> --source <source_url> --api-key <gitlab_persona
 ```
 
 - `<package_file>` is your package filename, ending in `.nupkg`.
-- `<source_url>` is the URL of the NuGet Package Registry.
+- `<source_url>` is the URL of the NuGet package registry.
 
 For example:
 
@@ -406,9 +406,9 @@ updated:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
 
-Prerequisite:
+Prerequisites:
 
-- The project-level Package Registry is a source for Chocolatey.
+- The project-level package registry is a source for Chocolatey.
 
 To publish a package with the Chocolatey CLI:
 
@@ -419,7 +419,7 @@ choco push <package_file> --source <source_url> --api-key <gitlab_personal_acces
 In this command:
 
 - `<package_file>` is your package filename and ends with `.nupkg`.
-- `<source_url>` is the URL of the NuGet v2 feed Package Registry.
+- `<source_url>` is the URL of the NuGet v2 feed package registry.
 
 For example:
 
@@ -457,14 +457,14 @@ not be recognized as a duplicate.
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
 
-To install a NuGet package from the Package Registry, you must first
+To install a NuGet package from the package registry, you must first
 [add a project-level or group-level endpoint](#add-the-package-registry-as-a-source-for-nuget-packages).
 
 ### Install a package with the NuGet CLI
 
 WARNING:
 By default, `nuget` checks the official source at `nuget.org` first. If you have
-a NuGet package in the Package Registry with the same name as a package at
+a NuGet package in the package registry with the same name as a package at
 `nuget.org`, you must specify the source name to install the correct package.
 
 Install the latest version of a package by running this command:
@@ -483,7 +483,7 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 ### Install a package with the .NET CLI
 
 WARNING:
-If you have a package in the Package Registry with the same name as a package at
+If you have a package in the package registry with the same name as a package at
 a different source, verify the order in which `dotnet` checks sources during
 install. This is defined in the `nuget.config` file.
 
@@ -503,7 +503,7 @@ dotnet add package <package_id> \
 
 Prerequisites:
 
-- The project-level Package Registry is a [v2 feed source](#add-a-source-with-chocolatey-cli) for Chocolatey.
+- The project-level package registry is a [v2 feed source](#add-a-source-with-chocolatey-cli) for Chocolatey.
 - A version must be provided when installing or upgrading a package using NuGet v2 feed.
 
 To install a package with the Chocolatey CLI:
@@ -515,7 +515,7 @@ choco install <package_id> -Source <source_url> -Version <package_version>
 In this command:
 
 - `<package_id>` is the package ID.
-- `<source_url>` is the URL or name of the NuGet v2 feed Package Registry.
+- `<source_url>` is the URL or name of the NuGet v2 feed package registry.
 - `<package_version>` is the package version.
 
 For example:
@@ -537,7 +537,7 @@ choco upgrade <package_id> -Source <source_url> -Version <package_version>
 In this command:
 
 - `<package_id>` is the package ID.
-- `<source_url>` is the URL or name of the NuGet v2 feed Package Registry.
+- `<source_url>` is the URL or name of the NuGet v2 feed package registry.
 - `<package_version>` is the package version.
 
 For example:
@@ -587,12 +587,51 @@ can also push them manually:
 nuget push My.Package.snupkg -Source <source_name>
 ```
 
-Consuming symbol packages is not yet guaranteed using clients such as Visual Studio or
-dotnet-symbol. The `.snupkg` files are available for download through the UI or the
-[API](../../../api/packages/nuget.md#download-a-package-file).
+### Use the package registry as a symbol server
 
-Follow the [NuGet symbol package issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262081)
-for further updates.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+
+GitLab can consume symbol files from the NuGet package registry,
+so you can use the package registry as a symbol server.
+
+To use the symbol server:
+
+1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+1. Configure your debugger to use the symbol server.
+   For example, to configure Visual Studio:
+
+   1. Open **Tools > Preferences**.
+   1. Select **Debugger > Symbol sources**.
+   1. Select **Add**.
+   1. Fill in the required fields. The URL for the symbol server is:
+
+      ```shell
+      https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/symbolfiles
+      -- or --
+      https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/symbolfiles
+      ```
+
+   1. Select **Add Source**.
+
+After you configure the debugger, you can debug your application as usual.
+The debugger automatically downloads the symbol PDB files from the package registry as long as they're available.
+
+#### Consuming symbol packages
+
+When the debugger is configured to consume symbol packages, the debugger sends the following
+in a request:
+
+- `Symbolchecksum` header: The SHA-256 checksum of the symbol file.
+- `file_name` request parameter: The name of the symbol file. For example, `mypackage.pdb`.
+- `signature` request parameter: The GUID and age of the PDB file.
+
+The GitLab server matches this information to a symbol file and returns it.
+
+Note that:
+
+- Only portable PDB files are supported.
+- Because debuggers can't provide authentication tokens, the symbol server endpoint doesn't support the usual authentication methods.
+  The GitLab server requires the `signature` and `Symbolchecksum` to return the correct symbol file.
 
 ## Supported CLI commands
 

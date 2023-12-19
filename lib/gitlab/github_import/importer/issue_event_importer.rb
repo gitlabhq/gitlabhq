@@ -6,6 +6,22 @@ module Gitlab
       class IssueEventImporter
         attr_reader :issue_event, :project, :client
 
+        SUPPORTED_EVENTS = %w[
+          assigned
+          closed
+          cross-referenced
+          demilestoned
+          labeled
+          merged
+          milestoned
+          renamed
+          reopened
+          review_request_removed
+          review_requested
+          unassigned
+          unlabeled
+        ].freeze
+
         # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.
@@ -47,6 +63,8 @@ module Gitlab
             Gitlab::GithubImport::Importer::Events::ChangedAssignee
           when 'review_requested', 'review_request_removed'
             Gitlab::GithubImport::Importer::Events::ChangedReviewer
+          when 'merged'
+            Gitlab::GithubImport::Importer::Events::Merged
           end
         end
       end

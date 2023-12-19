@@ -7,9 +7,12 @@ export const BULK_IMPORT_STATIC_ITEMS = {
   epics: __('Epic'),
   issues: __('Issue'),
   labels: __('Label'),
+  iterations: __('Iteration'),
+  iterations_cadences: s__('Iterations|Iteration cadence'),
   members: __('Member'),
   merge_requests: __('Merge request'),
   milestones: __('Milestone'),
+  namespace_settings: s__('GroupSettings|Namespace setting'),
   project: __('Project'),
 };
 

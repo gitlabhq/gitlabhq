@@ -1,7 +1,7 @@
 ---
-stage: Monitor
+stage: Service Management
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Escalation Policies **(PREMIUM ALL)**
@@ -15,7 +15,7 @@ where you manage [On-call schedules](oncall_schedules.md).
 
 ## Add an escalation policy
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role.
 - You must have an [on-call schedule](oncall_schedules.md).

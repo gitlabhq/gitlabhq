@@ -28,6 +28,10 @@ export const containsSensitiveToken = (message) => {
       name: 'GitLab OAuth Application Secret',
       regex: `gloas-[0-9a-zA-Z_-]{64}`,
     },
+    {
+      name: 'GitLab Deploy Token',
+      regex: `gldt-[0-9a-zA-Z_-]{20}`,
+    },
   ];
 
   for (const rule of sensitiveDataPatterns) {

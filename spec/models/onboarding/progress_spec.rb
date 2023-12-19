@@ -292,28 +292,4 @@ RSpec.describe Onboarding::Progress do
 
     it { is_expected.to eq(:subscription_created_at) }
   end
-
-  describe '#number_of_completed_actions' do
-    subject do
-      build(:onboarding_progress, actions.map { |x| { x => Time.current } }.inject(:merge)).number_of_completed_actions
-    end
-
-    context 'with 0 completed actions' do
-      let(:actions) { [:created_at, :updated_at] }
-
-      it { is_expected.to eq(0) }
-    end
-
-    context 'with 1 completed action' do
-      let(:actions) { [:created_at, :subscription_created_at] }
-
-      it { is_expected.to eq(1) }
-    end
-
-    context 'with 2 completed actions' do
-      let(:actions) { [:subscription_created_at, :git_write_at] }
-
-      it { is_expected.to eq(2) }
-    end
-  end
 end

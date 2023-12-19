@@ -212,7 +212,7 @@ module Notes
     end
 
     def should_track_ipynb_notes?(note)
-      Feature.enabled?(:ipynbdiff_notes_tracker) && note.respond_to?(:diff_file) && note.diff_file&.ipynb?
+      note.respond_to?(:diff_file) && note.diff_file&.ipynb?
     end
 
     def track_note_creation_in_ipynb(note)

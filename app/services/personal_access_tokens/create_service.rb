@@ -41,7 +41,11 @@ module PersonalAccessTokens
     end
 
     def pat_expiration
-      params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      params[:expires_at].presence || max_expiry_date
+    end
+
+    def max_expiry_date
+      PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
     end
 
     def creation_permitted?

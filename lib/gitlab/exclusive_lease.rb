@@ -31,7 +31,7 @@ module Gitlab
     EOS
 
     def self.get_uuid(key)
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.get(redis_shared_state_key(key)) || false
       end
     end
@@ -61,7 +61,7 @@ module Gitlab
     def self.cancel(key, uuid)
       return unless key.present?
 
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.eval(LUA_CANCEL_SCRIPT, keys: [ensure_prefixed_key(key)], argv: [uuid])
       end
     end
@@ -79,7 +79,7 @@ module Gitlab
     # Removes any existing exclusive_lease from redis
     # Don't run this in a live system without making sure no one is using the leases
     def self.reset_all!(scope = '*')
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.scan_each(match: redis_shared_state_key(scope)).each do |key|
           redis.del(key)
         end
@@ -96,7 +96,7 @@ module Gitlab
     # false if the lease is already taken.
     def try_obtain
       # Performing a single SET is atomic
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout) && @uuid
       end
     end
@@ -109,7 +109,7 @@ module Gitlab
     # Try to renew an existing lease. Return lease UUID on success,
     # false if the lease is taken by a different UUID or inexistent.
     def renew
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout])
         result == @uuid
       end
@@ -117,7 +117,7 @@ module Gitlab
 
     # Returns true if the key for this lease is set.
     def exists?
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.exists?(@redis_shared_state_key) # rubocop:disable CodeReuse/ActiveRecord
       end
     end
@@ -126,7 +126,7 @@ module Gitlab
     #
     # This method will return `nil` if no TTL could be obtained.
     def ttl
-      Gitlab::Redis::ClusterSharedState.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         ttl = redis.ttl(@redis_shared_state_key)
 
         ttl if ttl > 0

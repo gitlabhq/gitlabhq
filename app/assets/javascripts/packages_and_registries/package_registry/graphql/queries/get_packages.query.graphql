@@ -9,6 +9,7 @@ query getPackages(
   $groupSort: PackageGroupSort
   $packageName: String
   $packageType: PackageTypeEnum
+  $packageVersion: String
   $first: Int
   $last: Int
   $after: String
@@ -20,6 +21,7 @@ query getPackages(
       sort: $sort
       packageName: $packageName
       packageType: $packageType
+      packageVersion: $packageVersion
       after: $after
       before: $before
       first: $first
@@ -43,6 +45,7 @@ query getPackages(
       sort: $groupSort
       packageName: $packageName
       packageType: $packageType
+      packageVersion: $packageVersion
       after: $after
       before: $before
       first: $first

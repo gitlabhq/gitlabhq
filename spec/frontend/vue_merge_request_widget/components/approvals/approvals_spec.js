@@ -1,11 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
@@ -29,11 +29,6 @@ jest.mock('~/alert', () => ({
     dismiss: mockAlertDismiss,
   })),
 }));
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  visitUrl: jest.fn(),
-}));
-
 const TEST_HELP_PATH = 'help/path';
 const testApprovedBy = () => [1, 7, 10].map((id) => ({ id }));
 const testApprovals = () => ({
@@ -53,6 +48,9 @@ describe('MRWidget approvals', () => {
   let wrapper;
   let service;
   let mr;
+  const submitSpy = jest.fn().mockImplementation((e) => {
+    e.preventDefault();
+  });
 
   const createComponent = (options = {}, responses = { query: approvedByCurrentUser }) => {
     mockedSubscription = createMockApolloSubscription();
@@ -68,7 +66,7 @@ describe('MRWidget approvals', () => {
       apolloProvider.defaultClient.setRequestHandler(query, stream);
     });
 
-    wrapper = shallowMount(Approvals, {
+    wrapper = shallowMountExtended(Approvals, {
       apolloProvider,
       propsData: {
         mr,
@@ -78,7 +76,18 @@ describe('MRWidget approvals', () => {
       provide,
       stubs: {
         GlSprintf,
+        GlForm: {
+          data() {
+            return { submitSpy };
+          },
+          // Workaround jsdom not implementing form submit
+          template: '<form @submit="submitSpy"><slot></slot></form>',
+        },
+        GlButton: stubComponent(GlButton, {
+          template: '<button><slot></slot></button>',
+        }),
       },
+      attachTo: document.body,
     });
   };
 
@@ -257,11 +266,11 @@ describe('MRWidget approvals', () => {
       });
 
       describe('when SAML auth is required and user clicks Approve with SAML', () => {
-        const fakeGroupSamlPath = '/example_group_saml';
+        const fakeSamlPath = '/example_group_saml';
 
         beforeEach(async () => {
           mr.requireSamlAuthToApprove = true;
-          mr.samlApprovalPath = fakeGroupSamlPath;
+          mr.samlApprovalPath = fakeSamlPath;
 
           createComponent({}, { query: createCanApproveResponse() });
           await waitForPromises();
@@ -269,9 +278,10 @@ describe('MRWidget approvals', () => {
 
         it('redirects the user to the group SAML path', async () => {
           const action = findAction();
-          action.vm.$emit('click');
-          await nextTick();
-          expect(visitUrl).toHaveBeenCalledWith(fakeGroupSamlPath);
+
+          await action.trigger('click');
+
+          expect(submitSpy).toHaveBeenCalled();
         });
       });
 

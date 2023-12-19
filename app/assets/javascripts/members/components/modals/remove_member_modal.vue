@@ -72,7 +72,7 @@ export default {
         text: this.actionText,
         attributes: {
           variant: 'danger',
-          'data-qa-selector': 'remove_member_button',
+          'data-testid': 'remove-member-button',
         },
       };
     },
@@ -104,7 +104,7 @@ export default {
     :action-primary="actionPrimary"
     :title="actionText"
     :visible="removeMemberModalVisible"
-    data-qa-selector="remove_member_modal"
+    data-testid="remove-member-modal"
     @primary="submitForm"
     @hide="hideRemoveMemberModal"
   >

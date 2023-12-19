@@ -118,3 +118,6 @@ export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';
 
 // UI
 export const ZERO_CHANGES_ALT_DISPLAY = '-';
+
+// SAST Findings
+export const SAST_FINDING_DISMISSED = 'dismissed';

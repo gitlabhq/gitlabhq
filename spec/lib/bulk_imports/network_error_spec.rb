@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe BulkImports::NetworkError, :clean_gitlab_redis_cache, feature_category: :importers do
   let(:tracker) { double(id: 1, stage: 2, entity: double(id: 3)) }
 
+  before do
+    allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+  end
+
   describe '.new' do
     it 'requires either a message or a HTTP response' do
       expect { described_class.new }

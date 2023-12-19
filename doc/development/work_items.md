@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 # Work items and work item types
 
@@ -190,7 +190,7 @@ and incidents) into work items. Eventually (when these resources become regular
 work items), `base_type` will be removed.
 
 Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
-types. If a new work item type is absolutely necessary, please reach out to a
+types. If a new work item type is absolutely necessary, reach out to a
 member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
 
 ### Creating a new work item type in the database

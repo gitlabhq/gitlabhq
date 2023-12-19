@@ -122,4 +122,80 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
       expect(user.custom_attributes.find_by(key: 'arkose_custom_score').value).to eq(custom_score)
     end
   end
+
+  describe '.set_deleted_own_account_at' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:method_call) { described_class.set_deleted_own_account_at(user) }
+
+    it 'creates a custom attribute with "deleted_own_account_at" key associated to the user' do
+      freeze_time do
+        expect { method_call }.to change { user.custom_attributes.count }.by(1)
+
+        record = user.custom_attributes.find_by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT)
+        expect(record.value).to eq Time.zone.now.to_s
+      end
+    end
+
+    context 'when passed in user is nil' do
+      let(:user) { nil }
+
+      it 'does nothing' do
+        expect { method_call }.not_to change { UserCustomAttribute.count }
+      end
+    end
+  end
+
+  describe '.set_skipped_account_deletion_at' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:method_call) { described_class.set_skipped_account_deletion_at(user) }
+
+    it 'creates a custom attribute with "skipped_account_deletion_at" key associated to the user' do
+      freeze_time do
+        expect { method_call }.to change { user.custom_attributes.count }.by(1)
+
+        record = user.custom_attributes.find_by_key(UserCustomAttribute::SKIPPED_ACCOUNT_DELETION_AT)
+        expect(record.value).to eq Time.zone.now.to_s
+      end
+    end
+
+    context 'when passed in user is nil' do
+      let(:user) { nil }
+
+      it 'does nothing' do
+        expect { method_call }.not_to change { UserCustomAttribute.count }
+      end
+    end
+  end
+
+  describe '.set_assumed_high_risk_reason' do
+    let_it_be(:user) { create(:user) }
+    let(:reason) { 'Because' }
+
+    subject(:call_method) { described_class.set_assumed_high_risk_reason(user: user, reason: reason) }
+
+    it 'creates a custom attribute with correct attribute values for the user' do
+      expect { call_method }.to change { user.custom_attributes.count }.by(1)
+
+      record = user.custom_attributes.find_by_key(UserCustomAttribute::ASSUMED_HIGH_RISK_REASON)
+      expect(record.value).to eq 'Because'
+    end
+
+    context 'when passed in user is nil' do
+      let(:user) { nil }
+
+      it 'does nothing' do
+        expect { call_method }.not_to change { UserCustomAttribute.count }
+      end
+    end
+
+    context 'when there is no reason passed in' do
+      let(:reason) { nil }
+
+      it 'does nothing' do
+        expect { call_method }.not_to change { UserCustomAttribute.count }
+      end
+    end
+  end
 end

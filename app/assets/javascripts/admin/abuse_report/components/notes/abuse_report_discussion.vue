@@ -4,6 +4,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import AbuseReportNote from './abuse_report_note.vue';
+import AbuseReportAddNote from './abuse_report_add_note.vue';
 
 export default {
   name: 'AbuseReportDiscussion',
@@ -12,6 +13,7 @@ export default {
     DiscussionNotesRepliesWrapper,
     ToggleRepliesWidget,
     AbuseReportNote,
+    AbuseReportAddNote,
   },
   props: {
     abuseReportId: {
@@ -26,6 +28,7 @@ export default {
   data() {
     return {
       isExpanded: true,
+      showCommentForm: false,
     };
   },
   computed: {
@@ -52,16 +55,24 @@ export default {
     toggleDiscussion() {
       this.isExpanded = !this.isExpanded;
     },
+    startReplying() {
+      this.showCommentForm = true;
+    },
+    stopReplying() {
+      this.showCommentForm = false;
+    },
   },
 };
 </script>
 
 <template>
   <abuse-report-note
-    v-if="!hasReplies"
+    v-if="!hasReplies && !showCommentForm"
     :note="note"
     :abuse-report-id="abuseReportId"
+    show-reply-button
     class="gl-mb-4"
+    @startReplying="startReplying"
   />
   <timeline-entry-item v-else :data-note-id="noteId" class="note note-discussion gl-px-0">
     <div class="timeline-content">
@@ -74,7 +85,9 @@ export default {
                   :note="note"
                   :discussion-id="discussionId"
                   :abuse-report-id="abuseReportId"
+                  show-reply-button
                   class="gl-mb-4"
+                  @startReplying="startReplying"
                 />
                 <discussion-notes-replies-wrapper>
                   <toggle-replies-widget
@@ -92,6 +105,13 @@ export default {
                         :abuse-report-id="abuseReportId"
                       />
                     </template>
+                    <abuse-report-add-note
+                      :discussion-id="discussionId"
+                      :is-new-discussion="false"
+                      :show-comment-form="showCommentForm"
+                      :abuse-report-id="abuseReportId"
+                      @cancelEditing="stopReplying"
+                    />
                   </template>
                 </discussion-notes-replies-wrapper>
               </ul>

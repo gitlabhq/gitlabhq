@@ -3,15 +3,16 @@
 module Ci
   class BuildTraceMetadata < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     MAX_ATTEMPTS = 5
     self.table_name = 'ci_build_trace_metadata'
     self.primary_key = :build_id
 
-    belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :build,
+      ->(trace_metadata) { in_partition(trace_metadata) },
+      class_name: 'Ci::Build',
+      partition_foreign_key: :partition_id,
+      inverse_of: :trace_metadata
     belongs_to :trace_artifact, class_name: 'Ci::JobArtifact'
 
     partitionable scope: :build

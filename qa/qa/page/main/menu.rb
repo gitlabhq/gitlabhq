@@ -6,12 +6,11 @@ module QA
       class Menu < Page::Base
         # We need to check phone_layout? instead of mobile_layout? here
         # since tablets have the regular top navigation bar
-        prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
         include SubMenus::CreateNewMenu
         include SubMenus::SuperSidebar::GlobalSearchModal
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
-          element :navbar, required: true # TODO: rename to sidebar once it's default implementation
+          element 'super-sidebar', required: true
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
@@ -20,9 +19,9 @@ module QA
 
         view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
           element 'user-dropdown', required: !Runtime::Env.phone_layout?
-          element :user_avatar_content, required: !Runtime::Env.phone_layout?
-          element :sign_out_link
-          element :edit_profile_link
+          element 'user-avatar-content', required: !Runtime::Env.phone_layout?
+          element 'sign-out-link'
+          element 'edit-profile-link'
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
@@ -36,49 +35,14 @@ module QA
           element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
         end
 
-        view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
-          element 'global-search-input'
-        end
-
-        view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
-          element :navbar_dropdown
-        end
-
-        view 'app/assets/javascripts/nav/components/top_nav_dropdown_menu.vue' do
-          element 'menu-subview'
-        end
-
         view 'lib/gitlab/nav/top_nav_menu_item.rb' do
-          element :menu_item_link
-        end
-
-        view 'app/helpers/nav/top_nav_helper.rb' do
-          element :admin_area_link
-          element :projects_dropdown
-          element :groups_dropdown
-          element :menu_item_link
-        end
-
-        view 'app/views/layouts/_header_search.html.haml' do
-          element :search_box
-        end
-
-        view 'app/assets/javascripts/header_search/components/app.vue' do
-          element 'global-search-input'
-        end
-
-        view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element 'new-menu-toggle'
+          element 'menu-item-link'
         end
 
         view 'app/helpers/nav/new_dropdown_helper.rb' do
-          element :global_new_group_link
-          element :global_new_project_link
-          element :global_new_snippet_link
-        end
-
-        view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
-          element :new_navigation_toggle
+          element 'global-new-group-link'
+          element 'global-new-project-link'
+          element 'global-new-snippet-link'
         end
 
         def go_to_projects
@@ -122,7 +86,7 @@ module QA
             has_element?('user-profile-link', text: /#{user.username}/)
           end
           # we need to close user menu because plain user link check will leave it open
-          click_element :user_avatar_content if has_element?('user-profile-link', wait: 0)
+          click_element 'user-avatar-content' if has_element?('user-profile-link', wait: 0)
         end
 
         def not_signed_in?
@@ -140,7 +104,7 @@ module QA
             break true unless signed_in?
 
             within_user_menu do
-              click_element :sign_out_link
+              click_element 'sign-out-link'
             end
 
             not_signed_in?
@@ -154,7 +118,7 @@ module QA
         def click_edit_profile_link
           retry_until(reload: false) do
             within_user_menu do
-              click_element(:edit_profile_link)
+              click_element('edit-profile-link')
             end
 
             has_text?('User Settings')
@@ -168,11 +132,11 @@ module QA
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          has_element?(:user_avatar_content, wait: wait)
+          has_element?('user-avatar-content', wait: wait)
         end
 
         def has_no_personal_area?(wait: Capybara.default_max_wait_time)
-          has_no_element?(:user_avatar_content, wait: wait)
+          has_no_element?('user-avatar-content', wait: wait)
         end
 
         def click_stop_impersonation_link
@@ -192,8 +156,8 @@ module QA
         private
 
         def within_user_menu(&block)
-          within_element(:navbar) do
-            click_element :user_avatar_content unless has_element?('user-profile-link', wait: 1)
+          within_element('super-sidebar') do
+            click_element 'user-avatar-content' unless has_element?('user-profile-link', wait: 1)
 
             within_element('user-dropdown', &block)
           end

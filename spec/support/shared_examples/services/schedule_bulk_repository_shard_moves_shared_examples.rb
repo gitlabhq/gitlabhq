@@ -5,7 +5,7 @@ RSpec.shared_examples 'moves repository shard in bulk' do
   let(:destination_storage_name) { 'test_second_storage' }
 
   before do
-    stub_storage_settings(destination_storage_name => { 'path' => 'tmp/tests/extra_storage' })
+    stub_storage_settings(destination_storage_name => {})
   end
 
   describe '#execute' do

@@ -53,7 +53,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $white-normal;
+      color: $gray-50;
 
       img {
         position: relative;
@@ -104,7 +104,7 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $white-normal;
+    border-color: $gray-50;
     font-size: $gl-font-size;
     color: $gl-text-color;
     word-break: break-word;
@@ -165,7 +165,7 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $white-normal;
+      border: dotted 1px $gray-50;
       margin: 1px 0;
       min-height: 52px;
     }

@@ -11,7 +11,7 @@ import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
-import glRegexp from './lib/utils/regexp';
+import { unicodeLetters } from './lib/utils/regexp';
 
 const USERS_ALIAS = 'users';
 const ISSUES_ALIAS = 'issues';
@@ -82,8 +82,8 @@ export function membersBeforeSave(members) {
     const autoCompleteAvatar = member.avatar_url || member.username.charAt(0).toUpperCase();
 
     const rectAvatarClass = member.type === GROUP_TYPE ? 'rect-avatar' : '';
-    const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline center s26"/>`;
-    const txtAvatar = `<div class="avatar ${rectAvatarClass} center avatar-inline s26">${autoCompleteAvatar}</div>`;
+    const imgAvatar = `<img src="${member.avatar_url}" alt="${member.username}" class="avatar ${rectAvatarClass} avatar-inline s24 gl-mr-2"/>`;
+    const txtAvatar = `<div class="avatar ${rectAvatarClass} avatar-inline s24 gl-mr-2">${autoCompleteAvatar}</div>`;
     const avatarIcon = member.mentionsDisabled
       ? spriteIcon('notifications-off', 's16 vertical-align-middle gl-ml-2')
       : '';
@@ -262,6 +262,38 @@ class GfmAutoComplete {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  setSubmitReviewStates($input) {
+    if (!window.gon.features?.mrRequestChanges) return;
+
+    const REVIEW_STATES = {
+      reviewed: {
+        header: __('Comment'),
+        description: __('Submit general feedback without explicit approval.'),
+      },
+      approve: {
+        header: __('Approve'),
+        description: __('Submit feedback and approve these changes.'),
+      },
+      requested_changes: {
+        header: __('Request changes'),
+        description: __('Submit feedback that should be addressed before merging.'),
+      },
+    };
+
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
+      // Always keep the trailing space otherwise the command won't display correctly
+      at: '/submit_review ',
+      alias: 'submit_review',
+      data: Object.keys(REVIEW_STATES),
+      displayTpl({ name }) {
+        const reviewState = REVIEW_STATES[name];
+
+        return `<li><span class="name gl-font-weight-bold">${reviewState.header}</span><small class="description"><em>${reviewState.description}</em></small></li>`;
+      },
+    });
+  }
+
   setupEmoji($input) {
     const fetchData = this.fetchData.bind(this);
 
@@ -275,10 +307,7 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const regexp = new RegExp(
-            `(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`,
-            'gi',
-          );
+          const regexp = new RegExp(`(?:[^${unicodeLetters}0-9:]|\n|^):([^ :][^:]*)?$`, 'gi');
           const match = regexp.exec(subtext);
 
           if (match && match.length) {
@@ -851,6 +880,9 @@ class GfmAutoComplete {
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then((data) => {
+          if (data.some((c) => c.name === 'submit_review')) {
+            this.setSubmitReviewStates($input);
+          }
           this.loadData($input, at, data);
         })
         .catch(() => {

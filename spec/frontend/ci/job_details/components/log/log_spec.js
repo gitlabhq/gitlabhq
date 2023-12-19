@@ -6,8 +6,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Log from '~/ci/job_details/components/log/log.vue';
 import LogLineHeader from '~/ci/job_details/components/log/line_header.vue';
+import LineNumber from '~/ci/job_details/components/log/line_number.vue';
 import { logLinesParser } from '~/ci/job_details/store/utils';
 import { mockJobLog, mockJobLogLineCount } from './mock_data';
+
+const mockPagePath = 'project/-/jobs/99';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -24,7 +27,12 @@ describe('Job Log', () => {
   Vue.use(Vuex);
 
   const createComponent = (props) => {
+    store = new Vuex.Store({ actions, state });
+
     wrapper = mount(Log, {
+      provide: {
+        pagePath: mockPagePath,
+      },
       propsData: {
         ...props,
       },
@@ -36,39 +44,34 @@ describe('Job Log', () => {
     toggleCollapsibleLineMock = jest.fn();
     actions = {
       toggleCollapsibleLine: toggleCollapsibleLineMock,
+      setupFullScreenListeners: jest.fn(),
     };
+
+    const { lines, sections } = logLinesParser(mockJobLog);
 
     state = {
-      jobLog: logLinesParser(mockJobLog),
-      jobLogEndpoint: 'jobs/id',
+      jobLog: lines,
+      jobLogSections: sections,
     };
-
-    store = new Vuex.Store({
-      actions,
-      state,
-    });
   });
 
-  const findCollapsibleLine = () => wrapper.findComponent(LogLineHeader);
-  const findAllCollapsibleLines = () => wrapper.findAllComponents(LogLineHeader);
+  const findLineNumbers = () => wrapper.findAllComponents(LineNumber);
+  const findLineHeader = () => wrapper.findComponent(LogLineHeader);
+  const findLineHeaders = () => wrapper.findAllComponents(LogLineHeader);
 
   describe('line numbers', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it.each([...Array(mockJobLogLineCount).keys()])(
-      'renders a line number for each line %d',
-      (index) => {
-        const lineNumber = wrapper
-          .findAll('.js-log-line')
-          .at(index)
-          .find(`#L${index + 1}`);
+    it('renders a line number for each line %d with an href', () => {
+      for (let i = 0; i < mockJobLogLineCount; i += 1) {
+        const w = findLineNumbers().at(i);
 
-        expect(lineNumber.text()).toBe(`${index + 1}`);
-        expect(lineNumber.attributes('href')).toBe(`${state.jobLogEndpoint}#L${index + 1}`);
-      },
-    );
+        expect(w.text()).toBe(`${i + 1}`);
+        expect(w.attributes('href')).toBe(`${mockPagePath}#L${i + 1}`);
+      }
+    });
   });
 
   describe('collapsible sections', () => {
@@ -77,20 +80,52 @@ describe('Job Log', () => {
     });
 
     it('renders a clickable header section', () => {
-      expect(findCollapsibleLine().attributes('role')).toBe('button');
+      expect(findLineHeader().attributes('role')).toBe('button');
     });
 
     it('renders an icon with the open state', () => {
-      expect(findCollapsibleLine().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(
-        true,
-      );
+      expect(findLineHeader().find('[data-testid="chevron-lg-down-icon"]').exists()).toBe(true);
     });
 
     describe('on click header section', () => {
       it('calls toggleCollapsibleLine', () => {
-        findCollapsibleLine().trigger('click');
+        findLineHeader().trigger('click');
 
         expect(toggleCollapsibleLineMock).toHaveBeenCalled();
+      });
+    });
+
+    describe('duration', () => {
+      it('shows duration', () => {
+        expect(findLineHeader().props('duration')).toBe('00:00');
+        expect(findLineHeader().props('hideDuration')).toBe(false);
+      });
+
+      it('hides duration', () => {
+        state.jobLogSections['resolve-secrets'].hideDuration = true;
+        createComponent();
+
+        expect(findLineHeader().props('duration')).toBe('00:00');
+        expect(findLineHeader().props('hideDuration')).toBe(true);
+      });
+    });
+
+    describe('when a section is collapsed', () => {
+      beforeEach(() => {
+        state.jobLogSections['prepare-executor'].isClosed = true;
+
+        createComponent();
+      });
+
+      it('hides lines in section', () => {
+        expect(findLineNumbers().wrappers.map((w) => w.text())).toEqual([
+          '1',
+          '2',
+          '3',
+          '4',
+          // closed section not shown
+          '7',
+        ]);
       });
     });
   });
@@ -119,19 +154,19 @@ describe('Job Log', () => {
       it('scrolls to line number', async () => {
         createComponent();
 
-        state.jobLog = logLinesParser(mockJobLog, [], '#L6');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
 
-        state.jobLog = logLinesParser(mockJobLog, [], '#L7');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
       });
 
       it('line number within collapsed section is visible', () => {
-        state.jobLog = logLinesParser(mockJobLog, [], '#L6');
+        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
 
         createComponent();
 
@@ -150,15 +185,14 @@ describe('Job Log', () => {
               },
             ],
             section: 'prepare-executor',
-            section_header: true,
             lineNumber: 3,
           },
         ];
 
         createComponent({ searchResults: mockSearchResults });
 
-        expect(findAllCollapsibleLines().at(0).props('isHighlighted')).toBe(true);
-        expect(findAllCollapsibleLines().at(1).props('isHighlighted')).toBe(false);
+        expect(findLineHeaders().at(0).props('isHighlighted')).toBe(true);
+        expect(findLineHeaders().at(1).props('isHighlighted')).toBe(false);
       });
     });
   });

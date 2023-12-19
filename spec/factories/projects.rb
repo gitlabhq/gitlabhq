@@ -43,6 +43,7 @@ FactoryBot.define do
       releases_access_level { ProjectFeature::ENABLED }
       infrastructure_access_level { ProjectFeature::ENABLED }
       model_experiments_access_level { ProjectFeature::ENABLED }
+      model_registry_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -177,12 +178,6 @@ FactoryBot.define do
       import_status { :canceled }
     end
 
-    trait :jira_dvcs_cloud do
-      before(:create) do |project|
-        create(:project_feature_usage, :dvcs_cloud, project: project)
-      end
-    end
-
     trait :jira_dvcs_server do
       before(:create) do |project|
         create(:project_feature_usage, :dvcs_server, project: project)
@@ -241,10 +236,11 @@ FactoryBot.define do
     trait :custom_repo do
       transient do
         files { {} }
+        object_format { Repository::FORMAT_SHA1 }
       end
 
       after :create do |project, evaluator|
-        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository
+        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository(object_format: evaluator.object_format)
 
         evaluator.files.each do |filename, content|
           project.repository.create_file(
@@ -254,6 +250,24 @@ FactoryBot.define do
             message: "Automatically created file #{filename}",
             branch_name: project.default_branch || 'master'
           )
+        end
+      end
+    end
+
+    trait :pipeline_refs do
+      transient do
+        object_format { Repository::FORMAT_SHA1 }
+        pipeline_count { 10 }
+      end
+
+      after :create do |project, evaluator|
+        raise "Failed to create repository!" unless project.repository.exists? || project.create_repository(object_format: evaluator.object_format)
+
+        project.repository.create_file(project.creator, "README.md", "Test", message: "Test file", branch_name: project.default_branch || 'master')
+
+        evaluator.pipeline_count.times do |x|
+          project.repository.create_ref(project.repository.head_commit.id, "refs/pipelines/#{x}")
+          project.repository.create_ref(project.repository.head_commit.id, "refs/head/foo-#{x}")
         end
       end
     end
@@ -348,6 +362,12 @@ FactoryBot.define do
             branch_name: 'master')
           project.repository.create_file(
             project.creator,
+            ".gitlab/#{templates_path}/(test).md",
+            'parentheses',
+            message: 'test 3',
+            branch_name: 'master')
+          project.repository.create_file(
+            project.creator,
             ".gitlab/#{templates_path}/template_test.md",
             'template_test',
             message: 'test 1',
@@ -381,8 +401,12 @@ FactoryBot.define do
     end
 
     trait :empty_repo do
-      after(:create) do |project|
-        raise "Failed to create repository!" unless project.create_repository
+      transient do
+        object_format { Repository::FORMAT_SHA1 }
+      end
+
+      after(:create) do |project, evaluator|
+        raise "Failed to create repository!" unless project.create_repository(object_format: evaluator.object_format)
       end
     end
 
@@ -583,5 +607,17 @@ FactoryBot.define do
 
     path { 'gitlab-profile' }
     files { { 'README.md' => 'Hello World' } }
+  end
+
+  trait :with_code_suggestions_enabled do
+    after(:create) do |project|
+      project.project_setting.update!(code_suggestions: true)
+    end
+  end
+
+  trait :with_code_suggestions_disabled do
+    after(:create) do |project|
+      project.project_setting.update!(code_suggestions: false)
+    end
   end
 end

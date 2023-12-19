@@ -31,6 +31,7 @@ module Analytics
         scope :with_preloaded_labels, -> { includes(:start_event_label, :end_event_label) }
         scope :for_list, -> { with_preloaded_labels.ordered }
         scope :by_value_stream, ->(value_stream) { where(value_stream_id: value_stream.id) }
+        scope :by_value_streams_ids, ->(value_stream_ids) { where(value_stream_id: value_stream_ids) }
 
         before_save :ensure_stage_event_hash_id
         after_commit :cleanup_old_stage_event_hash

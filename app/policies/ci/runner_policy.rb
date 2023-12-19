@@ -5,6 +5,7 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
+    with_options scope: :subject, score: 20
     condition(:owned_runner) do
       @user.owns_runner?(@subject)
     end
@@ -21,6 +22,11 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:is_group_runner) do
       @subject.group_type?
+    end
+
+    with_options scope: :subject, score: 0
+    condition(:is_project_runner) do
+      @subject.project_type?
     end
 
     with_options scope: :user, score: 5
@@ -44,6 +50,27 @@ module Ci
       end
     end
 
+    with_options score: 6
+    condition(:developer_in_any_associated_projects) do
+      # Check if runner is associated to any projects where user is a developer+
+      @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::DEVELOPER).exists?
+    end
+
+    with_options score: 8
+    condition(:developer_in_any_associated_groups) do
+      user_group_ids = @user.developer_maintainer_owned_groups.select(:id)
+
+      # Check for direct group relationships
+      next true if user_group_ids.id_in(@subject.group_ids).any?
+
+      # Check for indirect group relationships
+      GroupGroupLink
+        .with_developer_maintainer_owner_access
+        .groups_accessible_via(user_group_ids)
+        .id_in(@subject.group_ids)
+        .any?
+    end
+
     condition(:belongs_to_multiple_projects, scope: :subject) do
       @subject.belongs_to_more_than_one_project?
     end
@@ -60,6 +87,14 @@ module Ci
     end
 
     rule { is_instance_runner & any_developer_projects_inheriting_shared_runners }.policy do
+      enable :read_runner
+    end
+
+    rule { is_project_runner & developer_in_any_associated_projects }.policy do
+      enable :read_runner
+    end
+
+    rule { is_group_runner & developer_in_any_associated_groups }.policy do
       enable :read_runner
     end
 

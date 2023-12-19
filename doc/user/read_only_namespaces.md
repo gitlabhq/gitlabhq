@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Read-only namespaces **(FREE SAAS)**
@@ -22,7 +22,7 @@ information, see [Restricted actions](#restricted-actions).
 To restore a namespace to its standard state, you can:
 
 - For exceeded free user limits:
-  - [Reduce the number of members](free_user_limit.md#manage-members-in-your-namespace) in your namespace.
+  - [Reduce the number of members](free_user_limit.md#manage-members-in-your-group-namespace) in your namespace.
   - [Start a free trial](https://gitlab.com/-/trial_registrations/new), which includes an unlimited number of members.
   - [Purchase a paid tier](https://about.gitlab.com/pricing/).
 - For exceeded storage quota:
@@ -33,9 +33,9 @@ To restore a namespace to its standard state, you can:
 
 | Feature | Action restricted |
 |---------|-------------------|
-| Container Registry | Create, edit, and delete cleanup policies <br> Push an image to the container registry |
+| Container registry | Create, edit, and delete cleanup policies <br> Push an image to the container registry |
 | Merge Requests | Create and update an MR |
-| Package Registry | Publish a package |
+| Package registry | Publish a package |
 | Repositories | Add tags <br> Create new branches <br> Create and update commit status <br> Push and force push to non-protected branches <br> Push and force push to protected branches <br> Upload files <br> Create merge requests |
 | CI/CD | Create, edit, admin, and run pipelines <br>  Create, edit, admin, and run builds <br>  Create and edit admin environments <br> Create and edit admin deployments <br>  Create and edit admin clusters <br> Create and edit admin releases |
 | Namespaces | **For exceeded free user limits:** Invite new users |

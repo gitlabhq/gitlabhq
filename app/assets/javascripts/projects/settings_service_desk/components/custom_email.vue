@@ -25,6 +25,10 @@ export default {
   I18N_STATE_VERIFICATION_FINISHED_TOGGLE_HELP,
   I18N_RESET_BUTTON_LABEL,
   props: {
+    incomingEmail: {
+      type: String,
+      required: true,
+    },
     customEmail: {
       type: String,
       required: true,
@@ -128,7 +132,13 @@ export default {
       <p class="gl-mb-0">
         <strong>{{ errorLabel }}</strong>
       </p>
-      <p>{{ errorDescription }}</p>
+      <p>
+        <gl-sprintf :message="errorDescription">
+          <template #incomingEmail>
+            <code>{{ incomingEmail }}</code>
+          </template>
+        </gl-sprintf>
+      </p>
     </template>
 
     <p>{{ resetNote }}</p>

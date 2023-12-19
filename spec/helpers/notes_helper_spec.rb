@@ -55,23 +55,6 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
     end
   end
 
-  describe "#notes_max_access_for_users" do
-    it 'returns access levels' do
-      expect(helper.note_max_access_for_user(owner_note)).to eq(Gitlab::Access::OWNER)
-      expect(helper.note_max_access_for_user(maintainer_note)).to eq(Gitlab::Access::MAINTAINER)
-      expect(helper.note_max_access_for_user(reporter_note)).to eq(Gitlab::Access::REPORTER)
-    end
-
-    it 'handles access in different projects' do
-      second_project = create(:project)
-      second_project.add_reporter(maintainer)
-      other_note = create(:note, author: maintainer, project: second_project)
-
-      expect(helper.note_max_access_for_user(maintainer_note)).to eq(Gitlab::Access::MAINTAINER)
-      expect(helper.note_max_access_for_user(other_note)).to eq(Gitlab::Access::REPORTER)
-    end
-  end
-
   describe '#discussion_path' do
     let_it_be(:project) { create(:project, :repository) }
 

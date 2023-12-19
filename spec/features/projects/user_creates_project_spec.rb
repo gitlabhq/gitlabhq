@@ -55,6 +55,45 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
     expect(page).to have_content('README.md Initial commit')
   end
 
+  context 'when creating a project with SHA256 repository' do
+    let(:sha256_field) { 'Use SHA-256 as the repository hashing algorithm' }
+
+    it 'creates a new project' do
+      visit(new_project_path)
+
+      click_link 'Create blank project'
+      fill_in(:project_name, with: 'With initial commits')
+
+      expect(page).to have_checked_field 'Initialize repository with a README'
+      expect(page).to have_unchecked_field sha256_field
+
+      check sha256_field
+
+      page.within('#content-body') do
+        click_button('Create project')
+      end
+
+      project = Project.last
+
+      expect(page).to have_current_path(project_path(project), ignore_query: true)
+      expect(page).to have_content('With initial commits')
+    end
+
+    context 'when "support_sha256_repositories" feature flag is disabled' do
+      before do
+        stub_feature_flags(support_sha256_repositories: false)
+      end
+
+      it 'does not display a SHA256 option' do
+        visit(new_project_path)
+
+        click_link 'Create blank project'
+
+        expect(page).not_to have_content(sha256_field)
+      end
+    end
+  end
+
   context 'in a subgroup they do not own' do
     let(:parent) { create(:group) }
     let!(:subgroup) { create(:group, parent: parent) }

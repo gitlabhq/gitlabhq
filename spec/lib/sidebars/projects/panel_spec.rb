@@ -30,28 +30,6 @@ RSpec.describe Sidebars::Projects::Panel, feature_category: :navigation do
           expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::WikiMenu) }).to be_nil
         end
       end
-
-      context 'shimo only' do
-        let_it_be(:shimo) { create(:shimo_integration, active: true) }
-
-        let(:project) { shimo.project }
-
-        it 'contains Shimo menu item' do
-          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ShimoMenu) }).not_to be_nil
-        end
-      end
-
-      context 'confluence & shimo' do
-        let_it_be(:confluence) { create(:confluence_integration, active: true) }
-        let_it_be(:shimo) { create(:shimo_integration, active: true) }
-
-        let(:project) { confluence.project }
-
-        it 'contains Confluence menu item, not Shimo' do
-          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ConfluenceMenu) }).not_to be_nil
-          expect(subject.index { |i| i.is_a?(Sidebars::Projects::Menus::ShimoMenu) }).to be_nil
-        end
-      end
     end
 
     context 'when integration is not present' do

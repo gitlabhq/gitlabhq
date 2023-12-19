@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :runner_fleet do
+RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibility do
   include AdminModeHelper
   include ApiHelpers
   include JavaScriptFixturesHelpers

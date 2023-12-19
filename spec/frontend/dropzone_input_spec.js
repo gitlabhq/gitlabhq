@@ -21,6 +21,10 @@ const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}"
 </form>`;
 
 describe('dropzone_input', () => {
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
   it('returns null when failed to initialize', () => {
     const dropzone = dropzoneInput($('<form class="gfm-form"></form>'));
 
@@ -58,8 +62,6 @@ describe('dropzone_input', () => {
 
     afterEach(() => {
       form = null;
-
-      resetHTMLFixture();
     });
 
     it('pastes Markdown tables', () => {
@@ -154,8 +156,6 @@ describe('dropzone_input', () => {
       mock.teardown();
     });
 
-    beforeEach(() => {});
-
     it.each`
       responseType          | responseBody
       ${'application/json'} | ${JSON.stringify({ message: TEST_ERROR_MESSAGE })}
@@ -171,6 +171,38 @@ describe('dropzone_input', () => {
 
       return waitForPromises().then(() => {
         expect(form.find('.uploading-error-message').text()).toEqual(TEST_ERROR_MESSAGE);
+      });
+    });
+  });
+
+  describe('clickable element', () => {
+    let form;
+
+    beforeEach(() => {
+      jest.spyOn($.fn, 'dropzone');
+      setHTMLFixture(TEMPLATE);
+      form = $('form');
+    });
+
+    describe('if attach file button exists', () => {
+      let attachFileButton;
+
+      beforeEach(() => {
+        attachFileButton = document.createElement('button');
+        attachFileButton.dataset.buttonType = 'attach-file';
+        document.body.querySelector('form').appendChild(attachFileButton);
+      });
+
+      it('passes attach file button as `clickable` to dropzone', () => {
+        dropzoneInput(form);
+        expect($.fn.dropzone.mock.calls[0][0]).toMatchObject({ clickable: attachFileButton });
+      });
+    });
+
+    describe('if attach file button does not exist', () => {
+      it('passes attach file button as `clickable`, if it exists', () => {
+        dropzoneInput(form);
+        expect($.fn.dropzone.mock.calls[0][0]).toMatchObject({ clickable: true });
       });
     });
   });

@@ -77,6 +77,18 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
       end
     end
 
+    context 'when the source and target projects are different' do
+      let(:importer) { described_class.new(project, hash.merge(source_and_target_project_different: true)) }
+
+      it 'skips the import' do
+        expect(Gitlab::BitbucketImport::Logger)
+          .to receive(:info)
+          .with(include(message: 'skipping because source and target projects are different', iid: anything))
+
+        expect { importer.execute }.not_to change { project.merge_requests.count }
+      end
+    end
+
     context 'when the author does not have a bitbucket identity' do
       before do
         identity.update!(provider: :github)

@@ -5,6 +5,7 @@ import {
   updateCacheAfterAddingAwardEmojiToNote,
   updateCacheAfterRemovingAwardEmojiFromNote,
 } from '~/work_items/graphql/cache_utils';
+import groupWorkItemNotesByIidQuery from '../graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.query.graphql';
 import addAwardEmojiMutation from '../graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
 import removeAwardEmojiMutation from '../graphql/notes/work_item_note_remove_award_emoji.mutation.graphql';
@@ -32,7 +33,7 @@ export function getMutation({ note, name }) {
   };
 }
 
-export function optimisticAwardUpdate({ note, name, fullPath, workItemIid }) {
+export function optimisticAwardUpdate({ note, name, fullPath, isGroup, workItemIid }) {
   const { mutation } = getMutation({ note, name });
 
   const currentUserId = window.gon.current_user_id;
@@ -40,7 +41,7 @@ export function optimisticAwardUpdate({ note, name, fullPath, workItemIid }) {
   return (store) => {
     store.updateQuery(
       {
-        query: workItemNotesByIidQuery,
+        query: isGroup ? groupWorkItemNotesByIidQuery : workItemNotesByIidQuery,
         variables: { fullPath, iid: workItemIid },
       },
       (sourceData) => {

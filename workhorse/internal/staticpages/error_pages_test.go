@@ -17,7 +17,7 @@ func TestIfErrorPageIsPresented(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	os.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "404.html"), []byte(errorPage), 0o600)
 
 	w := httptest.NewRecorder()
 	h := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -57,7 +57,7 @@ func TestIfErrorPageIsIgnoredInDevelopment(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0o600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -76,7 +76,7 @@ func TestIfErrorPageIsIgnoredIfCustomError(t *testing.T) {
 	dir := t.TempDir()
 
 	errorPage := "ERROR"
-	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+	os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0o600)
 
 	w := httptest.NewRecorder()
 	serverError := "Interesting Server Error"
@@ -107,7 +107,7 @@ func TestErrorPageInterceptedByContentType(t *testing.T) {
 		dir := t.TempDir()
 
 		errorPage := "ERROR"
-		os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0600)
+		os.WriteFile(filepath.Join(dir, "500.html"), []byte(errorPage), 0o600)
 
 		w := httptest.NewRecorder()
 		serverError := "Interesting Server Error"
@@ -167,4 +167,14 @@ func TestIfErrorPageIsPresentedText(t *testing.T) {
 	require.Equal(t, 404, w.Code)
 	testhelper.RequireResponseBody(t, w, errorPage)
 	testhelper.RequireResponseHeader(t, w, "Content-Type", "text/plain; charset=utf-8")
+}
+
+func TestErrorPageResponseWriterFlushable(t *testing.T) {
+	rw := httptest.NewRecorder()
+	eprw := errorPageResponseWriter{rw: rw}
+	rc := http.NewResponseController(&eprw)
+
+	err := rc.Flush()
+	require.NoError(t, err, "the underlying response writer is not flushable")
+	require.True(t, rw.Flushed)
 }

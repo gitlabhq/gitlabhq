@@ -1,8 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab ChatOps **(FREE ALL)**
@@ -103,7 +102,7 @@ ls:
 
 ## Trigger a CI/CD job using ChatOps
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role for the project.
 - The project is configured to use a slash command integration.

@@ -18,26 +18,24 @@ module Gitlab
             end
           end
 
-          class << self
-            private
+          private
 
-            def database
-              database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
-              Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
-            end
+          def database
+            database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
+            Gitlab::Schema::Validation::Sources::Database.new(database_model.connection)
+          end
 
-            def structure_sql
-              stucture_sql_path = Rails.root.join('db/structure.sql')
-              Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
-            end
+          def structure_sql
+            stucture_sql_path = Rails.root.join('db/structure.sql')
+            Gitlab::Schema::Validation::Sources::StructureSql.new(stucture_sql_path)
+          end
 
-            def validators
-              [
-                Gitlab::Schema::Validation::Validators::MissingIndexes,
-                Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes,
-                Gitlab::Schema::Validation::Validators::ExtraIndexes
-              ]
-            end
+          def validators
+            [
+              Gitlab::Schema::Validation::Validators::MissingIndexes,
+              Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes,
+              Gitlab::Schema::Validation::Validators::ExtraIndexes
+            ]
           end
         end
       end

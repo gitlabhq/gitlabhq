@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Protected environments **(PREMIUM ALL)**
@@ -27,6 +27,7 @@ Maintainer role.
 Prerequisites:
 
 - When granting the **Allowed to deploy** permission to a group or subgroup, the user configuring the protected environment must be a **direct member** of the group or subgroup to be added. Otherwise, the group or subgroup does not show up in the dropdown list. For more information see [issue #345140](https://gitlab.com/gitlab-org/gitlab/-/issues/345140).
+- When granting **Allowed to deploy** and **Approvers** permissions to a group or project by using the settings UI, only direct members of the group or project receive these permissions. To grant these permissions to inherited members also, [use the API](../../api/protected_environments.md#group-inheritance-types). For more information see [issue #422392](https://gitlab.com/gitlab-org/gitlab/-/issues/422392).
 
 To protect an environment:
 

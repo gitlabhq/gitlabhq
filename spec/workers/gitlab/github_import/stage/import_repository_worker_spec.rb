@@ -10,16 +10,6 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker, feature_cate
   it_behaves_like Gitlab::GithubImport::StageMethods
 
   describe '#import' do
-    before do
-      expect(Gitlab::GithubImport::RefreshImportJidWorker)
-        .to receive(:perform_in_the_future)
-        .with(project.id, '123')
-
-      expect(worker)
-        .to receive(:jid)
-        .and_return('123')
-    end
-
     context 'when the import succeeds' do
       context 'with issues' do
         it 'schedules the importing of the base data' do

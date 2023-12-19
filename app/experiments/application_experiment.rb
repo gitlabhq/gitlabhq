@@ -3,6 +3,18 @@
 class ApplicationExperiment < Gitlab::Experiment
   control { nil } # provide a default control for anonymous experiments
 
+  # We have experiments in ce/foss code even though they will never be available
+  # for ce/foss instances.
+  # We do that since we currently only experiment on the ee with SaaS instance.
+  # However, if the experiment is successful, we may commit the final code to ce/foss
+  # if the feature we are experimenting on is not a licensed or SaaS feature.
+  #
+  # This follows the https://docs.gitlab.com/ee/development/ee_features.html
+  # guidelines and therefore we have hardcoded `false` here.
+  def self.available?
+    false
+  end
+
   def control_behavior
     # define a default nil control behavior so we can omit it when not needed
   end
@@ -44,3 +56,5 @@ class ApplicationExperiment < Gitlab::Experiment
     actor.respond_to?(:id) ? actor : context.try(:user)
   end
 end
+
+ApplicationExperiment.prepend_mod

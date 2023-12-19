@@ -73,7 +73,6 @@ Style/RedundantReturn:
     - 'ee/app/serializers/vulnerabilities/merge_request_link_entity.rb'
     - 'ee/app/services/audit_events/streaming/headers/base.rb'
     - 'ee/app/services/ee/post_receive_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/user_add_on_assignments/create_service.rb'
     - 'ee/app/services/security/orchestration/assign_service.rb'
     - 'ee/app/services/vulnerabilities/manually_create_service.rb'
     - 'ee/app/workers/ee/repository_check/batch_worker.rb'

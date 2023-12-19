@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Provision
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 <!-- To promote the workflow described in license.md, this page is not included in global left nav. -->
@@ -18,8 +18,7 @@ link to the **Add license** page should be displayed.
 Otherwise, to add your license:
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
@@ -45,7 +44,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For self-compiled installations:
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.
-  - To specify a custom location and filename for the license, set the
+  - To specify a custom location and file name for the license, set the
     `GITLAB_LICENSE_FILE` environment variable with the path to the file:
 
     ```shell
@@ -54,7 +53,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For Linux package installations:
   - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
-  - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
+  - To specify a custom location and file name for the license, add this entry to `gitlab.rb`:
 
     ```ruby
     gitlab_rails['initial_license_file'] = "/path/to/license/file"
@@ -96,8 +95,7 @@ To go back to Free features, [delete all expired licenses](#remove-a-license).
 
 To remove a license from a self-managed instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 1. Select **Remove license**.
 
@@ -107,8 +105,7 @@ Repeat these steps to remove all licenses, including those applied in the past.
 
 To view your license details:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 
 You can add and view more than one license, but only the latest license in

@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -62,13 +61,9 @@ func TestS3ObjectUpload(t *testing.T) {
 
 			cancel()
 
-			testhelper.Retry(t, 5*time.Second, func() error {
-				if test.S3ObjectDoesNotExist(t, sess, config, objectName) {
-					return nil
-				}
-
-				return fmt.Errorf("file is still present")
-			})
+			require.Eventually(t, func() bool {
+				return (test.S3ObjectDoesNotExist(t, sess, config, objectName))
+			}, 5*time.Second, time.Millisecond, "file is still present")
 		})
 	}
 }

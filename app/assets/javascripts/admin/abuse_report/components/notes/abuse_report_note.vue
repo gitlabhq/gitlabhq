@@ -4,7 +4,10 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
+import EditedAt from '~/issues/show/components/edited.vue';
+import AbuseReportEditNote from './abuse_report_edit_note.vue';
 import NoteBody from './abuse_report_note_body.vue';
+import AbuseReportNoteActions from './abuse_report_note_actions.vue';
 
 export default {
   name: 'AbuseReportNote',
@@ -15,8 +18,11 @@ export default {
     GlAvatarLink,
     GlAvatar,
     TimelineEntryItem,
+    AbuseReportEditNote,
     NoteHeader,
     NoteBody,
+    AbuseReportNoteActions,
+    EditedAt,
   },
   props: {
     abuseReportId: {
@@ -27,6 +33,16 @@ export default {
       type: Object,
       required: true,
     },
+    showReplyButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      isEditing: false,
+    };
   },
   computed: {
     noteAnchorId() {
@@ -37,6 +53,20 @@ export default {
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
+    },
+    showEditButton() {
+      return this.note.userPermissions.resolveNote;
+    },
+    editedAtClasses() {
+      return this.showReplyButton ? 'gl-text-secondary gl-pl-3' : 'gl-text-secondary gl-pl-8';
+    },
+  },
+  methods: {
+    startEditing() {
+      this.isEditing = true;
+    },
+    cancelEditing() {
+      this.isEditing = false;
     },
   },
 };
@@ -59,8 +89,14 @@ export default {
         />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content">
-      <div data-testid="note-wrapper">
+    <div class="timeline-content gl-pb-4!">
+      <abuse-report-edit-note
+        v-if="isEditing"
+        :abuse-report-id="abuseReportId"
+        :note="note"
+        @cancelEditing="cancelEditing"
+      />
+      <div v-else data-testid="note-wrapper">
         <div class="note-header">
           <note-header
             :author="author"
@@ -70,11 +106,27 @@ export default {
           >
             <span v-if="note.createdAt" class="d-none d-sm-inline">&middot;</span>
           </note-header>
+          <div class="gl-display-inline-flex">
+            <abuse-report-note-actions
+              :show-reply-button="showReplyButton"
+              :show-edit-button="showEditButton"
+              @startReplying="$emit('startReplying')"
+              @startEditing="startEditing"
+            />
+          </div>
         </div>
 
         <div class="timeline-discussion-body">
           <note-body ref="noteBody" :note="note" />
         </div>
+
+        <edited-at
+          v-if="note.lastEditedBy"
+          :updated-at="note.lastEditedAt"
+          :updated-by-name="note.lastEditedBy.name"
+          :updated-by-path="note.lastEditedBy.webPath"
+          :class="editedAtClasses"
+        />
       </div>
     </div>
   </timeline-entry-item>

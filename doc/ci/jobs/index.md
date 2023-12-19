@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jobs **(FREE ALL)**
@@ -374,6 +374,14 @@ job1:
     - echo 'this line should be hidden automatically after loading the job log'
     - echo -e "\e[0Ksection_end:`date +%s`:my_first_section\r\e[0K"
 ```
+
+### Full screen mode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
+
+You can view the contents of a job log in full screen mode by clicking **Show full screen**.
+
+To use full screen mode, your web browser must also support it. If your web browser does not support full screen mode, then the option is not available.
 
 ## Deployment jobs
 

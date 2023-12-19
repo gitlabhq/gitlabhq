@@ -15,26 +15,21 @@ import * as tooltips from '~/tooltips';
 import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
-import initTodoToggle from './header';
 import initLayoutNav from './layout_nav';
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
 // everything else
-import initFeatureHighlight from './feature_highlight';
 import LazyLoader from './lazy_loader';
-import initLogoAnimation from './logo';
+import initLogoAnimation, { initPortraitLogoDetection } from './logo';
 import initBreadcrumbs from './breadcrumb';
 import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
-import { initSidebarTracking } from './pages/shared/nav/sidebar_tracking';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import initBroadcastNotifications from './broadcast_notification';
-import { initTopNav } from './nav';
 import { initCopyCodeButton } from './behaviors/copy_code';
-import initHeaderSearch from './header_search/init';
 import initGitlabVersionCheck from './gitlab_version_check';
 
 import 'ee_else_ce/main_ee';
@@ -85,19 +80,14 @@ initRails();
 function deferredInitialisation() {
   const $body = $('body');
 
-  if (!gon.use_new_navigation) {
-    initTopNav();
-    initTodoToggle();
-  }
   initBreadcrumbs();
   initPrefetchLinks('.js-prefetch-document');
   initLogoAnimation();
+  initPortraitLogoDetection();
   initUserPopovers();
   initBroadcastNotifications();
   initPersistentUserCallouts();
   initDefaultTrackers();
-  initSidebarTracking();
-  initFeatureHighlight();
   initCopyCodeButton();
   initGitlabVersionCheck();
 
@@ -120,11 +110,6 @@ function deferredInitialisation() {
   // Adding a helper class to activate animations only after all is rendered
   setTimeout(() => $body.addClass('page-initialised'), 1000);
 }
-
-// header search vue component bootstrap
-// loading this inside requestIdleCallback is causing issues
-// see https://gitlab.com/gitlab-org/gitlab/-/issues/365746
-initHeaderSearch();
 
 const $body = $('body');
 const $document = $(document);
@@ -196,10 +181,6 @@ $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxComplete
     default:
       return $buttons.enable();
   }
-});
-
-$('.navbar-toggler').on('click', () => {
-  document.body.classList.toggle('top-nav-responsive-open');
 });
 
 /**

@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, howto
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Group access tokens **(FREE)**
@@ -59,6 +58,7 @@ To create a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access Tokens**.
+1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Enter an expiry date for the token:
    - The token expires on that date at midnight UTC.
@@ -121,7 +121,7 @@ To revoke a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access Tokens**.
-1. Next to the group access token to revoke, select **Revoke**.
+1. Next to the group access token to revoke, select **Revoke**  (**{remove}**).
 
 ## Revoke a group access token using Rails console
 
@@ -143,17 +143,17 @@ token.revoke!
 
 The scope determines the actions you can perform when you authenticate with a group access token.
 
-| Scope              | Description                                                                                                                                                                      |
-|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read and write access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                   |
-| `read_api`         | Grants read access to the scoped group and related project API, including the [Package Registry](../../packages/package_registry/index.md).                                      |
-| `read_registry`    | Grants read access (pull) to the [Container Registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required. |
-| `write_registry`   | Grants write access (push) to the [Container Registry](../../packages/container_registry/index.md).                                                                              |
-| `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                    |
-| `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
-| `create_runner`    | Grants permission to create runners in a group.                                                                                                                                  |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                                         |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                     |
+| Scope              | Description                                                                                                                                                                                                                                                                                                |
+|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `api`              | Grants complete read and write access to the scoped group and related project API, including the [container registry](../../packages/container_registry/index.md), the [dependency proxy](../../packages/dependency_proxy/index.md), and the [package registry](../../packages/package_registry/index.md). |
+| `read_api`         | Grants read access to the scoped group and related project API, including the [package registry](../../packages/package_registry/index.md).                                                                                                                                                                |
+| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required.                                                                                                                           |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                                                                                                                                                                        |
+| `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                                                                                                                                              |
+| `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                                                                                                                                           |
+| `create_runner`    | Grants permission to create runners in a group.                                                                                                                                                                                                                                                            |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                                                                                                                                               |
 
 ## Enable or disable group access token creation
 
@@ -163,6 +163,7 @@ To enable or disable group access token creation for all subgroups in a top-leve
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
+1. Select **Save changes**.
 
 Even when creation is disabled, you can still use and revoke existing group access tokens.
 

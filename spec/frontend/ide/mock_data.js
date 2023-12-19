@@ -14,6 +14,7 @@ export const projectData = {
       commit: {
         id: '123',
         short_id: 'abc123de',
+        committed_date: '2019-09-13T15:37:30+0300',
       },
     },
   },

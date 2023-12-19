@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Prepare Auto DevOps for deployment **(FREE ALL)**
@@ -12,10 +12,8 @@ recommend that you prepare them before enabling Auto DevOps.
 
 ## Deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
-
 When using Auto DevOps to deploy your applications, choose the
-[continuous deployment strategy](../../ci/introduction/index.md)
+[continuous deployment strategy](../../ci/index.md)
 that works best for your needs:
 
 | Deployment strategy | Setup | Methodology |

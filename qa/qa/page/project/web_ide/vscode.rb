@@ -16,8 +16,11 @@ module QA
           end
 
           def right_click_file_explorer
-            has_element?('div.monaco-list-rows')
-            find_element('div[aria-label="Files Explorer"]').right_click
+            page.find('.explorer-folders-view', visible: true).right_click
+          end
+
+          def has_file?(file_name)
+            has_element?("div[aria-label='#{file_name}']")
           end
 
           def open_file_from_explorer(file_name)
@@ -36,19 +39,15 @@ module QA
             has_element?('div.menu-item-check')
           end
 
-          def click_new_folder_menu_item
-            click_element('span[aria-label="New Folder..."]')
-          end
-
-          def has_committed_and_pushed_successfully?
-            page.has_css?('.span[title="Success! Your changes have been committed."]')
+          def click_menu_item(item)
+            click_element("li[title='#{item}']")
           end
 
           def click_upload_menu_item
             click_element('span[aria-label="Upload..."]')
           end
 
-          def enter_new_folder_text_input(name)
+          def enter_text_for_input(name)
             find_element('input[type="text"]')
             send_keys(name, :enter)
           end
@@ -93,11 +92,15 @@ module QA
           end
 
           def click_continue_with_existing_branch
-            page.find('.monaco-button[title="Continue"]').click
+            click_element('.monaco-button[title="Continue"]')
           end
 
           def has_branch_input_field?
             has_element?('input[aria-label="input"]')
+          end
+
+          def has_committed_successfully?
+            has_element?('.span[title="Success! Your changes have been committed."]')
           end
 
           def has_message?(content)
@@ -106,13 +109,19 @@ module QA
             end
           end
 
+          def close_ide_tab
+            page.execute_script "window.close();" if page.current_url.include?('ide')
+          end
+
+          def ide_tab_closed?
+            within_vscode_editor do
+              has_file_explorer?
+            end
+          end
+
           def within_vscode_editor(&block)
             iframe = find('#ide iframe')
             page.within_frame(iframe, &block)
-          end
-
-          def click_new_file_menu_item
-            page.find('[aria-label="New File..."]').click
           end
 
           def switch_to_original_window
@@ -122,19 +131,14 @@ module QA
           def create_new_file_from_template(filename, template)
             within_vscode_editor do
               Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
-                click_new_file_menu_item
-                enter_new_file_text_input(filename)
+                click_menu_item("New File...")
+                enter_text_for_input(filename)
                 page.within('div.editor-container') do
                   page.find('textarea.inputarea.monaco-mouse-cursor-text').send_keys(template)
                 end
-                page.has_content?(filename)
+                has_text?(filename)
               end
             end
-          end
-
-          def enter_new_file_text_input(name)
-            page.find('.explorer-item-edited', visible: true)
-            send_keys(name, :enter)
           end
 
           # Used for stablility, due to feature_caching of vscode_web_ide
@@ -156,23 +160,22 @@ module QA
             end
           end
 
-          def create_new_folder(name)
-            within_vscode_editor do
-              # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
-              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
-                right_click_file_explorer
-                has_right_click_menu_item?
-                click_new_folder_menu_item
-                # Verify New Folder button is triggered and textbox is waiting for input
-                enter_new_folder_text_input(name)
-                has_text?(name)
-              end
-            end
+          def create_new_folder(folder_name)
+            create_item("New Folder...", folder_name)
           end
 
-          def commit_and_push(file_name)
+          def create_new_file(file_name)
+            create_item("New File...", file_name)
+          end
+
+          def commit_and_push_to_new_branch(file_name)
             commit_toggle(file_name)
             push_to_new_branch
+          end
+
+          def commit_and_push_to_existing_branch(file_name)
+            commit_toggle(file_name)
+            push_to_existing_branch
           end
 
           def commit_toggle(message)
@@ -194,23 +197,26 @@ module QA
           def push_to_existing_branch
             within_vscode_editor do
               click_continue_with_existing_branch
-              has_committed_and_pushed_successfully?
+              has_committed_successfully?
             end
           end
 
           def push_to_new_branch
             within_vscode_editor do
-              click_new_branch
+              page.find('.monaco-button[title="Create new branch"]').click
               has_branch_input_field?
               # Typing enter to 'New branch name' popup to take the default branch name
               send_keys(:enter)
+              has_committed_successfully?
             end
           end
 
           def create_merge_request
             within_vscode_editor do
-              has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
-              click_element('.monaco-button[title="Create MR"]')
+              within_element('.notification-toast-container') do
+                has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
+                click_element('.monaco-text-button[title="Create MR"]')
+              end
             end
           end
 
@@ -221,7 +227,9 @@ module QA
               page.execute_script("document.body.removeChild = function(){};")
 
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
-              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+              Support::Retrier.retry_until(
+                max_attempts: 5, retry_on_exception: true, sleep_interval: 2
+              ) do
                 right_click_file_explorer
                 has_right_click_menu_item?
                 click_upload_menu_item
@@ -237,15 +245,31 @@ module QA
               open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
-                send_keys(:enter, :enter, prompt_data)
+                wait_until_code_suggestions_enabled
+                send_keys(:enter, :enter)
+
+                # Send keys one at a time to allow suggestions request to be triggered
+                prompt_data.each_char { |c| send_keys(c) }
               end
             end
+          end
+
+          def wait_until_code_suggestions_enabled
+            wait_until(max_duration: 30, message: 'Wait for Code Suggestions extension to be enabled') do
+              has_code_suggestions_status?('enabled')
+            end
+          end
+
+          def has_code_suggestions_status?(status)
+            page.document.has_css?(
+              "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label~=#{status.downcase}]"
+            )
           end
 
           def verify_prompt_appears_and_accept(pattern)
             within_vscode_editor do
               within_file_editor do
-                Support::Waiter.wait_until(max_duration: 30) do
+                Support::Waiter.wait_until(max_duration: 60, message: 'Wait for suggestion to appear') do
                   page.text.match?(pattern)
                 end
                 send_keys(:tab)
@@ -257,6 +281,20 @@ module QA
             within_vscode_editor do
               within_file_editor do
                 page.text.match?(pattern)
+              end
+            end
+          end
+
+          private
+
+          def create_item(click_item, item_name)
+            within_vscode_editor do
+              # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
+              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+                click_menu_item(click_item)
+                # Verify the button is triggered and textbox is waiting for input
+                enter_text_for_input(item_name)
+                has_text?(item_name)
               end
             end
           end

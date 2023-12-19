@@ -18,10 +18,4 @@ RSpec.describe Sidebars::Concerns::ContainerWithHtmlOptions, feature_category: :
       expect(subject.container_html_options).to eq(aria: { label: 'Foo' })
     end
   end
-
-  describe '#collapsed_container_html_options' do
-    it 'includes by default aria-label attribute' do
-      expect(subject.collapsed_container_html_options).to eq(aria: { label: 'Foo' })
-    end
-  end
 end

@@ -33,6 +33,8 @@ module Users
     attr_reader :execution_tracker
 
     def migrate_records
+      migrate_user_achievements
+
       return if hard_delete
 
       migrate_issues
@@ -99,6 +101,11 @@ module Users
 
     def migrate_releases
       batched_migrate(Release, :author_id)
+    end
+
+    def migrate_user_achievements
+      batched_migrate(Achievements::UserAchievement, :awarded_by_user_id)
+      batched_migrate(Achievements::UserAchievement, :revoked_by_user_id)
     end
 
     # rubocop:disable CodeReuse/ActiveRecord

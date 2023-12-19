@@ -6,7 +6,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
-import { defaultSortableOptions } from '~/sortable/constants';
+import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
@@ -77,6 +77,8 @@ export default {
         'ghost-class': 'tree-item-drag-active',
         'data-parent-id': this.workItemId,
         value: this.children,
+        delay: DRAG_DELAY,
+        delayOnTouchOnly: true,
       };
 
       return this.canReorder ? options : {};

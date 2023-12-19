@@ -65,10 +65,6 @@
   .avatar-container {
     margin: 0 auto;
   }
-
-  li.active:not(.fly-out-top-item) > a {
-    background-color: $indigo-900-alpha-008;
-  }
 }
 
 @mixin sub-level-items-flyout {
@@ -195,32 +191,6 @@
         border-right-color: var(--black, $black);
       }
     }
-  }
-}
-
-//
-// PAGE-LAYOUT
-//
-
-.page-with-contextual-sidebar {
-  transition: padding-left $gl-transition-duration-medium;
-
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
-  }
-
-  @include media-breakpoint-up(xl) {
-    padding-left: $contextual-sidebar-width;
-  }
-
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
-    padding: 10px 0 15px;
-  }
-}
-
-.page-with-icon-sidebar {
-  @include media-breakpoint-up(md) {
-    padding-left: $contextual-sidebar-collapsed-width;
   }
 }
 
@@ -446,7 +416,7 @@
     &.mobile-nav-open {
       display: block;
       position: fixed;
-      background-color: $black-transparent;
+      background-color: $t-gray-a-24;
       height: 100%;
       width: 100%;
       z-index: $zindex-dropdown-menu;

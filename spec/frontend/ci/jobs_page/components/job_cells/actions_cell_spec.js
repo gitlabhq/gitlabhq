@@ -43,6 +43,7 @@ describe('Job actions cell', () => {
   const cannotPlayJob = findMockJob('playable', mockJobsNodesAsGuest);
   const cannotRetryJob = findMockJob('retryable', mockJobsNodesAsGuest);
   const cannotPlayScheduledJob = findMockJob('scheduled', mockJobsNodesAsGuest);
+  const cannotCancelJob = findMockJob('cancelable', mockJobsNodesAsGuest);
 
   const findRetryButton = () => wrapper.findByTestId('retry');
   const findPlayButton = () => wrapper.findByTestId('play');
@@ -99,6 +100,7 @@ describe('Job actions cell', () => {
     ${findPlayButton}             | ${'play'}           | ${cannotPlayJob}
     ${findRetryButton}            | ${'retry'}          | ${cannotRetryJob}
     ${findPlayScheduledJobButton} | ${'play scheduled'} | ${cannotPlayScheduledJob}
+    ${findCancelButton}           | ${'cancel'}         | ${cannotCancelJob}
   `('does not display the $action button if user cannot update build', ({ button, jobType }) => {
     createComponent(jobType);
 

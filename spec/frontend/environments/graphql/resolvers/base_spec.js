@@ -9,7 +9,7 @@ import environmentToStopQuery from '~/environments/graphql/queries/environment_t
 import createMockApollo from 'helpers/mock_apollo_helper';
 import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
 import isEnvironmentStoppingQuery from '~/environments/graphql/queries/is_environment_stopping.query.graphql';
-import pageInfoQuery from '~/environments/graphql/queries/page_info.query.graphql';
+import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   environmentsApp,
@@ -131,13 +131,14 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('folder', () => {
     it('should fetch the folder url passed to it', async () => {
       mock
-        .onGet(ENDPOINT, { params: { per_page: 3, scope: 'available', search: '' } })
+        .onGet(ENDPOINT, { params: { per_page: 3, scope: 'available', search: '', page: 1 } })
         .reply(HTTP_STATUS_OK, folder);
 
       const environmentFolder = await mockResolvers.Query.folder(null, {
         environment: { folderPath: ENDPOINT },
         scope: 'available',
         search: '',
+        page: 1,
       });
 
       expect(environmentFolder).toEqual(resolvedFolder);
@@ -147,10 +148,10 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('stopEnvironmentREST', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
-
+      const cache = { evict: jest.fn() };
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client });
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client, cache });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -161,6 +162,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         variables: { environment },
         data: { isEnvironmentStopping: true },
       });
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
     it('should set is stopping to false if stop fails', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
@@ -183,27 +185,39 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('rollbackEnvironment', () => {
     it('should post to the retry environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
+      const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.rollbackEnvironment(null, {
-        environment: { retryUrl: ENDPOINT },
-      });
+      await mockResolvers.Mutation.rollbackEnvironment(
+        null,
+        {
+          environment: { retryUrl: ENDPOINT },
+        },
+        { cache },
+      );
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
       );
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
   });
   describe('deleteEnvironment', () => {
     it('should DELETE to the delete environment path', async () => {
       mock.onDelete(ENDPOINT).reply(HTTP_STATUS_OK);
+      const cache = { evict: jest.fn() };
 
-      await mockResolvers.Mutation.deleteEnvironment(null, {
-        environment: { deletePath: ENDPOINT },
-      });
+      await mockResolvers.Mutation.deleteEnvironment(
+        null,
+        {
+          environment: { deletePath: ENDPOINT },
+        },
+        { cache },
+      );
 
       expect(mock.history.delete).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'delete' }),
       );
+      expect(cache.evict).toHaveBeenCalledWith({ fieldName: 'folder' });
     });
   });
   describe('cancelAutoStop', () => {

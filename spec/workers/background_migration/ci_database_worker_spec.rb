@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BackgroundMigration::CiDatabaseWorker, :clean_gitlab_redis_cluster_shared_state,
+RSpec.describe BackgroundMigration::CiDatabaseWorker, :clean_gitlab_redis_shared_state,
   feature_category: :database do
   before do
     skip_if_shared_database(:ci)

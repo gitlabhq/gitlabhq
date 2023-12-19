@@ -15,7 +15,11 @@ export const STATUSES = {
 
 export const PROVIDERS = {
   GITHUB: 'github',
+  BITBUCKET_SERVER: 'bitbucket_server',
 };
+
+// Retrieved from value of `PAGE_LENGTH` in lib/bitbucket_server/paginator.rb
+export const BITBUCKET_SERVER_PAGE_LENGTH = 25;
 
 const SCHEDULED_STATUS_ICON = {
   icon: 'status-scheduled',

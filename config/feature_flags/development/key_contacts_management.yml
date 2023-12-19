@@ -1,0 +1,8 @@
+---
+name: key_contacts_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432400
+rollout_issue_url: https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/5873
+milestone: '16.7'
+type: development
+group: group::subscription management
+default_enabled: false

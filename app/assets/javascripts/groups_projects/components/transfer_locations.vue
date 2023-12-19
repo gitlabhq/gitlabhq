@@ -237,7 +237,6 @@ export default {
     <gl-form-group :label="label">
       <gl-dropdown
         :text="selectedText"
-        data-qa-selector="namespaces_list"
         data-testid="transfer-locations-dropdown"
         block
         toggle-class="gl-mb-0"
@@ -248,7 +247,7 @@ export default {
           <gl-search-box-by-type
             v-model.trim="searchTerm"
             :is-loading="isSearchLoading"
-            data-qa-selector="namespaces_list_search"
+            data-testid="transfer-locations-search"
           />
         </template>
         <template v-if="showAdditionalDropdownItems">
@@ -265,23 +264,18 @@ export default {
           <gl-dropdown-item
             v-for="item in userTransferLocations"
             :key="item.id"
-            data-qa-selector="namespaces_list_item"
             @click="handleSelect(item)"
             >{{ item.humanName }}</gl-dropdown-item
           >
         </div>
-        <div
-          v-if="hasGroupTransferLocations"
-          data-qa-selector="namespaces_list_groups"
-          data-testid="group-transfer-locations"
-        >
+        <div v-if="hasGroupTransferLocations" data-testid="group-transfer-locations">
           <gl-dropdown-section-header v-if="showUserTransferLocations">{{
             $options.i18n.GROUPS
           }}</gl-dropdown-section-header>
           <gl-dropdown-item
             v-for="item in groupTransferLocations"
             :key="item.id"
-            data-qa-selector="namespaces_list_item"
+            data-testid="group-transfer-item"
             @click="handleSelect(item)"
             >{{ item.humanName }}</gl-dropdown-item
           >

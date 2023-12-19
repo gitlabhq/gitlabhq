@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # AI Architecture
@@ -19,7 +19,7 @@ The following diagram from the [architecture blueprint](../architecture/blueprin
 
 ## SaaS-based AI abstraction layer
 
-GitLab currently operates a cloud-hosted AI architecture. We will allow access to it for licensed self managed instances using the AI-gateway. Please see [the blueprint](../architecture/blueprints/ai_gateway) for details
+GitLab currently operates a cloud-hosted AI architecture. We will allow access to it for licensed self managed instances using the AI-gateway. See [the blueprint](../architecture/blueprints/ai_gateway) for details.
 
 There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating self-managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking self-managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
 

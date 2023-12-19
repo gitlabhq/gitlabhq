@@ -19,6 +19,8 @@ module API
       end
       params do
         use :list_params
+        optional :include_descendants, type: Grape::API::Boolean,
+          desc: 'Include milestones from all subgroups and subprojects'
       end
       get ":id/milestones" do
         list_milestones_for(user_group)

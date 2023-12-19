@@ -7,6 +7,7 @@ import {
   OPERATOR_NOT,
   OPERATOR_OR,
   OPERATOR_AFTER,
+  OPERATORS_TO_GROUP,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -232,6 +233,41 @@ export const getFilterTokens = (locationSearch) =>
         value: { data, operator },
       };
     });
+
+export function groupMultiSelectFilterTokens(filterTokensToGroup, tokenDefs) {
+  const groupedTokens = [];
+
+  const multiSelectTokenTypes = tokenDefs.filter((t) => t.multiSelect).map((t) => t.type);
+
+  filterTokensToGroup.forEach((token) => {
+    const shouldGroup =
+      OPERATORS_TO_GROUP.includes(token.value.operator) &&
+      multiSelectTokenTypes.includes(token.type);
+
+    if (!shouldGroup) {
+      groupedTokens.push(token);
+      return;
+    }
+
+    const sameTypeAndOperator = (t) =>
+      t.type === token.type && t.value.operator === token.value.operator;
+    const existingToken = groupedTokens.find(sameTypeAndOperator);
+
+    if (!existingToken) {
+      groupedTokens.push({
+        ...token,
+        value: {
+          ...token.value,
+          data: [token.value.data],
+        },
+      });
+    } else if (!existingToken.value.data.includes(token.value.data)) {
+      existingToken.value.data.push(token.value.data);
+    }
+  });
+
+  return groupedTokens;
+}
 
 export const isNotEmptySearchToken = (token) =>
   !(token.type === FILTERED_SEARCH_TERM && !token.value.data);

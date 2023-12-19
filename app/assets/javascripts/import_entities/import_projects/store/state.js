@@ -9,6 +9,6 @@ export default () => ({
     page: 0,
     startCursor: null,
     endCursor: null,
-    hasNextPage: true,
+    hasNextPage: false,
   },
 });

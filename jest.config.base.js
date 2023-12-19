@@ -233,8 +233,13 @@ module.exports = (path, options = {}) => {
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
     coverageReporters: ['json', 'lcov', 'text-summary', 'clover'],
-    // We need ignore _worker code coverage since we are manually transforming it
-    coveragePathIgnorePatterns: ['<rootDir>/node_modules/', '_worker\\.js$'],
+    coveragePathIgnorePatterns: [
+      '<rootDir>/node_modules/',
+      // We need ignore _worker code coverage since we are manually transforming it
+      '_worker\\.js$',
+      // we're using import.meta in main entrypoint with Vite which confuses Babel, so we just ignore it
+      '<rootDir>/app/assets/javascripts/entrypoints/main',
+    ],
     cacheDirectory: '<rootDir>/tmp/cache/jest',
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,

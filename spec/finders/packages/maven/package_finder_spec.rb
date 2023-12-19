@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Maven::PackageFinder do
+RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_registry do
   let_it_be(:user)    { create(:user) }
   let_it_be(:group)   { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
@@ -12,10 +12,6 @@ RSpec.describe ::Packages::Maven::PackageFinder do
   let(:project_or_group) { nil }
   let(:param_order_by_package_file) { false }
   let(:finder) { described_class.new(user, project_or_group, path: param_path, order_by_package_file: param_order_by_package_file) }
-
-  before do
-    group.add_developer(user)
-  end
 
   describe '#execute' do
     subject { finder.execute }
@@ -58,6 +54,24 @@ RSpec.describe ::Packages::Maven::PackageFinder do
       let(:project_or_group) { group }
 
       it_behaves_like 'handling valid and invalid paths'
+
+      context 'when the FF maven_remove_permissions_check_from_finder disabled' do
+        before do
+          stub_feature_flags(maven_remove_permissions_check_from_finder: false)
+        end
+
+        it 'returns an empty array' do
+          is_expected.to be_empty
+        end
+
+        context 'when an user assigned the developer role' do
+          before do
+            group.add_developer(user)
+          end
+
+          it_behaves_like 'handling valid and invalid paths'
+        end
+      end
     end
 
     context 'across all projects' do

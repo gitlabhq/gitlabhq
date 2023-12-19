@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Audit event streaming GraphQL API **(ULTIMATE ALL)**
@@ -378,7 +378,7 @@ Event streaming is enabled if:
 
 List all Google Cloud Logging configuration destinations for a top-level group.
 
-Prerequisite:
+Prerequisites:
 
 - Owner role for a top-level group.
 
@@ -410,7 +410,7 @@ You need the ID values returned by this query for the update and delete mutation
 
 Update a Google Cloud Logging configuration destinations for a top-level group.
 
-Prerequisite:
+Prerequisites:
 
 - Owner role for a top-level group.
 
@@ -446,7 +446,7 @@ Delete streaming destinations for a top-level group.
 
 When the last destination is successfully deleted, streaming is disabled for the group.
 
-Prerequisite:
+Prerequisites:
 
 - Owner role for a top-level group.
 
@@ -786,7 +786,7 @@ Event streaming is enabled if:
 
 List all Google Cloud Logging configuration destinations for an instance.
 
-Prerequisite:
+Prerequisites:
 
 - You have administrator access to the instance.
 
@@ -815,7 +815,7 @@ You need the ID values returned by this query for the update and delete mutation
 
 Update the Google Cloud Logging configuration destinations for an instance.
 
-Prerequisite:
+Prerequisites:
 
 - You have administrator access to the instance.
 
@@ -851,7 +851,7 @@ Delete streaming destinations for an instance.
 
 When the last destination is successfully deleted, streaming is disabled for the instance.
 
-Prerequisite:
+Prerequisites:
 
 - You have administrator access to the instance.
 

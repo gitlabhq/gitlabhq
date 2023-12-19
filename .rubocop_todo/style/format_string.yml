@@ -226,7 +226,6 @@ Style/FormatString:
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/licenses/submit_license_usage_data_banner.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
-    - 'ee/lib/gitlab/vulnerabilities/container_scanning_vulnerability.rb'
     - 'ee/spec/controllers/admin/licenses_controller_spec.rb'
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'

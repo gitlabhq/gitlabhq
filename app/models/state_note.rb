@@ -3,6 +3,8 @@
 class StateNote < SyntheticNote
   include Gitlab::Utils::StrongMemoize
 
+  self.allow_legacy_sti_class = true
+
   def self.from_event(event, resource: nil, resource_parent: nil)
     attrs = note_attributes(action_by(event), event, resource, resource_parent)
 

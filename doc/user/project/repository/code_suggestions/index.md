@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Creation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Code Suggestions **(FREE ALL BETA)**
@@ -17,16 +16,18 @@ Beta users should read about the [known limitations](#known-limitations). We loo
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-Code Suggestions supports two distinct types of interactions:
+With Code Suggestions, you get:
 
 - Code Completion, which suggests completions the current line you are typing. These suggestions are usually low latency.
 - Code Generation, which generates code based on a natural language code comment block. Generating code can exceed multiple seconds.
 
+## Start using Code Suggestions
+
 GitLab Duo Code Suggestions are available:
 
-- On [self-managed](self_managed.md) and [SaaS](saas.md).
+- On [self-managed](self_managed.md) and [SaaS](saas.md). View these pages to get started.
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
-- In the GitLab WebIDE.
+- In the GitLab Web IDE.
 
 <div class="video-fallback">
   <a href="https://youtu.be/wAYiy05fjF0">View how to setup and use GitLab Duo Code Suggestions</a>.
@@ -36,34 +37,7 @@ GitLab Duo Code Suggestions are available:
 </figure>
 
 During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availibility it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/). 
-
-## Use Code Suggestions
-
-Prerequisites:
-
-- Code Suggestions must be enabled for [SaaS](saas.md#enable-code-suggestions) or for [self-managed](self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
-- You must have installed and configured a [supported IDE editor extension](index.md#supported-editor-extensions).
-
-To use Code Suggestions:
-
-1. Author your code. As you type, suggestions are displayed. Code Suggestions, depending on the cursor position, either provides code snippets or completes the current line.
-1. Describe the requirements in natural language. Be concise and specific. Code Suggestions generates functions and code snippets as appropriate.
-1. To accept a suggestion, press <kbd>Tab</kbd>.
-1. To ignore a suggestion, keep typing as you usually would.
-1. To explicitly reject a suggestion, press <kbd>esc</kbd>.
-
-Things to remember:
-
-- AI is non-deterministic, so you may not get the same suggestion every time with the same input.
-- Just like product requirements, writing clear, descriptive, and specific tasks results in quality generated code.
-
-### Progressive enhancement
-
-This feature is designed as a progressive enhancement to developer's IDEs.
-Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely matter.
-In the event of a connection issue or model inference failure, the feature gracefully degrades.
-Code Suggestions do not prevent you from writing code in your IDE.
+Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availability it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
 
 ## Supported languages
 
@@ -167,6 +141,13 @@ However, Code Suggestions may generate suggestions that are:
 - Produce failed pipelines
 - Insecure code
 - Offensive or insensitive
+
+## Progressive enhancement
+
+This feature is designed as a progressive enhancement to developer's IDEs.
+Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely matter.
+In the event of a connection issue or model inference failure, the feature gracefully degrades.
+Code Suggestions do not prevent you from writing code in your IDE.
 
 ## Feedback
 

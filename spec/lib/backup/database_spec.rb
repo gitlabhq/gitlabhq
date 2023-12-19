@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Backup::Database, :reestablished_active_record_base, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
-  let(:output) { progress.string }
+  let(:progress_output) { progress.string }
   let(:backup_id) { 'some_id' }
   let(:one_database_configured?) { base_models_for_backup.one? }
   let(:timeout_service) do
@@ -48,28 +48,16 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
       it 'uses snapshots' do
         Dir.mktmpdir do |dir|
-          expect_next_instances_of(Backup::DatabaseModel, 2) do |adapter|
-            expect(adapter.connection).to receive(:begin_transaction).with(
-              isolation: :repeatable_read
-            ).and_call_original
-            expect(adapter.connection).to receive(:select_value).with(
-              "SELECT pg_export_snapshot()"
-            ).and_call_original
-            expect(adapter.connection).to receive(:rollback_transaction).and_call_original
+          expect_next_instances_of(Backup::DatabaseConnection, 2) do |backup_connection|
+            expect(backup_connection).to receive(:export_snapshot!).and_call_original
+
+            expect_next_instance_of(::Gitlab::Backup::Cli::Utils::PgDump) do |pgdump|
+              expect(pgdump.snapshot_id).to eq(backup_connection.snapshot_id)
+            end
+
+            expect(backup_connection).to receive(:release_snapshot!).and_call_original
           end
 
-          subject.dump(dir, backup_id)
-        end
-      end
-
-      it 'disables transaction time out' do
-        number_of_databases = base_models_for_backup.count
-        expect(Gitlab::Database::TransactionTimeoutSettings)
-          .to receive(:new).exactly(2 * number_of_databases).times.and_return(timeout_service)
-        expect(timeout_service).to receive(:disable_timeouts).exactly(number_of_databases).times
-        expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
-
-        Dir.mktmpdir do |dir|
           subject.dump(dir, backup_id)
         end
       end
@@ -82,79 +70,18 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
       it 'does not use snapshots' do
         Dir.mktmpdir do |dir|
-          base_model = Backup::DatabaseModel.new('main')
-          expect(base_model.connection).not_to receive(:begin_transaction).with(
-            isolation: :repeatable_read
-          ).and_call_original
-          expect(base_model.connection).not_to receive(:select_value).with(
-            "SELECT pg_export_snapshot()"
-          ).and_call_original
-          expect(base_model.connection).not_to receive(:rollback_transaction).and_call_original
+          expect_next_instance_of(Backup::DatabaseConnection) do |backup_connection|
+            expect(backup_connection).not_to receive(:export_snapshot!)
+
+            expect_next_instance_of(::Gitlab::Backup::Cli::Utils::PgDump) do |pgdump|
+              expect(pgdump.snapshot_id).to be_nil
+            end
+
+            expect(backup_connection).not_to receive(:release_snapshot!)
+          end
 
           subject.dump(dir, backup_id)
         end
-      end
-    end
-
-    describe 'pg_dump arguments' do
-      let(:snapshot_id) { 'fake_id' }
-      let(:default_pg_args) do
-        args = [
-          '--clean',
-          '--if-exists'
-        ]
-
-        if Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
-          args + ["--snapshot=#{snapshot_id}"]
-        else
-          args
-        end
-      end
-
-      let(:dumper) { double }
-      let(:destination_dir) { 'tmp' }
-
-      before do
-        allow(Backup::Dump::Postgres).to receive(:new).and_return(dumper)
-        allow(dumper).to receive(:dump).with(any_args).and_return(true)
-      end
-
-      shared_examples 'pg_dump arguments' do
-        it 'calls Backup::Dump::Postgres with correct pg_dump arguments' do
-          number_of_databases = base_models_for_backup.count
-          if number_of_databases > 1
-            expect_next_instances_of(Backup::DatabaseModel, number_of_databases) do |model|
-              expect(model.connection).to receive(:select_value).with(
-                "SELECT pg_export_snapshot()"
-              ).and_return(snapshot_id)
-            end
-          end
-
-          expect(dumper).to receive(:dump).with(anything, anything, expected_pg_args)
-
-          subject.dump(destination_dir, backup_id)
-        end
-      end
-
-      context 'when no PostgreSQL schemas are specified' do
-        let(:expected_pg_args) { default_pg_args }
-
-        include_examples 'pg_dump arguments'
-      end
-
-      context 'when a PostgreSQL schema is used' do
-        let(:schema) { 'gitlab' }
-        let(:expected_pg_args) do
-          default_pg_args + ['-n', schema] + Gitlab::Database::EXTRA_SCHEMAS.flat_map do |schema|
-            ['-n', schema.to_s]
-          end
-        end
-
-        before do
-          allow(Gitlab.config.backup).to receive(:pg_schema).and_return(schema)
-        end
-
-        include_examples 'pg_dump arguments'
       end
     end
 
@@ -223,7 +150,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
+        expect(progress_output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
       end
 
       it 'has a pre restore warning' do
@@ -241,9 +168,21 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include("Restoring PostgreSQL database")
-        expect(output).to include("[DONE]")
-        expect(output).not_to include("ERRORS")
+        expect(progress_output).to include("Restoring PostgreSQL database")
+        expect(progress_output).to include("[DONE]")
+        expect(progress_output).not_to include("ERRORS")
+      end
+
+      context 'when DECOMPRESS_CMD is set to tee' do
+        before do
+          stub_env('DECOMPRESS_CMD', 'tee')
+        end
+
+        it 'outputs a message about DECOMPRESS_CMD' do
+          expect do
+            subject.restore(backup_dir, backup_id)
+          end.to output(/Using custom DECOMPRESS_CMD 'tee'/).to_stdout
+        end
       end
     end
 
@@ -277,9 +216,9 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         subject.restore(backup_dir, backup_id)
 
-        expect(output).to include("ERRORS")
-        expect(output).not_to include(noise)
-        expect(output).to include(visible_error)
+        expect(progress_output).to include("ERRORS")
+        expect(progress_output).not_to include(noise)
+        expect(progress_output).to include(visible_error)
         expect(subject.post_restore_warning).not_to be_nil
       end
     end

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Repository **(FREE ALL)**
@@ -23,9 +23,25 @@ To create a repository, you can:
 You can add files to a repository:
 
 - When you create a project.
-- After you create a project:
-  - By using [the web editor](web_editor.md).
-  - From the command line.
+- After you create a project, by using:
+  - [The web editor](web_editor.md#upload-a-file).
+  - [The UI](#add-a-file-from-the-ui).
+  - [The command line](../../../topics/git/git_add.md).
+
+### Add a file from the UI
+
+You can upload a file from the GitLab UI.
+
+<!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
+<!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the directory where you want to upload the file.
+1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
+1. Complete the fields.
+   - To create a merge request with your changes, enter a branch name
+   that's not your repository's [default branch](branches/default.md).
+1. Select **Upload file**.
 
 ## Commit changes to a repository
 
@@ -80,7 +96,7 @@ prompted to open Xcode.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
-can also install the [GitLab Workflow VS Code extension](vscode.md) to clone from
+can also install the [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md) to clone from
 Visual Studio Code:
 
 - From the GitLab interface:
@@ -90,7 +106,7 @@ Visual Studio Code:
   1. Select a folder to clone the project into.
 
      After Visual Studio Code clones your project, it opens the folder.
-- From Visual Studio Code, with the [extension](vscode.md) installed, use the
+- From Visual Studio Code, with the [extension](../../../editor_extensions/visual_studio_code/index.md) installed, use the
   extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
 
 ### Clone and open in IntelliJ IDEA
@@ -193,8 +209,7 @@ These files can either be plain text or have the extension of a
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
 
-GitLab can render OpenAPI specification files. The filename
-must include `openapi` or `swagger` and the extension must be `yaml`,
+GitLab can render OpenAPI specification files. The file name must include `openapi` or `swagger` and the extension must be `yaml`,
 `yml`, or `json`. The following examples are all correct:
 
 - `openapi.yml`
@@ -237,12 +252,12 @@ updated, at most, every 15 minutes. The file size includes repository files, art
 
 The size can differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-Administrators can set a [repository size limit](../../admin_area/settings/account_and_limit_settings.md).
+Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md).
 [GitLab sets the size limits for GitLab.com](../../gitlab_com/index.md#account-and-limit-settings).
 
-## Repository contributor statistics
+## Repository contributor analytics
 
-You can view a list and charts of commits made by project members in [Contributor statistics](../../analytics/contributor_statistics.md).
+You can view a list and charts of commits made by project members in [Contributor analytics](../../analytics/contributor_analytics.md).
 
 ## Repository history graph
 
@@ -259,7 +274,7 @@ When a repository path changes, GitLab handles the transition from the
 old location to the new one with a redirect.
 
 When you [rename a user](../../profile/index.md#change-your-username),
-[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../settings/index.md#rename-a-repository):
+[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../../project/working_with_projects.md#rename-a-repository):
 
 - URLs for the namespace and everything under it, like projects, are
   redirected to the new URLs.
@@ -270,15 +285,19 @@ When you [rename a user](../../profile/index.md#change-your-username),
   work after a rename.
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
+- [API redirects](../../../api/rest/index.md#redirects) may need to be followed explicitly.
 
-WARNING:
-The [CI/CD `includes` keyword](../../../ci/yaml/includes.md) can't follow project
-redirects. Pipelines fail with a syntax error when configured to use `includes`
-to fetch configuration from a project that is renamed or moved.
+After you change a path, you must update the existing URL in the following resources,
+because they can't follow redirects:
+
+- [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md), otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
+- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-path-encoding) instead of the numeric namespace and project IDs.
+- [Docker image references](../../../ci/yaml/index.md#image).
+- Variables that specify a project or namespace.
 
 ## Related topics
 
-- [GitLab Workflow VS Code extension](vscode.md)
+- [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
 - [Find files](file_finder.md)

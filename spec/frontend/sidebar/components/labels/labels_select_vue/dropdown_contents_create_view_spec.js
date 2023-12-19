@@ -14,13 +14,14 @@ Vue.use(Vuex);
 
 describe('DropdownContentsCreateView', () => {
   let wrapper;
+  let store;
+
   const colors = Object.keys(mockSuggestedColors).map((color) => ({
     [color]: mockSuggestedColors[color],
   }));
 
   const createComponent = (initialState = mockConfig) => {
-    const store = new Vuex.Store(labelSelectModule());
-
+    store = new Vuex.Store(labelSelectModule());
     store.dispatch('setInitialState', initialState);
 
     wrapper = shallowMountExtended(DropdownContentsCreateView, {
@@ -47,7 +48,7 @@ describe('DropdownContentsCreateView', () => {
       it('returns `true` when `labelCreateInProgress` is true', async () => {
         await findColorSelectorInput().vm.$emit('input', '#ff0000');
         await findLabelTitleInput().vm.$emit('input', 'Foo');
-        wrapper.vm.$store.dispatch('requestCreateLabel');
+        store.dispatch('requestCreateLabel');
 
         await nextTick();
 
@@ -81,7 +82,6 @@ describe('DropdownContentsCreateView', () => {
     describe('getColorName', () => {
       it('returns color name from color object', () => {
         expect(findAllLinks().at(0).attributes('title')).toBe(Object.values(colors[0]).pop());
-        expect(wrapper.vm.getColorName(colors[0])).toBe(Object.values(colors[0]).pop());
       });
     });
 
@@ -97,20 +97,17 @@ describe('DropdownContentsCreateView', () => {
 
     describe('handleCreateClick', () => {
       it('calls action `createLabel` with object containing `labelTitle` & `selectedColor`', async () => {
-        jest.spyOn(wrapper.vm, 'createLabel').mockImplementation();
-
+        jest.spyOn(store, 'dispatch').mockImplementation();
         await findColorSelectorInput().vm.$emit('input', '#ff0000');
         await findLabelTitleInput().vm.$emit('input', 'Foo');
 
         findCreateClickButton().vm.$emit('click');
 
         await nextTick();
-        expect(wrapper.vm.createLabel).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Foo',
-            color: '#ff0000',
-          }),
-        );
+        expect(store.dispatch).toHaveBeenCalledWith('createLabel', {
+          title: 'Foo',
+          color: '#ff0000',
+        });
       });
     });
   });
@@ -186,7 +183,7 @@ describe('DropdownContentsCreateView', () => {
     });
 
     it('shows gl-loading-icon within create button element when `labelCreateInProgress` is `true`', async () => {
-      wrapper.vm.$store.dispatch('requestCreateLabel');
+      store.dispatch('requestCreateLabel');
 
       await nextTick();
       const loadingIconEl = wrapper.find('.dropdown-actions').findComponent(GlLoadingIcon);

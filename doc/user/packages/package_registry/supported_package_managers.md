@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Supported package managers **(FREE ALL)**
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 Not all package manager formats are ready for production use.
 
-The Package Registry supports the following package manager types:
+The package registry supports the following package manager types:
 
 | Package type                                     | GitLab version | Status                                                          |
 | ------------------------------------------------ | -------------- | --------------------------------------------------------------- |
@@ -27,4 +27,4 @@ The Package Registry supports the following package manager types:
 
 [View what each status means](../../../policy/experiment-beta-support.md).
 
-You can also use the [API](../../../api/packages.md) to administer the Package Registry.
+You can also use the [API](../../../api/packages.md) to administer the package registry.

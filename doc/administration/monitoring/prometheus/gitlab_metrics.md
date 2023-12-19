@@ -1,7 +1,7 @@
 ---
 stage: Shared responsibility based on functional area
 group: Shared responsibility based on functional area
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Prometheus metrics **(FREE SELF)**
@@ -9,9 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the GitLab Prometheus metrics:
 
 1. Log in to GitLab as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
 1. [Restart GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -178,6 +177,9 @@ The following metrics are available:
 | `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
 | `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
 | `gitlab_ci_queue_active_runners_total` | Histogram | 16.3 | The amount of active runners that can process queue in a project |
+| `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool |
+| `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool |
+| `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process scan result policies |
 
 ## Metrics controlled by a feature flag
 

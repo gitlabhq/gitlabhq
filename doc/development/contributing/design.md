@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Design and user interface changes
@@ -48,7 +47,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 - Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
 - Check grammar and spelling.
 - Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
-- Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments),
+- Request review from the [appropriate Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
 

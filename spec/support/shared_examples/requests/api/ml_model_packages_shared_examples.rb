@@ -15,11 +15,31 @@ RSpec.shared_examples 'Endpoint not found if read_model_registry not available' 
   end
 end
 
-RSpec.shared_examples 'creates model experiments package files' do
+RSpec.shared_examples 'Endpoint not found if write_model_registry not available' do
+  context 'when write_model_registry is disabled for current project' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(user, :write_model_registry, project)
+                          .and_return(false)
+    end
+
+    it { is_expected.to have_gitlab_http_status(:not_found) }
+  end
+end
+
+RSpec.shared_examples 'Not found when model version does not exist' do
+  context 'when model version does not exist' do
+    let(:version) { "#{non_existing_record_id}.0.0" }
+
+    it { is_expected.to have_gitlab_http_status(:not_found) }
+  end
+end
+
+RSpec.shared_examples 'creates package files for model versions' do
   it 'creates package files', :aggregate_failures do
     expect { api_response }
-      .to change { project.packages.count }.by(1)
-                                           .and change { Packages::PackageFile.count }.by(1)
+      .to change { Packages::PackageFile.count }.by(1)
     expect(api_response).to have_gitlab_http_status(:created)
 
     package_file = project.packages.last.package_files.reload.last
@@ -59,7 +79,7 @@ RSpec.shared_examples 'process ml model package upload' do
 
     context 'with correct params' do
       it_behaves_like 'package workhorse uploads'
-      it_behaves_like 'creates model experiments package files'
+      it_behaves_like 'creates package files for model versions'
       # To be reactivated with https://gitlab.com/gitlab-org/gitlab/-/issues/414270
       # it_behaves_like 'a package tracking event', '::API::MlModelPackages', 'push_package'
     end
@@ -81,7 +101,7 @@ RSpec.shared_examples 'process ml model package upload' do
         stub_package_file_object_storage(direct_upload: true)
       end
 
-      it_behaves_like 'creates model experiments package files'
+      it_behaves_like 'creates package files for model versions'
 
       ['123123', '../../123123'].each do |remote_id|
         context "with invalid remote_id: #{remote_id}" do
@@ -102,7 +122,7 @@ RSpec.shared_examples 'process ml model package upload' do
         stub_package_file_object_storage(direct_upload: false)
       end
 
-      it_behaves_like 'creates model experiments package files'
+      it_behaves_like 'creates package files for model versions'
     end
   end
 end
@@ -112,13 +132,5 @@ RSpec.shared_examples 'process ml model package download' do
     it { is_expected.to have_gitlab_http_status(:success) }
   end
 
-  context 'when record does not exist' do
-    it 'response is not found' do
-      expect_next_instance_of(::Packages::MlModel::PackageFinder) do |instance|
-        expect(instance).to receive(:execute!).and_raise(ActiveRecord::RecordNotFound)
-      end
-
-      expect(api_response).to have_gitlab_http_status(:not_found)
-    end
-  end
+  it_behaves_like 'Not found when model version does not exist'
 end

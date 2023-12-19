@@ -11,7 +11,9 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
 
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
-    []
+    [
+      "audit_events_instance_amazon_s3_configurations" # https://gitlab.com/gitlab-org/gitlab/-/issues/431327
+    ]
   end
 
   let!(:starting_from_milestone) { 16.7 }
@@ -48,16 +50,16 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   end
 
   def tables_having_gitlab_main_schema(starting_from_milestone:)
-    selected_data = gitlab_main_schema_tables.select do |database_dictionary|
-      database_dictionary.milestone.to_f >= starting_from_milestone
+    selected_data = gitlab_main_schema_tables.select do |entry|
+      entry.milestone.to_f >= starting_from_milestone
     end
 
     selected_data.map(&:table_name)
   end
 
   def gitlab_main_schema_tables
-    ::Gitlab::Database::GitlabSchema.build_dictionary('').select do |database_dictionary|
-      database_dictionary.schema?('gitlab_main')
+    ::Gitlab::Database::Dictionary.entries.select do |entry|
+      entry.schema?('gitlab_main')
     end
   end
 end

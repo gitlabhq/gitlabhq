@@ -139,7 +139,7 @@ export const mockDiscussionWithNoReplies = [
     body: 'Comment 1',
     bodyHtml: '\u003cp data-sourcepos="1:1-1:9" dir="auto"\u003eComment 1\u003c/p\u003e',
     createdAt: '2023-10-19T06:11:13Z',
-    lastEditedAt: '2023-10-20T02:46:50Z',
+    lastEditedAt: null,
     url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_1',
     resolved: false,
     author: {
@@ -153,7 +153,7 @@ export const mockDiscussionWithNoReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -192,7 +192,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -237,7 +237,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -282,7 +282,7 @@ export const mockDiscussionWithReplies = [
     },
     lastEditedBy: null,
     userPermissions: {
-      adminNote: true,
+      resolveNote: true,
       __typename: 'NotePermissions',
     },
     discussion: {
@@ -337,6 +337,86 @@ export const mockNotesByIdResponse = {
         __typename: 'DiscussionConnection',
       },
       __typename: 'AbuseReport',
+    },
+  },
+};
+
+export const createAbuseReportNoteResponse = {
+  data: {
+    createNote: {
+      note: {
+        id: 'gid://gitlab/Note/6',
+        discussion: {
+          id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
+          notes: {
+            nodes: [
+              {
+                id: 'gid://gitlab/Note/6',
+                body: 'Another comment',
+                bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Another comment</p>',
+                createdAt: '2023-11-02T02:45:46Z',
+                lastEditedAt: null,
+                url: 'http://127.0.0.1:3000/admin/abuse_reports/20#note_6',
+                resolved: false,
+                author: {
+                  id: 'gid://gitlab/User/1',
+                  avatarUrl:
+                    'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+                  name: 'Administrator',
+                  username: 'root',
+                  webUrl: 'http://127.0.0.1:3000/root',
+                },
+                lastEditedBy: null,
+                userPermissions: {
+                  resolveNote: true,
+                },
+                discussion: {
+                  id: 'gid://gitlab/Discussion/90ca230051611e6e1676c50ba7178e0baeabd98d',
+                  notes: {
+                    nodes: [
+                      {
+                        id: 'gid://gitlab/Note/6',
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      errors: [],
+    },
+  },
+};
+
+export const editAbuseReportNoteResponse = {
+  data: {
+    updateNote: {
+      errors: [],
+      note: {
+        id: 'gid://gitlab/Note/1',
+        body: 'Updated comment',
+        bodyHtml: '<p data-sourcepos="1:1-1:15" dir="auto">Updated comment</p>',
+        createdAt: '2023-10-20T07:47:42Z',
+        lastEditedAt: '2023-10-20T07:47:42Z',
+        url: 'http://127.0.0.1:3000/admin/abuse_reports/1#note_1',
+        resolved: false,
+        author: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'http://127.0.0.1:3000/root',
+          __typename: 'UserCore',
+        },
+        lastEditedBy: 'root',
+        userPermissions: {
+          resolveNote: true,
+          __typename: 'NotePermissions',
+        },
+      },
     },
   },
 };

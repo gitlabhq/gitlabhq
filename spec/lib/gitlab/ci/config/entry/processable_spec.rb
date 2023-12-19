@@ -217,6 +217,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
         end
       end
     end
+
+    context 'when interruptible is not a boolean' do
+      let(:config) { { interruptible: 123 } }
+
+      it 'returns error about wrong value type' do
+        expect(entry).not_to be_valid
+        expect(entry.errors).to include "interruptible config should be a boolean value"
+      end
+    end
   end
 
   describe '#relevant?' do
@@ -459,6 +468,28 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
           end
 
           it { expect(entry.tags_value).to eq(result) }
+        end
+      end
+    end
+
+    context 'with interruptible' do
+      context 'when interruptible is not defined' do
+        let(:config) { { script: 'ls' } }
+
+        it 'sets interruptible to nil' do
+          entry.compose!(deps)
+
+          expect(entry.value[:interruptible]).to be_nil
+        end
+      end
+
+      context 'when interruptible is defined' do
+        let(:config) { { script: 'ls', interruptible: true } }
+
+        it 'sets interruptible to the value' do
+          entry.compose!(deps)
+
+          expect(entry.value[:interruptible]).to eq(true)
         end
       end
     end

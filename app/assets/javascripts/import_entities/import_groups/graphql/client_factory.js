@@ -111,7 +111,11 @@ export function createResolvers({ endpoints }) {
       },
     },
     Mutation: {
-      async updateImportStatus(_, { id, status: newStatus }, { client, getCacheKey }) {
+      updateImportStatus(
+        _,
+        { id, status: newStatus, hasFailures = false },
+        { client, getCacheKey },
+      ) {
         const progressItem = client.readFragment({
           fragment: bulkImportSourceGroupProgressFragment,
           fragmentName: 'BulkImportSourceGroupProgress',
@@ -123,13 +127,14 @@ export function createResolvers({ endpoints }) {
 
         if (!progressItem) return null;
 
-        localStorageCache.updateStatusByJobId(id, newStatus);
+        localStorageCache.updateStatusByJobId(id, newStatus, hasFailures);
 
         return {
           __typename: clientTypenames.BulkImportProgress,
           ...progressItem,
           id,
           status: newStatus,
+          hasFailures,
         };
       },
 
@@ -172,6 +177,7 @@ export function createResolvers({ endpoints }) {
             id: response.id || `local-${Date.now()}-${idx}`,
             status: response.success ? STATUSES.CREATED : STATUSES.FAILED,
             message: response.message || null,
+            hasFailures: !response.success,
           };
 
           localStorageCache.set(op.group.webUrl, { progress, lastImportTarget });

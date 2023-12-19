@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Repository mirroring **(FREE ALL)**
@@ -107,7 +107,7 @@ While mirrors are scheduled to update automatically, you can force an immediate 
 - The [interval, in seconds](../../../../administration/instance_limits.md#pull-mirroring-interval)
   for pull mirroring limits has not elapsed after its last update.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 

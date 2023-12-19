@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Caching in GitLab CI/CD **(FREE ALL)**
@@ -45,7 +45,7 @@ can't link to files outside it.
 
 To ensure maximum availability of the cache, do one or more of the following:
 
-- [Tag your runners](../runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) and use the tag on jobs
+- [Tag your runners](../runners/configure_runners.md#control-jobs-that-a-runner-can-run) and use the tag on jobs
   that share the cache.
 - [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-project-runner-from-being-enabled-for-other-projects).
 - [Use a `key`](../yaml/index.md#cachekey) that fits your workflow. For example,
@@ -505,7 +505,7 @@ is stored on the machine where GitLab Runner is installed. The location also dep
 | Runner executor        | Default path of the cache |
 | ---------------------- | ------------------------- |
 | [Shell](https://docs.gitlab.com/runner/executors/shell.html) | Locally, under the `gitlab-runner` user's home directory: `/home/gitlab-runner/cache/<user>/<project>/<cache-key>/cache.zip`. |
-| [Docker](https://docs.gitlab.com/runner/executors/docker.html) | Locally, under [Docker volumes](https://docs.gitlab.com/runner/executors/docker.html#the-builds-and-cache-storage): `/var/lib/docker/volumes/<volume-id>/_data/<user>/<project>/<cache-key>/cache.zip`. |
+| [Docker](https://docs.gitlab.com/runner/executors/docker.html) | Locally, under [Docker volumes](https://docs.gitlab.com/runner/executors/docker.html#configure-directories-for-the-container-build-and-cache): `/var/lib/docker/volumes/<volume-id>/_data/<user>/<project>/<cache-key>/cache.zip`. |
 | [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html) (autoscale runners) | The same as the Docker executor. |
 
 If you use cache and artifacts to store the same path in your jobs, the cache might
@@ -633,7 +633,7 @@ The next time the pipeline runs, the cache is stored in a different location.
 You can clear the cache in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipelines**.
+1. Select **Build > Pipelines**.
 1. In the upper-right corner, select **Clear runner caches**.
 
 On the next commit, your CI/CD jobs use a new cache.

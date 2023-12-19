@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe Gitlab::SidekiqMiddleware::PauseControl, feature_category: :global_search do
   describe '.for' do
-    it 'returns the right class for `zoekt`' do
-      expect(described_class.for(:zoekt)).to eq(::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Zoekt)
+    using RSpec::Parameterized::TableSyntax
+
+    where(:strategy_name, :expected_class) do
+      :none                  | ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None
+      :unknown               | ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None
+      :click_house_migration | ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::ClickHouseMigration
+      :zoekt                 | ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Zoekt
     end
 
-    it 'returns the right class for `none`' do
-      expect(described_class.for(:none)).to eq(::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None)
-    end
-
-    it 'returns nil when passing an unknown key' do
-      expect(described_class.for(:unknown)).to eq(::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None)
+    with_them do
+      it 'returns the right class' do
+        expect(described_class.for(strategy_name)).to eq(expected_class)
+      end
     end
   end
 end

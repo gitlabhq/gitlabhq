@@ -238,7 +238,7 @@ module API
 
               not_found!('Packages') if available_packages.empty?
 
-              if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project)
+              if endpoint_scope == :project
                 if metadata_cache&.file&.exists?
                   metadata_cache.touch_last_downloaded_at
                   present_carrierwave_file!(metadata_cache.file)

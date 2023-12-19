@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, concepts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge methods **(FREE ALL)**
@@ -199,7 +198,7 @@ In these merge methods, you can merge only when your source branch is up-to-date
 If a fast-forward merge is not possible but a conflict-free rebase is possible,
 GitLab provides:
 
-- The [`/rebase` quick action](../../../../topics/git/git_rebase.md#from-the-gitlab-ui).
+- The [`/rebase` quick action](../../../../topics/git/git_rebase.md#rebase-from-the-ui).
 - The option to select **Rebase** in the user interface.
 
 You must rebase the source branch locally before a fast-forward merge if both
@@ -220,8 +219,11 @@ considered equivalent to rebasing.
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.
-This option is available when fast-forward merge is not possible but a conflict-free
-rebase is possible.
+
+This option is:
+
+- Available when fast-forward merge is not possible but a conflict-free rebase is possible.
+- Not available when the **Pipelines must succeed** option is enabled.
 
 Rebasing without a CI/CD pipeline saves resources in projects with a semi-linear
 workflow that requires frequent rebases.

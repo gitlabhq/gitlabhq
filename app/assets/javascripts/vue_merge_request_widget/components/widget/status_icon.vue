@@ -58,7 +58,7 @@ export default {
       :name="$options.EXTENSION_ICON_NAMES[iconName]"
       :size="12"
       :aria-label="iconAriaLabel"
-      :data-qa-selector="`status_${iconName}_icon`"
+      :data-testid="`status-${iconName}-icon`"
       class="gl-relative gl-z-index-1"
     />
   </div>

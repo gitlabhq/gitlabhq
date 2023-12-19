@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Protected tags **(FREE ALL)**
@@ -125,7 +125,7 @@ To allow a deploy key to create a protected tag:
 You can manually delete protected tags with the GitLab API, or the
 GitLab user interface.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role in your project.
 

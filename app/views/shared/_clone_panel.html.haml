@@ -10,9 +10,9 @@
           = default_clone_protocol.upcase
         = sprite_icon('chevron-down', css_class: 'gl-icon')
       %ul.dropdown-menu.dropdown-menu-selectable.clone-options-dropdown{ data: { testid: 'clone-dropdown-content' } }
-        %li
+        %li.js-clone-links
           = ssh_clone_button(container)
-        %li
+        %li.js-clone-links
           = http_clone_button(container)
         = render_if_exists 'shared/kerberos_clone_button', container: container
 

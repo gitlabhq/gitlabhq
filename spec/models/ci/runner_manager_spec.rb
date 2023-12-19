@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model do
+RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :model do
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'it has loose foreign keys' do

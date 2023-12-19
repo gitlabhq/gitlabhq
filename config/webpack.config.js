@@ -297,7 +297,6 @@ let shouldExcludeFromCompliling = (modulePath) =>
 // between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
-    '@gitlab/ui/scss_to_js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/scss_to_js'),
     '@gitlab/ui/dist/tokens/js': path.join(ROOT_PATH, 'node_modules/@gitlab/ui/dist/tokens/js'),
     '@gitlab/ui/dist': '@gitlab/ui/src',
     '@gitlab/ui': '@gitlab/ui/src',
@@ -370,8 +369,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].[contenthash:8].worker.js',
-              inline: IS_DEV_SERVER,
+              filename: '[name].[contenthash:8].worker.js',
             },
           },
           'babel-loader',

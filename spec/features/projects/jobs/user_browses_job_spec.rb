@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User browses a job', :js, feature_category: :groups_and_projects do
+RSpec.describe 'User browses a job', :js, feature_category: :continuous_integration do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create(:user) }

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'gitlab/rspec/next_instance_of'
+
 require_relative '../../../../scripts/lib/glfm/update_specification'
-require_relative '../../../support/helpers/next_instance_of'
 
 # IMPORTANT NOTE: See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#update-specificationrb-script
 # for details on the implementation and usage of the `update_specification.rb` script being tested.

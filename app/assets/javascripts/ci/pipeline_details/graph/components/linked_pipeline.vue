@@ -14,7 +14,7 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { reportToSentry } from '~/ci/utils';
 import { ACTION_FAILURE, DOWNSTREAM, UPSTREAM } from '../constants';
 
@@ -287,7 +287,7 @@ export default {
         />
         <div v-else :class="$options.styles.actionSizeClasses"></div>
       </div>
-      <div class="gl-pt-2">
+      <div class="gl-pt-2 gl-ml-7">
         <gl-badge size="sm" variant="info" data-testid="downstream-pipeline-label">
           {{ label }}
         </gl-badge>

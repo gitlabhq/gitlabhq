@@ -207,7 +207,7 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
       visit project_path(project)
 
       within('.project-repo-buttons') do
-        expect(page).not_to have_selector '.project-clone-holder'
+        expect(page).not_to have_selector '.project-code-holder'
       end
     end
 

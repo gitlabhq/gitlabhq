@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/vim/vim.git') }
 
+  before do
+    allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+  end
+
   it 'validates the operation being incremented' do
     expect { described_class.increment(project, :issue, :unknown) }
       .to raise_error(ArgumentError, 'operation must be fetched or imported')

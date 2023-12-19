@@ -3,7 +3,7 @@
 class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
   before_action :authorize_admin_project!, except: [:destroy]
-  before_action :authorize_admin_project_group_link!, only: [:destroy]
+  before_action :authorize_manage_destroy!, only: [:destroy]
   before_action :authorize_admin_project_member!, only: [:update]
 
   feature_category :groups_and_projects
@@ -20,8 +20,8 @@ class Projects::GroupLinksController < Projects::ApplicationController
       else
         render json: {}
       end
-    elsif result.reason == :not_found
-      render json: { message: result.message }, status: :not_found
+    else
+      render json: { message: result.message }, status: result.reason
     end
   end
 
@@ -47,7 +47,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
         end
 
         format.js do
-          render json: { message: result.message }, status: :not_found if result.reason == :not_found
+          render json: { message: result.message }, status: result.reason
         end
       end
     end
@@ -55,8 +55,8 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   protected
 
-  def authorize_admin_project_group_link!
-    render_404 unless can?(current_user, :admin_project_group_link, group_link)
+  def authorize_manage_destroy!
+    render_404 unless can?(current_user, :manage_destroy, group_link)
   end
 
   def group_link

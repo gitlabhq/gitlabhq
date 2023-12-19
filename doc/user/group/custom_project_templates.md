@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Custom group-level project templates **(PREMIUM ALL)**
@@ -21,7 +21,7 @@ You can also configure [custom templates for the instance](../../administration/
 
 ## Set up group-level project templates
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -40,7 +40,7 @@ Projects in nested subgroups are not included in the template list.
 ## Which projects are available as templates
 
 - Public and internal projects can be selected by any authenticated user as a template for a new project,
-  if all [project features](../project/settings/index.md#configure-project-features-and-permissions)
+  if all [project features](../project/settings/project_features_permissions.md#configure-project-features-and-permissions)
   except for **GitLab Pages** and **Security and Compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.
 

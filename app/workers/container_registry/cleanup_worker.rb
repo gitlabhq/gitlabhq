@@ -38,7 +38,7 @@ module ContainerRegistry
       # Deleting stale ongoing repair details would put the project back to the analysis pool
       ContainerRegistry::DataRepairDetail
         .ongoing_since(STALE_REPAIR_DETAIL_THRESHOLD.ago)
-        .each_batch(of: BATCH_SIZE) do |batch| # rubocop:disable Style/SymbolProc
+        .each_batch(of: BATCH_SIZE) do |batch|
           batch.delete_all
         end
     end

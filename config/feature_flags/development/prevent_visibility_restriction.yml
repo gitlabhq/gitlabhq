@@ -1,8 +1,0 @@
----
-name: prevent_visibility_restriction
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649
-rollout_issue_url:
-milestone: '16.3'
-type: development
-group: group::acquisition
-default_enabled: true

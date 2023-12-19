@@ -3,10 +3,11 @@
 module Projects
   module Ml
     class ShowMlModelComponent < ViewComponent::Base
-      attr_reader :model
+      attr_reader :model, :current_user
 
-      def initialize(model:)
+      def initialize(model:, current_user:)
         @model = model.present
+        @current_user = current_user
       end
 
       private
@@ -17,9 +18,10 @@ module Projects
             id: model.id,
             name: model.name,
             path: model.path,
-            description: "This is a placeholder for the short description",
+            description: model.description,
             latest_version: latest_version_view_model,
-            version_count: model.version_count
+            version_count: model.version_count,
+            candidate_count: model.candidate_count
           }
         }
 
@@ -29,8 +31,14 @@ module Projects
       def latest_version_view_model
         return unless model.latest_version
 
+        model_version = model.latest_version
+
         {
-          version: model.latest_version.version
+          version: model_version.version,
+          description: model_version.description,
+          project_path: project_path(model_version.project),
+          package_id: model_version.package_id,
+          **::Ml::CandidateDetailsPresenter.new(model_version.candidate, current_user).present
         }
       end
     end

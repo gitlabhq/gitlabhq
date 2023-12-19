@@ -6,7 +6,7 @@ module Projects
     class LfsLinkService < BaseService
       TooManyOidsError = Class.new(StandardError)
 
-      MAX_OIDS = 100_000
+      MAX_OIDS = ENV.fetch('GITLAB_LFS_MAX_OID_TO_FETCH', 100_000).to_i
       BATCH_SIZE = 1000
 
       # Accept an array of oids to link

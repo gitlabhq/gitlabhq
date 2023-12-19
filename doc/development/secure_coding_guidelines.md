@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Secure coding development guidelines
@@ -15,17 +14,16 @@ goal of reducing the number of vulnerabilities released over time.
 **Contributing**
 
 If you would like to contribute to one of the existing documents, or add
-guidelines for a new vulnerability type, please open an MR! Please try to
+guidelines for a new vulnerability type, open an MR! Try to
 include links to examples of the vulnerability found, and link to any resources
-used in defined mitigations. If you have questions or when ready for a review,
-please ping `gitlab-com/gl-security/appsec`.
+used in defined mitigations. If you have questions or when ready for a review, ping `gitlab-com/gl-security/appsec`.
 
 ## Permissions
 
 ### Description
 
 Application permissions are used to determine who can access what and what actions they can perform.
-For more information about the permission model at GitLab, please see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
+For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
 
 ### Impact
 
@@ -341,7 +339,7 @@ The injected client-side code is executed on the victim's browser in the context
 - potentially <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
 - perform actions that lead to data loss/theft or account takeover
 
-Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, please check out [the beef project](https://beefproject.com/).
+Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, check out [the beef project](https://beefproject.com/).
 
 For a demonstration of the impact on GitLab with a realistic attack scenario, see [this video on the GitLab Unfiltered channel](https://www.youtube.com/watch?v=t4PzHNycoKo) (internal, it requires being logged in with the GitLab Unfiltered account).
 
@@ -1308,6 +1306,24 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
 
+### Token prefixes
+
+User error or software bugs can lead to tokens leaking. Consider prepending a static prefix to the beginning of secrets and adding that prefix to our secrets detection capabilities. For example, GitLab Personal Access Tokens have a prefix so that the plaintext is `glpat-1234567890abcdefghij`.
+
+The prefix pattern should be:
+
+1. `gl` for GitLab
+1. lowercase letters abbreviating the token class name
+1. a hyphen (`-`)
+
+Add the new prefix to:
+
+- [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
+- The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
+- GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
+- [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
+- [Token Overview](../security/token_overview.md#gitlab-tokens) documentation
+
 ### Examples
 
 Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
@@ -1337,6 +1353,19 @@ class WebHookLog < ApplicationRecord
     self.url_hash = Gitlab::CryptoHelper.sha256(interpolated_url)
   end
 end
+```
+
+Using the `TokenAuthenticatable` class helper to create a prefixed token.
+
+```ruby
+class User
+  FEED_TOKEN_PREFIX = 'glft-'
+
+  add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
+
+  def prefix_for_feed_token
+    FEED_TOKEN_PREFIX
+  end
 ```
 
 ## Serialization
@@ -1464,11 +1493,43 @@ Logging helps track events for debugging. Logging also allows the application to
 - An audit trail for log edits must be available.
 - To avoid data loss, logs must be saved on different storage.
 
-### Who to contact if you have questions
+## URL Spoofing
+
+We want to protect our users from bad actors who might try to use GitLab
+features to redirect other users to malicious sites.
+
+Many features in GitLab allow users to post links to external websites. It is
+important that the destination of any user-specified link is made very clear
+to the user.
+
+### `external_redirect_path`
+
+When presenting links provided by users, if the actual URL is hidden, use the `external_redirect_path`
+helper method to redirect the user to a warning page first. For example:
+
+```ruby
+# Bad :(
+# This URL comes from User-Land and may not be safe...
+# We need the user to *see* where they are going.
+link_to foo_social_url(@user), title: "Foo Social" do
+  sprite_icon('question-o')
+end
+
+# Good :)
+# The external_redirect "leaving GitLab" page will show the URL to the user
+# before they leave.
+link_to external_redirect_path(url: foo_social_url(@user)), title: "Foo" do
+  sprite_icon('question-o')
+end
+```
+
+Also see this [real-life usage](https://gitlab.com/gitlab-org/gitlab/-/blob/bdba5446903ff634fb12ba695b2de99b6d6881b5/app/helpers/application_helper.rb#L378) as an example.
+
+## Who to contact if you have questions
 
 For general guidance, contact the [Application Security](https://about.gitlab.com/handbook/security/security-engineering/application-security/) team.
 
-### Related topics
+## Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))

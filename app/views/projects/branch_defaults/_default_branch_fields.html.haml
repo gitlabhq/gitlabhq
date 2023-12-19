@@ -1,3 +1,13 @@
+- change_default_disabled = @default_branch_blocked_by_security_policy
+- popover_data = {}
+
+- if change_default_disabled
+  - tag_pair_security_policies_page = tag_pair(link_to('', namespace_project_security_policies_path, target: '_blank', rel: 'noopener noreferrer'), :security_policies_link_start, :security_policies_link_end)
+  - tag_pair_security_policies_docs = tag_pair(link_to('', help_page_path('user/application_security/policies/scan-result-policies'), target: '_blank', rel: 'noopener noreferrer'), :learn_more_link_start, :learn_more_link_end)
+  - popover_content = safe_format(s_("SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."), tag_pair_security_policies_docs, tag_pair_security_policies_page)
+  - popover_title = s_("SecurityOrchestration|Security policy overwrites this setting")
+  - popover_data = { container: 'body', toggle: 'popover', html: 'true', triggers: 'hover', title: popover_title, content: popover_content }
+
 %fieldset#default-branch-settings
   - if @project.empty_repo?
     .text-secondary
@@ -6,8 +16,8 @@
     .form-group
       = f.label :default_branch, _("Default branch"), class: 'label-bold'
       %p= s_('ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one.')
-      .gl-form-input-xl
-        .js-select-default-branch{ data: { default_branch: @project.default_branch, project_id: @project.id } }
+      .gl-form-input-xl{ data: { **popover_data } }
+        .js-select-default-branch{ data: { default_branch: @project.default_branch, project_id: @project.id, disabled: change_default_disabled.to_s } }
 
   .form-group
     - help_text = _("When merge requests and commits in the default branch close, any issues they reference also close.")

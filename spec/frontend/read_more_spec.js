@@ -1,4 +1,3 @@
-import htmlProjectsOverview from 'test_fixtures/projects/overview.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initReadMore from '~/read_more';
 
@@ -11,7 +10,12 @@ describe('Read more click-to-expand functionality', () => {
 
   describe('expands target element', () => {
     beforeEach(() => {
-      setHTMLFixture(htmlProjectsOverview);
+      setHTMLFixture(`
+        <p class="read-more-container">Target</p>
+        <button type="button" class="js-read-more-trigger">
+          <span>Button text</span>
+        </button>
+      `);
     });
 
     it('adds "is-expanded" class to target element', () => {

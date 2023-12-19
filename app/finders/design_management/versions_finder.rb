@@ -25,7 +25,7 @@ module DesignManagement
 
     def execute
       unless Ability.allowed?(current_user, :read_design, design_or_collection)
-        return ::DesignManagement::Version.none
+        return DesignManagement::Version.none
       end
 
       items = design_or_collection.versions

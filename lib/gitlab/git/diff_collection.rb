@@ -35,6 +35,8 @@ module Gitlab
 
       def initialize(iterator, options = {})
         @iterator = iterator
+        @generated_files = options.fetch(:generated_files, nil)
+        @collapse_generated = options.fetch(:collapse_generated, false)
         @limits = self.class.limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
@@ -164,7 +166,10 @@ module Gitlab
         i = @array.length
 
         @iterator.each do |raw|
-          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
+          options = { expanded: expand_diff? }
+          options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
+
+          diff = Gitlab::Git::Diff.new(raw, **options)
 
           if raw.overflow_marker
             @overflow = true
@@ -193,7 +198,10 @@ module Gitlab
             break
           end
 
-          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
+          # Discard generated field if it is already set when FF is disabled
+          raw_data = @collapse_generated ? raw : raw.except(:generated)
+
+          diff = Gitlab::Git::Diff.new(raw_data, expanded: expand_diff?)
 
           if !expand_diff? && over_safe_limits?(i) && diff.line_count > 0
             diff.collapse!

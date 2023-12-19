@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::LfsCheck do
+RSpec.describe Gitlab::Checks::LfsCheck, feature_category: :source_code_management do
   include_context 'changes access checks context'
 
   let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }

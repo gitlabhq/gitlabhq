@@ -191,6 +191,24 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(described_class.by_user_id(user.id)).to contain_exactly(entity_1, entity_2)
       end
     end
+
+    describe '.stale' do
+      it 'returns entities that are stale' do
+        entity_1 = create(:bulk_import_entity, updated_at: 3.days.ago)
+        create(:bulk_import_entity)
+
+        expect(described_class.stale).to contain_exactly(entity_1)
+      end
+    end
+
+    describe '.order_by_updated_at_and_id' do
+      it 'returns entities ordered by updated_at and id' do
+        entity_1 = create(:bulk_import_entity, updated_at: 3.days.ago)
+        entity_2 = create(:bulk_import_entity, updated_at: 2.days.ago)
+
+        expect(described_class.order_by_updated_at_and_id(:desc)).to eq([entity_2, entity_1])
+      end
+    end
   end
 
   describe '.all_human_statuses' do
@@ -443,6 +461,13 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         entity.fail_op!
 
         expect(entity.has_failures).to eq(true)
+      end
+
+      it 'sets the has_failures flag on the parent import' do
+        create(:bulk_import_failure, entity: entity)
+
+        expect { entity.update_has_failures }
+          .to change { entity.bulk_import.has_failures? }.from(false).to(true)
       end
     end
 

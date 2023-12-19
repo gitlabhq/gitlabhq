@@ -1,7 +1,7 @@
 ---
 stage: SaaS Platforms
 group: GitLab Dedicated
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Dedicated
@@ -120,7 +120,6 @@ The following GitLab application features are not available:
 
 - LDAP, Smartcard, or Kerberos authentication
 - Multiple login providers
-- Advanced search
 - GitLab Pages
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
@@ -128,7 +127,8 @@ The following GitLab application features are not available:
 - GitLab-managed runners (hosted runners)
 - GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- [Feature Flags](../../administration/feature_flags.md) and functionality behind them
+- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)
+- Any functionality or feature behind a Feature Flag that is toggled `off` by default
 
 The following features will not be supported:
 
@@ -150,7 +150,7 @@ The following operational features are not available:
 
 ### Available AWS regions
 
-The following is a list of AWS regions verified for use in GitLab Dedicated. Regions must support io2 volumes and meet other requirements. If there is a region you are interested in that is not on this list, please reach out through your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about its availability. This list will be updated from time to time as additional regions are verified.
+The following is a list of AWS regions verified for use in GitLab Dedicated. Regions must support io2 volumes and meet other requirements. If there is a region you are interested in that is not on this list, reach out through your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about its availability. This list will be updated from time to time as additional regions are verified.
 
 - Asia Pacific (Singapore)
 - Asia Pacific (Sydney)

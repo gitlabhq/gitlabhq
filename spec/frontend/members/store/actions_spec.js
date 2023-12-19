@@ -37,28 +37,21 @@ describe('Vuex members actions', () => {
 
     describe('updateMemberRole', () => {
       const memberId = members[0].id;
-      const accessLevel = { integerValue: 30, memberRoleId: 90 };
+      const accessLevel = 30;
+      const memberRoleId = 90;
 
-      const payload = {
-        memberId,
-        accessLevel,
-      };
+      const payload = { memberId, accessLevel, memberRoleId };
 
       describe('successful request', () => {
-        it(`commits ${types.RECEIVE_MEMBER_ROLE_SUCCESS} mutation`, async () => {
+        it(`updates member role`, async () => {
           mock.onPut().replyOnce(HTTP_STATUS_OK);
 
-          await testAction(updateMemberRole, payload, state, [
-            {
-              type: types.RECEIVE_MEMBER_ROLE_SUCCESS,
-              payload,
-            },
-          ]);
+          await testAction(updateMemberRole, payload, state, []);
 
           expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
           expect(mockedRequestFormatter).toHaveBeenCalledWith({
-            accessLevel: accessLevel.integerValue,
-            memberRoleId: accessLevel.memberRoleId,
+            accessLevel,
+            memberRoleId,
           });
         });
       });
@@ -142,7 +135,7 @@ describe('Vuex members actions', () => {
 
     describe('showRemoveGroupLinkModal', () => {
       it(`commits ${types.SHOW_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
-        testAction(showRemoveGroupLinkModal, group, state, [
+        return testAction(showRemoveGroupLinkModal, group, state, [
           {
             type: types.SHOW_REMOVE_GROUP_LINK_MODAL,
             payload: group,
@@ -153,7 +146,7 @@ describe('Vuex members actions', () => {
 
     describe('hideRemoveGroupLinkModal', () => {
       it(`commits ${types.HIDE_REMOVE_GROUP_LINK_MODAL} mutation`, () => {
-        testAction(hideRemoveGroupLinkModal, group, state, [
+        return testAction(hideRemoveGroupLinkModal, group, state, [
           {
             type: types.HIDE_REMOVE_GROUP_LINK_MODAL,
           },
@@ -170,7 +163,7 @@ describe('Vuex members actions', () => {
 
     describe('showRemoveMemberModal', () => {
       it(`commits ${types.SHOW_REMOVE_MEMBER_MODAL} mutation`, () => {
-        testAction(showRemoveMemberModal, modalData, state, [
+        return testAction(showRemoveMemberModal, modalData, state, [
           {
             type: types.SHOW_REMOVE_MEMBER_MODAL,
             payload: modalData,
@@ -181,7 +174,7 @@ describe('Vuex members actions', () => {
 
     describe('hideRemoveMemberModal', () => {
       it(`commits ${types.HIDE_REMOVE_MEMBER_MODAL} mutation`, () => {
-        testAction(hideRemoveMemberModal, undefined, state, [
+        return testAction(hideRemoveMemberModal, undefined, state, [
           {
             type: types.HIDE_REMOVE_MEMBER_MODAL,
           },

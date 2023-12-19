@@ -5,15 +5,12 @@ import {
   GlDropdownDivider,
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
-
 import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -70,7 +67,6 @@ function createComponent(options = {}) {
 }
 
 describe('MilestoneToken', () => {
-  let mock;
   let wrapper;
 
   const findBaseToken = () => wrapper.findComponent(BaseToken);
@@ -80,12 +76,7 @@ describe('MilestoneToken', () => {
   };
 
   beforeEach(() => {
-    mock = new MockAdapter(axios);
     wrapper = createComponent();
-  });
-
-  afterEach(() => {
-    mock.restore();
   });
 
   describe('methods', () => {

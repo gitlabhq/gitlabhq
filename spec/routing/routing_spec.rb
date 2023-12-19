@@ -122,17 +122,12 @@ end
 
 #             profile_account GET    /-/profile/account(.:format)             profile#account
 #             profile_history GET    /-/profile/history(.:format)             profile#history
-#            profile_password PUT    /-/profile/password(.:format)            profile#password_update
 #               profile_token GET    /-/profile/token(.:format)               profile#token
 #                     profile GET    /-/profile(.:format)                     profile#show
 #              profile_update PUT    /-/profile/update(.:format)              profile#update
 RSpec.describe ProfilesController, "routing" do
   it "to #account" do
     expect(get("/-/profile/account")).to route_to('profiles/accounts#show')
-  end
-
-  it "to #audit_log" do
-    expect(get("/-/profile/audit_log")).to route_to('profiles#audit_log')
   end
 
   it "to #reset_feed_token" do
@@ -395,5 +390,21 @@ end
 RSpec.describe JwksController, "routing" do
   it "to #index" do
     expect(get('/-/jwks')).to route_to('jwks#index')
+  end
+end
+
+# user_settings_authentication_log GET  /-/user_settings/authentication_log(.:format) user_settings/user_settings#authentication_log
+
+RSpec.describe UserSettings::UserSettingsController, 'routing', feature_category: :system_access do
+  it 'to #authentication_log' do
+    expect(get('/-/user_settings/authentication_log')).to route_to('user_settings/user_settings#authentication_log')
+  end
+end
+
+# user_settings_active_sessions_log GET /-/user_settings_active_sessions_log(.:format)  user_settings/active_sessions#index#
+
+RSpec.describe UserSettings::ActiveSessionsController, 'routing', feature_category: :system_access do
+  it 'to #index' do
+    expect(get('/-/user_settings/active_sessions')).to route_to('user_settings/active_sessions#index')
   end
 end

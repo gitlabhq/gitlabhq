@@ -38,20 +38,24 @@ namespace :knapsack do
     reports.each do |report_name|
       QA::Support::KnapsackReport.new(report_name).download_report
     rescue StandardError => e
-      QA::Runtime::Logger.error(e)
+      QA::Runtime::Logger.error("Failed to download knapsack report '#{report_name}', error: #{e}")
     end
   end
 
   desc "Create knapsack reports from existing reports for selective jobs"
   task :create_reports_for_selective do
-    reports = Dir.glob("knapsack/*").map { |file| file.match(%r{.*/(.*)?\.json})[1] }
+    qa_tests = ENV["QA_TESTS"]
+    if qa_tests.blank?
+      next QA::Runtime::Logger.info("QA_TESTS not set, skipping report creation for selective execution")
+    end
 
+    reports = Dir.glob("knapsack/*").map { |file| file.match(%r{.*/(.*)?\.json})[1] }
     reports.each do |report_name|
-      unless report_name.include?('-selective-parallel')
-        QA::Support::KnapsackReport.new(report_name).create_for_selective(ENV['QA_TESTS'])
-      end
+      next unless report_name.include?('-selective-parallel')
+
+      QA::Support::KnapsackReport.new(report_name).create_for_selective(qa_tests)
     rescue StandardError => e
-      QA::Runtime::Logger.error(e)
+      QA::Runtime::Logger.error("Failed to create report '#{report_name}', error: #{e}")
     end
   end
 

@@ -1,8 +1,6 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
-import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -24,7 +22,6 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
-import { TYPENAME_ITERATION } from '~/graphql_shared/constants';
 import eventHub from '../eventhub';
 
 export default {
@@ -32,7 +29,7 @@ export default {
     search: __('Search'),
   },
   components: { FilteredSearch },
-  inject: ['initialFilterParams', 'isApolloBoard'],
+  inject: ['initialFilterParams'],
   props: {
     isSwimlanesOn: {
       type: Boolean,
@@ -342,18 +339,6 @@ export default {
         },
       );
     },
-    formattedFilterParams() {
-      const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
-      const filtersCopy = convertObjectPropsToCamelCase(rawFilterParams, {});
-      if (this.filterParams?.iterationId) {
-        filtersCopy.iterationId = convertToGraphQLId(
-          TYPENAME_ITERATION,
-          this.filterParams.iterationId,
-        );
-      }
-
-      return filtersCopy;
-    },
   },
   created() {
     eventHub.$on('updateTokens', this.updateTokens);
@@ -366,11 +351,15 @@ export default {
     eventHub.$off('updateTokens', this.updateTokens);
   },
   methods: {
-    ...mapActions(['performSearch']),
-    updateTokens() {
+    formattedFilterParams() {
       const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
-      this.filterParams = convertObjectPropsToCamelCase(rawFilterParams, {});
-      this.$emit('setFilters', this.formattedFilterParams);
+      const filtersCopy = convertObjectPropsToCamelCase(rawFilterParams, {});
+      this.filterParams = filtersCopy;
+
+      return filtersCopy;
+    },
+    updateTokens() {
+      this.$emit('setFilters', this.formattedFilterParams());
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {
@@ -382,11 +371,7 @@ export default {
         replace: true,
       });
 
-      if (this.isApolloBoard) {
-        this.$emit('setFilters', this.formattedFilterParams);
-      } else {
-        this.performSearch();
-      }
+      this.$emit('setFilters', this.formattedFilterParams());
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');

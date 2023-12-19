@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
+RSpec.describe 'File blob', :js, feature_category: :source_code_management do
   include MobileHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -41,9 +41,6 @@ RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
         # shows highlighted Ruby code
         expect(page).to have_css(".js-syntax-highlight")
         expect(page).to have_content("require 'fileutils'")
-
-        # does not show a viewer switcher
-        expect(page).not_to have_selector('.js-blob-viewer-switcher')
 
         # shows an enabled copy button
         expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
@@ -299,9 +296,6 @@ RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
           # shows text
           expect(page).to have_content('size 1575078')
 
-          # does not show a viewer switcher
-          expect(page).not_to have_selector('.js-blob-viewer-switcher')
-
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
 
@@ -429,9 +423,6 @@ RSpec.describe 'File blob', :js, feature_category: :groups_and_projects do
         aggregate_failures do
           # shows text
           expect(page).to have_content('size 1575078')
-
-          # does not show a viewer switcher
-          expect(page).not_to have_selector('.js-blob-viewer-switcher')
 
           # shows an enabled copy button
           expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')

@@ -72,7 +72,7 @@ export default {
 };
 </script>
 <template>
-  <div class="issuable-note-warning">
+  <div class="issuable-note-warning" data-testid="issuable-note-warning">
     <gl-icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential" ref="lockedAndConfidential">

@@ -186,6 +186,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
+          collection do
+            get :enabled_keys
+            get :available_project_keys
+            get :available_public_keys
+          end
+
           member do
             put :enable
             put :disable
@@ -402,6 +408,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # its preferable to keep it below all other project routes
         draw :repository
         draw :wiki
+        draw :gcp
 
         namespace :import do
           resource :jira, only: [:show], controller: :jira
@@ -435,10 +442,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               post :retry
             end
           end
-        end
-
-        namespace :integrations do
-          resource :shimo, only: [:show]
         end
 
         get :planning_hierarchy

@@ -1,7 +1,8 @@
 - wiki_page_title @page
 - add_page_specific_style 'page_bundles/wiki'
+- page_history = @page&.persisted? ? wiki_page_path(@wiki, @page, action: :history) : ''
 
-.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
+.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row.gl-border-b-0
   = wiki_sidebar_toggle_button
 
   .nav-text.flex-fill
@@ -11,8 +12,12 @@
         = time_ago_with_tooltip(@page.last_version.authored_date)
 
   .nav-controls.pb-md-3.pb-lg-0
+    - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
+      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), button_options: { class: 'js-wiki-edit', data: { testid: 'wiki-edit-button' }}) do
+        = _('Edit')
     = render 'shared/wikis/main_links'
-    #js-export-actions{ data: { options: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [stylesheet_path('application')] }.to_json } }
+
+    #js-export-actions{ data: { options: { history: page_history, print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [stylesheet_path('application')] } }.to_json } }
 
 - if @page.historical?
   = render Pajamas::AlertComponent.new(variant: :warning,
@@ -26,12 +31,9 @@
         = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :history)) do
           = s_('WikiHistoricalPage|Browse history')
 
-.gl-mt-5.gl-mb-3
+.gl-mb-3
   .gl-display-flex.gl-justify-content-space-between
     %h2.gl-mt-0.gl-mb-5{ data: { testid: 'wiki-page-title' } }= @page.human_title
-    %div
-      - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
-        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), icon: 'pencil', button_options: { class: 'js-wiki-edit', title: "Edit", data: { testid: 'wiki-edit-button' }})
 
   .js-async-wiki-page-content.md.gl-pt-2{ data: { qa_selector: 'wiki_page_content', testid: 'wiki-page-content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
 

@@ -29,10 +29,8 @@ export default {
     GlModal: GlModalDirective,
   },
   i18n: {
-    emptyGroupMessage: s__('Badges|This group has no badges, start by creating a new one above.'),
-    emptyProjectMessage: s__(
-      'Badges|This project has no badges, start by creating a new one above.',
-    ),
+    emptyGroupMessage: s__('Badges|This group has no badges. Add an existing badge or create one.'),
+    emptyProjectMessage: s__('Badges|This project has no badges. Start by adding a new badge.'),
   },
   data() {
     return {

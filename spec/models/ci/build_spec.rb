@@ -987,6 +987,28 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#artifacts_public?' do
     subject { build.artifacts_public? }
 
+    context 'artifacts with defaults - public' do
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'non public artifacts' do
+      let(:build) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'no artifacts' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#artifact_is_public_in_config?' do
+    subject { build.artifact_is_public_in_config? }
+
     context 'artifacts with defaults' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
@@ -994,9 +1016,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'non public artifacts' do
-      let(:build) { create(:ci_build, :artifacts, :with_private_artifacts_config, pipeline: pipeline) }
+      let(:build) { create(:ci_build, :with_private_artifacts_config, pipeline: pipeline) }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'public artifacts' do
+      let(:build) { create(:ci_build, :with_public_artifacts_config, pipeline: pipeline) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'no artifacts' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+
+      it { is_expected.to be_truthy }
     end
   end
 

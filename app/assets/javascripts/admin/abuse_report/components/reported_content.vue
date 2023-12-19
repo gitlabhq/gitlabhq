@@ -65,14 +65,14 @@ export default {
 <template>
   <div class="gl-pt-6">
     <div
-      class="gl-pb-3 gl-display-flex gl-justify-content-space-between gl-xs-flex-direction-column gl-align-items-center"
+      class="gl-pb-3 gl-display-flex gl-justify-content-space-between gl-flex-direction-column gl-sm-flex-direction-row gl-align-items-center"
     >
       <h2 class="gl-font-size-h1 gl-mt-2 gl-mb-2">
         {{ $options.i18n.reportTypes[reportType] }}
       </h2>
 
       <div
-        class="gl-display-flex gl-align-items-stretch gl-xs-flex-direction-column gl-mt-3 gl-sm-mt-0"
+        class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-sm-flex-direction-row gl-mt-3 gl-sm-mt-0"
       >
         <template v-if="report.screenshot">
           <gl-button data-testid="screenshot-button" @click="toggleScreenshotModal">

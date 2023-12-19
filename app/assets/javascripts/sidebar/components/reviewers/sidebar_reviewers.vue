@@ -2,11 +2,12 @@
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
 import Vue from 'vue';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
@@ -26,6 +27,7 @@ export default {
     ReviewerTitle,
     Reviewers,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     mediator: {
       type: Object,
@@ -56,6 +58,7 @@ export default {
         return {
           iid: this.issuableIid,
           fullPath: this.projectPath,
+          mrRequestChanges: this.glFeatures.mrRequestChanges,
         };
       },
       update(data) {
@@ -74,6 +77,7 @@ export default {
         variables() {
           return {
             issuableId: this.issuable?.id,
+            mrRequestChanges: this.glFeatures.mrRequestChanges,
           };
         },
         skip() {
@@ -153,7 +157,7 @@ export default {
         .saveReviewers(this.field)
         .then(() => {
           this.loading = false;
-          refreshUserMergeRequestCounts();
+          fetchUserCounts();
           this.$apollo.queries.issuable.refetch();
         })
         .catch(() => {

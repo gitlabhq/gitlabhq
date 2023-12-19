@@ -119,7 +119,7 @@ module API
       end
 
       def search_type(additional_params = {})
-        'basic'
+        search_service(additional_params).search_type
       end
 
       def search_scope

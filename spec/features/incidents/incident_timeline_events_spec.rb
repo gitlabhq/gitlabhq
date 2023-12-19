@@ -86,8 +86,8 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
     def trigger_dropdown_action(text)
       click_button _('More actions')
 
-      page.within '[data-testid="disclosure-content"]' do
-        page.find('[data-testid="disclosure-dropdown-item"]', text: text).click
+      within_testid 'disclosure-content' do
+        find_by_testid('disclosure-dropdown-item', text: text).click
       end
     end
   end

@@ -105,6 +105,10 @@ class UploadedFile
     @tempfile&.close
   end
 
+  def empty_size?
+    size == 0
+  end
+
   alias_method :local_path, :path
 
   def method_missing(method_name, *args, &block) #:nodoc:

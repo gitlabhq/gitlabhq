@@ -1,13 +1,12 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package Registry Rate Limits **(FREE SELF)**
+# Package registry rate limits **(FREE SELF)**
 
-With the [GitLab Package Registry](../../user/packages/package_registry/index.md),
+With the [GitLab package registry](../../user/packages/package_registry/index.md),
 you can use GitLab as a private or public registry for a variety of common package managers. You can
 publish and share packages, which others can consume as a dependency in downstream projects through
 the [Packages API](../../api/packages.md).
@@ -30,8 +29,7 @@ no difference in functionality compared to the general user and IP rate limits.
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Package registry rate limits**.
 1. Select **Enable unauthenticated request rate limit**.
@@ -45,8 +43,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**
 1. Expand **Package registry rate limits**.
 1. Select **Enable authenticated API request rate limit**.

@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # ClickUp **(FREE ALL)**
@@ -34,7 +34,7 @@ For example, this is a configuration for a project named `gitlab-ci`:
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
 For more information about the steps and consequences of disabling GitLab issues, see
-Configure project [visibility](../../../user/public_access.md#change-project-visibility), [features, and permissions](../settings/index.md#configure-project-features-and-permissions).
+Configure project [visibility](../../../user/public_access.md#change-project-visibility), [features, and permissions](../settings/project_features_permissions.md#configure-project-features-and-permissions).
 
 ## Reference ClickUp issues in GitLab
 

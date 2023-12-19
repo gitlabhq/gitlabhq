@@ -16,6 +16,8 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
   let_it_be(:another_project, reload: true) { create(:project) }
+  let_it_be(:model) { create(:ml_models, user: project.owner, project: project) }
+  let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
 
   let_it_be(:tokens) do
     {
@@ -70,10 +72,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       :private | :guest      | false | :job_token             | true  | :not_found
       :private | :developer  | false | :job_token             | false | :unauthorized
       :private | :guest      | false | :job_token             | false | :unauthorized
-      :public  | :developer  | true  | :deploy_token          | true  | :success
-      :public  | :developer  | true  | :deploy_token          | false | :unauthorized
-      :private | :developer  | true  | :deploy_token          | true  | :success
-      :private | :developer  | true  | :deploy_token          | false | :unauthorized
     end
 
     # :visibility, :user_role, :member, :token_type, :valid_token, :expected_status
@@ -112,10 +110,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       :private | :guest      | false | :job_token             | true  |  :not_found
       :private | :developer  | false | :job_token             | false |  :unauthorized
       :private | :guest      | false | :job_token             | false |  :unauthorized
-      :public  | :developer  | true  | :deploy_token          | true  |  :success
-      :public  | :developer  | true  | :deploy_token          | false |  :unauthorized
-      :private | :developer  | true  | :deploy_token          | true  |  :success
-      :private | :developer  | true  | :deploy_token          | false |  :unauthorized
     end
     # rubocop:enable Metrics/AbcSize
   end
@@ -128,14 +122,15 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     include_context 'ml model authorize permissions table'
 
     let(:token) { tokens[:personal_access_token] }
-    let(:user_headers) { { 'HTTP_AUTHORIZATION' => token } }
+    let(:user_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:headers) { user_headers.merge(workhorse_headers) }
     let(:request) { authorize_upload_file(headers) }
-    let(:model_name) { 'my_package' }
+    let(:model_name) { model_version.name }
+    let(:version) { model_version.version }
     let(:file_name) { 'myfile.tar.gz' }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/0.0.1/#{file_name}/authorize"
+      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}/authorize"
 
       put api(url), headers: headers
 
@@ -149,7 +144,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
-        let(:user_headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+        let(:user_headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
@@ -183,15 +178,16 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     let_it_be(:file_name) { 'model.md5' }
 
     let(:token) { tokens[:personal_access_token] }
-    let(:user_headers) { { 'HTTP_AUTHORIZATION' => token } }
+    let(:user_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:headers) { user_headers.merge(workhorse_headers) }
     let(:params) { { file: temp_file(file_name) } }
     let(:file_key) { :file }
     let(:send_rewritten_field) { true }
-    let(:model_name) { 'my_package' }
+    let(:model_name) { model_version.name }
+    let(:version) { model_version.version }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/0.0.1/#{file_name}"
+      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}"
 
       workhorse_finalize(
         api(url),
@@ -219,7 +215,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
-        let(:user_headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+        let(:user_headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
@@ -233,25 +229,27 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       end
 
       it_behaves_like 'Endpoint not found if read_model_registry not available'
+      it_behaves_like 'Endpoint not found if write_model_registry not available'
+      it_behaves_like 'Not found when model version does not exist'
     end
   end
 
   describe 'GET /api/v4/projects/:project_id/packages/ml_models/:model_name/:model_version/:file_name' do
     include_context 'ml model authorize permissions table'
 
-    let_it_be(:package) { create(:ml_model_package, project: project, name: 'model', version: '0.0.1') }
+    let_it_be(:package) { model_version.package }
     let_it_be(:package_file) { create(:package_file, :generic, package: package, file_name: 'model.md5') }
 
-    let(:model_name) { package.name }
-    let(:model_version) { package.version }
+    let(:model_name) { model_version.name }
+    let(:version) { model_version.version }
     let(:file_name) { package_file.file_name }
 
     let(:token) { tokens[:personal_access_token] }
-    let(:user_headers) { { 'HTTP_AUTHORIZATION' => token } }
+    let(:user_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:headers) { user_headers.merge(workhorse_headers) }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{model_version}/#{file_name}"
+      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}"
 
       get api(url), headers: headers
 
@@ -265,7 +263,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
 
       with_them do
         let(:token) { valid_token ? tokens[token_type] : 'invalid-token123' }
-        let(:user_headers) { user_role == :anonymous ? {} : { 'HTTP_AUTHORIZATION' => token } }
+        let(:user_headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
 
         before do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))

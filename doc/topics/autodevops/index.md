@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Auto DevOps **(FREE ALL)**
@@ -37,7 +37,6 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 | Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
 | Test | [Auto Code Quality](stages.md#auto-code-quality) |
 | Test | [Auto Container Scanning](stages.md#auto-container-scanning) |
-| Test | [Auto License Compliance](stages.md#auto-license-compliance-deprecated) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |
@@ -164,8 +163,7 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
@@ -207,7 +205,7 @@ match your new GitLab version:
 
 There is no guarantee that you can use a private container registry with Auto DevOps.
 
-Instead, use the [GitLab Container Registry](../../user/packages/container_registry/index.md) with Auto DevOps to
+Instead, use the [GitLab container registry](../../user/packages/container_registry/index.md) with Auto DevOps to
 simplify configuration and prevent any unforeseen issues.
 
 ## Install applications behind a proxy
@@ -220,7 +218,7 @@ installation pods at runtime.
 
 ## Related topics
 
-- [Continuous methodologies](../../ci/introduction/index.md)
+- [Continuous methodologies](../../ci/index.md)
 - [Docker](https://docs.docker.com)
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Helm](https://helm.sh/docs/)

@@ -5,7 +5,6 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import Tracking from '~/tracking';
 
 import {
-  HR_DEFAULT_CLASSES,
   TRACKING_ACTION_CLICK,
   TRACKING_LABEL_APPLY,
   TRACKING_LABEL_RESET,
@@ -19,7 +18,7 @@ export default {
     GlForm,
   },
   computed: {
-    ...mapState(['sidebarDirty', 'useSidebarNavigation']),
+    ...mapState(['sidebarDirty']),
     ...mapGetters(['currentScope']),
   },
   methods: {
@@ -37,15 +36,16 @@ export default {
       this.resetQuery();
     },
   },
-  HR_DEFAULT_CLASSES,
 };
 </script>
 
 <template>
-  <gl-form class="issue-filters gl-px-5 gl-pt-0" @submit.prevent="applyQueryWithTracking">
-    <hr v-if="!useSidebarNavigation" :class="$options.HR_DEFAULT_CLASSES" />
+  <gl-form
+    class="issue-filters gl-px-5 gl-pt-0"
+    :aria-label="__('Search filters')"
+    @submit.prevent="applyQueryWithTracking"
+  >
     <slot></slot>
-    <hr v-if="!useSidebarNavigation" :class="$options.HR_DEFAULT_CLASSES" />
     <div class="gl-display-flex gl-align-items-center gl-mt-4">
       <gl-button category="primary" variant="confirm" type="submit" :disabled="!sidebarDirty">
         {{ __('Apply') }}

@@ -30,13 +30,6 @@ module Sidebars
           _('Issues')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-issues-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'issues'

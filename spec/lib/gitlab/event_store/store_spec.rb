@@ -263,12 +263,59 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
     end
   end
 
+  describe '#publish_group' do
+    let(:event1) { event_klass.new(data: { name: 'Bob', id: 123 }) }
+    let(:event2) { event_klass.new(data: { name: 'Alice', id: 456 }) }
+    let(:event3) { event_klass.new(data: { name: 'Eva', id: 789 }) }
+
+    let(:group_size) { 3 }
+    let(:events) { [event1, event2, event3] }
+    let(:serialized_data) { events.map(&:data).map(&:deep_stringify_keys) }
+
+    let(:store) do
+      described_class.new do |s|
+        s.subscribe worker, to: event_klass, group_size: group_size
+      end
+    end
+
+    subject { store.publish_group(events) }
+
+    context 'with valid events' do
+      it 'calls consume_events of subscription' do
+        expect(store.subscriptions[event_klass].first).to receive(:consume_events).with(events)
+
+        subject
+      end
+    end
+
+    context 'when there is invalid event' do
+      let(:events) { [event1, invalid_event] }
+
+      context 'when event is invalid' do
+        let(:invalid_event) { stub_const('TestEvent', {}) }
+
+        it 'raises InvalidEvent error' do
+          expect { subject }.to raise_error(Gitlab::EventStore::InvalidEvent)
+        end
+      end
+
+      context 'when one of the events is a different event' do
+        let(:invalid_event) { stub_const('DifferentEvent', Class.new(Gitlab::EventStore::Event)) }
+
+        it 'raises InvalidEvent error' do
+          expect { subject }.to raise_error(Gitlab::EventStore::InvalidEvent)
+        end
+      end
+    end
+  end
+
   describe 'subscriber' do
     let(:data) { { name: 'Bob', id: 123 } }
+    let(:event_data) { data }
     let(:event_name) { event.class.name }
     let(:worker_instance) { worker.new }
 
-    subject { worker_instance.perform(event_name, data) }
+    subject { worker_instance.perform(event_name, event_data) }
 
     it 'is a Sidekiq worker' do
       expect(worker_instance).to be_a(ApplicationWorker)
@@ -278,7 +325,7 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
       expect(worker_instance).to receive(:handle_event).with(instance_of(event.class))
 
       expect_any_instance_of(event.class) do |event|
-        expect(event).to receive(:data).and_return(data)
+        expect(event).to receive(:data).and_return(event_data)
       end
 
       subject
@@ -297,6 +344,25 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
 
       it 'raises an error' do
         expect { subject }.to raise_error(NotImplementedError)
+      end
+    end
+
+    context 'when there are multiple events' do
+      let(:event_data) { [{ name: 'Bob', id: 123 }, { name: 'Alice', id: 456 }] }
+
+      let(:first_event) { event_klass.new(data: event_data.first) }
+      let(:second_event) { event_klass.new(data: event_data.last) }
+
+      before do
+        allow(worker_instance).to receive(:construct_event).with(event_klass, event_data.first).and_return(first_event)
+        allow(worker_instance).to receive(:construct_event).with(event_klass, event_data.last).and_return(second_event)
+      end
+
+      it 'calls handle_event multiple times' do
+        expect(worker_instance).to receive(:handle_event).once.with(first_event)
+        expect(worker_instance).to receive(:handle_event).once.with(second_event)
+
+        subject
       end
     end
   end

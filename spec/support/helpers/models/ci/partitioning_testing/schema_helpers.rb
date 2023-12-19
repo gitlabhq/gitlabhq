@@ -18,7 +18,6 @@ module Ci
         each_partitionable_table do |table_name|
           create_test_partition("p_#{table_name}", connection: connection)
         end
-        ensure_builds_id_uniquness(connection: connection)
       end
 
       def teardown(connection: Ci::ApplicationRecord.connection)
@@ -28,7 +27,7 @@ module Ci
       end
 
       def each_partitionable_table
-        ::Ci::Partitionable::Testing::PARTITIONABLE_MODELS.each do |klass|
+        ::Ci::Partitionable::Testing.partitionable_models.each do |klass|
           model = klass.safe_constantize
           table_name = model.table_name.delete_prefix('p_')
 
@@ -57,16 +56,6 @@ module Ci
         connection.execute(<<~SQL.squish)
           ALTER TABLE #{table_name} DETACH PARTITION  #{full_partition_name(table_name)};
           DROP TABLE IF EXISTS #{full_partition_name(table_name)};
-        SQL
-      end
-
-      # This can be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/421173
-      # is implemented
-      def ensure_builds_id_uniquness(connection:)
-        connection.execute(<<~SQL.squish)
-          CREATE TRIGGER assign_p_ci_builds_id_trigger
-            BEFORE INSERT ON #{full_partition_name('ci_builds')}
-            FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
         SQL
       end
 

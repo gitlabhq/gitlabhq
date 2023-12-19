@@ -10,7 +10,7 @@ module Resolvers
     include GroupIssuableResolver
 
     before_connection_authorization do |nodes, _|
-      projects = nodes.map(&:project)
+      projects = nodes.filter_map(&:project)
       ActiveRecord::Associations::Preloader.new(records: projects, associations: project_associations).call
     end
 

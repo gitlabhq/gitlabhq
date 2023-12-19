@@ -57,7 +57,7 @@ describe('error tracking actions', () => {
 
   describe('restartPolling', () => {
     it('should restart polling', () => {
-      testAction(
+      return testAction(
         actions.restartPolling,
         {},
         {},
@@ -74,7 +74,7 @@ describe('error tracking actions', () => {
     it('should search by query', () => {
       const query = 'search';
 
-      testAction(
+      return testAction(
         actions.searchByQuery,
         query,
         {},
@@ -92,7 +92,7 @@ describe('error tracking actions', () => {
     it('should search errors by status', () => {
       const status = 'ignored';
 
-      testAction(
+      return testAction(
         actions.filterByStatus,
         status,
         {},
@@ -106,7 +106,7 @@ describe('error tracking actions', () => {
     it('should search by query', () => {
       const field = 'frequency';
 
-      testAction(
+      return testAction(
         actions.sortByField,
         field,
         {},
@@ -123,7 +123,7 @@ describe('error tracking actions', () => {
     it('should set search endpoint', () => {
       const endpoint = 'https://sentry.io';
 
-      testAction(
+      return testAction(
         actions.setEndpoint,
         { endpoint },
         {},
@@ -136,7 +136,7 @@ describe('error tracking actions', () => {
   describe('fetchPaginatedResults', () => {
     it('should start polling the selected page cursor', () => {
       const cursor = '1576637570000:1:1';
-      testAction(
+      return testAction(
         actions.fetchPaginatedResults,
         cursor,
         {},

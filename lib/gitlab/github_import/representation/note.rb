@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class Note
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :noteable_id, :noteable_type, :author, :note,
                          :created_at, :updated_at, :note_id

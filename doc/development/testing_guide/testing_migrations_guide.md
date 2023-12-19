@@ -1,8 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Testing Rails migrations at GitLab
@@ -84,8 +83,7 @@ end
 ```
 
 In some cases, you must require multiple migration files to use them in your specs. Here, there's no
-pattern between your spec file and the other migration file. You can provide the migration filename
-like so:
+pattern between your spec file and the other migration file. You can provide the migration file name like so:
 
 ```ruby
 # frozen_string_literal: true
@@ -371,7 +369,7 @@ end
 ## Testing a non-`ActiveRecord::Migration` class
 
 To test a non-`ActiveRecord::Migration` test (a background migration),
-you must manually provide a required schema version. Please add a
+you must manually provide a required schema version. Add a
 `schema` tag to a context that you want to switch the database schema within.
 
 If not set, `schema` defaults to `:latest`.

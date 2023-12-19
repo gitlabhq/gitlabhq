@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Migrating projects using file exports **(FREE ALL)**
@@ -86,8 +86,7 @@ Before you can migrate projects on a self-managed GitLab instance using file exp
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Import sources**.
@@ -206,7 +205,7 @@ may be possible for an attacker to steal your sensitive data.
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
-  than the GitLab version you exported to.
+  than the GitLab version you exported from.
 - Review [compatibility](#compatibility) for any issues.
 - At least the Maintainer role on the destination group to migrate to.
 

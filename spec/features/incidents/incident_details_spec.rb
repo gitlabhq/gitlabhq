@@ -46,7 +46,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
       # shows the incident tabs
       page.within('.issuable-details') do
-        incident_tabs = find('[data-testid="incident-tabs"]')
+        incident_tabs = find_by_testid('incident-tabs')
 
         expect(find('h1')).to have_content(incident.title)
         expect(incident_tabs).to have_content('Summary')
@@ -66,14 +66,21 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
     describe 'escalation status' do
       let(:sidebar) { page.find('.right-sidebar') }
-      let(:widget) { sidebar.find('[data-testid="escalation_status_container"]') }
+      let(:widget) do
+        within sidebar do
+          find_by_testid('escalation_status_container')
+        end
+      end
+
       let(:expected_dropdown_options) { escalation_status.class::STATUSES.keys.take(3).map { |key| key.to_s.titleize } }
 
       it 'has an interactable escalation status widget', :aggregate_failures do
         expect(current_status).to have_text(escalation_status.status_name.to_s.titleize)
 
         # list the available statuses
-        widget.find('[data-testid="edit-button"]').click
+        within widget do
+          find_by_testid('edit-button').click
+        end
         expect(dropdown_options.map(&:text)).to eq(expected_dropdown_options)
         expect(widget).not_to have_selector('#escalation-status-help')
 
@@ -95,7 +102,9 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
       end
 
       def current_status
-        widget.find('[data-testid="collapsed-content"]')
+        within widget do
+          find_by_testid('collapsed-content')
+        end
       end
     end
   end
@@ -108,9 +117,9 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     click_button 'Edit title and description'
     wait_for_requests
 
-    page.within('[data-testid="issuable-form"]') do
+    within_testid('issuable-form') do
       click_button 'Issue'
-      find('[data-testid="issue-type-list-item"]', text: 'Incident').click
+      find_by_testid('issue-type-list-item', text: 'Incident').click
 
       click_button 'Save changes'
     end
@@ -130,9 +139,9 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     click_button 'Edit title and description'
     wait_for_requests
 
-    page.within('[data-testid="issuable-form"]') do
+    within_testid('issuable-form') do
       click_button 'Incident'
-      find('[data-testid="issue-type-list-item"]', text: 'Issue').click
+      find_by_testid('issue-type-list-item', text: 'Issue').click
       click_button 'Save changes'
     end
 

@@ -42,7 +42,7 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
+          expect(job).to be_successful(timeout: 180)
 
           job.go_to_pipeline
         end
@@ -52,7 +52,7 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
+          expect(job).to be_successful(timeout: 180)
         end
       end
 
@@ -61,7 +61,8 @@ module QA
         package.remove_via_api!
       end
 
-      it 'uploads a generic package and downloads it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
+      it 'uploads a generic package and downloads it', :reliable,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
         Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|

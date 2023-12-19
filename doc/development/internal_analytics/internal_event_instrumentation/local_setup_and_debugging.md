@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Local setup and debugging
@@ -54,9 +54,8 @@ On GitLab.com events are sent to a collector configured by GitLab. By default, s
 
 You can configure your self-managed GitLab instance to use a custom Snowplow collector.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Snowplow**.
 1. Select **Enable Snowplow tracking** and enter your Snowplow configuration information. For example:
 

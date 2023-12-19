@@ -1,8 +1,0 @@
----
-name: restrict_pipeline_cancellation_by_role
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135047
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429699
-milestone: '16.6'
-type: development
-group: group::pipeline execution
-default_enabled: false

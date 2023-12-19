@@ -1,17 +1,16 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from Bitbucket Cloud to GitLab **(FREE ALL)**
+# Import your project from Bitbucket Cloud **(FREE ALL)**
 
-NOTE:
-The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket
-Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
-[the Bitbucket Server importer](bitbucket_server.md).
+> - Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.7. Feature flag `bitbucket_parallel_importer` removed.
 
-Import your projects from Bitbucket Cloud to GitLab with minimal effort.
+Import your projects from Bitbucket Cloud to GitLab.
 
 The Bitbucket importer can import:
 
@@ -23,12 +22,42 @@ The Bitbucket importer can import:
 - Pull request comments
 - Milestones
 - Wiki
+- Labels
+- Milestones
+- LFS objects
 
 When importing:
 
 - References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
+
+NOTE:
+The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket
+Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
+[the Bitbucket Server importer](bitbucket_server.md).
+
+When issues, pull requests, and comments are imported, the Bitbucket importer uses the Bitbucket nickname of
+the author/assignee and tries to find the same Bitbucket identity in GitLab. If they don't match or
+the user is not found in the GitLab database, the project creator (most of the times the current
+user that started the import process) is set as the author, but a reference on the issue about the
+original Bitbucket author is kept.
+
+For pull requests:
+
+- If the source SHA does not exist in the repository, the importer attempts to set the source commit to the merge commit SHA.
+- The merge request assignee is set to the author. Reviewers are set with usernames matching Bitbucket identities in GitLab.
+- Approvals are not imported.
+- Merge requests in GitLab can be either can be either `opened`, `closed` or `merged`.
+
+For issues:
+
+- A label is added corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal` or `task`.
+- If the issue on Bitbucket was one of `resolved`, `invalid`, `duplicate`, `wontfix`, or `closed`, the issue is closed on GitLab.
+
+The importer creates any new namespaces (groups) if they don't exist or in
+the case the namespace is taken, the repository is imported under the user's
+namespace that started the import process.
 
 ## Prerequisites
 
@@ -39,20 +68,10 @@ When importing:
 - [Bitbucket Cloud import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
   GitLab administrator to enable it. The Bitbucket Cloud import source is enabled by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
+- Pull requests in Bitbucket must have the same source and destination project and not be from a fork of a project.
+  Otherwise, the pull requests are imported as empty merge requests.
 
-## How it works
-
-When issues/pull requests are being imported, the Bitbucket importer uses the Bitbucket nickname of
-the author/assignee and tries to find the same Bitbucket identity in GitLab. If they don't match or
-the user is not found in the GitLab database, the project creator (most of the times the current
-user that started the import process) is set as the author, but a reference on the issue about the
-original Bitbucket author is kept.
-
-The importer creates any new namespaces (groups) if they don't exist or in
-the case the namespace is taken, the repository is imported under the user's
-namespace that started the import process.
-
-## Requirements for user-mapped contributions
+### Requirements for user-mapped contributions
 
 For user contributions to be mapped, each user must complete the following before the project import:
 
@@ -117,5 +136,5 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 1. Following reconnection, the user should use the API again to verify that their `extern_uid` in
    the GitLab database now matches their current Bitbucket public name.
 
-The importer must then [delete the imported project](../../project/settings/index.md#delete-a-project)
+The importer must then [delete the imported project](../../project/working_with_projects.md#delete-a-project)
 and import again.

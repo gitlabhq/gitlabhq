@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Validate GitLab CI/CD configuration **(FREE ALL)**
@@ -15,7 +15,7 @@ If you use the [pipeline editor](pipeline_editor/index.md), it verifies configur
 syntax automatically.
 
 If you use VS Code, you can validate your CI/CD configuration with the
-[GitLab Workflow VS Code extension](../user/project/repository/vscode.md).
+[GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md).
 
 ## Check CI/CD syntax
 

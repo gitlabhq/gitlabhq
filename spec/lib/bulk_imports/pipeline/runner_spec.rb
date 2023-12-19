@@ -55,13 +55,11 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
   shared_examples 'failed pipeline' do |exception_class, exception_message|
     it 'logs import failure' do
       expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:with_entity).with(context.entity).and_call_original
         expect(logger).to receive(:error)
           .with(
             a_hash_including(
-              'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
-              'bulk_import_entity_type' => entity.source_type,
-              'source_full_path' => entity.source_full_path,
               'pipeline_step' => :extractor,
               'pipeline_class' => 'BulkImports::MyPipeline',
               'exception.class' => exception_class,
@@ -69,8 +67,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
               'correlation_id' => anything,
               'class' => 'BulkImports::MyPipeline',
               'message' => 'An object of a pipeline failed to import',
-              'exception.backtrace' => anything,
-              'source_version' => entity.bulk_import.source_version_info.to_s
+              'exception.backtrace' => anything
             )
           )
       end
@@ -94,6 +91,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
 
       it 'logs a warn message and marks entity and tracker as failed' do
         expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:with_entity).with(context.entity).and_call_original
           expect(logger).to receive(:warn)
             .with(
               log_params(
@@ -195,8 +193,11 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         expect(subject).to receive(:on_finish)
+        expect(context.bulk_import).to receive(:touch)
+        expect(context.entity).to receive(:touch)
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:with_entity).with(context.entity).and_call_original
           expect(logger).to receive(:info)
             .with(
               log_params(
@@ -305,14 +306,14 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
             allow(extractor).to receive(:extract).with(context).and_raise(
               BulkImports::NetworkError.new(
                 'Net::ReadTimeout',
-                response: instance_double(HTTParty::Response, code: reponse_status_code, headers: {})
+                response: instance_double(HTTParty::Response, code: response_status_code, headers: {})
               )
             )
           end
         end
 
         context 'when exception is retriable' do
-          let(:reponse_status_code) { 429 }
+          let(:response_status_code) { 429 }
 
           it 'raises the exception BulkImports::RetryPipelineError' do
             expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
@@ -320,7 +321,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         context 'when exception is not retriable' do
-          let(:reponse_status_code) { 503 }
+          let(:response_status_code) { 505 }
 
           it_behaves_like 'failed pipeline', 'BulkImports::NetworkError', 'Net::ReadTimeout'
         end
@@ -417,6 +418,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         entity.fail_op!
 
         expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:with_entity).with(context.entity).and_call_original
           expect(logger).to receive(:warn)
             .with(
               log_params(
@@ -434,10 +436,6 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
     def log_params(context, extra = {})
       {
         bulk_import_id: context.bulk_import_id,
-        bulk_import_entity_id: context.entity.id,
-        bulk_import_entity_type: context.entity.source_type,
-        source_full_path: entity.source_full_path,
-        source_version: context.entity.bulk_import.source_version_info.to_s,
         context_extra: context.extra
       }.merge(extra)
     end

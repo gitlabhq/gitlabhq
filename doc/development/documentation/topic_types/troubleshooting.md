@@ -1,15 +1,17 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Troubleshooting topic type
 
 Troubleshooting topics should be the final topics on a page.
 
-If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <feature>`
-and in the left nav, use the word `Troubleshooting` only.
+If a page has five or more troubleshooting topics, put those topics on a separate page.
+
+- Name the page `Troubleshooting <feature>`.
+- In the left nav, use the word `Troubleshooting` only.
 
 ## What type of troubleshooting information to include
 
@@ -25,7 +27,7 @@ If you think you have an exception to this rule, contact the Technical Writing t
 GitLab Support maintains their own
 [troubleshooting content](../../../administration/troubleshooting/index.md).
 
-## Troubleshooting topic types
+## Format
 
 Troubleshooting can be one of three types: introductory, task, or reference.
 
@@ -47,7 +49,7 @@ For example, "Run debug tools" or "Verify syntax."
 
 ### Troubleshooting reference
 
-This topic includes the error message. For example:
+This topic includes the error message. To be consistent, use **workaround** for temporary solutions and **resolution** and **resolve** for permanent solutions. For example:
 
 ```markdown
 ### The error message or a description of it
@@ -59,8 +61,10 @@ This issue occurs when...
 The workaround is...
 ```
 
-If multiple causes or workarounds exist, consider putting them into a table format.
+If multiple causes or solutions exist, consider putting them into a table format.
 If you use the exact error message, surround it in backticks so it's styled as code.
+
+For more guidance on solution types, see [workaround](../../documentation/styleguide/word_list.md#workaround) and [resolution, resolve](../../documentation/styleguide/word_list.md#resolution-resolve). 
 
 ## Troubleshooting topic titles
 

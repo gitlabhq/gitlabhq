@@ -176,16 +176,6 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
       let!(:artifact) { build(:ci_job_artifact, :private) }
 
       it { is_expected.to be_falsey }
-
-      context 'and the non_public_artifacts feature flag is disabled' do
-        let!(:artifact) { build(:ci_job_artifact, :private) }
-
-        before do
-          stub_feature_flags(non_public_artifacts: false)
-        end
-
-        it { is_expected.to be_truthy }
-      end
     end
   end
 

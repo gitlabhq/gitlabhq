@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating to the new runner registration workflow **(FREE ALL)**
@@ -29,7 +29,7 @@ you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab
 
 For the new runner registration workflow, you:
 
-1. [Create a runner](register_runner.md) directly in the GitLab UI.
+1. [Create a runner](runners_scope.md) directly in the GitLab UI.
 1. Receive a runner authentication token.
 1. Use the runner authentication token instead of the registration token when you register
    a runner with this configuration. Runner managers registered in multiple hosts appear
@@ -141,7 +141,7 @@ process is started.
 
 ## Creating runners programmatically
 
-In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner)
+In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner-linked-to-a-user)
 to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic
 or not reusable. If the runner configuration is static, you should reuse the runner authentication token of
 an existing runner.

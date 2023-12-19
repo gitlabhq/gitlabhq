@@ -47,6 +47,59 @@ func TestGetGeoProxyDataForResponses(t *testing.T) {
 	}
 }
 
+func TestPreAuthorizeFixedPath_OK(t *testing.T) {
+	var (
+		upstreamHeaders http.Header
+		upstreamQuery   url.Values
+	)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/my/api/path" {
+			return
+		}
+
+		upstreamHeaders = r.Header
+		upstreamQuery = r.URL.Query()
+
+		w.Header().Set("Content-Type", ResponseContentType)
+		io.WriteString(w, `{"TempPath":"HELLO!!"}`)
+	}))
+	defer ts.Close()
+
+	req, err := http.NewRequest("GET", "/original/request/path?q1=Q1&q2=Q2", nil)
+	require.NoError(t, err)
+	req.Header.Set("key1", "value1")
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
+	require.NoError(t, err)
+
+	require.Equal(t, "value1", upstreamHeaders.Get("key1"), "original headers must propagate")
+	require.Equal(t, url.Values{"q1": []string{"Q1"}, "q2": []string{"Q2"}}, upstreamQuery,
+		"original query must propagate")
+	require.Equal(t, "HELLO!!", resp.TempPath, "sanity check: successful API call")
+}
+
+func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/my/api/path" {
+			return
+		}
+
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	defer ts.Close()
+
+	req, err := http.NewRequest("GET", "/original/request/path?q1=Q1&q2=Q2", nil)
+	require.NoError(t, err)
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
+	require.Nil(t, resp)
+	preAuthError := &PreAuthorizeFixedPathError{StatusCode: 401, Status: "Unauthorized 401"}
+	require.ErrorAs(t, err, &preAuthError)
+}
+
 func getGeoProxyDataGivenResponse(t *testing.T, givenInternalApiResponse string) (*GeoProxyData, error) {
 	t.Helper()
 	ts := testRailsServer(regexp.MustCompile(`/api/v4/geo/proxy`), 200, givenInternalApiResponse)
@@ -76,36 +129,4 @@ func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server
 		w.WriteHeader(code)
 		fmt.Fprint(w, body)
 	})
-}
-
-func TestPreAuthorizeFixedPath(t *testing.T) {
-	var (
-		upstreamHeaders http.Header
-		upstreamQuery   url.Values
-	)
-
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/my/api/path" {
-			return
-		}
-
-		upstreamHeaders = r.Header
-		upstreamQuery = r.URL.Query()
-		w.Header().Set("Content-Type", ResponseContentType)
-		io.WriteString(w, `{"TempPath":"HELLO!!"}`)
-	}))
-	defer ts.Close()
-
-	req, err := http.NewRequest("GET", "/original/request/path?q1=Q1&q2=Q2", nil)
-	require.NoError(t, err)
-	req.Header.Set("key1", "value1")
-
-	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
-	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
-	require.NoError(t, err)
-
-	require.Equal(t, "value1", upstreamHeaders.Get("key1"), "original headers must propagate")
-	require.Equal(t, url.Values{"q1": []string{"Q1"}, "q2": []string{"Q2"}}, upstreamQuery,
-		"original query must propagate")
-	require.Equal(t, "HELLO!!", resp.TempPath, "sanity check: successful API call")
 }

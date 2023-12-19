@@ -15,8 +15,8 @@ RSpec.describe GitlabSchema.types['ContainerRegistryProtectionRule'], feature_ca
     it { is_expected.to have_non_null_graphql_type(::Types::GlobalIDType[::ContainerRegistry::Protection::Rule]) }
   end
 
-  describe 'container_path_pattern' do
-    subject { described_class.fields['containerPathPattern'] }
+  describe 'repository_path_pattern' do
+    subject { described_class.fields['repositoryPathPattern'] }
 
     it { is_expected.to have_non_null_graphql_type(GraphQL::Types::String) }
   end

@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@git
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import getRefMixin from '../mixins/get_ref';
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="lg" color="dark" class="m-auto" />
+  <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
   <commit-info v-else-if="commit" :commit="commit">
     <div
       class="commit-actions gl-display-flex gl-flex-align gl-align-items-center gl-flex-direction-row"

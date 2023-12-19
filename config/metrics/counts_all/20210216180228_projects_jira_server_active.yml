@@ -16,7 +16,8 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- customer_health_score
 milestone: "<13.9"
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112571
 milestone_removed: "15.10"

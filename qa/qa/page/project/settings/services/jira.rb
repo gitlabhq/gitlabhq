@@ -7,25 +7,25 @@ module QA
         module Services
           class Jira < QA::Page::Base
             view 'app/assets/javascripts/integrations/edit/components/dynamic_field.vue' do
-              element :service_url_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
-              element :service_username_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
-              element :service_password_field, ':data-qa-selector="`${fieldId}_field`"' # rubocop:disable QA/ElementWithPattern
+              element 'service-url-field', ':data-testid="`${fieldId}-field`"' # rubocop:disable QA/ElementWithPattern -- needed for qa:selectors job to pass
+              element 'service-username-field', ':data-testid="`${fieldId}-field`"' # rubocop:disable QA/ElementWithPattern -- needed for qa:selectors job to pass
+              element 'service-password-field', ':data-testid="`${fieldId}-field`"' # rubocop:disable QA/ElementWithPattern -- needed for qa:selectors job to pass
             end
 
             view 'app/assets/javascripts/integrations/edit/components/jira_trigger_fields.vue' do
-              element :service_jira_issue_transition_enabled_checkbox
-              element :service_jira_issue_transition_automatic_true_radio, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}_radio`"' # rubocop:disable QA/ElementWithPattern
-              element :service_jira_issue_transition_automatic_false_radio, ':data-qa-selector="`service_jira_issue_transition_automatic_${issueTransitionOption.value}_radio`"' # rubocop:disable QA/ElementWithPattern
-              element :service_jira_issue_transition_id_field
+              element 'jira-issue-transition-enabled-checkbox'
+              element 'jira-issue-transition-automatic-true-radio', ':data-testid="`jira-issue-transition-automatic-${issueTransitionOption.value}-radio`"' # rubocop:disable QA/ElementWithPattern -- needed for qa:selectors job to pass
+              element 'jira-issue-transition-automatic-false-radio', ':data-testid="`jira-issue-transition-automatic-${issueTransitionOption.value}-radio`"' # rubocop:disable QA/ElementWithPattern -- needed for qa:selectors job to pass
+              element 'jira-issue-transition-id-field'
             end
 
             view 'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue' do
-              element :save_changes_button
+              element 'save-changes-button'
             end
 
             view 'app/assets/javascripts/integrations/edit/components/jira_issues_fields.vue' do
-              element :service_jira_issues_enabled_checkbox
-              element :service_jira_project_key_field
+              element 'jira-issues-enabled-checkbox'
+              element 'jira-project-key-field'
             end
 
             def setup_service_with(url:)
@@ -45,52 +45,52 @@ module QA
             end
 
             def enable_jira_issues
-              check_element(:service_jira_issues_enabled_checkbox, true)
+              check_element('jira-issues-enabled-checkbox', true)
             end
 
             def set_jira_project_key(key)
-              fill_element(:service_jira_project_key_field, key)
+              fill_element('jira-project-key-field', key)
             end
 
             def click_save_changes_and_wait
               click_save_changes_button
               wait_until(reload: false) do
-                has_element?(:save_changes_button, wait: 1) ? !find_element(:save_changes_button).disabled? : true
+                has_element?('save-changes-button', wait: 1) ? !find_element('save-changes-button').disabled? : true
               end
             end
 
             private
 
             def set_jira_server_url(url)
-              fill_element(:service_url_field, url)
+              fill_element('service-url-field', url)
             end
 
             def set_username(username)
-              fill_element(:service_username_field, username)
+              fill_element('service-username-field', username)
             end
 
             def set_password(password)
-              fill_element(:service_password_field, password)
+              fill_element('service-password-field', password)
             end
 
             def enable_transitions
-              check_element(:service_jira_issue_transition_enabled_checkbox, true)
+              check_element('jira-issue-transition-enabled-checkbox', true)
             end
 
             def use_automatic_transitions
-              choose_element(:service_jira_issue_transition_automatic_true_radio, true)
+              choose_element('jira-issue-transition-automatic-true-radio', true)
             end
 
             def use_custom_transitions
-              choose_element(:service_jira_issue_transition_automatic_false_radio, true)
+              choose_element('jira-issue-transition-automatic-false-radio', true)
             end
 
             def set_transition_ids(transition_ids)
-              fill_element(:service_jira_issue_transition_id_field, transition_ids)
+              fill_element('jira-issue-transition-id-field', transition_ids)
             end
 
             def click_save_changes_button
-              click_element(:save_changes_button)
+              click_element('save-changes-button')
             end
           end
         end

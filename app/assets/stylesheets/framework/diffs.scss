@@ -1,3 +1,5 @@
+$diff-file-header: 41px;
+
 // Common
 .diff-file {
   margin-bottom: $gl-padding;
@@ -38,6 +40,10 @@
 
       &.is-sidebar-moved {
         top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
+
+        + .diff-content .md-header-preview {
+          top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header} - #{$gl-border-size-1});
+        }
       }
 
       &::before {
@@ -683,7 +689,7 @@ table.code {
 
 .note-container {
   background-color: $gray-light;
-  border-top: 1px solid $white-normal;
+  border-top: 1px solid $gray-50;
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
@@ -744,7 +750,7 @@ table.code {
 .diff-file .note-container > .new-note,
 .note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
-  border-left: 1px solid $white-normal;
+  border-left: 1px solid $gray-50;
 }
 
 .notes.active {

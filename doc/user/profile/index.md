@@ -1,8 +1,7 @@
 ---
-type: index, howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # User account **(FREE ALL)**
@@ -127,14 +126,15 @@ GitLab displays the contents of your README below your contribution graph.
 ### From an existing project
 
 To add the README from an existing project to your profile,
-[update the path](../project/settings/index.md#rename-a-repository) of the project
+[update the path](../project/working_with_projects.md#rename-a-repository) of the project
 to match your username.
 
 ## Add external accounts to your user profile page
 
-> Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default. This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
+> - Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
+> - Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
 
-You can add links to certain other external accounts you might have, like Skype and Twitter.
+You can add links to certain other external accounts you might have, like Skype and X (formerly Twitter).
 They can help other users connect with you on other platforms.
 
 To add links to other accounts:
@@ -146,7 +146,7 @@ To add links to other accounts:
    - LinkedIn profile name.
    - Mastodon username.
    - Skype username.
-   - Twitter @username.
+   - X (formerly Twitter) @username.
 
    Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.

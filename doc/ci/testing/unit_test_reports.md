@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Unit test reports **(FREE ALL)**
@@ -93,6 +93,10 @@ To copy the name of a single failed test:
 
 If a test failed in the project's default branch in the last 14 days, a message like
 `Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.
+
+The calculation includes failed tests in completed pipelines, but not [blocked pipelines](../jobs/job_control.md#types-of-manual-jobs).
+[Issue 431265](https://gitlab.com/gitlab-org/gitlab/-/issues/431265) proposes to
+also include blocked pipelines in the calculation.
 
 ## How to set it up
 

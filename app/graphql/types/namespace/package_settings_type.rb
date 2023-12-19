@@ -31,7 +31,7 @@ module Types
       description: 'When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. '
     field :nuget_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
-      description: 'Indicates whether duplicate NuGet packages are allowed for this namespace. '
+      description: 'Indicates whether duplicate NuGet packages are allowed for this namespace.'
     field :pypi_package_requests_forwarding, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates whether PyPI package forwarding is allowed for this namespace.'
@@ -58,5 +58,9 @@ module Types
       null: false,
       method: :pypi_package_requests_forwarding_locked?,
       description: 'Indicates whether PyPI package forwarding settings are locked by a parent namespace.'
+
+    field :nuget_symbol_server_enabled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates wheather the NuGet symbol server is enabled for this namespace.'
   end
 end

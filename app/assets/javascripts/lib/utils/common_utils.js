@@ -82,7 +82,7 @@ export const handleLocationHash = () => {
 
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed');
-  const fixedNav = document.querySelector('.navbar-gitlab');
+  const headerLoggedOut = document.querySelector('.header-logged-out');
   const fixedTopBar = document.querySelector('.top-bar-fixed');
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
@@ -91,7 +91,7 @@ export const handleLocationHash = () => {
 
   let adjustment = 0;
 
-  adjustment -= getElementOffsetHeight(fixedNav);
+  adjustment -= getElementOffsetHeight(headerLoggedOut);
   adjustment -= getElementOffsetHeight(fixedTabs);
   adjustment -= getElementOffsetHeight(fixedDiffStats);
   adjustment -= getElementOffsetHeight(fixedTopBar);
@@ -153,7 +153,7 @@ export const contentTop = () => {
   const isDesktop = breakpointInstance.isDesktop();
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
-    () => getOuterHeight('.navbar-gitlab'),
+    () => getOuterHeight('.header-logged-out'),
     () => getOuterHeight('.top-bar-fixed'),
     ({ desktop }) => {
       const mrStickyHeader = document.querySelector('.merge-request-sticky-header');
@@ -176,25 +176,13 @@ export const contentTop = () => {
     () => getOuterHeight('.js-diff-files-changed'),
     ({ desktop }) => {
       const diffsTabIsActive = window.mrTabs?.currentAction === 'diffs';
-      let size;
-
-      if (desktop && diffsTabIsActive) {
-        size = getOuterHeight(
-          '.diffs .diff-file .file-title-flex-parent:not([style="display:none"])',
-        );
-      }
-
-      return size;
+      const isDiscussionScroll =
+        desktop && diffsTabIsActive && window.location.hash.startsWith('#note');
+      return isDiscussionScroll
+        ? getOuterHeight('.diffs .diff-file .file-title-flex-parent:not([style="display:none"])')
+        : 0;
     },
-    ({ desktop }) => {
-      let size;
-
-      if (desktop) {
-        size = getOuterHeight('.mr-version-controls');
-      }
-
-      return size;
-    },
+    ({ desktop }) => (desktop ? getOuterHeight('.mr-version-controls') : 0),
   ];
 
   return heightCalculators.reduce((totalHeight, calculator) => {
@@ -385,8 +373,8 @@ export const buildUrlWithCurrentLocation = (param) => {
  *
  * @param {String} param
  */
-export const historyPushState = (newUrl) => {
-  window.history.pushState({}, document.title, newUrl);
+export const historyPushState = (newUrl, state = {}) => {
+  window.history.pushState(state, document.title, newUrl);
 };
 
 /**
@@ -752,3 +740,12 @@ export const isDefaultCiConfig = (path) => {
 export const hasCiConfigExtension = (path) => {
   return CI_CONFIG_PATH_EXTENSION.test(path);
 };
+
+/**
+ * Checks if an element with position:sticky is stuck
+ *
+ * @param el
+ * @returns {boolean}
+ */
+export const isElementStuck = (el) =>
+  el.getBoundingClientRect().top <= parseInt(getComputedStyle(el).top, 10);

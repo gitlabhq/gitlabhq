@@ -19,8 +19,8 @@ import {
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
   TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
+  TEMP_PROVIDER_URLS,
 } from '~/security_configuration/constants';
-import { TEMP_PROVIDER_URLS } from '~/security_configuration/components/constants';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import { updateSecurityTrainingOptimisticResponse } from '~/security_configuration/graphql/cache_utils';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
@@ -61,10 +61,9 @@ const TEMP_PROVIDER_LOGOS = {
     svg: '<svg>Secure Code Warrior</svg>',
   },
 };
-jest.mock('~/security_configuration/components/constants', () => {
+jest.mock('~/security_configuration/constants', () => {
   return {
-    TEMP_PROVIDER_URLS: jest.requireActual('~/security_configuration/components/constants')
-      .TEMP_PROVIDER_URLS,
+    TEMP_PROVIDER_URLS: jest.requireActual('~/security_configuration/constants').TEMP_PROVIDER_URLS,
     // NOTE: Jest hoists all mocks to the top so we can't use TEMP_PROVIDER_LOGOS
     // here directly.
     TEMP_PROVIDER_LOGOS: {

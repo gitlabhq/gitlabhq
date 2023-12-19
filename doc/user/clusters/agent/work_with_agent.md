@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Managing the agent for Kubernetes instances **(FREE ALL)**
@@ -12,7 +12,7 @@ Use the following tasks when you work with the agent for Kubernetes.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, the installed `agentk` version is displayed on the **Agent** tab.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role.
 

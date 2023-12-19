@@ -6,24 +6,24 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
   subject { described_class }
 
   describe '.available_for_type?' do
-    it 'returns true for Group' do
-      expect(subject.available_for_type?(Group.all)).to be_truthy
+    it 'returns true for when class implements .supported_keyset_orderings' do
+      model = Class.new(ApplicationRecord) do
+        self.table_name = 'users'
+
+        def self.supported_keyset_orderings
+          { id: [:desc] }
+        end
+      end
+
+      expect(subject.available_for_type?(model.all)).to eq(true)
     end
 
-    it 'returns true for Ci::Build' do
-      expect(subject.available_for_type?(Ci::Build.all)).to be_truthy
-    end
+    it 'return false when class does not implement .supported_keyset_orderings' do
+      model = Class.new(ApplicationRecord) do
+        self.table_name = 'users'
+      end
 
-    it 'returns true for Packages::BuildInfo' do
-      expect(subject.available_for_type?(Packages::BuildInfo.all)).to be_truthy
-    end
-
-    it 'returns true for User' do
-      expect(subject.available_for_type?(User.all)).to be_truthy
-    end
-
-    it 'return false for other types of relations' do
-      expect(subject.available_for_type?(Issue.all)).to be_falsey
+      expect(subject.available_for_type?(model.all)).to eq(false)
     end
   end
 
@@ -68,53 +68,54 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
   describe '.available?' do
     let(:request_context) { double('request_context', params: { order_by: order_by, sort: sort }) }
     let(:cursor_based_request_context) { Gitlab::Pagination::Keyset::CursorBasedRequestContext.new(request_context) }
+    let(:model) do
+      Class.new(ApplicationRecord) do
+        self.table_name = 'users'
 
-    context 'with order-by name asc' do
-      let(:order_by) { :name }
-      let(:sort) { :asc }
-
-      it 'returns true for Group' do
-        expect(subject.available?(cursor_based_request_context, Group.all)).to be_truthy
-      end
-
-      it 'return false for other types of relations' do
-        expect(subject.available?(cursor_based_request_context, Issue.all)).to be_falsey
-        expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_falsey
-        expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_falsey
+        def self.supported_keyset_orderings
+          { id: [:desc] }
+        end
       end
     end
 
-    context 'with order-by id desc' do
+    context 'when param order is supported by the model' do
       let(:order_by) { :id }
       let(:sort) { :desc }
 
-      it 'returns true for Ci::Build' do
-        expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_truthy
-      end
-
-      it 'returns true for AuditEvent' do
-        expect(subject.available?(cursor_based_request_context, AuditEvent.all)).to be_truthy
-      end
-
-      it 'returns true for Packages::BuildInfo' do
-        expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_truthy
-      end
-
-      it 'returns true for User' do
-        expect(subject.available?(cursor_based_request_context, User.all)).to be_truthy
+      it 'returns true' do
+        expect(subject.available?(cursor_based_request_context, model.all)).to eq(true)
       end
     end
 
-    context 'with other order-by columns' do
-      let(:order_by) { :path }
+    context 'when sort param is not supported by the model' do
+      let(:order_by) { :id }
       let(:sort) { :asc }
 
-      it 'returns false for Group' do
-        expect(subject.available?(cursor_based_request_context, Group.all)).to be_falsey
+      it 'returns false' do
+        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
+      end
+    end
+
+    context 'when order_by params is not supported by the model' do
+      let(:order_by) { :name }
+      let(:sort) { :desc }
+
+      it 'returns false' do
+        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
+      end
+    end
+
+    context 'when model does not implement .supported_keyset_orderings' do
+      let(:order_by) { :id }
+      let(:sort) { :desc }
+      let(:model) do
+        Class.new(ApplicationRecord) do
+          self.table_name = 'users'
+        end
       end
 
-      it 'return false for other types of relations' do
-        expect(subject.available?(cursor_based_request_context, Issue.all)).to be_falsey
+      it 'returns false' do
+        expect(subject.available?(cursor_based_request_context, model.all)).to eq(false)
       end
     end
   end

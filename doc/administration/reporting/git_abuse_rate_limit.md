@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Anti-Abuse
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Git abuse rate limit (administration) **(ULTIMATE SELF)**
@@ -21,8 +21,7 @@ GitLab team members can view more information in this confidential epic:
 
 ## Configure Git abuse rate limiting
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Reporting**.
 1. Expand **Git abuse rate limit**.
 1. Update the Git abuse rate limit settings:
@@ -41,8 +40,7 @@ If automatic banning is enabled, an email notification is sent when a user is ab
 
 ## Unban a user
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Banned** tab and search for the account you want to unban.
 1. From the **User administration** dropdown list select **Unban user**.

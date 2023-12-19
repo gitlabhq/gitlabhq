@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:seed:runner_fleet rake task', :silence_stdout, feature_category: :runner_fleet do
+RSpec.describe 'gitlab:seed:runner_fleet rake task', :silence_stdout, feature_category: :fleet_visibility do
   let(:registration_prefix) { 'rf-' }
   let(:runner_count) { 10 }
   let(:job_count) { 20 }

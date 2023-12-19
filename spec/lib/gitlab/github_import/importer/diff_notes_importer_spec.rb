@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_category: :importers do
-  let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
-  let(:client) { double(:client) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:github_comment) do
     {
@@ -90,6 +90,10 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_catego
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'imports each diff note in parallel' do
       importer = described_class.new(project, client)
 

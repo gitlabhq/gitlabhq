@@ -138,7 +138,7 @@ describe('Merge request merge checks component', () => {
   it.each`
     identifier
     ${'conflict'}
-    ${'unresolved_discussions'}
+    ${'discussions_not_resolved'}
     ${'need_rebase'}
     ${'default'}
   `('renders $identifier merge check', async ({ identifier }) => {

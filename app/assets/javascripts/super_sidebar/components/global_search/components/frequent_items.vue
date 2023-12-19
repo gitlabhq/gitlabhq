@@ -1,10 +1,10 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { truncateNamespace } from '~/lib/utils/text_utility';
-import { getItemsFromLocalStorage, removeItemFromLocalStorage } from '~/super_sidebar/utils';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
+import FrequentItemSkeleton from './frequent_item_skeleton.vue';
 
 export default {
   name: 'FrequentlyVisitedItems',
@@ -13,8 +13,14 @@ export default {
     GlDisclosureDropdownItem,
     GlIcon,
     FrequentItem,
+    FrequentItemSkeleton,
   },
   props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     emptyStateText: {
       type: String,
       required: true,
@@ -22,15 +28,6 @@ export default {
     groupName: {
       type: String,
       required: true,
-    },
-    maxItems: {
-      type: Number,
-      required: true,
-    },
-    storageKey: {
-      type: String,
-      required: false,
-      default: null,
     },
     viewAllItemsText: {
       type: String,
@@ -45,14 +42,11 @@ export default {
       required: false,
       default: null,
     },
-  },
-  data() {
-    return {
-      items: getItemsFromLocalStorage({
-        storageKey: this.storageKey,
-        maxItems: this.maxItems,
-      }),
-    };
+    items: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     formattedItems() {
@@ -83,7 +77,7 @@ export default {
       }));
     },
     showEmptyState() {
-      return this.items.length === 0;
+      return !this.loading && this.formattedItems.length === 0;
     },
     viewAllItem() {
       return {
@@ -92,38 +86,26 @@ export default {
       };
     },
   },
-  created() {
-    if (!this.storageKey) {
-      this.$emit('nothing-to-render');
-    }
-  },
-  methods: {
-    removeItem(item) {
-      removeItemFromLocalStorage({
-        storageKey: this.storageKey,
-        item,
-      });
-
-      this.items = this.items.filter((i) => i.id !== item.id);
-    },
-  },
 };
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group v-if="storageKey" v-bind="$attrs">
+  <gl-disclosure-dropdown-group v-bind="$attrs">
     <template #group-label>{{ groupName }}</template>
 
-    <gl-disclosure-dropdown-item
-      v-for="item of formattedItems"
-      :key="item.forDropdown.id"
-      :item="item.forDropdown"
-      class="show-on-focus-or-hover--context"
-    >
-      <template #list-item
-        ><frequent-item :item="item.forRenderer" @remove="removeItem"
-      /></template>
+    <gl-disclosure-dropdown-item v-if="loading">
+      <frequent-item-skeleton />
     </gl-disclosure-dropdown-item>
+    <template v-else>
+      <gl-disclosure-dropdown-item
+        v-for="item of formattedItems"
+        :key="item.forDropdown.id"
+        :item="item.forDropdown"
+        class="show-on-focus-or-hover--context"
+      >
+        <template #list-item><frequent-item :item="item.forRenderer" /></template>
+      </gl-disclosure-dropdown-item>
+    </template>
 
     <gl-disclosure-dropdown-item v-if="showEmptyState" class="gl-cursor-text">
       <span class="gl-text-gray-500 gl-font-sm gl-my-3 gl-mx-3">{{ emptyStateText }}</span>

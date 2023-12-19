@@ -1,9 +1,8 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
-type: index
 ---
 
 # Get started with GitLab CI/CD **(FREE ALL)**
@@ -105,6 +104,6 @@ A CI/CD component is a reusable single pipeline configuration unit. Use them to 
 - [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
 - [Make the case for CI/CD in your organization](https://about.gitlab.com/why-gitlab/).
 - Learn how [Verizon reduced rebuilds](https://about.gitlab.com/blog/2019/02/14/verizon-customer-story/) from 30 days to under 8 hours with GitLab.
-- Use the [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) to
+- Use the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md) to
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
   and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).

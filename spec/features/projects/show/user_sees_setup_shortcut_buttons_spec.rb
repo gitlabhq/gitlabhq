@@ -17,8 +17,8 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
 
     describe 'as a normal user' do
       before do
+        stub_feature_flags(project_overview_reorg: false)
         sign_in(user)
-
         visit project_path(project)
       end
 
@@ -40,6 +40,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
 
     describe 'as a maintainer' do
       before do
+        stub_feature_flags(project_overview_reorg: false)
         project.add_maintainer(user)
         sign_in(user)
 

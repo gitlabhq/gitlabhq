@@ -22,23 +22,9 @@ describe('StatusFilter', () => {
 
   const findRadioFilter = () => wrapper.findComponent(RadioFilter);
 
-  describe('old sidebar', () => {
-    beforeEach(() => {
-      createComponent({ useSidebarNavigation: false });
-    });
+  it('renders the component', () => {
+    createComponent();
 
-    it('renders the component', () => {
-      expect(findRadioFilter().exists()).toBe(true);
-    });
-  });
-
-  describe('new sidebar', () => {
-    beforeEach(() => {
-      createComponent({ useSidebarNavigation: true });
-    });
-
-    it('renders the component', () => {
-      expect(findRadioFilter().exists()).toBe(true);
-    });
+    expect(findRadioFilter().exists()).toBe(true);
   });
 });

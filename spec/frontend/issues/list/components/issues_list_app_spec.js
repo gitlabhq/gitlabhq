@@ -19,6 +19,7 @@ import {
   getIssuesCountsQueryResponse,
   getIssuesQueryEmptyResponse,
   getIssuesQueryResponse,
+  groupedFilteredTokens,
   locationSearch,
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
@@ -507,6 +508,13 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('filter tokens', () => {
+      it('groups url params of assignee and author', () => {
+        setWindowLocation(locationSearch);
+        wrapper = mountComponent({ provide: { glFeatures: { groupMultiSelectTokens: true } } });
+
+        expect(findIssuableList().props('initialFilterValue')).toEqual(groupedFilteredTokens);
+      });
+
       it('is set from the url params', () => {
         setWindowLocation(locationSearch);
         wrapper = mountComponent();

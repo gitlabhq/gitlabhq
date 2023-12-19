@@ -90,8 +90,7 @@ export default {
     }}</gl-button>
     <gl-collapsible-listbox
       class="gl-flex-grow-1"
-      data-qa-selector="select_namespace_dropdown"
-      data-testid="select_namespace_dropdown"
+      data-testid="select-namespace-dropdown"
       :items="namespaceItems"
       :header-text="__('Namespaces')"
       :no-results-text="__('No matches found')"

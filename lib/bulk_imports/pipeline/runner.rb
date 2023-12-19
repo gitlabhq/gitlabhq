@@ -16,6 +16,8 @@ module BulkImports
 
         if extracted_data
           extracted_data.each_with_index do |entry, index|
+            refresh_entity_and_import if index % 1000 == 0
+
             raw_entry = entry.dup
             next if already_processed?(raw_entry, index)
 
@@ -164,12 +166,8 @@ module BulkImports
       def log_params(extra)
         defaults = {
           bulk_import_id: context.bulk_import_id,
-          bulk_import_entity_id: context.entity.id,
-          bulk_import_entity_type: context.entity.source_type,
-          source_full_path: context.entity.source_full_path,
           pipeline_class: pipeline,
-          context_extra: context.extra,
-          source_version: context.entity.bulk_import.source_version_info.to_s
+          context_extra: context.extra
         }
 
         defaults
@@ -178,7 +176,7 @@ module BulkImports
       end
 
       def logger
-        @logger ||= Logger.build
+        @logger ||= Logger.build.with_entity(context.entity)
       end
 
       def log_exception(exception, payload)
@@ -192,6 +190,11 @@ module BulkImports
         )
 
         payload.stringify_keys.merge(context)
+      end
+
+      def refresh_entity_and_import
+        context.entity.touch
+        context.bulk_import.touch
       end
     end
   end

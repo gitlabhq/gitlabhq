@@ -4,7 +4,6 @@
 - nav              "project"
 - page_itemtype    'http://schema.org/SoftwareSourceCode'
 - display_subscription_banner!
-- @left_sidebar = true
 - @content_class = [@content_class, project_classes(@project)].compact.join(" ")
 
 - content_for :flash_message do
@@ -22,8 +21,10 @@
 - content_for :before_content do
   = render 'projects/invite_members_modal', project: @project
 
+= dispensable_render_if_exists "projects/importing_alert", project: @project
 = dispensable_render_if_exists "shared/web_hooks/web_hook_disabled_alert"
 = dispensable_render_if_exists "projects/free_user_cap_alert", project: @project
 = dispensable_render_if_exists 'shared/unlimited_members_during_trial_alert', resource: @project
+= dispensable_render_if_exists 'projects/code_suggestions_ga_non_owner_alert', project: @project
 
 = render template: "layouts/application"

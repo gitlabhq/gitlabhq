@@ -7,10 +7,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
 
 import CatalogHeader from '~/ci/catalog/components/list/catalog_header.vue';
+import CatalogSearch from '~/ci/catalog/components/list/catalog_search.vue';
 import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
 import CatalogListSkeletonLoader from '~/ci/catalog/components/list/catalog_list_skeleton_loader.vue';
 import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
-import { cacheConfig } from '~/ci/catalog/graphql/settings';
+import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
+import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
 import ciResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
 
 import getCatalogResources from '~/ci/catalog/graphql/queries/get_ci_catalog_resources.query.graphql';
@@ -24,9 +26,11 @@ describe('CiResourcesPage', () => {
   let wrapper;
   let catalogResourcesResponse;
 
+  const defaultQueryVariables = { first: 20 };
+
   const createComponent = () => {
     const handlers = [[getCatalogResources, catalogResourcesResponse]];
-    const mockApollo = createMockApollo(handlers, {}, cacheConfig);
+    const mockApollo = createMockApollo(handlers, resolvers, { cacheConfig, typeDefs });
 
     wrapper = shallowMountExtended(ciResourcesPage, {
       apolloProvider: mockApollo,
@@ -36,6 +40,7 @@ describe('CiResourcesPage', () => {
   };
 
   const findCatalogHeader = () => wrapper.findComponent(CatalogHeader);
+  const findCatalogSearch = () => wrapper.findComponent(CatalogSearch);
   const findCiResourcesList = () => wrapper.findComponent(CiResourcesList);
   const findLoadingState = () => wrapper.findComponent(CatalogListSkeletonLoader);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
@@ -71,8 +76,14 @@ describe('CiResourcesPage', () => {
       });
 
       it('renders the empty state', () => {
-        expect(findLoadingState().exists()).toBe(false);
         expect(findEmptyState().exists()).toBe(true);
+      });
+
+      it('renders the search', () => {
+        expect(findCatalogSearch().exists()).toBe(true);
+      });
+
+      it('does not render the list', () => {
         expect(findCiResourcesList().exists()).toBe(false);
       });
     });
@@ -99,6 +110,10 @@ describe('CiResourcesPage', () => {
           totalCount: count,
         });
       });
+
+      it('renders the search and sort', () => {
+        expect(findCatalogSearch().exists()).toBe(true);
+      });
     });
   });
 
@@ -121,11 +136,12 @@ describe('CiResourcesPage', () => {
 
       if (eventName === 'onNextPage') {
         expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
           after: pageInfo.endCursor,
-          first: 20,
         });
       } else {
         expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
           before: pageInfo.startCursor,
           last: 20,
           first: null,
@@ -134,8 +150,75 @@ describe('CiResourcesPage', () => {
     });
   });
 
+  describe('search and sort', () => {
+    describe('on initial load', () => {
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+      });
+
+      it('calls the query without search or sort', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(1);
+        expect(catalogResourcesResponse.mock.calls[0][0]).toEqual({
+          ...defaultQueryVariables,
+        });
+      });
+    });
+
+    describe('when sorting changes', () => {
+      const newSort = 'MOST_AWESOME_ASC';
+
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+        await findCatalogSearch().vm.$emit('update-sorting', newSort);
+      });
+
+      it('passes it to the graphql query', () => {
+        expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
+        expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+          ...defaultQueryVariables,
+          sortValue: newSort,
+        });
+      });
+    });
+
+    describe('when search component emits a new search term', () => {
+      const newSearch = 'sloths';
+
+      describe('and there are no results', () => {
+        beforeEach(async () => {
+          catalogResourcesResponse.mockResolvedValue(emptyCatalogResponseBody);
+          await createComponent();
+          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
+        });
+
+        it('renders the empty state and passes down the search query', () => {
+          expect(findEmptyState().exists()).toBe(true);
+          expect(findEmptyState().props().searchTerm).toBe(newSearch);
+        });
+      });
+
+      describe('and there are results', () => {
+        beforeEach(async () => {
+          catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+          await createComponent();
+          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
+        });
+
+        it('passes it to the graphql query', () => {
+          expect(catalogResourcesResponse).toHaveBeenCalledTimes(2);
+          expect(catalogResourcesResponse.mock.calls[1][0]).toEqual({
+            ...defaultQueryVariables,
+            searchTerm: newSearch,
+          });
+        });
+      });
+    });
+  });
+
   describe('pages count', () => {
-    describe('when the fetchMore call suceeds', () => {
+    describe('when the fetchMore call succeeds', () => {
       beforeEach(async () => {
         catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
 
@@ -151,6 +234,31 @@ describe('CiResourcesPage', () => {
         expect(findCiResourcesList().props().currentPage).toBe(2);
 
         await findCiResourcesList().vm.$emit('onPrevPage');
+        await waitForPromises();
+
+        expect(findCiResourcesList().props().currentPage).toBe(1);
+      });
+    });
+
+    describe.each`
+      event                   | payload
+      ${'update-search-term'} | ${'cat'}
+      ${'update-sorting'}     | ${'CREATED_ASC'}
+    `('when $event event is emitted', ({ event, payload }) => {
+      beforeEach(async () => {
+        catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
+        await createComponent();
+      });
+
+      it('resets the page count', async () => {
+        expect(findCiResourcesList().props().currentPage).toBe(1);
+
+        findCiResourcesList().vm.$emit('onNextPage');
+        await waitForPromises();
+
+        expect(findCiResourcesList().props().currentPage).toBe(2);
+
+        await findCatalogSearch().vm.$emit(event, payload);
         await waitForPromises();
 
         expect(findCiResourcesList().props().currentPage).toBe(1);

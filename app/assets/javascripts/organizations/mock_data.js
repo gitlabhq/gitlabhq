@@ -6,7 +6,7 @@
 
 export const organizations = [
   {
-    id: 'gid://gitlab/Organization/1',
+    id: 'gid://gitlab/Organizations::Organization/1',
     name: 'My First Organization',
     descriptionHtml:
       '<p>This is where an organization can be explained in <strong>detail</strong></p>',
@@ -15,7 +15,7 @@ export const organizations = [
     __typename: 'Organization',
   },
   {
-    id: 'gid://gitlab/Organization/2',
+    id: 'gid://gitlab/Organizations::Organization/2',
     name: 'Vegetation Co.',
     descriptionHtml:
       '<p> Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolt   Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt  Lorem ipsum dolor sit amet Lorem ipsum dolt<script>alert(1)</script></p>',
@@ -24,7 +24,7 @@ export const organizations = [
     __typename: 'Organization',
   },
   {
-    id: 'gid://gitlab/Organization/3',
+    id: 'gid://gitlab/Organizations::Organization/3',
     name: 'Dude where is my car?',
     descriptionHtml: null,
     avatarUrl: null,
@@ -302,10 +302,48 @@ export const organizationCreateResponseWithErrors = {
   },
 };
 
-export const updateOrganizationResponse = {
-  organization: {
-    id: 'gid://gitlab/Organizations/1',
-    name: 'Default updated',
+export const organizationUpdateResponse = {
+  data: {
+    organizationUpdate: {
+      organization: {
+        id: 'gid://gitlab/Organizations::Organization/1',
+        name: 'Default updated',
+        webUrl: 'http://127.0.0.1:3000/-/organizations/default',
+      },
+      errors: [],
+    },
   },
-  errors: [],
+};
+
+export const organizationUpdateResponseWithErrors = {
+  data: {
+    organizationUpdate: {
+      organization: null,
+      errors: ['Path is too short (minimum is 2 characters)'],
+    },
+  },
+};
+
+export const pageInfo = {
+  endCursor: 'eyJpZCI6IjEwNTMifQ',
+  hasNextPage: true,
+  hasPreviousPage: true,
+  startCursor: 'eyJpZCI6IjEwNzIifQ',
+  __typename: 'PageInfo',
+};
+
+export const pageInfoOnePage = {
+  endCursor: 'eyJpZCI6IjEwNTMifQ',
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: 'eyJpZCI6IjEwNzIifQ',
+  __typename: 'PageInfo',
+};
+
+export const pageInfoEmpty = {
+  endCursor: null,
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: null,
+  __typename: 'PageInfo',
 };

@@ -6,7 +6,7 @@ module Sidebars
       class PasswordMenu < ::Sidebars::Menu
         override :link
         def link
-          edit_profile_password_path
+          edit_user_settings_password_path
         end
 
         override :title

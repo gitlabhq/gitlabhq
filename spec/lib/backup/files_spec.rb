@@ -68,7 +68,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
       it 'calls tar command with unlink' do
         expect(subject).to receive(:tar).and_return('blabla-tar')
 
-        expect(subject).to receive(:run_pipeline!).with([%w[gzip -cd], %w[blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -]], any_args)
+        expect(subject).to receive(:run_pipeline!).with(["gzip -cd", %w[blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -]], any_args)
         expect(subject).to receive(:pipeline_succeeded?).and_return(true)
         subject.restore('registry.tar.gz', 'backup_id')
       end
@@ -105,6 +105,21 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
                              .and_call_original
 
         expect { subject.restore('registry.tar.gz', 'backup_id') }.to raise_error(/is a mountpoint/)
+      end
+    end
+
+    describe 'with DECOMPRESS_CMD' do
+      before do
+        stub_env('DECOMPRESS_CMD', 'tee')
+        allow(subject).to receive(:pipeline_succeeded?).and_return(true)
+      end
+
+      it 'passes through tee instead of gzip' do
+        expect(subject).to receive(:run_pipeline!).with(['tee', anything], any_args).and_return([[true, true], ''])
+
+        expect do
+          subject.restore('registry.tar.gz', 'backup_id')
+        end.to output(/Using custom DECOMPRESS_CMD 'tee'/).to_stdout
       end
     end
   end
@@ -173,6 +188,37 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
            .and raise_error(/Failed to create compressed file/)
       end
     end
+
+    describe 'with COMPRESS_CMD' do
+      before do
+        stub_env('COMPRESS_CMD', 'tee')
+      end
+
+      it 'passes through tee instead of gzip' do
+        expect(subject).to receive(:run_pipeline!).with([anything, 'tee'], any_args)
+        expect do
+          subject.dump('registry.tar.gz', 'backup_id')
+        end.to output(/Using custom COMPRESS_CMD 'tee'/).to_stdout
+      end
+    end
+
+    context 'when GZIP_RSYNCABLE is "yes"' do
+      before do
+        stub_env('GZIP_RSYNCABLE', 'yes')
+      end
+
+      it 'gzips the files with rsyncable option' do
+        expect(subject).to receive(:run_pipeline!).with([anything, 'gzip --rsyncable -c -1'], any_args)
+        subject.dump('registry.tar.gz', 'backup_id')
+      end
+    end
+
+    context 'when GZIP_RSYNCABLE is not set' do
+      it 'gzips the files without the rsyncable option' do
+        expect(subject).to receive(:run_pipeline!).with([anything, 'gzip -c -1'], any_args)
+        subject.dump('registry.tar.gz', 'backup_id')
+      end
+    end
   end
 
   describe '#exclude_dirs' do
@@ -226,13 +272,13 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
     it 'returns true if both tar and gzip succeeeded' do
       expect(
-        subject.pipeline_succeeded?(tar_status: status_0, gzip_status: status_0, output: 'any_output')
+        subject.pipeline_succeeded?(tar_status: status_0, compress_status: status_0, output: 'any_output')
       ).to be_truthy
     end
 
     it 'returns false if gzip failed' do
       expect(
-        subject.pipeline_succeeded?(tar_status: status_1, gzip_status: status_1, output: 'any_output')
+        subject.pipeline_succeeded?(tar_status: status_1, compress_status: status_1, output: 'any_output')
       ).to be_falsey
     end
 
@@ -243,7 +289,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
       it 'returns true' do
         expect(
-          subject.pipeline_succeeded?(tar_status: status_1, gzip_status: status_0, output: 'any_output')
+          subject.pipeline_succeeded?(tar_status: status_1, compress_status: status_0, output: 'any_output')
         ).to be_truthy
       end
     end
@@ -255,7 +301,7 @@ RSpec.describe Backup::Files, feature_category: :backup_restore do
 
       it 'returns false' do
         expect(
-          subject.pipeline_succeeded?(tar_status: status_1, gzip_status: status_0, output: 'any_output')
+          subject.pipeline_succeeded?(tar_status: status_1, compress_status: status_0, output: 'any_output')
         ).to be_falsey
       end
     end

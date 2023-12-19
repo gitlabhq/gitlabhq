@@ -19,7 +19,7 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
       Doorkeeper::Application.revoke_tokens_and_grants_for(params[:id], current_resource_owner)
     end
 
-    redirect_to applications_profile_url,
+    redirect_to user_settings_applications_url,
       status: :found,
       notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
   end

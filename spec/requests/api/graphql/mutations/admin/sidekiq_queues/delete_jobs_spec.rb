@@ -26,7 +26,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
   context 'when the user is an admin' do
     let(:current_user) { admin }
 
-    context 'valid request' do
+    context 'when valid request' do
       around do |example|
         Sidekiq::Queue.new(queue).clear
         Sidekiq::Testing.disable!(&example)
@@ -40,7 +40,7 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
           'args' => args,
           'meta.user' => user.username
         )
-        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero?
+        raise 'Not enqueued!' if Sidekiq::Queue.new(queue).size.zero? # rubocop:disable Style/ZeroLengthPredicate -- Sidekiq::Queue doesn't implement #blank? or #empty?
       end
 
       it 'returns info about the deleted jobs' do

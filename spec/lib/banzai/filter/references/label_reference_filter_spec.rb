@@ -747,10 +747,16 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       # Since we're not batching label queries across projects/groups,
       # queries increase when a new project/group is added.
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      # first reference to already loaded project (1),
-      # second reference requires project and namespace (2), and label (1)
+      # 1 for for routes to find routes.source_id of projects matching paths
+      # 1 for projects belonging to the above routes
+      # 1 for preloading routes of the projects
+      # 1 for loading the namespaces associated to the project
+      # 1 for loading the routes associated with the namespace
+      # 1 for the group
+      # 1x2 for labels
+      # Total == 8
       markdown = "#{project_reference} #{group2_reference}"
-      max_count = control_count + 3
+      max_count = control_count + 7
 
       expect do
         reference_filter(markdown)

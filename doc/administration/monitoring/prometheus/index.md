@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Monitoring GitLab with Prometheus **(FREE SELF)**
@@ -42,10 +42,14 @@ monitoring target for Prometheus, unless individually disabled.
 To disable Prometheus and all of its exporters, as well as any added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Add or find and uncomment the following line, making sure it's set to `false`:
+1. Add or find and uncomment the following lines, making sure they are set to `false`:
 
    ```ruby
    prometheus_monitoring['enable'] = false
+   sidekiq['metrics_enabled'] = false
+
+   # Already set to `false` by default, but you can explicitly disable it to be sure
+   puma['exporter_enabled'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
@@ -98,7 +102,7 @@ prometheus['scrape_configs'] = [
     'metrics_path': '/probe',
     'params' => {
       'param_a' => ['test'],
-      'param_b' => ['additional_test']
+      'param_b' => ['additional_test'],
     },
     'static_configs' => [
       'targets' => ['1.1.1.1:8060'],
@@ -212,7 +216,7 @@ To use an external Prometheus server:
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
 
-1. On **all** GitLab Rails(Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
+1. On **all** GitLab Rails (Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
 
    ```ruby
    gitlab_rails['prometheus_address'] = '192.168.0.1:9090'
@@ -236,7 +240,7 @@ To use an external Prometheus server:
    nginx['status']['options'] = {
          "server_tokens" => "off",
          "access_log" => "off",
-         "allow" => ["192.168.0.1", "192.168.0.2"]
+         "allow" => ["192.168.0.1", "192.168.0.2"],
          "deny" => "all",
    }
    ```

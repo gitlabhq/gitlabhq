@@ -14,11 +14,15 @@ RSpec.describe "User rebases a merge request", :js, feature_category: :code_revi
     it "rebases" do
       visit(merge_request_path(merge_request))
 
+      wait_for_requests
+
+      click_button 'Expand merge checks'
+
       expect(page).to have_button("Rebase")
 
       click_button("Rebase")
 
-      expect(page).to have_content("Rebase in progress")
+      expect(find_by_testid('standard-rebase-button')).to have_selector(".gl-spinner")
     end
   end
 

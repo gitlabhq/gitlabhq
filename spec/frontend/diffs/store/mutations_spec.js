@@ -1045,6 +1045,17 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_FILE_COMMENT_FORM', () => {
+    it('toggles diff files hasCommentForm', () => {
+      const state = { diffFiles: [{ file_path: 'path', hasCommentForm: false }] };
+      const expanded = true;
+
+      mutations[types.SET_FILE_COMMENT_FORM](state, { filePath: 'path', expanded });
+
+      expect(state.diffFiles[0].hasCommentForm).toEqual(expanded);
+    });
+  });
+
   describe('ADD_DRAFT_TO_FILE', () => {
     it('adds draft to diff file', () => {
       const state = { diffFiles: [{ file_path: 'path', drafts: [] }] };

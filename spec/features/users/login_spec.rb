@@ -578,7 +578,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           fill_in 'user_password', with: user.password
           click_button 'Sign in'
 
-          expect(page).to have_current_path(new_profile_password_path, ignore_query: true)
+          expect(page).to have_current_path(new_user_settings_password_path, ignore_query: true)
         end
       end
     end
@@ -783,6 +783,13 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         visit new_user_session_path
 
         ensure_no_tabs
+      end
+
+      it 'renders logo', :js do
+        visit new_user_session_path
+
+        image = find('img.js-portrait-logo-detection')
+        expect(image['class']).to include('gl-h-9')
       end
 
       it 'renders link to sign up path' do
@@ -1048,7 +1055,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         expect_to_be_on_terms_page
         click_button 'Accept terms'
 
-        expect(page).to have_current_path(new_profile_password_path, ignore_query: true)
+        expect(page).to have_current_path(new_user_settings_password_path, ignore_query: true)
 
         new_password = User.random_password
 

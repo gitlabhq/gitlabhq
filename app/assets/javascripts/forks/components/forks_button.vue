@@ -77,7 +77,7 @@ export default {
       :href="forkButtonUrl"
       icon="fork"
       :title="forkButtonTooltip"
-      >{{ s__('ProjectOverview|Forks') }}</gl-button
+      >{{ s__('ProjectOverview|Fork') }}</gl-button
     >
     <gl-button data-testid="forks-count" :disabled="!canReadCode" :href="projectForksUrl">{{
       forksCount

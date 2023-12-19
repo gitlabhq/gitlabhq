@@ -24,6 +24,11 @@ export default {
       type: String,
       required: true,
     },
+    hideDuration: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     duration: {
       type: String,
       required: false,
@@ -63,7 +68,7 @@ export default {
 
 <template>
   <div
-    class="js-log-line log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
+    class="js-log-line job-log-line-header job-log-line"
     :class="{ 'gl-bg-gray-700': isHighlighted || applyHashHighlight }"
     role="button"
     @click="handleOnClick"
@@ -73,10 +78,10 @@ export default {
     <span
       v-for="(content, i) in line.content"
       :key="i"
-      class="line-text w-100 gl-white-space-pre-wrap"
+      class="gl-flex-grow-1 gl-white-space-pre-wrap"
       :class="content.style"
       >{{ content.text }}</span
     >
-    <duration-badge v-if="duration" :duration="duration" />
+    <duration-badge v-if="duration && !hideDuration" :duration="duration" />
   </div>
 </template>

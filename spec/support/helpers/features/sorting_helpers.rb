@@ -22,9 +22,11 @@ module Features
     # pajamas_sort_by is used to sort new pajamas dropdowns. When
     # all of the dropdowns are converted, pajamas_sort_by can be renamed to sort_by
     # https://gitlab.com/groups/gitlab-org/-/epics/7551
-    def pajamas_sort_by(value)
-      find('.filter-dropdown-container .gl-new-dropdown').click
-      find('.gl-new-dropdown-item', text: value).click
+    def pajamas_sort_by(value, from: nil)
+      raise ArgumentError, 'The :from option must be given' if from.nil?
+
+      click_button from
+      find('[role="option"]', text: value).click
     end
   end
 end

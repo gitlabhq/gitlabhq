@@ -13,6 +13,14 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
     expect(described_class).to have_graphql_fields(*expected_foss_fields).at_least
   end
 
+  describe 'current_user field' do
+    subject { described_class.fields['currentUser'] }
+
+    it 'returns current user' do
+      is_expected.to have_graphql_type(Types::CurrentUserType)
+    end
+  end
+
   describe 'namespace field' do
     subject { described_class.fields['namespace'] }
 
@@ -135,6 +143,16 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_arguments(:id, :issue_filters)
       is_expected.to have_graphql_type(Types::BoardListType)
       is_expected.to have_graphql_resolver(Resolvers::BoardListResolver)
+    end
+  end
+
+  describe 'mlModel field' do
+    subject { described_class.fields['mlModel'] }
+
+    it 'returns metadata', :aggregate_failures do
+      is_expected.to have_graphql_type(Types::Ml::ModelType)
+      is_expected.to have_graphql_arguments(:id)
+      is_expected.to have_graphql_resolver(Resolvers::Ml::ModelDetailResolver)
     end
   end
 end

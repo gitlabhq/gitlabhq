@@ -20,30 +20,41 @@ export const initJobDetails = () => {
   }
 
   const {
+    jobEndpoint,
+    logEndpoint,
+    pagePath,
+    projectPath,
     artifactHelpUrl,
     deploymentHelpUrl,
     runnerSettingsUrl,
     subscriptionsMoreMinutesUrl,
-    endpoint,
-    pagePath,
-    buildStatus,
-    projectPath,
     retryOutdatedJobDocsUrl,
     aiRootCauseAnalysisAvailable,
+    testReportSummaryUrl,
+    pipelineTestReportUrl,
   } = el.dataset;
+
+  const fullScreenAPIAvailable = document.fullscreenEnabled;
 
   // init store to start fetching log
   const store = createStore();
-  store.dispatch('init', { endpoint, pagePath });
+  store.dispatch('init', {
+    jobEndpoint,
+    logEndpoint,
+    testReportSummaryUrl,
+    fullScreenAPIAvailable,
+  });
 
   return new Vue({
     el,
     apolloProvider,
     store,
     provide: {
+      pagePath,
       projectPath,
       retryOutdatedJobDocsUrl,
       aiRootCauseAnalysisAvailable: parseBoolean(aiRootCauseAnalysisAvailable),
+      pipelineTestReportUrl,
     },
     render(h) {
       return h(JobApp, {
@@ -52,10 +63,6 @@ export const initJobDetails = () => {
           deploymentHelpUrl,
           runnerSettingsUrl,
           subscriptionsMoreMinutesUrl,
-          endpoint,
-          pagePath,
-          buildStatus,
-          projectPath,
         },
       });
     },

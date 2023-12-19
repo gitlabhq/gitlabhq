@@ -21,7 +21,7 @@ RSpec.describe 'Search group member', :js, feature_category: :groups_and_project
   end
 
   it 'renders member users' do
-    page.within '[data-testid="members-filtered-search-bar"]' do
+    within_testid('members-filtered-search-bar') do
       find_field('Filter members').click
       find('input').native.send_keys(member.name)
       click_button 'Search'

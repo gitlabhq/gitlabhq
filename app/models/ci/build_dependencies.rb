@@ -36,7 +36,7 @@ module Ci
         next [] if no_local_dependencies_specified?
         next [] unless processable.pipeline_id # we don't have any dependency when creating the pipeline
 
-        deps = model_class.where(pipeline_id: processable.pipeline_id).latest
+        deps = model_class.where(pipeline_id: processable.pipeline_id, partition_id: processable.partition_id).latest
         deps = find_dependencies(processable, deps)
 
         from_dependencies(deps).to_a

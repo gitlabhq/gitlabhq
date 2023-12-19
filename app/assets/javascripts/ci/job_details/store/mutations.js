@@ -1,11 +1,12 @@
-import Vue from 'vue';
 import * as types from './mutation_types';
-import { logLinesParser, updateIncrementalJobLog } from './utils';
+import { logLinesParser } from './utils';
 
 export default {
   [types.SET_JOB_LOG_OPTIONS](state, options = {}) {
-    state.jobLogEndpoint = options.pagePath;
-    state.jobEndpoint = options.endpoint;
+    state.jobEndpoint = options.jobEndpoint;
+    state.logEndpoint = options.logEndpoint;
+    state.testReportSummaryUrl = options.testReportSummaryUrl;
+    state.fullScreenAPIAvailable = options.fullScreenAPIAvailable;
   },
 
   [types.HIDE_SIDEBAR](state) {
@@ -21,15 +22,27 @@ export default {
     }
 
     if (log.append) {
-      state.jobLog = log.lines ? updateIncrementalJobLog(log.lines, state.jobLog) : state.jobLog;
+      if (log.lines) {
+        const { sections, lines } = logLinesParser(log.lines, {
+          currentLines: state.jobLog,
+          currentSections: state.jobLogSections,
+        });
 
+        state.jobLog = lines;
+        state.jobLogSections = sections;
+      }
       state.jobLogSize += log.size;
     } else {
       // When the job still does not have a log
       // the job log response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `null`
-      state.jobLog = log.lines ? logLinesParser(log.lines, [], window.location.hash) : state.jobLog;
+      if (log.lines) {
+        const { sections, lines } = logLinesParser(log.lines, {}, window.location.hash);
+
+        state.jobLog = lines;
+        state.jobLogSections = sections;
+      }
 
       state.jobLogSize = log.size || state.jobLogSize;
     }
@@ -63,7 +76,9 @@ export default {
    * @param {Object} section
    */
   [types.TOGGLE_COLLAPSIBLE_LINE](state, section) {
-    Vue.set(section, 'isClosed', !section.isClosed);
+    if (state.jobLogSections[section]) {
+      state.jobLogSections[section].isClosed = !state.jobLogSections[section].isClosed;
+    }
   },
 
   [types.REQUEST_JOB](state) {
@@ -110,11 +125,6 @@ export default {
   [types.TOGGLE_SCROLL_ANIMATION](state, toggle) {
     state.isScrollingDown = toggle;
   },
-
-  [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_JOB_LOG](state, toggle) {
-    state.isScrolledToBottomBeforeReceivingJobLog = toggle;
-  },
-
   [types.REQUEST_JOBS_FOR_STAGE](state, stage = {}) {
     state.isLoadingJobs = true;
     state.selectedStage = stage.name;
@@ -126,5 +136,23 @@ export default {
   [types.RECEIVE_JOBS_FOR_STAGE_ERROR](state) {
     state.isLoadingJobs = false;
     state.jobs = [];
+  },
+  [types.RECEIVE_TEST_SUMMARY_SUCCESS](state, testSummary) {
+    state.testSummary = testSummary;
+  },
+  [types.RECEIVE_TEST_SUMMARY_COMPLETE](state) {
+    state.testSummaryComplete = true;
+  },
+  [types.ENTER_FULLSCREEN_SUCCESS](state) {
+    state.fullScreenEnabled = true;
+  },
+  [types.EXIT_FULLSCREEN_SUCCESS](state) {
+    state.fullScreenEnabled = false;
+  },
+  [types.FULL_SCREEN_CONTAINER_SET_UP](state, value) {
+    state.fullScreenContainerSetUp = value;
+  },
+  [types.FULL_SCREEN_MODE_AVAILABLE_SUCCESS](state) {
+    state.fullScreenModeAvailable = true;
   },
 };

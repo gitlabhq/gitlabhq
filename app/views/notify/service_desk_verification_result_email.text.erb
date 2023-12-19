@@ -1,6 +1,7 @@
 <% project_name = @service_desk_setting.project.human_name %>
 <% email_address = @service_desk_setting.custom_email %>
 <% verify_email_address = @service_desk_setting.custom_email_address_for_verification %>
+<% service_desk_incoming_address = @service_desk_setting.project.service_desk_incoming_address %>
 
 <% if @verification.finished? %>
   <%= s_("Notify|Email successfully verified") %>
@@ -18,7 +19,7 @@
     <%= s_('Notify|We were not able to make a connection to the specified host or there was an SSL issue.') %>
   <% elsif @verification.invalid_credentials? %>
     <%= s_('Notify|Invalid credentials:') %>
-    <%= s_('Notify|The given credentials (username and password) were rejected by the SMTP server.') %>
+    <%= s_('Notify|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.') %>
   <% elsif @verification.mail_not_received_within_timeframe? %>
     <%= s_('Notify|Verification email not received within timeframe:') %>
     <%= s_('Notify|We did not receive the verification email we sent out to %{strong_open}%{email_address}%{strong_close} in time.') % { email_address: verify_email_address, strong_open: '', strong_close: '' } %>
@@ -32,6 +33,12 @@
   <% elsif @verification.incorrect_token? %>
     <%= s_('Notify|Incorrect verification token:') %>
     <%= s_('Notify|We could not verify that we received the email we sent to your email inbox.') %>
+  <% elsif @verification.read_timeout? %>
+    <%= s_('Notify|Read timeout:') %>
+    <%= s_('Notify|The SMTP server did not respond in time.') %>
+  <% elsif @verification.incorrect_forwarding_target? %>
+    <%= s_('Notify|Incorrect forwarding target:') %>
+    <%= s_('Notify|Forward all emails to the custom email address to %{code_open}%{service_desk_incoming_address}%{code_end}.') % { code_open: '', service_desk_incoming_address: service_desk_incoming_address, code_end: '' } %>
   <% end %>
 
   <%= s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.') % { settings_link_start: '', settings_link_end: '' } %>

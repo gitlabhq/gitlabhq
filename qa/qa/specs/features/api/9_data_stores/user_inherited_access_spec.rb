@@ -12,6 +12,8 @@ module QA
       end
 
       context 'when added to parent group' do
+        include QA::Support::Helpers::Project
+
         let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:parent_group_user_api_client) do
@@ -23,6 +25,8 @@ module QA
         end
 
         before do
+          wait_until_project_is_ready(sub_group_project)
+
           parent_group.add_member(parent_group_user)
         end
 
@@ -52,22 +56,27 @@ module QA
           :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
-          expect do
-            create(:file,
-              api_client: parent_group_user_api_client,
-              project: sub_group_project,
-              branch: "new_branch_#{SecureRandom.hex(8)}")
-          end.not_to raise_error
+          # Retry is needed due to delays with project authorization updates
+          # Long term solution to accessing the status of a project authorization update
+          # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+          QA::Support::Retrier.retry_on_exception(max_attempts: 30, sleep_interval: 2) do
+            expect do
+              create(:file,
+                api_client: parent_group_user_api_client,
+                project: sub_group_project,
+                branch: "new_branch_#{SecureRandom.hex(8)}")
+            end.not_to raise_error
+          end
         end
 
         it(
-          'is allowed to commit to sub-group project via the API',
+          'is allowed to commit to sub-group project via the API', :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           # Retry is needed due to delays with project authorization updates
           # Long term solution to accessing the status of a project authorization update
           # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
-          QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
+          QA::Support::Retrier.retry_on_exception(max_attempts: 30, sleep_interval: 2) do
             expect do
               create(:commit,
                 api_client: parent_group_user_api_client,

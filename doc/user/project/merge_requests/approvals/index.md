@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, concepts
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Merge request approvals **(FREE ALL)**
@@ -26,7 +25,7 @@ group-level settings for merge request approval rules is tracked in this
 [GitLab Premium](https://about.gitlab.com/pricing/) and
 [GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
 can also configure approvals
-[for the entire instance](../../../admin_area/merge_requests_approvals.md).
+[for the entire instance](../../../../administration/admin_area.md).
 
 ## How approvals work
 
@@ -129,7 +128,7 @@ Invalid approval rules created through a scan result policy are presented with
 ## Related topics
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)
-- [Instance-level approval rules](../../../admin_area/merge_requests_approvals.md) for self-managed installations
+- [Instance-level approval rules](../../../../administration/admin_area.md) for self-managed installations
 
 <!-- ## Troubleshooting
 

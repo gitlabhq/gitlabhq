@@ -1,18 +1,17 @@
 ---
-type: reference
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use OpenID Connect as an OAuth 2.0 authentication provider **(FREE SELF)**
 
-GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
+You can use GitLab as a client application with [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.
 
 To enable the OpenID Connect OmniAuth provider, you must register your application
 with an OpenID Connect provider.
-The OpenID Connect provides you with a client's details and secret for you to use.
+The OpenID Connect provider provides you with a client's details and secret for you to use.
 
 1. On your GitLab server, open the configuration file.
 

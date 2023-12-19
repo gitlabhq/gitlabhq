@@ -65,10 +65,10 @@ export default {
       key: 'created_at',
       label: __('Date'),
     }),
+
     tableCell({
       key: 'status',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     }),
   ],
 
@@ -154,9 +154,7 @@ export default {
             </gl-link>
             <span v-else>{{ item.import_url }}</span>
           </template>
-          <span v-else>{{
-            s__('BulkImport|Template / File-based import / GitLab Migration')
-          }}</span>
+          <span v-else>{{ s__('BulkImport|Template / File-based import / Direct transfer') }}</span>
         </template>
         <template #cell(destination)="{ item }">
           <gl-link :href="item.http_url_to_repo">

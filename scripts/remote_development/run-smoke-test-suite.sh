@@ -10,6 +10,10 @@
 
 set -o errexit # AKA -e - exit immediately on errors (http://mywiki.wooledge.org/BashFAQ/105)
 
+###########
+## Setup ##
+###########
+
 # https://stackoverflow.com/a/28938235
 BCyan='\033[1;36m' # Bold Cyan
 BRed='\033[1;31m' # Bold Red
@@ -19,25 +23,67 @@ Color_Off='\033[0m' # Text Reset
 
 function onexit_err() {
   local exit_status=${1:-$?}
-  printf "\n❌❌❌ ${BRed}Remote Development specs failed!${Color_Off} ❌❌❌\n"
+  printf "\n❌❌❌ ${BRed}Remote Development smoke test failed!${Color_Off} ❌❌❌\n"
+
+  if [ ${REVEAL_RUBOCOP_TODO} -ne 0 ]; then
+    printf "\n(If the failure was due to rubocop, set REVEAL_RUBOCOP_TODO=0 to ignore TODOs)\n"
+  fi
+
   exit "${exit_status}"
 }
 trap onexit_err ERR
 set -o errexit
 
-printf "${BCyan}"
-printf "\nStarting Remote Development specs.\n\n"
-printf "${Color_Off}"
+#####################
+## Invoke commands ##
+#####################
 
-printf "${BBlue}Running Remote Development backend specs${Color_Off}\n\n"
+printf "${BCyan}\nStarting Remote Development smoke test...\n\n${Color_Off}"
 
-bin/rspec -r spec_helper \
-$(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa') \
-ee/spec/graphql/types/query_type_spec.rb \
-ee/spec/graphql/types/subscription_type_spec.rb \
-ee/spec/requests/api/internal/kubernetes_spec.rb \
-spec/graphql/types/subscription_type_spec.rb \
-spec/lib/result_spec.rb \
-spec/support_specs/matchers/result_matchers_spec.rb
+#############
+## RUBOCOP ##
+#############
+
+printf "${BBlue}Running RuboCop for Remote Development and related files${Color_Off}\n\n"
+
+# TODO: Also run rubocop for the other non-remote-development files once they are passing rubocop
+#       with REVEAL_RUBOCOP_TODO=1
+while IFS= read -r -d '' file; do
+  files_for_rubocop+=("$file")
+done < <(find . -path './**/remote_development/*.rb' -print0)
+
+REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
+
+###########
+## RSPEC ##
+###########
+
+printf "\n\n${BBlue}Running Remote Development and related backend RSpec specs${Color_Off}\n\n"
+
+while IFS= read -r file; do
+    files_for_rspec+=("$file")
+done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa')
+
+files_for_rspec+=(
+    "ee/spec/graphql/types/query_type_spec.rb"
+    "ee/spec/graphql/types/subscription_type_spec.rb"
+    "ee/spec/requests/api/internal/kubernetes_spec.rb"
+    "spec/graphql/types/subscription_type_spec.rb"
+    "spec/lib/result_spec.rb"
+    "spec/support_specs/matchers/result_matchers_spec.rb"
+)
+bin/rspec -r spec_helper "${files_for_rspec[@]}"
+
+##########
+## JEST ##
+##########
+
+printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
+
+yarn jest ee/spec/frontend/remote_development
+
+###########################
+## Print success message ##
+###########################
 
 printf "\n✅✅✅ ${BGreen}All Remote Development specs passed successfully!${Color_Off} ✅✅✅\n"

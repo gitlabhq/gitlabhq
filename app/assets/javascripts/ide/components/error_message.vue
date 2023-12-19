@@ -53,7 +53,6 @@ export default {
 
 <template>
   <gl-alert
-    data-qa-selector="flash_alert"
     variant="danger"
     :dismissible="canDismiss"
     :primary-button-text="message.actionText"

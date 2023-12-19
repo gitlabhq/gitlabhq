@@ -3,10 +3,6 @@
 module PackagesHelper
   include ::API::Helpers::RelatedResourcesHelpers
 
-  def package_sort_path(options = {})
-    "#{request.path}?#{options.to_param}"
-  end
-
   def nuget_package_registry_url(project_id)
     expose_url(api_v4_projects_packages_nuget_index_path(id: project_id, format: '.json'))
   end
@@ -101,11 +97,11 @@ module PackagesHelper
     }
   end
 
-  def settings_data
+  def settings_data(project)
     cleanup_settings_data.merge(
-      show_container_registry_settings: show_container_registry_settings(@project).to_s,
-      show_package_registry_settings: show_package_registry_settings(@project).to_s,
-      cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(@project)
+      show_container_registry_settings: show_container_registry_settings(project).to_s,
+      show_package_registry_settings: show_package_registry_settings(project).to_s,
+      cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(project)
     )
   end
 end

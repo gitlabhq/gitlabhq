@@ -88,7 +88,6 @@ export default {
     v-else-if="!loadingContentFailed && !isLoadingContent"
     ref="content"
     v-safe-html="content"
-    data-qa-selector="wiki_page_content"
     data-testid="wiki-page-content"
     class="js-wiki-page-content md"
   ></div>

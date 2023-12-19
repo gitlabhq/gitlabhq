@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Code Quality **(FREE ALL)**
@@ -51,7 +51,9 @@ Code Quality results are shown in the:
 
 Code Quality analysis results display in the merge request widget area if a report from the target
 branch is available for comparison. The merge request widget displays Code Quality findings and resolutions that
-were introduced by the changes made in the merge request.
+were introduced by the changes made in the merge request. Multiple Code Quality findings with identical
+fingerprints display as a single entry in the merge request widget, each individual finding is available in the
+full report available in the **Pipeline** details view.
 
 ![Code Quality Widget](img/code_quality_widget_13_11.png)
 
@@ -63,9 +65,9 @@ were introduced by the changes made in the merge request.
 > - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
 
 Code Quality results display in the merge request **Changes** view. Lines containing Code Quality
-issues are marked by an indicator beside the gutter. Hover over the marker for details of the issue.
+issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
 
-![Code Quality MR diff report](img//code_quality_mr_diff_report_v15_7.png)
+![Code Quality Inline Indicator](img/code_quality_inline_indicator_v16_7.png)
 
 ### Pipeline details view **(PREMIUM ALL)**
 
@@ -350,7 +352,7 @@ the nested method of container execution.
 The following variables can address all of the required image pulls:
 
 - `CODE_QUALITY_IMAGE`: A fully prefixed image name that can be located anywhere
-  accessible from your job environment. GitLab Container Registry can be used here
+  accessible from your job environment. GitLab container registry can be used here
   to host your own copy.
 - `CODECLIMATE_PREFIX`: The domain of your intended container image registry. This
   is a configuration option supported by [CodeClimate CLI](https://github.com/codeclimate/codeclimate/pull/948).
@@ -420,7 +422,7 @@ code_quality:
 
 You can use a Dependency Proxy to reduce the time taken to download dependencies.
 
-Prerequisite:
+Prerequisites:
 
 - [Dependency Proxy](../../user/packages/dependency_proxy/index.md) enabled in the project's
   group.
@@ -518,15 +520,15 @@ Code Quality functionality can be extended by using Code Climate
 For example, to use the [SonarJava analyzer](https://docs.codeclimate.com/docs/sonar-java):
 
 1. Add a file named `.codeclimate.yml` to the root of your repository
-1. Add to the `.codeclimate.yml` the [enablement code](https://docs.codeclimate.com/docs/sonar-java#enable-the-plugin)
-  for the plugin to the root of your repository:
+1. Add the [enablement code](https://docs.codeclimate.com/docs/sonar-java#enable-the-plugin)
+   for the plugin to the root of your repository to the `.codeclimate.yml` file:
 
-  ```yaml
-  version: "2"
-  plugins:
-    sonar-java:
-      enabled: true
-  ```
+   ```yaml
+   version: "2"
+   plugins:
+     sonar-java:
+       enabled: true
+   ```
 
 This adds SonarJava to the `plugins:` section of the
 [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
@@ -550,7 +552,7 @@ You should configure Code Quality checks to run on your worker as documented in
 A common issue is that the terms `Code Quality` (GitLab specific) and `Code Climate`
 (Engine used by GitLab) are very similar. You must add a **`.codeclimate.yml`** file
 to change the default configuration, **not** a `.codequality.yml` file. If you use
-the wrong filename, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
+the wrong file name, the [default `.codeclimate.yml`](https://gitlab.com/gitlab-org/ci-cd/codequality/-/blob/master/codeclimate_defaults/.codeclimate.yml.template)
 is still used.
 
 ### No Code Quality report is displayed in a merge request
@@ -718,7 +720,7 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
 1. Go to the pipeline details page.
 1. Append `.json` to the URL.
 1. Copy the `iid` of the pipeline.
-1. Go to [GraphiQL explorer](../../api/graphql/index.md#graphiql).
+1. Go to the [interactive GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 1. Run the following query:
 
    ```graphql

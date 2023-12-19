@@ -28,14 +28,16 @@ swap:
   e-mail: "email"
   emojis: "emoji"
   ex: "for example"
-  file name: "filename"
+  filename: "file name"
   filesystem: "file system"
+  fullscreen: "full screen"
   info: "information"
   installation from source: self-compiled installation
   installations from source: self-compiled installations
   it is recommended: "you should"
   logged in user: "authenticated user"
   logged-in user: "authenticated user"
+  machine-learning: "machine learning"
   modal dialog: "dialog"
   modal window: "dialog"
   modal: "dialog"

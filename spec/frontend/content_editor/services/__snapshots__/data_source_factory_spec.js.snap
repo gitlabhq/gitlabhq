@@ -1,0 +1,256 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataSourceFactory filters items based on command "/assign" for reference type "user" and command 1`] = `
+Array [
+  "florida.schoen",
+  "root",
+  "all",
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+  "jashkenas",
+  "twitter",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/assign_reviewer" for reference type "user" and command 1`] = `
+Array [
+  "florida.schoen",
+  "root",
+  "all",
+  "errol",
+  "evelynn_olson",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+  "jashkenas",
+  "twitter",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/label" for reference type "label" and command 1`] = `
+Array [
+  "Bronce",
+  "Contour",
+  "Corolla",
+  "Cygsync",
+  "Frontier",
+  "Grand Am",
+  "Onesync",
+  "Phone",
+  "Pynefunc",
+  "Trinix",
+  "Trounswood",
+  "group::knowledge",
+  "scoped label",
+  "type::one",
+  "type::two",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/reassign" for reference type "user" and command 1`] = `
+Array [
+  "florida.schoen",
+  "root",
+  "all",
+  "errol",
+  "evelynn_olson",
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/reassign_reviewer" for reference type "user" and command 1`] = `
+Array [
+  "florida.schoen",
+  "root",
+  "all",
+  "errol",
+  "evelynn_olson",
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/relabel" for reference type "label" and command 1`] = `
+Array [
+  "Amsche",
+  "Brioffe",
+  "Bronce",
+  "Bryncefunc",
+  "Contour",
+  "Corolla",
+  "Cygsync",
+  "Frontier",
+  "Ghost",
+  "Grand Am",
+  "Onesync",
+  "Phone",
+  "Pynefunc",
+  "Trinix",
+  "Trounswood",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/unassign" for reference type "user" and command 1`] = `
+Array [
+  "errol",
+  "evelynn_olson",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/unassign_reviewer" for reference type "user" and command 1`] = `
+Array [
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+]
+`;
+
+exports[`DataSourceFactory filters items based on command "/unlabel" for reference type "label" and command 1`] = `
+Array [
+  "Amsche",
+  "Brioffe",
+  "Bryncefunc",
+  "Ghost",
+]
+`;
+
+exports[`DataSourceFactory for reference type "command", searches for "re" correctly 1`] = `
+Array [
+  "relabel",
+  "remove_milestone",
+  "remove_estimate",
+  "remove_time_spent",
+  "relate",
+  "remove_epic",
+  "reassign",
+  "create_merge_request",
+]
+`;
+
+exports[`DataSourceFactory for reference type "epic", searches for "n" correctly 1`] = `
+Array [
+  "Nobis quidem aspernatur reprehenderit sunt ut ipsum tempora sapiente sed iste.",
+  "Minus eius ut omnis quos sunt dicta ex ipsum.",
+  "Quae nostrum possimus rerum aliquam pariatur a eos aut id.",
+  "Dicta incidunt vel dignissimos sint sit esse est quibusdam quidem consequatur.",
+  "Doloremque a quisquam qui culpa numquam doloribus similique iure enim.",
+]
+`;
+
+exports[`DataSourceFactory for reference type "issue", searches for "q" correctly 1`] = `
+Array [
+  "Quasi id et et nihil sint autem.",
+  "Eaque omnis eius quas necessitatibus hic ut et corrupti.",
+  "Aut quisquam magnam eos distinctio incidunt perferendis fugit.",
+  "Dolorem quisquam cupiditate consequatur perspiciatis sequi eligendi ullam.",
+  "Nesciunt quia molestiae in aliquam amet et dolorem.",
+  "Porro tempore qui qui culpa saepe et nam quos.",
+  "Sed sint a est consequatur quae quasi autem debitis alias.",
+  "Molestiae minima maxime optio nihil quam eveniet dolor.",
+  "Et laboriosam aut ratione voluptatem quasi recusandae.",
+  "Et molestiae delectus voluptates velit vero illo aut rerum quo et.",
+]
+`;
+
+exports[`DataSourceFactory for reference type "label", searches for "c" correctly 1`] = `
+Array [
+  "Contour",
+  "Corolla",
+  "Cygsync",
+  "scoped label",
+  "Amsche",
+  "Bronce",
+  "Bryncefunc",
+  "Onesync",
+  "Pynefunc",
+]
+`;
+
+exports[`DataSourceFactory for reference type "merge_request", searches for "n" correctly 1`] = `
+Array [
+  "Blanditiis maxime voluptatem ut pariatur vel autem vero non quod libero.",
+  "Optio nemo qui dolorem sit ipsum qui saepe.",
+  "Draft: Alunny/publish lib",
+  "Draft: Fix event current target",
+  "Draft: Resolve \\"hgvbbvnnb\\"",
+  "Autem eaque et sed provident enim corrupti molestiae.",
+  "Always call registry's trigger method from withRegistration",
+]
+`;
+
+exports[`DataSourceFactory for reference type "milestone", searches for "16" correctly 1`] = `
+Array [
+  "16.7",
+  "16.8",
+  "16.9",
+  "16.10",
+  "16.11",
+  "16.0 (expired)",
+  "16.1 (expired)",
+  "16.2 (expired)",
+  "16.3 (expired)",
+  "16.4 (expired)",
+  "16.5 (expired)",
+  "16.6 (expired)",
+]
+`;
+
+exports[`DataSourceFactory for reference type "snippet", searches for "s" correctly 1`] = `
+Array [
+  "ss",
+  "test snippet",
+  "another test snippet",
+]
+`;
+
+exports[`DataSourceFactory for reference type "user", searches for "r" correctly 1`] = `
+Array [
+  "root",
+  "errol",
+  "lakeesha.batz",
+  "myrtis",
+  "florida.schoen",
+  "laurene_blick",
+  "all",
+  "twitter",
+  "gitlab-org",
+  "evelynn_olson",
+]
+`;
+
+exports[`DataSourceFactory for reference type "vulnerability", searches for "cross" correctly 1`] = `
+Array [
+  "Cross Site Scripting (Persistent)",
+  "Cross Site Scripting (Persistent)",
+  "Cross Site Scripting (Persistent)",
+]
+`;

@@ -803,14 +803,72 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     end
 
     describe 'Empty State' do
-      let(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :repository) }
 
       before do
         visit project_pipelines_path(project)
+
+        wait_for_requests
       end
 
       it 'renders empty state' do
         expect(page).to have_content 'Try test template'
+      end
+
+      it 'does not show Jenkins Migration Prompt' do
+        expect(page).not_to have_content _('Migrate to GitLab CI/CD from Jenkins')
+      end
+    end
+
+    describe 'Jenkins migration prompt' do
+      let_it_be_with_reload(:project) { create(:project, :repository) }
+
+      before do
+        allow_next_instance_of(Repository) do |instance|
+          allow(instance).to receive(:jenkinsfile?).and_return(true)
+        end
+      end
+
+      context 'when jenkinsfile is present' do
+        it 'shows Jenkins Migration Prompt' do
+          visit project_pipelines_path(project)
+
+          wait_for_requests
+
+          expect(page).to have_content _('Migrate to GitLab CI/CD from Jenkins')
+          expect(page).to have_content _('Start with a migration plan')
+        end
+      end
+
+      context 'when gitlab ci file is present' do
+        before do
+          allow_next_instance_of(Repository) do |instance|
+            allow(instance).to receive(:gitlab_ci_yml).and_return(true)
+          end
+        end
+
+        it 'does not show migration prompt' do
+          expect_not_to_show_prompt(project)
+        end
+      end
+
+      context 'when AutoDevops is enabled' do
+        before do
+          project.update!(auto_devops_attributes: { enabled: true })
+        end
+
+        it 'does not show migration prompt' do
+          expect_not_to_show_prompt(project)
+        end
+      end
+
+      def expect_not_to_show_prompt(project)
+        visit project_pipelines_path(project)
+
+        wait_for_requests
+
+        expect(page).not_to have_content _('Migrate to GitLab CI/CD from Jenkins')
+        expect(page).not_to have_content _('Start with a migration plan')
       end
     end
   end

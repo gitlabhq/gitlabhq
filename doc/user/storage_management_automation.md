@@ -1,8 +1,7 @@
 ---
-type: howto
 stage: Fulfillment
 group: Utilization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Automate storage management **(FREE ALL)**
@@ -838,8 +837,8 @@ you can configure:
 - The number of days before an image tag can be deleted (`older_than`)
 
 WARNING:
-On GitLab.com, due to the scale of the Container Registry, the number of tags deleted by this API is limited.
-If your Container Registry has a large number of tags to delete, only some of them are deleted. You might need
+On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
+If your container registry has a large number of tags to delete, only some of them are deleted. You might need
 to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.
@@ -892,7 +891,7 @@ echo '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":tr
 
 You can optimize container images to reduce the image size and overall storage consumption in the container registry. Learn more in the [pipeline efficiency documentation](../ci/pipelines/pipeline_efficiency.md#optimize-docker-images).
 
-## Manage Package Registry storage
+## Manage package registry storage
 
 Package registries are available [for projects](../api/packages.md#for-a-project) or [for groups](../api/packages.md#for-a-group).
 

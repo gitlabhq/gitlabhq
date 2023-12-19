@@ -1,43 +1,35 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Email from GitLab **(PREMIUM SELF)**
 
-GitLab provides a tool to administrators for emailing all users, or users of
-a chosen group or project, right from the Admin Area. Users receive the email
-at their primary email address.
+Administrators can email all users, or users of a chosen group or project.
+Users receive the email at their primary email address.
+
+You might use this functionality to notify your users:
+
+- About a new project, a new feature, or a new product launch.
+- About a new deployment, or that downtime is expected.
 
 For information about email notifications originating from GitLab, read
 [GitLab notification emails](../user/profile/notifications.md).
 
-## Use-cases
-
-- Notify your users about a new project, a new feature, or a new product launch.
-- Notify your users about a new deployment, or that downtime is expected
-  for a particular reason.
-
 ## Sending emails to users from GitLab
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+You can send email notifications to all users, or only to users in a specific group or project.
+You can send email notifications once every 10 minutes.
+
+To send an email:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select **Send email to users**.
-
-   ![administrators](img/email1.png)
-
-1. Compose an email and choose where to send it (all users or users of a
-   chosen group or project). The email body only supports plain text messages.
-   HTML, Markdown, and other rich text formats are not supported, and is
-   sent as plain text to users.
-
-   ![compose an email](img/email2.png)
-
-NOTE:
-[Starting with GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/31509), email notifications can be sent only once every 10 minutes. This helps minimize performance issues.
+1. In the upper-right corner, select **Send email to users** (**{mail}**).
+1. Complete the fields. The email body supports only plain text and does not support HTML, Markdown, or other rich text formats.
+1. From the **Select group or project** dropdown list, select the recipient.
+1. Select **Send message**.
 
 ## Unsubscribing from emails
 

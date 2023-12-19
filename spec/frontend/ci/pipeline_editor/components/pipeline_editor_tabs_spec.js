@@ -65,6 +65,7 @@ describe('Pipeline editor tabs component', () => {
       },
       provide: {
         aiChatAvailable: false,
+        ciCatalogPath: '/explore/catalog',
         ciConfigPath: '/path/to/ci-config',
         ciLintPath: mockCiLintPath,
         currentBranch: 'main',

@@ -1,0 +1,8 @@
+---
+name: packages_dependency_proxy_containers_scope_check
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136655
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431386
+milestone: '16.7'
+type: development
+group: group::container registry
+default_enabled: false

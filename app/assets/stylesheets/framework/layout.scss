@@ -71,6 +71,11 @@ body {
 }
 
 .alert-wrapper {
+  @include gl-media-breakpoint-up(xl) {
+    --gl-alert-padding-x: #{$gl-spacing-scale-3};
+    --gl-broadcast-message-padding-x: #{$gl-spacing-scale-3};
+  }
+
   .alert {
     margin-bottom: 0;
 
@@ -149,7 +154,7 @@ body {
   overflow: hidden;
 
   > #js-peek,
-  > .navbar-gitlab {
+  > .header-logged-out {
     position: static;
     top: auto;
   }

@@ -22,9 +22,7 @@ module BreadcrumbsHelper
   end
 
   def breadcrumb_list_item(link)
-    content_tag "li" do
-      link + sprite_icon("chevron-lg-right", size: 8, css_class: "breadcrumbs-list-angle")
-    end
+    content_tag :li, link, class: 'gl-breadcrumb-item'
   end
 
   def add_to_breadcrumb_collapsed_links(link, location: :before)

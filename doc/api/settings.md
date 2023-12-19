@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Application settings API **(FREE SELF)**
@@ -21,6 +21,7 @@ For information on how to control the application settings cache for an instance
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 > - `in_product_marketing_emails_enabled` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 > - `repository_storages` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429675) in GitLab 16.6.
+> - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
@@ -124,7 +125,9 @@ Example response:
   "silent_mode_enabled": false,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
-  "project_jobs_api_rate_limit": 600
+  "project_jobs_api_rate_limit": 600,
+  "security_txt_content": null,
+  "bulk_import_concurrent_pipeline_batch_limit": 25
 }
 ```
 
@@ -160,6 +163,7 @@ these parameters:
 
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
+> - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -268,7 +272,9 @@ Example response:
   "security_policy_global_group_approvers_enabled": true,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
-  "project_jobs_api_rate_limit": 600
+  "project_jobs_api_rate_limit": 600,
+  "security_txt_content": null,
+  "bulk_import_concurrent_pipeline_batch_limit": 25
 }
 ```
 
@@ -343,7 +349,7 @@ listed in the descriptions of the relevant settings.
 | `container_registry_delete_tags_service_timeout`          | integer | no                           | The maximum time, in seconds, that the cleanup process can take to delete a batch of tags for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_expiration_policies_caching`          | boolean | no                           | Caching during the execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
 | `container_registry_expiration_policies_worker_capacity`  | integer | no                           | Number of workers for [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
-| `container_registry_token_expire_delay`                   | integer | no                           | Container Registry token duration in minutes. |
+| `container_registry_token_expire_delay`                   | integer | no                           | Container registry token duration in minutes. |
 | `package_registry_cleanup_policies_worker_capacity`       | integer | no                           | Number of workers assigned to the packages cleanup policies. |
 | `updating_name_disabled_for_users`       | boolean          | no                                   | [Disable user profile name changes](../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes). |
 | `allow_account_deletion`                 | boolean          | no                                   | Enable [users to delete their accounts](../administration/settings/account_and_limit_settings.md#prevent-users-from-deleting-their-accounts). |
@@ -526,7 +532,6 @@ listed in the descriptions of the relevant settings.
 | `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
-| `user_email_lookup_limit`                | integer          | no                                   | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631/)** in GitLab 14.9 will be removed in 15.0. Replaced by `search_rate_limit`. Max number of requests per minute for email lookup. Default: 60. To disable throttling set to 0.|
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling set to 0.|
 | `search_rate_limit_unauthenticated`      | integer          | no                                   | Max number of requests per minute for performing a search while unauthenticated. Default: 10. To disable throttling set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |
@@ -543,6 +548,7 @@ listed in the descriptions of the relevant settings.
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up scan result policy approval groups globally or within project hierarchies. |
+| `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean | no | Flag to indicate if token expiry date can be optional for service account users |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes` **(PREMIUM ALL)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on shared runners per month. |
@@ -617,6 +623,7 @@ listed in the descriptions of the relevant settings.
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
+| `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous Direct Transfer batches to process. |
 
 ### Configure inactive project deletion
 
@@ -651,7 +658,7 @@ to be set, or _all_ of these values to be set:
 
 ::EndTabs
 
-### Package Registry: Package file size limits
+### Package registry: Package file size limits
 
 The package file size limits are not part of the Application settings API.
 Instead, these settings can be accessed using the [Plan limits API](plan_limits.md).

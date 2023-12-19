@@ -25,11 +25,7 @@ RSpec.describe 'Querying an Abuse Report', feature_category: :insider_threat do
 
     it 'returns all fields' do
       expect(abuse_report_data).to include(
-        'id' => global_id,
-        'userPermissions' => {
-          'readAbuseReport' => true,
-          'createNote' => true
-        }
+        'id' => global_id
       )
     end
   end

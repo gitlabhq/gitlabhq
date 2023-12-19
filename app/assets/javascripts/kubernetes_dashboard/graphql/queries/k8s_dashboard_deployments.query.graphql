@@ -1,0 +1,14 @@
+query getK8sDashboardDeployments($configuration: LocalConfiguration) {
+  k8sDeployments(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    status {
+      conditions
+    }
+  }
+}

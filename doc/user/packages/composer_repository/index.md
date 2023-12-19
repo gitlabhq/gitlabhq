@@ -1,10 +1,10 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Composer packages in the Package Registry **(FREE ALL BETA)**
+# Composer packages in the package registry **(FREE ALL BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -16,7 +16,7 @@ The Composer package registry for GitLab is under development and isn't ready fo
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
 work and timelines to make it production ready.
 
-Publish [Composer](https://getcomposer.org/) packages in your project's Package Registry.
+Publish [Composer](https://getcomposer.org/) packages in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
 
 For documentation of the specific API endpoints that the Composer
@@ -29,7 +29,7 @@ Learn how to [build a Composer package](../workflows/build_packages.md#composer)
 
 ## Publish a Composer package by using the API
 
-Publish a Composer package to the Package Registry,
+Publish a Composer package to the package registry,
 so that anyone who can access the project can use the package as a dependency.
 
 Prerequisites:
@@ -81,7 +81,7 @@ selecting the **Composer** tab.
 
 ## Publish a Composer package by using CI/CD
 
-You can publish a Composer package to the Package Registry as part of your CI/CD process.
+You can publish a Composer package to the package registry as part of your CI/CD process.
 
 1. Specify a `CI_JOB_TOKEN` in your `.gitlab-ci.yml` file:
 
@@ -123,11 +123,11 @@ When you publish:
 
 > Authorization to [download a package archive](../../../api/packages/composer.md#download-a-package-archive) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
 
-Install a package from the Package Registry so you can use it as a dependency.
+Install a package from the package registry so you can use it as a dependency.
 
 Prerequisites:
 
-- A package in the Package Registry.
+- A package in the package registry.
 - The group ID, which is on the group's home page.
 - One of the following token types:
   - A [personal access token](../../../user/profile/personal_access_tokens.md)
@@ -138,9 +138,9 @@ Prerequisites:
 
 To install a package:
 
-1. Add the Package Registry URL to your project's `composer.json` file, along with the package name and version you want to install:
+1. Add the package registry URL to your project's `composer.json` file, along with the package name and version you want to install:
 
-   - Connect to the Package Registry for your group:
+   - Connect to the package registry for your group:
 
    ```shell
    composer config repositories.<group_id> composer https://gitlab.example.com/api/v4/group/<group_id>/-/packages/composer/packages.json

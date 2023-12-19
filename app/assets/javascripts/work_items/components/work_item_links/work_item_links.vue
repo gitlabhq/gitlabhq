@@ -201,10 +201,12 @@ export default {
     },
   },
   i18n: {
-    title: s__('WorkItem|Tasks'),
-    fetchError: s__('WorkItem|Something went wrong when fetching tasks. Please refresh this page.'),
+    title: s__('WorkItem|Child items'),
+    fetchError: s__(
+      'WorkItem|Something went wrong when fetching child items. Please refresh this page.',
+    ),
     emptyStateMessage: s__(
-      'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
+      'WorkItem|No child items are currently assigned. Use child items to break down this issue into smaller parts.',
     ),
     addChildButtonLabel: s__('WorkItem|Add'),
     addChildOptionLabel: s__('WorkItem|Existing task'),

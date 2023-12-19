@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Project'] do
+RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_projects do
   include GraphqlHelpers
   include ProjectForksHelper
+  using RSpec::Parameterized::TableSyntax
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Project) }
 
@@ -21,7 +22,8 @@ RSpec.describe GitlabSchema.types['Project'] do
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled avatar_url
       issues_enabled merge_requests_enabled wiki_enabled
-      snippets_enabled jobs_enabled public_jobs open_issues_count import_status
+      forking_access_level issues_access_level merge_requests_access_level
+      snippets_enabled jobs_enabled public_jobs open_issues_count open_merge_requests_count import_status
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics statistics_details_paths repository merge_requests merge_request issues
@@ -39,7 +41,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
-      ci_cd_settings detailed_import_status
+      ci_cd_settings detailed_import_status value_streams
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -701,6 +703,63 @@ RSpec.describe GitlabSchema.types['Project'] do
       it 'is empty' do
         expect(subject.dig('data', 'project', 'serviceDeskAddress')).to be_blank
       end
+    end
+  end
+
+  describe 'project features access level' do
+    let_it_be(:project) { create(:project, :public) }
+
+    where(project_feature: %w[forkingAccessLevel issuesAccessLevel mergeRequestsAccessLevel])
+
+    with_them do
+      let(:query) do
+        %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            #{project_feature} {
+              integerValue
+              stringValue
+            }
+          }
+        }
+      )
+      end
+
+      subject { GitlabSchema.execute(query).as_json.dig('data', 'project', project_feature) }
+
+      it { is_expected.to eq({ "integerValue" => ProjectFeature::ENABLED, "stringValue" => "ENABLED" }) }
+    end
+  end
+
+  describe 'open_merge_requests_count' do
+    let_it_be(:project, reload: true) { create(:project, :public) }
+    let_it_be(:open_merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:closed_merge_request) { create(:merge_request, :closed, source_project: project) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            openMergeRequestsCount
+          }
+        }
+      )
+    end
+
+    subject(:open_merge_requests_count) do
+      GitlabSchema.execute(query).as_json.dig('data', 'project', 'openMergeRequestsCount')
+    end
+
+    context 'when the user can access merge requests' do
+      it { is_expected.to eq(1) }
+    end
+
+    context 'when the user cannot access merge requests' do
+      before do
+        project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 

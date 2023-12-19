@@ -1,0 +1,4 @@
+fragment PipelineHeaderData on Pipeline {
+  id
+  iid
+}

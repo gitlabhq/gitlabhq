@@ -23,7 +23,7 @@ export default class Profile {
       modalCrop: '.modal-profile-crop',
       pickImageEl: '.js-choose-user-avatar-button',
       uploadImageBtn: '.js-upload-user-avatar',
-      modalCropImg: '.modal-profile-crop-image',
+      modalCropImg: document.querySelector('.modal-profile-crop-image'),
     };
     this.avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data('glcrop');
   }
@@ -89,12 +89,9 @@ export default class Profile {
   }
 
   updateHeaderAvatar() {
-    if (gon?.use_new_navigation) {
-      $('[data-testid="user-dropdown"] .gl-avatar').attr('src', this.avatarGlCrop.dataURL);
-    } else {
-      $('.header-user-avatar').attr('src', this.avatarGlCrop.dataURL);
-      $('.js-sidebar-user-avatar').attr('src', this.avatarGlCrop.dataURL);
-    }
+    const url = URL.createObjectURL(this.avatarGlCrop.getBlob());
+
+    document.dispatchEvent(new CustomEvent('userAvatar:update', { detail: { url } }));
   }
 
   setRepoRadio() {

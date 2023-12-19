@@ -161,10 +161,25 @@ module Gitlab
         condition do
           quick_action_target.persisted?
         end
-        command :submit_review do
+        command :submit_review do |state = "reviewed"|
           next if params[:review_id]
 
           result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
+
+          if Feature.enabled?(:mr_request_changes, current_user)
+            reviewer_state = state.strip.presence
+
+            if reviewer_state === 'approve'
+              ::MergeRequests::ApprovalService
+                .new(project: quick_action_target.project, current_user: current_user)
+                .execute(quick_action_target)
+            elsif MergeRequestReviewer.states.key?(reviewer_state)
+              ::MergeRequests::UpdateReviewerStateService
+                .new(project: quick_action_target.project, current_user: current_user)
+                .execute(quick_action_target, reviewer_state)
+            end
+          end
+
           @execution_message[:submit_review] = if result[:status] == :success
                                                  _('Submitted the current review.')
                                                else

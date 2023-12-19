@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Upgrading GitLab **(FREE SELF)**
@@ -195,7 +195,7 @@ When upgrading:
    - GitLab 16: [`16.0.x`](versions/gitlab_16_changes.md#1600) (only
      instances with [lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change) or
      [large pipeline variables history](versions/gitlab_16_changes.md#1610)) >
-     [`16.1`](versions/gitlab_16_changes.md#1610)(instances with NPM packages in their Package Registry) >
+     [`16.1`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
      [`16.2.x`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
      [`16.3`](versions/gitlab_16_changes.md#1630) > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
@@ -218,7 +218,7 @@ upgrade stops allow required background migrations to finish.
 
 During GitLab 16.x, we are scheduling required upgrade stops beforehand so users can better plan out appropriate upgrade stops and downtime when necessary.
 
-The first scheduled required upgrade stop has been announced for 16.3.x. When planning upgrades, please take this into account.
+The first scheduled required upgrade stop has been announced for 16.3.x. When planning upgrades, take this into account.
 
 ### Earlier GitLab versions
 

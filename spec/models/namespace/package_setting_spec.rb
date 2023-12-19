@@ -16,6 +16,9 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
       it { is_expected.to validate_inclusion_of(:nuget_duplicates_allowed).in_array([true, false]) }
     end
 
+    it { is_expected.to allow_value(true, false).for(:nuget_symbol_server_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:nuget_symbol_server_enabled) }
+
     describe 'regex values' do
       let_it_be(:package_settings) { create(:namespace_package_setting) }
 

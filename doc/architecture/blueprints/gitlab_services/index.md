@@ -22,15 +22,15 @@ As GitLab works towards providing a single platform for the whole DevSecOps cycl
 its offering should not stop at pipelines, but should include the deployment and release management, as well as
 observability of user-developed and third party applications.
 
-While GitLab offers some concepts, like the `environment` syntax in GitLab pipelines, 
-it does not offer any concept on what is running in a given environment. While the environment might answer the "where" is 
+While GitLab offers some concepts, like the `environment` syntax in GitLab pipelines,
+it does not offer any concept on what is running in a given environment. While the environment might answer the "where" is
 something running, it does not answer the question of "what" is running there. We should
-introduce [service](https://about.gitlab.com/direction/delivery/glossary.html#service) and [release artifact](https://about.gitlab.com/direction/delivery/glossary.html#release) to answer this question. The [Delivery glossary](https://about.gitlab.com/direction/delivery/glossary.html#service) defines 
+introduce [service](https://about.gitlab.com/direction/delivery/glossary.html#service) and [release artifact](https://about.gitlab.com/direction/delivery/glossary.html#release) to answer this question. The [Delivery glossary](https://about.gitlab.com/direction/delivery/glossary.html#service) defines
 a service as
 
 > a logical concept that is a (mostly) independently deployable part of an application that is loosely coupled with other services to serve specific functionalities for the application.
 
-A service would connect to the SCM, registry or issues through release artifacts and would be a focused view into the [environments](https://about.gitlab.com/direction/delivery/glossary.html#environment) where 
+A service would connect to the SCM, registry or issues through release artifacts and would be a focused view into the [environments](https://about.gitlab.com/direction/delivery/glossary.html#environment) where
 a specific version of the given release artifact is deployed (or being deployed).
 
 Having a concept of services allows our users to track their applications in production, not only in CI/CD pipelines. This opens up possibilities, like cost management.

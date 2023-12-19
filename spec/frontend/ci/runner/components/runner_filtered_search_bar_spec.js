@@ -1,4 +1,4 @@
-import { GlFilteredSearch, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { assertProps } from 'helpers/assert_props';
@@ -32,7 +32,12 @@ describe('RunnerList', () => {
 
   const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
-  const findSortOptions = () => wrapper.findAllComponents(GlDropdownItem);
+  const findGlSorting = () => wrapper.findComponent(GlSorting);
+  const getSortOptions = () => findGlSorting().props('sortOptions');
+  const getSelectedSortOption = () => {
+    const sortBy = findGlSorting().props('sortBy');
+    return getSortOptions().find(({ value }) => sortBy === value)?.text;
+  };
 
   const mockOtherSort = CONTACTED_DESC;
   const mockFilters = [
@@ -56,8 +61,6 @@ describe('RunnerList', () => {
       stubs: {
         FilteredSearch,
         GlFilteredSearch,
-        GlDropdown,
-        GlDropdownItem,
       },
       ...options,
     });
@@ -74,9 +77,10 @@ describe('RunnerList', () => {
   it('sets sorting options', () => {
     const SORT_OPTIONS_COUNT = 2;
 
-    expect(findSortOptions()).toHaveLength(SORT_OPTIONS_COUNT);
-    expect(findSortOptions().at(0).text()).toBe('Created date');
-    expect(findSortOptions().at(1).text()).toBe('Last contact');
+    const sortOptionsProp = getSortOptions();
+    expect(sortOptionsProp).toHaveLength(SORT_OPTIONS_COUNT);
+    expect(sortOptionsProp[0].text).toBe('Created date');
+    expect(sortOptionsProp[1].text).toBe('Last contact');
   });
 
   it('sets tokens to the filtered search', () => {
@@ -141,12 +145,7 @@ describe('RunnerList', () => {
     });
 
     it('sort option is selected', () => {
-      expect(
-        findSortOptions()
-          .filter((w) => w.props('isChecked'))
-          .at(0)
-          .text(),
-      ).toEqual('Last contact');
+      expect(getSelectedSortOption()).toBe('Last contact');
     });
 
     it('when the user sets a filter, the "search" preserves the other filters', async () => {
@@ -181,7 +180,7 @@ describe('RunnerList', () => {
   });
 
   it('when the user sets a sorting method, the "search" is emitted with the sort', () => {
-    findSortOptions().at(1).vm.$emit('click');
+    findGlSorting().vm.$emit('sortByChange', 2);
 
     expectToHaveLastEmittedInput({
       runnerType: null,

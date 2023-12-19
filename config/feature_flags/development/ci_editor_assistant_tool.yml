@@ -1,8 +1,0 @@
----
-name: ci_editor_assistant_tool
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130162
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423524
-milestone: '16.4'
-type: development
-group: group::environments
-default_enabled: false

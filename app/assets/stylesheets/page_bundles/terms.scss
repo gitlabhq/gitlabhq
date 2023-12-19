@@ -26,16 +26,6 @@
       justify-content: space-between;
       line-height: $line-height-base;
 
-      .navbar-collapse {
-        padding-right: 0;
-        flex-grow: 0;
-        flex-basis: auto;
-
-        .navbar-nav {
-          margin: 0;
-        }
-      }
-
       .nav li {
         float: none;
       }

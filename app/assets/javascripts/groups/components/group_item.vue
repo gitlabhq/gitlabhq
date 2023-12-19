@@ -243,7 +243,7 @@ export default {
                 </div>
               </gl-popover>
             </template>
-            <user-access-role-badge v-if="group.permission" class="gl-mr-3">
+            <user-access-role-badge v-if="group.permission" size="sm" class="gl-mr-3">
               {{ group.permission }}
             </user-access-role-badge>
             <gl-label
@@ -254,7 +254,7 @@ export default {
               size="sm"
             />
           </div>
-          <div v-if="group.description" class="description">
+          <div v-if="group.description" class="description gl-font-sm gl-mt-1">
             <span
               v-safe-html:[$options.safeHtmlConfig]="group.description"
               :itemprop="microdata.descriptionItemprop"

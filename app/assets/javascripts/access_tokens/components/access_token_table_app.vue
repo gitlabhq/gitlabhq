@@ -158,7 +158,7 @@ export default {
               :aria-label="$options.i18n.revokeButton"
               :data-confirm="modalMessage(name)"
               data-confirm-btn-variant="danger"
-              data-qa-selector="revoke_button"
+              data-testid="revoke-button"
               data-method="put"
               :href="revokePath"
               icon="remove"

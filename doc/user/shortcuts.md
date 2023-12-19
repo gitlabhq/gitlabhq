@@ -1,8 +1,7 @@
 ---
 stage: Manage
 group: Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab keyboard shortcuts **(FREE ALL)**
@@ -14,7 +13,7 @@ To display a window in GitLab that lists its keyboard shortcuts, use one of the
 following methods:
 
 - Press <kbd>?</kbd>.
-- In the Help menu, in the upper-right corner of the application, select **Keyboard shortcuts**.
+- In the lower-left corner of the application, select **Help** and then **Keyboard shortcuts**.
 
 Although [global shortcuts](#global-shortcuts) work from any area of GitLab,
 you must be in specific pages for the other shortcuts to be available, as
@@ -77,7 +76,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Code > Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analyze > Repository analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project issues list (**Plan > Issues**). |
-| <kbd>i</kbd>                | Go to the New Issue page (**Pan > Issues**, select **New issue** ). |
+| <kbd>i</kbd>                | Go to the New Issue page (**Plan > Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Plan > Issue boards**). |
 | <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [merge requests](project/merge_requests/index.md) list (**Code > Merge requests**). |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD pipelines list (**Build > Pipelines**). |

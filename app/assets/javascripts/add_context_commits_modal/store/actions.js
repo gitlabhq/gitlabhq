@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { uniqBy, orderBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
 import { createAlert } from '~/alert';
@@ -52,8 +52,8 @@ export const searchCommits = ({ dispatch, commit, state }, search = {}) => {
 };
 
 export const setCommits = ({ commit }, { commits: data, silentAddition = false }) => {
-  let commits = _.uniqBy(data, 'short_id');
-  commits = _.orderBy(data, (c) => new Date(c.committed_date), ['desc']);
+  let commits = uniqBy(data, 'short_id');
+  commits = orderBy(data, (c) => new Date(c.committed_date), ['desc']);
   if (silentAddition) {
     commit(types.SET_COMMITS_SILENT, commits);
   } else {
@@ -125,8 +125,8 @@ export const removeContextCommits = ({ state }, forceReload = false) =>
     });
 
 export const setSelectedCommits = ({ commit }, selected) => {
-  let selectedCommits = _.uniqBy(selected, 'short_id');
-  selectedCommits = _.orderBy(
+  let selectedCommits = uniqBy(selected, 'short_id');
+  selectedCommits = orderBy(
     selectedCommits,
     (selectedCommit) => new Date(selectedCommit.committed_date),
     ['desc'],

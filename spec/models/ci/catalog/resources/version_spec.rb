@@ -10,9 +10,6 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
 
-  it { is_expected.to delegate_method(:name).to(:release) }
-  it { is_expected.to delegate_method(:description).to(:release) }
-  it { is_expected.to delegate_method(:tag).to(:release) }
   it { is_expected.to delegate_method(:sha).to(:release) }
   it { is_expected.to delegate_method(:released_at).to(:release) }
   it { is_expected.to delegate_method(:author_id).to(:release) }
@@ -101,6 +98,53 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
         resource2.versions.delete_all(:delete_all)
 
         is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#update_catalog_resource' do
+    let_it_be(:release) { create(:release, project: project1, tag: 'v1') }
+    let(:version) { build(:ci_catalog_resource_version, catalog_resource: resource1, release: release) }
+
+    context 'when a version is created' do
+      it 'calls update_catalog_resource' do
+        expect(version).to receive(:update_catalog_resource).once
+
+        version.save!
+      end
+    end
+
+    context 'when a version is destroyed' do
+      it 'calls update_catalog_resource' do
+        version.save!
+
+        expect(version).to receive(:update_catalog_resource).once
+
+        version.destroy!
+      end
+    end
+  end
+
+  describe '#name' do
+    it 'is equivalent to release.tag' do
+      release_v1_0.update!(name: 'Release v1.0')
+
+      expect(v1_0.name).to eq(release_v1_0.tag)
+    end
+  end
+
+  describe '#commit' do
+    subject(:commit) { v1_0.commit }
+
+    it 'returns a commit' do
+      is_expected.to be_a(Commit)
+    end
+
+    context 'when the sha is nil' do
+      it 'returns nil' do
+        release_v1_0.update!(sha: nil)
+
+        is_expected.to be_nil
       end
     end
   end

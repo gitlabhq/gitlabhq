@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'gitlab/rspec/next_instance_of'
 
 require_relative '../../support/stub_settings_source'
 require_relative '../../../sidekiq_cluster/cli'
-require_relative '../../support/helpers/next_instance_of'
 
 RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_settings_source: true do # rubocop:disable RSpec/FilePath
   include NextInstanceOf
@@ -248,13 +248,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
             if Gitlab.ee?
               [
                 %w[incident_management_close_incident status_page_publish] + described_class::DEFAULT_QUEUES,
-                %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import project_template_export] +
+                %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import project_template_export] +
                   described_class::DEFAULT_QUEUES
               ]
             else
               [
                 %w[incident_management_close_incident] + described_class::DEFAULT_QUEUES,
-                %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import] +
+                %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import] +
                   described_class::DEFAULT_QUEUES
               ]
             end

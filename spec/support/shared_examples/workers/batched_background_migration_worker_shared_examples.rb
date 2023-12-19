@@ -341,15 +341,21 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
       context 'health status' do
         subject(:migration_run) { described_class.new.perform }
 
-        it 'puts migration on hold when there is autovaccum activity on related tables' do
-          swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
-          create(
-            :postgres_autovacuum_activity,
-            table: migration.table_name,
-            table_identifier: "public.#{migration.table_name}"
-          )
+        context 'with skip_autovacuum_health_check_for_ci_builds FF disabled' do
+          before do
+            stub_feature_flags(skip_autovacuum_health_check_for_ci_builds: false)
+          end
 
-          expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+          it 'puts migration on hold when there is autovaccum activity on related tables' do
+            swapout_view_for_table(:postgres_autovacuum_activity, connection: connection)
+            create(
+              :postgres_autovacuum_activity,
+              table: migration.table_name,
+              table_identifier: "public.#{migration.table_name}"
+            )
+
+            expect { migration_run }.to change { migration.reload.on_hold? }.from(false).to(true)
+          end
         end
 
         it 'puts migration on hold when the pending WAL count is above the limit' do

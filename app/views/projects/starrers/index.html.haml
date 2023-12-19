@@ -10,8 +10,8 @@
       = form_tag request.original_url, method: :get, class: 'form-inline user-search-form flex-users-form' do
         .form-group
           .position-relative
-            = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-            %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
+            = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control gl-pr-7', spellcheck: false }
+            %button.user-search-btn{ class: 'gl-p-2 gl-absolute gl-right-3', type: "submit", "aria-label" => _("Submit search") }
               = sprite_icon('search')
           - starrers_sort_options = starrers_sort_options_hash.map { |value, text| { value: value, text: text, href: filter_starrer_path(sort: value) } }
           = gl_redirect_listbox_tag starrers_sort_options, @sort, class: 'gl-ml-3', data: { placement: 'right' }

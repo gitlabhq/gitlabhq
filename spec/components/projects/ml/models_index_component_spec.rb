@@ -43,12 +43,14 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
           {
             'name' => model1.name,
             'version' => model1.latest_version.version,
+            'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
             'versionPackagePath' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
             'versionPath' => "/#{project.full_path}/-/ml/models/#{model1.id}/versions/#{model1.latest_version.id}",
             'versionCount' => 1
           },
           {
             'name' => model2.name,
+            'path' => "/#{project.full_path}/-/ml/models/#{model2.id}",
             'version' => nil,
             'versionPackagePath' => nil,
             'versionPath' => nil,

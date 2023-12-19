@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Sidekiq **(FREE SELF)**
@@ -640,6 +640,11 @@ This change might reduce the amount of work Sidekiq can do. Symptoms like delays
 indicate that additional Sidekiq processes would be beneficial.
 Consider [adding additional Sidekiq processes](extra_sidekiq_processes.md)
 to compensate for removing the `sidekiq-cluster` service.
+
+## CPU saturation in Redis caused by Sidekiq BRPOP calls
+
+Sidekiq `BROP` calls can cause CPU usage to increase on Redis.
+Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
 
 ## Related topics
 

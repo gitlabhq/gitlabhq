@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 <!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
@@ -41,5 +41,5 @@ Go modules can be pulled from secondary sites, with a number of limitations:
 - Git configuration (using `insteadOf`) is needed to fetch data from the Geo secondary site.
 - For private projects, authentication details need to be specified in `~/.netrc`.
 
-Read more in the
-[working with projects `go get` documentation](../../../user/project/working_with_projects.md#fetch-go-modules-from-geo-secondary-sites).
+For more information, see
+[Using a project as a Go package](../../../user/project/use_project_as_go_package.md#fetch-go-modules-from-geo-secondary-sites).

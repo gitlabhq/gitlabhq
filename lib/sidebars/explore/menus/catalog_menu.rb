@@ -21,7 +21,7 @@ module Sidebars
 
         override :render?
         def render?
-          Feature.enabled?(:global_ci_catalog, current_user)
+          true
         end
 
         override :active_routes

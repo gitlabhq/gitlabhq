@@ -34,7 +34,12 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     end
 
     context 'with duplicate user and project authorization' do
-      subject { project_auth.dup }
+      subject do
+        project_auth.dup.tap do |auth|
+          auth.project = project_1
+          auth.user = user
+        end
+      end
 
       it { is_expected.to be_invalid }
 
@@ -52,6 +57,8 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     context 'with multiple access levels for the same user and project' do
       subject do
         project_auth.dup.tap do |auth|
+          auth.project = project_1
+          auth.user = user
           auth.access_level = Gitlab::Access::MAINTAINER
         end
       end
@@ -103,6 +110,23 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.owners' do
+      let_it_be(:project_original_owner_authorization) { project.owner.project_authorizations.first }
+      let_it_be(:project_authorization_owner) { create(:project_authorization, :owner, project: project) }
+
+      before_all do
+        create(:project_authorization, :guest, project: project)
+        create(:project_authorization, :developer, project: project)
+      end
+
+      it 'returns all records which only have Owners access' do
+        expect(described_class.owners.map(&:attributes)).to match_array([
+          project_original_owner_authorization,
+          project_authorization_owner
+        ].map(&:attributes))
+      end
+    end
+
     describe '.for_project' do
       let_it_be(:project_2) { create(:project, namespace: user.namespace) }
       let_it_be(:project_3) { create(:project, namespace: user.namespace) }
@@ -144,6 +168,13 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       described_class.insert_all(attributes)
 
       expect(user.project_authorizations.pluck(:user_id, :project_id, :access_level)).to match_array(attributes.map(&:values))
+    end
+  end
+
+  context 'with loose foreign key on project_authorizations.user_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project_authorization, user: parent) }
     end
   end
 end

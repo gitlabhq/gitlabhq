@@ -2670,10 +2670,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     subject { new_repository.replicate(repository) }
 
     before do
-      stub_storage_settings('test_second_storage' => {
-        'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-        'path' => TestEnv::SECOND_STORAGE_PATH
-      })
+      stub_storage_settings('test_second_storage' => {})
     end
 
     after do
@@ -2781,6 +2778,31 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#object_format' do
+    subject { repository.object_format }
+
+    context 'for SHA1 repository' do
+      it { is_expected.to eq :OBJECT_FORMAT_SHA1 }
+    end
+
+    context 'for SHA256 repository' do
+      let(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+      let(:repository) { project.repository.raw }
+
+      it { is_expected.to eq :OBJECT_FORMAT_SHA256 }
+    end
+
+    context 'for removed repository' do
+      let(:repository) { mutable_repository }
+
+      before do
+        repository.remove
+      end
+
+      it { expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository) }
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:rev) { 'master' }
     let(:paths) { ['file.txt'] }
@@ -2788,6 +2810,71 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :get_file_attributes do
       subject { repository.get_file_attributes(rev, paths, attrs) }
+    end
+  end
+
+  describe '#detect_generated_files' do
+    let(:project) do
+      create(:project, :custom_repo, files: {
+        '.gitattributes' => gitattr_content,
+        'file1.txt' => 'first file',
+        'file2.txt' => 'second file'
+      })
+    end
+
+    let(:repository) { project.repository.raw }
+    let(:rev) { 'master' }
+    let(:paths) { ['file1.txt', 'file2.txt'] }
+
+    subject(:generated_files) { repository.detect_generated_files(rev, paths) }
+
+    context 'when the linguist-generated attribute is used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt linguist-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when the gitlab-generated attribute is used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt gitlab-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when both linguist-generated and gitlab-generated attribute are used' do
+      let(:gitattr_content) { "*.txt text\nfile1.txt linguist-generated gitlab-generated\n" }
+
+      it 'returns generated files only' do
+        expect(generated_files).to contain_exactly('file1.txt')
+      end
+    end
+
+    context 'when the all files are generated' do
+      let(:gitattr_content) { "*.txt gitlab-generated\n" }
+
+      it 'returns all generated files' do
+        expect(generated_files).to eq paths.to_set
+      end
+    end
+
+    context 'when empty paths are given' do
+      let(:paths) { [] }
+      let(:gitattr_content) { "*.txt gitlab-generated\n" }
+
+      it 'returns an empty set' do
+        expect(generated_files).to eq Set.new
+      end
+    end
+
+    context 'when no generated overrides are used' do
+      let(:gitattr_content) { "*.txt text\n" }
+
+      it 'returns an empty set' do
+        expect(generated_files).to eq Set.new
+      end
     end
   end
 end

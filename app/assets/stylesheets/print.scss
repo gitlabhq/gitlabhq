@@ -39,7 +39,7 @@
       content: ' ';
       height: 100%;
       width: 4px;
-      background-color: $white-dark;
+      background-color: $gray-100;
     }
 
     position: relative;
@@ -57,8 +57,6 @@
 
 header,
 nav,
-nav.navbar-collapse,
-nav.navbar-collapse.collapse,
 .nav-sidebar,
 .super-sidebar,
 .profiler-results,

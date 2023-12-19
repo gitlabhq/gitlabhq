@@ -134,15 +134,4 @@ RSpec.describe Users::InProductMarketingEmail, type: :model, feature_category: :
       end
     end
   end
-
-  describe '.ACTIVE_TRACKS' do
-    it 'has an entry for every track' do
-      tracks = Namespaces::InProductMarketingEmailsService::TRACKS.keys
-      expect(tracks).to match_array(described_class::ACTIVE_TRACKS.keys.map(&:to_sym))
-    end
-
-    it 'does not include INACTIVE_TRACK_NAMES' do
-      expect(described_class::ACTIVE_TRACKS.keys).not_to include(*described_class::INACTIVE_TRACK_NAMES)
-    end
-  end
 end

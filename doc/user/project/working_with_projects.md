@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Manage projects **(FREE ALL)**
@@ -50,81 +50,19 @@ To view projects you have [starred](#star-a-project):
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Starred projects**.
 
-## Organizing projects with topics
+## Edit project name and description
 
-Topics are labels that you can assign to projects to help you organize and find them.
-A topic is typically a short name that describes the content or purpose of a project.
-You can assign a topic to several projects.
+Use the project general settings to edit your project details.
 
-For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
+Prerequisites:
 
-Topics assigned to a project are listed in the **Project overview**, below the project name and activity information.
+- You must have at least the Maintainer role for the project.
 
-Only users with access to the project can see the topics assigned to that project,
-but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
-Do not include sensitive information in the name of a topic.
-
-### Explore topics
-
-To explore project topics:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select **Explore**.
-1. On the left sidebar, select **Topics**.
-1. To view projects associated with a topic, select a topic.
-
-The **Explore topics** page shows a list of projects with this topic.
-
-### Filter and sort topics
-
-You can filter the list of projects that have a certain topic by:
-
-- Name
-- Language
-- Owner
-- Archive status
-- Visibility
-
-You can sort the projects by:
-
-- Date created
-- Date updated
-- Name
-- Number of stars
-
-### Subscribe to a topic
-
-If you want to know when new projects are added to a topic, you can use its RSS feed.
-
-You can do this either from the **Explore topics** page or a project with topics.
-
-To subscribe to a topic:
-
-- From the **Explore topics** page:
-
-  1. On the left sidebar, expand the top-most chevron ({**chevron-down**}).
-  1. Select **Explore**.
-  1. Select **Topics**.
-  1. Select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
-
-- From a project:
-
-  1. On the left sidebar, select **Search or go to** and find your project.
-  1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
-
-The results are displayed as an RSS feed in Atom format.
-The URL of the result contains a feed token and the list of projects that have the topic. You can add this URL to your feed reader.
-
-### Assign a topic to a project
-
-You can assign topics to a project on the [Project Settings page](settings/index.md#assign-topics-to-a-project).
-
-### Administer topics
-
-Instance administrators can administer all project topics from the
-[Admin Area's Topics page](../../administration/admin_area.md#administering-topics).
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
+1. In the **Project description** text box, enter your project description. The description is limited to 500 characters.
+1. Under **Project avatar**, to change your project avatar, select **Choose file**.
 
 ## Star a project
 
@@ -135,7 +73,78 @@ To add a star to a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star**.
 
-## View projects pending deletion **(PREMIUM ALL)**
+## Delete a project
+
+> - Default deletion behavior for projects changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+> - Default deletion behavior for projects changed to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
+> - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+You can mark a project to be deleted.
+After you delete a project:
+
+- Projects in personal namespaces are deleted immediately.
+- Projects in groups are deleted after a retention period.
+
+Prerequisites:
+
+- You must have the Owner role for a project.
+
+To delete a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Delete this project** section, select **Delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+
+This action deletes the project and all associated resources (such as issues and merge requests).
+
+You can also [delete projects using the Rails console](#delete-a-project-using-console).
+
+### Delayed project deletion **(PREMIUM ALL)**
+
+> - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+> - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+Projects in a group (not a personal namespace) can be deleted after a delay period.
+
+On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
+On SaaS, there is a non-adjustable default retention period of seven days.
+
+You can [view projects that are pending deletion](#view-projects-pending-deletion),
+and use the Rails console to
+[find projects that are pending deletion](#find-projects-that-are-pending-deletion).
+
+### Delete a project immediately
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be [marked for deletion](#delete-a-project).
+
+If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
+
+In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
+If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
+
+To immediately delete a project marked for deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Delete this project** section, select **Delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+
+### View projects pending deletion
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -206,31 +215,44 @@ You can filter projects by the programming language they use. To do this:
 
 A list of projects that use the selected language is displayed.
 
-## Change the visibility of individual features in a project
+## Rename a repository
 
-You can change the visibility of individual features in a project.
+A project's repository name defines its URL and its place on the file disk
+where GitLab is installed.
 
-Prerequisite:
+Prerequisites:
 
-- You must have the Owner role for the project.
+- You must be an administrator or have the Maintainer or Owner role for the project.
+
+NOTE:
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
+[redirects when renaming repositories](../project/repository/index.md#what-happens-when-a-repository-path-changes).
+
+To rename a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Use the toggle by each feature you want to turn on or off, or change access for.
-1. Select **Save changes**.
+1. Expand **Advanced**.
+1. In the **Change path** text box, edit the path.
+1. Select **Change path**.
 
-## Access the Project overview page by using the project ID
+## Access the project overview page by using the project ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53671) in GitLab 11.8.
+> Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 To access a project by using the project ID instead of its name,
-go to `https://gitlab.example.com/projects/:id`.
+go to `https://gitlab.example.com/projects/<id>`.
 
-The project ID is displayed in the **Project overview** page, under the project name.
+To copy the project ID:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. Select **Copy project ID**.
 
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
 either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
+
+You might also need the project ID if you want to interact with it using the [GitLab API](../../api/index.md).
 
 ## Who can view the Project overview page
 
@@ -250,147 +272,24 @@ For users without permission to view the project's code, the landing page shows:
 
 ## Leave a project
 
+> The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
 When you leave a project:
 
 - You are no longer a project member and cannot contribute.
 - All the issues and merge requests that were assigned
   to you are unassigned.
 
+Prerequisites:
+
+- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/index.md).
+- You must be a [direct member](members/index.md#membership-types) of the project.
+
 To leave a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Leave project**. The **Leave project** option only displays
-on the project dashboard when a project is part of a group under a
-[group namespace](../namespace/index.md).
-
-## Use a project as a Go package
-
-Prerequisites:
-
-- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/index.md).
-- To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause
-`go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
-
-To use a project as a Go package, use the `go get` and `godoc.org` discovery requests. You can use the meta tags:
-
-- [`go-import`](https://pkg.go.dev/cmd/go#hdr-Remote_import_paths)
-- [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
-
-### Authenticate Go requests to private projects
-
-Prerequisites:
-
-- Your GitLab instance must be accessible with HTTPS.
-- You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
-
-To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc) file with the following information:
-
-```plaintext
-machine gitlab.example.com
-login <gitlab_user_name>
-password <personal_access_token>
-```
-
-On Windows, Go reads `~/_netrc` instead of `~/.netrc`.
-
-The `go` command does not transmit credentials over insecure connections. It authenticates
-HTTPS requests made by Go, but does not authenticate requests made
-through Git.
-
-### Authenticate Git requests
-
-If Go cannot fetch a module from a proxy, it uses Git. Git uses a `.netrc` file to authenticate requests, but you can
-configure other authentication methods.
-
-Configure Git to either:
-
-- Embed credentials in the request URL:
-
-  ```shell
-  git config --global url."https://${user}:${personal_access_token}@gitlab.example.com".insteadOf "https://gitlab.example.com"
-  ```
-
-- Use SSH instead of HTTPS:
-
-  ```shell
-  git config --global url."git@gitlab.example.com:".insteadOf "https://gitlab.example.com/"
-  ```
-
-### Disable Go module fetching for private projects
-
-To [fetch modules or packages](../../development/go_guide/dependencies.md#fetching), Go uses
-the [environment variables](../../development/go_guide/dependencies.md#proxies):
-
-- `GOPRIVATE`
-- `GONOPROXY`
-- `GONOSUMDB`
-
-To disable fetching:
-
-1. Disable `GOPRIVATE`:
-   - To disable queries for one project, disable `GOPRIVATE=gitlab.example.com/my/private/project`.
-   - To disable queries for all projects on GitLab.com, disable `GOPRIVATE=gitlab.example.com`.
-1. Disable proxy queries in `GONOPROXY`.
-1. Disable checksum queries in `GONOSUMDB`.
-
-- If the module name or its prefix is in `GOPRIVATE` or `GONOPROXY`, Go does not query module
-  proxies.
-- If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
-  Checksum databases.
-
-### Fetch Go modules from Geo secondary sites
-
-Use [Geo](../../administration/geo/index.md) to access Git repositories that contain Go modules
-on secondary Geo servers.
-
-You can use SSH or HTTP to access the Geo secondary server.
-
-#### Use SSH to access the Geo secondary server
-
-To access the Geo secondary server with SSH:
-
-1. Reconfigure Git on the client to send traffic for the primary to the secondary:
-
-   ```shell
-   git config --global url."git@gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
-   git config --global url."git@gitlab-secondary.example.com".insteadOf "http://gitlab.example.com"
-   ```
-
-   - For `gitlab.example.com`, use the primary site domain name.
-   - For `gitlab-secondary.example.com`, use the secondary site domain name.
-
-1. Ensure the client is set up for SSH access to GitLab repositories. You can test this on the primary,
-   and GitLab replicates the public key to the secondary.
-
-The `go get` request generates HTTP traffic to the primary Geo server. When the module
-download starts, the `insteadOf` configuration sends the traffic to the secondary Geo server.
-
-#### Use HTTP to access the Geo secondary
-
-You must use persistent access tokens that replicate to the secondary server. You cannot use
-CI/CD job tokens to fetch Go modules with HTTP.
-
-To access the Geo secondary server with HTTP:
-
-1. Add a Git `insteadOf` redirect on the client:
-
-   ```shell
-   git config --global url."https://gitlab-secondary.example.com".insteadOf "https://gitlab.example.com"
-   ```
-
-   - For `gitlab.example.com`, use the primary site domain name.
-   - For `gitlab-secondary.example.com`, use the secondary site domain name.
-
-1. Generate a [personal access token](../profile/personal_access_tokens.md) and
-   add the credentials in the client's `~/.netrc` file:
-
-   ```shell
-   machine gitlab.example.com login USERNAME password TOKEN
-   machine gitlab-secondary.example.com login USERNAME password TOKEN
-   ```
-
-The `go get` request generates HTTP traffic to the primary Geo server. When the module
-download starts, the `insteadOf` configuration sends the traffic to the secondary Geo server.
+1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. Select **Leave project**, then **Leave project** again.
 
 ## Add a compliance framework to a project **(PREMIUM)**
 
@@ -411,14 +310,6 @@ Prerequisites:
 1. [Set up LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md) for that group.
 1. To use LDAP groups to manage access to a project,
 [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
-
-## Related topics
-
-- [Import a project](../../user/project/import/index.md).
-- [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
-- [Fork a project](repository/forking_workflow.md#create-a-fork).
-- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
 
 ## Troubleshooting
 
@@ -519,3 +410,11 @@ end
 To find features that can be toggled, run `pp p.project_feature`.
 Available permission levels are listed in
 [concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+
+## Related topics
+
+- [Import a project](../../user/project/import/index.md).
+- [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
+- [Fork a project](repository/forking_workflow.md#create-a-fork).
+- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/project_features_permissions.md#configure-project-features-and-permissions).
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)

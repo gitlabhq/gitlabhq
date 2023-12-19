@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Parsing GitLab logs with `jq` **(FREE SELF)**
@@ -24,7 +24,7 @@ include use cases targeted for parsing GitLab log files.
 ## Parsing Logs
 
 The examples listed below address their respective log files by
-their relative Linux package installation paths and default filenames.
+their relative Linux package installation paths and default file names.
 Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
 
 ### General Commands

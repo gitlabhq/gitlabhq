@@ -28,12 +28,6 @@ module QA
       expect(subject).to respond_to(:perform)
     end
 
-    it 'performs before hooks only once' do
-      subject.perform(args)
-
-      expect(release).to have_received(:perform_before_hooks).once
-    end
-
     it 'sets tags on runner' do
       subject.perform(args)
 

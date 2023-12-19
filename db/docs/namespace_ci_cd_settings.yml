@@ -4,7 +4,7 @@ classes:
 - NamespaceCiCdSetting
 feature_categories:
 - continuous_integration
-- runner_fleet
+- fleet_visibility
 description: Namespace-scoped settings related to the CI/CD domain
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86477
 milestone: '15.0'

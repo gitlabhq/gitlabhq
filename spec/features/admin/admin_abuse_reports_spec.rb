@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
+  include Features::SortingHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
@@ -79,7 +81,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       expect(report_rows[1].text).to include(report_text(open_report2))
 
       # updated_at asc
-      sort_by 'Updated date'
+      sort_by 'Updated date', from: 'Created date'
 
       expect(report_rows[0].text).to include(report_text(open_report2))
       expect(report_rows[1].text).to include(report_text(open_report))
@@ -120,7 +122,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
         expect(report_rows[1].text).to include(report_text(open_report2))
 
         # created_at desc
-        sort_by 'Created date'
+        sort_by 'Created date', from: 'Number of Reports'
 
         expect(report_rows[0].text).to include(report_text(open_report2))
         expect(report_rows[1].text).to include(aggregated_report_text(open_report, 2))
@@ -131,7 +133,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
         expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
         expect(report_rows[1].text).to include(report_text(open_report2))
 
-        sort_by 'Updated date'
+        sort_by 'Updated date', from: 'Created date'
 
         # updated_at asc
         expect(report_rows[0].text).to include(report_text(open_report2))
@@ -193,14 +195,10 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       select_tokens(*tokens, submit: true, input_text: 'Filter reports')
     end
 
-    def sort_by(sort)
+    def sort_by(sort, from: 'Number of Reports')
       page.within('.vue-filtered-search-bar-container .sort-dropdown-container') do
-        page.find('.gl-dropdown-toggle').click
-
-        page.within('.dropdown-menu') do
-          click_button sort
-          wait_for_requests
-        end
+        pajamas_sort_by sort, from: from
+        wait_for_requests
       end
     end
   end

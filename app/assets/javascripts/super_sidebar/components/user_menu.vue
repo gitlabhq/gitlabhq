@@ -5,11 +5,13 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlButton,
+  GlModalDirective,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
+import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 
@@ -18,10 +20,8 @@ const DROPDOWN_X_OFFSET_BASE = -211;
 const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
+  SET_STATUS_MODAL_ID,
   i18n: {
-    newNavigation: {
-      sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
-    },
     setStatus: s__('SetStatusModal|Set status'),
     editStatus: s__('SetStatusModal|Edit status'),
     editProfile: s__('CurrentUser|Edit profile'),
@@ -39,9 +39,14 @@ export default {
     GlDisclosureDropdownItem,
     GlButton,
     UserMenuProfileItem,
+    SetStatusModal: () =>
+      import(
+        /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
+      ),
   },
   directives: {
     SafeHtml,
+    GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['isImpersonating'],
@@ -51,7 +56,16 @@ export default {
       type: Object,
     },
   },
+  data() {
+    return {
+      setStatusModalReady: false,
+      updatedAvatarUrl: null,
+    };
+  },
   computed: {
+    avatarUrl() {
+      return this.updatedAvatarUrl || this.data.avatar_url;
+    },
     toggleText() {
       return sprintf(__('%{user} user’s menu'), { user: this.data.name });
     },
@@ -64,7 +78,8 @@ export default {
       return {
         text: statusLabel,
         extraAttrs: {
-          class: 'js-set-status-modal-trigger',
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_edit_status',
         },
       };
     },
@@ -86,7 +101,7 @@ export default {
         text: this.$options.i18n.editProfile,
         href: this.data.settings.profile_path,
         extraAttrs: {
-          'data-testid': 'edit_profile_link',
+          'data-testid': 'edit-profile-link',
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_profile',
         },
@@ -135,7 +150,7 @@ export default {
             href: this.data.sign_out_link,
             extraAttrs: {
               'data-method': 'post',
-              'data-testid': 'sign_out_link',
+              'data-testid': 'sign-out-link',
               class: 'sign-out-link',
             },
           },
@@ -143,24 +158,22 @@ export default {
       };
     },
     statusModalData() {
-      const defaultData = {
-        'data-current-emoji': '',
-        'data-current-message': '',
-        'data-default-emoji': 'speech_balloon',
-      };
+      if (!this.data?.status?.can_update) {
+        return null;
+      }
 
       const { busy, customized } = this.data.status;
 
       if (!busy && !customized) {
-        return defaultData;
+        return {};
       }
+      const { emoji, message, availability, clear_after: clearAfter } = this.data.status;
 
       return {
-        ...defaultData,
-        'data-current-emoji': this.data.status.emoji,
-        'data-current-message': this.data.status.message,
-        'data-current-availability': this.data.status.availability,
-        'data-current-clear-status-after': this.data.status.clear_after,
+        'current-emoji': emoji || '',
+        'current-message': message || '',
+        'current-availability': availability || '',
+        'current-clear-status-after': clearAfter || '',
       };
     },
     buyPipelineMinutesCalloutData() {
@@ -181,7 +194,16 @@ export default {
       };
     },
   },
+  mounted() {
+    document.addEventListener('userAvatar:update', this.updateAvatar);
+  },
+  unmounted() {
+    document.removeEventListener('userAvatar:update', this.updateAvatar);
+  },
   methods: {
+    updateAvatar(event) {
+      this.updatedAvatarUrl = event.detail?.url;
+    },
     onShow() {
       this.initBuyCIMinsCallout();
     },
@@ -226,14 +248,14 @@ export default {
       @shown="onShow"
     >
       <template #toggle>
-        <gl-button category="tertiary" class="user-bar-item btn-with-notification">
+        <gl-button category="tertiary" class="user-bar-dropdown-toggle btn-with-notification">
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
             :size="24"
             :entity-name="data.name"
-            :src="data.avatar_url"
+            :src="avatarUrl"
             aria-hidden="true"
-            data-testid="user_avatar_content"
+            data-testid="user-avatar-content"
           />
           <span
             v-if="showNotificationDot"
@@ -251,7 +273,8 @@ export default {
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
-          v-if="data.status.can_update"
+          v-if="setStatusModalReady && statusModalData"
+          v-gl-modal="$options.SET_STATUS_MODAL_ID"
           :item="statusItem"
           data-testid="status-item"
           @action="closeDropdown"
@@ -307,11 +330,11 @@ export default {
         @action="trackSignOut"
       />
     </gl-disclosure-dropdown>
-
-    <div
-      v-if="data.status.can_update"
-      class="js-set-status-modal-wrapper"
+    <set-status-modal
+      v-if="statusModalData"
+      default-emoji="speech_balloon"
       v-bind="statusModalData"
-    ></div>
+      @mounted="setStatusModalReady = true"
+    />
   </div>
 </template>

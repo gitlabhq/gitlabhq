@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -9,7 +9,7 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import { isProjectImportable } from '../utils';
-import { PROVIDERS } from '../../constants';
+import { PROVIDERS, BITBUCKET_SERVER_PAGE_LENGTH } from '../../constants';
 import * as types from './mutation_types';
 
 let eTagPoll;
@@ -25,13 +25,23 @@ const pathWithParams = ({ path, ...params }) => {
   return queryString ? `${path}?${queryString}` : path;
 };
 const commitPaginationData = ({ state, commit, data }) => {
-  const cursorsGitHubResponse = !_.isEmpty(data.pageInfo || {});
+  const cursorsGitHubResponse = !isEmpty(data.pageInfo || {});
 
   if (state.provider === PROVIDERS.GITHUB && cursorsGitHubResponse) {
     commit(types.SET_PAGE_CURSORS, data.pageInfo);
   } else {
     const nextPage = state.pageInfo.page + 1;
     commit(types.SET_PAGE, nextPage);
+  }
+
+  // Only BitBucket Server uses pagination with page length
+  if (state.provider === PROVIDERS.BITBUCKET_SERVER) {
+    const reposLength = data.providerRepos.length;
+    if (reposLength > 0 && reposLength % BITBUCKET_SERVER_PAGE_LENGTH === 0) {
+      commit(types.SET_HAS_NEXT_PAGE, true);
+    } else {
+      commit(types.SET_HAS_NEXT_PAGE, false);
+    }
   }
 };
 const paginationParams = ({ state }) => {

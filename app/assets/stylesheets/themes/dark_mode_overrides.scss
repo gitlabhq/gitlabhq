@@ -1,93 +1,10 @@
 @import './themes/dark';
+@import '@gitlab/ui/dist/tokens/css/tokens.dark';
 @import 'page_bundles/mixins_and_variables_and_functions';
 @import './themes/theme_helper';
 
 :root {
   color-scheme: dark;
-  --gray-10: #{$gray-10};
-  --gray-50: #{$gray-50};
-  --gray-100: #{$gray-100};
-  --gray-200: #{$gray-200};
-  --gray-300: #{$gray-300};
-  --gray-400: #{$gray-400};
-  --gray-500: #{$gray-500};
-  --gray-600: #{$gray-600};
-  --gray-700: #{$gray-700};
-  --gray-800: #{$gray-800};
-  --gray-900: #{$gray-900};
-  --gray-950: #{$gray-950};
-
-  --green-50: #{$green-50};
-  --green-100: #{$green-100};
-  --green-200: #{$green-200};
-  --green-300: #{$green-300};
-  --green-400: #{$green-400};
-  --green-500: #{$green-500};
-  --green-600: #{$green-600};
-  --green-700: #{$green-700};
-  --green-800: #{$green-800};
-  --green-900: #{$green-900};
-  --green-950: #{$green-950};
-
-  --blue-50: #{$blue-50};
-  --blue-100: #{$blue-100};
-  --blue-200: #{$blue-200};
-  --blue-300: #{$blue-300};
-  --blue-400: #{$blue-400};
-  --blue-500: #{$blue-500};
-  --blue-600: #{$blue-600};
-  --blue-700: #{$blue-700};
-  --blue-800: #{$blue-800};
-  --blue-900: #{$blue-900};
-  --blue-950: #{$blue-950};
-
-  --orange-50: #{$orange-50};
-  --orange-100: #{$orange-100};
-  --orange-200: #{$orange-200};
-  --orange-300: #{$orange-300};
-  --orange-400: #{$orange-400};
-  --orange-500: #{$orange-500};
-  --orange-600: #{$orange-600};
-  --orange-700: #{$orange-700};
-  --orange-800: #{$orange-800};
-  --orange-900: #{$orange-900};
-  --orange-950: #{$orange-950};
-
-  --red-50: #{$red-50};
-  --red-100: #{$red-100};
-  --red-200: #{$red-200};
-  --red-300: #{$red-300};
-  --red-400: #{$red-400};
-  --red-500: #{$red-500};
-  --red-600: #{$red-600};
-  --red-700: #{$red-700};
-  --red-800: #{$red-800};
-  --red-900: #{$red-900};
-  --red-950: #{$red-950};
-
-  --indigo-50: #{$indigo-50};
-  --indigo-100: #{$indigo-100};
-  --indigo-200: #{$indigo-200};
-  --indigo-300: #{$indigo-300};
-  --indigo-400: #{$indigo-400};
-  --indigo-500: #{$indigo-500};
-  --indigo-600: #{$indigo-600};
-  --indigo-700: #{$indigo-700};
-  --indigo-800: #{$indigo-800};
-  --indigo-900: #{$indigo-900};
-  --indigo-950: #{$indigo-950};
-
-  --purple-50: #{$purple-50};
-  --purple-100: #{$purple-100};
-  --purple-200: #{$purple-200};
-  --purple-300: #{$purple-300};
-  --purple-400: #{$purple-400};
-  --purple-500: #{$purple-500};
-  --purple-600: #{$purple-600};
-  --purple-700: #{$purple-700};
-  --purple-800: #{$purple-800};
-  --purple-900: #{$purple-900};
-  --purple-950: #{$purple-950};
 
   --dark-icon-color-purple-1: #524a68;
   --dark-icon-color-purple-2: #715bae;
@@ -98,8 +15,6 @@
   --gl-text-color: #{$gray-900};
   --border-color: #{$border-color};
 
-  --white: #{$white};
-  --black: #{$black};
   --gray-light: #{$gray-50};
 
   --svg-status-bg: #{$white};
@@ -209,13 +124,6 @@
   border-color: $gray-800;
 }
 
-.nav-sidebar,
-.toggle-sidebar-button,
-.close-nav-button {
-  background-color: darken($gray-50, 4%);
-  border-right: 1px solid $gray-50;
-}
-
 .gl-avatar:not(.gl-avatar-identicon),
 .avatar-container,
 .avatar {
@@ -227,80 +135,14 @@
   box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
 }
 
-.nav-sidebar {
-  .sidebar-sub-level-items.fly-out-list {
-    box-shadow: none;
-    border: 1px solid $border-color;
-  }
-}
-
 aside.right-sidebar:not(.right-sidebar-merge-requests) {
   background-color: $gray-10;
-  border-left-color: $gray-50;
 }
 
 :root.gl-dark {
-  @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $white);
-
   .terms {
     .logo-text {
       fill: var(--black);
-    }
-  }
-
-
-  .navbar.navbar-gitlab {
-    background-color: var(--gray-50);
-    box-shadow: 0 1px 0 0 var(--gray-100);
-
-    .navbar-sub-nav,
-    .navbar-nav {
-      li {
-        > a:hover,
-        > a:focus,
-        > button:hover,
-        > button:focus {
-          color: var(--gl-text-color);
-          background-color: var(--gray-200);
-        }
-      }
-
-      li.active,
-      li.dropdown.show {
-        > a,
-        > button {
-          color: var(--gl-text-color);
-          background-color: var(--gray-200);
-        }
-      }
-    }
-
-    .header-search-form {
-      background-color: var(--gray-100) !important;
-      box-shadow: inset 0 0 0 1px var(--border-color) !important;
-
-      &:active,
-      &:hover {
-        background-color: var(--gray-100) !important;
-        box-shadow: inset 0 0 0 1px var(--blue-200) !important;
-      }
-    }
-
-    .search {
-      form {
-        background-color: var(--gray-100);
-        box-shadow: inset 0 0 0 1px var(--border-color);
-
-        &:active,
-        &:hover {
-          background-color: var(--gray-100);
-          box-shadow: inset 0 0 0 1px var(--blue-200);
-        }
-
-        .search-input {
-          color: var(--gl-text-color);
-        }
-      }
     }
   }
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: none
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 toc: false
 ---
 
@@ -69,7 +69,7 @@ The configuration arguments disabled for authentication tokens are:
 - `--run-untagged`
 - `--tag-list`
 
-This change is a breaking change. You should use an [authentication token](../ci/runners/register_runner.md) in the `gitlab-runner register` command instead.
+This change is a breaking change. You should use an [authentication token](../ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -96,7 +96,7 @@ The configuration arguments disabled for authentication tokens are:
 - `--tag-list`
 - `--maintenance-note`
 
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -259,7 +259,7 @@ the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Container Registry support for the Swift and OSS storage drivers
+### Container registry support for the Swift and OSS storage drivers
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.6</span>
@@ -312,6 +312,38 @@ In 17.0, we will remove the **Limit** setting completely, and set the **Allow ac
 To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 17.0 or later.
 
 In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Dependency Proxy: Access tokens to have additional scope checks
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431386).
+</div>
+
+When using the Dependency Proxy for containers with a group access token or personal access token, `docker login` and `docker pull` requests with insufficient scopes for Dependency Proxy are not rejected.
+
+GitLab 17.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
+
+To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
+
+</div>
+
+<div class="deprecation " data-milestone="17.0">
+
+### Deprecate GraphQL fields related to the temporary storage increase
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385720).
+</div>
+
+The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageIncreaseEndsOn`, have been deprecated. These GraphQL fields are related to the temporary storage increase project. The project has been cancelled and the fields were not used.
 
 </div>
 
@@ -685,7 +717,7 @@ In GitLab 16.0 and later:
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Internal Container Registry API tag deletion endpoint
+### Internal container registry API tag deletion endpoint
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.4</span>
@@ -695,7 +727,7 @@ In GitLab 16.0 and later:
 
 The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
 
-Tag deletion is an important function, so we added a tag deletion operation to the GitLab Container Registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
+Tag deletion is an important function, so we added a tag deletion operation to the GitLab container registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
 
 Since then, the OCI Distribution Spec has had some updates and it now has a tag delete operation, using the [`DELETE /v2/<name>/manifests/<tag>` endpoint](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#deleting-tags).
 
@@ -703,9 +735,23 @@ This leaves the container registry with two endpoints that provide the exact sam
 
 Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, and it will be removed in GitLab 17.0.
 
-This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
+This endpoint is used by the **internal** container registry application API, not the public [GitLab container registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
 
 If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### JWT `/-/jwks` instance endpoint is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/221031).
+</div>
+
+With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint which is an alias for `/oauth/discovery/keys` is no longer necessary and will be removed. Please replace any uses of `/-/jwks` with `/oauth/discovery/keys`, for example change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com/oauth/discovery/keys`.
 
 </div>
 
@@ -733,6 +779,23 @@ The table below lists the deprecated metrics and their respective replacements. 
 | `geo_repositories_verification_failed`   | `geo_project_repositories_verification_failed` |
 | `geo_repositories_checksum_mismatch`     |  None available                                |
 | `geo_repositories_retrying_verification` |  None available                                |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### List repository directories Rake task
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.7</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/384361).
+</div>
+
+The `gitlab-rake gitlab:list_repos` Rake task does not work and will be removed in GitLab 17.0.
+If you're migrating GitLab, use
+[backup and restore](https://docs.gitlab.com/ee/administration/operations/moving_repositories.html#recommended-approach-in-all-cases)
+instead.
 
 </div>
 
@@ -936,7 +999,7 @@ The configuration arguments disabled for authentication tokens are:
 - `--tag-list`
 - `--maintenance-note`
 
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -1322,6 +1385,41 @@ To prepare for GitLab 15.8 and later, you should:
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.7">
+
+## GitLab 16.7
+
+<div class="deprecation breaking-change" data-milestone="16.7">
+
+### Shimo integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">16.7</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377824).
+</div>
+
+The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.7">
+
+### `user_email_lookup_limit` API field
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.9</span>
+- Removal in GitLab <span class="milestone">16.7</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+</div>
+
+The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated in GitLab 14.9 and removed in GitLab 16.7. Until the feature is removed, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows still work.
+
+Any API calls to change the rate limits for `user_email_lookup_limit` must use `search_rate_limit` instead.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.6">
 
 ## GitLab 16.6
@@ -1682,20 +1780,6 @@ config file locations instead, for example `config/redis.cache.yml` or
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Container Registry pull-through cache
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.8</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
-</div>
-
-The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Container Scanning variables that reference Docker
 
 <div class="deprecation-notes">
@@ -1705,6 +1789,20 @@ The Container Registry [pull-through cache](https://docs.docker.com/registry/rec
 </div>
 
 All Container Scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### Container registry pull-through cache
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.8</span>
+- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
+</div>
+
+The container registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
 
 </div>
 
@@ -2617,21 +2715,6 @@ For more information, refer to [security report validation](https://docs.gitlab.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Shimo integration
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377824).
-</div>
-
-The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
-and will be moved to the JiHu GitLab codebase.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Starboard directive in the config for the GitLab Agent for Kubernetes
 
 <div class="deprecation-notes">
@@ -2820,13 +2903,13 @@ You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status o
 
 Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
-Supporting both GitLab's Container Registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
+Supporting both GitLab's container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
 
 This change will not impact your ability to pull and push container images to external registries using pipelines.
 
-Since we released the new [GitLab Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab Container Registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
+Since we released the new [GitLab container registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab container registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
 
-Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
+Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab container registry.
 
 </div>
 
@@ -3734,12 +3817,12 @@ an inline argument expression).
 - Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 </div>
 
-The GitLab Package stage offers a Package Registry, Container Registry, and Dependency Proxy to help you manage all of your dependencies using GitLab. Each of these product categories has a variety of settings that can be adjusted using the API.
+The GitLab Package stage offers a Package Registry, container registry, and Dependency Proxy to help you manage all of your dependencies using GitLab. Each of these product categories has a variety of settings that can be adjusted using the API.
 
 The permissions model for GraphQL is being updated. After 15.0, users with the Guest, Reporter, and Developer role can no longer update these settings:
 
 - [Package Registry settings](https://docs.gitlab.com/ee/api/graphql/reference/#packagesettings)
-- [Container Registry cleanup policy](https://docs.gitlab.com/ee/api/graphql/reference/#containerexpirationpolicy)
+- [Container registry cleanup policy](https://docs.gitlab.com/ee/api/graphql/reference/#containerexpirationpolicy)
 - [Dependency Proxy time-to-live policy](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxyimagettlgrouppolicy)
 - [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxysetting)
 
@@ -4335,7 +4418,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### Update to the Container Registry group-level API
+### Update to the container registry group-level API
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">14.5</span>
@@ -4343,7 +4426,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336912).
 </div>
 
-In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
+In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the container registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
 
 The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
 
@@ -4558,31 +4641,16 @@ If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you wi
 
 <div class="deprecation breaking-change" data-milestone="15.0">
 
-### htpasswd Authentication for the Container Registry
+### htpasswd Authentication for the container registry
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">14.9</span>
 - Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 </div>
 
-The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
+The container registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
 
 Since it isn't used in the context of GitLab (the product), `htpasswd` authentication will be deprecated in GitLab 14.9 and removed in GitLab 15.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="15.0">
-
-### user_email_lookup_limit API field
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">14.9</span>
-- Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-</div>
-
-The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated and will be removed in GitLab 15.0. Until GitLab 15.0, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows will continue to work.
-
-Any API calls attempting to change the rate limits for `user_email_lookup_limit` should use `search_rate_limit` instead.
 
 </div>
 </div>

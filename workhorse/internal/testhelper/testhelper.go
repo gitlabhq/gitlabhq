@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"runtime"
 	"testing"
-	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
@@ -152,19 +151,6 @@ func ParseJWT(token *jwt.Token) (interface{}, error) {
 type UploadClaims struct {
 	Upload map[string]string `json:"upload"`
 	jwt.RegisteredClaims
-}
-
-func Retry(t testing.TB, timeout time.Duration, fn func() error) {
-	t.Helper()
-	start := time.Now()
-	var err error
-	for ; time.Since(start) < timeout; time.Sleep(time.Millisecond) {
-		err = fn()
-		if err == nil {
-			return
-		}
-	}
-	t.Fatalf("test timeout after %v; last error: %v", timeout, err)
 }
 
 func SetupStaticFileHelper(t *testing.T, fpath, content, directory string) string {

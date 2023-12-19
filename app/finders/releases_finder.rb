@@ -27,11 +27,11 @@ class ReleasesFinder
   private
 
   def get_releases
-    Release.where(project_id: authorized_projects).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+    Release.for_projects(authorized_projects).tagged
   end
 
   def get_latest_releases
-    Release.latest_for_projects(authorized_projects, order_by: params[:order_by_for_latest]).where.not(tag: nil) # rubocop: disable CodeReuse/ActiveRecord
+    Release.latest_for_projects(authorized_projects, order_by: params[:order_by_for_latest]).tagged
   end
 
   def authorized_projects
@@ -43,19 +43,17 @@ class ReleasesFinder
   end
   strong_memoize_attr :authorized_projects
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_tag(releases)
-    return releases unless params[:tag].present?
-
-    releases.where(tag: params[:tag])
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def order_releases(releases)
     releases.sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
   end
 
   def authorized?(project)
     Ability.allowed?(current_user, :read_release, project)
+  end
+
+  def by_tag(releases)
+    return releases unless params[:tag].present?
+
+    releases.by_tag(params[:tag])
   end
 end

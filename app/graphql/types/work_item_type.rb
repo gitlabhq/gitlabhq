@@ -67,6 +67,12 @@ module Types
 
     expose_permissions Types::PermissionTypes::WorkItem
 
+    def work_item_type
+      context.scoped_set!(:resource_parent, object.resource_parent)
+
+      object.work_item_type
+    end
+
     def web_url
       Gitlab::UrlBuilder.build(object)
     end

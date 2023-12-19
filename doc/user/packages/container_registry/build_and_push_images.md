@@ -1,18 +1,18 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Build and push container images to the Container Registry **(FREE ALL)**
+# Build and push container images to the container registry **(FREE ALL)**
 
-Before you can build and push container images, you must [authenticate](authenticate_with_container_registry.md) with the Container Registry.
+Before you can build and push container images, you must [authenticate](authenticate_with_container_registry.md) with the container registry.
 
 ## Use Docker commands
 
-You can use Docker commands to build and push container images to your Container Registry:
+You can use Docker commands to build and push container images to your container registry:
 
-1. [Authenticate](authenticate_with_container_registry.md) with the Container Registry.
+1. [Authenticate](authenticate_with_container_registry.md) with the container registry.
 1. Run the Docker command to build or push. For example:
 
    - To build:
@@ -29,7 +29,7 @@ You can use Docker commands to build and push container images to your Container
 
 ## Configure your `.gitlab-ci.yml` file
 
-You can configure your `.gitlab-ci.yml` file to build and push container images to the Container Registry.
+You can configure your `.gitlab-ci.yml` file to build and push container images to the container registry.
 
 - If multiple jobs require authentication, put the authentication command in the `before_script`.
 - Before building, use `docker build --pull` to fetch changes to base images. It takes slightly
@@ -50,7 +50,7 @@ You can use [GitLab CI/CD](../../../ci/yaml/index.md) to build and push containe
 Container Registry. You can use CI/CD to test, build, and deploy your project from the container
 image you created.
 
-### Use a Docker-in-Docker container image from your Container Registry
+### Use a Docker-in-Docker container image from your container registry
 
 You can use your own container images for Docker-in-Docker.
 
@@ -108,7 +108,7 @@ and an error like the following is shown:
 error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
 ```
 
-## Container Registry examples with GitLab CI/CD
+## Container registry examples with GitLab CI/CD
 
 If you're using Docker-in-Docker on your runners, your `.gitlab-ci.yml` file should look similar to this:
 

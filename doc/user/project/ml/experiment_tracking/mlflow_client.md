@@ -1,20 +1,20 @@
 ---
-stage: Create
-group: Incubation
-info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+stage: ModelOps
+group: MLOps
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# MLflow client compatibility **(FREE ALL)**
+# MLflow client compatibility **(FREE ALL EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
 NOTE:
-Model experiment tracking is an [experimental feature](../../../../policy/experiment-beta-support.md).
-Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
+Model registry and model experiment tracking are [Experiments](../../../../policy/experiment-beta-support.md).
+Provide feedback [for model experiment tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/381660). Provide feedback for [model registry](https://gitlab.com/gitlab-org/gitlab/-/epics/9423).
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning Experiment Tracking.
-GitLab [Model experiment tracking](index.md) is compatible with MLflow Client,
-[logging experiments](index.md). The setup requires minimal changes to existing code.
+GitLab [Model experiment tracking](index.md) and GitLab
+[Model registry](../model_registry/index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
 GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
 
@@ -37,18 +37,18 @@ To use MLflow client compatibility from a local environment:
    export MLFLOW_TRACKING_TOKEN="<your_access_token>"
    ```
 
-1. If your training code contains the call to `mlflow.set_tracking_uri()`, remove it.
+1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
-When running the training code, MLflow creates experiments, runs, log parameters, metrics, metadata
-and artifacts on GitLab.
+## Model experiments
+
+When running the training code, MLflow client can be used to create experiments, runs,
+models, model versions, log parameters, metrics, metadata and artifacts on GitLab.
 
 After experiments are logged, they are listed under `/<your project>/-/ml/experiments`.
-Runs are registered as:
 
-- Model Candidates, which can be explored by selecting an experiment.
-- Tags, which are registered as metadata.
+Runs are registered as candidates, which can be explored by selecting an experiment, model, or model version.
 
-## Associating a candidate to a CI/CD job
+### Associating a candidate to a CI/CD job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
 
@@ -71,10 +71,179 @@ candidate metadata. To associate a candidate to a CI/CD job:
       # End of snippet to be included
     ```
 
+## Model registry
+
+You can also manage models and model versions by using the MLflow
+client. Models are registered under `/<your project>/-/ml/models`.
+
+### Models
+
+#### Creating a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+description = 'Model description'
+model = client.create_registered_model(model_name, description=description)
+```
+
+**Notes**
+
+- `create_registered_model` argument `tags` is ignored.
+- `name` must be unique within the project.
+- `name` cannot be the name of an existing experiment.
+
+#### Fetching a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+model = client.get_registered_model(model_name)
+```
+
+#### Updating a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+description = 'New description'
+client.update_registered_model(model_name, description=description)
+```
+
+#### Deleting a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+client.delete_registered_model(model_name)
+```
+
+### Logging candidates to a model
+
+Every model has an associated experiment with the same name. To log a candidate/run to the model,
+use the experiment with the name of the model:
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+exp = client.get_experiment_by_name(model_name)
+run = client.create_run(exp.experiment_id)
+```
+
+### Model version
+
+#### Creating a model version
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+description = 'Model version description'
+model_version = client.create_model_version(model_name, source="", description=description)
+```
+
+**Notes**
+
+- Argument `run_id` is ignored. Every model version behaves as a Candidate/Run. Creating a mode version from a run is not yet supported.
+- Argument `source` is ignored. GitLab will create a package location for the model version files.
+- Argument `tags` is ignored.
+- Argument `run_link` is ignored.
+- Argument `await_creation_for` is ignored.
+
+#### Updating a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+description = 'New description'
+client.update_model_version(model_name, version, description=description)
+```
+
+#### Fetching a model version
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+client.get_model_version(model_name, version)
+```
+
+#### Getting latest versions of a model
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+client.get_latest_versions(model_name)
+```
+
+**Notes**
+
+- Argument `stages` is ignored.
+- Versions are ordered by last created.
+
+#### Logging metrics and parameters to a model version
+
+Every model version is also a candidate/run, allowing users to log parameters
+and metrics. The run ID can either be found at the Model version page in GitLab,
+or by using the MLflow client:
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+model_version = client.get_model_version(model_name, version)
+run_id = model_version.run_id
+
+# Your training code
+
+client.log_metric(run_id, '<metric_name>', '<metric_value>')
+client.log_param(run_id, '<param_name>', '<param_value>')
+client.log_batch(run_id, metric_list, param_list, tag_list)
+```
+
+#### Logging artifacts to a model version
+
+GitLab creates a package that can be used by the MLflow client to upload files.
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+model_version = client.get_model_version(model_name, version)
+run_id = model_version.run_id
+
+# Your training code
+
+client.log_artifact(run_id, '<local/path/to/file.txt>', artifact_path="")
+client.log_figure(run_id, figure, artifact_file="my_plot.png")
+client.log_dict(run_id, my_dict, artifact_file="my_dict.json")
+client.log_image(run_id, image, artifact_file="image.png")
+```
+
+Artifacts will then be available under `https/<your project>/-/ml/models/<model_id>/versions/<version_id>`.
+
+#### Linking a model version to a CI/CD job
+
+Similar to candidates, it is also possible to link a model version to a CI/CD job:
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+model_version = client.get_model_version(model_name, version)
+run_id = model_version.run_id
+
+# Your training code
+
+if os.getenv('GITLAB_CI'):
+    client.set_tag(model_version.run_id, 'gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
+```
+
 ## Supported MLflow client methods and caveats
 
 GitLab supports these methods from the MLflow client. Other methods might be supported but were not
-tested. More information can be found in the [MLflow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html).
+tested. More information can be found in the [MLflow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html). The MlflowClient counterparts
+of the methods below are also supported with the same caveats.
 
 | Method                   | Supported        | Version Added  | Comments                                                                            |
 |--------------------------|------------------|----------------|-------------------------------------------------------------------------------------|
@@ -102,9 +271,23 @@ tested. More information can be found in the [MLflow Documentation](https://www.
 | `update_run`             | Yes              | 15.11          |                                                                                     |
 | `log_model`              | Partial          | 15.11          | (15.11) Saves the artifacts, but not the model data. `artifact_path` must be empty. |
 
+Other MLflowClient methods:
+
+| Method                    | Supported        | Version added | Comments                                         |
+|---------------------------|------------------|---------------|--------------------------------------------------|
+| `create_registered_model` | Yes with caveats | 16.8          | [See notes](#creating-a-model)                   |
+| `get_registered_model`    | Yes              | 16.8          |                                                  |
+| `delete_registered_model` | Yes              | 16.8          |                                                  |
+| `update_registered_model` | Yes              | 16.8          |                                                  |
+| `create_model_version`    | Yes with caveats | 16.8          | [See notes](#creating-a-model-version)           |
+| `get_model_version`       | Yes              | 16.8          |                                                  |
+| `get_latest_versions`     | Yes with caveats | 16.8          | [See notes](#getting-latest-versions-of-a-model) |
+| `update_model_version`    | Yes              | 16.8          |                                                  |
+| `create_registered_model` | Yes              | 16.8          |                                                  |
+| `create_registered_model` | Yes              | 16.8          |                                                  |
+
 ## Limitations
 
-- The API GitLab supports is the one defined at MLflow version 1.28.0.
-- API endpoints not listed above are not supported.
+- The API GitLab supports is the one defined at MLflow version 2.7.1.
+- MLflow client methods not listed above are not supported.
 - During creation of experiments and runs, ExperimentTags are stored, even though they are not displayed.
-- MLflow Model Registry is not supported.

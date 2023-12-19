@@ -4,6 +4,11 @@ module MembershipActions
   include MembersPresentation
   extend ActiveSupport::Concern
 
+  included do
+    before_action :authenticate_user!, only: :request_access
+    before_action :already_a_member!, only: :request_access
+  end
+
   def update
     member = members_and_requesters.find(params[:id])
     result = Members::UpdateService
@@ -165,6 +170,20 @@ module MembershipActions
         [:inherited, :direct]
       end
     end
+  end
+
+  def authenticate_user!
+    return if current_user
+
+    redirect_to new_user_session_path
+  end
+
+  def already_a_member!
+    member = members_and_requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord
+    return if member.nil?
+
+    message = member.request? ? _('You have already requested access.') : _('You already have access.')
+    redirect_to polymorphic_path(membershipable), notice: message
   end
 end
 

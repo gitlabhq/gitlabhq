@@ -4,7 +4,7 @@ creation-date: "2021-02-08"
 authors: [ "@abrandl" ]
 coach: "@glopezfernandez"
 approvers: [ "@fabian", "@craig-gomes" ]
-owning-stage: "~devops::data_stores"
+owning-stage: "~devops::data stores"
 participating-stages: []
 ---
 

@@ -13,7 +13,9 @@ export const initOrganizationsUsers = () => {
     defaultClient: createDefaultClient(),
   });
 
-  const { organizationGid } = convertObjectPropsToCamelCase(el.dataset);
+  const { organizationGid, paths } = convertObjectPropsToCamelCase(JSON.parse(el.dataset.appData), {
+    deep: true,
+  });
 
   return new Vue({
     el,
@@ -21,6 +23,7 @@ export const initOrganizationsUsers = () => {
     apolloProvider,
     provide: {
       organizationGid,
+      paths,
     },
     render(createElement) {
       return createElement(OrganizationsUsersApp);

@@ -1,8 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Run DAST in an offline environment **(ULTIMATE ALL)**
@@ -16,7 +15,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 To use DAST in an offline environment, you need:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](index.md#prerequisites).
-- Docker Container Registry with a locally available copy of the DAST
+- Docker container registry with a locally available copy of the DAST
   [container image](https://gitlab.com/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/security-products/dast/container_registry).
 

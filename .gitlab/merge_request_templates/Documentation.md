@@ -16,7 +16,7 @@
 - [ ] If you're adding or changing the main heading of the page (H1), ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added.
 - [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
     - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/#metadata).
-    - The [associated Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
+    - The [associated Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 If you are a GitLab team member and only adding documentation, do not add any of the following labels:
 

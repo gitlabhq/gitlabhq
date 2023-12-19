@@ -22,7 +22,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
       />
     </div>
     <div
-      class="gfm-form gl-overflow-hidden js-expanded js-vue-markdown-field md-area position-relative"
+      class="gfm-form js-expanded js-vue-markdown-field md-area position-relative"
       data-uploads-path=""
     >
       <markdown-header-stub

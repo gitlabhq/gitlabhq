@@ -10,12 +10,15 @@ export const searchArrayToFilterTokens = (search) =>
   search.map((s) => keyValueToFilterToken(FILTERED_SEARCH_TERM, s));
 
 export const extractFilterAndSorting = (queryObject) => {
-  const { type, search, sort, orderBy } = queryObject;
+  const { type, search, version, sort, orderBy } = queryObject;
   const filters = [];
   const sorting = {};
 
   if (type) {
     filters.push(keyValueToFilterToken('type', type));
+  }
+  if (version) {
+    filters.push(keyValueToFilterToken('version', version));
   }
   if (search) {
     filters.push(...searchArrayToFilterTokens(search));

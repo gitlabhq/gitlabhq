@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # CI/CD analytics **(FREE ALL)**
@@ -30,6 +30,17 @@ View pipeline duration history:
 
 ## View CI/CD analytics
 
+You can view CI/CD analytics for a group or project.
+
+### For a group **(ULTIMATE ALL)**
+
+To view CI/CD analytics:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > CI/CD analytics**.
+
+### For a project **(FREE ALL)**
+
 To view CI/CD analytics:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -44,7 +55,7 @@ frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
 for its deployment information to appear on the graphs.
 
-  Deployment frequency is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
+Deployment frequency is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
 
 The deployment frequency chart is available for groups and projects.
 
@@ -68,7 +79,7 @@ merge requests to be deployed to a production environment. This chart is availab
 - For time periods in which no merge requests were deployed, the charts render a
   red, dashed line.
 
-  Lead time for changes is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
+Lead time for changes is one of the four DORA metrics that DevOps teams use for measuring excellence in software delivery.
 
 To view the lead time for changes chart:
 

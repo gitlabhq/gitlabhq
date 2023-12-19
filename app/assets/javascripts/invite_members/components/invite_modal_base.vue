@@ -1,7 +1,7 @@
 <script>
 import {
+  GlCollapsibleListbox,
   GlFormGroup,
-  GlFormSelect,
   GlModal,
   GlDatepicker,
   GlLink,
@@ -12,6 +12,7 @@ import {
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
 import {
   ACCESS_LEVEL,
   ACCESS_EXPIRE_DATE,
@@ -36,8 +37,8 @@ const DEFAULT_SLOTS = [
 
 export default {
   components: {
+    GlCollapsibleListbox,
     GlFormGroup,
-    GlFormSelect,
     GlDatepicker,
     GlLink,
     GlModal,
@@ -68,6 +69,11 @@ export default {
       type: Number,
       required: true,
     },
+    defaultMemberRoleId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     helpLink: {
       type: String,
       required: true,
@@ -91,6 +97,11 @@ export default {
       default: false,
     },
     isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLoadingRoles: {
       type: Boolean,
       required: false,
       default: false,
@@ -134,14 +145,14 @@ export default {
   data() {
     // Be sure to check out reset!
     return {
-      selectedAccessLevel: this.defaultAccessLevel,
+      selectedAccessLevel: null,
       selectedDate: undefined,
       minDate: new Date(),
     };
   },
   computed: {
-    accessLevelsOptions() {
-      return Object.entries(this.accessLevels).map(([text, value]) => ({ text, value }));
+    accessLevelOptions() {
+      return roleDropdownItems(this.accessLevels);
     },
     introText() {
       return sprintf(this.labelIntroText, { name: this.name });
@@ -158,11 +169,6 @@ export default {
     datepickerId() {
       return `${this.modalId}_expires_at`;
     },
-    selectedRoleName() {
-      return Object.keys(this.accessLevels).find(
-        (key) => this.accessLevels[key] === Number(this.selectedAccessLevel),
-      );
-    },
     contentSlots() {
       return [...DEFAULT_SLOTS, ...(this.extraSlots || [])];
     },
@@ -173,7 +179,6 @@ export default {
           variant: 'confirm',
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'invite_button',
         },
       };
     },
@@ -195,18 +200,16 @@ export default {
     },
   },
   watch: {
-    selectedAccessLevel: {
+    accessLevelOptions: {
       immediate: true,
-      handler(val) {
-        this.$emit('access-level', val);
-      },
+      handler: 'resetSelectedAccessLevel',
     },
   },
   methods: {
     onReset() {
       // This component isn't necessarily disposed,
       // so we might need to reset it's state.
-      this.selectedAccessLevel = this.defaultAccessLevel;
+      this.resetSelectedAccessLevel();
       this.selectedDate = undefined;
 
       this.$emit('reset');
@@ -230,13 +233,26 @@ export default {
       // We never want to hide when submitting
       e.preventDefault();
 
+      const { accessLevel, memberRoleId } = this.accessLevelOptions.flatten.find(
+        (item) => item.value === this.selectedAccessLevel,
+      );
       this.$emit('submit', {
-        accessLevel: this.selectedAccessLevel,
+        accessLevel,
+        memberRoleId,
         expiresAt: this.selectedDate,
       });
     },
     onClose() {
       this.$emit('close');
+    },
+    resetSelectedAccessLevel() {
+      const accessLevel = {
+        integerValue: this.defaultAccessLevel,
+        memberRoleId: this.defaultMemberRoleId,
+      };
+      this.selectedAccessLevel = initialSelectedRole(this.accessLevelOptions.flatten, {
+        accessLevel,
+      });
     },
   },
   HEADER_CLOSE_LABEL,
@@ -308,11 +324,13 @@ export default {
               </template>
             </gl-sprintf>
           </template>
-          <gl-form-select
+          <gl-collapsible-listbox
             :id="dropdownId"
             v-model="selectedAccessLevel"
-            data-qa-selector="access_level_dropdown"
-            :options="accessLevelsOptions"
+            data-testid="access-level-dropdown"
+            :items="accessLevelOptions.formatted"
+            :loading="isLoadingRoles"
+            block
           />
         </gl-form-group>
 
@@ -338,10 +356,10 @@ export default {
 
     <template #modal-footer>
       <div
-        class="gl-m-0 gl-w-full gl-display-flex gl-xs-flex-direction-column! gl-flex-direction-row-reverse"
+        class="gl-m-0 gl-w-full gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row-reverse"
       >
         <gl-button
-          class="gl-w-full gl-sm-w-auto gl-xs-mb-3! gl-sm-ml-3!"
+          class="gl-w-full gl-sm-w-auto gl-sm-ml-3!"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
           @click="onSubmit"

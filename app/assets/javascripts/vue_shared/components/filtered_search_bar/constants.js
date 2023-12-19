@@ -31,6 +31,8 @@ export const OPERATORS_IS_NOT = [...OPERATORS_IS, ...OPERATORS_NOT];
 export const OPERATORS_IS_NOT_OR = [...OPERATORS_IS, ...OPERATORS_NOT, ...OPERATORS_OR];
 export const OPERATORS_AFTER_BEFORE = [...OPERATORS_AFTER, ...OPERATORS_BEFORE];
 
+export const OPERATORS_TO_GROUP = [OPERATOR_OR, OPERATOR_NOT];
+
 export const OPTION_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const OPTION_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const OPTION_CURRENT = { value: FILTER_CURRENT, text: __('Current') };
@@ -66,6 +68,7 @@ export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
 export const TOKEN_TITLE_CONTACT = s__('Crm|Contact');
 export const TOKEN_TITLE_GROUP = __('Group');
 export const TOKEN_TITLE_LABEL = __('Label');
+export const TOKEN_TITLE_PROJECT = __('Project');
 export const TOKEN_TITLE_MILESTONE = __('Milestone');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
@@ -76,6 +79,7 @@ export const TOKEN_TITLE_STATUS = __('Status');
 export const TOKEN_TITLE_JOBS_RUNNER_TYPE = s__('Job|Runner type');
 export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
+export const TOKEN_TITLE_VERSION = __('Version');
 export const TOKEN_TITLE_SEARCH_WITHIN = __('Search Within');
 export const TOKEN_TITLE_CREATED = __('Created date');
 export const TOKEN_TITLE_CLOSED = __('Closed date');
@@ -91,6 +95,7 @@ export const TOKEN_TYPE_EPIC = 'epic';
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/377838
+export const TOKEN_TYPE_PROJECT = 'project';
 export const TOKEN_TYPE_HEALTH = 'health';
 export const TOKEN_TYPE_ITERATION = 'iteration';
 export const TOKEN_TYPE_LABEL = 'label';
@@ -104,6 +109,7 @@ export const TOKEN_TYPE_STATUS = 'status';
 export const TOKEN_TYPE_JOBS_RUNNER_TYPE = 'jobs-runner-type';
 export const TOKEN_TYPE_TARGET_BRANCH = 'target-branch';
 export const TOKEN_TYPE_TYPE = 'type';
+export const TOKEN_TYPE_VERSION = 'version';
 export const TOKEN_TYPE_WEIGHT = 'weight';
 export const TOKEN_TYPE_SEARCH_WITHIN = 'in';
 export const TOKEN_TYPE_CREATED = 'created';

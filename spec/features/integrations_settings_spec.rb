@@ -11,19 +11,17 @@ RSpec.describe 'Integration settings', feature_category: :integrations do
     sign_in(user)
   end
 
-  context 'with Shimo Zentao integration records' do
+  context 'with Zentao integration records' do
     before do
-      create(:integration, project: project, type_new: 'Integrations::Shimo', category: 'issue_tracker')
       create(:integration, project: project, type_new: 'Integrations::Zentao', category: 'issue_tracker')
     end
 
-    it 'shows settings without Shimo Zentao', :js do
+    it 'shows settings without Zentao', :js do
       visit namespace_project_settings_integrations_path(namespace_id: project.namespace.full_path,
         project_id: project.path)
 
       expect(page).to have_content('Add an integration')
       expect(page).not_to have_content('ZenTao')
-      expect(page).not_to have_content('Shimo')
     end
   end
 end

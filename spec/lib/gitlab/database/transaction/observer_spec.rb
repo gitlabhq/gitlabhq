@@ -21,6 +21,8 @@ RSpec.describe Gitlab::Database::Transaction::Observer, feature_category: :datab
 
     it 'tracks transaction data', :aggregate_failures do
       ActiveRecord::Base.transaction do
+        User.first
+
         ActiveRecord::Base.transaction(requires_new: true) do
           User.first
 

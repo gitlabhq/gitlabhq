@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jenkins **(FREE ALL)**
@@ -17,6 +17,12 @@ You should use a Jenkins integration with GitLab when:
   in the future, but need an interim solution.
 - You're invested in [Jenkins plugins](https://plugins.jenkins.io/) and choose
   to keep using Jenkins to build your apps.
+
+This integration can trigger a Jenkins build when a change is pushed to GitLab.
+
+You cannot use this integration to trigger GitLab CI/CD pipelines from Jenkins. Instead,
+use the [pipeline triggers API endpoint](../api/pipeline_triggers.md) in a Jenkins job,
+authenticated with a [pipeline trigger token](../ci/triggers/index.md#create-a-pipeline-trigger-token).
 
 After you have configured a Jenkins integration, you trigger a build in Jenkins
 when you push code to your repository or create a merge request in GitLab. The

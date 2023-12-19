@@ -18,6 +18,7 @@ module Gitlab
 
           def create_note(issue_event, note_body, review_requester_id)
             Note.create!(
+              importing: true,
               system: true,
               noteable_type: issuable_type(issue_event),
               noteable_id: issuable_db_id(issue_event),

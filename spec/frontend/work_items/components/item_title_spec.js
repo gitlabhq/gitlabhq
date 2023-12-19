@@ -2,11 +2,12 @@ import { shallowMount } from '@vue/test-utils';
 import { escape } from 'lodash';
 import ItemTitle from '~/work_items/components/item_title.vue';
 
-const createComponent = ({ title = 'Sample title', disabled = false } = {}) =>
+const createComponent = ({ title = 'Sample title', disabled = false, useH1 = false } = {}) =>
   shallowMount(ItemTitle, {
     propsData: {
       title,
       disabled,
+      useH1,
     },
   });
 
@@ -25,6 +26,12 @@ describe('ItemTitle', () => {
       contenteditable: 'true',
     });
     expect(findInputEl().text()).toBe('Sample title');
+  });
+
+  it('renders H1 if useH1 is true, otherwise renders H2', () => {
+    expect(wrapper.element.tagName).toBe('H2');
+    wrapper = createComponent({ useH1: true });
+    expect(wrapper.element.tagName).toBe('H1');
   });
 
   it('renders title contents with editing disabled', () => {

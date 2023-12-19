@@ -13,12 +13,17 @@ const Tracking = Object.assign(Tracker, {
     return {
       computed: {
         trackingCategory() {
-          const localCategory = this.tracking ? this.tracking.category : null;
+          // TODO: refactor to remove potentially undefined property
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/432995
+          const localCategory = 'tracking' in this ? this.tracking.category : null;
           return localCategory || opts.category;
         },
         trackingOptions() {
           const options = addExperimentContext(opts);
-          return { ...options, ...this.tracking };
+          // TODO: refactor to remove potentially undefined property
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/432995
+          const tracking = 'tracking' in this ? this.tracking : {};
+          return { ...options, ...tracking };
         },
       },
       methods: {

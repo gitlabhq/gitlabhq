@@ -131,8 +131,6 @@ module Projects
 
           update_integrations
 
-          remove_paid_features
-
           project.old_path_with_namespace = @old_path
 
           update_repository_configuration(@new_path)
@@ -143,6 +141,7 @@ module Projects
         end
       end
 
+      remove_paid_features
       update_pending_builds
 
       post_update_hooks(project, @old_group)

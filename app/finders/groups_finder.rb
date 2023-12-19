@@ -17,6 +17,7 @@
 #     include_parent_descendants: boolean (defaults to false) - includes descendant groups when
 #                                 filtering by parent. The parent param must be present.
 #     include_ancestors: boolean (defaults to true)
+#     organization: Scope the groups to the Organizations::Organization
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -44,6 +45,7 @@ class GroupsFinder < UnionFinder
   attr_reader :current_user, :params
 
   def filter_groups(groups)
+    groups = by_organization(groups)
     groups = by_parent(groups)
     groups = by_custom_attributes(groups)
     groups = filter_group_ids(groups)
@@ -91,6 +93,13 @@ class GroupsFinder < UnionFinder
     return groups unless params[:filter_group_ids]
 
     groups.id_in(params[:filter_group_ids])
+  end
+
+  def by_organization(groups)
+    organization = params[:organization]
+    return groups unless organization
+
+    groups.in_organization(organization)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -1,18 +1,18 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PyPI packages in the Package Registry **(FREE ALL)**
+# PyPI packages in the package registry **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208747) in GitLab 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
-Publish PyPI packages in your project's Package Registry. Then install the
+Publish PyPI packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
 
-The Package Registry works with:
+The package registry works with:
 
 - [pip](https://pypi.org/project/pip/)
 - [twine](https://pypi.org/project/twine/)
@@ -22,9 +22,9 @@ clients use, see the [PyPI API documentation](../../../api/packages/pypi.md).
 
 Learn how to [build a PyPI package](../workflows/build_packages.md#pypi).
 
-## Authenticate with the Package Registry
+## Authenticate with the package registry
 
-Before you can publish to the Package Registry, you must authenticate.
+Before you can publish to the package registry, you must authenticate.
 
 To do this, you can use:
 
@@ -119,9 +119,10 @@ https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/pypi
 
 Prerequisites:
 
-- You must [authenticate with the Package Registry](#authenticate-with-the-package-registry).
+- You must [authenticate with the package registry](#authenticate-with-the-package-registry).
 - Your [version string must be valid](#ensure-your-version-string-is-valid).
 - The maximum allowed package size is 5 GB.
+- The maximum length of the `description` field is 4000 characters. Longer `description` strings are truncated.
 - You can't upload the same version of a package multiple times. If you try,
   you receive the error `400 Bad Request`.
 - PyPI packages are published using your projectID.
@@ -202,9 +203,9 @@ more than once, a `400 Bad Request` error occurs.
 ## Install a PyPI package
 
 In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/233413),
-when a PyPI package is not found in the Package Registry, the request is forwarded to [pypi.org](https://pypi.org/).
+when a PyPI package is not found in the package registry, the request is forwarded to [pypi.org](https://pypi.org/).
 
-Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
 
 WARNING:
 When you use the `--index-url` option, do not specify the port if it is a default

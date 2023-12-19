@@ -4,8 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class DiffNote
-        include ToHash
-        include ExposeAttribute
+        include Representable
 
         NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i
 
@@ -133,9 +132,6 @@ module Gitlab
         end
 
         private
-
-        # Required by ExposeAttribute
-        attr_reader :attributes
 
         def diff_line_params
           if addition?

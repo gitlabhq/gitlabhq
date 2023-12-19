@@ -119,7 +119,7 @@ module QA
       def with_retry_on_too_many_requests
         response = nil
 
-        Support::Retrier.retry_until(log: false) do
+        Support::Retrier.retry_until(log: false, message: "Retrying upon receiving 429 HTTP status") do
           response = yield
 
           if response.code == HTTP_STATUS_TOO_MANY_REQUESTS
@@ -159,7 +159,7 @@ module QA
 
         loop do
           response = if attempts > 0
-                       Retrier.retry_on_exception(max_attempts: attempts, log: false) do
+                       Retrier.retry_on_exception(max_attempts: attempts, log: false, sleep_interval: 1) do
                          get(url).tap { |resp| not_ok_error.call(resp) if resp.code != HTTP_STATUS_OK }
                        end
                      else

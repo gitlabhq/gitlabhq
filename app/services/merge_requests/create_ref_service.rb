@@ -35,8 +35,6 @@ module MergeRequests
       result = maybe_rebase!(**result)
       result = maybe_merge!(**result)
 
-      update_merge_request!(merge_request, result)
-
       ServiceResponse.success(payload: result)
     rescue CreateRefError => error
       ServiceResponse.error(message: error.message)
@@ -116,10 +114,6 @@ module MergeRequests
         merge_commit_sha: merge_commit_sha,
         expected_old_oid: expected_old_oid
       ).compact
-    end
-
-    def update_merge_request!(merge_request, result)
-      # overridden in EE
     end
 
     def safe_gitaly_operation

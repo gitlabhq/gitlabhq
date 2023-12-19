@@ -1,21 +1,45 @@
 {
   "type": "object",
   "allOf": [
-    { "$ref": "group_link.json" },
+    {
+      "$ref": "group_link.json"
+    },
     {
       "required": [
-        "source"
+        "source",
+        "valid_roles",
+        "can_update",
+        "can_remove"
       ],
       "properties": {
         "source": {
           "type": "object",
-          "required": ["id", "full_name", "web_url"],
+          "required": [
+            "id",
+            "full_name",
+            "web_url"
+          ],
           "properties": {
-            "id": { "type": "integer" },
-            "full_name": { "type": "string" },
-            "web_url": { "type": "string" }
+            "id": {
+              "type": "integer"
+            },
+            "full_name": {
+              "type": "string"
+            },
+            "web_url": {
+              "type": "string"
+            }
           },
           "additionalProperties": false
+        },
+        "valid_roles": {
+          "type": "object"
+        },
+        "can_update": {
+          "type": "boolean"
+        },
+        "can_remove": {
+          "type": "boolean"
         }
       }
     }

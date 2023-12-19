@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Development seed files
@@ -18,6 +18,7 @@ data for features.
 |-------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | DevOps Adoption                                                                                                   | `FILTER=devops_adoption bundle exec rake db:seed_fu`                                                          | [31_devops_adoption.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/31_devops_adoption.rb)                        |
 | Value Streams Dashboard                                                                                           | `FILTER=cycle_analytics SEED_VSA=1 bundle exec rake db:seed_fu`                                               | [17_cycle_analytics.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/fixtures/development/17_cycle_analytics.rb)                           |
+| Value Streams Dashboard overview counts                                                                           | `FILTER=vsd_overview_counts SEED_VSD_COUNTS=1 bundle exec rake db:seed_fu`                                    | [93_vsd_overview_counts.rb](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/fixtures/development/93_vsd_overview_counts.rb)                |
 | Value Stream Analytics                                                                                            | `FILTER=customizable_cycle_analytics SEED_CUSTOMIZABLE_CYCLE_ANALYTICS=1 bundle exec rake db:seed_fu` | [30_customizable_cycle_analytics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/30_customizable_cycle_analytics.rb) |
 | CI/CD analytics                                                                                                   | `FILTER=ci_cd_analytics SEED_CI_CD_ANALYTICS=1 bundle exec rake db:seed_fu`                                   | [38_ci_cd_analytics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/fixtures/development/38_ci_cd_analytics.rb?ref_type=heads)               |
 | Contributions Analytics<br><br>Productivity Analytics<br><br>Code review Analytics<br><br>Merge Request Analytics | `FILTER=productivity_analytics SEED_PRODUCTIVITY_ANALYTICS=1 bundle exec rake db:seed_fu`             | [90_productivity_analytics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/90_productivity_analytics.rb)             |

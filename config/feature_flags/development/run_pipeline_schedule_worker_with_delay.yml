@@ -1,0 +1,8 @@
+---
+name: run_pipeline_schedule_worker_with_delay
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136992
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431892
+milestone: '16.7'
+type: development
+group: group::pipeline execution
+default_enabled: false

@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge request commits **(FREE ALL)**
@@ -83,3 +82,12 @@ To view the changes between previously merged commits:
 
 If you selected to add previously merged commits for context, those commits are
 also shown in the list.
+
+## Find the merge request that introduced a change
+
+When you view the commit details page, GitLab links to one or more merge requests
+that contain that commit.
+
+This behavior only applies to commits that are in the most recent version of a merge
+request. If the commits were in a merge request and were rebased out of that merge
+request, the commits are not linked.

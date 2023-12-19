@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::UnregisterRunnerService, '#execute', feature_category: :runner_fleet do
+RSpec.describe ::Ci::Runners::UnregisterRunnerService, '#execute', feature_category: :fleet_visibility do
   subject(:execute) { described_class.new(runner, 'some_token').execute }
 
   let(:runner) { create(:ci_runner) }

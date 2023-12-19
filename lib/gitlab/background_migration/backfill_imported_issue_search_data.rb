@@ -15,7 +15,7 @@ module Gitlab
       def perform
         each_sub_batch do |sub_batch|
           update_search_data(sub_batch)
-        rescue ActiveRecord::StatementInvalid => e
+        rescue ActiveRecord::StatementInvalid => e # rubocop:todo BackgroundMigration/AvoidSilentRescueExceptions -- https://gitlab.com/gitlab-org/gitlab/-/issues/431592
           raise unless e.cause.is_a?(PG::ProgramLimitExceeded) && e.message.include?('string is too long for tsvector')
 
           update_search_data_individually(sub_batch)
@@ -44,7 +44,7 @@ module Gitlab
         relation.pluck(:id).each do |issue_id|
           update_search_data(relation.klass.where(id: issue_id))
           sleep(pause_ms * 0.001)
-        rescue ActiveRecord::StatementInvalid => e
+        rescue ActiveRecord::StatementInvalid => e # rubocop:todo BackgroundMigration/AvoidSilentRescueExceptions -- https://gitlab.com/gitlab-org/gitlab/-/issues/431592
           raise unless e.cause.is_a?(PG::ProgramLimitExceeded) && e.message.include?('string is too long for tsvector')
 
           logger.error(

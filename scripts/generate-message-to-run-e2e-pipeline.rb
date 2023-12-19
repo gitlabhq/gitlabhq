@@ -72,8 +72,8 @@ class GenerateMessageToRunE2ePipeline
       <!-- Run e2e warning begin -->
       @#{author_username} Some end-to-end (E2E) tests should run based on the stage label.
 
-      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure tests in the `follow-up-e2e:package-and-test-ee` pipeline
-      pass **before this MR is merged**.
+      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and wait for the tests in the `follow-up-e2e:package-and-test-ee` pipeline
+      to pass **before merging this MR**. Do not use **Auto-merge**, unless these tests have already completed successfully, because a failure in these tests do not block the auto-merge.
       (E2E tests are computationally intensive and don't run automatically for every push/rebase, so we ask you to run this job manually at least once.)
 
       To run all E2E tests, apply the ~"pipeline:run-all-e2e" label and run a new pipeline.
@@ -83,7 +83,7 @@ class GenerateMessageToRunE2ePipeline
 
       Once done, apply the ✅ emoji on this comment.
 
-      **Team members only:** for any questions or help, reach out on the internal `#quality` Slack channel.
+      **Team members only:** for any questions or help, reach out on the internal `#test-platform` Slack channel.
       <!-- Run e2e warning end -->
     MARKDOWN
   end

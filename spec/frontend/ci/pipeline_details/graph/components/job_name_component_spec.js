@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import jobNameComponent from '~/ci/common/private/job_name_component.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 describe('job name component', () => {
   let wrapper;

@@ -109,6 +109,21 @@ class IssuesFinder < IssuableFinder
     super.with_projects_matching_search_data
   end
 
+  override :by_parent
+  def by_parent(items)
+    return super unless include_namespace_level_work_items?
+
+    items.in_namespaces(
+      Namespace.from_union(
+        [
+          Group.id_in(params.group).select(:id),
+          params.projects.select(:project_namespace_id)
+        ],
+        remove_duplicates: false
+      )
+    )
+  end
+
   def by_confidential(items)
     return items if params[:confidential].nil?
 
@@ -156,6 +171,12 @@ class IssuesFinder < IssuableFinder
 
   def model_class
     Issue
+  end
+
+  def include_namespace_level_work_items?
+    params.group? &&
+      Array(params[:issue_types]).map(&:to_s).include?('epic') &&
+      Feature.enabled?(:namespace_level_work_items, params.group)
   end
 end
 

@@ -38,11 +38,7 @@ export default {
   },
   computed: {
     showAiActions() {
-      return (
-        this.resourceGlobalId &&
-        (this.glFeatures.openaiExperimentation || this.glFeatures.aiGlobalSwitch) &&
-        this.glFeatures.summarizeNotes
-      );
+      return this.resourceGlobalId && this.glFeatures.summarizeNotes;
     },
   },
 };

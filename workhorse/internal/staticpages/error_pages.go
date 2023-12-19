@@ -11,14 +11,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
-var (
-	staticErrorResponses = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "gitlab_workhorse_static_error_responses",
-			Help: "How many HTTP responses have been changed to a static error page, by HTTP status code.",
-		},
-		[]string{"code"},
-	)
+var staticErrorResponses = promauto.NewCounterVec(
+	prometheus.CounterOpts{
+		Name: "gitlab_workhorse_static_error_responses",
+		Help: "How many HTTP responses have been changed to a static error page, by HTTP status code.",
+	},
+	[]string{"code"},
 )
 
 type ErrorFormat int
@@ -118,6 +116,11 @@ func (s *errorPageResponseWriter) writeText() (string, []byte) {
 
 func (s *errorPageResponseWriter) flush() {
 	s.WriteHeader(http.StatusOK)
+}
+
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (s *errorPageResponseWriter) Unwrap() http.ResponseWriter {
+	return s.rw
 }
 
 func (st *Static) ErrorPagesUnless(disabled bool, format ErrorFormat, handler http.Handler) http.Handler {

@@ -46,6 +46,34 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
   end
 
+  describe '.instrumentation_class' do
+    context 'for non internal events' do
+      let(:attributes) { { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', data_source: 'redis_hll' } }
+
+      it 'returns class from the definition' do
+        expect(definition.instrumentation_class).to eq('RedisHLLMetric')
+      end
+    end
+
+    context 'for internal events' do
+      context 'for total counter' do
+        let(:attributes) { { key_path: 'metric1', data_source: 'internal_events', events: [{ name: 'a' }] } }
+
+        it 'returns TotalCounterMetric' do
+          expect(definition.instrumentation_class).to eq('TotalCountMetric')
+        end
+      end
+
+      context 'for uniq counter' do
+        let(:attributes) { { key_path: 'metric1', data_source: 'internal_events', events: [{ name: 'a', unique: :id }] } }
+
+        it 'returns RedisHLLMetric' do
+          expect(definition.instrumentation_class).to eq('RedisHLLMetric')
+        end
+      end
+    end
+  end
+
   describe 'not_removed' do
     let(:all_definitions) do
       metrics_definitions = [
@@ -71,12 +99,13 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
   describe '#with_instrumentation_class' do
     let(:all_definitions) do
       metrics_definitions = [
-        { key_path: 'metric1', instrumentation_class: 'RedisHLLMetric', status: 'active' },
-        { key_path: 'metric2', instrumentation_class: 'RedisHLLMetric', status: 'broken' },
-        { key_path: 'metric3', instrumentation_class: 'RedisHLLMetric', status: 'active' },
-        { key_path: 'metric4', instrumentation_class: 'RedisHLLMetric', status: 'removed' },
-        { key_path: 'metric5', status: 'active' },
-        { key_path: 'metric_missing_status' }
+        { key_path: 'metric1', status: 'active', data_source: 'redis_hll', instrumentation_class: 'RedisHLLMetric' },
+        { key_path: 'metric2', status: 'active', data_source: 'internal_events' }, # class is defined by data_source
+
+        { key_path: 'metric3', status: 'active', data_source: 'redis_hll' },
+        { key_path: 'metric4', status: 'removed', instrumentation_class: 'RedisHLLMetric', data_source: 'redis_hll' },
+        { key_path: 'metric5', status: 'removed', data_source: 'internal_events' },
+        { key_path: 'metric_missing_status', data_source: 'internal_events' }
       ]
       metrics_definitions.map { |definition| described_class.new(definition[:key_path], definition.symbolize_keys) }
     end
@@ -86,15 +115,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
 
     it 'includes definitions with instrumentation_class' do
-      expect(described_class.with_instrumentation_class.count).to eq(3)
-    end
-
-    context 'with removed metric' do
-      let(:metric_status) { 'removed' }
-
-      it 'excludes removed definitions' do
-        expect(described_class.with_instrumentation_class.count).to eq(3)
-      end
+      expect(described_class.with_instrumentation_class.map(&:key_path)).to match_array(%w[metric1 metric2])
     end
   end
 
@@ -224,25 +245,9 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
 
         where(:instrumentation_class, :options, :events, :is_valid) do
           'AnotherClass'     | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          nil                | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
+          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
           'RedisHLLMetric'   | { events: ['a'] } | nil | false
-          'RedisHLLMetric'   | nil               | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'a' }] | false
-          'RedisHLLMetric'   | { events: 'a' }   | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: [2] }   | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'], a: 'b' } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id', b: 'c' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ unique: 'user.id' }] | false
-          'TotalCountMetric' | { events: ['a'] } | [{ name: 'a' }] | true
-          'TotalCountMetric' | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          'TotalCountMetric' | { events: ['a'] } | nil | false
-          'TotalCountMetric' | nil               | [{ name: 'a' }] | false
-          'TotalCountMetric' | { events: [2] }   | [{ name: 'a' }] | false
-          'TotalCountMetric' | { events: ['a'] } | [{}] | false
-          'TotalCountMetric' | 'a'               | [{ name: 'a' }] | false
-          'TotalCountMetric' | { events: ['a'], a: 'b' } | [{ name: 'a' }] | false
+          nil                | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
         end
 
         with_them do

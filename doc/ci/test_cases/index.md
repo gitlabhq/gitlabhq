@@ -1,9 +1,8 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
-type: reference
 ---
 
 # Test cases **(ULTIMATE ALL)**
@@ -21,7 +20,7 @@ For more information, see [Product Stage Direction - Plan](https://about.gitlab.
 
 ## Create a test case
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 
@@ -91,7 +90,7 @@ or editing an existing one.
 
 When you want to stop using a test case, you can archive it. You can [reopen an archived test case](#reopen-an-archived-test-case) later.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

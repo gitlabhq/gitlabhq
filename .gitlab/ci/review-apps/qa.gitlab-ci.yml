@@ -30,6 +30,8 @@ include:
   needs:
     - review-deploy
     - download-knapsack-report
+    - pipeline: $PARENT_PIPELINE_ID
+      job: retrieve-tests-metadata
   variables:
     GIT_LFS_SKIP_SMUDGE: 1
     WD_INSTALL_DIR: /usr/local/bin

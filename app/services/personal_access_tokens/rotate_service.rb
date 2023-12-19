@@ -21,6 +21,7 @@ module PersonalAccessTokens
         end
 
         response = create_access_token(params)
+
         raise ActiveRecord::Rollback unless response.success?
       end
 
@@ -30,15 +31,6 @@ module PersonalAccessTokens
     private
 
     attr_reader :current_user, :token
-
-    def create_token_params(token, params)
-      expires_at = params[:expires_at] || (Date.today + EXPIRATION_PERIOD)
-      {  name: token.name,
-         previous_personal_access_token_id: token.id,
-         impersonation: token.impersonation,
-         scopes: token.scopes,
-         expires_at: expires_at }
-    end
 
     def create_access_token(params)
       target_user = token.user
@@ -63,5 +55,15 @@ module PersonalAccessTokens
     def error_response(message)
       ServiceResponse.error(message: message)
     end
+
+    def create_token_params(token, params)
+      { name: token.name,
+        previous_personal_access_token_id: token.id,
+        impersonation: token.impersonation,
+        scopes: token.scopes,
+        expires_at: expires_at(params) }
+    end
   end
 end
+
+PersonalAccessTokens::RotateService.prepend_mod

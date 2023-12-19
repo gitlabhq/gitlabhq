@@ -200,7 +200,7 @@ export default {
       id="super-sidebar-search"
       v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
+      class="user-bar-button gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-line-height-1 gl-w-full"
       data-testid="super-sidebar-search-button"
     >
       <gl-icon name="search" />

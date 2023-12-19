@@ -1,8 +1,0 @@
----
-name: frecent_namespaces_suggestions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132128
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428362
-milestone: '16.6'
-type: development
-group: group::foundations
-default_enabled: false

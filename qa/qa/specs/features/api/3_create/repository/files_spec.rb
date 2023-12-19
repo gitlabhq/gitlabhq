@@ -78,7 +78,8 @@ module QA
           SVG
         end
 
-        it 'sets no-cache headers as expected', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347746' do
+        it 'sets no-cache headers as expected', :reliable,
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347746' do
           create_project_request = Runtime::API::Request.new(@api_client, '/projects')
           post create_project_request.url, path: project_name, name: project_name
 

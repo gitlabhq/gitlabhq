@@ -1,0 +1,3 @@
+mutation updateCurrentScope($scope: DeployKeysScope) {
+  currentScope(scope: $scope) @client
+}

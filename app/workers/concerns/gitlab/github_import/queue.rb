@@ -14,7 +14,7 @@ module Gitlab
         # the dead queue. This does mean some resources may not be imported, but
         # this is better than a project being stuck in the "import" state
         # forever.
-        sidekiq_options dead: false, retry: 5
+        sidekiq_options dead: false
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :source_code_management do
   include Features::SourceEditorSpecHelpers
   include Features::BlobSpecHelpers
 
@@ -63,6 +63,11 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         find('.add-to-tree').click
         click_link('New file')
         expect(page).to have_selector('.file-editor')
+      end
+
+      it 'shows full path instead of ref when creating a file' do
+        expect(page).to have_selector('#editor_path')
+        expect(page).not_to have_selector('#editor_ref')
       end
 
       def submit_new_file(options)

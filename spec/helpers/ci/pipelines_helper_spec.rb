@@ -97,7 +97,8 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
                                            :pipeline_editor_path,
                                            :suggested_ci_templates,
                                            :full_path,
-                                           :visibility_pipeline_id_type])
+                                           :visibility_pipeline_id_type,
+                                           :show_jenkins_ci_prompt])
     end
   end
 
@@ -121,6 +122,41 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
       it 'shows user preference pipeline id type' do
         expect(subject).to eq('iid')
       end
+    end
+  end
+
+  describe '#show_jenkins_ci_prompt' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.pipelines_list_data(project, 'list_url')[:show_jenkins_ci_prompt] }
+
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:repository) { project.repository }
+
+    before do
+      sign_in(user)
+      project.send(add_role_method, user)
+
+      allow(repository).to receive(:gitlab_ci_yml).and_return(has_gitlab_ci?)
+      allow(repository).to receive(:jenkinsfile?).and_return(has_jenkinsfile?)
+    end
+
+    where(:add_role_method, :has_gitlab_ci?, :has_jenkinsfile?, :result) do
+      # Test permissions
+      :add_owner        | false   | true    | "true"
+      :add_maintainer   | false   | true    | "true"
+      :add_developer    | false   | true    | "true"
+      :add_guest        | false   | true    | "false"
+
+      # Test combination of presence of ci files
+      :add_owner        | false   | false   | "false"
+      :add_owner        | true    | true    | "false"
+      :add_owner        | true    | false   | "false"
+    end
+
+    with_them do
+      it { expect(subject).to eq(result) }
     end
   end
 end

@@ -241,7 +241,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     let(:url) { "/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/pipelines" }
 
     matcher :return_pipeline_schedule_pipelines_successfully do
-      match_unless_raises do |reponse|
+      match_unless_raises do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(response).to match_response_schema('public_api/v4/pipelines')

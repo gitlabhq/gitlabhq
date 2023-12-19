@@ -1,9 +1,12 @@
 export default () => ({
   jobEndpoint: null,
-  jobLogEndpoint: null,
+  logEndpoint: null,
+  testReportSummaryUrl: null,
 
   // sidebar
   isSidebarOpen: true,
+  testSummary: {},
+  testSummaryComplete: false,
 
   isLoading: false,
   hasError: false,
@@ -13,10 +16,14 @@ export default () => ({
   isScrollBottomDisabled: true,
   isScrollTopDisabled: true,
 
-  // Used to check if we should keep the automatic scroll
-  isScrolledToBottomBeforeReceivingJobLog: true,
+  // fullscreen mode
+  fullScreenAPIAvailable: false,
+  fullScreenModeAvailable: false,
+  fullScreenEnabled: false,
+  fullScreenContainerSetUp: false,
 
   jobLog: [],
+  jobLogSections: {},
   isJobLogComplete: false,
   jobLogSize: 0,
   isJobLogSizeVisible: false,

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Flavored Markdown (GLFM) **(FREE ALL)**
@@ -77,6 +77,29 @@ Features [extended from standard Markdown](#features-extended-from-standard-mark
 | [images](#images)                     | [embedded videos](#videos) and [audio](#audio)                                        |
 | [line breaks](#line-breaks)           | [more line break control](#newlines)                                                  |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking)                                       |
+
+## Markdown and accessibility
+
+When you use GitLab Flavored Markdown, you are creating digital content.
+This content should be as accessible as possible to your audience.
+The following list is not exhaustive, but it provides guidance for some of the GLFM styles to pay
+particular attention to:
+
+### Headings
+
+Use heading formatting to create a logical heading structure.
+The structure of headings on a page should make sense, like a good table of contents.
+Ensure that there is only one `h1` element on a page, that heading levels are not skipped, and that they are nested correctly.
+
+### Tables
+
+To keep tables accessible and scannable, tables should not have any empty cells.
+If there is no otherwise meaningful value for a cell, consider entering **N/A** for "not applicable" or **None**.
+
+### Images and videos
+
+Describe the image or video in the `[alt text]`. Make the description accurate, succinct, and unique.
+Don't use `image of` or `video of` in the description. For more information, see [WebAim Alternative Text](https://webaim.org/techniques/alttext/).
 
 ## Features not found in standard Markdown
 
@@ -459,10 +482,21 @@ To create a task list, follow the format of an ordered or unordered list:
 
 ### Table of contents
 
+<!--
+The following paragraphs use HTML to work around a Markdown bug.
+Do not change it back to a Markdown backticks.
+For more information, see https://gitlab.com/gitlab-org/gitlab/-/issues/359077.
+-->
+<!-- vale gitlab.Uppercase = NO -->
 A table of contents is an unordered list that links to subheadings in the document.
 You can add a table of contents to issues and merge requests, but you can't add one
-to notes or comments. Add either the `[[_TOC_]]` or `[TOC]` tag on its own line
+to notes or comments. Add either the `[[_TOC_]]` or <code>[TOC]</code> tag on its own line
 to the **Description** field of any of the supported content types:
+<!-- vale gitlab.Uppercase = YES -->
+
+NOTE:
+A table of contents renders also when you use <code>`[TOC]`</code>, regardless of being on its own line or not.
+This behavior is unintended. For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
 
 - Markdown files.
 - Wiki pages.

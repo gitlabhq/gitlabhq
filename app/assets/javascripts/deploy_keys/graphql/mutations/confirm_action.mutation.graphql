@@ -1,0 +1,3 @@
+mutation confirmDisable($id: ID) {
+  confirmDisable(id: $id) @client
+}

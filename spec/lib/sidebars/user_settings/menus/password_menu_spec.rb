@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::UserSettings::Menus::PasswordMenu, feature_category: :navigation do
   it_behaves_like 'User settings menu',
-    link: '/-/profile/password',
+    link: '/-/user_settings/password',
     title: _('Password'),
     icon: 'lock',
     active_routes: { controller: :passwords }

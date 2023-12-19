@@ -1,7 +1,7 @@
 ---
-stage: Monitor
+stage: Service Management
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Service Desk **(FREE ALL)**
@@ -46,6 +46,7 @@ Meanwhile:
   - [Customize emails sent to the requester](configure.md#customize-emails-sent-to-the-requester)
   - [Use a custom template for Service Desk tickets](configure.md#use-a-custom-template-for-service-desk-tickets)
   - [Support Bot user](configure.md#support-bot-user)
+  - [Reopen issues when an external participant comments](configure.md#reopen-issues-when-an-external-participant-comments)
   - [Custom email address (Beta)](configure.md#custom-email-address)
   - [Use an additional Service Desk alias email](configure.md#use-an-additional-service-desk-alias-email)
   - [Configure email ingestion in multi-node environments](configure.md#configure-email-ingestion-in-multi-node-environments)
@@ -61,3 +62,33 @@ Meanwhile:
 
 Your emails might be ignored because they contain one of the
 [email headers that GitLab ignores](../../../administration/incoming_email.md#rejected-headers).
+
+### Email ingestion doesn't work in 16.6.0 self-managed
+
+GitLab self-managed `16.6.0` introduced a regression that prevents `mail_room` (email ingestion) from starting.
+Service Desk and other reply-by-email features don't work.
+[Issue 432257](https://gitlab.com/gitlab-org/gitlab/-/issues/432257) tracks fixing this problem.
+
+The workaround is to run the following commands in your GitLab installation
+to patch the affected files:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+```shell
+curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
+patch -p1 -d /opt/gitlab/embedded/service/gitlab-rails < /tmp/mailroom.patch
+gitlab-ctl restart mailroom
+```
+
+:::TabTitle Docker
+
+```shell
+curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
+cd /opt/gitlab/embedded/service/gitlab-rails
+patch -p1 < /tmp/mailroom.patch
+gitlab-ctl restart mailroom
+```
+
+::EndTabs

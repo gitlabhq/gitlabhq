@@ -1,0 +1,8 @@
+---
+name: approval_group_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137268
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432248
+milestone: '16.7'
+type: development
+group: 'group::source code'
+default_enabled: false

@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Advanced search migration style guide
@@ -66,17 +66,15 @@ The following migration helpers are available in `ee/app/workers/concerns/elasti
 
 Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
 
-Requires the `index_name` and `field_name` methods to backfill a single field.
+Requires the `field_name` method and `DOCUMENT_TYPE` constant to backfill a single field.
 
 ```ruby
 class MigrationName < Elastic::Migration
   include Elastic::MigrationBackfillHelper
 
-  private
+  DOCUMENT_TYPE = Issue
 
-  def index_name
-    Issue.__elasticsearch__.index_name
-  end
+  private
 
   def field_name
     :schema_version
@@ -84,17 +82,15 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-Requires the `index_name` and `field_names` methods to backfill multiple fields if any field is null.
+Requires the `field_names` method and `DOCUMENT_TYPE` constant to backfill multiple fields if any field is null.
 
 ```ruby
 class MigrationName < Elastic::Migration
   include Elastic::MigrationBackfillHelper
 
-  private
+  DOCUMENT_TYPE = Issue
 
-  def index_name
-    Issue.__elasticsearch__.index_name
-  end
+  private
 
   def field_names
     %w[schema_version visibility_level]
@@ -106,17 +102,15 @@ end
 
 Updates a mapping in an index by calling `put_mapping` with the mapping specified.
 
-Requires the `index_name` and `new_mappings` methods.
+Requires the `new_mappings` method and `DOCUMENT_TYPE` constant.
 
 ```ruby
 class MigrationName < Elastic::Migration
   include Elastic::MigrationUpdateMappingsHelper
 
-  private
+  DOCUMENT_TYPE = Issue
 
-  def index_name
-    Issue.__elasticsearch__.index_name
-  end
+  private
 
   def new_mappings
     {
@@ -402,7 +396,7 @@ actually want to hold up GitLab.com deployments on advanced search migrations,
 as they may still have another week to go, and that's too long to block
 deployments.
 
-### Process for removing migrations
+### Process for marking migrations as obsolete
 
 For every migration that was created 2 minor versions before the major version
 being upgraded to, we do the following:
@@ -415,8 +409,17 @@ being upgraded to, we do the following:
    ```
 
 1. Delete any spec files to support this migration.
+1. Verify that there are no references of the migration in the `.rubocop_todo/` directory.
 1. Remove any logic handling backwards compatibility for this migration. You
    can find this by looking for
    `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
 1. Create a merge request with these changes. Noting that we should not
    accidentally merge this before the major release is started.
+
+### Process for removing migrations
+
+1. Select migrations that were marked as obsolete before the current major release
+1. If the step above includes all obsolete migrations, keep one last migration as a safeguard for customers with unapplied migrations
+1. Delete migration files and spec files for those migrations
+1. Verify that there are no references of the migrations in the `.rubocop_todo/` directory.
+1. Create a merge request and assign it to a team member from the global search team.

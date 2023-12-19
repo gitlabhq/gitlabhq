@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Database Dictionary
@@ -41,7 +41,7 @@ gitlab_schema: gitlab_main
 | `feature_categories`       | Array(String) | yes      | List of feature categories using this table. |
 | `description`              | String        | no       | Text description of the information stored in the table, and its purpose. |
 | `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table. |
-| `milestone`                | String        | no       | The milestone that introduced this table. |
+| `milestone`                | String        | yes      | The milestone that introduced this table. |
 | `gitlab_schema`            | String        | yes      | GitLab schema name. |
 
 ### Process

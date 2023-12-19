@@ -5,6 +5,10 @@ module Packages
     class Symbol < ApplicationRecord
       include FileStoreMounter
       include ShaAttribute
+      include Packages::Destructible
+
+      # Used in destroying stale symbols in worker
+      enum :status, default: 0, processing: 1, error: 3
 
       belongs_to :package, -> { where(package_type: :nuget) }, inverse_of: :nuget_symbols
 
@@ -19,6 +23,12 @@ module Packages
       mount_file_store_uploader SymbolUploader
 
       before_validation :set_object_storage_key, on: :create
+
+      scope :stale, -> { where(package_id: nil) }
+      scope :pending_destruction, -> { stale.default }
+      scope :with_file_name, ->(file_name) { where(file: file_name) }
+      scope :with_signature, ->(signature) { where(signature: signature) }
+      scope :with_file_sha256, ->(checksums) { where(file_sha256: checksums) }
 
       private
 

@@ -116,7 +116,7 @@ module Nav
             id: 'general_new_project',
             title: _('New project/repository'),
             href: new_project_path,
-            data: { track_action: 'click_link_new_project', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global_new_project_link' }
+            data: { track_action: 'click_link_new_project', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global-new-project-link' }
           )
         )
       end
@@ -127,7 +127,7 @@ module Nav
             id: 'general_new_group',
             title: _('New group'),
             href: new_group_path,
-            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global_new_group_link' }
+            data: { track_action: 'click_link_new_group', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global-new-group-link' }
           )
         )
       end
@@ -149,7 +149,7 @@ module Nav
             id: 'general_new_snippet',
             title: _('New snippet'),
             href: new_snippet_path,
-            data: { track_action: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global_new_snippet_link' }
+            data: { track_action: 'click_link_new_snippet_parent', track_label: 'plus_menu_dropdown', track_property: 'navigation_top', testid: 'global-new-snippet-link' }
           )
         )
       end

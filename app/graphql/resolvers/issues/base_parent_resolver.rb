@@ -15,8 +15,7 @@ module Resolvers
           raise Gitlab::Graphql::Errors::ArgumentError, Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE
         }
 
-      # see app/graphql/types/issue_connection.rb
-      type 'Types::IssueConnection', null: true
+      type Types::IssueType.connection_type, null: true
 
       def resolve_with_lookahead(**args)
         return Issue.none if resource_parent.nil?

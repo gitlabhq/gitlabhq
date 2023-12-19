@@ -1,9 +1,20 @@
-%h4.gl-mt-0.gl-mb-3{ data: { testid: 'invite-member-section',
-  track_label: 'invite_members_empty_project',
-  track_action: 'render' } }
-  = s_('InviteMember|Invite your team')
-%p= s_('InviteMember|Add members to this project and start collaborating with your team.')
-.js-invite-members-trigger{ data: { variant: 'confirm',
-  classes: 'gl-mb-8 gl-w-full gl-sm-w-auto',
-  display_text: s_('InviteMember|Invite members'),
-  trigger_source: 'project_empty_page' } }
+- if Feature.enabled?(:project_overview_reorg)
+  %p.gl-font-weight-bold.gl-text-gray-900.gl-mt-0.gl-mt-n1.gl-mb-3{ data: { testid: 'invite-member-section',
+    track_label: 'invite_members_empty_project',
+    track_action: 'render' } }
+    = s_('InviteMember|Invite your team')
+  %p.gl-mb-3= s_('InviteMember|Add members to this project and start collaborating with your team.')
+  .js-invite-members-trigger{ data: { variant: 'confirm',
+    classes: 'gl-mb-3 gl-w-full gl-sm-w-auto',
+    display_text: s_('InviteMember|Invite members'),
+    trigger_source: 'project_empty_page' } }
+- else
+  %h4.gl-mt-0.gl-mb-3{ data: { testid: 'invite-member-section',
+    track_label: 'invite_members_empty_project',
+    track_action: 'render' } }
+    = s_('InviteMember|Invite your team')
+  %p= s_('InviteMember|Add members to this project and start collaborating with your team.')
+  .js-invite-members-trigger{ data: { variant: 'confirm',
+    classes: 'gl-mb-8 gl-w-full gl-sm-w-auto',
+    display_text: s_('InviteMember|Invite members'),
+    trigger_source: 'project_empty_page' } }

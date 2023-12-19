@@ -57,7 +57,7 @@ export default {
       type: Function,
       required: true,
     },
-    fetchInitialSelectionText: {
+    fetchInitialSelection: {
       type: Function,
       required: false,
       default: null,
@@ -77,34 +77,22 @@ export default {
       searchString: '',
       items: [],
       page: 1,
-      selectedValue: null,
-      selectedText: null,
+      selected: this.initialSelection || '',
+      initialSelectedItem: {},
       errorMessage: '',
     };
   },
   computed: {
-    selected: {
-      set(value) {
-        this.selectedValue = value;
-        this.selectedText =
-          value === null ? null : this.items.find((item) => item.value === value).text;
-        this.$emit('input', {
-          value: this.selectedValue,
-          text: this.selectedText,
-        });
-      },
-      get() {
-        return this.selectedValue;
-      },
+    selectedItem() {
+      const item = this.items.find(({ value }) => value === this.selected);
+
+      return item || this.initialSelectedItem;
     },
     toggleText() {
-      return this.selectedText ?? this.defaultToggleText;
+      return this.selectedItem?.text ?? this.defaultToggleText;
     },
     resetButtonLabel() {
       return this.clearable ? RESET_LABEL : '';
-    },
-    inputValue() {
-      return this.selectedValue ? this.selectedValue : '';
     },
     isSearchQueryTooShort() {
       return this.searchString && this.searchString.length < MINIMUM_QUERY_LENGTH;
@@ -115,8 +103,13 @@ export default {
         : this.$options.i18n.noResultsText;
     },
   },
+  watch: {
+    selected() {
+      this.$emit('input', this.selectedItem);
+    },
+  },
   created() {
-    this.fetchInitialSelection();
+    this.getInitialSelection();
   },
   methods: {
     search: debounce(function debouncedSearch(searchString) {
@@ -148,23 +141,20 @@ export default {
       this.searching = false;
       this.infiniteScrollLoading = false;
     },
-    async fetchInitialSelection() {
+    async getInitialSelection() {
       if (!this.initialSelection) {
         this.pristine = false;
         return;
       }
 
-      if (!this.fetchInitialSelectionText) {
+      if (!this.fetchInitialSelection) {
         throw new Error(
           '`initialSelection` is provided but lacks `fetchInitialSelectionText` to retrieve the corresponding text',
         );
       }
 
       this.searching = true;
-      const name = await this.fetchInitialSelectionText(this.initialSelection);
-
-      this.selectedValue = this.initialSelection;
-      this.selectedText = name;
+      this.initialSelectedItem = await this.fetchInitialSelection(this.initialSelection);
       this.pristine = false;
       this.searching = false;
     },
@@ -218,6 +208,6 @@ export default {
         <slot name="list-item" :item="item"></slot>
       </template>
     </gl-collapsible-listbox>
-    <input :id="inputId" data-testid="input" type="hidden" :name="inputName" :value="inputValue" />
+    <input :id="inputId" data-testid="input" type="hidden" :name="inputName" :value="selected" />
   </gl-form-group>
 </template>

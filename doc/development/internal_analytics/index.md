@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Internal analytics
@@ -97,6 +97,7 @@ FROM common_mart.mart_behavior_structured_event
 WHERE event_action = 'feature_used'
 AND event_category = 'InternalEventTracking'
 AND behavior_date > '2023-08-01' --restricted minimum date for performance
+AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
 GROUP BY 1 ORDER BY 1 desc
 ```
 

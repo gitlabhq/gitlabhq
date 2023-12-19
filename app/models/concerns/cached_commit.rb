@@ -19,4 +19,8 @@ module CachedCommit
   def referenced_by
     []
   end
+
+  def extended_trailers
+    {}
+  end
 end

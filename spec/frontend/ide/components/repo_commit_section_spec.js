@@ -71,11 +71,8 @@ describe('RepoCommitSection', () => {
       createComponent();
     });
 
-    it('renders no changes text', () => {
-      expect(wrapper.findComponent(EmptyState).text().trim()).toContain('No changes');
-      expect(wrapper.findComponent(EmptyState).find('img').attributes('src')).toBe(
-        TEST_NO_CHANGES_SVG,
-      );
+    it('renders empty state component', () => {
+      expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
     });
   });
 

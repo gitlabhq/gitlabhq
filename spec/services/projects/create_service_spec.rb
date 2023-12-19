@@ -812,6 +812,31 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
+  context 'when SHA256 format is requested' do
+    let(:project) { create_project(user, opts) }
+    let(:opts) { super().merge(initialize_with_readme: true, repository_object_format: 'sha256') }
+
+    before do
+      allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+    end
+
+    it 'creates a repository with SHA256 commit hashes', :aggregate_failures do
+      expect(project.repository.commit_count).to be(1)
+      expect(project.commit.id.size).to eq 64
+    end
+
+    context 'when "support_sha256_repositories" feature flag is disabled' do
+      before do
+        stub_feature_flags(support_sha256_repositories: false)
+      end
+
+      it 'creates a repository with default SHA1 commit hash' do
+        expect(project.repository.commit_count).to be(1)
+        expect(project.commit.id.size).to eq 40
+      end
+    end
+  end
+
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 

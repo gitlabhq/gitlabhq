@@ -1,8 +1,7 @@
 ---
 stage: Data Stores
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Advanced search **(PREMIUM ALL)**
@@ -23,7 +22,7 @@ You can use advanced search in:
 - Merge requests
 - Milestones
 - Users
-- Epics (in groups only)
+- Epics
 - Code
 - Comments
 - Commits
@@ -34,6 +33,7 @@ You can use advanced search in:
 - On GitLab.com, advanced search is enabled for groups with paid subscriptions.
 - For self-managed GitLab instances, an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+- For GitLab Dedicated, advanced search is enabled.
 
 ## Syntax
 

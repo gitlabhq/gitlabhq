@@ -44,6 +44,30 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
         expect(response).to include_limited_pagination_headers
       end
+
+      describe "commit trailers" do
+        it "doesn't include the commit trailers by default" do
+          get api(route, current_user), params: { page: 2 }
+
+          commit_with_trailers = json_response.find { |c| c["trailers"].any? }
+
+          expect(commit_with_trailers).to be_nil
+          expect(json_response.first["trailers"]).to eq({})
+        end
+
+        it "does include the commit trailers when specified in the params" do
+          # Test repo commits with trailers are further down the list, so use a
+          # higher page number.
+          get api(route, current_user), params: { page: 2, trailers: true }
+
+          commit_with_trailers = json_response.find { |c| c["trailers"].any? }
+
+          expect(commit_with_trailers["trailers"]).to be_a(Hash)
+          expect(commit_with_trailers["extended_trailers"]).to be_a(Hash)
+          expect(commit_with_trailers["trailers"].size).to be > 0
+          expect(commit_with_trailers["extended_trailers"].size).to be > 0
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do
@@ -425,6 +449,10 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
               expect(commit['trailers']).to eq(
                 'Signed-off-by' => 'Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>'
+              )
+
+              expect(commit['extended_trailers']).to eq(
+                'Signed-off-by' => ['Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>']
               )
             end
           end

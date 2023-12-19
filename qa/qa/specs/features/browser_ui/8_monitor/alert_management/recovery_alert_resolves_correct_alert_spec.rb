@@ -40,7 +40,11 @@ module QA
 
       context(
         'when using Prometheus integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393590'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393590',
+        quarantine: {
+          type: :flaky,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413220'
+        }
       ) do
         include_context 'sends and resolves test alerts'
 

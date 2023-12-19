@@ -1,0 +1,4 @@
+include:
+  - local: gems/gem-pg.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-database-load_balancing"

@@ -42,8 +42,8 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_frontend_feature_flag(:issue_email_participants, @project)
+    push_frontend_feature_flag(:encoding_logs_tree)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
@@ -398,6 +398,7 @@ class ProjectsController < Projects::ApplicationController
 
     if can?(current_user, :read_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
+      return render 'projects/missing_default_branch', status: :service_unavailable if @ref == ''
 
       render 'projects/empty' if @project.empty_repo?
     else
@@ -442,6 +443,7 @@ class ProjectsController < Projects::ApplicationController
     params.require(:project)
       .permit(project_params_attributes + attributes)
       .merge(import_url_params)
+      .merge(object_format_params)
   end
 
   def project_feature_attributes
@@ -465,6 +467,7 @@ class ProjectsController < Projects::ApplicationController
       monitor_access_level
       infrastructure_access_level
       model_experiments_access_level
+      model_registry_access_level
     ]
   end
 
@@ -497,6 +500,7 @@ class ProjectsController < Projects::ApplicationController
       :name,
       :only_allow_merge_if_all_discussions_are_resolved,
       :only_allow_merge_if_pipeline_succeeds,
+      :allow_merge_without_pipeline,
       :path,
       :printing_merge_request_link_enabled,
       :public_builds,
@@ -529,6 +533,12 @@ class ProjectsController < Projects::ApplicationController
     {}
   end
 
+  def object_format_params
+    return {} unless Gitlab::Utils.to_boolean(params.dig(:project, :use_sha256_repository))
+
+    { repository_object_format: Repository::FORMAT_SHA256 }
+  end
+
   def active_new_project_tab
     project_params[:import_url].present? ? 'import' : 'blank'
   end
@@ -552,6 +562,9 @@ class ProjectsController < Projects::ApplicationController
   # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
+  rescue Gitlab::Git::CommandError
+    # Empty string is intentional and prevent the @ref reload
+    ''
   end
 
   def build_canonical_path(project)

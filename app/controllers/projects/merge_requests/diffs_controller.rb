@@ -32,8 +32,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   # rubocop: disable Metrics/AbcSize
   def diffs_batch
+    collapse_generated = Feature.enabled?(:collapse_generated_diff_files, project)
+
     diff_options_hash = diff_options
     diff_options_hash[:paths] = params[:paths] if params[:paths]
+    diff_options_hash[:collapse_generated] = collapse_generated
 
     diffs = @compare.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options_hash)
 
@@ -59,7 +62,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       params[:expanded],
       params[:page],
       params[:per_page],
-      options[:merge_ref_head_diff]
+      options[:merge_ref_head_diff],
+      collapse_generated
     ]
 
     expires_in(1.day) if cache_with_max_age?

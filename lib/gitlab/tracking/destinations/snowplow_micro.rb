@@ -7,6 +7,8 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
         extend ::Gitlab::Utils::Override
 
+        delegate :flush, to: :tracker
+
         DEFAULT_URI = 'http://localhost:9090'
 
         override :options

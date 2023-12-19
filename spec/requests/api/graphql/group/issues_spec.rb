@@ -15,6 +15,8 @@ RSpec.describe 'getting an issue list for a group', feature_category: :team_plan
   let_it_be(:issue2) { create(:issue, project: project2) }
   let_it_be(:issue3) { create(:issue, project: project3) }
 
+  let_it_be(:group_level_issue) { create(:issue, :epic, :group_level, namespace: group1) }
+
   let(:issue1_gid) { issue1.to_global_id.to_s }
   let(:issue2_gid) { issue2.to_global_id.to_s }
   let(:issues_data) { graphql_data['group']['issues']['edges'] }
@@ -138,6 +140,40 @@ RSpec.describe 'getting an issue list for a group', feature_category: :team_plan
 
           expect(issues_ids).to contain_exactly(issue1_gid, issue2_gid)
         end
+      end
+    end
+  end
+
+  context 'when querying epic types' do
+    let(:query) do
+      graphql_query_for(
+        'group',
+        { 'fullPath' => group1.full_path },
+        "issues(types: [EPIC]) { #{fields} }"
+      )
+    end
+
+    before_all do
+      group1.add_developer(current_user)
+    end
+
+    it 'returns group-level epics' do
+      post_graphql(query, current_user: current_user)
+
+      expect_graphql_errors_to_be_empty
+      expect(issues_ids).to contain_exactly(group_level_issue.to_global_id.to_s)
+    end
+
+    context 'when namespace_level_work_items is disabled' do
+      before do
+        stub_feature_flags(namespace_level_work_items: false)
+      end
+
+      it 'returns no epics' do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_be_empty
+        expect(issues_ids).to be_empty
       end
     end
   end

@@ -47,7 +47,7 @@ export default {
     workItemMilestone: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     workItemType: {
       type: String,
@@ -155,9 +155,6 @@ export default {
     },
   },
   methods: {
-    handleMilestoneClick(milestone) {
-      this.localMilestone = milestone;
-    },
     onDropdownShown() {
       this.shouldFetch = true;
     },
@@ -167,9 +164,6 @@ export default {
     },
     setSearchKey(value) {
       this.searchTerm = value;
-    },
-    isMilestoneChecked(milestone) {
-      return this.localMilestone?.id === milestone?.id;
     },
     updateMilestone() {
       this.localMilestone =
@@ -234,7 +228,6 @@ export default {
       v-model="localMilestoneId"
       :items="dropdownGroups"
       category="tertiary"
-      data-testid="work-item-milestone-dropdown"
       class="gl-max-w-full"
       :toggle-text="dropdownText"
       :loading="updateInProgress"

@@ -104,6 +104,18 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    context 'when querying work item type information' do
+      include_context 'with work item types request context'
+
+      let(:work_item_fields) { "workItemType { #{work_item_type_fields} }" }
+
+      it 'returns work item type information' do
+        expect(work_item_data['workItemType']).to match(
+          expected_work_item_type_response(work_item.work_item_type).first
+        )
+      end
+    end
+
     context 'when querying widgets' do
       describe 'description widget' do
         let(:work_item_fields) do

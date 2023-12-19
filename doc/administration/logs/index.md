@@ -1,7 +1,7 @@
 ---
-stage: Monitor
+stage: Service Management
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Log system **(FREE SELF)**
@@ -985,8 +985,15 @@ For example:
 
 ## `geo.log` **(PREMIUM SELF)**
 
-Geo stores structured log messages in a `geo.log` file. For Linux package
-installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+Geo stores structured log messages in a `geo.log` file. For Linux package installations,
+this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+
+For Helm chart installations, it's stored in the Sidekiq pod, at `/var/log/gitlab/geo.log`.
+It can be read by either directly accessing the file, or by using `kubectl` to fetch the Sidekiq logs, and subsequently filtering the results by `"subcomponent"=="geo"`. The example below uses `jq` to grab only Geo logs:
+
+```shell
+kubectl logs -l app=sidekiq --max-log-requests=50 | jq 'select(."subcomponent"=="geo")'
+```
 
 This file contains information about when Geo attempts to sync repositories
 and files. Each line in the file contains a separate JSON entry that can be
@@ -1037,7 +1044,7 @@ This file is located at:
 
 ## Registry logs
 
-For Linux package installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
+For Linux package installations, container registry logs are in `/var/log/gitlab/registry/current`.
 
 ## NGINX logs
 
@@ -1047,8 +1054,8 @@ For Linux package installations, NGINX logs are in:
 - `/var/log/gitlab/nginx/gitlab_error.log`: A log of NGINX errors for GitLab
 - `/var/log/gitlab/nginx/gitlab_pages_access.log`: A log of requests made to Pages static sites
 - `/var/log/gitlab/nginx/gitlab_pages_error.log`: A log of NGINX errors for Pages static sites
-- `/var/log/gitlab/nginx/gitlab_registry_access.log`: A log of requests made to the Container Registry
-- `/var/log/gitlab/nginx/gitlab_registry_error.log`: A log of NGINX errors for the Container Registry
+- `/var/log/gitlab/nginx/gitlab_registry_access.log`: A log of requests made to the container registry
+- `/var/log/gitlab/nginx/gitlab_registry_error.log`: A log of NGINX errors for the container registry
 - `/var/log/gitlab/nginx/gitlab_mattermost_access.log`: A log of requests made to Mattermost
 - `/var/log/gitlab/nginx/gitlab_mattermost_error.log`: A log of NGINX errors for Mattermost
 

@@ -159,12 +159,12 @@ export const stageMedians = {
 };
 
 export const formattedStageMedians = {
-  issue: '2d',
-  plan: '1d',
-  review: '1w',
-  code: '1d',
-  test: '3d',
-  staging: '4d',
+  issue: '2 days',
+  plan: '1 day',
+  review: '1 week',
+  code: '1 day',
+  test: '3 days',
+  staging: '4 days',
 };
 
 export const allowedStages = [issueStage, planStage, codeStage];

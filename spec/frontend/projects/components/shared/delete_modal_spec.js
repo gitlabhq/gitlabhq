@@ -49,7 +49,7 @@ describe('DeleteModal', () => {
         attributes: {
           variant: 'danger',
           disabled: true,
-          'data-qa-selector': 'confirm_delete_button',
+          'data-testid': 'confirm-delete-button',
         },
       },
       actionCancel: {

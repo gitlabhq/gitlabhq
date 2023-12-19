@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Reset a user's password **(FREE SELF)**
@@ -20,9 +19,8 @@ The user's new password must meet all [password requirements](../user/profile/us
 
 To reset a user's password in the UI:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Users**.
 1. For the user whose password you want to update, select **Edit**.
 1. In the **Password** area, type a password and password confirmation.
 1. Select **Save changes**.

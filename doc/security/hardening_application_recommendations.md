@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Hardening - Application Recommendations
@@ -14,9 +13,8 @@ web interface.
 
 ## System hooks
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **System Hooks**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **System Hooks**.
 
 In a typical hardened environment, internal information is not transmitted or stored
 outside of the system. For an offline environment system, this is
@@ -33,9 +31,8 @@ encouraged for communications through system hooks.
 
 ## Push rules
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Push Rules**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Push Rules**.
 
 Ensure that the following items are selected:
 
@@ -48,9 +45,8 @@ The adjustments help limit pushes to established and authorized users.
 
 ## Deploy keys
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Deploy Keys**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Deploy Keys**.
 
 Public deploy keys at are used to give read or read/write access to
 **all** projects on the instance, and are intended for remote automation to access
@@ -61,9 +57,8 @@ the documentation on [deploy keys](../user/project/deploy_keys/index.md) and
 
 ## General
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 
 Hardening adjustments can be made in 4 sections.
 
@@ -168,7 +163,7 @@ checkbox next to **Two-factor authentication** (2FA) is selected.
 The default setting for **Two-factor grace period** is 48 hours. This should be adjusted
 to a much lower value, such as 8 hours.
 
-Ensure the checkbox next to **Enable admin mode** is selected so that **Admin Mode** is
+Ensure the checkbox next to **Enable Admin Mode** is selected so that **Admin Mode** is
 active. This requires users with Admin access to have to use additional
 authentication in order to perform administrative tasks, enforcing additional 2FA by the user.
 
@@ -180,9 +175,8 @@ For more detailed information, see
 
 ## Integrations
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Integrations**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Integrations**.
 
 In general, as long as administrators control and monitor usage, integrations
 are fine in a hardened environment. Be cautious about integrations that allow
@@ -192,9 +186,8 @@ process or authenticated user.
 
 ## Metrics and profiling
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 
 The main focus for hardening is **Usage statistics**:
 
@@ -210,9 +203,8 @@ help you make an informed decision, see
 
 ## Network
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 
 For any setting that enables rate limiting, make sure it is selected. Default values
 should be fine. Additionally there are numerous settings that enable access, and all

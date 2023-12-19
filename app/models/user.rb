@@ -22,7 +22,6 @@ class User < MainClusterwide::ApplicationRecord
   include FromUnion
   include BatchDestroyDependentAssociations
   include BatchNullifyDependentAssociations
-  include IgnorableColumns
   include UpdateHighestRole
   include HasUserType
   include Gitlab::Auth::Otp::Fortinet
@@ -31,15 +30,7 @@ class User < MainClusterwide::ApplicationRecord
   include StripAttribute
   include EachBatch
   include CrossDatabaseIgnoredTables
-  include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
-
-  ignore_column %i[
-    email_opted_in
-    email_opted_in_ip
-    email_opted_in_source_id
-    email_opted_in_at
-  ], remove_with: '16.6', remove_after: '2023-10-22'
 
   # `ensure_namespace_correct` needs to be moved to an after_commit (?)
   cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
@@ -160,6 +151,7 @@ class User < MainClusterwide::ApplicationRecord
   # Namespace for personal projects
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
+    required: true,
     dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
     foreign_key: :owner_id,
     inverse_of: :owner,
@@ -228,9 +220,6 @@ class User < MainClusterwide::ApplicationRecord
   has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
-  has_many :user_interacted_projects
-  has_many :project_interactions, through: :user_interacted_projects, source: :project, class_name: 'Project'
-
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
@@ -245,9 +234,10 @@ class User < MainClusterwide::ApplicationRecord
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_reports,            dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
+  has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
+  has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
-  has_many :assigned_abuse_reports,   foreign_key: :assignee_id, class_name: "AbuseReport", inverse_of: :assignee
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
   has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -398,6 +388,7 @@ class User < MainClusterwide::ApplicationRecord
     :tab_width, :tab_width=,
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
+    :use_web_ide_extension_marketplace, :use_web_ide_extension_marketplace=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
@@ -410,6 +401,7 @@ class User < MainClusterwide::ApplicationRecord
     :pinned_nav_items, :pinned_nav_items=,
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
+    :home_organization, :home_organization_id, :home_organization_id=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -611,7 +603,21 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  def self.supported_keyset_orderings
+    {
+      id: [:asc, :desc],
+      name: [:asc, :desc],
+      username: [:asc, :desc],
+      created_at: [:asc, :desc],
+      updated_at: [:asc, :desc]
+    }
+  end
+
   strip_attributes! :name
+
+  def user_belongs_to_organization?(organization)
+    organization_users.exists?(organization: organization)
+  end
 
   def preferred_language
     read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
@@ -1307,7 +1313,7 @@ class User < MainClusterwide::ApplicationRecord
     several_namespaces? || admin
   end
 
-  # rubocop: disable Style/ArgumentsForwarding
+  # rubocop: disable Style/ArgumentsForwarding -- https://gitlab.com/gitlab-org/gitlab/-/issues/433045
   def can?(action, subject = :global, **opts)
     Ability.allowed?(self, action, subject, **opts)
   end
@@ -1356,10 +1362,6 @@ class User < MainClusterwide::ApplicationRecord
 
   def namespace_id
     namespace.try :id
-  end
-
-  def name_with_username
-    "#{name} (#{username})"
   end
 
   def already_forked?(project)
@@ -1491,14 +1493,6 @@ class User < MainClusterwide::ApplicationRecord
       .where_exists(counts)
   end
 
-  def with_defaults
-    User.defaults.each do |k, v|
-      public_send("#{k}=", v) # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    self
-  end
-
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.member(self)
@@ -1602,13 +1596,22 @@ class User < MainClusterwide::ApplicationRecord
     if namespace
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
-    else
+    elsif Feature.disabled?(:create_personal_ns_outside_model, Feature.current_request)
       # TODO: we should no longer need the `type` parameter once we can make the
       #       the `has_one :namespace` association use the correct class.
       #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
       namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
+  end
+
+  def assign_personal_namespace
+    return namespace if namespace
+
+    build_namespace(path: username, name: name)
+    namespace.build_namespace_settings
+
+    namespace
   end
 
   def set_username_errors
@@ -1647,6 +1650,7 @@ class User < MainClusterwide::ApplicationRecord
     if should_delay_delete?(deleted_by)
       new_note = format(_("User deleted own account on %{timestamp}"), timestamp: Time.zone.now)
       self.note = "#{new_note}\n#{note}".strip
+      UserCustomAttribute.set_deleted_own_account_at(self)
 
       block_or_ban
       DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
@@ -1778,7 +1782,7 @@ class User < MainClusterwide::ApplicationRecord
   def contributed_projects
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
-      .where("created_at > ?", Time.current - 1.year)
+      .created_after(Time.current - 1.year)
       .distinct
       .reorder(nil)
 
@@ -1813,6 +1817,8 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def owns_runner?(runner)
+    runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
+
     ci_owned_runners.include?(runner)
   end
 
@@ -2075,7 +2081,11 @@ class User < MainClusterwide::ApplicationRecord
   def terms_accepted?
     return true if project_bot? || service_account? || security_policy_bot?
 
-    accepted_term_id.present?
+    if Feature.enabled?(:enforce_acceptance_of_changed_terms)
+      !!ApplicationSetting::Term.latest&.accepted_by_user?(self)
+    else
+      accepted_term_id.present?
+    end
   end
 
   def required_terms_not_accepted?
@@ -2246,6 +2256,10 @@ class User < MainClusterwide::ApplicationRecord
     return if namespace.nil?
 
     namespace_commit_emails.find_by(namespace: namespace)
+  end
+
+  def deleted_own_account?
+    custom_attributes.by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT).exists?
   end
 
   protected

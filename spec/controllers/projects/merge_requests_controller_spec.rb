@@ -18,6 +18,27 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     sign_in(user)
   end
 
+  shared_examples 'a 400 response' do
+    it 'does not send polling interval' do
+      expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+      subject
+    end
+
+    it 'returns 400 HTTP status' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'returns an error string' do
+      subject
+
+      expect(json_response['status_reason']).to eq error_string
+      expect(json_response['errors']).to match_array [error_string]
+    end
+  end
+
   describe 'GET commit_change_content' do
     it 'renders commit_change_content template' do
       get :commit_change_content,
@@ -100,13 +121,13 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
               w: '0',
               page: '0',
               per_page: '5',
-              ck: merge_request.merge_head_diff.id))
+              ck: merge_request.merge_head_diff.patch_id_sha))
         end
 
         it 'sets diffs_batch_cache_key' do
           go
 
-          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.id)
+          expect(assigns['diffs_batch_cache_key']).to eq(merge_request.merge_head_diff.patch_id_sha)
         end
 
         context 'when diffs_batch_cache_with_max_age feature flag is disabled' do
@@ -1228,20 +1249,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted coverage reports' do
-        let(:report) { { status: :error, status_reason: 'Failed to parse coverage reports' } }
+        let(:report) { { status: :error, status_reason: error_string } }
+        let(:error_string) { 'Failed to parse coverage reports' }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'Failed to parse coverage reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
 
@@ -1475,20 +1486,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted terraform reports' do
-        let(:report) { { status: :error, status_reason: 'Failed to parse terraform reports' } }
+        let(:report) { { status: :error, status_reason: error_string } }
+        let(:error_string) { 'Failed to parse terraform reports' }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'Failed to parse terraform reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
 
@@ -1603,20 +1604,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'when user created corrupted test reports' do
-      let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
+      let(:error_string) { 'Failed to parse test reports' }
+      let(:comparison_status) { { status: :error, status_reason: error_string } }
 
-      it 'does not send polling interval' do
-        expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-        subject
-      end
-
-      it 'returns 400 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
-      end
+      it_behaves_like 'a 400 response'
     end
   end
 
@@ -1723,20 +1714,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'when user created corrupted accessibility reports' do
-        let(:accessibility_comparison) { { status: :error, status_reason: 'This merge request does not have accessibility reports' } }
+        let(:error_string) { 'This merge request does not have accessibility reports' }
+        let(:accessibility_comparison) { { status: :error, status_reason: error_string } }
 
-        it 'does not send polling interval' do
-          expect(Gitlab::PollingInterval).not_to receive(:set_header)
-
-          subject
-        end
-
-        it 'returns 400 HTTP status' do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'status_reason' => 'This merge request does not have accessibility reports' })
-        end
+        it_behaves_like 'a 400 response'
       end
     end
   end
@@ -1845,14 +1826,10 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
     end
 
     context 'when pipeline has job without a codequality report' do
-      let(:codequality_comparison) { { status: :error, status_reason: 'no codequality report' } }
+      let(:error_string) { 'no codequality report' }
+      let(:codequality_comparison) { { status: :error, status_reason: error_string } }
 
-      it 'returns a 400' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'status_reason' => 'no codequality report' })
-      end
+      it_behaves_like 'a 400 response'
     end
   end
 
@@ -2305,121 +2282,58 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
 
       context 'highlight preloading' do
-        context 'when only_highlight_discussions_requested is false' do
-          before do
-            stub_feature_flags(only_highlight_discussions_requested: false)
+        context 'with commit diff notes' do
+          let!(:first_commit_diff_note) do
+            create(:diff_note_on_commit, project: merge_request.project)
           end
 
-          context 'with commit diff notes' do
-            let!(:first_commit_diff_note) do
-              create(:diff_note_on_commit, project: merge_request.project)
-            end
-
-            let!(:second_commit_diff_note) do
-              create(:diff_note_on_commit, project: merge_request.project)
-            end
-
-            it 'preloads all of the notes diffs highlights' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                first_note_diff_file = first_commit_diff_note.note_diff_file
-                second_note_diff_file = second_commit_diff_note.note_diff_file
-
-                expect(collection).to receive(:load_highlight).and_call_original
-                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
-                expect(collection).to receive(:find_by_id).with(second_note_diff_file.id).and_call_original
-              end
-
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
-                                          per_page: 2 }
-            end
-
-            it 'preloads all of the notes diffs highlights when per_page is 1' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                first_note_diff_file = first_commit_diff_note.note_diff_file
-                second_note_diff_file = second_commit_diff_note.note_diff_file
-
-                expect(collection).to receive(:load_highlight).and_call_original
-                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
-                expect(collection).not_to receive(:find_by_id).with(second_note_diff_file.id)
-              end
-
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
-                                          per_page: 1 }
-            end
+          let!(:second_commit_diff_note) do
+            create(:diff_note_on_commit, project: merge_request.project)
           end
 
-          context 'with diff notes' do
-            let!(:diff_note) do
-              create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+          it 'preloads all of the notes diffs highlights' do
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              first_note_diff_file = first_commit_diff_note.note_diff_file
+              second_note_diff_file = second_commit_diff_note.note_diff_file
+
+              expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id, second_commit_diff_note.id]).and_call_original
+              expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+              expect(collection).to receive(:find_by_id).with(second_note_diff_file.id).and_call_original
             end
 
-            it 'preloads notes diffs highlights' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                note_diff_file = diff_note.note_diff_file
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                        per_page: 2 }
+          end
 
-                expect(collection).to receive(:load_highlight).and_call_original
-                expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
-              end
+          it 'preloads all of the notes diffs highlights when per_page is 1' do
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              first_note_diff_file = first_commit_diff_note.note_diff_file
+              second_note_diff_file = second_commit_diff_note.note_diff_file
 
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
+              expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id]).and_call_original
+              expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
+              expect(collection).not_to receive(:find_by_id).with(second_note_diff_file.id)
             end
+
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
+                                        per_page: 1 }
           end
         end
 
-        context 'when only_highlight_discussions_requested is true' do
-          context 'with commit diff notes' do
-            let!(:first_commit_diff_note) do
-              create(:diff_note_on_commit, project: merge_request.project)
-            end
-
-            let!(:second_commit_diff_note) do
-              create(:diff_note_on_commit, project: merge_request.project)
-            end
-
-            it 'preloads all of the notes diffs highlights' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                first_note_diff_file = first_commit_diff_note.note_diff_file
-                second_note_diff_file = second_commit_diff_note.note_diff_file
-
-                expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id, second_commit_diff_note.id]).and_call_original
-                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
-                expect(collection).to receive(:find_by_id).with(second_note_diff_file.id).and_call_original
-              end
-
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
-                                          per_page: 2 }
-            end
-
-            it 'preloads all of the notes diffs highlights when per_page is 1' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                first_note_diff_file = first_commit_diff_note.note_diff_file
-                second_note_diff_file = second_commit_diff_note.note_diff_file
-
-                expect(collection).to receive(:load_highlight).with(diff_note_ids: [first_commit_diff_note.id]).and_call_original
-                expect(collection).to receive(:find_by_id).with(first_note_diff_file.id).and_call_original
-                expect(collection).not_to receive(:find_by_id).with(second_note_diff_file.id)
-              end
-
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid,
-                                          per_page: 1 }
-            end
+        context 'with diff notes' do
+          let!(:diff_note) do
+            create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
           end
 
-          context 'with diff notes' do
-            let!(:diff_note) do
-              create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+          it 'preloads notes diffs highlights' do
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              note_diff_file = diff_note.note_diff_file
+
+              expect(collection).to receive(:load_highlight).with(diff_note_ids: [diff_note.id]).and_call_original
+              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
             end
 
-            it 'preloads notes diffs highlights' do
-              expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
-                note_diff_file = diff_note.note_diff_file
-
-                expect(collection).to receive(:load_highlight).with(diff_note_ids: [diff_note.id]).and_call_original
-                expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
-              end
-
-              get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
-            end
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
           end
         end
       end

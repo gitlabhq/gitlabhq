@@ -5,10 +5,7 @@ module Ci
     include Ci::Partitionable
     include Ci::NewHasVariable
     include Ci::RawVariable
-    include SafelyChangeColumnDefault
     include BulkInsertSafe
-
-    columns_changing_default :partition_id
 
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_variables
 

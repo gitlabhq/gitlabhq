@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, api
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Internal API
@@ -467,8 +466,7 @@ Example response:
 ## GitLab agent endpoints
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41045) in GitLab 13.4.
-> - This feature is not deployed on GitLab.com
-> - It's not recommended for production use.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
 
 The following endpoints are used by the GitLab agent server (`kas`)
 for various purposes.
@@ -554,6 +552,46 @@ Example Request:
 ```shell
 curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Content-Type: application/json" \
      --data '{"counters": {"gitops_sync":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
+```
+
+### GitLab agent events
+
+Called from GitLab agent server (`kas`) to track events.
+
+| Attribute                                                                     | Type          | Required | Description                                                               |
+|:------------------------------------------------------------------------------|:--------------|:---------|:--------------------------------------------------------------------------|
+| `events`                                                                      | hash          | no       | Hash of events                                                            |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]`                 | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_ci_access`   |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]["user_id"]`      | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_ci_access"]["project_id"]`   | integer       | no       | The project ID for the event                                              |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]`               | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_user_access` |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]["user_id"]`    | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_user_access"]["project_id"]` | integer       | no       | The project ID for the event                                              |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]`                | hash array    | no       | Array of events for `k8s_api_proxy_requests_unique_users_via_pat_access`  |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]["user_id"]`     | integer       | no       | The user ID for the event                                                 |
+| `events["k8s_api_proxy_requests_unique_users_via_pat_access"]["project_id"]`  | integer       | no       | The project ID for the event                                              |
+
+```plaintext
+POST /internal/kubernetes/agent_events
+```
+
+Example Request:
+
+```shell
+curl --request POST \
+  --url "http://localhost:3000/api/v4/internal/kubernetes/agent_events" \
+  --header "Gitlab-Kas-Api-Request: <JWT token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "events": {
+      "k8s_api_proxy_requests_unique_users_via_ci_access": [
+        {
+          "user_id": 1,
+          "project_id": 1
+        }
+      ]
+    }
+  }'
 ```
 
 ### Create Starboard vulnerability
@@ -1236,10 +1274,12 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
 
+NOTE:
+This API does not require the `Gitlab-Shell-Api-Request` header.
+
 ### Get a list of SCIM provisioned users
 
-This endpoint is used as part of the SCIM syncing mechanism. It only returns
-a single user based on a unique ID which should match the `extern_uid` of the user.
+This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
 
 ```plaintext
 GET /api/scim/v2/groups/:group_path/Users
@@ -1257,7 +1297,7 @@ Parameters:
 NOTE:
 Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
 
-Example request:
+Example request filtering on a specific identifier:
 
 ```shell
 curl "https://gitlab.example.com/api/scim/v2/groups/test_group/Users?filter=id%20eq%20%220b1d561c-21ff-4092-beab-8154b17f82f2%22" \
@@ -1414,11 +1454,21 @@ Parameters:
 | `group_path` | string | yes    | Full path to the group. |
 | `Operations`   | JSON string  | yes     | An [operations](#available-operations) expression. |
 
-Example request:
+Example request to update the user's `id`:
 
 ```shell
 curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
      --data '{ "Operations": [{"op":"replace","path":"id","value":"1234abcd"}] }' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Returns an empty response with a `204` status code if successful.
+
+Example request to set the user's `active` state:
+
+```shell
+curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
+     --data '{ "Operations": [{"op":"replace","path":"active","value":"true"}] }' \
      --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 
@@ -1472,10 +1522,12 @@ This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SC
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
 
+NOTE:
+This API does not require the `Gitlab-Shell-Api-Request` header.
+
 ### Get a list of SCIM provisioned users
 
-This endpoint is used as part of the SCIM syncing mechanism. It only returns
-a single user based on a unique ID which should match the `extern_uid` of the user.
+This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
 
 ```plaintext
 GET /api/scim/v2/application/Users
@@ -1651,9 +1703,9 @@ curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/applicati
 
 Returns an empty response with a `204` status code if successful.
 
-### Remove a single SCIM provisioned user
+### Block a single SCIM provisioned user
 
-The user is placed in an `ldap_blocked` status and signed out. This means
+The user is placed in a `blocked` state and signed out. This means
 the user cannot sign in or push or pull code.
 
 ```plaintext

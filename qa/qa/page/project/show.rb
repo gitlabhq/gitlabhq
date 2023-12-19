@@ -9,9 +9,6 @@ module QA
         include Page::Component::Breadcrumbs
         include Page::File::Shared::CommitMessage
         include Page::Component::Dropdown
-        # We need to check phone_layout? instead of mobile_layout? here
-        # since tablets have the regular top navigation bar
-        prepend Mobile::Page::Project::Show if Runtime::Env.phone_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
           element 'blob-viewer-content'
@@ -25,17 +22,15 @@ module QA
           element 'file-tree-table'
         end
 
-        view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element 'new-menu-toggle'
-        end
-
         view 'app/views/projects/_last_push.html.haml' do
           element 'create-merge-request-button'
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
           element 'project-name-content'
-          element 'project-id-content'
+        end
+
+        view 'app/views/projects/_sidebar.html.haml' do
           element 'project-badges-content'
           element 'badge-image-link'
         end

@@ -1,14 +1,32 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import FrequentItems from '~/super_sidebar/components/global_search/components/frequent_items.vue';
 import FrequentProjects from '~/super_sidebar/components/global_search/components/frequent_projects.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import currentUserFrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
+import waitForPromises from 'helpers/wait_for_promises';
+import { frecentProjectsMock } from '../../../mock_data';
+
+Vue.use(VueApollo);
 
 describe('FrequentlyVisitedProjects', () => {
   let wrapper;
 
   const projectsPath = '/mock/project/path';
+  const currentUserFrecentProjectsQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+      frecentProjects: frecentProjectsMock,
+    },
+  });
 
   const createComponent = (options) => {
+    const mockApollo = createMockApollo([
+      [currentUserFrecentProjectsQuery, currentUserFrecentProjectsQueryHandler],
+    ]);
+
     wrapper = shallowMount(FrequentProjects, {
+      apolloProvider: mockApollo,
       provide: {
         projectsPath,
       },
@@ -28,19 +46,25 @@ describe('FrequentlyVisitedProjects', () => {
     expect(findFrequentItems().props()).toMatchObject({
       emptyStateText: 'Projects you visit often will appear here.',
       groupName: 'Frequently visited projects',
-      maxItems: 5,
-      storageKey: null,
       viewAllItemsIcon: 'project',
       viewAllItemsText: 'View all my projects',
       viewAllItemsPath: projectsPath,
     });
   });
 
-  it('with a user, passes a storage key string to FrequentItems', () => {
-    gon.current_username = 'test_user';
+  it('loads frecent projects', () => {
     createComponent();
 
-    expect(findFrequentItems().props('storageKey')).toBe('test_user/frequent-projects');
+    expect(currentUserFrecentProjectsQueryHandler).toHaveBeenCalled();
+    expect(findFrequentItems().props('loading')).toBe(true);
+  });
+
+  it('passes fetched projects to FrequentItems', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findFrequentItems().props('items')).toEqual(frecentProjectsMock);
+    expect(findFrequentItems().props('loading')).toBe(false);
   });
 
   it('passes attrs to FrequentItems', () => {

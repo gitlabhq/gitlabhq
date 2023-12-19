@@ -7,8 +7,13 @@ class Projects::SyncEvent < ApplicationRecord
 
   belongs_to :project
 
+  scope :unprocessed_events, -> { all }
   scope :preload_synced_relation, -> { preload(:project) }
   scope :order_by_id_asc, -> { order(id: :asc) }
+
+  def self.mark_records_processed(records)
+    id_in(records).delete_all
+  end
 
   def self.enqueue_worker
     ::Projects::ProcessSyncEventsWorker.perform_async # rubocop:disable CodeReuse/Worker

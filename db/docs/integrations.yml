@@ -45,7 +45,6 @@ classes:
 - Integrations::Pumble
 - Integrations::Pushover
 - Integrations::Redmine
-- Integrations::Shimo
 - Integrations::Slack
 - Integrations::SlackSlashCommands
 - Integrations::SquashTm

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Push rules **(PREMIUM ALL)**
@@ -33,14 +33,13 @@ All projects created after you configure global push rules inherit this
 configuration. However, each existing project must be updated manually, using the
 process described in [Override global push rules per project](#override-global-push-rules-per-project).
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 
 To create global push rules:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Push Rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -79,6 +78,19 @@ Use these rules for your commit messages.
   - `[[:^punct:]]\b$` rejects a commit if the final character is a punctuation mark.
     The word boundary character (`\b`) prevents false negatives, because Git adds a
     newline character (`\n`) to the end of the commit message.
+
+  Commit messages created in GitLab UI set `\r\n` as a newline character.
+  Use `(\r\n?|\n)` instead of `\n` in your regular expression to correctly match
+  it.
+
+  For example, given the following multi-line commit description:
+
+  ```plaintext
+  JIRA:
+  Description
+  ```
+
+  You can validate it with this regular expression: `JIRA:(\r\n?|\n)\w+`.
 
 - **Reject expression in commit messages**: Commit messages must not match
   the expression. To allow any commit message, leave empty.

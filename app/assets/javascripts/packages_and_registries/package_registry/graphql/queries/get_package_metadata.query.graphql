@@ -12,7 +12,10 @@ query getPackageMetadata($id: PackagesPackageID!) {
       }
       ... on PypiMetadata {
         id
+        authorEmail
+        keywords
         requiredPython
+        summary
       }
       ... on ConanMetadata {
         id

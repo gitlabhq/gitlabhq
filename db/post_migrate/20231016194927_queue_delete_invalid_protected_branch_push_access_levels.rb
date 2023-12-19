@@ -16,7 +16,6 @@ class QueueDeleteInvalidProtectedBranchPushAccessLevels < Gitlab::Database::Migr
       :protected_branch_push_access_levels,
       :id,
       job_interval: DELAY_INTERVAL,
-      queued_migration_version: '20231016194927',
       batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )

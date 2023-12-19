@@ -35,9 +35,9 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
     response
   end
 
-  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model_versions/get' do
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get' do
     let(:route) do
-      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=#{name}&version=#{version}"
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=#{name}&version=#{version}"
     end
 
     it 'returns the model version', :aggregate_failures do
@@ -51,7 +51,7 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
       context 'when has access' do
         context 'and model name in incorrect' do
           let(:route) do
-            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=--&version=#{version}"
+            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=--&version=#{version}"
           end
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
@@ -59,7 +59,7 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
 
         context 'and version in incorrect' do
           let(:route) do
-            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model_versions/get?name=#{name}&version=--"
+            "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/get?name=#{name}&version=--"
           end
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
@@ -79,8 +79,95 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
         end
       end
 
-      it_behaves_like 'MLflow|shared model registry error cases'
-      it_behaves_like 'MLflow|Requires read_api scope'
+      it_behaves_like 'MLflow|an authenticated resource'
+      it_behaves_like 'MLflow|a read-only model registry resource'
+    end
+  end
+
+  describe 'UPDATE /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update' do
+    let(:params) { { name: name, version: version, description: 'description-text' } }
+    let(:request) { patch api(route), params: params, headers: headers }
+
+    let(:route) do
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/update"
+    end
+
+    it 'returns the model version', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      expect(json_response['model_version']).not_to be_nil
+      expect(json_response['model_version']['name']).to eq(name)
+      expect(json_response['model_version']['version']).to eq(version)
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model name in incorrect' do
+          let(:params) { { name: 'invalid-name', version: version, description: 'description-text' } }
+
+          it 'throws error 400' do
+            is_expected.to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and version in incorrect' do
+          let(:params) { { name: name, version: 'invalid-version', description: 'description-text' } }
+
+          it 'throws error 400' do
+            is_expected.to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'when user lacks write_model_registry rights' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?)
+                                .with(current_user, :write_model_registry, project)
+                                .and_return(false)
+          end
+
+          it "is Not Found" do
+            is_expected.to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
+
+      it_behaves_like 'MLflow|an authenticated resource'
+      it_behaves_like 'MLflow|a read/write model registry resource'
+    end
+  end
+
+  describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/model_versions/create' do
+    let(:model_name) { model.name }
+    let(:route) do
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/model-versions/create"
+    end
+
+    let(:params) { { name: model_name, description: 'description-text' } }
+    let(:request) { post api(route), params: params, headers: headers }
+
+    it 'returns the model', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      is_expected.to match_response_schema('ml/get_model_version')
+    end
+
+    it 'increments the version if a model version already exists' do
+      create(:ml_model_versions, model: model, version: '1.0.0')
+
+      is_expected.to have_gitlab_http_status(:ok)
+      expect(json_response["model_version"]["version"]).to eq('2.0.0')
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model does not exist' do
+          let(:model_name) { 'foo' }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+      end
+
+      it_behaves_like 'MLflow|an authenticated resource'
+      it_behaves_like 'MLflow|a read/write model registry resource'
     end
   end
 end

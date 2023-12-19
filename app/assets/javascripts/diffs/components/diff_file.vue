@@ -9,7 +9,7 @@ import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
 import { createAlert } from '~/alert';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
@@ -170,6 +170,11 @@ export default {
     showWarning() {
       return this.isCollapsed && this.automaticallyCollapsed && !this.viewDiffsFileByFile;
     },
+    expandableWarning() {
+      return this.file.viewer?.generated
+        ? this.$options.i18n.autoCollapsedGenerated
+        : this.$options.i18n.autoCollapsed;
+    },
     showContent() {
       return !this.isCollapsed && !this.isFileTooLarge;
     },
@@ -295,8 +300,13 @@ export default {
         collapsed: collapsingNow,
       });
 
-      if (collapsingNow && viaUserInteraction && contentElement) {
-        scrollToElement(contentElement, { duration: 1 });
+      if (
+        collapsingNow &&
+        viaUserInteraction &&
+        contentElement &&
+        isElementStuck(this.$refs.header.$el)
+      ) {
+        scrollToElement(contentElement, { duration: 0 });
       }
 
       if (!this.hasDiff && !collapsingNow) {
@@ -381,6 +391,7 @@ export default {
     class="diff-file file-holder gl-border-none gl-mb-0! gl-pb-5"
   >
     <diff-file-header
+      ref="header"
       :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
@@ -419,6 +430,7 @@ export default {
       <div
         :id="`diff-content-${file.file_hash}`"
         :class="hasBodyClasses.contentByHash"
+        class="diff-content"
         data-testid="content-area"
       >
         <gl-alert
@@ -523,7 +535,7 @@ export default {
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
             <p class="gl-mb-5">
-              {{ $options.i18n.autoCollapsed }}
+              {{ expandableWarning }}
             </p>
             <gl-button data-testid="expand-button" @click.prevent="handleToggle">
               {{ $options.i18n.expand }}

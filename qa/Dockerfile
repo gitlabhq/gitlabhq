@@ -1,7 +1,7 @@
-ARG DOCKER_VERSION=20.10.14
-ARG CHROME_VERSION=106
-ARG QA_BUILD_TARGET=ee
+ARG DOCKER_VERSION=24.0.5
+ARG CHROME_VERSION=113
 ARG RUBY_VERSION=3.0
+ARG QA_BUILD_TARGET=ee
 
 FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23 AS foss
 LABEL maintainer="GitLab Quality Department <quality@gitlab.com>"
@@ -69,5 +69,10 @@ FROM ee AS jhqa
 ONBUILD COPY ./jh/qa /home/gitlab/jh/qa
 ONBUILD COPY ./jh/lib /home/gitlab/jh/lib
 ONBUILD COPY ./jh/config/feature_flags /home/gitlab/jh/config/feature_flags
+
+# Add solargraph gem for devcontainer
+# Solargraph is only present in parent Gemfile so we just install it manually
+FROM ee as dev
+RUN gem install solargraph --force
 
 FROM $QA_BUILD_TARGET

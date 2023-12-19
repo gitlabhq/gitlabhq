@@ -18,12 +18,12 @@ module Mutations
             required: true,
             description: 'Full path of the project where a protection rule is located.'
 
-          argument :container_path_pattern,
+          argument :repository_path_pattern,
             GraphQL::Types::String,
             required: true,
             description:
-              'ContainerRegistryname protected by the protection rule. For example `@my-scope/my-container-*`. ' \
-              'Wildcard character `*` allowed.'
+              'Container repository path pattern protected by the protection rule. ' \
+              'For example `my-project/my-container-*`. Wildcard character `*` allowed.'
 
           argument :push_protected_up_to_access_level,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,

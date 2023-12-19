@@ -7,9 +7,8 @@ module QA
     except: { job: 'review-qa-*' },
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383215',
-      type: :flaky
-    },
-    feature_flag: { name: 'show_pages_in_deployments_menu' } do
+      type: :broken
+    } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
     describe 'Pages', product_group: :knowledge do
       let!(:project) { create(:project, name: 'gitlab-pages-projects', template_name: :plainhtml) }
@@ -40,7 +39,7 @@ module QA
         end
 
         Page::Project::Menu.perform(&:go_to_pages_settings)
-        Page::Project::Settings::Pages.perform(&:go_to_access_page)
+        Page::Project::Pages.perform(&:go_to_access_page)
 
         Support::Waiter.wait_until(
           sleep_interval: 2,

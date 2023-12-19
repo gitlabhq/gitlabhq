@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Runner
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Services **(FREE ALL)**
@@ -27,7 +26,7 @@ than to install `mysql`, for example, every time the project is built.
 
 You're not limited to only database services. You can add as many
 services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
-Any image found at [Docker Hub](https://hub.docker.com/) or your private Container Registry can be
+Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
 Services inherit the same DNS servers, search domains, and additional hosts as
@@ -436,54 +435,48 @@ See [Mask a CI/CD Variable](../variables/index.md#mask-a-cicd-variable)
 
 ## Debug a job locally
 
-The following commands are run without root privileges. You should be
-able to run Docker with your user account.
+The following commands are run without root privileges. You should be able to run Docker with your user account.
 
-First start with creating a file named `build_script`:
+First start by creating a file named `build_script`:
 
 ```shell
 cat <<EOF > build_script
 git clone https://gitlab.com/gitlab-org/gitlab-runner.git /builds/gitlab-org/gitlab-runner
 cd /builds/gitlab-org/gitlab-runner
-make
+make runner-bin-host
 EOF
 ```
 
-Here we use as an example the GitLab Runner repository which contains a
-Makefile, so running `make` executes the commands defined in the Makefile.
-Instead of `make`, you could run the command which is specific to your project.
+Here we use as an example the GitLab Runner repository which contains a Makefile, so running `make` executes the target
+defined in the Makefile. Instead of `make runner-bin-host`, you could run the command which is specific to your project.
 
-Then create some service containers:
-
-```shell
-docker run -d --name service-mysql mysql:latest
-docker run -d --name service-postgres postgres:latest
-```
-
-The previous commands create two service containers. The service container named `service-mysql` uses the latest MySQL image. The one named `service-postgres` uses the latest PostgreSQL image. Both service containers run in the background (`-d`).
-
-Finally, create a build container by executing the `build_script` file we
-created earlier:
+Then create a service container:
 
 ```shell
-docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.6 /bin/bash < build_script
+docker run -d --name service-redis redis:latest
 ```
 
-The above command creates a container named `build` that's spawned from
-the `ruby:2.6` image and has two services linked to it. The `build_script` is
-piped using `stdin` to the bash interpreter which in turn executes the
+The previous command creates a service container named `service-redis` using the latest Redis image. The service
+container runs in the background (`-d`).
+
+Finally, create a build container by executing the `build_script` file we created earlier:
+
+```shell
+docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
+```
+
+The above command creates a container named `build` that is spawned from the `golang:latest` image and has one service
+linked to it. The `build_script` is piped using `stdin` to the bash interpreter which in turn executes the
 `build_script` in the `build` container.
 
-When you finish testing and no longer need the containers, you can remove them
-with:
+When you finish testing and no longer need the containers, you can remove them with:
 
 ```shell
-docker rm -f -v build service-mysql service-postgres
+docker rm -f -v build service-redis
 ```
 
-This forcefully (`-f`) removes the `build` container, the two service
-containers, and all volumes (`-v`) that were created with the container
-creation.
+This forcefully (`-f`) removes the `build` container, the service container, and all volumes (`-v`) that were created
+with the container creation.
 
 ## Security when using services containers
 

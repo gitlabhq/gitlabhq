@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable BackgroundMigration/DictionaryFile
+# rubocop:disable BackgroundMigration/DictionaryFile -- BackfillProjectWikiRepositories is rescheduled
 class RequeueBackfillProjectWikiRepositories < Gitlab::Database::Migration[2.1]
   MIGRATION = "BackfillProjectWikiRepositories"
   DELAY_INTERVAL = 2.minutes

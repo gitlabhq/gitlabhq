@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # SQL Query Guidelines
@@ -86,7 +86,7 @@ _can_ be used by `ILIKE` / `LIKE` and can lead to greatly improved performance.
 One downside of these indexes is that they can easily get quite large (depending
 on the amount of data indexed).
 
-To keep naming of these indexes consistent please use the following naming
+To keep naming of these indexes consistent, use the following naming
 pattern:
 
 ```plaintext

@@ -237,7 +237,8 @@ export default class MergeRequestTabs {
 
   bindEvents() {
     $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', (event) => {
+      if (event?.state?.skipScrolling) return;
       const action = getActionFromHref(location.href);
 
       this.tabShown(action, location.href);
@@ -603,11 +604,7 @@ export default class MergeRequestTabs {
     if (!isInVueNoteablePage() || this.cachedPageLayoutClasses) return;
 
     this.cachedPageLayoutClasses = this.pageLayout.className;
-    this.pageLayout.classList.remove(
-      'right-sidebar-collapsed',
-      'right-sidebar-expanded',
-      'page-with-icon-sidebar',
-    );
+    this.pageLayout.classList.remove('right-sidebar-collapsed', 'right-sidebar-expanded');
     this.sidebar.style.width = '0px';
   }
 

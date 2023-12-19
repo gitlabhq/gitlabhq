@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerSetupType, feature_category: :runner_fleet do
+RSpec.describe Types::Ci::RunnerSetupType, feature_category: :fleet_visibility do
   specify { expect(described_class.graphql_name).to eq('RunnerSetup') }
 
   it 'exposes the expected fields' do

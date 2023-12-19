@@ -741,3 +741,71 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status|
     end
   end
 end
+
+RSpec.shared_examples 'nuget symbol file endpoint' do
+  let_it_be(:symbol) { create(:nuget_symbol) }
+  let_it_be(:filename) { symbol.file.filename }
+  let_it_be(:signature) { symbol.signature }
+  let_it_be(:checksum) { symbol.file_sha256.delete("\n") }
+
+  let(:headers) { { 'Symbolchecksum' => "SHA256:#{checksum}" } }
+
+  subject { get api(url), headers: headers }
+
+  it { is_expected.to have_request_urgency(:low) }
+
+  context 'with nuget_symbol_server_enabled setting enabled' do
+    before do
+      allow_next_instance_of(::Namespace::PackageSetting) do |setting|
+        allow(setting).to receive(:nuget_symbol_server_enabled).and_return(true)
+      end
+    end
+
+    context 'with valid target' do
+      it 'returns the symbol file' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq('application/octet-stream')
+        expect(response.body).to eq(symbol.file.read)
+      end
+    end
+
+    context 'when target does not exist' do
+      let(:target) { double(id: 1234567890) }
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    context 'when target exists' do
+      context 'when symbol file does not exist' do
+        let(:filename) { 'non-existent-file.pdb' }
+        let(:signature) { 'non-existent-signature' }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'when symbol file checksum does not match' do
+        let(:checksum) { 'non-matching-checksum' }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'when symbol file checksum is missing' do
+        let(:headers) { {} }
+
+        it_behaves_like 'returning response status', :bad_request
+      end
+    end
+  end
+
+  context 'with nuget_symbol_server_enabled setting disabled' do
+    before do
+      allow_next_instance_of(::Namespace::PackageSetting) do |setting|
+        allow(setting).to receive(:nuget_symbol_server_enabled).and_return(false)
+      end
+    end
+
+    it_behaves_like 'returning response status', :forbidden
+  end
+end

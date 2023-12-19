@@ -33,6 +33,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    hideEditButton: {
+      type: Boolean,
+      required: false,
+    },
     workspaceType: {
       type: String,
       required: false,
@@ -70,7 +74,7 @@ export default {
         data-testid="issuable-title"
       ></h1>
       <gl-button
-        v-if="enableEdit"
+        v-if="enableEdit && !hideEditButton"
         v-gl-tooltip.bottom
         :title="$options.i18n.editTitleAndDescription"
         :aria-label="$options.i18n.editTitleAndDescription"

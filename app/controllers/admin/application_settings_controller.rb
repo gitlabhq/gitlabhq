@@ -164,10 +164,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_denylist_raw) if params[:domain_denylist]
     params.delete(:domain_allowlist_raw) if params[:domain_allowlist]
 
-    if params[:application_setting].key?(:user_email_lookup_limit)
-      params[:application_setting][:search_rate_limit] ||= params[:application_setting][:user_email_lookup_limit]
-    end
-
     params[:application_setting].permit(visible_application_setting_attributes)
   end
 
@@ -183,6 +179,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       *::ApplicationSettingsHelper.visible_attributes,
       *::ApplicationSettingsHelper.external_authorization_service_attributes,
       *ApplicationSetting.kroki_formats_attributes.keys.map { |key| "kroki_formats_#{key}".to_sym },
+      :can_create_organization,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_denylist_file,

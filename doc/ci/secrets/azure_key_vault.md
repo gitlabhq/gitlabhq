@@ -1,16 +1,13 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: concepts, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3.
-
-NOTE:
-A [bug was discovered](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) and this feature might not work as expected or at all. A fix is scheduled for a future release.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
+> - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.
 
 You can use secrets stored in the [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)
 in your GitLab CI/CD pipelines.
@@ -69,8 +66,8 @@ RESPONSE 400 Bad Request
 AADSTS50027: JWT token is invalid or malformed.
 ```
 
-This occurs due to a known issue in GitLab Runner where the JWT token isn't parsed correctly.
-A fix is [scheduled for a future GitLab Runner release](https://gitlab.com/gitlab-org/gitlab/-/issues/424746).
+This occurs due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) in GitLab Runner where the JWT token isn't parsed correctly.
+To resolve this, upgrade to GitLab Runner 16.6 or later.
 
 ### `Caller is not authorized to perform action on resource` message
 
@@ -83,7 +80,7 @@ Caller is not authorized to perform action on resource.\r\nIf role assignments, 
 ForbiddenByRbac
 ```
 
-If your Azure Key Vault is using RBAC, you must add the **Key Vault Secrets User** to your Azure AD
+If your Azure Key Vault is using RBAC, you must add the **Key Vault Secrets User** role assignment to your Azure AD
 application.
 
 For example:

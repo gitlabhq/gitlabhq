@@ -23,7 +23,7 @@ RSpec.describe Projects::TerraformHelper do
     end
 
     it 'includes access token path' do
-      expect(subject[:access_tokens_path]).to eq(profile_personal_access_tokens_path)
+      expect(subject[:access_tokens_path]).to eq(user_settings_personal_access_tokens_path)
     end
 
     it 'includes username' do

@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference, concepts
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # External status checks **(ULTIMATE ALL)**
@@ -172,8 +171,7 @@ To retry a failed status check:
 
 An organization might have a policy that does not allow merging merge requests if
 external status checks do not pass. However, the details in the widget are for informational
-purposes only. GitLab does not prevent merging of merge requests that fail status checks.
-Support to allow merges to be blocked when external status checks fail is proposed in epic [&8516](https://gitlab.com/groups/gitlab-org/-/epics/8516).
+purposes only.
 
 NOTE:
 GitLab cannot guarantee that the external status checks are properly processed by

@@ -38,7 +38,6 @@ module Backup
     ensure
       strategy.finish!
 
-      cleanup_snippets_without_repositories
       restore_object_pools
     end
 
@@ -132,24 +131,6 @@ module Backup
 
         pool.schedule
       end
-    end
-
-    # Snippets without a repository should be removed because they failed to import
-    # due to having invalid repositories
-    def cleanup_snippets_without_repositories
-      invalid_snippets = []
-
-      snippet_relation.find_each(batch_size: 1000).each do |snippet|
-        response = Snippets::RepositoryValidationService.new(nil, snippet).execute
-        next if response.success?
-
-        snippet.repository.remove
-        progress.puts("Snippet #{snippet.full_path} can't be restored: #{response.message}")
-
-        invalid_snippets << snippet.id
-      end
-
-      Snippet.id_in(invalid_snippets).delete_all
     end
   end
 end

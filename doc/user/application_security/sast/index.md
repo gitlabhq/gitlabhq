@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Static Application Security Testing (SAST) **(FREE ALL)**
@@ -17,7 +17,6 @@ any GitLab tier. The analyzers output JSON-formatted reports as job artifacts.
 
 With GitLab Ultimate, SAST results are also processed so you can:
 
-- See them in merge requests.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 
@@ -208,7 +207,8 @@ include:
 
 A FIPS-compliant image is only available for the Semgrep-based analyzer.
 
-To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers).
+WARNING:
+To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes.html#running-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
 
 ## Summary of features per tier
 
@@ -222,12 +222,42 @@ as shown in the following table:
 | [Customize SAST settings](#available-cicd-variables)              | **{check-circle}**  | **{check-circle}** |
 | Download [JSON Report](#reports-json-format)                      | **{check-circle}**  | **{check-circle}** |
 | See new findings in merge request widget                          | **{dotted-circle}** | **{check-circle}** |
+| See new findings in merge request changes                         | **{dotted-circle}** | **{check-circle}** |
 | [Manage vulnerabilities](../vulnerabilities/index.md)             | **{dotted-circle}** | **{check-circle}** |
 | [Access the Security Dashboard](../security_dashboard/index.md)   | **{dotted-circle}** | **{check-circle}** |
 | [Configure SAST by using the UI](#configure-sast-by-using-the-ui) | **{dotted-circle}** | **{check-circle}** |
 | [Customize SAST rulesets](customize_rulesets.md)                  | **{dotted-circle}** | **{check-circle}** |
 | [Detect False Positives](#false-positive-detection)               | **{dotted-circle}** | **{check-circle}** |
 | [Track moved vulnerabilities](#advanced-vulnerability-tracking)   | **{dotted-circle}** | **{check-circle}** |
+
+## View SAST results
+
+SAST results are shown in the:
+
+- Merge request widget
+- Merge request changes view
+- Vulnerability Report
+
+### Merge request widget **(ULTIMATE ALL)**
+
+SAST results display in the merge request widget area if a report from the target
+branch is available for comparison. The merge request widget displays SAST findings and resolutions that
+were introduced by the changes made in the merge request.
+
+![Security Merge request widget](img/sast_mr_widget_v16_7.png)
+
+### Merge request changes view **(ULTIMATE ALL)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`.
+On GitLab.com, this feature is available.
+
+SAST results display in the merge request **Changes** view. Lines containing SAST
+issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
+
+![SAST Inline Indicator](img/sast_inline_indicator_v16_7.png)
 
 ## Contribute your scanner
 
@@ -642,7 +672,7 @@ run successfully. For more information, see [Offline environments](../offline_de
 To use SAST in an offline environment, you need:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
-- A Docker Container Registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
+- A Docker container registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 
 GitLab Runner has a [default `pull_policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),

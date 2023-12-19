@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Code Intelligence **(FREE ALL)**
@@ -41,7 +40,7 @@ code_navigation:
       lsif: dump.lsif
 ```
 
-The generated LSIF file size may be limited by
+The generated LSIF file size might be limited by
 the [artifact application limits (`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact),
 default to 100 MB (configurable by an instance administrator).
 

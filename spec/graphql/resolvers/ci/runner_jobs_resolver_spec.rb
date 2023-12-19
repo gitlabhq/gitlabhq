@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::RunnerJobsResolver, feature_category: :runner_fleet do
+RSpec.describe Resolvers::Ci::RunnerJobsResolver, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

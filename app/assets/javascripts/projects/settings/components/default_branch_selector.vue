@@ -8,6 +8,11 @@ export default {
     RefSelector,
   },
   props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     persistedDefaultBranch: {
       type: String,
       required: true,
@@ -26,6 +31,7 @@ export default {
 </script>
 <template>
   <ref-selector
+    :disabled="disabled"
     :value="persistedDefaultBranch"
     class="gl-w-full"
     :project-id="projectId"

@@ -95,6 +95,10 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:home_organization).to(:user_preference) }
+    it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
+    it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -175,7 +179,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:abuse_reports).dependent(:nullify).inverse_of(:user) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
-    it { is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport').inverse_of(:assignee) }
     it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
     it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
@@ -199,6 +202,13 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
+    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
+
+    it do
+      is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
+        .through(:admin_abuse_report_assignees)
+        .source(:abuse_report)
+    end
 
     it do
       is_expected.to have_many(:organization_users).class_name('Organizations::OrganizationUser').inverse_of(:user)
@@ -461,7 +471,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe 'validations' do
     describe 'password' do
-      let!(:user) { build_stubbed(:user) }
+      let!(:user) { build(:user) }
 
       before do
         allow(Devise).to receive(:password_length).and_return(8..128)
@@ -541,9 +551,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'namespace_move_dir_allowed' do
         context 'when the user is not a new record' do
-          before do
-            expect(user.new_record?).to eq(false)
-          end
+          let!(:user) { create(:user) }
 
           it 'checks when username changes' do
             expect(user).to receive(:namespace_move_dir_allowed)
@@ -1434,6 +1442,25 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns only the trusted users' do
         expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
       end
+    end
+  end
+
+  describe '#user_belongs_to_organization?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+
+    subject { user.user_belongs_to_organization?(organization) }
+
+    context 'when user is an organization user' do
+      before do
+        create(:organization_user, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user is not an organization user' do
+      it { is_expected.to eq false }
     end
   end
 
@@ -3537,32 +3564,8 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#avatar_type' do
-    let(:user) { create(:user) }
-
-    it 'is true if avatar is image' do
-      user.update_attribute(:avatar, 'uploads/avatar.png')
-
-      expect(user.avatar_type).to be_truthy
-    end
-
-    it 'is false if avatar is html page' do
-      user.update_attribute(:avatar, 'uploads/avatar.html')
-      user.avatar_type
-
-      expect(user.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    let(:user) { create(:user, :with_avatar) }
-
-    context 'when avatar file is uploaded' do
-      it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(user.avatar.url)
-        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
-      end
-    end
+  it_behaves_like Avatarable do
+    let(:model) { create(:user, :with_avatar) }
   end
 
   describe '#clear_avatar_caches' do
@@ -5430,8 +5433,7 @@ RSpec.describe User, feature_category: :user_profile do
 
       before do
         shared_project.project_group_links.create!(
-          group: group2,
-          group_access: ProjectGroupLink.default_access
+          group: group2
         )
 
         group2.add_member(user, GroupMember::OWNER)
@@ -5682,21 +5684,35 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe '#ensure_namespace_correct' do
     context 'for a new user' do
-      let(:user) { build(:user) }
+      let(:user) { described_class.new attributes_for(:user) }
 
-      it 'creates the namespace' do
+      it 'does not create the namespace' do
         expect(user.namespace).to be_nil
 
-        user.save!
+        user.valid?
 
-        expect(user.namespace).not_to be_nil
-        expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        expect(user.namespace).to be_nil
       end
 
-      it 'creates the namespace setting' do
-        user.save!
+      context 'when create_personal_ns_outside_model feature flag is disabled' do
+        before do
+          stub_feature_flags(create_personal_ns_outside_model: false)
+        end
 
-        expect(user.namespace.namespace_settings).to be_persisted
+        it 'creates the namespace' do
+          expect(user.namespace).to be_nil
+
+          user.save!
+
+          expect(user.namespace).to be_present
+          expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        end
+
+        it 'creates the namespace setting' do
+          user.save!
+
+          expect(user.namespace.namespace_settings).to be_persisted
+        end
       end
     end
 
@@ -5760,6 +5776,37 @@ RSpec.describe User, feature_category: :user_profile do
             end.not_to change { user.namespace.updated_at }
           end
         end
+      end
+    end
+  end
+
+  describe '#assign_personal_namespace' do
+    subject(:personal_namespace) { user.assign_personal_namespace }
+
+    context 'when namespace exists' do
+      let(:user) { build(:user) }
+
+      it 'leaves the namespace untouched' do
+        expect { personal_namespace }.not_to change(user, :namespace)
+      end
+
+      it 'returns the personal namespace' do
+        expect(personal_namespace).to eq(user.namespace)
+      end
+    end
+
+    context 'when namespace does not exist' do
+      let(:user) { described_class.new attributes_for(:user) }
+
+      it 'builds a new namespace' do
+        subject
+
+        expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
+        expect(user.namespace.namespace_settings).to be_present
+      end
+
+      it 'returns the personal namespace' do
+        expect(personal_namespace).to eq(user.namespace)
       end
     end
   end
@@ -6130,6 +6177,15 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
+      it 'adds a custom attribute that indicates the user deleted their own account' do
+        freeze_time do
+          expect { user.delete_async(deleted_by: deleted_by) }.to change { user.custom_attributes.count }.by(1)
+
+          expect(user.custom_attributes.last.key).to eq UserCustomAttribute::DELETED_OWN_ACCOUNT_AT
+          expect(user.custom_attributes.last.value).to eq Time.zone.now.to_s
+        end
+      end
+
       context 'when delay_delete_own_user feature flag is disabled' do
         before do
           stub_feature_flags(delay_delete_own_user: false)
@@ -6141,6 +6197,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'does not update the note' do
           expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.note }
+        end
+
+        it 'does not add any new custom attrribute' do
+          expect { user.delete_async(deleted_by: deleted_by) }.not_to change { user.custom_attributes.count }
         end
       end
 
@@ -6330,6 +6390,34 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#max_member_access_for_group' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
+    context 'when user has no access' do
+      it 'returns Gitlab::Access::NO_ACCESS' do
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when user has access via a single permission' do
+      it 'returns Gitlab::Access::DEVELOPER' do
+        group.add_developer(user)
+
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    context 'when user has access via a multiple groups' do
+      it 'returns Gitlab::Access::MAINTAINER' do
+        group.add_developer(user)
+        group.add_maintainer(user)
+
+        expect(user.max_member_access_for_group(group.id)).to eq(Gitlab::Access::MAINTAINER)
+      end
+    end
+  end
+
   context 'changing a username' do
     let(:user) { create(:user, username: 'foo') }
 
@@ -6379,6 +6467,49 @@ RSpec.describe User, feature_category: :user_profile do
               expect(required_terms_not_accepted).to be_falsey
             end
           end
+        end
+      end
+
+      context 'with multiple versions of terms' do
+        shared_examples 'terms acceptance' do
+          let(:another_term) { create :term }
+          let(:required_terms_are_accepted) { !required_terms_not_accepted }
+
+          context 'when the latest term is not accepted' do
+            before do
+              accept_terms(user)
+              another_term
+            end
+
+            it { expect(required_terms_are_accepted).to be result_for_latest_not_accepted }
+          end
+
+          context 'when the latest term is accepted' do
+            before do
+              another_term
+              accept_terms(user)
+            end
+
+            it { expect(required_terms_are_accepted).to be result_for_latest_accepted }
+          end
+        end
+
+        context 'when enforce_acceptance_of_changed_terms is enabled' do
+          let(:result_for_latest_not_accepted) { false }
+          let(:result_for_latest_accepted) { true }
+
+          include_examples 'terms acceptance'
+        end
+
+        context 'when enforce_acceptance_of_changed_terms is disabled' do
+          let(:result_for_latest_not_accepted) { true }
+          let(:result_for_latest_accepted) { true }
+
+          before do
+            stub_feature_flags(enforce_acceptance_of_changed_terms: false)
+          end
+
+          include_examples 'terms acceptance'
         end
       end
     end
@@ -7964,6 +8095,26 @@ RSpec.describe User, feature_category: :user_profile do
           expect(emails).to eq(project_commit_email)
         end
       end
+    end
+  end
+
+  describe '#deleted_own_account?' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:result) { user.deleted_own_account? }
+
+    context 'when user has a DELETED_OWN_ACCOUNT_AT custom attribute' do
+      let_it_be(:custom_attr) do
+        create(:user_custom_attribute, user: user, key: UserCustomAttribute::DELETED_OWN_ACCOUNT_AT, value: 'now')
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user does not have a DELETED_OWN_ACCOUNT_AT custom attribute' do
+      let_it_be(:user) { create(:user) }
+
+      it { is_expected.to eq false }
     end
   end
 end

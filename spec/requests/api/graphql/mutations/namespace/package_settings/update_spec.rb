@@ -22,7 +22,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       npm_package_requests_forwarding: true,
       lock_npm_package_requests_forwarding: true,
       pypi_package_requests_forwarding: true,
-      lock_pypi_package_requests_forwarding: true
+      lock_pypi_package_requests_forwarding: true,
+      nuget_symbol_server_enabled: true
     }
   end
 
@@ -42,6 +43,7 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
           lockNpmPackageRequestsForwarding
           pypiPackageRequestsForwarding
           lockPypiPackageRequestsForwarding
+          nugetSymbolServerEnabled
         }
         errors
       QL
@@ -70,6 +72,7 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       expect(package_settings_response['lockPypiPackageRequestsForwarding']).to eq(params[:lock_pypi_package_requests_forwarding])
       expect(package_settings_response['npmPackageRequestsForwarding']).to eq(params[:npm_package_requests_forwarding])
       expect(package_settings_response['lockNpmPackageRequestsForwarding']).to eq(params[:lock_npm_package_requests_forwarding])
+      expect(package_settings_response['nugetSymbolServerEnabled']).to eq(params[:nuget_symbol_server_enabled])
     end
   end
 
@@ -111,7 +114,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         npm_package_requests_forwarding: nil,
         lock_npm_package_requests_forwarding: false,
         pypi_package_requests_forwarding: nil,
-        lock_pypi_package_requests_forwarding: false
+        lock_pypi_package_requests_forwarding: false,
+        nuget_symbol_server_enabled: false
       }, to: {
         maven_duplicates_allowed: false,
         maven_duplicate_exception_regex: 'foo-.*',
@@ -124,7 +128,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         npm_package_requests_forwarding: true,
         lock_npm_package_requests_forwarding: true,
         pypi_package_requests_forwarding: true,
-        lock_pypi_package_requests_forwarding: true
+        lock_pypi_package_requests_forwarding: true,
+        nuget_symbol_server_enabled: true
       }
 
     it_behaves_like 'returning a success'

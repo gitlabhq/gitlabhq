@@ -93,7 +93,7 @@ module API
           requires :token, type: String, desc: %q(The runner's authentication token)
           requires :system_id, type: String, desc: %q(The runner's system identifier.)
         end
-        delete '/managers', urgency: :low, feature_category: :runner_fleet do
+        delete '/managers', urgency: :low, feature_category: :fleet_visibility do
           authenticate_runner!(ensure_runner_manager: false)
 
           destroy_conditionally!(current_runner) do

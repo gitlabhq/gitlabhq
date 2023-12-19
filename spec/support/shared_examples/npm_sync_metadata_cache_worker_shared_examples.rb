@@ -19,12 +19,4 @@ RSpec.shared_examples 'enqueue a worker to sync a metadata cache' do
 
     subject
   end
-
-  context 'with npm_metadata_cache disabled' do
-    before do
-      stub_feature_flags(npm_metadata_cache: false)
-    end
-
-    it_behaves_like 'does not enqueue a worker to sync a metadata cache'
-  end
 end

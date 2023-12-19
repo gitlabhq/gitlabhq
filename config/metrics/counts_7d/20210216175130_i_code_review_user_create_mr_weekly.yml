@@ -9,7 +9,6 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: internal_events
-instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_code_review_user_create_mr

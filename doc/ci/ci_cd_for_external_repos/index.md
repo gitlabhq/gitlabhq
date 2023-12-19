@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab CI/CD for external repositories **(PREMIUM ALL)**
@@ -18,15 +17,13 @@ external repository to get the benefits of GitLab CI/CD.
 Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
 and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
-[can be re-enabled later](../../user/project/settings/index.md#configure-project-features-and-permissions).
+[can be re-enabled later](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
 
 ## Connect to an external repository
 
 To connect to an external repository:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select **New project**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Run CI/CD for external repository**.
 1. Select **GitHub** or **Repository by URL**.
 1. Complete the fields.

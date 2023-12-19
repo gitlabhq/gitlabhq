@@ -1,8 +1,7 @@
 ---
-type: index, reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Milestones **(FREE ALL)**
@@ -46,7 +45,7 @@ In a group, GitLab displays milestones that belong to the group and all projects
 ### View milestones in a project with issues turned off
 
 If a project has issue tracking
-[turned off](../settings/index.md#configure-project-features-and-permissions),
+[turned off](../settings/project_features_permissions.md#configure-project-features-and-permissions),
 to get to the milestones page, enter its URL.
 
 To do so:

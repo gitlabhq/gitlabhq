@@ -39,7 +39,7 @@ dont-interrupt-me:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~zoekt --tag ~click_house"
+    - rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~zoekt --tag ~click_house"
   artifacts:
     expire_in: 7d
     paths:
@@ -54,7 +54,7 @@ rspec migration foss-impact:
 <% end %>
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
+    - rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 <% end %>
 
 <% if rspec_files_per_test_level[:background_migration][:files].size > 0 %>

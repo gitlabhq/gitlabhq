@@ -28,6 +28,9 @@ class Repository
     #{REF_PIPELINES}
   ].freeze
 
+  FORMAT_SHA1 = 'sha1'
+  FORMAT_SHA256 = 'sha256'
+
   include Gitlab::RepositoryCacheAdapter
 
   attr_accessor :full_path, :shard, :disk_path, :container, :repo_type
@@ -676,6 +679,10 @@ class Repository
   end
   cache_method :gitlab_ci_yml
 
+  def jenkinsfile?
+    file_on_head(:jenkinsfile).present?
+  end
+
   def xcode_project?
     file_on_head(:xcode_config, :tree).present?
   end
@@ -1269,6 +1276,17 @@ class Repository
     raw_repository
       .get_file_attributes(revision, paths, attributes)
       .map(&:to_h)
+  end
+
+  def object_format
+    return unless exists?
+
+    case raw.object_format
+    when :OBJECT_FORMAT_SHA1
+      FORMAT_SHA1
+    when :OBJECT_FORMAT_SHA256
+      FORMAT_SHA256
+    end
   end
 
   private

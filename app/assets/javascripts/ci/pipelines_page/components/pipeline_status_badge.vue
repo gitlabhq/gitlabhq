@@ -1,6 +1,6 @@
 <script>
 import { TRACKING_CATEGORIES } from '~/ci/constants';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import Tracking from '~/tracking';
 import PipelinesTimeago from './time_ago.vue';
 

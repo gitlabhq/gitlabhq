@@ -14,7 +14,8 @@ RSpec.shared_examples 'StageEventModel' do
           milestone_id: 6,
           state_id: 1,
           start_event_timestamp: time,
-          end_event_timestamp: time
+          end_event_timestamp: time,
+          duration_in_milliseconds: 3
         },
         {
           stage_event_hash_id: 7,
@@ -25,7 +26,8 @@ RSpec.shared_examples 'StageEventModel' do
           milestone_id: 13,
           state_id: 1,
           start_event_timestamp: time,
-          end_event_timestamp: time
+          end_event_timestamp: time,
+          duration_in_milliseconds: 5
         }
       ]
     end
@@ -40,7 +42,8 @@ RSpec.shared_examples 'StageEventModel' do
         :milestone_id,
         :state_id,
         :start_event_timestamp,
-        :end_event_timestamp
+        :end_event_timestamp,
+        :duration_in_milliseconds
       ]
     end
 

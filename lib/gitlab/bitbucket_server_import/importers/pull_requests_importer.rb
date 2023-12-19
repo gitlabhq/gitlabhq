@@ -6,16 +6,20 @@ module Gitlab
       class PullRequestsImporter
         include ParallelScheduling
 
+        # Reduce fetch limit (from 100) to avoid Gitlab::Git::ResourceExhaustedError
+        PULL_REQUESTS_BATCH_SIZE = 50
+
         def execute
           page = 1
 
           loop do
             log_info(
-              import_stage: 'import_pull_requests', message: "importing page #{page} using batch-size #{BATCH_SIZE}"
+              import_stage: 'import_pull_requests',
+              message: "importing page #{page} using batch-size #{PULL_REQUESTS_BATCH_SIZE}"
             )
 
             pull_requests = client.pull_requests(
-              project_key, repository_slug, page_offset: page, limit: BATCH_SIZE
+              project_key, repository_slug, page_offset: page, limit: PULL_REQUESTS_BATCH_SIZE
             ).to_a
 
             break if pull_requests.empty?
@@ -24,7 +28,15 @@ module Gitlab
               next if already_processed?(pull_request)
               next unless pull_request.merged? || pull_request.closed?
 
-              [pull_request.source_branch_sha, pull_request.target_branch_sha]
+              [].tap do |commits|
+                source_sha = pull_request.source_branch_sha
+                target_sha = pull_request.target_branch_sha
+
+                existing_commits = repo.commits_by(oids: [source_sha, target_sha]).map(&:sha)
+
+                commits << source_branch_commit(source_sha, pull_request) unless existing_commits.include?(source_sha)
+                commits << target_branch_commit(target_sha) unless existing_commits.include?(target_sha)
+              end
             end.flatten
 
             # Bitbucket Server keeps tracks of references for open pull requests in
@@ -77,6 +89,22 @@ module Gitlab
 
         def id_for_already_processed_cache(object)
           object.iid
+        end
+
+        def repo
+          @repo ||= project.repository
+        end
+
+        def ref_path(pull_request)
+          "refs/#{Repository::REF_MERGE_REQUEST}/#{pull_request.iid}/head"
+        end
+
+        def source_branch_commit(source_branch_sha, pull_request)
+          [source_branch_sha, ':', ref_path(pull_request)].join
+        end
+
+        def target_branch_commit(target_branch_sha)
+          [target_branch_sha, ':refs/keep-around/', target_branch_sha].join
         end
       end
     end

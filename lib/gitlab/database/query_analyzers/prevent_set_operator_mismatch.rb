@@ -6,7 +6,7 @@ module Gitlab
       class PreventSetOperatorMismatch < Base
         SetOperatorStarError = Class.new(QueryAnalyzerError)
 
-        DETECT_REGEX = /.*SELECT.+(UNION|EXCEPT|INTERSECT)/i
+        DETECT_REGEX = /.*SELECT.+\b(UNION|EXCEPT|INTERSECT)\b/i
 
         class << self
           def enabled?
@@ -36,9 +36,8 @@ module Gitlab
             node.stmt.select_stmt
           end
 
-          # This not entirely correct and will run true on `SELECT union_station, ...`
           def requires_detection?(sql)
-            sql.match DETECT_REGEX
+            DETECT_REGEX.match?(sql)
           end
         end
       end

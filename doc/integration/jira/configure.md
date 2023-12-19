@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Jira issue integration **(FREE ALL)**
@@ -15,8 +15,11 @@ The Jira issue integration connects one or more GitLab projects to a Jira instan
 Prerequisites:
 
 - Your GitLab installation must not use a [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-relative-url-for-gitlab).
-- **For Jira Cloud**, you must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and
-  the email address you used to create the token.
+- **For Jira Cloud**:
+  - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
+  - If you've enabled
+  [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
+  [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](issues.md#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).
@@ -55,22 +58,47 @@ To configure your project settings in GitLab:
    - To [transition Jira issues automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically) in GitLab,
    select the **Enable Jira transitions** checkbox.
 1. In the **Jira issue matching** section:
-   - For **Jira issue regex**, [enter a regex pattern](issues.md#use-regular-expression).
-   - For **Jira issue prefix**, [enter a prefix](issues.md#use-a-prefix).
+   - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
+   - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
 1. In the **Issues** section:
-   - To [view Jira issues](issues.md#view-jira-issues) in a GitLab project, select the **Enable Jira issues** checkbox and
+   - To [view Jira issues](issues.md#view-jira-issues) in GitLab, select the **Enable Jira issues** checkbox and
    enter a Jira project key. You can only view issues from a single Jira project in a GitLab project.
 
    WARNING:
    When you enable this setting, all users with access to that GitLab project
    can view all issues from the Jira project you've specified.
 
-   - To [create Jira issues for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select the **Enable Jira issue creation from vulnerabilities** checkbox.
+   - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability), select the **Enable Jira issue creation from vulnerabilities** checkbox.
+
+   NOTE:
+   You can enable this setting at the project level only.
+
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 Your GitLab project can now interact with all Jira projects in your instance, and the project
 displays a Jira link that opens the Jira project.
+
+## Create a Jira issue for a vulnerability **(ULTIMATE ALL)**
+
+Prerequisites:
+
+- Ensure the Jira issue integration is [configured](#configure-the-integration) and the
+  **Enable Jira issue creation from vulnerabilities** checkbox is selected.
+- You must have a Jira user account with permission to create issues in the target project.
+
+You can create a Jira issue to track any action taken to resolve or mitigate a vulnerability.
+
+To create a Jira issue for a vulnerability:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Vulnerability report**.
+1. Select the vulnerability's description.
+1. Select **Create Jira issue**.
+
+A Jira issue is created in the project with information from the vulnerability report.
+
+To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability).
 
 ## Create a Jira Cloud API token
 

@@ -17,10 +17,8 @@ import (
 	"gitlab.com/gitlab-org/labkit/monitoring"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/goredis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -225,34 +223,19 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	secret.SetPath(boot.secretPath)
 
-	keyWatcher := redis.NewKeyWatcher()
+	log.Info("Using redis/go-redis")
 
-	var watchKeyFn builds.WatchKeyHandler
-	var goredisKeyWatcher *goredis.KeyWatcher
-
-	if os.Getenv("GITLAB_WORKHORSE_FF_GO_REDIS_ENABLED") == "true" {
-		log.Info("Using redis/go-redis")
-
-		goredisKeyWatcher = goredis.NewKeyWatcher()
-		if err := goredis.Configure(cfg.Redis); err != nil {
-			log.WithError(err).Error("unable to configure redis client")
-		}
-
-		if rdb := goredis.GetRedisClient(); rdb != nil {
-			go goredisKeyWatcher.Process(rdb)
-		}
-
-		watchKeyFn = goredisKeyWatcher.WatchKey
-	} else {
-		log.Info("Using gomodule/redigo")
-
-		if cfg.Redis != nil {
-			redis.Configure(cfg.Redis, redis.DefaultDialFunc)
-			go keyWatcher.Process()
-		}
-
-		watchKeyFn = keyWatcher.WatchKey
+	rdb, err := redis.Configure(cfg.Redis)
+	if err != nil {
+		log.WithError(err).Error("unable to configure redis client")
 	}
+	redisKeyWatcher := redis.NewKeyWatcher(rdb)
+
+	if rdb != nil {
+		go redisKeyWatcher.Process()
+	}
+
+	watchKeyFn := redisKeyWatcher.WatchKey
 
 	if err := cfg.RegisterGoCloudURLOpeners(); err != nil {
 		return fmt.Errorf("register cloud credentials: %v", err)
@@ -300,11 +283,8 @@ func run(boot bootConfig, cfg config.Config) error {
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()
 
-		if goredisKeyWatcher != nil {
-			goredisKeyWatcher.Shutdown()
-		}
+		redisKeyWatcher.Shutdown()
 
-		keyWatcher.Shutdown()
 		return srv.Shutdown(ctx)
 	}
 }

@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          profile_active_sessions_path
+          user_settings_active_sessions_path
         end
 
         override :title

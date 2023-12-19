@@ -21,7 +21,7 @@ module Gitlab
           href: href,
           view: view.to_s,
           css_class: css_class,
-          data: data || { testid: 'menu_item_link', qa_title: title },
+          data: data || { testid: 'menu-item-link', qa_title: title },
           partial: partial,
           component: component
         }

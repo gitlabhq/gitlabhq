@@ -15,12 +15,12 @@ module Types
           null: false,
           description: 'ID of the container registry protection rule.'
 
-        field :container_path_pattern,
+        field :repository_path_pattern,
           GraphQL::Types::String,
           null: false,
           description:
             'Container repository path pattern protected by the protection rule. ' \
-            'For example `@my-scope/my-container-*`. Wildcard character `*` allowed.'
+            'For example `my-project/my-container-*`. Wildcard character `*` allowed.'
 
         field :push_protected_up_to_access_level,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,

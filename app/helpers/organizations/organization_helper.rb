@@ -44,14 +44,14 @@ module Organizations
 
     def organization_user_app_data(organization)
       {
-        organization_gid: organization.to_global_id
-      }
+        organization_gid: organization.to_global_id,
+        paths: organizations_users_paths
+      }.to_json
     end
 
     def home_organization_setting_app_data
       {
-        # TODO: use real setting - https://gitlab.com/gitlab-org/gitlab/-/issues/428668
-        initial_selection: 1
+        initial_selection: current_user.home_organization_id
       }.to_json
     end
 
@@ -63,6 +63,13 @@ module Organizations
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_group_path,
         new_project_path: new_project_path
+      }
+    end
+
+    # See UsersHelper#admin_users_paths for inspiration to this method
+    def organizations_users_paths
+      {
+        admin_user: admin_user_path(:id)
       }
     end
   end

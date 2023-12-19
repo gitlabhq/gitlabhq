@@ -2,17 +2,15 @@ import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import * as types from './mutation_types';
 
-export const updateMemberRole = async ({ state, commit }, { memberId, accessLevel }) => {
+export const updateMemberRole = async (
+  { state, commit },
+  { memberId, accessLevel, memberRoleId },
+) => {
   try {
     await axios.put(
       state.memberPath.replace(/:id$/, memberId),
-      state.requestFormatter({
-        accessLevel: accessLevel.integerValue,
-        memberRoleId: accessLevel.memberRoleId,
-      }),
+      state.requestFormatter({ accessLevel, memberRoleId }),
     );
-
-    commit(types.RECEIVE_MEMBER_ROLE_SUCCESS, { memberId, accessLevel });
   } catch (error) {
     commit(types.RECEIVE_MEMBER_ROLE_ERROR, { error });
 

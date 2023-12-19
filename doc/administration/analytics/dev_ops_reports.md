@@ -1,19 +1,18 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # DevOps Reports **(FREE SELF)**
 
 DevOps Reports give you an overview of your entire instance's adoption of
-[Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
+[DevOps](https://about.gitlab.com/topics/devops/)
 from planning to monitoring.
 
 To see DevOps Reports:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Analytics > DevOps Reports**.
 
 ## DevOps Score

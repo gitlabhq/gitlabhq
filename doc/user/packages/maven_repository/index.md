@@ -1,12 +1,12 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Maven packages in the Package Registry **(FREE ALL)**
+# Maven packages in the package registry **(FREE ALL)**
 
-Publish [Maven](https://maven.apache.org) artifacts in your project's Package Registry.
+Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
 
 For documentation of the specific API endpoints that the Maven package manager
@@ -20,9 +20,9 @@ Supported clients:
   - `sbt` can only be used to [pull dependencies](#install-a-package).
     See this [issue 408479](https://gitlab.com/gitlab-org/gitlab/-/issues/408479) for more details.
 
-## Publish to the GitLab Package Registry
+## Publish to the GitLab package registry
 
-### Authenticate to the Package Registry
+### Authenticate to the package registry
 
 You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../package_registry/index.md#authenticate-with-the-registry).
 
@@ -135,7 +135,7 @@ file:
 
 ##### Basic HTTP Authentication
 
-You can also use basic HTTP authentication to authenticate to the Maven Package Registry.
+You can also use basic HTTP authentication to authenticate to the Maven package registry.
 
 ::Tabs
 
@@ -237,7 +237,7 @@ You must to provide a name and a password.
 NOTE:
 The name field must be named to match the token you chose.
 
-To install a package from the Maven GitLab Package Registry by using `sbt`, you must configure
+To install a package from the Maven GitLab package registry by using `sbt`, you must configure
 a [Maven resolver](https://www.scala-sbt.org/1.x/docs/Resolvers.html#Maven+resolvers).
 If you're accessing a private or an internal project or group, you need to set up
 [credentials](https://www.scala-sbt.org/1.x/docs/Publishing.html#Credentials).
@@ -458,13 +458,16 @@ Go to your project's **Packages and registries** page and view the published pac
 
 ## Install a package
 
-To install a package from the GitLab Package Registry, you must configure
+To install a package from the GitLab package registry, you must configure
 the [remote and authenticate](#authenticate-to-the-package-registry).
 When this is completed, you can install a package from a project,
 group, or namespace.
 
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
+
+In case there are not enough permissions to read the most recently-published
+package than `403 Forbidden` is returning.
 
 ::Tabs
 
@@ -489,7 +492,7 @@ To install a package by using `mvn install`:
    mvn install
    ```
 
-The message should show that the package is downloading from the Package Registry:
+The message should show that the package is downloading from the package registry:
 
 ```shell
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
@@ -509,7 +512,7 @@ You can also install packages by using the Maven [`dependency:get` command](http
 NOTE:
 The repository IDs in the command(`gitlab-maven`) and the `settings.xml` file must match.
 
-The message should show that the package is downloading from the Package Registry:
+The message should show that the package is downloading from the package registry:
 
 ```shell
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
@@ -592,11 +595,11 @@ FLAG:
 By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
 This feature is not available for SaaS users.
 
-When a Maven package is not found in the Package Registry, the request is forwarded
+When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).
 
 When the feature flag is enabled, administrators can disable this behavior in the
-[Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
+[Continuous Integration settings](../../../administration/settings/continuous_integration.md).
 
 Maven forwarding is restricted to only the project level and
 group level [endpoints](#naming-convention). The instance level endpoint
@@ -789,13 +792,13 @@ The GitLab Maven repository supports the following CLI commands:
 
 :::TabTitle `mvn`
 
-- `mvn deploy`: Publish your package to the Package Registry.
+- `mvn deploy`: Publish your package to the package registry.
 - `mvn install`: Install packages specified in your Maven project.
 - `mvn dependency:get`: Install a specific package.
 
 :::TabTitle `gradle`
 
-- `gradle publish`: Publish your package to the Package Registry.
+- `gradle publish`: Publish your package to the package registry.
 - `gradle install`: Install packages specified in your Gradle project.
 
 ::EndTabs

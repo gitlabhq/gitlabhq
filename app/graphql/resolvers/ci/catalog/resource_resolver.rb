@@ -6,8 +6,6 @@ module Resolvers
       class ResourceResolver < BaseResolver
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
-        authorize :read_code
-
         type ::Types::Ci::Catalog::ResourceType, null: true
 
         argument :id, ::Types::GlobalIDType[::Ci::Catalog::Resource],
@@ -28,19 +26,15 @@ module Resolvers
         end
 
         def resolve(id: nil, full_path: nil)
-          if full_path.present?
-            project = Project.find_by_full_path(full_path)
-            authorize!(project)
+          catalog_resource = if full_path.present?
+                               ::Ci::Catalog::Listing.new(current_user).find_resource(full_path: full_path)
+                             else
+                               ::Ci::Catalog::Listing.new(current_user).find_resource(id: id.model_id)
+                             end
 
-            raise_resource_not_available_error! unless project.catalog_resource
+          raise_resource_not_available_error! unless catalog_resource
 
-            project.catalog_resource
-          else
-            catalog_resource = ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(id))
-            authorize!(catalog_resource&.project)
-
-            catalog_resource
-          end
+          catalog_resource
         end
       end
     end

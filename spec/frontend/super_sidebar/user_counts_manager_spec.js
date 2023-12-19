@@ -6,6 +6,7 @@ import {
   userCounts,
   destroyUserCountsManager,
 } from '~/super_sidebar/user_counts_manager';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
 jest.mock('~/api');
 
@@ -118,15 +119,30 @@ describe('User Merge Requests', () => {
       createUserCountsManager();
     });
 
-    it('fetches counts from API, stores and rebroadcasts them', async () => {
-      expect(userCounts).toMatchObject(userCountDefaults);
+    describe('manually created event', () => {
+      it('fetches counts from API, stores and rebroadcasts them', async () => {
+        expect(userCounts).toMatchObject(userCountDefaults);
 
-      document.dispatchEvent(new CustomEvent('userCounts:fetch'));
-      await waitForPromises();
+        document.dispatchEvent(new CustomEvent('userCounts:fetch'));
+        await waitForPromises();
 
-      expect(UserApi.getUserCounts).toHaveBeenCalled();
-      expect(userCounts).toMatchObject(userCountUpdate);
-      expect(channelMock.postMessage).toHaveBeenLastCalledWith(userCounts);
+        expect(UserApi.getUserCounts).toHaveBeenCalled();
+        expect(userCounts).toMatchObject(userCountUpdate);
+        expect(channelMock.postMessage).toHaveBeenLastCalledWith(userCounts);
+      });
+    });
+
+    describe('fetchUserCounts helper', () => {
+      it('fetches counts from API, stores and rebroadcasts them', async () => {
+        expect(userCounts).toMatchObject(userCountDefaults);
+
+        fetchUserCounts();
+        await waitForPromises();
+
+        expect(UserApi.getUserCounts).toHaveBeenCalled();
+        expect(userCounts).toMatchObject(userCountUpdate);
+        expect(channelMock.postMessage).toHaveBeenLastCalledWith(userCounts);
+      });
     });
   });
 

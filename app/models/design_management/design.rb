@@ -82,9 +82,9 @@ module DesignManagement
     # As a query, we ascertain this by finding the last event prior to
     # (or equal to) the cut-off, and seeing whether that version was a deletion.
     scope :visible_at_version, -> (version) do
-      deletion = ::DesignManagement::Action.events[:deletion]
+      deletion = DesignManagement::Action.events[:deletion]
       designs = arel_table
-      actions = ::DesignManagement::Action
+      actions = DesignManagement::Action
         .most_recent.up_to_version(version)
         .arel.as('most_recent_actions')
 
@@ -253,7 +253,7 @@ module DesignManagement
 
     def user_notes_count_service
       strong_memoize(:user_notes_count_service) do
-        ::DesignManagement::DesignUserNotesCountService.new(self) # rubocop: disable CodeReuse/ServiceClass
+        DesignManagement::DesignUserNotesCountService.new(self) # rubocop: disable CodeReuse/ServiceClass
       end
     end
   end

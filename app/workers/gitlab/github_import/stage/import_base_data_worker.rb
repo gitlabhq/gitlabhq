@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        include GithubImport::Queue
         include StageMethods
 
         # These importers are fast enough that we can just run them in the same

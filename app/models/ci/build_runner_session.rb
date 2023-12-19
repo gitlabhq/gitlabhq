@@ -5,9 +5,6 @@ module Ci
   # Data will be removed after transitioning from running to any state.
   class BuildRunnerSession < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     TERMINAL_SUBPROTOCOL = 'terminal.gitlab.com'
     DEFAULT_SERVICE_NAME = 'build'
@@ -15,7 +12,11 @@ module Ci
 
     self.table_name = 'ci_builds_runner_session'
 
-    belongs_to :build, class_name: 'Ci::Build', inverse_of: :runner_session
+    belongs_to :build,
+      ->(runner_session) { in_partition(runner_session) },
+      class_name: 'Ci::Build',
+      partition_foreign_key: :partition_id,
+      inverse_of: :runner_session
 
     partitionable scope: :build
 

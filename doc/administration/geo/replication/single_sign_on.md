@@ -1,8 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Geo with Single Sign On (SSO) **(PREMIUM SELF)**
@@ -15,7 +14,7 @@ This documentation only discusses Geo-specific SSO considerations and configurat
 
 [Instance-wide SAML](../../../integration/saml.md) must be working on your primary Geo site.
 
-You only configure SAML on the primary site. Configuring `gitlab_rails['omniauth_providers']` in `gitlab.rb` in a secondary site has no effect.
+You only configure SAML on the primary site. Configuring `gitlab_rails['omniauth_providers']` in `gitlab.rb` in a secondary site has no effect. The secondary site authenticates against the SAML provider configured on the primary site. Depending on the [URL type](#determine-the-type-of-url-your-secondary-site-uses) of the secondary site, [additional configuration](#saml-with-separate-url-with-proxying-enabled) might be needed on the primary site.
 
 ### Determine the type of URL your secondary site uses
 

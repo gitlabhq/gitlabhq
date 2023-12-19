@@ -92,6 +92,7 @@ module Gitlab
       # If a newer pipeline already build a PagesDeployment
       def validate_outdated_sha
         return if latest?
+        return if latest_pipeline_id.blank?
         return if latest_pipeline_id <= build.pipeline_id
 
         errors.add(:base, 'build SHA is outdated for this ref')

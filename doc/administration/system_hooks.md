@@ -1,8 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # System hooks **(FREE SELF)**
@@ -53,9 +52,8 @@ For push and tag events, the same structure and deprecations are followed as [pr
 
 To create a system hook:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **System Hooks**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **System Hooks**.
 1. Select **Add new webhook**.
 1. Provide the **URL** and **Secret Token**.
 1. Select the checkbox next to each optional **Trigger** you want to enable.

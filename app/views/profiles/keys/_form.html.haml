@@ -5,12 +5,12 @@
 
     .form-group
       = f.label :key, s_('Profiles|Key'), class: 'label-bold'
-      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input", rows: 8, required: true, data: { supported_algorithms: Gitlab::SSHPublicKey.supported_algorithms, qa_selector: 'key_public_key_field' }
+      = f.text_area :key, class: "form-control gl-form-input js-add-ssh-key-validation-input", rows: 8, required: true, data: { supported_algorithms: Gitlab::SSHPublicKey.supported_algorithms, testid: 'key-public-key-field' }
       %p.form-text.text-muted= s_('Profiles|Begins with %{ssh_key_algorithms}.') % { ssh_key_algorithms: ssh_key_allowed_algorithms }
     .form-row
       .col.form-group
         = f.label :title, s_('Profiles|Title'), class: 'label-bold'
-        = f.text_field :title, class: "form-control gl-form-input input-lg", required: true, placeholder: s_('Profiles|Example: MacBook key'), data: { qa_selector: 'key_title_field' }
+        = f.text_field :title, class: "form-control gl-form-input input-lg", required: true, placeholder: s_('Profiles|Example: MacBook key'), data: { testid: 'key-title-field' }
         %p.form-text.text-muted= s_('Profiles|Key titles are publicly visible.')
     .form-row
       .col.form-group
@@ -25,13 +25,14 @@
           %p.form-text.text-muted= ssh_key_expires_field_description
 
     .js-add-ssh-key-validation-warning.hide
-      .bs-callout.bs-callout-warning.gl-mt-0{ role: 'alert', aria_live: 'assertive' }
-        %strong= _('Oops, are you sure?')
-        %p= s_("Profiles|Publicly visible private SSH keys can compromise your system.")
-      = render Pajamas::ButtonComponent.new(variant: :confirm,
-        button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
-        = _("Yes, add it")
+      = render Pajamas::AlertComponent.new(title: _('Are you sure?'), variant: :warning, dismissible: false) do |c|
+        - c.with_body do
+          = s_("Profiles|Publicly visible private SSH keys can compromise your system.")
+        - c.with_actions do
+          = render Pajamas::ButtonComponent.new(variant: :confirm,
+            button_options: { class: 'js-add-ssh-key-validation-confirm-submit' }) do
+            = _("Yes, add it")
 
-    = f.submit s_('Profiles|Add key'), class: "js-add-ssh-key-validation-original-submit", pajamas_button: true, data: { qa_selector: 'add_key_button' }
+    = f.submit s_('Profiles|Add key'), class: "js-add-ssh-key-validation-original-submit", pajamas_button: true, data: { testid: 'add-key-button' }
     = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-add-ssh-key-validation-cancel gl-ml-2 js-toggle-button' }) do
       = _('Cancel')

@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Groups API **(FREE ALL)**
@@ -1285,6 +1285,87 @@ Example response:
 ]
 ```
 
+## List group users **(PREMIUM ALL EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [Experiment](../policy/experiment-beta-support.md).
+
+Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
+of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
+by the group or subgroups.
+
+This endpoint is an [Experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
+
+Requires at least the Maintainer role in the group.
+
+```plaintext
+GET /groups/:id/users
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/users?include_saml_users=true&include_service_accounts=true"
+```
+
+Parameters:
+
+| Attribute                  | Type           | Required                  | Description                                                                    |
+|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
+| `id`                       | integer/string | yes                       | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `include_saml_users`       | boolean        | yes (see description)  | Include users with a SAML identity. Either this value or `include_service_accounts` must be `true`. |
+| `include_service_accounts` | boolean        | yes (see description)  | Include service account users. Either this value or `include_saml_users` must be `true`. |
+| `search`                   | string         | no                        | Search users by name, email, username.                                         |
+
+If successful, returns [`200 OK`](../api/rest/index.md#status-codes) and the
+following response attributes:
+
+Example response:
+
+```json
+[
+  {
+    "id": 66,
+    "username": "user22",
+    "name": "John Doe22",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+    "web_url": "http://my.gitlab.com/user22",
+    "created_at": "2021-09-10T12:48:22.381Z",
+    "bio": "",
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": null,
+    "job_title": "",
+    "pronouns": null,
+    "bot": false,
+    "work_information": null,
+    "followers": 0,
+    "following": 0,
+    "local_time": null,
+    "last_sign_in_at": null,
+    "confirmed_at": "2021-09-10T12:48:22.330Z",
+    "last_activity_on": null,
+    "email": "user22@example.org",
+    "theme_id": 1,
+    "color_scheme_id": 1,
+    "projects_limit": 100000,
+    "current_sign_in_at": null,
+    "identities": [ ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": false,
+    "external": false,
+    "private_profile": false,
+    "commit_email": "user22@example.org",
+    "shared_runners_minutes_limit": null,
+    "extra_shared_runners_minutes_limit": null
+  },
+  ...
+]
+```
+
 ## Service Accounts **(PREMIUM ALL)**
 
 ### Create Service Account User
@@ -1607,6 +1688,7 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
+> - `member_role_id` type [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417201) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `custom_roles_for_saml_group_links`. Disabled by default.
 
 List, get, add, and delete SAML group links.
 
@@ -1630,6 +1712,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 |:-------------------|:--------|:-----------------------------------------------------------------------------|
 | `[].name`          | string  | Name of the SAML group                                                       |
 | `[].access_level`  | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `[].member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
@@ -1643,11 +1726,13 @@ Example response:
 [
   {
     "name": "saml-group-1",
-    "access_level": 10
+    "access_level": 10,
+    "member_role_id": 12
   },
   {
     "name": "saml-group-2",
-    "access_level": 40
+    "access_level": 40,
+    "member_role_id": 99
   }
 ]
 ```
@@ -1673,6 +1758,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
 | `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
@@ -1685,7 +1771,8 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": 10
+"access_level": 10,
+"member_role_id": 12
 }
 ```
 
@@ -1704,6 +1791,7 @@ Supported attributes:
 | `id`               | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)     |
 | `saml_group_name`  | string         | yes      | Name of a SAML group                                                         |
 | `access_level`     | integer        | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group |
+| `member_role_id`   | integer        | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
 
@@ -1711,11 +1799,12 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following res
 |:---------------|:--------|:-----------------------------------------------------------------------------|
 | `name`         | string  | Name of the SAML group                                                       |
 | `access_level` | integer | [Role (`access_level`)](members.md#roles) for members of the for members of the SAML group. The attribute had a string type from GitLab 15.3.0 to GitLab 15.3.3 |
+| `member_role_id` | integer | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level>, "member_role_id": <chosen_member_role_id> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
 ```
 
 Example response:
@@ -1723,7 +1812,8 @@ Example response:
 ```json
 {
 "name": "saml-group-1",
-"access_level": 10
+"access_level": 10,
+"member_role_id": 12
 }
 ```
 
@@ -1830,6 +1920,9 @@ GET /groups/:id/push_rule
 {
   "id": 2,
   "created_at": "2020-08-17T19:09:19.580Z",
+  "commit_committer_check": true,
+  "commit_committer_name_check": true,
+  "reject_unsigned_commits": false,
   "commit_message_regex": "[a-zA-Z]",
   "commit_message_negative_regex": "[x+]",
   "branch_name_regex": "[a-z]",
@@ -1839,19 +1932,6 @@ GET /groups/:id/push_rule
   "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
   "file_name_regex": "(exe)$",
   "max_file_size": 100
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `commit_committer_check` and `reject_unsigned_commits` parameters:
-
-```json
-{
-  "id": 2,
-  "created_at": "2020-08-17T19:09:19.580Z",
-  "commit_committer_check": true,
-  "reject_unsigned_commits": false,
-  ...
 }
 ```
 
@@ -1871,6 +1951,7 @@ POST /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
 | `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
@@ -1890,6 +1971,7 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_committer_name_check": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,
@@ -1918,6 +2000,7 @@ PUT /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
 | `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
@@ -1937,6 +2020,7 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_committer_name_check": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,

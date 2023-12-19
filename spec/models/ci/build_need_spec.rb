@@ -11,11 +11,21 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
-  describe '.artifacts' do
-    let_it_be(:with_artifacts)    { create(:ci_build_need, artifacts: true) }
-    let_it_be(:without_artifacts) { create(:ci_build_need, artifacts: false) }
+  describe 'scopes' do
+    describe '.scoped_build' do
+      subject(:scoped_build) { described_class.scoped_build }
 
-    it { expect(described_class.artifacts).to contain_exactly(with_artifacts) }
+      it 'includes partition_id filter' do
+        expect(scoped_build.where_values_hash).to match(a_hash_including('partition_id'))
+      end
+    end
+
+    describe '.artifacts' do
+      let_it_be(:with_artifacts)    { create(:ci_build_need, artifacts: true) }
+      let_it_be(:without_artifacts) { create(:ci_build_need, artifacts: false) }
+
+      it { expect(described_class.artifacts).to contain_exactly(with_artifacts) }
+    end
   end
 
   describe 'BulkInsertSafe' do

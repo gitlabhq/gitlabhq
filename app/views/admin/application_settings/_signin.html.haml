@@ -29,12 +29,12 @@
       .form-text.text-muted
         = _('Maximum time that users are allowed to skip the setup of two-factor authentication (in hours). Set to 0 (zero) to enforce at next sign in.')
     .form-group
-      = f.label :admin_mode, _('Admin mode'), class: 'label-bold'
+      = f.label :admin_mode, _('Admin Mode'), class: 'label-bold'
       = sprite_icon('lock', css_class: 'gl-icon')
       - help_text = _('Require additional authentication for administrative tasks.')
       - help_link = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions', anchor: 'admin-mode'), target: '_blank', rel: 'noopener noreferrer'
       = f.gitlab_ui_checkbox_component :admin_mode,
-        _('Enable admin mode'),
+        _('Enable Admin Mode'),
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :unknown_sign_in, _('Email notification for unknown sign-ins'), class: 'label-bold'

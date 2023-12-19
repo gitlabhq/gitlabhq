@@ -5,10 +5,10 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
+import SecurityConfigurationApp from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
-import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/components/constants';
+import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 import { securityFeaturesMock, provideMock } from '../mock_data';
@@ -18,6 +18,8 @@ const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
 
 useLocalStorageSpy();
 Vue.use(VueApollo);
+
+const { i18n } = SecurityConfigurationApp;
 
 describe('~/security_configuration/components/app', () => {
   let wrapper;

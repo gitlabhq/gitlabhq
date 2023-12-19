@@ -3,6 +3,8 @@
 module Packages
   module Maven
     class PackageFinder < ::Packages::GroupOrProjectPackageFinder
+      extend ::Gitlab::Utils::Override
+
       def execute
         packages
       end
@@ -14,6 +16,15 @@ module Packages
         matching_packages = matching_packages.order_by_package_file if @params[:order_by_package_file]
 
         matching_packages
+      end
+
+      override :group_packages
+      def group_packages
+        if Feature.enabled?(:maven_remove_permissions_check_from_finder, @project_or_group)
+          packages_for(@current_user, within_group: @project_or_group)
+        else
+          super
+        end
       end
     end
   end

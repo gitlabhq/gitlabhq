@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateHumanUserType, schema: 20230327103401, feature_category: :user_management do # rubocop:disable Layout/LineLength
+RSpec.describe Gitlab::BackgroundMigration::MigrateHumanUserType, feature_category: :user_management do
   let!(:valid_users) do
     # 13 is the max value we have at the moment.
     (0..13).map do |type|

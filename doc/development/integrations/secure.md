@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Security scanner integration
@@ -239,7 +239,7 @@ Success also includes the case when vulnerabilities are found.
 
 When a CI job fails, security report results are not ingested by GitLab, even if the job
 [allows failure](../../ci/yaml/index.md#allow_failure). However, the report artifacts are still uploaded to GitLab and available
-for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#download-security-scan-outputs).
+for [download in the pipeline security tab](../../user/application_security/vulnerability_report/pipeline.md#downloading-security-scan-results).
 
 ### Logging
 

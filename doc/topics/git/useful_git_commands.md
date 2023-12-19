@@ -1,136 +1,19 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Frequently used Git commands **(FREE ALL)**
 
-The GitLab support team has collected these commands to help you. You may not
-need them frequently.
+The following commands are frequently used.
 
-## Remotes
+## Add another URL to a remote
 
-### Add another URL to a remote, so both remotes get updated on each push
+Add another URL to a remote, so both remotes get updated on each push:
 
 ```shell
 git remote set-url --add <remote_name> <remote_url>
-```
-
-## Staging and reverting changes
-
-### Remove last commit and leave the changes in unstaged
-
-```shell
-git reset --soft HEAD^
-```
-
-### Unstage a certain number of commits from HEAD
-
-To unstage 3 commits, for example, run:
-
-```shell
-git reset HEAD^3
-```
-
-### Unstage changes to a certain file from HEAD
-
-```shell
-git reset <filename>
-```
-
-### Revert a file to HEAD state and remove changes
-
-To revert changes to a file, you can use either:
-
-- `git checkout <filename>`
-- `git reset --hard <filename>`
-
-### Undo a previous commit by creating a new replacement commit
-
-```shell
-git revert <commit-sha>
-```
-
-### Create a new message for last commit
-
-```shell
-git commit --amend
-```
-
-### Create a new message for older commits
-
-WARNING:
-Changing commit history can disrupt others' work if they have cloned, forked, or have active branches.
-Only amend pushed commits if you're sure it's safe.
-To learn more, see [Git rebase and force push](git_rebase.md).
-
-```shell
-git rebase -i HEAD~n
-```
-
-Replace `n` with the number of commits you want to go back.
-
-This opens your text editor with a list of commits.
-In the editor, replace `pick` with `reword` for each commit you want to change the message:
-
-```shell
-reword 1fc6c95 original commit message
-pick 6b2481b another commit message
-pick 5c1291b another commit message
-```
-
-After saving and closing the file, you can update each message in a new editor window.
-
-After updating your commits, you must push them to the repository.
-As this rewrites history, a force push is required.
-To prevent unintentional overwrites, use `--force-with-lease`:
-
-```shell
-git push --force-with-lease
-```
-
-### Add a file to the last commit
-
-```shell
-git add <filename>
-git commit --amend
-```
-
-Append `--no-edit` to the `commit` command if you do not want to edit the commit
-message.
-
-## Stashing
-
-### Stash changes
-
-```shell
-git stash save
-```
-
-The default behavior of `stash` is to save, so you can also use just:
-
-```shell
-git stash
-```
-
-### Unstash your changes
-
-```shell
-git stash apply
-```
-
-### Discard your stashed changes
-
-```shell
-git stash drop
-```
-
-### Apply and drop your stashed changes
-
-```shell
-git stash pop
 ```
 
 ## Refs and Log
@@ -173,36 +56,6 @@ gitk <file>
 ```shell
 gitk --follow <file>
 ```
-
-## Debugging
-
-### Use a custom SSH key for a Git command
-
-```shell
-GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
-```
-
-### Debug cloning
-
-With SSH:
-
-```shell
-GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>
-```
-
-With HTTPS:
-
-```shell
-GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
-```
-
-### Debugging with Git embedded traces
-
-Git includes a complete set of [traces for debugging Git commands](https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables#_debugging), for example:
-
-- `GIT_TRACE_PERFORMANCE=1`: enables tracing of performance data, showing how long each particular `git` invocation takes.
-- `GIT_TRACE_SETUP=1`: enables tracing of what `git` is discovering about the repository and environment it's interacting with.
-- `GIT_TRACE_PACKET=1`: enables packet-level tracing for network operations.
 
 ## Rebasing
 

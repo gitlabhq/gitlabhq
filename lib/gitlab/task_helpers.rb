@@ -149,12 +149,6 @@ module Gitlab
       end
     end
 
-    def repository_storage_paths_args
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
-      end
-    end
-
     def user_home
       Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
     end

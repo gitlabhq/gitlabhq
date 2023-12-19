@@ -269,6 +269,7 @@ export default {
             :invalid-feedback="form.fields['commit_message'].feedback"
           >
             <gl-form-textarea
+              id="commit_message"
               ref="message"
               v-model="form.fields['commit_message'].value"
               v-validation:[form.showValidation]
@@ -289,6 +290,7 @@ export default {
             :invalid-feedback="form.fields['branch_name'].feedback"
           >
             <gl-form-input
+              id="branch_name"
               v-model="form.fields['branch_name'].value"
               v-validation:[form.showValidation]
               :state="form.fields['branch_name'].state"

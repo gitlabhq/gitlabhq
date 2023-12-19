@@ -119,7 +119,9 @@ module Gitlab
             attrs[:namespace] = namespace_attributes
             attrs[:enable_tasks_by_type_chart] = 'false'
             attrs[:enable_customizable_stages] = 'false'
+            attrs[:can_edit] = 'false'
             attrs[:enable_projects_filter] = 'false'
+            attrs[:enable_vsd_link] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)
             end.to_json
@@ -151,8 +153,8 @@ module Gitlab
           helpers = ActionController::Base.helpers
 
           {}.tap do |paths|
-            paths[:empty_state_svg_path] = helpers.image_path("illustrations/analytics/cycle-analytics-empty-chart.svg")
-            paths[:no_data_svg_path] = helpers.image_path("illustrations/analytics/cycle-analytics-empty-chart.svg")
+            paths[:empty_state_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
+            paths[:no_data_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
             paths[:no_access_svg_path] = helpers.image_path("illustrations/analytics/no-access.svg")
 
             if project

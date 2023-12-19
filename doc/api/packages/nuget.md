@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # NuGet API **(FREE ALL)**
@@ -13,7 +13,7 @@ This API is used by the [NuGet package manager client](https://www.nuget.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install NuGet packages from the GitLab
-package registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md).
+Package Registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
@@ -453,6 +453,41 @@ Possible request responses:
 | ------ | ----------- |
 | `204`  | Package deleted |
 | `401`  | Unauthorized |
+| `403`  | Forbidden |
+| `404`  | Not found |
+
+## Download a debugging symbol file `.pdb`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+
+Download a debugging symbol file (`.pdb`):
+
+```plaintext
+GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
+```
+
+| Attribute         | Type   | Required | Description |
+| ----------------- | ------ | -------- | ----------- |
+| `file_name`       | string | yes      | The name of the file. |
+| `signature`       | string | yes      | The signature of the file. |
+| `Symbolchecksum` | string | yes      | Required header. The checksum of the file. |
+
+```shell
+curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/:file_name/:signature/:file_name"
+```
+
+Write the output to a file:
+
+```shell
+curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/mynugetpkg.pdb/k813f89485474661234z7109cve5709eFFFFFFFF/mynugetpkg.pdb" > mynugetpkg.pdb
+```
+
+Possible request responses:
+
+| Status | Description |
+| ------ | ----------- |
+| `200`  | File downloaded |
+| `400`  | Bad request |
 | `403`  | Forbidden |
 | `404`  | Not found |
 

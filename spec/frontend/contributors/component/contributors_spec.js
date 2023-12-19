@@ -12,6 +12,8 @@ import { SET_CHART_DATA, SET_LOADING_STATE } from '~/contributors/stores/mutatio
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
+  joinPaths: jest.fn(),
+  setUrlFragment: jest.fn(),
 }));
 
 let wrapper;

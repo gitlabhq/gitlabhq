@@ -1,5 +1,5 @@
 ---
-info: For assistance with this Style Guide page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
@@ -24,7 +24,7 @@ In the Markdown doc for a resource (AKA endpoint):
 - Every method must have the REST API request. For example:
 
   ```plaintext
-  GET /projects/:id/repository/branches
+  GET /api/v4/projects/:id/repository/branches
   ```
 
 - Every method must have a detailed [description of the attributes](#method-description).
@@ -57,7 +57,7 @@ One or two sentence description of what endpoint does.
 Description of the method.
 
 ```plaintext
-METHOD /endpoint
+METHOD /api/v4/endpoint
 ```
 
 Supported attributes:

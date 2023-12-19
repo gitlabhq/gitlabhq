@@ -5,6 +5,7 @@ import {
   apiParamsWithSpecialValues,
   filteredTokens,
   filteredTokensWithSpecialValues,
+  groupedFilteredTokens,
   locationSearch,
   locationSearchWithSpecialValues,
   urlParams,
@@ -19,6 +20,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
+  groupMultiSelectFilterTokens,
   isSortKey,
 } from '~/issues/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
@@ -161,5 +163,16 @@ describe('convertToUrlParams', () => {
 describe('convertToSearchQuery', () => {
   it('returns search string given filtered tokens', () => {
     expect(convertToSearchQuery(filteredTokens)).toBe('find issues');
+  });
+});
+
+describe('groupMultiSelectFilterTokens', () => {
+  it('groups multiSelect filter tokens with || and != operators', () => {
+    expect(
+      groupMultiSelectFilterTokens(filteredTokens, [
+        { type: 'assignee', multiSelect: true },
+        { type: 'author', multiSelect: true },
+      ]),
+    ).toEqual(groupedFilteredTokens);
   });
 });

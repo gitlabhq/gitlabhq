@@ -12,7 +12,7 @@ RSpec.shared_context 'with scan result policy blocking protected branches' do
   end
 
   let(:scan_result_policy) do
-    build(:scan_result_policy, branches: [branch_name], approval_settings: { block_unprotecting_branches: true })
+    build(:scan_result_policy, branches: [branch_name], approval_settings: { block_branch_modification: true })
   end
 
   before do

@@ -48,21 +48,4 @@ namespace :gitlab do
       SystemCheck::RakeTask::LdapTask.run!
     end
   end
-
-  namespace :orphans do
-    desc 'Gitlab | Orphans | Check for orphaned namespaces and repositories'
-    task check: :gitlab_environment do
-      SystemCheck::RakeTask::OrphansTask.run!
-    end
-
-    desc 'GitLab | Orphans | Check for orphaned namespaces in the repositories path'
-    task check_namespaces: :gitlab_environment do
-      SystemCheck::RakeTask::Orphans::NamespaceTask.run!
-    end
-
-    desc 'GitLab | Orphans | Check for orphaned repositories in the repositories path'
-    task check_repositories: :gitlab_environment do
-      SystemCheck::RakeTask::Orphans::RepositoryTask.run!
-    end
-  end
 end

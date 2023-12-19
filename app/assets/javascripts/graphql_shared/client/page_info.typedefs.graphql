@@ -1,0 +1,10 @@
+type LocalPageInfoInput {
+  page: Int
+}
+
+type LocalPageInfo {
+  total: Int!
+  perPage: Int!
+  nextPage: Int!
+  previousPage: Int!
+}

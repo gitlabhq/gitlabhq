@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Resource classes in GitLab QA
@@ -494,14 +494,14 @@ We have a mechanism to [collect](https://gitlab.com/gitlab-org/gitlab/-/blob/443
 all resources created during test executions, and another to [handle](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L44)
 these resources. On [dotcom environments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#environments), after a test suite finishes in the [QA pipelines](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#scheduled-qa-test-pipelines), resources from all passing test are
 automatically deleted in the same pipeline run. Resources from all failed tests are reserved for investigation,
-and won't be deleted until the following Saturday by a scheduled pipeline. When introducing new resources, please
+and won't be deleted until the following Saturday by a scheduled pipeline. When introducing new resources,
 also make sure to add any resource that cannot be deleted to the [IGNORED_RESOURCES](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L29)
 list.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#quality` channel on Slack
+If you need more information, ask for help on `#test-platform` channel on Slack
 (internal, GitLab Team only).
 
-If you are not a Team Member, and you still need help to contribute, please
+If you are not a Team Member, and you still need help to contribute,
 open an issue in GitLab CE issue tracker with the `~QA` label.

@@ -1,193 +1,105 @@
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 /**
- * Adds the line number property
- * @param Object line
- * @param Number lineNumber
- */
-export const parseLine = (line = {}, lineNumber) => ({
-  ...line,
-  lineNumber,
-});
-
-/**
- * When a line has `section_header` set to true, we create a new
- * structure to allow to nest the lines that belong to the
- * collapsible section
+ * Filters out lines that have an offset lower than the offset provided.
  *
- * @param Object line
- * @param Number lineNumber
+ * If no offset is provided, all the lines are returned back.
+ *
+ * @param {Array} newLines
+ * @param {Number} offset
+ * @returns Lines to be added to the log that have not been added.
  */
-export const parseHeaderLine = (line = {}, lineNumber, hash) => {
-  let isClosed = parseBoolean(line.section_options?.collapsed);
-
-  // if a hash is present in the URL then we ensure
-  // all sections are visible so we can scroll to the hash
-  // in the DOM
-  if (hash) {
-    isClosed = false;
+const linesAfterOffset = (newLines = [], offset = -1) => {
+  if (offset === -1) {
+    return newLines;
   }
-
-  return {
-    isClosed,
-    isHeader: true,
-    line: parseLine(line, lineNumber),
-    lines: [],
-  };
+  return newLines.filter((newLine) => newLine.offset > offset);
 };
 
 /**
- * Finds the matching header section
- * for the section_duration object and adds it to it
+ * Parses a series of trace lines from a job and returns lines and
+ * sections of the log. Each line is annotated with a lineNumber.
  *
- * {
- *   isHeader: true,
- *   line: {
- *     content: [],
- *     lineNumber: 0,
- *     section_duration: "",
- *   },
- *   lines: []
- * }
+ * Sections have a range: starting line and ending line, plus a
+ * "duration" string.
  *
- * @param Array data
- * @param Object durationLine
+ * @param {Array} newLines - Lines to add to the log
+ * @param {Object} currentState - Current log: lines and sections
+ * @returns Consolidated lines and sections to be displayed
  */
-export function addDurationToHeader(data, durationLine) {
-  data.forEach((el) => {
-    if (el.line && el.line.section === durationLine.section) {
-      el.line.section_duration = durationLine.section_duration;
+export const logLinesParser = (
+  newLines = [],
+  { currentLines = [], currentSections = {} } = {},
+  hash = '',
+) => {
+  const lastCurrentLine = currentLines[currentLines.length - 1];
+  const newLinesToAppend = linesAfterOffset(newLines, lastCurrentLine?.offset);
+
+  if (!newLinesToAppend.length) {
+    return { lines: currentLines, sections: currentSections };
+  }
+
+  let lineNumber = lastCurrentLine?.lineNumber || 0;
+  const lines = [...currentLines];
+  const sections = { ...currentSections };
+
+  newLinesToAppend.forEach((line) => {
+    const {
+      offset,
+      content,
+      section,
+      section_header: isHeader,
+      section_footer: isFooter,
+      section_duration: duration,
+      section_options: options,
+    } = line;
+
+    if (content.length) {
+      lineNumber += 1;
+      lines.push({
+        offset,
+        lineNumber,
+        content,
+        ...(section ? { section } : {}),
+        ...(isHeader ? { isHeader: true } : {}),
+      });
+    }
+
+    // root level lines have no section, skip creating one
+    if (section) {
+      sections[section] = sections[section] || {
+        startLineNumber: 0,
+        endLineNumber: Infinity, // by default, sections are unbounded / have no end
+        duration: null,
+        isClosed: false,
+      };
+
+      if (isHeader) {
+        sections[section].startLineNumber = lineNumber;
+      }
+      if (options) {
+        let isClosed = parseBoolean(options?.collapsed);
+        // if a hash is present in the URL then we ensure
+        // all sections are visible so we can scroll to the hash
+        // in the DOM
+        if (hash) {
+          isClosed = false;
+        }
+        sections[section].isClosed = isClosed;
+
+        const hideDuration = parseBoolean(options?.hide_duration);
+        if (hideDuration) {
+          sections[section].hideDuration = hideDuration;
+        }
+      }
+      if (duration) {
+        sections[section].duration = duration;
+      }
+      if (isFooter) {
+        sections[section].endLineNumber = lineNumber;
+      }
     }
   });
-}
 
-/**
- * Check is the current section belongs to a collapsible section
- *
- * @param Array acc
- * @param Object last
- * @param Object section
- *
- * @returns Boolean
- */
-export const isCollapsibleSection = (acc = [], last = {}, section = {}) =>
-  acc.length > 0 &&
-  last.isHeader === true &&
-  !section.section_duration &&
-  section.section === last.line.section;
-
-/**
- * Returns the next line number in the parsed log
- *
- * @param Array acc
- * @returns Number
- */
-export const getNextLineNumber = (acc) => {
-  if (!acc?.length) {
-    return 1;
-  }
-
-  const lastElement = acc[acc.length - 1];
-  const nestedLines = lastElement.lines;
-
-  if (lastElement.isHeader && !nestedLines.length && lastElement.line) {
-    return lastElement.line.lineNumber + 1;
-  }
-
-  if (lastElement.isHeader && nestedLines.length) {
-    return nestedLines[nestedLines.length - 1].lineNumber + 1;
-  }
-
-  return lastElement.lineNumber + 1;
-};
-
-/**
- * Parses the job log content into a structure usable by the template
- *
- * For collaspible lines (section_header = true):
- *    - creates a new array to hold the lines that are collapsible,
- *    - adds a isClosed property to handle toggle
- *    - adds a isHeader property to handle template logic
- *    - adds the section_duration
- * For each line:
- *    - adds the index as lineNumber
- *
- * @param Array lines
- * @param Array accumulator
- * @returns Array parsed log lines
- */
-export const logLinesParser = (lines = [], prevLogLines = [], hash = '') =>
-  lines.reduce(
-    (acc, line) => {
-      const lineNumber = getNextLineNumber(acc);
-
-      const last = acc[acc.length - 1];
-
-      // If the object is an header, we parse it into another structure
-      if (line.section_header) {
-        acc.push(parseHeaderLine(line, lineNumber, hash));
-      } else if (isCollapsibleSection(acc, last, line)) {
-        // if the object belongs to a nested section, we append it to the new `lines` array of the
-        // previously formatted header
-        last.lines.push(parseLine(line, lineNumber));
-      } else if (line.section_duration) {
-        // if the line has section_duration, we look for the correct header to add it
-        addDurationToHeader(acc, line);
-      } else {
-        // otherwise it's a regular line
-        acc.push(parseLine(line, lineNumber));
-      }
-
-      return acc;
-    },
-    [...prevLogLines],
-  );
-
-/**
- * Finds the repeated offset, removes the old one
- *
- * Returns a new array with the updated log without
- * the repeated offset
- *
- * @param Array newLog
- * @param Array oldParsed
- * @returns Array
- *
- */
-export const findOffsetAndRemove = (newLog = [], oldParsed = []) => {
-  const cloneOldLog = [...oldParsed];
-  const lastIndex = cloneOldLog.length - 1;
-  const last = cloneOldLog[lastIndex];
-
-  const firstNew = newLog[0];
-
-  if (last && firstNew) {
-    if (last.offset === firstNew.offset || (last.line && last.line.offset === firstNew.offset)) {
-      cloneOldLog.splice(lastIndex);
-    } else if (last.lines && last.lines.length) {
-      const lastNestedIndex = last.lines.length - 1;
-      const lastNested = last.lines[lastNestedIndex];
-      if (lastNested.offset === firstNew.offset) {
-        last.lines.splice(lastNestedIndex);
-      }
-    }
-  }
-
-  return cloneOldLog;
-};
-
-/**
- * When the job log is not complete, backend may send the last received line
- * in the new response.
- *
- * We need to check if that is the case by looking for the offset property
- * before parsing the incremental part
- *
- * @param array oldLog
- * @param array newLog
- */
-export const updateIncrementalJobLog = (newLog = [], oldParsed = []) => {
-  const parsedLog = findOffsetAndRemove(newLog, oldParsed);
-
-  return logLinesParser(newLog, parsedLog);
+  return { lines, sections };
 };

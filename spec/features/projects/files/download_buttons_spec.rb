@@ -22,16 +22,4 @@ RSpec.describe 'Projects > Files > Download buttons in files tree', feature_cate
   it_behaves_like 'archive download buttons' do
     let(:path_to_visit) { project_tree_path(project, project.default_branch) }
   end
-
-  context 'with artifacts' do
-    before do
-      visit project_tree_path(project, project.default_branch)
-    end
-
-    it 'shows download artifacts button' do
-      href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
-
-      expect(page).to have_link build.name, href: href
-    end
-  end
 end

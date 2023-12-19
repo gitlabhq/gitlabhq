@@ -29,7 +29,8 @@ module Gitlab
           associated = associated.to_h
 
           compose_associated_id!(parent_record, associated)
-          return if already_imported?(associated)
+
+          return if already_imported?(associated) || importer_class::SUPPORTED_EVENTS.exclude?(associated[:event])
 
           Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 

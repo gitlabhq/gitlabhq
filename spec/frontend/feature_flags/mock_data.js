@@ -56,7 +56,7 @@ export const userList = {
   iid: 2,
   project_id: 1,
   created_at: '2020-02-04T08:13:10.507Z',
-  updated_at: '2020-02-04T08:13:10.507Z',
+  updated_at: '2020-02-05T08:14:10.507Z',
   path: '/path/to/user/list',
   edit_path: '/path/to/user/list/edit',
 };

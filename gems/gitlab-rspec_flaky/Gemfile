@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# Specify your gem's dependencies in gitlab-rspec_flaky.gemspec
+gemspec
+
+gem "gitlab-rspec", "~> 0.1", path: "../gitlab-rspec"

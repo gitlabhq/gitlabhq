@@ -153,5 +153,17 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         expect(deploy_job.reload.canceled?).to be false
       end
     end
+
+    context 'when the merge request has a pages deployment' do
+      it 'performs Pages::DeactivateMrDeploymentWorker asynchronously' do
+        expect(Pages::DeactivateMrDeploymentsWorker)
+          .to receive(:perform_async)
+          .with(merge_request)
+
+        subject
+
+        expect(merge_request.reload).to be_merged
+      end
+    end
   end
 end

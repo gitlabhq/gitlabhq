@@ -20,6 +20,9 @@ export default {
       'Job|Search for substrings in your job log output. Currently search is only supported for the visible job log output, not for any log output that is truncated due to size.',
     ),
     logLineNumberNotFound: s__('Job|We could not find this element'),
+    enterFullscreen: s__('Job|Show full screen'),
+    exitFullScreen: s__('Job|Exit full screen'),
+    fullScreenNotAvailable: s__('Job|Full screen mode is not available'),
   },
   components: {
     GlLink,
@@ -65,6 +68,16 @@ export default {
       type: Array,
       required: true,
     },
+    fullScreenModeAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fullScreenEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -80,14 +93,14 @@ export default {
         size: numberToHumanSize(this.size),
       });
     },
-    showJumpToFailures() {
-      return this.glFeatures.jobLogJumpToFailures;
-    },
     hasFailures() {
       return this.failureCount > 0;
     },
     shouldDisableJumpToFailures() {
       return !this.hasFailures;
+    },
+    fullScreenTooltipContent() {
+      return this.fullScreenModeAvailable ? '' : this.$options.i18n.fullScreenNotAvailable;
     },
   },
   mounted() {
@@ -95,19 +108,17 @@ export default {
   },
   methods: {
     checkFailureCount() {
-      if (this.glFeatures.jobLogJumpToFailures) {
-        backOff((next, stop) => {
-          this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
+      backOff((next, stop) => {
+        this.failureCount = document.querySelectorAll('.term-fg-l-red').length;
 
-          if (this.hasFailures || (this.isComplete && !this.hasFailures)) {
-            stop();
-          } else {
-            next();
-          }
-        }).catch(() => {
-          this.failureCount = null;
-        });
-      }
+        if (this.hasFailures || (this.isComplete && !this.hasFailures)) {
+          stop();
+        } else {
+          next();
+        }
+      }).catch(() => {
+        this.failureCount = null;
+      });
     },
     handleScrollToNextFailure() {
       const failures = document.querySelectorAll('.term-fg-l-red');
@@ -125,6 +136,12 @@ export default {
     handleScrollToBottom() {
       this.$emit('scrollJobLogBottom');
       this.failureIndex = 0;
+    },
+    handleFullscreenMode() {
+      this.$emit('enterFullscreen');
+    },
+    handleExitFullscreenMode() {
+      this.$emit('exitFullscreen');
     },
     searchJobLog() {
       this.searchResults = [];
@@ -221,7 +238,6 @@ export default {
 
       <!-- scroll buttons -->
       <gl-button
-        v-if="showJumpToFailures"
         v-gl-tooltip
         :title="$options.i18n.scrollToNextFailureButtonLabel"
         :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
@@ -255,6 +271,29 @@ export default {
         />
       </div>
       <!-- eo scroll buttons -->
+
+      <div v-gl-tooltip="fullScreenTooltipContent">
+        <gl-button
+          v-if="!fullScreenEnabled"
+          :disabled="!fullScreenModeAvailable"
+          :title="$options.i18n.enterFullscreen"
+          :aria-label="$options.i18n.enterFullscreen"
+          class="btn-scroll gl-ml-3"
+          data-testid="job-controller-enter-fullscreen"
+          icon="maximize"
+          @click="handleFullscreenMode"
+        />
+      </div>
+
+      <gl-button
+        v-if="fullScreenEnabled"
+        :title="$options.i18n.exitFullScreen"
+        :aria-label="$options.i18n.exitFullScreen"
+        class="btn-scroll gl-ml-3"
+        data-testid="job-controller-exit-fullscreen"
+        icon="minimize"
+        @click="handleExitFullscreenMode"
+      />
     </div>
   </div>
 </template>

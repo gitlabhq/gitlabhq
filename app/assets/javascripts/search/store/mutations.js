@@ -6,7 +6,7 @@ export default {
   },
   [types.RECEIVE_GROUPS_SUCCESS](state, data) {
     state.fetchingGroups = false;
-    state.groups = data;
+    state.groups = [...data];
   },
   [types.RECEIVE_GROUPS_ERROR](state) {
     state.fetchingGroups = false;
@@ -17,7 +17,7 @@ export default {
   },
   [types.RECEIVE_PROJECTS_SUCCESS](state, data) {
     state.fetchingProjects = false;
-    state.projects = data;
+    state.projects = [...data];
   },
   [types.RECEIVE_PROJECTS_ERROR](state) {
     state.fetchingProjects = false;

@@ -48,8 +48,7 @@ To configure Git to use your key:
    git config --global gpg.format ssh
    ```
 
-1. Specify which public SSH key to use as the signing key and change the filename
-   (`~/.ssh/examplekey.pub`) to the location of your key. The filename might
+1. Specify which public SSH key to use as the signing key and change the file name (`~/.ssh/examplekey.pub`) to the location of your key. The file name might
    differ, depending on how you generated your key:
 
    ```shell

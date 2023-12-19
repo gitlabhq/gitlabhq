@@ -49,34 +49,6 @@ RSpec.describe Gitlab::GithubImport::LabelFinder, :clean_gitlab_redis_cache, fea
         expect(finder.id_for(feature.name)).to eq(feature.id)
       end
     end
-
-    context 'with FF import_fallback_to_db_empty_cache disabled' do
-      before do
-        stub_feature_flags(import_fallback_to_db_empty_cache: false)
-      end
-
-      it 'returns nil for a non existing label name' do
-        expect(finder.id_for('kittens')).to be_nil
-      end
-
-      it 'does not fetch object id from database if not in cache' do
-        expect(finder.id_for(feature.name)).to be_nil
-      end
-
-      it 'fetches object id from cache if present' do
-        finder.build_cache
-
-        expect(finder.id_for(feature.name)).to eq(feature.id)
-      end
-
-      it 'returns -1 if cache is -1' do
-        key = finder.cache_key_for(bug.name)
-
-        Gitlab::Cache::Import::Caching.write(key, -1)
-
-        expect(finder.id_for(bug.name)).to eq(-1)
-      end
-    end
   end
 
   describe '#build_cache' do

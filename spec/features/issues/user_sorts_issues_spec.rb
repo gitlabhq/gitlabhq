@@ -3,6 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "User sorts issues", feature_category: :team_planning do
+  include Features::SortingHelpers
   include SortingHelper
   include IssueHelpers
 
@@ -46,8 +47,7 @@ RSpec.describe "User sorts issues", feature_category: :team_planning do
   it 'sorts by popularity', :js do
     visit(project_issues_path(project))
 
-    click_button 'Created date'
-    click_on 'Popularity'
+    pajamas_sort_by 'Popularity', from: 'Created date'
 
     page.within(".issues-list") do
       page.within("li.issue:nth-child(1)") do

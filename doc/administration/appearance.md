@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Appearance **(FREE SELF)**
@@ -9,8 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Several options are available for customizing the appearance of a self-managed instance
 of GitLab. To access these settings:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Appearance**.
 
 ## Navigation bar
@@ -83,8 +82,7 @@ description, and icon.
 
 To configure the PWA settings:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Appearance**.
 1. Scroll to the **Progressive Web App (PWA)** section.
 1. Complete the fields.

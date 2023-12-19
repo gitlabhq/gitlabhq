@@ -2,7 +2,7 @@
 import PROJECT_CREATE_FROM_TEMPLATE_SVG_URL from '@gitlab/svgs/dist/illustrations/project-create-from-template-sm.svg?url';
 import PROJECT_CREATE_NEW_SVG_URL from '@gitlab/svgs/dist/illustrations/project-create-new-sm.svg?url';
 import PROJECT_IMPORT_SVG_URL from '@gitlab/svgs/dist/illustrations/project-import-sm.svg?url';
-import PROJECT_RUN_CICD_PIPELINES_SVG_URL from '@gitlab/svgs/dist/illustrations/project-run-CICD-pipelines-sm.svg?url';
+import PROJECT_RUN_CICD_PIPELINES_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';

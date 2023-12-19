@@ -31,7 +31,6 @@ var (
 var (
 	multipartUploadRequests = promauto.NewCounterVec(
 		prometheus.CounterOpts{
-
 			Name: "gitlab_workhorse_multipart_upload_requests",
 			Help: "How many multipart upload requests have been processed by gitlab-workhorse. Partitioned by type.",
 		},

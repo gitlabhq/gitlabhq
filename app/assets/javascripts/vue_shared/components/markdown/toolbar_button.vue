@@ -111,7 +111,7 @@ export default {
     type="button"
     category="tertiary"
     size="small"
-    class="js-md gl-mr-3"
+    class="js-md gl-mr-2"
     data-container="body"
     @click="$emit('click', $event)"
   />

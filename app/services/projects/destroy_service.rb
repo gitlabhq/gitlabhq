@@ -34,7 +34,7 @@ module Projects
 
       ::Ci::AbortPipelinesService.new.execute(project.all_pipelines, :project_deleted)
 
-      Projects::UnlinkForkService.new(project, current_user).execute
+      Projects::UnlinkForkService.new(project, current_user).execute(refresh_statistics: false)
 
       attempt_destroy(project)
 

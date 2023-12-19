@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # OAuth 2.0 identity provider API **(FREE ALL)**
@@ -54,7 +53,7 @@ Refer to the [OAuth RFC](https://www.rfc-editor.org/rfc/rfc6749) to find out
 how all those flows work and pick the right one for your use case.
 
 Authorization code (with or without PKCE) flow requires `application` to be
-registered first via the `/profile/applications` page in your user's account.
+registered first via the `/user_settings/applications` page in your user's account.
 During registration, by enabling proper scopes, you can limit the range of
 resources which the `application` can access. Upon creation, you obtain the
 `application` credentials: _Application ID_ and _Client Secret_. The _Client Secret_
@@ -73,7 +72,7 @@ parameter, which are securely bound to the user agent", with each request to the
 
 ### Use HTTPS in production
 
-For production, please use HTTPS for your `redirect_uri`.
+For production, use HTTPS for your `redirect_uri`.
 For development, GitLab allows insecure HTTP redirect URIs.
 
 As OAuth 2.0 bases its security entirely on the transport layer, you should not use unprotected
@@ -418,7 +417,7 @@ Standard OAuth 2.0 tokens support different degrees of access to GitLab
 registries, as they:
 
 - Do not allow users to authenticate to:
-  - The GitLab [Container registry](../user/packages/container_registry/authenticate_with_container_registry.md).
+  - The GitLab [container registry](../user/packages/container_registry/authenticate_with_container_registry.md).
   - Packages listed in the GitLab [Package registry](../user/packages/package_registry/index.md).
 - Allow users to get, list, and delete registries through
-  the [Container registry API](container_registry.md).
+  the [container registry API](container_registry.md).

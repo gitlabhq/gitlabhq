@@ -92,18 +92,13 @@
   @include transition(background-color, border-color, color, box-shadow);
 }
 
-.dropdown-menu-toggle,
-.header-user-avatar {
+.dropdown-menu-toggle {
   @include transition(border-color);
 }
 
 .note-action-button,
 .dropdown-toggle-caret {
   @include transition(color);
-}
-
-.notification-dot {
-  @include transition(background-color, color, border);
 }
 
 .stage-nav-item {

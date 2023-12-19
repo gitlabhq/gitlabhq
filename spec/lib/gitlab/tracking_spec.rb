@@ -3,6 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation do
   include StubENV
+  using RSpec::Parameterized::TableSyntax
 
   before do
     stub_application_setting(snowplow_enabled: true)
@@ -16,6 +17,8 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
   after do
     described_class.instance_variable_set(:@tracker, nil)
   end
+
+  it { is_expected.to delegate_method(:flush).to(:tracker) }
 
   describe '.options' do
     shared_examples 'delegates to destination' do |klass|
@@ -295,26 +298,54 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
   end
 
   describe 'snowplow_micro_enabled?' do
-    before do
-      allow(Rails.env).to receive(:development?).and_return(true)
+    where(:development?, :micro_verification_enabled?, :snowplow_micro_enabled, :result) do
+      true  | true  | true  | true
+      true  | true  | false | false
+      false | true  | true  | true
+      false | true  | false | false
+      false | false | true  | false
+      false | false | false | false
+      true  | false | true  | true
+      true  | false | false | false
     end
 
-    it 'returns true when snowplow_micro is enabled' do
-      stub_config(snowplow_micro: { enabled: true })
+    with_them do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(development?)
+        allow(described_class).to receive(:micro_verification_enabled?).and_return(micro_verification_enabled?)
+        stub_config(snowplow_micro: { enabled: snowplow_micro_enabled })
+      end
 
-      expect(described_class).to be_snowplow_micro_enabled
-    end
+      subject { described_class.snowplow_micro_enabled? }
 
-    it 'returns false when snowplow_micro is disabled' do
-      stub_config(snowplow_micro: { enabled: false })
-
-      expect(described_class).not_to be_snowplow_micro_enabled
+      it { is_expected.to be(result) }
     end
 
     it 'returns false when snowplow_micro is not configured' do
+      allow(Rails.env).to receive(:development?).and_return(true)
       allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
 
       expect(described_class).not_to be_snowplow_micro_enabled
+    end
+  end
+
+  describe '.micro_verification_enabled?' do
+    where(:verify_tracking, :result) do
+      nil     | false
+      'true'  | true
+      'false' | false
+      '0'     | false
+      '1'     | true
+    end
+
+    with_them do
+      before do
+        stub_env('VERIFY_TRACKING', verify_tracking)
+      end
+
+      subject { described_class.micro_verification_enabled? }
+
+      it { is_expected.to be(result) }
     end
   end
 

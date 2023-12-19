@@ -76,6 +76,8 @@ work_item_type:
 - work_items
 - widget_definitions
 - enabled_widget_definitions
+- child_restrictions
+- allowed_child_types_by_name
 events:
 - author
 - project
@@ -420,6 +422,7 @@ builds:
 - job_artifacts_cluster_image_scanning
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
+- job_artifacts_repository_xray
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -521,6 +524,7 @@ container_repositories:
 - name
 project:
 - catalog_resource
+- catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
 - external_status_checks
@@ -570,7 +574,6 @@ project:
 - google_play_integration
 - pipelines_email_integration
 - mattermost_slash_commands_integration
-- shimo_integration
 - slack_slash_commands_integration
 - harbor_integration
 - irker_integration
@@ -831,6 +834,7 @@ project:
 - target_branch_rules
 - organization
 - dora_performance_scores
+- xray_reports
 award_emoji:
 - awardable
 - user
@@ -1053,6 +1057,7 @@ catalog_resource:
   - project
   - catalog_resource_components
   - catalog_resource_versions
+  - catalog_resource_sync_events
 catalog_resource_versions:
   - project
   - release

@@ -1,3 +1,5 @@
+#import "~/graphql_shared/client/page_info.typedefs.graphql"
+
 type LocalEnvironment {
   id: Int!
   globalId: ID!
@@ -55,19 +57,19 @@ type LocalErrors {
   errors: [String!]!
 }
 
-type LocalPageInfo {
-  total: Int!
-  perPage: Int!
-  nextPage: Int!
-  previousPage: Int!
-}
-
 type k8sPodStatus {
   phase: String
 }
 
+type k8sPodMetadata {
+  name: String
+  namespace: String
+  creationTimestamp: String
+}
+
 type LocalK8sPods {
   status: k8sPodStatus
+  metadata: k8sPodMetadata
 }
 
 input LocalConfiguration {

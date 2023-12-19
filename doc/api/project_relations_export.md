@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Project relations export API **(FREE ALL)**
@@ -75,6 +75,7 @@ The status can be one of the following:
     "error": null,
     "updated_at": "2021-05-04T11:25:20.423Z",
     "batched": true,
+    "batches_count": 1,
     "batches": [
       {
         "status": 1,
@@ -90,7 +91,8 @@ The status can be one of the following:
     "status": 1,
     "error": null,
     "updated_at": "2021-05-04T11:25:20.085Z",
-    "batched": false
+    "batched": false,
+    "batches_count": 0
   }
 ]
 ```

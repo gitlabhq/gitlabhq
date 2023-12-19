@@ -61,8 +61,9 @@
             = _("You don't have any applications.")
 
   - else
-    .bs-callout.bs-callout-disabled
-      = _('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
+    = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
+      - c.with_body do
+        = s_('Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission.')
 
   - if oauth_authorized_applications_enabled
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card oauth-authorized-applications' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|

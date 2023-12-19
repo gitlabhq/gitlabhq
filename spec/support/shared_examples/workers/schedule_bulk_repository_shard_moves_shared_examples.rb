@@ -6,7 +6,7 @@ RSpec.shared_examples 'schedules bulk repository shard moves' do
 
   describe "#perform" do
     before do
-      stub_storage_settings(destination_storage_name => { 'path' => 'tmp/tests/extra_storage' })
+      stub_storage_settings(destination_storage_name => {})
 
       allow(worker_klass).to receive(:perform_async)
     end

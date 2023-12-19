@@ -76,7 +76,6 @@ export default {
         :value="value"
         :disabled="disabled"
         name="commit-action"
-        data-qa-selector="commit_type_radio"
         @change="updateCommitAction(value)"
       >
         <span v-if="label" class="ide-option-label">

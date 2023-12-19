@@ -8,7 +8,7 @@ describe('CiResourceDetails', () => {
   let wrapper;
 
   const defaultProps = {
-    resourceId: 'gid://gitlab/Ci::Catalog::Resource/1',
+    resourcePath: 'twitter/project-1',
   };
   const defaultProvide = {
     glFeatures: { ciCatalogComponentsTab: true },

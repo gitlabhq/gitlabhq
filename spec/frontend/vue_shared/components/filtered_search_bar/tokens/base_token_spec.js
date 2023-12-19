@@ -156,9 +156,12 @@ describe('BaseToken', () => {
       it('uses last item in list when value is an array', () => {
         const mockGetActiveTokenValue = jest.fn();
 
+        const config = { ...mockConfig, multiSelect: true };
+
         wrapper = createComponent({
           props: {
-            value: { data: mockLabels.map((l) => l.title) },
+            config,
+            value: { data: mockLabels.map((l) => l.title), operator: '||' },
             suggestions: mockLabels,
             getActiveTokenValue: mockGetActiveTokenValue,
           },
@@ -409,8 +412,9 @@ describe('BaseToken', () => {
       });
 
       it('emits token-selected event when groupMultiSelectTokens: true', () => {
+        const config = { ...mockConfig, multiSelect: true };
         wrapper = createComponent({
-          props: { suggestions: mockLabels },
+          props: { suggestions: mockLabels, config, value: { operator: '||' } },
           groupMultiSelectTokens: true,
         });
 
@@ -419,9 +423,10 @@ describe('BaseToken', () => {
         expect(wrapper.emitted('token-selected')).toEqual([[mockTokenValue.title]]);
       });
 
-      it('does not emit token-selected event when groupMultiSelectTokens: true', () => {
+      it('does not emit token-selected event when groupMultiSelectTokens: false', () => {
+        const config = { ...mockConfig, multiSelect: true };
         wrapper = createComponent({
-          props: { suggestions: mockLabels },
+          props: { suggestions: mockLabels, config, value: { operator: '||' } },
           groupMultiSelectTokens: false,
         });
 

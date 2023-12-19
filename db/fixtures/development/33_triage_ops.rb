@@ -121,14 +121,7 @@ class Gitlab::Seeder::TriageOps
   private
 
   def ensure_bot_user
-    bot = User.find_by_username('triagebot')
-    bot ||= User.create!(
-      username: 'triagebot',
-      name: 'Triage Bot',
-      email: 'triagebot@example.com',
-      confirmed_at: DateTime.now,
-      password: SecureRandom.hex.slice(0, 16)
-    )
+    bot = User.find_by_username('triagebot') || build_bot_user!
 
     ensure_group('gitlab-org').add_maintainer(bot)
     ensure_group('gitlab-com').add_maintainer(bot)
@@ -146,6 +139,18 @@ class Gitlab::Seeder::TriageOps
     puts "Bot with API_TOKEN=#{response[:personal_access_token].token} is present now."
 
     bot
+  end
+
+  def build_bot_user!
+    User.create!(
+      username: 'triagebot',
+      name: 'Triage Bot',
+      email: 'triagebot@example.com',
+      confirmed_at: DateTime.now,
+      password: SecureRandom.hex.slice(0, 16)
+    ) do |user|
+      user.assign_personal_namespace
+    end
   end
 
   def ensure_webhook_for(group_path)

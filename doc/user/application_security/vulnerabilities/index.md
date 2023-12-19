@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Threat Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Vulnerability Page **(ULTIMATE ALL)**
@@ -77,6 +77,47 @@ The following data is shared with third-party AI APIs:
   record).
 - Filename.
 
+## Vulnerability resolution **(ULTIMATE SAAS EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+
+Use GitLab Duo Vulnerability resolution to automatically create a merge request that
+resolves the vulnerability.
+
+On GitLab.com this feature is available. By default, it is powered by Google's `code-bison-001`
+model.
+
+We cannot guarantee that the large language model produces results that are correct. Use the
+explanation with caution.
+
+Prerequisites:
+
+- You must have the GitLab Ultimate subscription tier.
+- You must be a member of the project.
+- The vulnerability must be a SAST finding.
+
+Learn more about [how to enable all GitLab Duo features](../../ai_features.md#enable-aiml-features).
+
+To resolve the vulnerability:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Security and Compliance > Vulnerability report**.
+1. In the **Tool** dropdown list, select **SAST**.
+1. Select the SAST vulnerability you want resolved.
+1. At the top of the vulnerability's page, from the **Resolve with merge request** dropdown list, select **Resolve with AI**.
+
+A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
+then process the merge request according to your standard workflow.
+
+### Data shared with third-party AI APIs
+
+The following data is shared with third-party AI APIs:
+
+- Vulnerability title (which might contain the file name, depending on which scanner is used).
+- Vulnerability identifiers.
+- Code block.
+- File name.
+
 ## Vulnerability status values
 
 A vulnerability's status can be:
@@ -126,17 +167,9 @@ To change a vulnerability's status from its Vulnerability Page:
 Details of the status change, including who made the change and when, are recorded in the
 vulnerability's action log.
 
-## Creating an issue for a vulnerability
+## Create a GitLab issue for a vulnerability
 
-From a vulnerability's page you can create an issue to track all action taken to resolve or
-mitigate it.
-
-You can create either:
-
-- [A GitLab issue](#create-a-gitlab-issue-for-a-vulnerability) (default).
-- [A Jira issue](#create-a-jira-issue-for-a-vulnerability).
-
-### Create a GitLab issue for a vulnerability
+You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
 
 To create a GitLab issue for a vulnerability:
 
@@ -145,42 +178,19 @@ To create a GitLab issue for a vulnerability:
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
-An issue is created in the project, pre-populated with information from the vulnerability report.
-The issue is then opened so you can take further action.
+A GitLab issue is created in the project with information from the vulnerability report.
 
-### Create a Jira issue for a vulnerability
-
-Prerequisites:
-
-- [Enable Jira integration](../../../integration/jira/configure.md). The
-  **Enable Jira issue creation from vulnerabilities** option must be selected as part
-  of the configuration.
-- Each user must have a personal Jira user account with permission to create issues in the target
-  project.
-
-To create a Jira issue for a vulnerability:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
-1. Select the vulnerability's description.
-1. Select **Create Jira issue**.
-1. If you're not already logged in to Jira, sign in.
-
-The Jira issue is created and opened in a new browser tab. The **Summary** and **Description**
-fields are pre-populated from the vulnerability's details.
-
-Unlike GitLab issues, the status of whether a Jira issue is open or closed does not display in the
-GitLab user interface.
+To create a Jira issue, see [Create a Jira issue for a vulnerability](../../../integration/jira/configure.md#create-a-jira-issue-for-a-vulnerability).
 
 ## Linking a vulnerability to GitLab and Jira issues
 
 You can link a vulnerability to one or more existing [GitLab](#create-a-gitlab-issue-for-a-vulnerability)
-or [Jira](#create-a-jira-issue-for-a-vulnerability) issues. Only one linking feature is available at the same time.
+or [Jira](../../../integration/jira/configure.md#create-a-jira-issue-for-a-vulnerability) issues. Only one linking feature is available at the same time.
 Adding a link helps track the issue that resolves or mitigates a vulnerability.
 
 ### Link a vulnerability to existing GitLab issues
 
-Prerequisite:
+Prerequisites:
 
 - [Jira issue integration](../../../integration/jira/configure.md) must not be enabled.
 
@@ -209,7 +219,7 @@ Be aware of the following conditions between a vulnerability and a linked GitLab
 
 ### Link a vulnerability to existing Jira issues
 
-Prerequisite:
+Prerequisites:
 
 - [Jira issue integration](../../../integration/jira/configure.md) must be enabled, with option **Enable Jira issue creation from vulnerabilities** also enabled.
 
@@ -282,7 +292,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 NOTE:
-Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
+Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/).
 GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
 

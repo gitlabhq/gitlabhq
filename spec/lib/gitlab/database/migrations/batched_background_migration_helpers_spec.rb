@@ -71,8 +71,11 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
     end
 
     context "when the migration doesn't exist already" do
+      let(:version) { '20231204101122' }
+
       before do
         allow(Gitlab::Database::PgClass).to receive(:for_table).with(:projects).and_return(pgclass_info)
+        allow(migration).to receive(:version).and_return(version)
       end
 
       subject(:enqueue_batched_background_migration) do
@@ -81,7 +84,6 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
           :projects,
           :id,
           job_interval: 5.minutes,
-          queued_migration_version: format("%.14d", 123),
           batch_min_value: 5,
           batch_max_value: 1000,
           batch_class_name: 'MyBatchClass',
@@ -115,7 +117,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
           status_name: :active,
           total_tuple_count: pgclass_info.cardinality_estimate,
           gitlab_schema: 'gitlab_ci',
-          queued_migration_version: format("%.14d", 123)
+          queued_migration_version: version
         )
       end
     end

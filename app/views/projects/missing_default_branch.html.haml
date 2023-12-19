@@ -1,0 +1,10 @@
+- @skip_current_level_breadcrumb = true
+
+= render Pajamas::AlertComponent.new(alert_options: { class: 'gl-my-5' },
+  variant: :danger,
+  dismissible: false,
+  title: s_('ProjectPage|Unable to load default branch')) do |c|
+  - c.with_body do
+    = s_('ProjectPage|The default branch was not able to be found. Please contact your administrator.')
+
+= render 'home_panel'

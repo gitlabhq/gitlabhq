@@ -1,10 +1,11 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import getCurrentUserOrganizationsQuery from '~/organizations/index/graphql/organizations.query.graphql';
+import getCurrentUserOrganizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import getOrganizationQuery from '~/organizations/shared/graphql/queries/organization.query.graphql';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_ORGANIZATION } from '~/graphql_shared/constants';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import { DEFAULT_PER_PAGE } from '~/api';
 import {
   ORGANIZATION_TOGGLE_TEXT,
   ORGANIZATION_HEADER_TEXT,
@@ -62,53 +63,59 @@ export default {
   data() {
     return {
       errorMessage: '',
+      endCursor: null,
     };
   },
   methods: {
-    async fetchOrganizations() {
+    async fetchOrganizations(search, page = 1) {
+      if (page === 1) {
+        this.endCursor = null;
+      }
+
       try {
-        const {
-          data: {
-            currentUser: {
-              organizations: { nodes },
-            },
-          },
-        } = await this.$apollo.query({
+        const response = await this.$apollo.query({
           query: getCurrentUserOrganizationsQuery,
-          // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/429999.
+          // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/433954.
+          variables: { after: this.endCursor, first: DEFAULT_PER_PAGE },
         });
+        const { nodes, pageInfo } = response.data.currentUser.organizations;
+        this.endCursor = pageInfo.endCursor;
 
         return {
-          items: nodes.map((organization) => ({
-            text: organization.name,
-            value: getIdFromGraphQLId(organization.id),
-          })),
-          // TODO: implement pagination - https://gitlab.com/gitlab-org/gitlab/-/issues/429999.
-          totalPages: 1,
+          items: nodes.map((organization) => this.mapOrganizationData(organization)),
+          // `EntitySelect` expects a `totalPages` key but GraphQL requests don't provide this data
+          // because it uses keyset pagination. Since the dropdown uses infinite scroll it
+          // only needs to know if there is a next page. We pass `page + 1` if there is a next page,
+          // otherwise we just set this to the current page.
+          totalPages: pageInfo.hasNextPage ? page + 1 : page,
         };
       } catch (error) {
+        this.endCursor = null;
         this.handleError({ message: FETCH_ORGANIZATIONS_ERROR, error });
 
         return { items: [], totalPages: 0 };
       }
     },
-    async fetchOrganizationName(id) {
+    async fetchInitialOrganization(id) {
       try {
-        const {
-          data: {
-            organization: { name },
-          },
-        } = await this.$apollo.query({
+        const response = await this.$apollo.query({
           query: getOrganizationQuery,
-          variables: { id: convertToGraphQLId(TYPENAME_ORGANIZATION, id) },
+          variables: { id: convertToGraphQLId(TYPE_ORGANIZATION, id) },
         });
 
-        return name;
+        return this.mapOrganizationData(response.data.organization);
       } catch (error) {
         this.handleError({ message: FETCH_ORGANIZATION_ERROR, error });
 
-        return '';
+        return {};
       }
+    },
+    mapOrganizationData(organization) {
+      return {
+        ...organization,
+        text: organization.name,
+        value: getIdFromGraphQLId(organization.id),
+      };
     },
     handleError({ message, error }) {
       Sentry.captureException(error);
@@ -137,7 +144,7 @@ export default {
     :header-text="$options.i18n.selectGroup"
     :default-toggle-text="$options.i18n.toggleText"
     :fetch-items="fetchOrganizations"
-    :fetch-initial-selection-text="fetchOrganizationName"
+    :fetch-initial-selection="fetchInitialOrganization"
     :toggle-class="toggleClass"
     v-on="$listeners"
   >

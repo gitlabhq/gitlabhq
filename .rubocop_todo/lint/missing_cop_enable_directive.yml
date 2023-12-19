@@ -60,7 +60,6 @@ Lint/MissingCopEnableDirective:
     - 'app/services/search/global_service.rb'
     - 'danger/feature_flag/Dangerfile'
     - 'danger/pajamas/Dangerfile'
-    - 'db/migrate/20220531024905_add_operations_access_levels_to_project_feature.rb'
     - 'ee/app/controllers/ee/admin/dashboard_controller.rb'
     - 'ee/app/controllers/ee/admin/groups_controller.rb'
     - 'ee/app/controllers/ee/admin/users_controller.rb'

@@ -8,6 +8,7 @@ module API
       expose :human_state_name, as: :state, documentation: { type: 'string', example: 'scheduled' }
       expose :source_storage_name, documentation: { type: 'string', example: 'default' }
       expose :destination_storage_name, documentation: { type: 'string', example: 'storage1' }
+      expose :error_message, documentation: { type: 'string', example: 'Failed to move repository' }
     end
   end
 end

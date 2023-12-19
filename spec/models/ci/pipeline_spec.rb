@@ -86,6 +86,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
   it { is_expected.to delegate_method(:name).to(:pipeline_metadata).allow_nil }
+  it { is_expected.to delegate_method(:auto_cancel_on_job_failure).to(:pipeline_metadata).allow_nil }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }
@@ -163,7 +164,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     before do
       stub_const('Ci::Refs::UnlockPreviousPipelinesWorker', unlock_previous_pipelines_worker_spy)
-      stub_feature_flags(ci_stop_unlock_pipelines: false)
     end
 
     shared_examples 'not unlocking pipelines' do |event:|
@@ -202,42 +202,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it_behaves_like 'unlocking pipelines', event: :skip
       it_behaves_like 'unlocking pipelines', event: :cancel
       it_behaves_like 'unlocking pipelines', event: :block
-
-      context 'and ci_stop_unlock_pipelines is enabled' do
-        before do
-          stub_feature_flags(ci_stop_unlock_pipelines: true)
-        end
-
-        it_behaves_like 'not unlocking pipelines', event: :succeed
-        it_behaves_like 'not unlocking pipelines', event: :drop
-        it_behaves_like 'not unlocking pipelines', event: :skip
-        it_behaves_like 'not unlocking pipelines', event: :cancel
-        it_behaves_like 'not unlocking pipelines', event: :block
-      end
-
-      context 'and ci_unlock_non_successful_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
-        end
-
-        it_behaves_like 'unlocking pipelines', event: :succeed
-        it_behaves_like 'not unlocking pipelines', event: :drop
-        it_behaves_like 'not unlocking pipelines', event: :skip
-        it_behaves_like 'not unlocking pipelines', event: :cancel
-        it_behaves_like 'not unlocking pipelines', event: :block
-
-        context 'and ci_stop_unlock_pipelines is enabled' do
-          before do
-            stub_feature_flags(ci_stop_unlock_pipelines: true)
-          end
-
-          it_behaves_like 'not unlocking pipelines', event: :succeed
-          it_behaves_like 'not unlocking pipelines', event: :drop
-          it_behaves_like 'not unlocking pipelines', event: :skip
-          it_behaves_like 'not unlocking pipelines', event: :cancel
-          it_behaves_like 'not unlocking pipelines', event: :block
-        end
-      end
     end
 
     context 'when transitioning to a non-unlockable state' do
@@ -246,14 +210,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it_behaves_like 'not unlocking pipelines', event: :run
-
-      context 'and ci_unlock_non_successful_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_unlock_non_successful_pipelines: false)
-        end
-
-        it_behaves_like 'not unlocking pipelines', event: :run
-      end
     end
   end
 
@@ -2028,17 +1984,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
         end
 
-        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update disabled' do
-          let(:only_allow_merge_if_pipeline_succeeds?) { false }
-
-          before do
-            stub_feature_flags(widget_pipeline_pass_subscription_update: false)
-          end
-
-          it_behaves_like 'state transition not triggering GraphQL subscription mergeRequestMergeStatusUpdated'
-        end
-
-        context 'when only_allow_merge_if_pipeline_succeeds? returns false and widget_pipeline_pass_subscription_update enabled' do
+        context 'when only_allow_merge_if_pipeline_succeeds? returns false' do
           let(:only_allow_merge_if_pipeline_succeeds?) { false }
 
           it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
@@ -3848,6 +3794,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#set_failed' do
+    let(:pipeline) { build(:ci_pipeline) }
+
+    it 'marks the pipeline as failed with the given reason without saving', :aggregate_failures do
+      pipeline.set_failed(:filtered_by_rules)
+
+      expect(pipeline).to be_failed
+      expect(pipeline).to be_filtered_by_rules
+      expect(pipeline).not_to be_persisted
+    end
+  end
+
+  describe '#filtered_as_empty?' do
+    let(:pipeline) { build_stubbed(:ci_pipeline) }
+
+    subject { pipeline.filtered_as_empty? }
+
+    it { is_expected.to eq false }
+
+    context 'when the pipeline is failed' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:drop_reason, :expected) do
+        :unknown_failure            | false
+        :filtered_by_rules          | true
+        :filtered_by_workflow_rules | true
+      end
+
+      with_them do
+        before do
+          pipeline.set_failed(drop_reason)
+        end
+
+        it { is_expected.to eq expected }
+      end
+    end
+  end
+
   describe '#has_yaml_errors?' do
     let(:pipeline) { build_stubbed(:ci_pipeline) }
 
@@ -4065,8 +4049,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#builds_in_self_and_project_descendants' do
     subject(:builds) { pipeline.builds_in_self_and_project_descendants }
 
-    let(:pipeline) { create(:ci_pipeline) }
-    let!(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
 
     context 'when pipeline is standalone' do
       it 'returns the list of builds' do
@@ -4093,6 +4077,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(builds).to contain_exactly(build, child_build, child_of_child_build)
       end
     end
+
+    it 'includes partition_id filter' do
+      expect(builds.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
+    end
   end
 
   describe '#build_with_artifacts_in_self_and_project_descendants' do
@@ -4118,7 +4106,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#jobs_in_self_and_project_descendants' do
     subject(:jobs) { pipeline.jobs_in_self_and_project_descendants }
 
-    let(:pipeline) { create(:ci_pipeline) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
     shared_examples_for 'fetches jobs in self and project descendant pipelines' do |factory_type|
       let!(:job) { create(factory_type, pipeline: pipeline) }
@@ -4150,6 +4138,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns the list of jobs' do
           expect(jobs).to contain_exactly(job, child_job, child_of_child_job, child_source_bridge, child_of_child_source_bridge)
         end
+      end
+
+      it 'includes partition_id filter' do
+        expect(jobs.where_values_hash).to match(a_hash_including('partition_id' => pipeline.partition_id))
       end
     end
 
@@ -5648,6 +5640,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'does not change the partition_id value' do
         expect { pipeline.valid? }.not_to change(pipeline, :partition_id)
       end
+    end
+  end
+
+  describe '.current_partition_value' do
+    subject { described_class.current_partition_value }
+
+    it { is_expected.to eq(101) }
+
+    it 'accepts an optional argument' do
+      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(101)
+    end
+
+    it 'returns 100 when the flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_101: false)
+
+      is_expected.to eq(100)
     end
   end
 

@@ -9,3 +9,4 @@ allow_cross_transactions:
   - gitlab_main
 allow_cross_foreign_keys:
   - gitlab_main
+cell_local: true

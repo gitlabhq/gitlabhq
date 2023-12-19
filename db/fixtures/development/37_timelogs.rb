@@ -63,13 +63,15 @@ class Gitlab::Seeder::Timelogs
     if user.nil?
       print "\nCreating user '#{username}' with password: '#{password}'"
 
-      user = User.create!(
+      User.create!(
         username: username,
         name: FFaker::Name.name,
         email: FFaker::Internet.email,
         confirmed_at: DateTime.now,
         password: password
-      )
+      ) do |user|
+        user.assign_personal_namespace
+      end
     end
 
     user

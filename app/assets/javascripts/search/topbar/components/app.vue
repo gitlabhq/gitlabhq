@@ -1,56 +1,30 @@
 <script>
-import { GlSearchBoxByClick, GlButton } from '@gitlab/ui';
+import { GlSearchBoxByType, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import { ZOEKT_SEARCH_TYPE, ADVANCED_SEARCH_TYPE } from '~/search/store/constants';
 import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
-import GroupFilter from './group_filter.vue';
-import ProjectFilter from './project_filter.vue';
+import SearchTypeIndicator from './search_type_indicator.vue';
 
 export default {
   name: 'GlobalSearchTopbar',
   i18n: {
     searchPlaceholder: s__(`GlobalSearch|Search for projects, issues, etc.`),
     searchLabel: s__(`GlobalSearch|What are you searching for?`),
-    documentFetchErrorMessage: s__(
-      'GlobalSearch|There was an error fetching the "Syntax Options" document.',
-    ),
-    searchFieldLabel: s__('GlobalSearch|What are you searching for?'),
     syntaxOptionsLabel: s__('GlobalSearch|Syntax options'),
     groupFieldLabel: s__('GlobalSearch|Group'),
     projectFieldLabel: s__('GlobalSearch|Project'),
-    searchButtonLabel: s__('GlobalSearch|Search'),
-    closeButtonLabel: s__('GlobalSearch|Close'),
   },
   components: {
     GlButton,
-    GlSearchBoxByClick,
-    GroupFilter,
-    ProjectFilter,
+    GlSearchBoxByType,
     MarkdownDrawer,
-  },
-  props: {
-    groupInitialJson: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    projectInitialJson: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    defaultBranchName: {
-      type: String,
-      required: false,
-      default: '',
-    },
+    SearchTypeIndicator,
   },
   computed: {
-    ...mapState(['query', 'searchType']),
+    ...mapState(['query', 'searchType', 'defaultBranchName']),
     search: {
       get() {
         return this.query ? this.query.search : '';
@@ -58,9 +32,6 @@ export default {
       set(value) {
         this.setQuery({ key: 'search', value });
       },
-    },
-    showFilters() {
-      return !parseBoolean(this.query.snippets);
     },
     showSyntaxOptions() {
       return (
@@ -90,45 +61,39 @@ export default {
 </script>
 
 <template>
-  <section class="gl-p-5 gl-bg-gray-10 gl-border-b gl-border-t">
+  <section>
+    <div
+      class="gl-lg-display-flex gl-flex-direction-row gl-py-5"
+      :class="{
+        'gl-justify-content-space-between': showSyntaxOptions,
+        'gl-justify-content-end': !showSyntaxOptions,
+      }"
+    >
+      <template v-if="showSyntaxOptions">
+        <div>
+          <gl-button
+            category="tertiary"
+            variant="link"
+            size="small"
+            button-text-classes="gl-font-sm!"
+            @click="onToggleDrawer"
+            >{{ $options.i18n.syntaxOptionsLabel }}
+          </gl-button>
+        </div>
+        <markdown-drawer ref="markdownDrawer" :document-path="documentBasedOnSearchType" />
+      </template>
+      <search-type-indicator />
+    </div>
     <div class="search-page-form gl-lg-display-flex gl-flex-direction-column">
-      <div class="gl-lg-display-flex gl-flex-direction-row gl-align-items-flex-end">
-        <div class="gl-flex-grow-1 gl-mb-4 gl-lg-mb-0 gl-lg-mr-2">
-          <div
-            class="gl-display-flex gl-flex-direction-row gl-justify-content-space-between gl-mb-0 gl-md-mb-4"
-          >
-            <label class="gl-mb-1 gl-md-pb-2">{{ $options.i18n.searchLabel }}</label>
-            <template v-if="showSyntaxOptions">
-              <gl-button
-                category="tertiary"
-                variant="link"
-                size="small"
-                button-text-classes="gl-font-sm!"
-                @click="onToggleDrawer"
-                >{{ $options.i18n.syntaxOptionsLabel }}
-              </gl-button>
-              <markdown-drawer ref="markdownDrawer" :document-path="documentBasedOnSearchType" />
-            </template>
-          </div>
-          <gl-search-box-by-click
+      <div class="gl-lg-display-flex gl-flex-direction-row gl-align-items-flex-start">
+        <div class="gl-flex-grow-1 gl-pb-8 gl-lg-mb-0 gl-lg-mr-2">
+          <gl-search-box-by-type
             id="dashboard_search"
             v-model="search"
             name="search"
             :placeholder="$options.i18n.searchPlaceholder"
-            @submit="applyQuery"
+            @keydown.enter.stop.prevent="applyQuery"
           />
-        </div>
-        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-3">
-          <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
-            $options.i18n.groupFieldLabel
-          }}</label>
-          <group-filter :initial-data="groupInitialJson" />
-        </div>
-        <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-ml-3">
-          <label class="gl-display-block gl-mb-1 gl-md-pb-2">{{
-            $options.i18n.projectFieldLabel
-          }}</label>
-          <project-filter :initial-data="projectInitialJson" />
         </div>
       </div>
     </div>

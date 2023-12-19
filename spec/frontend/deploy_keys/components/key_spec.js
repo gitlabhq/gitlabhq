@@ -4,7 +4,7 @@ import data from 'test_fixtures/deploy_keys/keys.json';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import key from '~/deploy_keys/components/key.vue';
 import DeployKeysStore from '~/deploy_keys/store';
-import { getTimeago, formatDate } from '~/lib/utils/datetime_utility';
+import { getTimeago, localeDateFormat } from '~/lib/utils/datetime_utility';
 
 describe('Deploy keys key', () => {
   let wrapper;
@@ -64,7 +64,9 @@ describe('Deploy keys key', () => {
       const expiryComponent = wrapper.find('[data-testid="expires-at-tooltip"]');
       const tooltip = getBinding(expiryComponent.element, 'gl-tooltip');
       expect(tooltip).toBeDefined();
-      expect(expiryComponent.attributes('title')).toBe(`${formatDate(expiresAt)}`);
+      expect(expiryComponent.attributes('title')).toBe(
+        `${localeDateFormat.asDateTimeFull.format(expiresAt)}`,
+      );
     });
     it('renders never when no expiration date', () => {
       createComponent({

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Page objects in GitLab QA
@@ -303,8 +303,8 @@ from within the `qa` directory.
 
 ## Where to ask for help?
 
-If you need more information, ask for help on `#quality` channel on Slack
+If you need more information, ask for help on `#test-platform` channel on Slack
 (internal, GitLab Team only).
 
-If you are not a Team Member, and you still need help to contribute, please
+If you are not a Team Member, and you still need help to contribute,
 open an issue in GitLab CE issue tracker with the `~QA` label.

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Monitoring Gitaly and Gitaly Cluster
@@ -31,7 +31,7 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 
 ## Monitor Gitaly concurrency limiting
 
-You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
+You can observe specific behavior of [concurrency-queued requests](concurrency_limiting.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
@@ -62,7 +62,7 @@ In Prometheus, look for the following metrics:
 
 ## Monitor Gitaly pack-objects concurrency limiting
 
-You can observe specific behavior of [pack-objects limiting](configure_gitaly.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
+You can observe specific behavior of [pack-objects limiting](concurrency_limiting.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
@@ -94,7 +94,7 @@ In Prometheus, look for the following metrics:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
 
-You can observe specific behavior of [adaptive concurrency limiting](configure_gitaly.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
+You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
 In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
 You can filter the content of the logs (`msg`) for "Multiplicative decrease" and "Additive increase" messages.
@@ -176,12 +176,26 @@ gitaly_streamcache_filestore_removed_total{dir="/var/opt/gitlab/git-data/reposit
 gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache"} 1
 ```
 
+## Monitor Gitaly server-side backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
+
+Monitor [server-side repository backups](configure_gitaly.md#configure-server-side-backups) with the following metrics:
+
+- `gitaly_backup_latency_seconds`, a histogram measuring the amount of time in seconds that each phase of a server-side
+  backup takes. The different phases are `refs`, `bundle`, and `custom_hooks` and represent the type of data being
+  processed at each stage.
+- `gitaly_backup_bundle_bytes`, a histogram measuring the upload data rate of Git bundles being pushed to object
+  storage by the Gitaly backup service.
+
+Use these metrics especially if your GitLab instance contains large repositories.
+
 ## Queries
 
 The following are some queries for monitoring Gitaly:
 
 - Use the following Prometheus query to observe the
-  [type of connections](configure_gitaly.md#enable-tls-support) Gitaly is serving a production
+  [type of connections](tls_support.md) Gitaly is serving a production
   environment:
 
   ```prometheus
@@ -189,7 +203,7 @@ The following are some queries for monitoring Gitaly:
   ```
 
 - Use the following Prometheus query to monitor the
-  [authentication behavior](configure_gitaly.md#observe-type-of-gitaly-connections) of your GitLab
+  [authentication behavior](tls_support.md#observe-type-of-gitaly-connections) of your GitLab
   installation:
 
   ```prometheus

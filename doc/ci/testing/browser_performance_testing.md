@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Browser Performance Testing **(PREMIUM ALL)**
@@ -49,7 +49,8 @@ If the Browser Performance report has no data to compare, such as when you add t
 Browser Performance job in your `.gitlab-ci.yml` for the very first time,
 the Browser Performance report widget doesn't display. It must have run at least
 once on the target branch (`main`, for example), before it displays in a
-merge request targeting that branch.
+merge request targeting that branch. Additionally, the widget only displays if the
+job ran in the latest pipeline for the Merge request.
 
 ![Browser Performance Widget](img/browser_performance_testing.png)
 
@@ -134,11 +135,11 @@ be extended for dynamic environments, but a few extra steps are required:
 
 1. The `browser_performance` job should run after the dynamic environment has started.
 1. In the `review` job:
-    1. Generate a URL list file with the dynamic URL.
-    1. Save the file as an artifact, for example with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
-       in your job's `script`.
-    1. Pass the list as the URL environment variable (which can be a URL or a file containing URLs)
-       to the `browser_performance` job.
+   1. Generate a URL list file with the dynamic URL.
+   1. Save the file as an artifact, for example with `echo $CI_ENVIRONMENT_URL > environment_url.txt`
+      in your job's `script`.
+   1. Pass the list as the URL environment variable (which can be a URL or a file containing URLs)
+      to the `browser_performance` job.
 1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 

@@ -21,6 +21,13 @@ module Sidebars
 
         override :configure_menu_items
         def configure_menu_items
+          groups_and_projects_menu_item
+          users_menu_item
+        end
+
+        private
+
+        def groups_and_projects_menu_item
           add_item(
             ::Sidebars::MenuItem.new(
               title: _('Groups and projects'),
@@ -30,6 +37,11 @@ module Sidebars
               item_id: :organization_groups_and_projects
             )
           )
+        end
+
+        def users_menu_item
+          return unless can?(context.current_user, :read_organization_user, context.container)
+
           add_item(
             ::Sidebars::MenuItem.new(
               title: _('Users'),

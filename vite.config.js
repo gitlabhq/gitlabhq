@@ -1,8 +1,11 @@
-import path from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
 import RubyPlugin from 'vite-plugin-ruby';
+import chokidar from 'chokidar';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
 import {
@@ -11,7 +14,15 @@ import {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
 } from './config/webpack.constants';
-import viteSharedConfig from './config/vite.json';
+
+let viteGDKConfig;
+try {
+  viteGDKConfig = JSON.parse(
+    readFileSync(path.resolve(__dirname, 'config/vite.gdk.json'), 'utf-8'),
+  );
+} catch {
+  viteGDKConfig = {};
+}
 
 const aliasArr = Object.entries(webpackConfig.resolve.alias).map(([find, replacement]) => ({
   find: find.includes('$') ? new RegExp(find) : find,
@@ -58,7 +69,25 @@ const JH_ALIAS_FALLBACK = [
   },
 ];
 
+const autoRestartPlugin = {
+  configureServer(server) {
+    const watcher = chokidar.watch(['node_modules/.yarn-integrity'], {
+      ignoreInitial: true,
+    });
+
+    // GDK will restart Vite server for us
+    const stop = () => server.stop();
+
+    watcher.on('add', stop);
+    watcher.on('change', stop);
+    watcher.on('unlink', stop);
+
+    server.httpServer?.addListener?.('close', () => watcher.close());
+  },
+};
+
 export default defineConfig({
+  cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
   resolve: {
     alias: [
       ...aliasArr,
@@ -75,6 +104,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
       template: {
@@ -89,18 +119,45 @@ export default defineConfig({
     }),
   ],
   define: {
-    IS_EE: IS_EE ? 'window.gon && window.gon.ee' : JSON.stringify(false),
-    IS_JH: IS_JH ? 'window.gon && window.gon.jh' : JSON.stringify(false),
+    // window can be undefined in a Web Worker
+    IS_EE: IS_EE
+      ? JSON.stringify('typeof window !== "undefined" && window.gon && window.gon.ee')
+      : JSON.stringify(false),
+    IS_JH: IS_JH
+      ? JSON.stringify('typeof window !== "undefined" && window.gon && window.gon.jh')
+      : JSON.stringify(false),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
-    hmr: {
-      host: viteSharedConfig?.development?.host || 'localhost',
-      // ensure we stay compatible with HTTPS enabled for GDK
-      protocol: 'ws',
-    },
+    hmr:
+      viteGDKConfig.hmr === undefined
+        ? /*
+        This is a legacy behavior for older GDKs. They will fallback to:
+          ws://localhost:3038/vite-dev/
+        TODO: Remove this after 2024-01-18 */
+          {
+            host: 'localhost',
+            protocol: 'ws',
+          }
+        : viteGDKConfig.hmr,
     https: false,
+    watch: {
+      ignored: [
+        '**/*.stories.js',
+        function ignoreRootFolder(x) {
+          /*
+           `vite` watches the root folder of gitlab and all of its sub folders
+           This is not what we want, because we have temp files, and all kind
+           of other stuff. As vite starts its watchers recursively, we just
+           ignore if the path matches exactly the root folder
+
+           Additional folders like `ee/app/assets` are defined in
+           */
+          return x === __dirname;
+        },
+      ],
+    },
   },
 });

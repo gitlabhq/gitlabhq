@@ -171,6 +171,16 @@ RSpec.shared_examples 'issuable quick actions' do
         }
       ),
       QuickAction.new(
+        action_text: "/react :heart:",
+        expectation: ->(noteable, can_use_quick_action) {
+          if can_use_quick_action
+            expect(noteable.award_emoji.last.name).to eq("heart")
+          else
+            expect(noteable.award_emoji).to be_empty
+          end
+        }
+      ),
+      QuickAction.new(
         action_text: "/estimate 1d 2h 3m",
         expectation: ->(noteable, can_use_quick_action) {
           expect(noteable.time_estimate == 36180).to eq(can_use_quick_action)

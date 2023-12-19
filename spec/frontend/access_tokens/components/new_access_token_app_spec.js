@@ -81,20 +81,6 @@ describe('~/access_tokens/components/new_access_token_app', () => {
       );
     });
 
-    it('input field should contain QA-related selectors', async () => {
-      const newToken = '12345';
-      await triggerSuccess(newToken);
-
-      expect(findGlAlertError().exists()).toBe(false);
-
-      const inputAttributes = wrapper
-        .findByLabelText(sprintf(__('Your new %{accessTokenType}'), { accessTokenType }))
-        .attributes();
-      expect(inputAttributes).toMatchObject({
-        'data-qa-selector': 'created_access_token_field',
-      });
-    });
-
     it('should render an info alert', async () => {
       await triggerSuccess();
 

@@ -3,7 +3,6 @@ import { GlAlert, GlButton, GlIcon, GlFormCheckbox, GlTooltipDirective } from '@
 import $ from 'jquery';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
@@ -17,6 +16,7 @@ import { badgeState } from '~/merge_requests/components/merge_request_header.vue
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
 import * as constants from '../constants';
 import eventHub from '../event_hub';
@@ -297,8 +297,10 @@ export default {
       const toggleState = this.isOpen ? this.closeIssuable : this.reopenIssuable;
 
       toggleState()
-        .then(() => badgeState.updateStatus && badgeState.updateStatus())
-        .then(refreshUserMergeRequestCounts)
+        .then(() => {
+          fetchUserCounts();
+          return badgeState?.updateStatus();
+        })
         .catch(() =>
           createAlert({
             message: constants.toggleStateErrorMessage[this.noteableType][this.openState],

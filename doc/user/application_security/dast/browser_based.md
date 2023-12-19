@@ -1,8 +1,7 @@
 ---
 stage: Secure
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # DAST browser-based analyzer **(ULTIMATE ALL)**
@@ -90,7 +89,7 @@ A simplified timing attack works as follows:
 
 Active scans do not use a browser to send HTTP requests in an effort to minimize scan time.
 
-Anti-CSRF tokens are not regenerated for attacks that submit forms. Please disable anti-CSRF tokens when running an active scan.
+Anti-CSRF tokens are not regenerated for attacks that submit forms. Disable anti-CSRF tokens when running an active scan.
 
 ## Getting started
 

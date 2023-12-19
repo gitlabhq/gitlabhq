@@ -2,8 +2,6 @@
 import { GlButton, GlCollapsibleListbox, GlModalDirective } from '@gitlab/ui';
 import { produce } from 'immer';
 import { differenceBy, debounce } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
@@ -51,10 +49,9 @@ export default {
     'weights',
     'boardType',
     'isGroupBoard',
-    'isApolloBoard',
   ],
   props: {
-    boardApollo: {
+    board: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -79,18 +76,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['board', 'isBoardLoading']),
-    boardToUse() {
-      return this.isApolloBoard ? this.boardApollo : this.board;
+    boardName() {
+      return this.board?.name || s__('IssueBoards|Select board');
     },
-    boardToUseName() {
-      return this.boardToUse?.name || s__('IssueBoards|Select board');
-    },
-    boardToUseId() {
-      return getIdFromGraphQLId(this.boardToUse.id) || '';
-    },
-    isBoardToUseLoading() {
-      return this.isApolloBoard ? this.isCurrentBoardLoading : this.isBoardLoading;
+    boardId() {
+      return getIdFromGraphQLId(this.board.id) || '';
     },
     parentType() {
       return this.boardType;
@@ -147,7 +137,7 @@ export default {
     },
   },
   watch: {
-    boardToUse(newBoard) {
+    board(newBoard) {
       document.title = newBoard.name;
     },
   },
@@ -162,7 +152,6 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['fetchBoard', 'unsetActiveId']),
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },
@@ -251,13 +240,6 @@ export default {
 
       this.$emit('switchBoard', board.id);
     },
-    fetchCurrentBoard(boardId) {
-      this.fetchBoard({
-        fullPath: this.fullPath,
-        fullBoardId: fullBoardId(boardId),
-        boardType: this.boardType,
-      });
-    },
     setFilterTerm(value) {
       this.filterTerm = value;
     },
@@ -268,15 +250,9 @@ export default {
       }
     },
     switchBoardGroup(value) {
-      if (this.isApolloBoard) {
-        // Epic board ID is supported in EE version of this file
-        this.$emit('switchBoard', this.fullBoardId(value));
-        updateHistory({ url: `${this.boardBaseUrl}/${value}` });
-      } else {
-        this.unsetActiveId();
-        this.fetchCurrentBoard(value);
-        updateHistory({ url: `${this.boardBaseUrl}/${value}` });
-      }
+      // Epic board ID is supported in EE version of this file
+      this.$emit('switchBoard', this.fullBoardId(value));
+      updateHistory({ url: `${this.boardBaseUrl}/${value}` });
     },
   },
 };
@@ -294,10 +270,10 @@ export default {
         toggle-class="gl-min-w-20"
         :header-text="$options.i18n.headerText"
         :no-results-text="$options.i18n.noResultsText"
-        :loading="isBoardToUseLoading"
+        :loading="isCurrentBoardLoading"
         :items="listBoxItems"
-        :toggle-text="boardToUseName"
-        :selected="boardToUseId"
+        :toggle-text="boardName"
+        :selected="boardId"
         @search="handleSearch"
         @select="switchBoardGroup"
         @shown="loadBoards"
@@ -350,7 +326,7 @@ export default {
         :can-admin-board="canAdminBoard"
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
-        :current-board="boardToUse"
+        :current-board="board"
         :current-page="currentPage"
         @addBoard="addBoard"
         @cancel="cancel"

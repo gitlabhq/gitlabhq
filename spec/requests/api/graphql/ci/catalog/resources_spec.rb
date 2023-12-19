@@ -29,8 +29,11 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     )
   end
 
-  let_it_be(:resource1) { create(:ci_catalog_resource, project: project1, latest_released_at: '2023-01-01T00:00:00Z') }
-  let_it_be(:public_resource) { create(:ci_catalog_resource, project: public_project) }
+  let_it_be(:resource1) do
+    create(:ci_catalog_resource, :published, project: project1, latest_released_at: '2023-01-01T00:00:00Z')
+  end
+
+  let_it_be(:public_resource) { create(:ci_catalog_resource, :published, project: public_project) }
 
   let(:query) do
     <<~GQL
@@ -44,7 +47,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             webPath
             latestReleasedAt
             starCount
-            forksCount
             readmeHtml
           }
         }
@@ -58,11 +60,11 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     it do
       ctx = { current_user: user }
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         run_with_clean_state(query, context: ctx)
       end
 
-      create(:ci_catalog_resource, project: project2)
+      create(:ci_catalog_resource, :published, project: project2)
 
       expect do
         run_with_clean_state(query, context: ctx)
@@ -83,7 +85,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         icon: project1.avatar_path,
         webPath: "/#{project1.full_path}",
         starCount: project1.star_count,
-        forksCount: project1.forks_count,
         readmeHtml: a_string_including('Test</strong>'),
         latestReleasedAt: resource1.latest_released_at
       ),
@@ -121,7 +122,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     end
 
     it 'limits the request to 1 resource at a time' do
-      create(:ci_catalog_resource, project: project2)
+      create(:ci_catalog_resource, :published, project: project2)
 
       post_query
 
@@ -135,11 +136,13 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     let_it_be(:author2) { create(:user, name: 'author2') }
 
     let_it_be(:latest_version1) do
-      create(:release, project: project1, released_at: '2023-02-01T00:00:00Z', author: author1)
+      create(:release, :with_catalog_resource_version, project: project1, released_at: '2023-02-01T00:00:00Z',
+        author: author1).catalog_resource_version
     end
 
     let_it_be(:latest_version2) do
-      create(:release, project: public_project, released_at: '2023-02-01T00:00:00Z', author: author2)
+      create(:release, :with_catalog_resource_version, project: public_project, released_at: '2023-02-01T00:00:00Z',
+        author: author2).catalog_resource_version
     end
 
     let(:query) do
@@ -167,9 +170,11 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
     before_all do
       namespace.add_developer(user)
 
-      # Previous versions of the projects
-      create(:release, project: project1, released_at: '2023-01-01T00:00:00Z', author: author1)
-      create(:release, project: public_project, released_at: '2023-01-01T00:00:00Z', author: author2)
+      # Previous versions of the catalog resources
+      create(:release, :with_catalog_resource_version, project: project1, released_at: '2023-01-01T00:00:00Z',
+        author: author1)
+      create(:release, :with_catalog_resource_version, project: public_project, released_at: '2023-01-01T00:00:00Z',
+        author: author2)
     end
 
     it 'returns all resources with the latest version data' do
@@ -180,7 +185,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
           resource1,
           latestVersion: a_graphql_entity_for(
             latest_version1,
-            tagName: latest_version1.tag,
+            tagName: latest_version1.name,
             releasedAt: latest_version1.released_at,
             author: a_graphql_entity_for(author1, :name)
           )
@@ -189,7 +194,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
           public_resource,
           latestVersion: a_graphql_entity_for(
             latest_version2,
-            tagName: latest_version2.tag,
+            tagName: latest_version2.name,
             releasedAt: latest_version2.released_at,
             author: a_graphql_entity_for(author2, :name)
           )
@@ -197,43 +202,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       )
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/430350
-    # it_behaves_like 'avoids N+1 queries'
-  end
-
-  describe 'rootNamespace' do
-    before_all do
-      namespace.add_developer(user)
-    end
-
-    let(:query) do
-      <<~GQL
-        query {
-          ciCatalogResources {
-            nodes {
-              id
-              rootNamespace {
-                id
-                name
-                path
-              }
-            }
-          }
-        }
-      GQL
-    end
-
-    it 'returns the correct root namespace data' do
-      post_query
-
-      expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
-        a_graphql_entity_for(
-          resource1,
-          rootNamespace: a_graphql_entity_for(namespace, :name, :path)
-        ),
-        a_graphql_entity_for(public_resource, rootNamespace: nil)
-      )
-    end
+    it_behaves_like 'avoids N+1 queries'
   end
 
   describe 'openIssuesCount' do
@@ -326,8 +295,8 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       end
 
       it 'returns catalog resources with the expected data' do
-        resource2 = create(:ci_catalog_resource, project: project2)
-        _resource_in_another_namespace = create(:ci_catalog_resource)
+        resource2 = create(:ci_catalog_resource, :published, project: project2)
+        _resource_in_another_namespace = create(:ci_catalog_resource, :published)
 
         post_query
 
@@ -338,7 +307,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             icon: project2.avatar_path,
             webPath: "/#{project2.full_path}",
             starCount: project2.star_count,
-            forksCount: project2.forks_count,
             readmeHtml: '',
             latestReleasedAt: resource2.latest_released_at
           )

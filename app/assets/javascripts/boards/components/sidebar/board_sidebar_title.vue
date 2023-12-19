@@ -1,7 +1,5 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -22,7 +20,7 @@ export default {
   directives: {
     autofocusonshow,
   },
-  inject: ['fullPath', 'issuableType', 'isEpicBoard', 'isApolloBoard'],
+  inject: ['fullPath', 'issuableType', 'isEpicBoard'],
   props: {
     activeItem: {
       type: Object,
@@ -37,15 +35,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['activeBoardItem']),
-    item() {
-      return this.isApolloBoard ? this.activeItem : this.activeBoardItem;
-    },
     pendingChangesStorageKey() {
-      return this.getPendingChangesKey(this.item);
+      return this.getPendingChangesKey(this.activeItem);
     },
     projectPath() {
-      const referencePath = this.item.referencePath || '';
+      const referencePath = this.activeItem.referencePath || '';
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
     validationState() {
@@ -53,7 +47,7 @@ export default {
     },
   },
   watch: {
-    item: {
+    activeItem: {
       handler(updatedItem, formerItem) {
         if (formerItem?.title !== this.title) {
           localStorage.setItem(this.getPendingChangesKey(formerItem), this.title);
@@ -66,7 +60,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveItemTitle']),
     getPendingChangesKey(item) {
       if (!item) {
         return '';
@@ -92,16 +85,12 @@ export default {
       }
     },
     cancel() {
-      this.title = this.item.title;
+      this.title = this.activeItem.title;
       this.$refs.sidebarItem.collapse();
       this.showChangesAlert = false;
       localStorage.removeItem(this.pendingChangesStorageKey);
     },
     async setActiveBoardItemTitle() {
-      if (!this.isApolloBoard) {
-        await this.setActiveItemTitle({ title: this.title, projectPath: this.projectPath });
-        return;
-      }
       const { fullPath, issuableType, isEpicBoard, title } = this;
       const workspacePath = isEpicBoard
         ? { groupPath: fullPath }
@@ -111,7 +100,7 @@ export default {
         variables: {
           input: {
             ...workspacePath,
-            iid: String(this.item.iid),
+            iid: String(this.activeItem.iid),
             title,
           },
         },
@@ -120,7 +109,7 @@ export default {
     async setTitle() {
       this.$refs.sidebarItem.collapse();
 
-      if (!this.title || this.title === this.item.title) {
+      if (!this.title || this.title === this.activeItem.title) {
         return;
       }
 
@@ -130,14 +119,14 @@ export default {
         localStorage.removeItem(this.pendingChangesStorageKey);
         this.showChangesAlert = false;
       } catch (e) {
-        this.title = this.item.title;
+        this.title = this.activeItem.title;
         setError({ error: e, message: this.$options.i18n.updateTitleError });
       } finally {
         this.loading = false;
       }
     },
     handleOffClick() {
-      if (this.title !== this.item.title) {
+      if (this.title !== this.activeItem.title) {
         this.showChangesAlert = true;
         localStorage.setItem(this.pendingChangesStorageKey, this.title);
       } else {
@@ -166,13 +155,13 @@ export default {
   >
     <template #title>
       <span data-testid="item-title">
-        <gl-link class="gl-reset-color gl-hover-text-blue-800" :href="item.webUrl">
-          {{ item.title }}
+        <gl-link class="gl-reset-color gl-hover-text-blue-800" :href="activeItem.webUrl">
+          {{ activeItem.title }}
         </gl-link>
       </span>
     </template>
     <template #collapsed>
-      <span class="gl-text-gray-800">{{ item.referencePath }}</span>
+      <span class="gl-text-gray-800">{{ activeItem.referencePath }}</span>
     </template>
     <gl-alert v-if="showChangesAlert" variant="warning" class="gl-mb-5" :dismissible="false">
       {{ $options.i18n.reviewYourChanges }}

@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Background migrations and upgrades **(FREE SELF)**
@@ -67,8 +67,7 @@ Prerequisites:
 
 To check the status of batched background migrations:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
    and **Failed** for failed migrations.
@@ -95,6 +94,15 @@ To query the database directly for the status of batched background migrations:
    FROM batched_background_migrations
    WHERE status <> 3;
    ```
+
+Alternatively, you can wrap the query with `gitlab-psql -c "<QUERY>"` to check the status of
+batched background migrations:
+
+```shell
+gitlab-psql -c "SELECT job_class_name, table_name, column_name, job_arguments FROM batched_background_migrations WHERE status <> 3;"
+```
+
+If the query returns zero rows, all batched background migrations are complete.
 
 ### Enable or disable advanced features
 
@@ -217,8 +225,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select the failed **Migration** to see the migration parameters and the jobs that failed.
@@ -233,8 +240,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
 1. Select a failed batched background migration to retry by clicking on the retry button (**{retry}**).

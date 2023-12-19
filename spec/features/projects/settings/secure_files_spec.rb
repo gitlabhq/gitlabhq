@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Secure Files', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Secure Files', :js, feature_category: :source_code_management do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
 ---
 
@@ -629,8 +629,7 @@ You can disable a specific Vale linting rule or all Vale linting rules for any p
 document:
 
 - To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
-  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename
-  of a test in the
+  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the file name of a test in the
   [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
   directory.
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a

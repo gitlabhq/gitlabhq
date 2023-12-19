@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Members of a project **(FREE ALL)**
@@ -17,9 +17,9 @@ Users can become members of a group or project in different ways, which define t
 | Membership type                               | Membership process |
 | --------------------------------------------- | ------------------ |
 | [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
-| [Inherited](#inherited-membership)            | The user is a member of an ancestor group or project that is added to the current group or project. |
+| [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
 | [Direct shared](share_project_with_groups.md) | The user is a member of a group or project that is shared into the current group or project. |
-| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of an ancestor of a group or project that is shared into the current group or project. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project that is shared into the current group or project. |
 
 ```mermaid
 flowchart RL
@@ -45,64 +45,6 @@ flowchart RL
   G-->|Group C shared with Project A|E
 ```
 
-### Inherited membership
-
-When your project belongs to a group, project members inherit their role
-from the group.
-
-![Project members page](img/project_members_v14_4.png)
-
-In this example:
-
-- Three members have access to the project.
-- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
-  which contains the project.
-- **User 1** belongs directly to the project. In the **Source** column, they are listed
-  as a **Direct member**.
-- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
-  They have inherited their role in the project from the **demo** group.
-
-If a user is:
-
-- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
-- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group.
-
-### Membership and visibility rights
-
-Depending on their membership type, members of groups or projects are granted different [visibility levels](../../../user/public_access.md)
-and rights into the group or project.
-
-| Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
-| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
-| Generate boards | ✓ | ✓ | ✓ | ✓ |
-| View issues of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
-| View labels of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
-| View milestones of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
-| Be shared into other groups | ✓ |  |  |  |
-| Be shared into other projects | ✓ | ✓ | ✓ | ✓ |
-| Share the group with other members | ✓ | ✓ | ✓ | ✓ |
-
-In the following example, `User` is a:
-
-- Direct member of `subgroup`.
-- Inherited member of `subsubgroup`.
-- Indirect member of `subgroup-2` and `subgroup-3`.
-- Indirect inherited member of `subsubgroup-2` and `subsubgroup-3`.
-
-```mermaid
-graph TD
-  classDef user stroke:green,color:green;
-
-  root --> subgroup --> subsubgroup
-  root-2 --> subgroup-2 --> subsubgroup-2
-  root-3 --> subgroup-3 --> subsubgroup-3
-  subgroup -. shared .-> subgroup-2 -. shared .-> subgroup-3
-
-  User-. member .- subgroup
-
-  class User user
-```
-
 ## Add users to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
@@ -113,9 +55,10 @@ graph TD
 Add users to a project so they become direct members and have permission
 to perform actions.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner or Maintainer role.
+- [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 
 To add a user to a project:
 
@@ -158,6 +101,28 @@ role for the group. For example, the maximum role you can set is:
 In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
 The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
 
+## Inherited membership
+
+When your project belongs to a group, project members inherit their role
+from the group.
+
+![Project members page](img/project_members_v14_4.png)
+
+In this example:
+
+- Three members have access to the project.
+- **User 0** is a Reporter and has inherited their role in the project from the **demo** group,
+  which contains the project.
+- **User 1** has been added directly to the project. In the **Source** column, they are listed
+  as a **Direct member**.
+- **Administrator** is the [Owner](../../permissions.md) and member of all groups.
+  They have inherited their role in the project from the **demo** group.
+
+If a user is:
+
+- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
+- An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group that the member originates from.
+
 ## Add groups to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
@@ -189,19 +154,27 @@ To add a group to a project:
    From that date onward, the group can no longer access the project.
 1. Select **Invite**.
 
-The members of the group are not displayed on the **Members** tab.
+The invited group is displayed on the **Groups** tab.
 Private groups are masked from unauthorized users.
+The members of the invited group are not displayed on the **Members** tab.
 The **Members** tab shows:
 
-- Members who are directly assigned to the project.
-- If the project was created in a group [namespace](../../namespace/index.md), members of that group.
+- Members who were directly added to the project.
+- Inherited members of the group [namespace](../../namespace/index.md) that the project was added to.
+
+## Share a project with a group
+
+Instead of adding users one by one, you can [share a project with an entire group](share_project_with_groups.md).
 
 ## Import members from another project
 
-You can import another project's members to your own project.
+You can import another project's direct members to your own project.
 Imported project members retain the same permissions as the project you import them from.
 
-Prerequisite:
+NOTE:
+Only direct members of a project are imported. Inherited or shared members of a project are not imported.
+
+Prerequisites:
 
 - You must have the Maintainer or Owner role.
 
@@ -210,7 +183,7 @@ If the importing member's role in the target project is:
 - Maintainer, then members with the Owner role in the source project are imported with the Maintainer role.
 - Owner, then members with the Owner role in the source project are imported with the Owner role.
 
-To import users:
+To import a project's members:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
@@ -218,7 +191,8 @@ To import users:
 1. Select the project. You can view only the projects for which you're a maintainer.
 1. Select **Import project members**.
 
-After the success message displays, refresh the page to view the new members.
+If the import is successful, a success message is displayed.
+To view the imported members on the **Members** tab, refresh the page.
 
 ## Remove a member from a project
 
@@ -264,22 +238,13 @@ To avoid this problem, GitLab administrators can:
 - Remove the malicious user account.
 - Change the password for the malicious user account.
 
-## Filter and sort members
+## Filter and sort project members
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21727) in GitLab 12.6.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/4901) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299954) in GitLab 13.10.
 
 You can filter and sort members in a project.
-
-### Display inherited members
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
-1. In the **Filter members** box, select `Membership` `=` `Inherited`.
-1. Press <kbd>Enter</kbd>.
-
-![Project members filter inherited](img/project_members_filter_inherited_v14_4.png)
 
 ### Display direct members
 
@@ -288,19 +253,38 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press <kbd>Enter</kbd>.
 
-![Project members filter direct](img/project_members_filter_direct_v14_4.png)
+### Display inherited members
 
-### Search
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. In the **Filter members** box, select `Membership` `=` `Inherited`.
+1. Press <kbd>Enter</kbd>.
 
-You can search for members by name, username, or email.
+### Search for members in a project
 
-![Project members search](img/project_members_search_v14_4.png)
+To search for a project member:
 
-### Sort
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. In the search box, enter the member's name, username, or email.
+1. Press <kbd>Enter</kbd>.
 
-You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
+### Sort members in a project
 
-![Project members sort](img/project_members_sort_v14_4.png)
+You can sort members in ascending or descending order by:
+
+- **Account** name
+- **Access granted** date
+- **Max role** the members have in the group
+- **User created** date
+- **Last activity** date
+- **Last sign-in** date
+
+To sort members:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Members**.
+1. At the top of the member list, from the dropdown list, select the item you want to sort by.
 
 ## Request access to a project
 
@@ -311,24 +295,29 @@ GitLab users can request to become a member of a project.
 
 ![Request access button](img/request_access_button.png)
 
-An email is sent to the most recently active project maintainers or owners.
-Up to ten project maintainers or owners are notified.
-Any project owner or maintainer can approve or decline the request.
-Project maintainers cannot approve Owner role access requests.
+An email is sent to the most recently active project Maintainers or Owners.
+Up to ten project Maintainers or Owners are notified.
+Any project Owner or Maintainer can approve or decline the request.
+Project Maintainers cannot approve Owner role access requests.
 
-If a project does not have any direct owners or maintainers, the notification is sent to the
-most recently active owners of the project's group.
+If a project does not have any direct Owners or Maintainers, the notification is sent to the
+most recently active Owners of the project's parent group.
 
-If you change your mind before your request is approved, select
-**Withdraw Access Request**.
+### Withdraw an access request to a project
+
+You can withdraw an access request to a project before the request is approved.
+To withdraw the access request:
+
+1. On the left sidebar, select **Search or go to** and find the project you requested access to.
+1. Next to the project name, select **Withdraw Access Request**.
 
 ## Prevent users from requesting access to a project
 
 You can prevent users from requesting access to a project.
 
-Prerequisite:
+Prerequisites:
 
-- You must be the project owner.
+- You must have the Owner role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -336,6 +325,57 @@ Prerequisite:
 1. Under **Project visibility**, select **Users can request access**.
 1. Select **Save changes**.
 
-## Share a project with a group
+## Membership and visibility rights
 
-Instead of adding users one by one, you can [share a project with an entire group](share_project_with_groups.md).
+Depending on their membership type, members of groups or projects are granted different [visibility levels](../../../user/public_access.md)
+and rights into the group or project.
+
+The following table lists the membership and visibility rights of project members.
+
+| Action | Direct project member | Inherited project member | Direct shared project member | Inherited shared project member |
+| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
+| Generate boards | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View issues of parent groups <sup>1</sup> | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View labels of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View milestones of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Be shared into other groups | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |  **{dotted-circle}** No |
+| Be imported into other projects | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
+| Share the project with other members | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+
+The following table lists the membership and visibility rights of group members.
+
+| Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
+| --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
+| Generate boards | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View issues of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View labels of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| View milestones of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+
+<html>
+<small>Footnotes:
+  <ol>
+    <li>Users can view only issues of projects they have access to.</li>
+  </ol>
+</small>
+</html>
+
+In the following example, `User` is a:
+
+- Direct member of `subgroup`.
+- Inherited member of `subsubgroup`.
+- Indirect member of `subgroup-2` and `subgroup-3`.
+- Indirect inherited member of `subsubgroup-2` and `subsubgroup-3`.
+
+```mermaid
+graph TD
+  classDef user stroke:green,color:green;
+
+  root --> subgroup --> subsubgroup
+  root-2 --> subgroup-2 --> subsubgroup-2
+  root-3 --> subgroup-3 --> subsubgroup-3
+  subgroup -. shared .-> subgroup-2 -. shared .-> subgroup-3
+
+  User-. member .- subgroup
+
+  class User user
+```

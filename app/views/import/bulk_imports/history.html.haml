@@ -1,6 +1,9 @@
 - add_to_breadcrumbs _('New group'), new_group_path
 - add_to_breadcrumbs _('Import group'), new_group_path(anchor: 'import-group-pane')
+- if params[:bulk_import_id].present?
+  - add_to_breadcrumbs s_('BulkImport|Direct transfer history'), history_import_bulk_imports_path
+  - breadcrumb_title params[:bulk_import_id]
+- page_title s_('BulkImport|Direct transfer history')
 - add_page_specific_style 'page_bundles/import'
-- page_title _('Import history')
 
 #import-history-mount-element{ data: { details_path: details_import_bulk_imports_path, realtime_changes_path: realtime_changes_import_bulk_imports_path(format: :json) } }

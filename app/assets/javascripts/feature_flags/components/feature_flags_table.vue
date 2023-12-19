@@ -67,7 +67,7 @@ export default {
       return featureFlag.iid ? `^${featureFlag.iid}` : '';
     },
     canDeleteFlag(flag) {
-      return !this.permissions || (flag.scopes || []).every((scope) => scope.can_update);
+      return (flag.scopes || []).every((scope) => scope.can_update);
     },
     setDeleteModalData(featureFlag) {
       this.deleteFeatureFlagUrl = featureFlag.destroy_path;

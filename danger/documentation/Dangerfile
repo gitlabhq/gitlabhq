@@ -8,8 +8,64 @@ def doc_path_to_url(path)
   path.sub("doc/", "https://docs.gitlab.com/ee/").sub("index.md", "").sub(".md", "/")
 end
 
+docs_paths_to_review = helper.changes_by_category[:docs]
+
+# Some docs do not need a review from a Technical Writer.
+# In these cases, we'll output a message specific to the section.
+sections_with_no_tw_review = {
+  'doc/solutions' => [],
+  'doc/development' => []
+}.freeze
+
+# One exception to the exceptions above: Technical Writing docs should get a TW review.
+TW_DOCS_PATH = 'doc/development/documentation'
+
+docs_paths_to_review.reject! do |doc|
+  section_with_no_tw_review = sections_with_no_tw_review.keys.find { |skip_path| doc.start_with?(skip_path) && !doc.start_with?(TW_DOCS_PATH) }
+  next unless section_with_no_tw_review
+
+  sections_with_no_tw_review[section_with_no_tw_review] << doc
+
+  true
+end
+
+SOLUTIONS_LABELS = %w[Solutions].freeze
+DEVELOPMENT_LABELS = ['docs::improvement', 'development guidelines'].freeze
+
+def add_labels(labels)
+  helper.labels_to_add.concat(%w[documentation type::maintenance maintenance::refactor] + labels)
+end
+
+SOLUTIONS_MESSAGE = <<~MSG
+This MR contains docs in the /solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
+MSG
+
+DEVELOPMENT_MESSAGE = <<~MSG
+This MR contains docs in the /development directory. Any Maintainer, other than the author, can merge. You do not need tech writer review.
+MSG
+
+# For regular pages, prompt for a TW review
+DOCS_UPDATE_SHORT_MESSAGE = <<~MSG
+This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.
+MSG
+
+DOCS_UPDATE_LONG_MESSAGE = <<~MSG.freeze
+## Documentation review
+
+The following files require a review from a technical writer:
+
+* #{docs_paths_to_review.map { |path| "`#{path}` ([Link to current live version](#{doc_path_to_url(path)}))" }.join("\n* ")}
+
+The review does not need to block merging this merge request. See the:
+
+- [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
+- The [Technical Writer assigned](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
+- [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
+MSG
+
+# Documentation should be updated for feature::addition and feature::enhancement
 DOCUMENTATION_UPDATE_MISSING = <<~MSG
-~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
+~"feature::addition" and ~"feature::enhancement" merge requests normally have a documentation change. Consider adding a documentation update or confirming the documentation plan with the [Technical Writer counterpart](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 For more information, see:
 
@@ -17,36 +73,20 @@ For more information, see:
 - The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
 MSG
 
-docs_paths_to_review = helper.changes_by_category[:docs]
+# Output messages
+warn(DOCUMENTATION_UPDATE_MISSING) if docs_paths_to_review.empty? && feature_mr?
 
-# Some docs do not need a review from a technical writer
-SKIP_TW_REVIEW_PATHS = ['doc/solutions'].freeze
-
-docs_paths_to_review.delete_if do |item|
-  SKIP_TW_REVIEW_PATHS.any? { |skip_path| item.start_with?(skip_path) }
+if sections_with_no_tw_review["doc/solutions"].any?
+  add_labels(SOLUTIONS_LABELS)
+  message(SOLUTIONS_MESSAGE)
 end
 
-# Documentation should be updated for feature::addition and feature::enhancement
-if docs_paths_to_review.empty?
-  warn(DOCUMENTATION_UPDATE_MISSING) if feature_mr?
-
-  return
+if sections_with_no_tw_review["doc/development"].any?
+  add_labels(DEVELOPMENT_LABELS)
+  message(DEVELOPMENT_MESSAGE)
 end
 
-message 'This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.'
-
-return unless helper.ci?
-
-markdown(<<~MARKDOWN)
-  ## Documentation review
-
-  The following files require a review from a technical writer:
-
-  * #{docs_paths_to_review.map { |path| "`#{path}` ([Link to current live version](#{doc_path_to_url(path)}))" }.join("\n* ")}
-
-  The review does not need to block merging this merge request. See the:
-
-  - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
-  - The [Technical Writer assigned](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
-  - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
-MARKDOWN
+unless docs_paths_to_review.empty?
+  message(DOCS_UPDATE_SHORT_MESSAGE)
+  markdown(DOCS_UPDATE_LONG_MESSAGE)
+end

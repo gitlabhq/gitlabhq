@@ -42,7 +42,7 @@ RSpec.describe 'projects/pages/_pages_settings', feature_category: :pages do
 
         render
 
-        expect(rendered).to have_content('Use multiple versions')
+        expect(rendered).to have_content('Use multiple deployments')
       end
     end
   end

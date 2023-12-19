@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::MatchingMergeRequest do
+RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_code_management do
   describe '#match?' do
     let_it_be(:newrev) { '012345678' }
     let_it_be(:target_branch) { 'feature' }

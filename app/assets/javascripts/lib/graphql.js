@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client/core';
+import { BatchHttpLink } from '@apollo/client/link/batch-http';
 import { createUploadLink } from 'apollo-upload-client';
 import { persistCache } from 'apollo3-cache-persist';
 import ActionCableLink from '~/actioncable_link';
@@ -64,8 +65,7 @@ export const typePolicies = {
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {
-  /* eslint-disable-next-line no-unused-vars */
-  const [_, params] = url.split(path);
+  const [, params] = url.split(path);
 
   if (!params) {
     return url;
@@ -159,7 +159,15 @@ function createApolloClient(resolvers = {}, config = {}) {
     return fetch(stripWhitespaceFromQuery(url, uri), options);
   };
 
-  const requestLink = new HttpLink({ ...httpOptions, fetch: fetchIntervention });
+  const requestLink = ApolloLink.split(
+    (operation) => operation.getContext().batchKey,
+    new BatchHttpLink({
+      ...httpOptions,
+      batchKey: (operation) => operation.getContext().batchKey,
+      fetch: fetchIntervention,
+    }),
+    new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
+  );
 
   const uploadsLink = ApolloLink.split(
     (operation) => operation.getContext().hasUpload,

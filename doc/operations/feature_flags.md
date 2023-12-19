@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Feature flags **(FREE ALL)**
@@ -431,7 +431,7 @@ The polling rate is configurable in SDKs. Provided that all clients are requesti
 For applications looking for more scalable solution, you should use [Unleash Proxy](#unleash-proxy-example).
 On GitLab.com, you should use Unleash Proxy to reduce the chance of being rate limited across endpoints.
 This proxy server sits between the server and clients. It makes requests to the server on behalf of the client groups,
-so the number of outbound requests can be greatly reduced.
+so the number of outbound requests can be greatly reduced. If you still get `429` responses, increase the `UNLEASH_FETCH_INTERVAL` value in the Unleash Proxy.
 
 There is also an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295472) to give more
 capacity to the current rate limit.

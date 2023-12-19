@@ -87,6 +87,12 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       [english, with_accent, japanese].each(&:update_search_data!)
     end
 
+    it 'builds a search query using `search_vector` from the search_data table' do
+      sql = model_class.pg_full_text_search('test').to_sql
+
+      expect(sql).to include('"issue_search_data"."search_vector" @@ to_tsquery')
+    end
+
     it 'searches across all fields' do
       expect(model_class.pg_full_text_search('title english')).to contain_exactly(english, japanese)
     end
@@ -155,6 +161,14 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
 
         expect(model_class.pg_full_text_search('rain')).to contain_exactly(with_xml)
       end
+    end
+  end
+
+  describe '.pg_full_text_search_in_model' do
+    it 'builds a search query using `search_vector` from the model table' do
+      sql = model_class.pg_full_text_search_in_model('test').to_sql
+
+      expect(sql).to include('"issues"."search_vector" @@ to_tsquery')
     end
   end
 

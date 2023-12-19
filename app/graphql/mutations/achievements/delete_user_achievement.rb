@@ -24,10 +24,6 @@ module Mutations
         result = ::Achievements::DestroyUserAchievementService.new(current_user, user_achievement).execute
         { user_achievement: result.payload, errors: result.errors }
       end
-
-      def find_object(id:)
-        GitlabSchema.object_from_id(id, expected_type: ::Achievements::UserAchievement)
-      end
     end
   end
 end

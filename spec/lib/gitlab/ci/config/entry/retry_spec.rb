@@ -11,8 +11,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
   end
 
   shared_context 'when retry value is a hash', :hash do
-    let(:config) { { max: max, when: public_send(:when) }.compact }
+    let(:config) { { max: max, when: public_send(:when), exit_codes: public_send(:exit_codes) }.compact }
     let(:when) {}
+    let(:exit_codes) {}
     let(:max) {}
   end
 
@@ -43,6 +44,44 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
           expect(value).to eq(when: %w[unknown_failure runner_system_failure])
         end
       end
+
+      context 'and `exit_codes` is an integer' do
+        let(:exit_codes) { 255 }
+
+        it 'returns an array of exit_codes' do
+          expect(value).to eq(exit_codes: [255])
+        end
+      end
+
+      context 'and `exit_codes` is an array' do
+        let(:exit_codes) { [255, 142] }
+
+        it 'returns an array of exit_codes' do
+          expect(value).to eq(exit_codes: [255, 142])
+        end
+      end
+    end
+
+    context 'when ci_retry_on_exit_codes feature flag is disabled', :hash do
+      before do
+        stub_feature_flags(ci_retry_on_exit_codes: false)
+      end
+
+      context 'when `exit_codes` is an integer' do
+        let(:exit_codes) { 255 }
+
+        it 'deletes the attribute exit_codes' do
+          expect(value).to eq({})
+        end
+      end
+
+      context 'when `exit_codes` is an array' do
+        let(:exit_codes) { [255, 137] }
+
+        it 'deletes the attribute exit_codes' do
+          expect(value).to eq({})
+        end
+      end
     end
   end
 
@@ -59,6 +98,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
       context 'when it is a hash', :hash do
         context 'with max' do
           let(:max) { 2 }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'with numeric exit_codes' do
+          let(:exit_codes) { 255 }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        context 'with hash values exit_codes' do
+          let(:exit_codes) { [255, 142] }
 
           it 'is valid' do
             expect(entry).to be_valid
@@ -202,12 +257,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
           end
         end
 
-        context 'iwth max too high' do
+        context 'with max too high' do
           let(:max) { 10 }
 
           it 'returns error about value too high' do
             expect(entry).not_to be_valid
             expect(entry.errors).to include 'retry max must be less than or equal to 2'
+          end
+        end
+
+        context 'with exit_codes in wrong format' do
+          let(:exit_codes) { true }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'retry exit codes should be an array of integers or an integer'
+          end
+        end
+
+        context 'with exit_codes in wrong array format' do
+          let(:exit_codes) { ['string 1', 'string 2'] }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'retry exit codes should be an array of integers or an integer'
+          end
+        end
+
+        context 'with exit_codes in wrong mixed array format' do
+          let(:exit_codes) { [255, '155'] }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'retry exit codes should be an array of integers or an integer'
           end
         end
 

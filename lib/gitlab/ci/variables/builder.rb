@@ -34,6 +34,25 @@ module Gitlab
           end
         end
 
+        def unprotected_scoped_variables(job, expose_project_variables:, expose_group_variables:, environment:, dependencies:)
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            variables.concat(predefined_variables(job, environment))
+            variables.concat(project.predefined_variables)
+            variables.concat(pipeline_variables_builder.predefined_variables)
+            variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
+            variables.concat(kubernetes_variables(environment: environment, job: job))
+            variables.concat(job.yaml_variables)
+            variables.concat(user_variables(job.user))
+            variables.concat(job.dependency_variables) if dependencies
+            variables.concat(secret_instance_variables)
+            variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables))
+            variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables))
+            variables.concat(pipeline.variables)
+            variables.concat(pipeline_schedule_variables)
+            variables.concat(release_variables)
+          end
+        end
+
         def config_variables
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             break variables unless project
@@ -91,21 +110,21 @@ module Gitlab
           end
         end
 
-        def secret_group_variables(environment:)
-          strong_memoize_with(:secret_group_variables, environment) do
+        def secret_group_variables(environment:, include_protected_vars: protected_ref?)
+          strong_memoize_with(:secret_group_variables, environment, include_protected_vars) do
             group_variables_builder
               .secret_variables(
                 environment: environment,
-                protected_ref: protected_ref?)
+                protected_ref: include_protected_vars)
           end
         end
 
-        def secret_project_variables(environment:)
-          strong_memoize_with(:secret_project_variables, environment) do
+        def secret_project_variables(environment:, include_protected_vars: protected_ref?)
+          strong_memoize_with(:secret_project_variables, environment, include_protected_vars) do
             project_variables_builder
               .secret_variables(
                 environment: environment,
-                protected_ref: protected_ref?)
+                protected_ref: include_protected_vars)
           end
         end
 
@@ -183,3 +202,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Variables::Builder.prepend_mod_with('Gitlab::Ci::Variables::Builder')

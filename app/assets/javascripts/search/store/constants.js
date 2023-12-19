@@ -39,3 +39,7 @@ export const ICON_MAP = {
 export const ZOEKT_SEARCH_TYPE = 'zoekt';
 export const ADVANCED_SEARCH_TYPE = 'advanced';
 export const BASIC_SEARCH_TYPE = 'basic';
+
+export const SEARCH_LEVEL_GLOBAL = 'global';
+export const SEARCH_LEVEL_PROJECT = 'project';
+export const SEARCH_LEVEL_GROUP = 'group';

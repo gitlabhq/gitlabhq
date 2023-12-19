@@ -92,7 +92,7 @@ RSpec.describe JwtController, feature_category: :system_access do
         context 'project with enabled CI' do
           subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-          it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters.merge(auth_type: :build)).permit!) }
+          it { expect(service_class).to have_received(:new).with(project, user, ActionController::Parameters.new(parameters.merge(auth_type: :build, raw_token: build.token)).permit!) }
 
           it_behaves_like 'user logging'
         end
@@ -119,7 +119,7 @@ RSpec.describe JwtController, feature_category: :system_access do
               .with(
                 nil,
                 nil,
-                ActionController::Parameters.new(parameters.merge(deploy_token: deploy_token, auth_type: :deploy_token)).permit!
+                ActionController::Parameters.new(parameters.merge(deploy_token: deploy_token, auth_type: :deploy_token, raw_token: deploy_token.token)).permit!
               )
           end
 
@@ -144,7 +144,7 @@ RSpec.describe JwtController, feature_category: :system_access do
               .with(
                 nil,
                 user,
-                ActionController::Parameters.new(parameters.merge(auth_type: :personal_access_token)).permit!
+                ActionController::Parameters.new(parameters.merge(auth_type: :personal_access_token, raw_token: pat.token)).permit!
               )
           end
 
@@ -160,7 +160,7 @@ RSpec.describe JwtController, feature_category: :system_access do
 
         subject! { get '/jwt/auth', params: parameters, headers: headers }
 
-        it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!) }
+        it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap, raw_token: user.password)).permit!) }
 
         it_behaves_like 'rejecting a blocked user'
 
@@ -180,7 +180,7 @@ RSpec.describe JwtController, feature_category: :system_access do
             ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
-          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
+          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap, raw_token: user.password)) }
 
           it_behaves_like 'user logging'
         end
@@ -197,7 +197,7 @@ RSpec.describe JwtController, feature_category: :system_access do
             ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
-          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
+          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap, raw_token: user.password)) }
         end
 
         context 'when user has 2FA enabled' do
@@ -274,6 +274,8 @@ RSpec.describe JwtController, feature_category: :system_access do
     let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :private, group: group) }
+    let_it_be(:bot_user) { create(:user, :project_bot) }
+    let_it_be(:group_access_token) { create(:personal_access_token, :dependency_proxy_scopes, user: bot_user) }
     let_it_be(:group_deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
     let_it_be(:gdeploy_token) { create(:group_deploy_token, deploy_token: group_deploy_token, group: group) }
     let_it_be(:project_deploy_token) { create(:deploy_token, :project, :dependency_proxy_scopes) }
@@ -311,6 +313,48 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:credential_password) { user.password }
 
       it_behaves_like 'with valid credentials'
+    end
+
+    context 'with group access token' do
+      let(:credential_user) { group_access_token.user.username }
+      let(:credential_password) { group_access_token.token }
+
+      context 'with the required scopes' do
+        it_behaves_like 'with valid credentials'
+        it_behaves_like 'a token that expires today'
+
+        context 'revoked' do
+          before do
+            group_access_token.update!(revoked: true)
+          end
+
+          it_behaves_like 'returning response status', :unauthorized
+        end
+
+        context 'expired' do
+          before do
+            group_access_token.update!(expires_at: Date.yesterday)
+          end
+
+          it_behaves_like 'returning response status', :unauthorized
+        end
+      end
+
+      context 'without the required scopes' do
+        before do
+          group_access_token.update!(scopes: [::Gitlab::Auth::READ_REPOSITORY_SCOPE])
+        end
+
+        it_behaves_like 'returning response status', :forbidden
+
+        context 'packages_dependency_proxy_containers_scope_check disabled' do
+          before do
+            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
+          end
+
+          it_behaves_like 'with valid credentials'
+        end
+      end
     end
 
     context 'with group deploy token' do

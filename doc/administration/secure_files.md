@@ -1,7 +1,7 @@
 ---
 stage: Mobile
 group: Mobile DevOps
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Secure Files administration **(FREE SELF)**
@@ -30,7 +30,7 @@ Secure Files to reduce disk space, or to remove access to the feature.
 
 To disable Secure Files, follow the steps below according to your installation.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

@@ -1,5 +1,6 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Tracking from '~/tracking';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
 
 const TRACKING_EVENT_NAME = 'view_wiki_page';
@@ -72,6 +73,6 @@ export default class Wikis {
   }
 
   static initShortcuts() {
-    new ShortcutsWiki(); // eslint-disable-line no-new
+    addShortcutsExtension(ShortcutsWiki);
   }
 }

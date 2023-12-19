@@ -8,6 +8,10 @@ RSpec.describe StatAnchorsHelper do
   describe '#stat_anchor_attrs' do
     subject { helper.stat_anchor_attrs(anchor) }
 
+    before do
+      stub_feature_flags(project_overview_reorg: false)
+    end
+
     context 'when anchor is a link' do
       let(:anchor) { anchor_klass.new(true) }
 

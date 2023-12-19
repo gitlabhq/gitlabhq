@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectRepository do
+RSpec.describe ProjectRepository, feature_category: :source_code_management do
   describe 'associations' do
     it { is_expected.to belong_to(:shard) }
     it { is_expected.to belong_to(:project) }
@@ -23,6 +23,30 @@ RSpec.describe ProjectRepository do
 
     it 'returns nil when it does not find the project' do
       expect(described_class.find_project('@@unexisting/path/to/project')).to be_nil
+    end
+  end
+
+  describe '#object_format' do
+    subject { project_repository.object_format }
+
+    let(:project_repository) { build(:project_repository, object_format: object_format) }
+
+    context 'when object format is sha1' do
+      let(:object_format) { 'sha1' }
+
+      it { is_expected.to eq 'sha1' }
+    end
+
+    context 'when object format is sha256' do
+      let(:object_format) { 'sha256' }
+
+      it { is_expected.to eq 'sha256' }
+    end
+
+    context 'when object format is not set' do
+      let(:project_repository) { build(:project_repository) }
+
+      it { is_expected.to eq 'sha1' }
     end
   end
 end

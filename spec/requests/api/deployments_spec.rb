@@ -161,24 +161,56 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
   end
 
   describe 'GET /projects/:id/deployments/:deployment_id' do
-    let(:project)     { deployment.environment.project }
-    let!(:deployment) { create(:deployment, :success) }
+    let_it_be(:deployment_with_bridge) { create(:deployment, :with_bridge, :success) }
+    let_it_be(:deployment_with_build) { create(:deployment, :success) }
 
     context 'as a member of the project' do
-      it 'returns the projects deployment' do
-        get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
+      shared_examples "returns project deployments" do
+        let(:project) { deployment.environment.project }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['sha']).to match /\A\h{40}\z/
-        expect(json_response['id']).to eq(deployment.id)
+        it 'returns the expected response' do
+          get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['sha']).to match /\A\h{40}\z/
+          expect(json_response['id']).to eq(deployment.id)
+        end
+      end
+
+      context 'when the deployable is a build' do
+        it_behaves_like 'returns project deployments' do
+          let!(:deployment) { deployment_with_build }
+        end
+      end
+
+      context 'when the deployable is a bridge' do
+        it_behaves_like 'returns project deployments' do
+          let!(:deployment) { deployment_with_bridge }
+        end
       end
     end
 
     context 'as non member' do
-      it 'returns a 404 status code' do
-        get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
+      shared_examples 'deployment will not be found' do
+        let(:project) { deployment.environment.project }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'returns a 404 status code' do
+          get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the deployable is a build' do
+        it_behaves_like 'deployment will not be found' do
+          let!(:deployment) { deployment_with_build }
+        end
+      end
+
+      context 'when the deployable is a bridge' do
+        it_behaves_like 'deployment will not be found' do
+          let!(:deployment) { deployment_with_bridge }
+        end
       end
     end
   end
@@ -227,6 +259,22 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response['sha']).to eq(sha)
         expect(json_response['ref']).to eq('master')
         expect(json_response['environment']['name']).to eq('production')
+      end
+
+      it 'errors when creating a deployment with an invalid ref', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'doesnotexist',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "ref" => ["The branch or tag does not exist"] })
       end
 
       it 'errors when creating a deployment with an invalid name' do

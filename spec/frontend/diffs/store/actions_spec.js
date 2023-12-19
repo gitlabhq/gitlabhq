@@ -631,7 +631,7 @@ describe('DiffsStoreActions', () => {
 
   describe('prefetchFileNeighbors', () => {
     it('dispatches two requests to prefetch the next/previous files', () => {
-      testAction(
+      return testAction(
         diffActions.prefetchFileNeighbors,
         {},
         {
@@ -1327,8 +1327,13 @@ describe('DiffsStoreActions', () => {
           await waitForPromises();
 
           expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
-          expect(dispatch).toHaveBeenCalledWith('scrollToFile', file);
-          expect(dispatch).toHaveBeenCalledTimes(2);
+          expect(commonUtils.historyPushState).toHaveBeenCalledWith(new URL(`${TEST_HOST}/#test`), {
+            skipScrolling: true,
+          });
+          expect(commonUtils.scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
+            duration: 0,
+          });
+          expect(dispatch).toHaveBeenCalledTimes(1);
         });
 
         it('shows an alert when there was an error fetching the file', async () => {
@@ -2057,11 +2062,48 @@ describe('DiffsStoreActions', () => {
 
   describe('toggleFileCommentForm', () => {
     it('commits TOGGLE_FILE_COMMENT_FORM', () => {
+      const file = getDiffFileMock();
       return testAction(
         diffActions.toggleFileCommentForm,
-        'path',
-        {},
-        [{ type: types.TOGGLE_FILE_COMMENT_FORM, payload: 'path' }],
+        file.file_path,
+        {
+          diffFiles: [file],
+        },
+        [
+          { type: types.TOGGLE_FILE_COMMENT_FORM, payload: file.file_path },
+          {
+            type: types.SET_FILE_COLLAPSED,
+            payload: { filePath: file.file_path, collapsed: false },
+          },
+        ],
+        [],
+      );
+    });
+
+    it('always opens if file is collapsed', () => {
+      const file = {
+        ...getDiffFileMock(),
+        viewer: {
+          ...getDiffFileMock().viewer,
+          manuallyCollapsed: true,
+        },
+      };
+      return testAction(
+        diffActions.toggleFileCommentForm,
+        file.file_path,
+        {
+          diffFiles: [file],
+        },
+        [
+          {
+            type: types.SET_FILE_COMMENT_FORM,
+            payload: { filePath: file.file_path, expanded: true },
+          },
+          {
+            type: types.SET_FILE_COLLAPSED,
+            payload: { filePath: file.file_path, collapsed: false },
+          },
+        ],
         [],
       );
     });

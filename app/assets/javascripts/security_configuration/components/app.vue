@@ -1,42 +1,20 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import Api from '~/api';
-import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
-import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
-import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
-} from './constants';
+  i18n,
+} from '../constants';
+import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
+import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
-
-export const i18n = {
-  configurationHistory: s__('SecurityConfiguration|Configuration history'),
-  securityTesting: s__('SecurityConfiguration|Security testing'),
-  latestPipelineDescription: s__(
-    `SecurityConfiguration|The status of the tools only applies to the
-     default branch and is based on the %{linkStart}latest pipeline%{linkEnd}.`,
-  ),
-  description: s__(
-    `SecurityConfiguration|Once you've enabled a scan for the default branch,
-     any subsequent feature branch you create will include the scan. An enabled
-     scanner will not be reflected as such until the pipeline has been
-     successfully executed and it has generated valid artifacts.`,
-  ),
-  securityConfiguration: __('Security configuration'),
-  vulnerabilityManagement: s__('SecurityConfiguration|Vulnerability Management'),
-  securityTraining: s__('SecurityConfiguration|Security training'),
-  securityTrainingDescription: s__(
-    'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.',
-  ),
-  securityTrainingDoc: s__('SecurityConfiguration|Learn more about vulnerability training'),
-};
 
 export default {
   i18n,

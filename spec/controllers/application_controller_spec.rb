@@ -19,7 +19,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
       expect(user.ldap_user?).to be_falsey
       allow(controller).to receive(:current_user).and_return(user)
       expect(controller).to receive(:redirect_to)
-      expect(controller).to receive(:new_profile_password_path)
+      expect(controller).to receive(:new_user_settings_password_path)
 
       controller.send(:check_password_expiration)
     end
@@ -470,7 +470,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
 
       enforce_terms
 
-      expect { get :index }.not_to exceed_query_limit(control)
+      expect { get :index }.not_to exceed_query_limit(control.count).with_threshold(1)
     end
 
     context 'when terms are enforced' do

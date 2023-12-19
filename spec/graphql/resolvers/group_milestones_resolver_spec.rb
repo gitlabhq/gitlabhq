@@ -102,76 +102,7 @@ RSpec.describe Resolvers::GroupMilestonesResolver, feature_category: :team_plann
       end
     end
 
-    context 'when including descendant milestones in a public group' do
-      let_it_be(:group) { create(:group, :public) }
-
-      let(:args) { { include_descendants: true } }
-
-      it 'finds milestones only in accessible projects and groups' do
-        accessible_group = create(:group, :private, parent: group)
-        accessible_project = create(:project, group: accessible_group)
-        accessible_group.add_developer(current_user)
-        inaccessible_group = create(:group, :private, parent: group)
-        inaccessible_project = create(:project, :private, group: group)
-        milestone1 = create(:milestone, group: group)
-        milestone2 = create(:milestone, group: accessible_group)
-        milestone3 = create(:milestone, project: accessible_project)
-        create(:milestone, group: inaccessible_group)
-        create(:milestone, project: inaccessible_project)
-
-        expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3])
-      end
-    end
-
-    describe 'include_descendants and include_ancestors' do
-      let_it_be(:parent_group) { create(:group, :public) }
-      let_it_be(:group) { create(:group, :public, parent: parent_group) }
-      let_it_be(:accessible_group) { create(:group, :private, parent: group) }
-      let_it_be(:accessible_project) { create(:project, group: accessible_group) }
-      let_it_be(:inaccessible_group) { create(:group, :private, parent: group) }
-      let_it_be(:inaccessible_project) { create(:project, :private, group: group) }
-      let_it_be(:milestone1) { create(:milestone, group: group) }
-      let_it_be(:milestone2) { create(:milestone, group: accessible_group) }
-      let_it_be(:milestone3) { create(:milestone, project: accessible_project) }
-      let_it_be(:milestone4) { create(:milestone, group: inaccessible_group) }
-      let_it_be(:milestone5) { create(:milestone, project: inaccessible_project) }
-      let_it_be(:milestone6) { create(:milestone, group: parent_group) }
-
-      before do
-        accessible_group.add_developer(current_user)
-      end
-
-      context 'when including neither ancestor or descendant milestones in a public group' do
-        let(:args) { {} }
-
-        it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args: args)).to match_array([milestone1])
-        end
-      end
-
-      context 'when including descendant milestones in a public group' do
-        let(:args) { { include_descendants: true } }
-
-        it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3])
-        end
-      end
-
-      context 'when including ancestor milestones in a public group' do
-        let(:args) { { include_ancestors: true } }
-
-        it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone6])
-        end
-      end
-
-      context 'when including both ancestor or descendant milestones in a public group' do
-        let(:args) { { include_descendants: true, include_ancestors: true } }
-
-        it 'finds milestones only in accessible projects and groups' do
-          expect(resolve_group_milestones(args: args)).to match_array([milestone1, milestone2, milestone3, milestone6])
-        end
-      end
-    end
+    # testing for include_descendants and include_ancestors moved into
+    # `spec/requests/api/graphql/milestone_spec.rb`
   end
 end

@@ -37,8 +37,12 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
 
 ## MR acceptance checklist
 
-This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability.
+**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
+It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
 
-* [ ] I have evaluated the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) for this MR.
+## After merge
+
+- [ ] Notify team members of the upgrade by creating an announcement in relevant Slack channels (`#backend` and `#development`)
+and Engineering Week In Review (EWIR).
 
 /label ~"type::maintenance" ~"maintenance::dependency"  ~backend ~"Engineering Productivity" ~"static code analysis" 

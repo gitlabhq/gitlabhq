@@ -3,7 +3,7 @@ table_name: ci_runner_machines
 classes:
 - Ci::RunnerManager
 feature_categories:
-- runner_fleet
+- fleet_visibility
 description: Information about runner managers associated to Ci::Runner models
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107801
 milestone: '15.8'

@@ -28,7 +28,8 @@ module Gitlab
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
-        :committed_date, :committer_name, :committer_email, :trailers, :referenced_by
+        :committed_date, :committer_name, :committer_email,
+        :trailers, :extended_trailers, :referenced_by
       ].freeze
 
       attr_accessor(*SERIALIZE_KEYS)
@@ -432,7 +433,15 @@ module Gitlab
         @committer_email = commit.committer.email.dup
         @parent_ids = Array(commit.parent_ids)
         @trailers = commit.trailers.to_h { |t| [t.key, t.value] }
+        @extended_trailers = parse_commit_trailers(commit.trailers)
         @referenced_by = Array(commit.referenced_by)
+      end
+
+      # Turn the commit trailers into a hash of key: [value, value] arrays
+      def parse_commit_trailers(trailers)
+        trailers.each_with_object({}) do |trailer, hash|
+          (hash[trailer.key] ||= []) << trailer.value
+        end
       end
 
       # Gitaly provides a UNIX timestamp in author.date.seconds, and a timezone

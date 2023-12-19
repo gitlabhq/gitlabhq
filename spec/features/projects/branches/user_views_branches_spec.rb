@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views branches", :js, feature_category: :groups_and_projects do
+RSpec.describe "User views branches", :js, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
 

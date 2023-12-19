@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
+  include AutocompleteSources::ExpiresIn
+
   before_action :authorize_read_milestone!, only: :milestones
   before_action :authorize_read_crm_contact!, only: :contacts
 
@@ -13,11 +15,6 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :contacts]
 
   def members
-    if Feature.enabled?(:cache_autocomplete_sources_members, current_user)
-      # Cache the response on the frontend
-      expires_in 3.minutes
-    end
-
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
   end
 

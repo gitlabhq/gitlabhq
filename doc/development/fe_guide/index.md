@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Frontend Development Guidelines
@@ -11,7 +11,7 @@ across the GitLab frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, please read  [this explanation](vue.md#when-to-add-vue-application).
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, read [this explanation](vue.md#when-to-add-vue-application).
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -19,19 +19,19 @@ Be wary of [the limitations that come with using Hamlit](https://github.com/k0ku
 
 <!-- vale gitlab.Spelling = YES -->
 
-When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS utils which are packaged inside the `gitlab-ui` project and can be seen [in the repository](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) or on [UNPKG](https://unpkg.com/browse/@gitlab/ui@latest/src/scss/utility-mixins/). Please favor using these before adding or using any SCSS classes.
+When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS utils which are packaged inside the `gitlab-ui` project and can be seen [in the repository](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) or on [UNPKG](https://unpkg.com/browse/@gitlab/ui@latest/src/scss/utility-mixins/). Favor using these before adding or using any SCSS classes.
 
 We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel](https://babeljs.io/) and ES module support through [webpack](https://webpack.js.org/).
 
-When making API calls, we use [GraphQL](graphql.md) as [the first choice](../../api/graphql/index.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
+When making API calls, we use [GraphQL](graphql.md) as [the first choice](../api_graphql_styleguide.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
 
 We use [Apollo](https://www.apollographql.com/) as our global state manager and [GraphQL client](graphql.md).
 [VueX](vuex.md) is still in use across the codebase, but it is no longer the recommended global state manager.
 You should **not** [use VueX and Apollo together](graphql.md#using-with-vuex),
 and should [avoid adding new VueX stores](migrating_from_vuex.md) whenever possible.
 
-For copy strings and translations, we have frontend utilities available. Please see the JavaScript section of [Preparing a page for translation](../i18n/externalization.md#javascript-files) for more information.
+For copy strings and translations, we have frontend utilities available. See the JavaScript section of [Preparing a page for translation](../i18n/externalization.md#javascript-files) for more information.
 
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our

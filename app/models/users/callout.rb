@@ -77,7 +77,9 @@ module Users
       vsd_feedback_banner: 75, # EE-only
       security_policy_protected_branch_modification: 76, # EE-only
       vulnerability_report_grouping: 77, # EE-only
-      new_nav_for_everyone_callout: 78
+      new_nav_for_everyone_callout: 78,
+      code_suggestions_ga_non_owner_alert: 79, # EE-only
+      duo_chat_callout: 80 # EE-only
     }
 
     validates :feature_name,

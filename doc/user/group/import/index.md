@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating GitLab groups **(FREE ALL)**
@@ -76,7 +76,7 @@ Estimating the duration of migration by direct transfer is difficult. The follow
   very different amounts of time to migrate if one of the projects has a lot more attachments, comments, and other items on the merge requests. Therefore, the number
   of merge requests on a project is a poor predictor of how long a project will take to migrate.
 
-There’s no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
+There's no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
 
 | Project resource type       | Average time (in seconds) to import a record |
 |:----------------------------|:---------------------------------------------|
@@ -113,6 +113,8 @@ If you are migrating large projects and encounter problems with timeouts or dura
 
 ### Limits
 
+> Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+
 Hardcoded limits apply on migration by direct transfer.
 
 | Limit       | Description                                                                                                                                                                     |
@@ -121,7 +123,6 @@ Hardcoded limits apply on migration by direct transfer.
 | 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                                                            |
 | 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
 | 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
-| 8 hours     | Time until migration times out.                                                                                                                                                 |
 
 [Configurable limits](../../../administration/settings/account_and_limit_settings.md) are also available.
 
@@ -173,9 +174,12 @@ To migrate groups by direct transfer:
   - For GitLab 15.0 and earlier source instances, the personal access token must
     have both the `api` and `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- Your must have a role on the destination namespace the enables you to
+- You must have a role in the destination namespace that enables you to
   [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
   namespace.
+- To import items stored in object storage, you must either:
+  - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
+  - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
 
 ### Prepare user accounts
 
@@ -201,7 +205,7 @@ Create the group you want to import to and connect the source GitLab instance:
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
      - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
-1. Enter the URL of a GitLab instance running GitLab 14.0 or later.
+1. Enter the base URL of a GitLab instance running GitLab 14.0 or later.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
@@ -226,6 +230,8 @@ ready for production use.
 
 ### Group import history
 
+> **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+
 You can view all groups migrated by you by direct transfer listed on the group import history page. This list includes:
 
 - Paths of source groups.
@@ -249,7 +255,7 @@ To view group import history:
 To review the results of an import:
 
 1. Go to the [Group import history page](#group-import-history).
-1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** status.
+1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** or **Partially completed** status.
 
 ### Migrated group items
 
@@ -433,7 +439,7 @@ Some project items are excluded from migration because they either:
   - Environments
   - Feature flags
   - Infrastructure Registry
-  - Package Registry
+  - Package registry
   - Pages domains
   - Remote mirrors
 
@@ -613,15 +619,14 @@ sure these users exist before importing the desired groups.
 
 ### Enable export for a group
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
 To enable import and export for a group:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In the **Import sources** section, select the checkboxes for the sources you want.
 
@@ -662,7 +667,7 @@ NOTE:
 The maximum import file size can be set by the administrator, default is `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the
 [Application settings API](../../../api/settings.md#change-application-settings) or the
-[Admin Area](../../admin_area/settings/account_and_limit_settings.md).
+[Admin Area](../../../administration/settings/account_and_limit_settings.md).
 Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
 ### Rate limits

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Downstream pipelines **(FREE ALL)**
@@ -671,9 +671,7 @@ the ones defined in the upstream project take precedence.
 
 ### Pass dotenv variables created in a job **(PREMIUM ALL)**
 
-You can pass variables to a downstream job with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
-and [`needs:project`](../yaml/index.md#needsproject). These variables are only available in
-the script of the job and can't be used to configure it, for example with `rules` or `artifact:paths`.
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 

@@ -6,7 +6,7 @@ module Integrations
 
     ATTRIBUTES = %i[
       section type placeholder choices value checkbox_label
-      title help if
+      title help if description
       non_empty_password_help
       non_empty_password_title
     ].concat(BOOLEAN_ATTRIBUTES).freeze
@@ -58,6 +58,10 @@ module Integrations
 
     TYPES.each do |type|
       define_method("#{type}?") { self[:type] == type }
+    end
+
+    def api_type
+      checkbox? ? ::API::Integrations::Boolean : String
     end
 
     private

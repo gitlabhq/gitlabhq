@@ -2,10 +2,6 @@
 
 module Ci
   class PipelineMessage < Ci::ApplicationRecord
-    include IgnorableColumns
-
-    ignore_column :pipeline_id_convert_to_bigint, remove_with: '16.5', remove_after: '2023-09-22'
-
     MAX_CONTENT_LENGTH = 10_000
 
     belongs_to :pipeline

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Host the GitLab product documentation **(FREE SELF)**
@@ -82,7 +82,7 @@ To run the GitLab product documentation website in a Docker container:
 
 You can use GitLab Pages to host the GitLab product documentation.
 
-Prerequisite:
+Prerequisites:
 
 - Ensure the Pages site URL does not use a subfolder. Because of the way the
   site is pre-compiled, the CSS and JavaScript files are relative to the

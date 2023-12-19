@@ -48,3 +48,5 @@ export const CVE_ID_REQUEST_BUTTON_I18N = {
 export const modelExperimentsHelpPath = helpPagePath(
   'user/project/ml/experiment_tracking/index.md',
 );
+
+export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/index.md');

@@ -1,0 +1,17 @@
+query getK8sDashboardReplicaSets($configuration: LocalConfiguration) {
+  k8sReplicaSets(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    status {
+      readyReplicas
+    }
+    spec {
+      replicas
+    }
+  }
+}

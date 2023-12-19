@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting SAML **(FREE ALL)**
@@ -222,7 +221,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
 
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity). 
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity).
 - Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
 
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
@@ -290,7 +289,7 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
     Example request:
 
     ```plaintext
-    curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
+    curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --header "Content-Type: application/scim+json" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
     ```
 
 ### 500 error after login **(FREE SELF)**
@@ -323,8 +322,7 @@ This message might indicate that you must add or remove a domain from your domai
 
 To implement this workaround:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
@@ -359,18 +357,21 @@ Additionally, see [troubleshooting users receiving a 404 after sign in](#users-r
 
 ## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
 
-This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute as shown in the following example:
+This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute.
+Ensure the SAML identity provider is configured to send a [supported mail attribute](../../../integration/saml.md).
+
+Examples:
 
 ```xml
 <Attribute Name="email">
-  <AttributeValue>user@domain.com‹/AttributeValue>
+  <AttributeValue>user@example.com‹/AttributeValue>
 </Attribute>
 ```
 
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` like in the following example are not supported. Remove this type of attribute name from the SAML response on the IDP side.
+Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/2005/05/identity/claims` and `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are supported by default beginning in GitLab 16.7.
 
 ```xml
-<Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/email">
-  <AttributeValue>user@domain.com‹/AttributeValue>
+<Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress">
+  <AttributeValue>user@example.com‹/AttributeValue>
 </Attribute>
 ```

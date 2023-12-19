@@ -349,6 +349,7 @@ Settings.pages['object_store']      = ObjectStoreSettings.legacy_parse(Settings.
 Settings.pages['local_store'] ||= {}
 Settings.pages['local_store']['path'] = Settings.absolute(Settings.pages['local_store']['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['local_store']['enabled'] = true if Settings.pages['local_store']['enabled'].nil?
+Settings.pages['namespace_in_path'] = false if Settings.pages['namespace_in_path'].nil?
 
 #
 # GitLab documentation
@@ -699,6 +700,9 @@ Settings.cron_jobs['deactivated_pages_deployments_delete_cron_worker']['job_clas
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] = 'Ci::ScheduleUnlockPipelinesInQueueCronWorker'
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker'] ||= {}
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class'] = 'Ci::Catalog::Resources::ProcessSyncEventsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -773,9 +777,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['open_ai_clear_conversations'] ||= {}
-  Settings.cron_jobs['open_ai_clear_conversations']['cron'] ||= '*/10 * * * *'
-  Settings.cron_jobs['open_ai_clear_conversations']['job_class'] = 'OpenAi::ClearConversationsWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
@@ -800,6 +801,9 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
+  Settings.cron_jobs['sync_service_token_worker'] ||= {}
+  Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} #{rand(5..6)} * * * UTC"
+  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::Ai::SyncServiceTokenWorker'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker'
@@ -872,6 +876,13 @@ Gitlab.ee do
   Settings.cron_jobs['timeout_pending_status_check_responses_worker'] ||= {}
   Settings.cron_jobs['timeout_pending_status_check_responses_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['timeout_pending_status_check_responses_worker']['job_class'] = 'ComplianceManagement::TimeoutPendingStatusCheckResponsesWorker'
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -883,16 +894,9 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
-    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
-    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
-    Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
     Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
-    Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'
@@ -951,6 +955,14 @@ Gitlab.ee do
 end
 
 #
+# Cloud connector
+#
+Gitlab.ee do
+  Settings['cloud_connector'] = {}
+  Settings.cloud_connector['base_url'] ||= ENV['CLOUD_CONNECTOR_BASE_URL'] || 'https://cloud.gitlab.com'
+end
+
+#
 # Zoekt credentials
 #
 Gitlab.ee do
@@ -971,22 +983,10 @@ Settings.repositories.storages.each do |key, storage|
   Settings.repositories.storages[key] = Gitlab::GitalyClient::StorageSettings.new(storage)
 end
 
-#
-# The repository_downloads_path is used to remove outdated repository
-# archives, if someone has it configured incorrectly, and it points
-# to the path where repositories are stored this can cause some
-# data-integrity issue. In this case, we sets it to the default
-# repository_downloads_path value.
-#
-repositories_storages          = Settings.repositories.storages.values
-repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
-repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
+repository_downloads_path = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 
-# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1255
-Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-  if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
-    Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
-  end
+if repository_downloads_path.blank?
+  Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 
 #

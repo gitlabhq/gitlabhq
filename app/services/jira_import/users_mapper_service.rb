@@ -63,6 +63,7 @@ module JiraImport
         relations << User.by_emails(jira_emails).select("users.id, users.name, users.username, emails.email as user_email")
 
         User.from_union(relations).id_in(project_member_ids).select("users.id as user_id, users.name as name, users.username as username, user_email")
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432608")
       end
     end
 

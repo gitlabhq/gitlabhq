@@ -1,4 +1,7 @@
 - external_url = @blob.external_url(@build)
+- external_url_text = external_url
+- if Gitlab.config.pages.namespace_in_path
+  - external_url_text = "#{external_url} (Experimental)"
 - page_title @path, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
 
 = render "projects/jobs/header"
@@ -9,7 +12,7 @@
   %h2= _("You are being redirected away from GitLab")
   %p= _("This page is hosted on GitLab pages but contains user-generated content and may contain malicious code. Do not accept unless you trust the author and source.")
 
-  = link_to external_url,
+  = link_to external_url_text,
       external_url,
       target: '_blank',
       title: _('Opens in a new window'),

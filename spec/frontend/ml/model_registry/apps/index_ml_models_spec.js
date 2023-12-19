@@ -1,12 +1,13 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
-import { TITLE_LABEL, NO_MODELS_LABEL } from '~/ml/model_registry/translations';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import SearchBar from '~/ml/model_registry/components/search_bar.vue';
-import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
+import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
+import EmptyState from '~/ml/model_registry/components/empty_state.vue';
 import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
 
 let wrapper;
@@ -18,17 +19,18 @@ const createWrapper = (
 
 const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);
 const findPagination = () => wrapper.findComponent(Pagination);
-const findEmptyLabel = () => wrapper.findByText(NO_MODELS_LABEL);
+const findEmptyState = () => wrapper.findComponent(EmptyState);
 const findSearchBar = () => wrapper.findComponent(SearchBar);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+const findBadge = () => wrapper.findComponent(GlBadge);
 
 describe('MlModelsIndex', () => {
   describe('empty state', () => {
     beforeEach(() => createWrapper({ models: [], pageInfo: defaultPageInfo }));
 
-    it('displays empty state when no experiment', () => {
-      expect(findEmptyLabel().exists()).toBe(true);
+    it('shows empty state', () => {
+      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.model);
     });
 
     it('does not show pagination', () => {
@@ -46,12 +48,16 @@ describe('MlModelsIndex', () => {
     });
 
     it('does not show empty state', () => {
-      expect(findEmptyLabel().exists()).toBe(false);
+      expect(findEmptyState().exists()).toBe(false);
     });
 
     describe('header', () => {
       it('displays the title', () => {
-        expect(findTitleArea().props('title')).toBe(TITLE_LABEL);
+        expect(findTitleArea().text()).toContain('Model registry');
+      });
+
+      it('displays the experiment badge', () => {
+        expect(findBadge().attributes().href).toBe('/help/user/project/ml/model_registry/index.md');
       });
 
       it('sets model metadata item to model count', () => {

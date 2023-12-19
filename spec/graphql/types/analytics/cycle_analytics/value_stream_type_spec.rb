@@ -7,5 +7,5 @@ RSpec.describe Types::Analytics::CycleAnalytics::ValueStreamType, feature_catego
 
   specify { expect(described_class).to require_graphql_authorizations(:read_cycle_analytics) }
 
-  specify { expect(described_class).to have_graphql_fields(:id, :name, :namespace, :project) }
+  specify { expect(described_class).to have_graphql_fields(:id, :name, :namespace, :project, :stages) }
 end

@@ -86,7 +86,7 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :team_planning do
     it "opens milestones dropdown for editing" do
       find('body').native.send_key('m')
 
-      expect(find('[data-testid="milestone-edit"]')).to have_selector('.gl-dropdown-inner')
+      expect(find_by_testid('milestone-edit')).to have_selector('.gl-dropdown-inner')
     end
   end
 

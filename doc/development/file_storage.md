@@ -1,14 +1,14 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # File Storage in GitLab
 
 We use the [CarrierWave](https://github.com/carrierwaveuploader/carrierwave) gem to handle file upload, store and retrieval.
 
-File uploads should be accelerated by workhorse, for details please refer to [uploads development documentation](uploads/index.md).
+File uploads should be accelerated by workhorse, for details refer to [uploads development documentation](uploads/index.md).
 
 There are many places where file uploading is used, according to contexts:
 

@@ -2,7 +2,7 @@
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 /**
  * Pipeline Stop Modal.

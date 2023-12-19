@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class DropSyncIndexCiJobArtifactsOnExpireAtForRemoval < Gitlab::Database::Migration[2.1]
   INDEX_NAME = 'index_ci_job_artifacts_on_expire_at_for_removal'
   CONDITIONS = 'locked = 0 AND expire_at IS NOT NULL'

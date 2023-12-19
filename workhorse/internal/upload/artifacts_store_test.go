@@ -311,11 +311,7 @@ func TestUploadHandlerMultipartUploadMaximumSizeFromApi(t *testing.T) {
 	response := testUploadArtifacts(t, contentType, ts.URL+Path, &contentBuffer)
 	require.Equal(t, http.StatusRequestEntityTooLarge, response.Code)
 
-	testhelper.Retry(t, 5*time.Second, func() error {
-		if os.GetObjectMD5(test.ObjectPath) == "" {
-			return nil
-		}
-
-		return fmt.Errorf("file is still present")
-	})
+	require.Eventually(t, func() bool {
+		return os.GetObjectMD5(test.ObjectPath) == ""
+	}, 5*time.Second, time.Millisecond, "file is still present")
 }

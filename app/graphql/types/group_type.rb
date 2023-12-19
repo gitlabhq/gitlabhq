@@ -21,7 +21,8 @@ module Types
     field :custom_emoji,
           type: Types::CustomEmojiType.connection_type,
           null: true,
-          description: 'Custom emoji within this namespace.',
+          resolver: Resolvers::CustomEmojiResolver,
+          description: 'Custom emoji in this namespace.',
           alpha: { milestone: '13.6' }
 
     field :share_with_group_lock,
@@ -274,6 +275,14 @@ module Types
           description: 'Find a work item by IID directly associated with the group. Returns `null` if the ' \
                        '`namespace_level_work_items` feature flag is disabled.'
 
+    field :work_item_state_counts,
+          Types::WorkItemStateCountsType,
+          null: true,
+          alpha: { milestone: '16.7' },
+          description: 'Counts of work items by state for the namespace. Returns `null` if the ' \
+                       '`namespace_level_work_items` feature flag is disabled.',
+          resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
+
     field :autocomplete_users,
           null: true,
           resolver: Resolvers::AutocompleteUsersResolver,
@@ -328,10 +337,6 @@ module Types
 
     def dependency_proxy_setting
       group.dependency_proxy_setting || group.create_dependency_proxy_setting
-    end
-
-    def custom_emoji
-      object.custom_emoji if Feature.enabled?(:custom_emoji)
     end
 
     private

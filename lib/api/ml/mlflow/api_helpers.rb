@@ -4,6 +4,8 @@ module API
   module Ml
     module Mlflow
       module ApiHelpers
+        OUTER_QUOTES_REGEXP = /^("|')|("|')?$/
+
         def check_api_read!
           not_found! unless can?(current_user, :read_model_experiments, user_project)
         end
@@ -16,6 +18,10 @@ module API
           not_found! unless can?(current_user, :read_model_registry, user_project)
         end
 
+        def check_api_model_registry_write!
+          unauthorized! unless can?(current_user, :write_model_registry, user_project)
+        end
+
         def resource_not_found!
           render_structured_api_error!({ error_code: 'RESOURCE_DOES_NOT_EXIST' }, 404)
         end
@@ -26,6 +32,10 @@ module API
 
         def invalid_parameter!(message = nil)
           render_structured_api_error!({ error_code: 'INVALID_PARAMETER_VALUE', message: message }, 400)
+        end
+
+        def update_failed!
+          render_structured_api_error!({ error_code: 'UPDATE_FAILED' }, 400)
         end
 
         def experiment_repository
@@ -75,6 +85,34 @@ module API
           }
         end
 
+        def model_order_params(params)
+          if params[:order_by].blank?
+            order_by = 'name'
+            sort = 'asc'
+          else
+            order_by, sort = params[:order_by].downcase.split(' ')
+            order_by = 'updated_at' if order_by == 'last_updated_timestamp'
+            sort ||= 'asc'
+          end
+
+          {
+            order_by: order_by,
+            sort: sort
+          }
+        end
+
+        def model_filter_params(params)
+          return {} if params[:filter].blank?
+
+          param, filter = params[:filter].split('=')
+
+          return {} unless param == 'name'
+
+          filter.gsub!(OUTER_QUOTES_REGEXP, '') unless filter.blank?
+
+          { name: filter }
+        end
+
         def find_experiment!(iid, name)
           experiment_repository.by_iid_or_name(iid: iid, name: name) || resource_not_found!
         end
@@ -87,13 +125,12 @@ module API
           ::Ml::FindModelService.new(project, name).execute || resource_not_found!
         end
 
-        def packages_url
-          path = api_v4_projects_packages_generic_package_version_path(
-            id: user_project.id, package_name: '', file_name: ''
-          )
-          path = path.delete_suffix('/package_version')
+        def find_model_version(project, name, version)
+          ::Ml::ModelVersions::GetModelVersionService.new(project, name, version).execute || resource_not_found!
+        end
 
-          expose_url(path)
+        def model
+          @model ||= find_model(user_project, params[:name])
         end
       end
     end

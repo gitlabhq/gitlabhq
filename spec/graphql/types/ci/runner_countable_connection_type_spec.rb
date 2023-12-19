@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::RunnerCountableConnectionType, feature_category: :runner_fleet do
+RSpec.describe Types::Ci::RunnerCountableConnectionType, feature_category: :fleet_visibility do
   it 'contains attributes related to a runner connection' do
     expected_fields = %w[count]
 

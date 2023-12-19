@@ -40,10 +40,26 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
       it_behaves_like 'listing all milestones'
 
-      context 'when include_parent_milestones is true' do
+      context 'when include_ancestors is true' do
+        let(:params) { { include_ancestors: true } }
+
+        it_behaves_like 'listing all milestones'
+      end
+
+      context 'when deprecated include_parent_milestones is true' do
         let(:params) { { include_parent_milestones: true } }
 
         it_behaves_like 'listing all milestones'
+      end
+
+      context 'when both include_parent_milestones and include_ancestors are specified' do
+        let(:params) { { include_ancestors: true, include_parent_milestones: true } }
+
+        it 'returns 400' do
+          get api(route, user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
     end
 
@@ -52,14 +68,14 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
         project.update!(namespace: group)
       end
 
-      context 'when include_parent_milestones is true' do
-        let(:params) { { include_parent_milestones: true } }
+      context 'when include_ancestors is true' do
+        let(:params) { { include_ancestors: true } }
         let(:milestones) { [group_milestone, ancestor_group_milestone, milestone, closed_milestone] }
 
         it_behaves_like 'listing all milestones'
 
         context 'when iids param is present' do
-          let(:params) { { include_parent_milestones: true, iids: [group_milestone.iid] } }
+          let(:params) { { include_ancestors: true, iids: [group_milestone.iid] } }
 
           it_behaves_like 'listing all milestones'
         end
@@ -75,7 +91,7 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
         end
 
         context 'when updated_before param is present' do
-          let(:params) { { updated_before: 12.hours.ago.iso8601, include_parent_milestones: true } }
+          let(:params) { { updated_before: 12.hours.ago.iso8601, include_ancestors: true } }
 
           it_behaves_like 'listing all milestones' do
             let(:milestones) { [group_milestone, ancestor_group_milestone, milestone] }
@@ -83,7 +99,7 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
         end
 
         context 'when updated_after param is present' do
-          let(:params) { { updated_after: 2.days.ago.iso8601, include_parent_milestones: true } }
+          let(:params) { { updated_after: 2.days.ago.iso8601, include_ancestors: true } }
 
           it_behaves_like 'listing all milestones' do
             let(:milestones) { [ancestor_group_milestone, closed_milestone] }

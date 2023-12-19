@@ -656,7 +656,7 @@ class ContainerRepository < ApplicationRecord
       tag.updated_at = raw_tag['updated_at']
       tag.total_size = raw_tag['size_bytes']
       tag.manifest_digest = raw_tag['digest']
-      tag.revision = raw_tag['config_digest'].to_s.split(':')[1]
+      tag.revision = raw_tag['config_digest'].to_s.split(':')[1] || ''
       tag
     end
   end

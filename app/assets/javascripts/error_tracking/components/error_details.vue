@@ -169,16 +169,10 @@ export default {
         {
           text: this.ignoreBtnLabel,
           action: this.onIgnoreStatusUpdate,
-          extraAttrs: {
-            'data-qa-selector': 'update_ignore_status_button',
-          },
         },
         {
           text: this.resolveBtnLabel,
           action: this.onResolveStatusUpdate,
-          extraAttrs: {
-            'data-qa-selector': 'update_resolve_status_button',
-          },
         },
       ];
     },
@@ -187,7 +181,7 @@ export default {
         text: __('View issue'),
         href: this.error.gitlabIssuePath,
         extraAttrs: {
-          'data-qa-selector': 'view_issue_button',
+          'data-testid': 'view-issue-button',
         },
       };
     },
@@ -342,7 +336,7 @@ export default {
             <gl-button
               v-if="error.gitlabIssuePath"
               class="gl-ml-3"
-              data-testid="view_issue_button"
+              data-testid="view-issue-button"
               :href="error.gitlabIssuePath"
               variant="confirm"
             >

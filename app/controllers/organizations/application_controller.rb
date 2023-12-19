@@ -28,6 +28,10 @@ module Organizations
       access_denied! unless can?(current_user, :read_organization, organization)
     end
 
+    def authorize_read_organization_user!
+      access_denied! unless can?(current_user, :read_organization_user, organization)
+    end
+
     def authorize_admin_organization!
       access_denied! unless can?(current_user, :admin_organization, organization)
     end

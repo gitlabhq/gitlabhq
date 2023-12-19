@@ -10,10 +10,10 @@ RSpec.describe 'User activates issue tracker', :js, feature_category: :integrati
   def fill_form(disable: false, skip_new_issue_url: false)
     click_active_checkbox if disable
 
-    fill_in 'service_project_url', with: url
-    fill_in 'service_issues_url', with: "#{url}/:id"
+    fill_in 'service-project_url', with: url
+    fill_in 'service-issues_url', with: "#{url}/:id"
 
-    fill_in 'service_new_issue_url', with: url unless skip_new_issue_url
+    fill_in 'service-new_issue_url', with: url unless skip_new_issue_url
   end
 
   shared_examples 'external issue tracker activation' do |tracker:, skip_new_issue_url: false, skip_test: false|

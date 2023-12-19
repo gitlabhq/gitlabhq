@@ -40,12 +40,6 @@ Metrics/BlockLength:
     Long blocks can be hard to read. Consider splitting the code into separate
     methods.
 
-Style/Documentation:
-  Enabled: true
-  Details: >
-    Adding documentation makes it easier to figure out what a migration is
-    supposed to do.
-
 Style/FrozenStringLiteralComment:
   Enabled: true
   Details: >-

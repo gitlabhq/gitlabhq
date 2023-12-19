@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: tutorial
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Using SSH keys with GitLab CI/CD **(FREE ALL)**
@@ -25,12 +24,15 @@ environment by extending your `.gitlab-ci.yml`, and it's a solution that works
 with any type of [executor](https://docs.gitlab.com/runner/executors/)
 (like Docker or shell, for example).
 
-## How it works
+## Create and use an SSH key
+
+To create and use an SSH key in GitLab CI/CD:
 
 1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
-1. Add the private key as a [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables) to
-   your project
-1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
+1. Add the private key as a [file type CI/CD variable](../variables/index.md#for-a-project) to
+   your project. The variable value must end in a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
+   at the end of the last line of the SSH key before saving it in the CI/CD settings.
+1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) in the job, which loads
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../user/project/deploy_keys/index.md)
@@ -52,9 +54,11 @@ to access it. In this case, you can use an SSH key pair.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [file type CI/CD variable](../variables/index.md).
-   As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
-   the content of your _private_ key that you created earlier.
+1. Create a new [file type CI/CD variable](../variables/index.md#for-a-project).
+   - In the **Key** field, enter `SSH_PRIVATE_KEY`.
+   - In the **Value** field, paste the content of your _private_ key from the key pair that you created earlier.
+   Make sure the file ends with a newline. To add a newline, press
+   <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
 
 1. Modify your `.gitlab-ci.yml` with a `before_script` action. In the following
    example, a Debian based image is assumed. Edit to your needs:
@@ -161,6 +165,8 @@ ssh-keyscan 10.0.2.2
 
 Create a new [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
 with `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
+Make sure the file ends with a newline. To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
+at the end of the last line of the SSH key before saving your changes.
 
 If you must connect to multiple servers, all the server host keys
 must be collected in the **Value** of the variable, one key per line.
@@ -202,11 +208,19 @@ before_script:
   # - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
 ```
 
-## Example project
+## Use SSH key without a file type CI/CD variable
 
-We have set up an [Example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/) for your convenience
-that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[shared runners](../runners/index.md).
+If you do not want to use a file type CI/CD variable, the [example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/)
+shows an alternative method. This method uses a regular CI/CD variable instead of
+the file type variable recommended above.
 
-Want to hack on it? Fork it, commit, and push your changes. In a few
-moments the changes is picked by a public runner and the job starts.
+## Troubleshooting
+
+### `Error loading key "/builds/path/SSH_PRIVATE_KEY": error in libcrypto` message
+
+This message can be returned if there is a formatting error with the SSH key.
+
+When saving the SSH key as a [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables),
+the value must end with a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
+at the end of the `-----END OPENSSH PRIVATE KEY-----` line of the SSH key before saving
+the variable.

@@ -8,7 +8,7 @@ class PipelineMetricsWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: 3
   include PipelineQueue
 
-  urgency :high
+  urgency :low
 
   def perform(pipeline_id)
     Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|

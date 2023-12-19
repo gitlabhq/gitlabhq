@@ -1,12 +1,14 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Task topic type
 
 A task gives instructions for how to complete a procedure.
+
+## Format
 
 Tasks should be in this format:
 
@@ -152,6 +154,8 @@ For example, `To create an issue:`
 As a best practice, if the task requires the user to have a role other than Guest,
 put the minimum role in the prerequisites. See [the Word list](../styleguide/word_list.md) for
 how to write the phrase for each role.
+
+`Prerequisites` must always be plural, even if the list includes only one item.
 
 ## Related topics
 

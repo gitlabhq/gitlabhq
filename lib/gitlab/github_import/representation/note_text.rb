@@ -8,13 +8,10 @@ module Gitlab
   module GithubImport
     module Representation
       class NoteText
-        include ToHash
-        include ExposeAttribute
+        include Representable
 
         MODELS_ALLOWLIST = [::Release, ::Note, ::Issue, ::MergeRequest].freeze
         ModelNotSupported = Class.new(StandardError)
-
-        attr_reader :attributes
 
         expose_attribute :record_db_id, :record_type, :text, :iid, :tag, :noteable_type
 

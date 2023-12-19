@@ -53,7 +53,7 @@ RSpec.describe Gitlab::BitbucketImport::AdvanceStageWorker, :clean_gitlab_redis_
 
       it 'schedules the next stage' do
         expect(import_state)
-          .to receive(:refresh_jid_expiration)
+          .to receive(:refresh_jid_expiration).twice
 
         expect(Gitlab::BitbucketImport::Stage::FinishImportWorker)
           .to receive(:perform_async)

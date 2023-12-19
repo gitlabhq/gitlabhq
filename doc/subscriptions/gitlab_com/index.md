@@ -1,8 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab SaaS subscription **(PREMIUM SAAS)**
@@ -42,7 +41,7 @@ To subscribe to GitLab SaaS:
 
 ## View your GitLab SaaS subscription
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -192,7 +191,7 @@ To add seats to a subscription:
 1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
 1. Review the **Purchase summary** section. The system lists the total price for all users on the
-   system and a credit for what you've already paid. You are only be charged for the net change.
+   system and a credit for what you've already paid. You are only charged for the net change.
 1. Enter your payment information.
 1. Select **Purchase seats**.
 
@@ -266,6 +265,17 @@ Only one namespace can be linked to a subscription.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
+
+### Transfer restrictions
+
+Changing the linked namespace is not supported for all subscription types.
+
+You cannot transfer:
+
+- A subscription with compute minutes.
+- An expired or trial subscription.
+- A subscription to a namespace which already has a Premium or Ultimate plan.
+- A subscription from a namespace with multiple subscriptions.
 
 ## Upgrade your GitLab SaaS subscription tier
 
@@ -356,7 +366,7 @@ If you have difficulty during the renewal process, contact the
 
 There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
-1. Turn off auto-renewal to avoid renewing at a higher seat quantity.
+1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
 1. [Manually renew](#renew-or-change-a-gitlab-saas-subscription) within 15 days of subscription renewal date, and specify the desired seat quantity.
 1. Work with the Sales team to renew your subscription.
 
@@ -365,7 +375,7 @@ There are several options to renew a subscription for fewer seats, as long as th
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
 For information about how to transfer ownership of the Customers Portal account to another person, see
-[Change account owner information](../customers_portal.md#change-account-owner-information).
+[Change profile owner information](../customers_portal.md#change-profile-owner-information).
 
 To add a secondary contact for your subscription:
 
@@ -401,7 +411,7 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage and transfer
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role.
 
@@ -456,6 +466,20 @@ To confirm the available storage, go to your group, and then select
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.
+
+## Enterprise Agile Planning
+
+GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
+DevSecOps platform where engineers build, test, secure, and deploy code.
+The add-on enables cross-team collaboration between developers and non-developers without having to
+purchase full GitLab licenses for non-engineering team members.
+With Enterprise Agile Planning seats, non-engineering team members can participate in planning
+workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
+executive dashboards to drive organizational visibility.
+
+### Purchase additional Enterprise Agile Planning seats
+
+Contact your [GitLab sales representative](https://about.gitlab.com/sales/) for more information.
 
 ## Contact Support
 

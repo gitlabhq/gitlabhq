@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Gitaly reference **(FREE SELF)**
@@ -89,7 +89,7 @@ certificate_path = '/home/git/cert.cert'
 key_path = '/home/git/key.pem'
 ```
 
-[Read more](configure_gitaly.md#enable-tls-support) about TLS in Gitaly.
+[Read more](tls_support.md) about TLS in Gitaly.
 
 ### Storage
 

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Polling interval multiplier **(FREE SELF)**
@@ -26,9 +26,8 @@ The default value (`1`) is recommended for the majority of GitLab installations.
 
 To adjust the polling interval multiplier:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Preferences**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Preferences**.
 1. Expand **Polling interval multiplier**.
 1. Set a value for the polling interval multiplier. This multiplier is applied to all resources at
    once.

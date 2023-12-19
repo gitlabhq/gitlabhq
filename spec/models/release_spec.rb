@@ -39,6 +39,24 @@ RSpec.describe Release, feature_category: :release_orchestration do
       end
     end
 
+    describe 'scopes' do
+      let_it_be(:another_project) { create(:project) }
+      let_it_be(:release) { create(:release, project: project, author: user, tag: 'v1') }
+      let_it_be(:another_release) { create(:release, project: another_project, tag: 'v2') }
+
+      describe '.for_projects' do
+        it 'returns releases for the given projects' do
+          expect(described_class.for_projects([project])).to eq([release])
+        end
+      end
+
+      describe '.by_tag' do
+        it 'returns releases with the given tag' do
+          expect(described_class.by_tag(release.tag)).to eq([release])
+        end
+      end
+    end
+
     context 'when description of a release is longer than the limit' do
       let(:description) { 'a' * (Gitlab::Database::MAX_TEXT_SIZE_LIMIT + 1) }
       let(:release) { build(:release, project: project, description: description) }
@@ -83,6 +101,56 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
         expect { release.save! }.not_to raise_error
       end
+    end
+  end
+
+  describe '#update_catalog_resource' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:release) { create(:release, project: project, author: user) }
+
+    context 'when the project is a catalog resource' do
+      before_all do
+        create(:ci_catalog_resource, project: project)
+      end
+
+      context 'when released_at is updated' do
+        it 'calls update_catalog_resource' do
+          expect(release).to receive(:update_catalog_resource).once
+
+          release.update!(released_at: release.released_at + 1.day)
+        end
+      end
+
+      context 'when the release is destroyed' do
+        it 'calls update_catalog_resource' do
+          expect(release).to receive(:update_catalog_resource).once
+
+          release.destroy!
+        end
+      end
+    end
+
+    context 'when the project is not a catalog resource' do
+      it 'does not call update_catalog_resource' do
+        expect(release).not_to receive(:update_catalog_resource)
+
+        release.update!(released_at: release.released_at + 1.day)
+        release.destroy!
+      end
+    end
+  end
+
+  describe 'tagged' do
+    # We only test for empty string since there's a not null constraint at the database level
+    it 'does not return the tagless release' do
+      empty_string_tag = create(:release, tag: 'v99.0.0')
+      empty_string_tag.update_column(:tag, '')
+
+      expect(described_class.tagged).not_to include(empty_string_tag)
+    end
+
+    it 'does return the tagged releases' do
+      expect(described_class.tagged).to include(release)
     end
   end
 

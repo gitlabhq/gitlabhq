@@ -36,7 +36,7 @@ module QA
 
                 For more help see documentation in
                 https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html
-                or ask for help on #quality channel on Slack (GitLab Team only).
+                or ask for help on #test-platform channel on Slack (GitLab Team only).
 
                 If you are not a Team Member, and you still need help to
                 contribute, please open an issue in GitLab QA issue tracker.

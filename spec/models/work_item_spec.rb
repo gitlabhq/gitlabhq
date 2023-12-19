@@ -17,6 +17,13 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         .with_foreign_key('work_item_id')
     end
 
+    it 'has one `dates_source`' do
+      is_expected.to have_one(:dates_source)
+        .class_name('WorkItems::DatesSource')
+        .with_foreign_key('issue_id')
+        .inverse_of(:work_item)
+    end
+
     it 'has many `work_item_children`' do
       is_expected.to have_many(:work_item_children)
         .class_name('WorkItem')
@@ -77,16 +84,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         it { is_expected.to eq(expected_order) }
       end
     end
-  end
-
-  describe '.in_namespaces' do
-    let(:group) { create(:group) }
-    let!(:group_work_item) { create(:work_item, namespace: group) }
-    let!(:project_work_item) { create(:work_item, project: reusable_project) }
-
-    subject { described_class.in_namespaces(group) }
-
-    it { is_expected.to contain_exactly(group_work_item) }
   end
 
   describe '.with_confidentiality_check' do

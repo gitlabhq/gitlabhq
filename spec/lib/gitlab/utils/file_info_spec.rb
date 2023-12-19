@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Utils::FileInfo, feature_category: :shared do
 
   describe '.linked?' do
     it 'raises an error when file does not exist' do
-      expect { subject.linked?('foo') }.to raise_error(Errno::ENOENT)
+      expect { subject.linked?("#{tmpdir}/foo") }.to raise_error(Errno::ENOENT)
     end
 
     shared_examples 'identifies a linked file' do
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Utils::FileInfo, feature_category: :shared do
 
   describe '.shares_hard_link?' do
     it 'raises an error when file does not exist' do
-      expect { subject.shares_hard_link?('foo') }.to raise_error(Errno::ENOENT)
+      expect { subject.shares_hard_link?("#{tmpdir}/foo") }.to raise_error(Errno::ENOENT)
     end
 
     shared_examples 'identifies a file that shares a hard link' do

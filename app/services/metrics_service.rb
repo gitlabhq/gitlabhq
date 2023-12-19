@@ -4,11 +4,7 @@ require 'prometheus/client/formats/text'
 
 class MetricsService
   def prometheus_metrics_text
-    if Feature.enabled?(:prom_metrics_rust)
-      ::Prometheus::Client::Formats::Text.marshal_multiprocess(multiprocess_metrics_path, use_rust: true)
-    else
-      ::Prometheus::Client::Formats::Text.marshal_multiprocess(multiprocess_metrics_path)
-    end
+    ::Prometheus::Client::Formats::Text.marshal_multiprocess(multiprocess_metrics_path)
   end
 
   def metrics_text

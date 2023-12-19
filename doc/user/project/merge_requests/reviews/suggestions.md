@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Suggest changes **(FREE ALL)**
@@ -18,9 +17,8 @@ merge request, authored by the user who suggested the changes.
 1. Select **Code > Merge requests** and find your merge request.
 1. On the secondary menu, select **Changes**.
 1. Find the lines of code you want to change.
-   - To select a single line:
-     - Hover over the line number, and
-       select **Add a comment to this line** (**{comment}**).
+   - To select a single line, hover over the line number and
+     select **Add a comment to this line** (**{comment}**).
    - To select multiple lines:
      1. Hover over the line number, and select **Add a comment to this line** (**{comment}**).
      1. Select and drag your selection until all desired lines are included. To
@@ -35,8 +33,11 @@ merge request, authored by the user who suggested the changes.
    ````
 
 1. Edit the pre-populated code block to add your suggestion.
-1. Select either **Start a review** or **Add to review** to add your comment to a
-   [review](index.md), or **Add comment now** to add the comment to the thread immediately.
+1. Select whether you want your comment to appear immediately:
+
+   - **Start a review** or **Add to review** creates your comment in a pending state
+     as part of a [review](index.md).
+   - **Add comment now** adds your comment immediately.
 
 ### Multi-line suggestions
 
@@ -45,23 +46,24 @@ in a single suggestion, by either:
 
 - Selecting and dragging, as described in [Create suggestions](#create-suggestions).
   GitLab creates a suggestion block for you.
-- Selecting a single line, then manually adjusting the range offsets.
+- Selecting a single line, then manually editing the range offsets in the suggestion block.
 
 The range offsets in the first line of the suggestion describe line numbers relative
 to the line you selected. The offsets specify the lines your suggestion intends to replace.
-For example, this suggestion covers 3 lines above and 4 lines below the
+For example, this suggestion covers 2 lines above and 2 lines below the
 commented line:
 
 ````markdown
-```suggestion:-3+4
-        "--talk-name=ca.desrt.dconf",
-        "--socket=wayland",
+```suggestion:-2+2
+## Prevent approval by author
+
+By default, the author of a merge request cannot approve it. To change this setting:
 ```
 ````
 
-When applied, the suggestion replaces from 3 lines above to 4 lines below the commented line:
+When applied, the suggestion replaces from 2 lines above to 2 lines below the commented line:
 
-![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
+![Multi-line suggestion preview](img/multi-line-suggestion-preview_v16_6.png)
 
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
@@ -74,7 +76,7 @@ suggestion.
 > - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
 When you insert suggestions, you can use the WYSIWYG
-[rich text editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/) to move
+[rich text editor](../../../rich_text_editor.md) to move
 up and down the source file's line numbers in the UI.
 
 To add or subtract changed lines, next to **From line**, select **+** or **-**.
@@ -119,7 +121,7 @@ git config --global receive.advertisepushoptions true
 ````
 `````
 
-![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v12_8.png)
+![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v16_6.png)
 
 ## Configure the commit message for applied suggestions
 
@@ -133,9 +135,14 @@ Apply 3 suggestion(s) to 2 file(s)
 ```
 
 Merge requests created from forks use the template defined in the target project.
+To meet your project's needs, customize these messages and include other
+placeholder variables.
 
-To meet your project's needs, you can customize these messages and include other
-placeholder variables:
+Prerequisites:
+
+- You must have the Maintainer role.
+
+To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
@@ -166,12 +173,16 @@ For example, to customize the commit message to output
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
 
-To reduce the number of commits added to your branch, you can apply multiple
+Prerequisites:
+
+- You must have a role in the project that allows you to commit to the source branch.
+
+To reduce the number of commits added to your branch, apply multiple
 suggestions in a single commit.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
-1. For each suggestion you want to apply, and select **Add suggestion to batch**.
+1. For each suggestion you want to apply, select **Add suggestion to batch**.
 1. Optional. To remove a suggestion, select **Remove from batch**.
 1. After you add your desired suggestions, select **Apply suggestions**.
 

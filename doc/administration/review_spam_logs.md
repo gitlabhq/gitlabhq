@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Anti-Abuse
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Review spam logs **(FREE SELF)**
@@ -19,8 +18,7 @@ View and resolve spam logs to moderate user activity in your instance.
 
 To view spam logs:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Spam Logs**.
 1. Optional. To resolve a spam log, select a log and then select **Remove user**, **Block user**, **Remove log**, or **Trust user**.
 

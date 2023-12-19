@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Running tests that require special setup
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The [`jenkins_build_status_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/24a86debf49f3aed6f2ecfd6e8f9233b3a214181/qa/qa/specs/features/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb)
 spins up a Jenkins instance in a Docker container with the Jenkins GitLab plugin pre-installed. Due to a license restriction we are unable to distribute this image.
-To build a QA compatible image, please visit the [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public), where third party Dockerfiles can be found.
+To build a QA compatible image, visit the [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public), where third party Dockerfiles can be found.
 The project also has instructions for forking and building the images automatically in CI.
 
 Some extra environment variables for the location of the forked repository are also needed.
@@ -47,7 +47,7 @@ bin/qa Test::Instance::All http://localhost -- qa/specs/features/ee/browser_ui/3
 
 The test automatically spins up a Docker container for Jenkins and tear down once the test completes.
 
-If you need to run Jenkins manually outside of the tests, please refer to the README for the
+If you need to run Jenkins manually outside of the tests, refer to the README for the
 [third party images project](https://gitlab.com/gitlab-org/quality/third-party-docker-public/-/blob/main/jenkins/README.md)
 
 ### Troubleshooting
@@ -420,7 +420,7 @@ To run these tests locally against the GDK:
    QA_LOG_LEVEL=debug WEBDRIVER_HEADLESS=false bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb -- --tag orchestrated
    ```
 
-For instructions on how to run these tests using the `gitlab-qa` gem, please refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationsmtp-ceeefull-image-address).
+For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationsmtp-ceeefull-image-address).
 
 ## Guide to the mobile suite
 
@@ -600,3 +600,23 @@ To run the [`login_via_oauth_and_oidc_with_gitlab_as_idp_spec`](https://gitlab.c
 
    RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
    ```
+
+## Product Analytics tests
+
+Product Analytics e2e tests require Product Analytics services running and connected to your GDK.
+
+In order to run Product Analytics services, devkit can be used. Instructions to set it up and connect to your GDK can be found in the [devkit project's `README.md`](https://gitlab.com/gitlab-org/analytics-section/product-analytics/devkit).
+
+Additionally, the following setup is required on the GDK:
+
+- Ultimate license applied.
+  - [How to request the license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
+  - [How to activate GitLab EE with a license file or key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+- Product Analytics feature flags enabled. The list of feature flags can be [found here](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/user/product_analytics#enable-product-analytics).
+- Simulate SaaS enabled. Instructions can be [found here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md#simulate-a-saas-instance).
+
+Once Product Analytics services are running and are connected to your GDK, the tests can be executed with:
+
+```shell
+bundle exec rspec qa/specs/features/ee/browser_ui/8_monitor/product_analytics/onboarding_spec.rb
+```

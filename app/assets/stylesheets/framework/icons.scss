@@ -44,7 +44,7 @@
 
 .ci-icon {
   // .ci-icon class is used at
-  // - app/assets/javascripts/vue_shared/components/ci_icon.vue
+  // - app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue
   // - app/helpers/ci/status_helper.rb
   .ci-icon-gl-icon-wrapper {
     @include gl-rounded-full;

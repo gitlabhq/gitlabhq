@@ -14,3 +14,5 @@ module Types
     present_using UserPresenter
   end
 end
+
+Types::UserType.prepend_mod

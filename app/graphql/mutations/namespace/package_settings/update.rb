@@ -81,6 +81,11 @@ module Mutations
                 required: false,
                 description: copy_field_description(Types::Namespace::PackageSettingsType, :lock_pypi_package_requests_forwarding)
 
+        argument :nuget_symbol_server_enabled,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :nuget_symbol_server_enabled)
+
         field :package_settings,
               Types::Namespace::PackageSettingsType,
               null: true,

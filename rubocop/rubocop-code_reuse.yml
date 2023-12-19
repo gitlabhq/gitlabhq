@@ -26,6 +26,7 @@ CodeReuse/ActiveRecord:
     - lib/banzai/**/*.rb
     - lib/click_house/migration_support/**/*.rb
     - lib/gitlab/background_migration/**/*.rb
+    - lib/gitlab/circuit_breaker/store.rb
     - lib/gitlab/cycle_analytics/**/*.rb
     - lib/gitlab/counters/**/*.rb
     - lib/gitlab/database/**/*.rb
@@ -42,5 +43,4 @@ CodeReuse/ActiveRecord:
     - ee/db/fixtures/**/*.rb
     - ee/lib/tasks/**/*.rake
     - ee/lib/ee/gitlab/background_migration/**/*.rb
-    - ee/lib/gitlab/llm/open_ai/response_modifiers/tanuki_bot.rb
     - ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb

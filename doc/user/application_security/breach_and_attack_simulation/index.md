@@ -2,7 +2,6 @@
 stage: Secure
 group: Incubation
 info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
-type: reference, howto
 ---
 
 # Breach and Attack Simulation **(ULTIMATE ALL)**
@@ -91,7 +90,7 @@ To enable Breach and Attack Simulation features inside of an existing DAST job:
      extends: .dast_with_bas
    ```
 
-1. Disable the `dast+job` job included in the BAS template by setting `DAST_BAS_DISABLED`:
+1. Disable the `dast_with_bas` job included in the BAS template by setting `DAST_BAS_DISABLED`:
 
    ```yaml
    variables:
@@ -129,6 +128,9 @@ Perform Out-of-Band Application Security Testing (OAST) for certain [active chec
      services:
        # NOTE: services overwrites rather than merges so it must be referenced to merge.
        - !reference [.dast_with_bas_using_services, services]
+       # NOTE: Link your application container to the dast job and
+       # access it with the hostname yourapp. See more about Docker services at
+       # https://docs.gitlab.com/ee/user/application_security/dast/#docker-services
        - name: $CI_REGISTRY_IMAGE
          alias: yourapp
    ```

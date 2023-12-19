@@ -12,7 +12,7 @@
           url.searchParams.set('page', 2);
           return fetch(url).then(response => response.body);
         })();
-- dataset = { testid: 'blob-content-holder', qa_selector: 'blame_file_content', per_page: @blame_pagination.per_page, total_extra_pages: @blame_pagination.total_extra_pages - 1, pages_url: blame_streaming_url }
+- dataset = { testid: 'blob-content-holder', per_page: @blame_pagination.per_page, total_extra_pages: @blame_pagination.total_extra_pages - 1, pages_url: blame_streaming_url }
 
 #blob-content-holder.tree-holder.js-per-page{ data: dataset }
   = render "projects/blob/breadcrumb", blob: @blob, blame: true

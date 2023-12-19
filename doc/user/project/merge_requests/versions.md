@@ -1,78 +1,69 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge requests versions **(FREE ALL)**
+# Merge request diff versions **(FREE ALL)**
 
-Every time you push to a branch that is tied to a merge request, a new version
-of merge request diff is created. When you visit a merge request that contains
-more than one pushes, you can select and compare the versions of those merge
-request diffs.
+When you create a merge request, you select two branches to compare. The differences
+between the two branches are shown as a **diff** in the merge request. Each time
+you push commits to a branch connected to a merge request, GitLab updates the
+merge request diff to a new **diff version**.
 
-![Merge request versions](img/versions.png)
+NOTE:
+Diff versions are updated on each push, not each commit. If a push contains multiple
+commits, only one new diff version is created.
 
-## Selecting a version
+By default, GitLab compares the latest push in your source branch (`feature`)
+against the most recent commit in the target branch, often `main`.
 
-By default, the latest version of changes is shown. However, you
-can select an older one from version dropdown list.
+## Compare diff versions
 
-![Merge request versions dropdown list](img/versions_dropdown.png)
+If you've pushed to your branch multiple times, the diff version from each previous push
+is available for comparison. When your merge request contains many changes or
+sequential changes to the same file, you might want to compare a smaller number of changes.
 
-Merge request versions are based on push not on commit. So, if you pushed 5
-commits in a single push, it displays as a single option in the dropdown list. If you
-pushed 5 times, that counts for 5 options.
+Prerequisites:
 
-You can also compare the merge request version with an older one to see what has
-changed since then.
+- The merge request branch must contain commits from multiple pushes. Individual commits
+  in the same push do not generate new diff versions.
 
-![Merge request versions compare](img/versions_compare.png)
+To compare diff versions:
 
-Comments are disabled while viewing outdated merge versions or comparing to
-versions other than base.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests**.
+1. Select a merge request.
+1. To view the current diff version for this merge request, select **Changes**.
+1. Next to **Compare** (**{file-tree}**), select the pushes to compare. This example
+   compares `main` to the most recent push (latest diff version) of the branch:
 
-Every time you push new changes to the branch, a link to compare the last
-changes appears as a system note.
+   ![Merge request versions dropdown list](img/versions_dropdown_v16_6.png)
 
-![Merge request versions system note](img/versions_system_note.png)
+   This example branch has four commits, but the branch contains only three diff versions
+   because two commits were pushed at the same time.
 
-## Find the merge request that introduced a change
+## View diff versions from a system note
 
-When viewing the commit details page, GitLab links to the merge request (or
-merge requests, if it's in more than one) containing that commit.
+GitLab adds a system note to a merge request each time you push new changes to
+the merge request's branch. In this example, a single push added two commits:
 
-This only applies to commits that are in the most recent version of a merge
-request - if commits were in a merge request, then rebased out of that merge
-request, they aren't linked.
+![Merge request versions system note](img/versions_system_note_v16_6.png)
 
-## `HEAD` comparison mode for merge requests
+To view the diff for that commit, select the commit SHA.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27008) in GitLab 12.10.
+For more information, see how to [show or filter system notes on a merge request](../system_notes.md#on-a-merge-request).
 
-Merge requests, particularly the **Changes** tab, is where source code
-is reviewed and discussed. In circumstances where the target branch was
-merged into the source branch of the merge request, the changes in the
-source and target branch can be shown mixed together making it hard to
-understand which changes are being added and which already exist in the
-target branch.
+## Related topics
 
-In GitLab 12.10, we added a comparison mode, which
-shows a diff calculated by simulating how it would look like once merged - a more accurate
-representation of the changes rather than using the base of the two
-branches. The new mode is available from the comparison target drop down
-by selecting **main (HEAD)**. In GitLab 13.9, it
-[replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/198458) the
-old default comparison. For technical details, additional information is available in the
-[developer documentation](../../../development/merge_request_concepts/diffs/index.md#merge-request-diffs-against-the-head-of-the-target-branch).
-
-![Merge request versions compare HEAD](img/versions_compare_head_v12_10.png)
+- [Merge request diffs for developers](../../../development/merge_request_concepts/diffs/index.md)
+- [Merge request diff storage for administrators](../../../administration/merge_request_diffs.md)
 
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
 one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
+important to describe those, too. Think of things that might go wrong and include them here.
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 

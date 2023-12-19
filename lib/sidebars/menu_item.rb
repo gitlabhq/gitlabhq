@@ -4,11 +4,11 @@ module Sidebars
   class MenuItem
     include ::Sidebars::Concerns::LinkWithHtmlOptions
 
-    attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :hint_html_options, :has_pill, :pill_count, :super_sidebar_parent, :avatar, :entity_id
+    attr_reader :title, :link, :active_routes, :item_id, :container_html_options, :sprite_icon, :sprite_icon_html_options, :has_pill, :pill_count, :super_sidebar_parent, :avatar, :entity_id
     alias_method :has_pill?, :has_pill
 
     # rubocop: disable Metrics/ParameterLists
-    def initialize(title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil, sprite_icon_html_options: {}, hint_html_options: {}, has_pill: false, pill_count: nil, super_sidebar_parent: nil, avatar: nil, entity_id: nil)
+    def initialize(title:, link:, active_routes:, item_id: nil, container_html_options: {}, sprite_icon: nil, sprite_icon_html_options: {}, has_pill: false, pill_count: nil, super_sidebar_parent: nil, avatar: nil, entity_id: nil)
       @title = title
       @link = link
       @active_routes = active_routes
@@ -18,16 +18,11 @@ module Sidebars
       @sprite_icon_html_options = sprite_icon_html_options
       @avatar = avatar
       @entity_id = entity_id
-      @hint_html_options = hint_html_options
       @has_pill = has_pill
       @pill_count = pill_count
       @super_sidebar_parent = super_sidebar_parent
     end
     # rubocop: enable Metrics/ParameterLists
-
-    def show_hint?
-      hint_html_options.present?
-    end
 
     def render?
       true
@@ -49,16 +44,6 @@ module Sidebars
         # https://gitlab.com/gitlab-org/gitlab/-/issues/391864
         #
         # container_html_options
-        # hint_html_options
-        # nav_link_html_options
-      }
-    end
-
-    def nav_link_html_options
-      {
-        data: {
-          track_label: item_id
-        }
       }
     end
   end

@@ -81,10 +81,9 @@ RSpec.describe Integration, feature_category: :integrations do
       let!(:integration1) { create(:jira_integration, project: project) }
       let!(:integration2) { create(:redmine_integration, project: project) }
       let!(:integration3) { create(:confluence_integration, project: project) }
-      let!(:integration4) { create(:shimo_integration, project: project) }
 
       it 'returns the right group integration' do
-        expect(described_class.third_party_wikis).to contain_exactly(integration3, integration4)
+        expect(described_class.third_party_wikis).to contain_exactly(integration3)
       end
     end
 

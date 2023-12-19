@@ -95,12 +95,14 @@ describe('Job Log Header Line', () => {
   });
 
   describe('with duration', () => {
-    beforeEach(() => {
+    it('renders the duration badge', () => {
       createComponent({ ...defaultProps, duration: '00:10' });
+      expect(wrapper.findComponent(DurationBadge).exists()).toBe(true);
     });
 
-    it('renders the duration badge', () => {
-      expect(wrapper.findComponent(DurationBadge).exists()).toBe(true);
+    it('does not render the duration badge with hidden duration', () => {
+      createComponent({ ...defaultProps, hideDuration: true, duration: '00:10' });
+      expect(wrapper.findComponent(DurationBadge).exists()).toBe(false);
     });
   });
 

@@ -18,11 +18,21 @@ module Types
 
         field :allows_multiple_assignees, GraphQL::Types::Boolean,
           null: true, method: :allows_multiple_assignees?,
-          description: 'Indicates whether multiple assignees are allowed.'
+          description: 'Indicates whether multiple assignees are allowed.',
+          deprecated: {
+            milestone: '16.7',
+            replacement: 'workitemWidgetDefinitionAssignees.allowsMultipleAssignees',
+            reason: 'Field moved to workItemType widget definition interface'
+          }
 
         field :can_invite_members, GraphQL::Types::Boolean,
           null: false, resolver_method: :can_invite_members?,
-          description: 'Indicates whether the current user can invite members to the work item\'s project.'
+          description: 'Indicates whether the current user can invite members to the work item\'s project.',
+          deprecated: {
+            milestone: '16.7',
+            replacement: 'workitemWidgetDefinitionAssignees.canInviteMembers',
+            reason: 'Field moved to workItemType widget definition interface'
+          }
 
         def can_invite_members?
           Ability.allowed?(current_user, :admin_project_member, object.work_item.project)

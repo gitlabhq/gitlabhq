@@ -44,6 +44,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     params,
     fullPath,
     visibilityPipelineIdType,
+    showJenkinsCiPrompt,
   } = el.dataset;
 
   return new Vue({
@@ -57,6 +58,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       pipelineEditorPath,
       pipelineSchedulesPath,
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
+      showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
     },
     data() {
       return {

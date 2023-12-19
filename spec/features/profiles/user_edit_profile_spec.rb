@@ -188,7 +188,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   context 'user status', :js do
-    def select_emoji(emoji_name, is_modal = false)
+    def select_emoji(emoji_name)
       toggle_button = find('.emoji-menu-toggle-button')
       toggle_button.click
       emoji_button = find("gl-emoji[data-name=\"#{emoji_name}\"]")
@@ -330,10 +330,12 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         find_by_testid('user-dropdown').click
 
         within_testid('user-dropdown') do
-          find('.js-set-status-modal-trigger.ready')
+          expect(page).to have_button(text: button_text, visible: :visible)
 
           click_button button_text
         end
+
+        expect(page.find('#set-user-status-modal')).to be_visible
       end
 
       def open_user_status_modal
@@ -386,7 +388,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       it 'adds emoji to user status' do
         emoji = 'grinning'
         open_user_status_modal
-        select_emoji(emoji, true)
+        select_emoji(emoji)
         set_user_status_in_modal
 
         visit_user
@@ -415,7 +417,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       it 'opens the emoji modal again after closing it' do
         open_user_status_modal
-        select_emoji('grinning', true)
+        select_emoji('grinning')
 
         find('.emoji-menu-toggle-button').click
 
@@ -428,7 +430,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
         emoji = 'grinning'
         open_user_status_modal
-        select_emoji(emoji, true)
+        select_emoji(emoji)
 
         expect(page.all('.award-control .js-counter')).to all(have_content('0'))
       end
@@ -451,7 +453,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
         emoji = 'grinning'
         message = 'Playing outside'
         open_user_status_modal
-        select_emoji(emoji, true)
+        select_emoji(emoji)
         find_field(s_("SetStatusModal|What's your status?")).native.send_keys(message)
         set_user_status_in_modal
 

@@ -19,6 +19,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      linkedPipelines: null,
+    };
+  },
   apollo: {
     linkedPipelines: {
       query: getLinkedPipelinesQuery,

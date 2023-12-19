@@ -35,10 +35,13 @@ module Users
     scope :for_user, -> (user_id) { where(user_id: user_id) }
 
     def self.related_to_banned_user?(international_dial_code, phone_number)
-      joins(:banned_user).where(
+      joins(:banned_user)
+      .where(
         international_dial_code: international_dial_code,
         phone_number: phone_number
-      ).exists?
+      )
+      .where.not(validated_at: nil)
+      .exists?
     end
 
     def self.by_reference_id(ref_id)

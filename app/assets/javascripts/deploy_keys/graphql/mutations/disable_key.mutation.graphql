@@ -1,0 +1,3 @@
+mutation disableKey($id: ID!) {
+  disableKey(id: $id) @client
+}

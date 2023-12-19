@@ -88,6 +88,10 @@ module Gitlab
         # rubocop:enable Gitlab/DocUrl
       end
 
+      def self.cell_local?(schema)
+        Gitlab::Database.all_gitlab_schemas[schema.to_s].cell_local
+      end
+
       def self.cross_joins_allowed?(table_schemas, all_tables)
         return true unless table_schemas.many?
 
@@ -121,15 +125,6 @@ module Gitlab
         end
       end
 
-      def self.dictionary_paths
-        Gitlab::Database.all_database_connections
-          .values.map(&:db_docs_dir).uniq
-      end
-
-      def self.dictionary_path_globs(scope)
-        self.dictionary_paths.map { |path| Rails.root.join(path, scope, '*.yml') }
-      end
-
       def self.views_and_tables_to_schema
         @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
       end
@@ -139,31 +134,23 @@ module Gitlab
       end
 
       def self.deleted_tables_to_schema
-        @deleted_tables_to_schema ||= self.build_dictionary('deleted_tables').map(&:name_and_schema).to_h
+        @deleted_tables_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_tables').map(&:name_and_schema).to_h
       end
 
       def self.deleted_views_to_schema
-        @deleted_views_to_schema ||= self.build_dictionary('deleted_views').map(&:name_and_schema).to_h
+        @deleted_views_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_views').map(&:name_and_schema).to_h
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= self.build_dictionary('').map(&:name_and_schema).to_h
+        @tables_to_schema ||= ::Gitlab::Database::Dictionary.entries.map(&:name_and_schema).to_h
       end
 
       def self.views_to_schema
-        @views_to_schema ||= self.build_dictionary('views').map(&:name_and_schema).to_h
+        @views_to_schema ||= ::Gitlab::Database::Dictionary.entries('views').map(&:name_and_schema).to_h
       end
 
       def self.schema_names
         @schema_names ||= self.views_and_tables_to_schema.values.to_set
-      end
-
-      def self.build_dictionary(scope)
-        Dir.glob(dictionary_path_globs(scope)).map do |file_path|
-          dictionary = Dictionary.new(file_path)
-          dictionary.validate!
-          dictionary
-        end
       end
     end
   end

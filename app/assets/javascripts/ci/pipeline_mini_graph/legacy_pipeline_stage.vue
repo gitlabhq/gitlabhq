@@ -13,7 +13,7 @@
  */
 
 import { GlDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { createAlert } from '~/alert';
 import eventHub from '~/ci/event_hub';
 import axios from '~/lib/utils/axios_utils';

@@ -355,6 +355,40 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
 
       client.create_repository('feature/新機能')
     end
+
+    context 'when object format is provided' do
+      before do
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:create_repository)
+          .with(gitaly_request_with_path(storage_name, relative_path)
+          .and(gitaly_request_with_params(default_branch: '', object_format: expected_format)), kind_of(Hash))
+          .and_return(double)
+      end
+
+      context 'with SHA1 format' do
+        let(:expected_format) { :OBJECT_FORMAT_SHA1 }
+
+        it 'sends a create_repository message with object format' do
+          client.create_repository(object_format: Repository::FORMAT_SHA1)
+        end
+      end
+
+      context 'with SHA256 format' do
+        let(:expected_format) { :OBJECT_FORMAT_SHA256 }
+
+        it 'sends a create_repository message with object format' do
+          client.create_repository(object_format: Repository::FORMAT_SHA256)
+        end
+      end
+
+      context 'with unknown format' do
+        let(:expected_format) { :OBJECT_FORMAT_UNSPECIFIED }
+
+        it 'sends a create_repository message with object format' do
+          client.create_repository(object_format: 'unknown')
+        end
+      end
+    end
   end
 
   describe '#raw_changes_between' do
@@ -476,6 +510,16 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
 
       client.object_pool
+    end
+  end
+
+  describe '#object_format' do
+    it 'sends a object_format message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:object_format)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+
+      client.object_format
     end
   end
 

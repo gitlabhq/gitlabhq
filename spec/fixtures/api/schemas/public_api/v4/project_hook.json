@@ -22,8 +22,10 @@
     "releases_events",
     "alert_status",
     "disabled_until",
-    "url_variables",
     "emoji_events"
+  ],
+  "optional": [
+    "url_variables"
   ],
   "properties": {
     "id": {

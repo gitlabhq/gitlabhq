@@ -1,72 +1,111 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Roll back commits **(FREE ALL)**
 
-## Undo Commits
+In Git, if you make a mistake, you can undo or roll back your changes.
+For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md).
 
-- Undo last commit putting everything back into the staging area:
+## Undo commits by removing them
+
+- Undo your last commit and put everything back in the staging area:
 
   ```shell
   git reset --soft HEAD^
   ```
 
-- Add files and change message with:
+- Add files and change the commit message:
 
   ```shell
   git commit --amend -m "New Message"
   ```
 
-- Undo last and remove changes:
+- Undo the last change and remove all other changes,
+  if you did not push yet:
 
   ```shell
   git reset --hard HEAD^
   ```
 
-- Same as last one but for two commits back:
+- Undo the last change and remove the last two commits,
+  if you did not push yet:
 
   ```shell
   git reset --hard HEAD^^
   ```
 
-**Don't reset after pushing**
+### Git reset sample workflow
 
-## Reset Workflow
+The following is a common Git reset workflow:
 
-1. Edit file again 'edit_this_file.rb'
-1. Check status
-1. Add and commit with wrong message
-1. Check log
-1. Amend commit
-1. Check log
-1. Soft reset
-1. Check log
-1. Pull for updates
-1. Push changes
+1. Edit a file.
+1. Check the status of the branch:
 
-## Commands
+   ```shell
+   git status
+   ```
+
+1. Commit the changes to the branch with a wrong commit message:
+
+   ```shell
+   git commit -am "kjkfjkg"
+   ```
+
+1. Check the Git log:
+
+   ```shell
+   git log
+   ```
+
+1. Amend the commit with the correct commit message:
+
+   ```shell
+   git commit --amend -m "New comment added"
+   ```
+
+1. Check the Git log again:
+
+   ```shell
+   git log
+   ```
+
+1. Soft reset the branch:
+
+   ```shell
+   git reset --soft HEAD^
+   ```
+
+1. Check the Git log again:
+
+   ```shell
+   git log
+   ```
+
+1. Pull updates for the branch from the remote:
+
+   ```shell
+   git pull origin <branch>
+   ```
+
+1. Push changes for the branch to the remote:
+
+   ```shell
+   git push origin <branch>
+   ```
+
+## Undo commits with a new replacement commit
 
 ```shell
-# Change file edit_this_file.rb
-git status
-git commit -am "kjkfjkg"
-git log
-git commit --amend -m "New comment added"
-git log
-git reset --soft HEAD^
-git log
-git pull origin master
-git push origin master
+git revert <commit-sha>
 ```
 
-## Note
+## The difference between `git revert` and `git reset`
 
-- `git revert` vs `git reset`
-- Reset removes the commit while revert removes the changes but leaves the commit
-- Revert is safer considering we can revert a revert
+- The `git reset` command removes the commit. The `git revert` command removes the changes but leaves the commit.
+- The `git revert` command is safer, because you can revert a revert.
 
 ```shell
 # Changed file

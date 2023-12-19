@@ -72,12 +72,34 @@ function delete_helm_release() {
   fi
 
   if deploy_exists "${namespace}" "${release}"; then
+    echoinfo "[$(date '+%H:%M:%S')] Release exists. Deleting it first."
     helm uninstall --namespace="${namespace}" "${release}"
   fi
 
   if namespace_exists "${namespace}"; then
-    echoinfo "Deleting namespace ${namespace}..." true
-    kubectl delete namespace "${namespace}" --wait
+    echoinfo "[$(date '+%H:%M:%S')] Deleting namespace ${namespace}..." true
+
+    # Capture status of command, and check whether the status was successful.
+    if ! kubectl delete namespace "${namespace}" --wait --timeout=1200s; then
+      echoerr
+      echoerr "Could not delete the namespace ${namespace} in time."
+      echoerr
+      echoerr "It can happen that some resources cannot be deleted right away, causing a delay in the namespace deletion."
+      echoerr
+      echoerr "You can see further below which resources are blocking the deletion of the namespace (under DEBUG information)"
+      echoerr
+      echoerr "If retrying the job does not fix the issue, please contact Engineering Productivity for further investigation."
+      echoerr
+      echoerr "DEBUG INFORMATION:"
+      echoerr
+      echoerr "RUNBOOK: https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/review-apps.md#namespace-stuck-in-terminating-state"
+      echoerr
+      kubectl describe namespace "${namespace}"
+      echoinfo
+      kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get -n "${namespace}"
+
+      exit 1
+    fi
   fi
 }
 

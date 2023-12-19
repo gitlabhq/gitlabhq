@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
+RSpec.describe 'Group milestones', feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project_empty_repo, group: group) }
   let_it_be(:user) { create(:group_member, :maintainer, user: create(:user), group: group).user }
@@ -98,7 +98,7 @@ RSpec.describe 'Group milestones', feature_category: :groups_and_projects do
       end
 
       it 'counts milestones correctly' do
-        page.within '[data-testid="milestones-filter"]' do
+        within_testid 'milestones-filter' do
           expect(page).to have_content('Open 3')
           expect(page).to have_content('Closed 3')
           expect(page).to have_content('All 6')

@@ -35,7 +35,7 @@ Organization can only be on a single Cell.
 ## Differences
 
 The main difference between this proposal and one [with buffering requests](proposal-stateless-router-with-buffering-requests.md)
-is that this proposal uses a pre-flight API request (`/api/v4/cells/learn`) to redirect the request body to the correct Cell.
+is that this proposal uses a pre-flight API request (`/pi/v4/internal/cells/learn`) to redirect the request body to the correct Cell.
 This means that each request is sent exactly once to be processed, but the URI is used to decode which Cell it should be directed.
 
 ## Summary in diagrams
@@ -157,11 +157,11 @@ graph TD;
 1. The `application_settings` (and probably a few other instance level tables) are decomposed into `gitlab_admin` schema
 1. A new column `routes.cell_id` is added to `routes` table
 1. A new Router service exists to choose which cell to route a request to.
-1. If a router receives a new request it will send `/api/v4/cells/learn?method=GET&path_info=/group-org/project` to learn which Cell can process it
+1. If a router receives a new request it will send `/api/v4/internal/cells/learn?method=GET&path_info=/group-org/project` to learn which Cell can process it
 1. A new concept will be introduced in GitLab called an organization
 1. We require all existing endpoints to be routable by URI, or be fixed to a specific Cell for processing. This requires changing ambiguous endpoints like `/dashboard` to be scoped like `/organizations/my-organization/-/dashboard`
 1. Endpoints like `/admin` would be routed always to the specific Cell, like `cell_0`
-1. Each Cell can respond to `/api/v4/cells/learn` and classify each endpoint
+1. Each Cell can respond to `/api/v4/internal/cells/learn` and classify each endpoint
 1. Writes to `gitlab_users` and `gitlab_routes` are sent to a primary PostgreSQL server in our `US` region but reads can come from replicas in the same region. This will add latency for these writes but we expect they are infrequent relative to the rest of GitLab.
 
 ## Pre-flight request learning
@@ -174,7 +174,7 @@ the routable path. GitLab Rails will decode `path_info` and match it to
 an existing endpoint and find a routable entity (like project). The router will
 treat this as short-lived cache information.
 
-1. Prefix match: `/api/v4/cells/learn?method=GET&path_info=/gitlab-org/gitlab-test/-/issues`
+1. Prefix match: `/api/v4/internal/cells/learn?method=GET&path_info=/gitlab-org/gitlab-test/-/issues`
 
    ```json
    {
@@ -184,7 +184,7 @@ treat this as short-lived cache information.
    }
    ```
 
-1. Some endpoints might require an exact match: `/api/v4/cells/learn?method=GET&path_info=/-/profile`
+1. Some endpoints might require an exact match: `/api/v4/internal/cells/learn?method=GET&path_info=/-/profile`
 
    ```json
    {
@@ -283,7 +283,7 @@ keeping settings in sync for all cells.
    to aggregate information from many Cells.
 1. All unknown routes are sent to the latest deployment which we assume to be `Cell US0`.
    This is required as newly added endpoints will be only decodable by latest cell.
-   Likely this is not a problem for the `/cells/learn` is it is lightweight
+   Likely this is not a problem for the `/internal/cells/learn` is it is lightweight
    to process and this should not cause a performance impact.
 
 ## Example database configuration
@@ -361,7 +361,7 @@ this limitation.
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. They request `/my-company/my-project` without the router cache, so the router chooses randomly `Cell EU1`
-1. The `/cells/learn` is sent to `Cell EU1`, which responds that resource lives on `Cell EU0`
+1. The `/internal/cells/learn` is sent to `Cell EU1`, which responds that resource lives on `Cell EU0`
 1. `Cell EU0` returns the correct response
 1. The router now caches and remembers any request paths matching `/my-company/*` should go to `Cell EU0`
 
@@ -372,7 +372,7 @@ sequenceDiagram
     participant cell_eu0 as Cell EU0
     participant cell_eu1 as Cell EU1
     user->>router_eu: GET /my-company/my-project
-    router_eu->>cell_eu1: /api/v4/cells/learn?method=GET&path_info=/my-company/my-project
+    router_eu->>cell_eu1: /api/v4/internal/cells/learn?method=GET&path_info=/my-company/my-project
     cell_eu1->>router_eu: {path: "/my-company", cell: "cell_eu0", source: "routable"}
     router_eu->>cell_eu0: GET /my-company/my-project
     cell_eu0->>user: <h1>My Project...
@@ -382,9 +382,9 @@ sequenceDiagram
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router does not have `/my-company/*` cached yet so it chooses randomly `Cell EU1`
-1. The `/cells/learn` is sent to `Cell EU1`, which responds that resource lives on `Cell EU0`
+1. The `/internal/cells/learn` is sent to `Cell EU1`, which responds that resource lives on `Cell EU0`
 1. `Cell EU0` redirects them through a login flow
-1. User requests `/users/sign_in`, uses random Cell to run `/cells/learn`
+1. User requests `/users/sign_in`, uses random Cell to run `/internal/cells/learn`
 1. The `Cell EU1` responds with `cell_0` as a fixed route
 1. User after login requests `/my-company/my-project` which is cached and stored in `Cell EU0`
 1. `Cell EU0` returns the correct response
@@ -396,12 +396,12 @@ sequenceDiagram
     participant cell_eu0 as Cell EU0
     participant cell_eu1 as Cell EU1
     user->>router_eu: GET /my-company/my-project
-    router_eu->>cell_eu1: /api/v4/cells/learn?method=GET&path_info=/my-company/my-project
+    router_eu->>cell_eu1: /api/v4/internal/cells/learn?method=GET&path_info=/my-company/my-project
     cell_eu1->>router_eu: {path: "/my-company", cell: "cell_eu0", source: "routable"}
     router_eu->>cell_eu0: GET /my-company/my-project
     cell_eu0->>user: 302 /users/sign_in?redirect=/my-company/my-project
     user->>router_eu: GET /users/sign_in?redirect=/my-company/my-project
-    router_eu->>cell_eu1: /api/v4/cells/learn?method=GET&path_info=/users/sign_in
+    router_eu->>cell_eu1: /api/v4/internal/cells/learn?method=GET&path_info=/users/sign_in
     cell_eu1->>router_eu: {path: "/users", cell: "cell_eu0", source: "fixed"}
     router_eu->>cell_eu0: GET /users/sign_in?redirect=/my-company/my-project
     cell_eu0-->>user: <h1>Sign in...
@@ -445,7 +445,7 @@ sequenceDiagram
     participant cell_eu0 as Cell EU0
     participant cell_us0 as Cell US0
     user->>router_eu: GET /gitlab-org/gitlab
-    router_eu->>cell_eu0: /api/v4/cells/learn?method=GET&path_info=/gitlab-org/gitlab
+    router_eu->>cell_eu0: /api/v4/internal/cells/learn?method=GET&path_info=/gitlab-org/gitlab
     cell_eu0->>router_eu: {path: "/gitlab-org", cell: "cell_us0", source: "routable"}
     router_eu->>cell_us0: GET /gitlab-org/gitlab
     cell_us0->>user: <h1>GitLab.org...
@@ -569,7 +569,7 @@ sequenceDiagram
     router_us->>cell_us1: GET /
     cell_us1->>user: 302 /dashboard
     user->>router_us: GET /dashboard
-    router_us->>cell_us1: /api/v4/cells/learn?method=GET&path_info=/dashboard
+    router_us->>cell_us1: /api/v4/internal/cells/learn?method=GET&path_info=/dashboard
     cell_us1->>router_us: {path: "/dashboard", cell: "cell_us0", source: "routable"}
     router_us->>cell_us0: GET /dashboard
     cell_us0->>user: <h1>Dashboard...

@@ -54,6 +54,8 @@ RSpec.shared_examples 'an editable merge request' do
       page.within '.labels' do
         expect(page).to have_content label.title
         expect(page).to have_content label2.title
+
+        expect(page).to have_selector("[data-testid='close-icon']", count: 1)
       end
     end
   end

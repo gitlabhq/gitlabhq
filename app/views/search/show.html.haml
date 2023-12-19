@@ -8,7 +8,6 @@
   = hidden_field_tag :project_id, params[:project_id]
 - group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
-- search_bar_classes = !show_super_sidebar? ? 'search-sidebar gl-display-flex gl-flex-direction-column gl-mr-4' : ''
 
 - if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?)
   - if @search_service_presenter.without_count?
@@ -17,11 +16,8 @@
     - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
-.gl-display-flex.gl-flex-wrap.gl-justify-content-end.gl-pt-6.gl-pb-5
-  = render_if_exists 'search/form_elasticsearch'
-
-#js-search-topbar{ data: { "group-initial-json": group_attributes.to_json, "project-initial-json": project_attributes.to_json, "default-branch-name": @project&.default_branch } }
+#js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
 .results.gl-lg-display-flex.gl-mt-0
-  #js-search-sidebar{ class: search_bar_classes, data: { navigation_json: search_navigation_json, search_type: search_service.search_type } }
+  #js-search-sidebar{ data: { navigation_json: search_navigation_json, search_type: search_service.search_type, search_level: search_service.level, group_initial_json: group_attributes.to_json, project_initial_json: project_attributes.to_json, } }
   - if @search_term
     = render 'search/results'

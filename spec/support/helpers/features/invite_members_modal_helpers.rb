@@ -2,6 +2,8 @@
 
 module Features
   module InviteMembersModalHelpers
+    include ListboxHelpers
+
     def invite_member(names, role: 'Guest', expires_at: nil)
       click_on 'Invite members'
 
@@ -63,13 +65,20 @@ module Features
     end
 
     def choose_options(role, expires_at)
-      select role, from: 'Select a role'
+      page.within role_dropdown_selector do
+        toggle_listbox
+        select_listbox_item(role, exact_text: true)
+      end
       fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
     end
 
     def click_groups_tab
       expect(page).to have_link 'Groups'
       click_link "Groups"
+    end
+
+    def role_dropdown_selector
+      '[data-testid="access-level-dropdown"]'
     end
 
     def group_dropdown_selector

@@ -380,6 +380,16 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.in_namespaces' do
+    let(:group) { create(:group) }
+    let!(:group_work_item) { create(:issue, :group_level, namespace: group) }
+    let!(:project_work_item) { create(:issue, project: reusable_project) }
+
+    subject { described_class.in_namespaces(group) }
+
+    it { is_expected.to contain_exactly(group_work_item) }
+  end
+
   describe '.with_issue_type' do
     let_it_be(:issue) { create(:issue, project: reusable_project) }
     let_it_be(:incident) { create(:incident, project: reusable_project) }
@@ -2192,6 +2202,23 @@ RSpec.describe Issue, feature_category: :team_planning do
             it { is_expected.to be_truthy }
           end
         end
+      end
+    end
+  end
+
+  describe '#gfm_reference' do
+    where(:issue_type, :expected_name) do
+      :issue     | 'issue'
+      :incident  | 'incident'
+      :test_case | 'test case'
+      :task      | 'task'
+    end
+
+    with_them do
+      it 'uses the issue type as the reference name' do
+        issue = create(:issue, issue_type, project: reusable_project)
+
+        expect(issue.gfm_reference).to eq("#{expected_name} #{issue.to_reference}")
       end
     end
   end

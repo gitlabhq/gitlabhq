@@ -1,6 +1,4 @@
 - if @page&.persisted?
-  = link_button_to wiki_page_path(@wiki, @page, action: :history), role: "button", data: { testid: 'page-history-button' } do
-    = s_("Wiki|Page history")
   - if can?(current_user, :create_wiki, @wiki.container)
     = link_button_to wiki_path(@wiki, action: :new), role: "button", data: { testid: 'new-page-button' }, variant: :confirm, category: :secondary do
       = s_("Wiki|New page")

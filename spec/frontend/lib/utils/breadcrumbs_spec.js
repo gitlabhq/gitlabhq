@@ -26,24 +26,20 @@ describe('Breadcrumbs utils', () => {
   `;
 
   const mockRouter = jest.fn();
-  let MockComponent;
-  let mockApolloProvider;
 
-  beforeEach(() => {
-    MockComponent = Vue.component('MockComponent', {
-      render: (createElement) =>
-        createElement('span', {
-          attrs: {
-            'data-testid': 'mock-component',
-          },
-        }),
-    });
-    mockApolloProvider = createMockApollo();
+  const MockComponent = Vue.component('MockComponent', {
+    render: (createElement) =>
+      createElement('span', {
+        attrs: {
+          'data-testid': 'mock-component',
+        },
+      }),
   });
+
+  const mockApolloProvider = createMockApollo();
 
   afterEach(() => {
     resetHTMLFixture();
-    MockComponent = null;
   });
 
   describe('injectVueAppBreadcrumbs', () => {

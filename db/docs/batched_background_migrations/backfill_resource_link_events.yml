@@ -3,4 +3,4 @@ migration_job_name: BackfillResourceLinkEvents
 description: Backfills resource_link_events table based off system_note_metadata and notes
 feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118605
-milestone: 16.1
+milestone: '16.1'

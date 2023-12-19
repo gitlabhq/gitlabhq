@@ -445,7 +445,7 @@ export const descriptionHtmlWithCheckboxes = `
   </ul>
 `;
 
-const taskType = {
+export const taskType = {
   __typename: 'WorkItemType',
   id: 'gid://gitlab/WorkItems::Type/5',
   name: 'Task',
@@ -457,6 +457,20 @@ export const objectiveType = {
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Objective',
   iconName: 'issue-type-objective',
+};
+
+export const keyResultType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Key Result',
+  iconName: 'issue-type-keyresult',
+};
+
+export const issueType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Issue',
+  iconName: 'issue-type-issue',
 };
 
 export const mockEmptyLinkedItems = {
@@ -3702,6 +3716,41 @@ export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
     },
   },
 });
+
+export const allowedChildrenTypesResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/634',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedChildTypes: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItems::Type/7',
+                  name: 'Key Result',
+                  __typename: 'WorkItemType',
+                },
+                {
+                  id: 'gid://gitlab/WorkItems::Type/6',
+                  name: 'Objective',
+                  __typename: 'WorkItemType',
+                },
+              ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
 
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));

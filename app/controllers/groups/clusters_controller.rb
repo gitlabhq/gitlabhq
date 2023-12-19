@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-class Groups::ClustersController < Clusters::ClustersController
+class Groups::ClustersController < ::Clusters::ClustersController
   include ControllerWithCrossProjectAccessCheck
 
   before_action :ensure_feature_enabled!
-  prepend_before_action :group
   requires_cross_project_access
 
   layout 'group'
@@ -12,7 +11,7 @@ class Groups::ClustersController < Clusters::ClustersController
   private
 
   def clusterable
-    @clusterable ||= ClusterablePresenter.fabricate(group, current_user: current_user)
+    @clusterable ||= group && ClusterablePresenter.fabricate(group, current_user: current_user)
   end
 
   def group

@@ -54,9 +54,11 @@ class BulkImports::Entity < ApplicationRecord
   enum source_type: { group_entity: 0, project_entity: 1 }
 
   scope :by_user_id, ->(user_id) { joins(:bulk_import).where(bulk_imports: { user_id: user_id }) }
-  scope :stale, -> { where('created_at < ?', 8.hours.ago).where(status: [0, 1]) }
+  scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
   scope :by_bulk_import_id, ->(bulk_import_id) { where(bulk_import_id: bulk_import_id) }
   scope :order_by_created_at, ->(direction) { order(created_at: direction) }
+  scope :order_by_updated_at_and_id, ->(direction) { order(updated_at: direction, id: :asc) }
+  scope :with_trackers, -> { includes(:trackers) }
 
   alias_attribute :destination_slug, :destination_name
 
@@ -198,6 +200,7 @@ class BulkImports::Entity < ApplicationRecord
     return unless failures.any?
 
     update!(has_failures: true)
+    bulk_import.update!(has_failures: true)
   end
 
   def source_version

@@ -755,7 +755,7 @@ module API
       end
       params do
         requires :group_id, type: Integer, desc: 'The ID of a group', documentation: { example: 1 }
-        requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
+        requires :group_access, type: Integer, values: Gitlab::Access.all_values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
       post ":id/share", feature_category: :groups_and_projects do
@@ -798,8 +798,7 @@ module API
           result = ::Projects::GroupLinks::DestroyService.new(user_project, current_user).execute(link)
 
           if result.error?
-            status = :not_found if result.reason == :not_found
-            render_api_error!(result.message, status)
+            render_api_error!(result.message, result.reason)
           end
         end
       end

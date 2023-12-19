@@ -7,8 +7,8 @@ require 'fast_spec_helper'
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47008
 require 'rubocop'
 require 'rubocop/rspec/shared_contexts/default_rspec_language_config_context'
+require 'gitlab/rspec/next_instance_of'
 
-require_relative 'support/helpers/next_instance_of'
 require_relative 'rubocop/support_workaround'
 
 RSpec.configure do |config|

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifacts::CoverageReportWorker, feature_category: :code_testing do
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
   describe '#perform' do
     let(:pipeline_id) { pipeline.id }
 

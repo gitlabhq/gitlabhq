@@ -45,7 +45,6 @@ describe('ide/components/ide_sidebar_nav', () => {
         title: button.attributes('title'),
         ariaLabel: button.attributes('aria-label'),
         classes: button.classes(),
-        qaSelector: button.attributes('data-qa-selector'),
         icon: button.findComponent(GlIcon).props('name'),
         tooltip: getBinding(button.element, 'tooltip').value,
       };
@@ -75,7 +74,6 @@ describe('ide/components/ide_sidebar_nav', () => {
             title: tab.title,
             ariaLabel: tab.title,
             classes: ['ide-sidebar-link', ...classes, ...(classesObj[index] || [])],
-            qaSelector: `${tab.title.toLowerCase()}_tab_button`,
             icon: tab.icon,
             tooltip: {
               container: 'body',

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_category: :runner_fleet do
+RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_category: :fleet_visibility do
   subject(:execute) { described_class.new(**service_args).execute }
 
   let_it_be(:admin_user) { create(:user, :admin) }

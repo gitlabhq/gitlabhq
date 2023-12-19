@@ -52,7 +52,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
             aggregate_failures do
               expect(page).to have_css('.empty-state')
               expect(page).to have_text('Use Service Desk to connect with your users')
-              expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk'))
+              expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk/index'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(project.service_desk_address)
             end
@@ -71,7 +71,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
               aggregate_failures do
                 expect(page).to have_css('.empty-state')
                 expect(page).to have_text('Use Service Desk to connect with your users')
-                expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk'))
+                expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk/index'))
                 expect(page).not_to have_link('Enable Service Desk')
                 expect(page).not_to have_content(project.service_desk_address)
               end
@@ -93,7 +93,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
 
           it 'displays the small info box, documentation, a button to configure service desk, and the address' do
             aggregate_failures do
-              expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk'))
+              expect(page).to have_link('Learn more.', href: help_page_path('user/project/service_desk/index'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(project.service_desk_address)
             end

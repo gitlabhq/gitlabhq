@@ -103,6 +103,11 @@ func (s *sendFileResponseWriter) WriteHeader(status int) {
 	s.rw.WriteHeader(s.status)
 }
 
+// Unwrap lets http.ResponseController get the underlying http.ResponseWriter.
+func (s *sendFileResponseWriter) Unwrap() http.ResponseWriter {
+	return s.rw
+}
+
 func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 	log.WithContextFields(r.Context(), log.Fields{
 		"file":   file,

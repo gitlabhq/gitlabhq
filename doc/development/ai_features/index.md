@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # AI features based on 3rd-party integrations
@@ -37,7 +37,7 @@ Apply the following two feature flags to any AI feature work:
 - A general flag (`ai_global_switch`) that applies to all AI features.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
-See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405161) for the list of all feature flags and how to use them.
+See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
 ## Implement a new AI action
 
@@ -50,8 +50,14 @@ All AI features are experimental.
 
 ## Test AI features locally
 
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+**One-line setup**
+
+```shell
+# Replace the <test-group-name> by the group name you want to enable GitLab Duo features. If the group doesn't exist, it creates a new one.
+RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
+```
+
+**Manual way**
 
 1. Enable the required general feature flags:
 
@@ -61,19 +67,17 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
 
 1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
-1. Enable `Experimental features`:
+1. Enable `Experiment & Beta features`
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
-   1. Enable **Experiment features**
+   1. Enable **Experiment & Beta features**
 1. Enable the specific feature flag for the feature you want to test
+1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For all other providers, like Anthropic, create an access request where `@m_gill`, `@wayne`, and `@timzallmann` are the tech stack owners.
+   1. For Anthropic, create an access request
 
 ### Set up the embedding database
-
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 For features that use the embedding database, additional setup is needed.
 
@@ -87,19 +91,13 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
-### Setup for GitLab documentation chat (legacy chat)
-
-To populate the embedding database for GitLab chat:
-
-1. Open a rails console
-1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
-
 ### Configure GCP Vertex access
 
-In order to obtain a GCP service key for local development, please follow the steps below:
+In order to obtain a GCP service key for local development, follow the steps below:
 
 - Create a sandbox GCP project by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group GCP project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
 - If you are using an individual GCP project, you may also need to enable the Vertex AI API:
+    1. Visit [welcome page](https://console.cloud.google.com/welcome), choose your project (e.g. jdoe-5d23dpe).
     1. Go to **APIs & Services > Enabled APIs & services**.
     1. Select **+ Enable APIs and Services**.
     1. Search for `Vertex AI API`.
@@ -141,7 +139,7 @@ we can add a few selected embeddings to the table from a pre-generated fixture.
 For instance, to test that the question "How can I reset my password" is correctly
 retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
 to the question into a fixture and only restore a small number of embeddings quickly.
-To faciliate an extraction process, a Rake task been written.
+To facilitate an extraction process, a Rake task has been written.
 You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
 
 ```shell
@@ -275,65 +273,6 @@ G -->|calling| H[Gitlab::Llm::VertexAi::Client]
 H --> |response| I[::Gitlab::Llm::GraphqlSubscriptionResponseService]
 I --> J[GraphqlTriggers.ai_completion_response]
 J --> K[::GitlabSchema.subscriptions.trigger]
-```
-
-## CircuitBreaker
-
-The CircuitBreaker concern is a reusable module that you can include in any class that needs to run code with circuit breaker protection. The concern provides a `run_with_circuit` method that wraps a code block with circuit breaker functionality, which helps prevent cascading failures and improves system resilience. For more information about the circuit breaker pattern, see:
-
-- [What is Circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.html).
-- [The Hystrix documentation on CircuitBreaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker).
-
-### Use CircuitBreaker
-
-To use the CircuitBreaker concern, you need to include it in a class. For example:
-
-```ruby
-class MyService
-  include Gitlab::Llm::Concerns::CircuitBreaker
-
-  def call_external_service
-    run_with_circuit do
-      # Code that interacts with external service goes here
-
-      raise InternalServerError
-    end
-  end
-end
-```
-
-The `call_external_service` method is an example method that interacts with an external service.
-By wrapping the code that interacts with the external service with `run_with_circuit`, the method is executed within the circuit breaker.
-The circuit breaker is created and configured by the `circuit` method, which is called automatically when the `CircuitBreaker` module is included.
-The method should raise `InternalServerError` error which will be counted towards the error threshold if raised during the execution of the code block.
-
-The circuit breaker tracks the number of errors and the rate of requests,
-and opens the circuit if it reaches the configured error threshold or volume threshold.
-If the circuit is open, subsequent requests fail fast without executing the code block, and the circuit breaker periodically allows a small number of requests through to test the service's availability before closing the circuit again.
-
-### Configuration
-
-The circuit breaker is configured with two constants which control the number of errors and requests at which the circuit will open:
-
-- `ERROR_THRESHOLD`
-- `VOLUME_THRESHOLD`
-
-You can adjust these values as needed for the specific service and usage pattern.
-The `InternalServerError` is the exception class counted towards the error threshold if raised during the execution of the code block.
-This is the exception class that triggers the circuit breaker when raised by the code that interacts with the external service.
-
-NOTE:
-The `CircuitBreaker` module depends on the `Circuitbox` gem to provide the circuit breaker implementation. By default, the service name is inferred from the class name where the concern module is included. Override the `service_name` method if the name needs to be different.
-
-### Testing
-
-To test code that uses the `CircuitBreaker` concern, you can use `RSpec` shared examples and pass the `service` and `subject` variables:
-
-```ruby
-it_behaves_like 'has circuit breaker' do
-  let(:service) { dummy_class.new }
-  let(:subject) { service.dummy_method }
-end
 ```
 
 ## How to implement a new action
@@ -523,7 +462,7 @@ module Gitlab
           end
 
           def to_prompt
-            <<-PROMPT
+            <<~PROMPT
             You are an assistant that writes code for the following context:
 
             context: #{user_input}

@@ -93,10 +93,11 @@ module StubConfiguration
     messages.deep_stringify_keys!
 
     # Default storage is always required
-    messages['default'] ||= Gitlab.config.repositories.storages.default
+    messages['default'] ||= Gitlab.config.repositories.storages[GitalySetup::REPOS_STORAGE]
     messages.each do |storage_name, storage_hash|
-      if !storage_hash.key?('path') || storage_hash['path'] == Gitlab::GitalyClient::StorageSettings::Deprecated
-        storage_hash['path'] = Gitlab::GitalyClient::StorageSettings.allow_disk_access { TestEnv.repos_path }
+      # Default additional storages to connect to the default storage
+      unless storage_hash.key?('gitaly_address')
+        storage_hash['gitaly_address'] = Gitlab.config.repositories.storages[GitalySetup::REPOS_STORAGE].gitaly_address
       end
 
       messages[storage_name] = Gitlab::GitalyClient::StorageSettings.new(storage_hash.to_h)

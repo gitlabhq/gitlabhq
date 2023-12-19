@@ -68,15 +68,6 @@ RSpec.describe Event, feature_category: :user_profile do
         end.not_to change { project.last_repository_updated_at }
       end
     end
-
-    describe 'after_create UserInteractedProject.track' do
-      let(:event) { build(:push_event, project: project, author: project.first_owner) }
-
-      it 'passes event to UserInteractedProject.track' do
-        expect(UserInteractedProject).to receive(:track).with(event)
-        event.save!
-      end
-    end
   end
 
   describe 'validations' do
@@ -115,6 +106,18 @@ RSpec.describe Event, feature_category: :user_profile do
       end
     end
 
+    describe '.for_merge_request' do
+      let(:mr_event) { create(:event, :for_merge_request, project: project) }
+
+      before do
+        create(:event, :for_issue, project: project)
+      end
+
+      it 'returns events for MergeRequest target_type' do
+        expect(described_class.for_merge_request).to contain_exactly(mr_event)
+      end
+    end
+
     describe '.created_at' do
       it 'can find the right event' do
         time = 1.day.ago
@@ -125,6 +128,21 @@ RSpec.describe Event, feature_category: :user_profile do
 
         expect(found).to include(event)
         expect(found).not_to include(false_positive)
+      end
+    end
+
+    describe '.created_between' do
+      it 'returns events created between given timestamps' do
+        start_time = 2.days.ago
+        end_time = Date.today
+
+        create(:event, created_at: 3.days.ago)
+        e1 = create(:event, created_at: 2.days.ago)
+        e2 = create(:event, created_at: 1.day.ago)
+
+        found = described_class.created_between(start_time, end_time)
+
+        expect(found).to contain_exactly(e1, e2)
       end
     end
 
@@ -152,16 +170,28 @@ RSpec.describe Event, feature_category: :user_profile do
     end
 
     describe '.contributions' do
-      let!(:merge_request_event) { create(:event, :created, :for_merge_request, project: project) }
-      let!(:issue_event) { create(:event, :created, :for_issue, project: project) }
-      let!(:work_item_event) { create(:event, :created, :for_work_item, project: project) }
-      let!(:design_event) { create(:design_event, project: project) }
+      let!(:merge_request_events) do
+        %i[created closed merged approved].map do |action|
+          create(:event, :for_merge_request, action: action, project: project)
+        end
+      end
 
-      it 'returns events for MergeRequest, Issue and WorkItem' do
+      let!(:work_item_event) { create(:event, :created, :for_work_item, project: project) }
+      let!(:issue_events) do
+        %i[created closed].map { |action| create(:event, :for_issue, action: action, project: project) }
+      end
+
+      let!(:push_event) { create_push_event(project, project.owner) }
+      let!(:comment_event) { create(:event, :commented, project: project) }
+
+      before do
+        create(:design_event, project: project) # should not be in scope
+      end
+
+      it 'returns events for MergeRequest, Issue, WorkItem and push, comment events' do
         expect(described_class.contributions).to contain_exactly(
-          merge_request_event,
-          issue_event,
-          work_item_event
+          *merge_request_events, *issue_events, work_item_event,
+          push_event, comment_event
         )
       end
     end
@@ -881,7 +911,7 @@ RSpec.describe Event, feature_category: :user_profile do
     context 'when a project was updated more than 1 hour ago', :clean_gitlab_redis_shared_state do
       before do
         ::Gitlab::Redis::SharedState.with do |redis|
-          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current)
+          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current.to_s)
         end
       end
 
@@ -1145,5 +1175,12 @@ RSpec.describe Event, feature_category: :user_profile do
     )
 
     event
+  end
+
+  context 'with loose foreign key on events.author_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:event, author: parent) }
+    end
   end
 end

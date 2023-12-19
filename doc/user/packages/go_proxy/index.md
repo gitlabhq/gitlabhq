@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Go proxy for GitLab **(FREE ALL EXPERIMENT)**
@@ -53,7 +53,7 @@ Feature.disable(:go_proxy, Project.find(2))
 ```
 
 NOTE:
-Even if it's enabled, GitLab doesn't display Go modules in the **Package Registry**.
+Even if it's enabled, GitLab doesn't display Go modules in the **package registry**.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/213770) for
 details.
 

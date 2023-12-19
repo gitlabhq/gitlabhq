@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GitLab Application Service Level Indicators (SLIs)
@@ -179,7 +179,7 @@ In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
 we are extending this so alerts for SLIs with a `feature_category`
 label in the source metrics can also be routed.
 
-For any question, please don't hesitate to create an issue in
+For any question, don't hesitate to create an issue in
 [the Scalability issue tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues)
 or come find us in
 [#g_scalability](https://gitlab.slack.com/archives/CMMF8TKR9) on Slack.

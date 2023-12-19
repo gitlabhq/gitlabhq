@@ -2,6 +2,8 @@
 
 module Bitbucket
   class Connection
+    include Bitbucket::ExponentialBackoff
+
     DEFAULT_API_VERSION = '2.0'
     DEFAULT_BASE_URI    = 'https://api.bitbucket.org/'
     DEFAULT_QUERY       = {}.freeze
@@ -22,7 +24,14 @@ module Bitbucket
     def get(path, extra_query = {})
       refresh! if expired?
 
-      response = connection.get(build_url(path), params: @default_query.merge(extra_query))
+      response = if Feature.enabled?(:bitbucket_importer_exponential_backoff)
+                   retry_with_exponential_backoff do
+                     connection.get(build_url(path), params: @default_query.merge(extra_query))
+                   end
+                 else
+                   connection.get(build_url(path), params: @default_query.merge(extra_query))
+                 end
+
       response.parsed
     end
 
@@ -42,6 +51,10 @@ module Bitbucket
 
     def client
       @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)
+    end
+
+    def logger
+      Gitlab::BitbucketImport::Logger
     end
 
     def connection

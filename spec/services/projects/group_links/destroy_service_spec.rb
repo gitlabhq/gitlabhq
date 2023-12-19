@@ -19,8 +19,10 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
     end
   end
 
-  shared_examples_for 'returns not_found' do
-    it do
+  context 'if group_link is blank' do
+    let!(:group_link) { nil }
+
+    it 'returns 404 not found' do
       expect do
         result = subject.execute(group_link)
 
@@ -30,14 +32,15 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
     end
   end
 
-  context 'if group_link is blank' do
-    let!(:group_link) { nil }
-
-    it_behaves_like 'returns not_found'
-  end
-
   context 'if the user does not have access to destroy the link' do
-    it_behaves_like 'returns not_found'
+    it 'returns 404 not found' do
+      expect do
+        result = subject.execute(group_link)
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:reason]).to eq(:not_found)
+      end.not_to change { project.reload.project_group_links.count }
+    end
   end
 
   context 'when the user has proper permissions to remove a group-link from a project' do
@@ -110,6 +113,41 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
             it_behaves_like 'removes confidential todos'
           end
         end
+      end
+
+      context 'on trying to destroy a link with OWNER access' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        it 'does not remove the group from project' do
+          expect do
+            result = subject.execute(group_link)
+
+            expect(result[:status]).to eq(:error)
+            expect(result[:reason]).to eq(:forbidden)
+          end.not_to change { project.reload.project_group_links.count }
+        end
+
+        context 'if the user is an OWNER of the group' do
+          before do
+            group.add_owner(user)
+          end
+
+          it_behaves_like 'removes group from project'
+        end
+      end
+    end
+
+    context 'when the user is an OWNER in the project' do
+      before do
+        project.add_owner(user)
+      end
+
+      it_behaves_like 'removes group from project'
+
+      context 'on trying to destroy a link with OWNER access' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        it_behaves_like 'removes group from project'
       end
     end
   end

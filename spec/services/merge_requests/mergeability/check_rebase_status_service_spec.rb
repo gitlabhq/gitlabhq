@@ -10,6 +10,8 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
   let(:params) { { skip_rebase_check: skip_check } }
   let(:skip_check) { false }
 
+  it_behaves_like 'mergeability check service', :need_rebase, 'Checks whether the merge request needs to be rebased'
+
   describe '#execute' do
     let(:result) { check_rebase_status.execute }
 
@@ -31,7 +33,7 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
 
         it 'returns a check result with status failed' do
           expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-          expect(result.payload[:reason]).to eq(:need_rebase)
+          expect(result.payload[:identifier]).to eq(:need_rebase)
         end
       end
 

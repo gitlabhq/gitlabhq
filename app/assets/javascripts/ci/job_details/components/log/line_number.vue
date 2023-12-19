@@ -20,7 +20,7 @@ export default {
     return h(
       'a',
       {
-        class: 'gl-link d-inline-block text-right line-number flex-shrink-0',
+        class: 'job-log-line-number',
         attrs: {
           id: lineId,
           href: lineHref,

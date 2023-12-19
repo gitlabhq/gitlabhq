@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Where variables can be used **(FREE ALL)**
@@ -149,15 +148,15 @@ Pipeline-level persisted variables:
 
 Job-level persisted variables:
 
-- `CI_JOB_ID`
-- `CI_JOB_URL`
-- `CI_JOB_TOKEN`
-- `CI_JOB_STARTED_AT`
-- `CI_REGISTRY_USER`
-- `CI_REGISTRY_PASSWORD`
-- `CI_REPOSITORY_URL`
-- `CI_DEPLOY_USER`
 - `CI_DEPLOY_PASSWORD`
+- `CI_DEPLOY_USER`
+- `CI_JOB_ID`
+- `CI_JOB_STARTED_AT`
+- `CI_JOB_TOKEN`
+- `CI_JOB_URL`
+- `CI_REGISTRY_PASSWORD`
+- `CI_REGISTRY_USER`
+- `CI_REPOSITORY_URL`
 
 Persisted variables are:
 

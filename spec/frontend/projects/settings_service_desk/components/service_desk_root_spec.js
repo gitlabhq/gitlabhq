@@ -22,15 +22,13 @@ describe('ServiceDeskRoot', () => {
     isIssueTrackerEnabled: true,
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
+    reopenIssueOnExternalParticipantNote: true,
     addExternalParticipantsFromCc: true,
     selectedTemplate: 'Bug',
     selectedFileTemplateProjectId: 42,
     templates: ['Bug', 'Documentation'],
     publicProject: false,
     customEmailEndpoint: '/gitlab-org/gitlab-test/-/service_desk/custom_email',
-    glFeatures: {
-      serviceDeskCustomEmail: true,
-    },
   };
 
   const getAlertText = () => wrapper.findComponent(GlAlert).text();
@@ -63,6 +61,8 @@ describe('ServiceDeskRoot', () => {
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
+        initialReopenIssueOnExternalParticipantNote:
+          provideData.reopenIssueOnExternalParticipantNote,
         initialAddExternalParticipantsFromCc: provideData.addExternalParticipantsFromCc,
         initialSelectedTemplate: provideData.selectedTemplate,
         initialSelectedFileTemplateProjectId: provideData.selectedFileTemplateProjectId,
@@ -87,7 +87,7 @@ describe('ServiceDeskRoot', () => {
       const alertBodyLink = alertEl.findComponent(GlLink);
       expect(alertBodyLink.exists()).toBe(true);
       expect(alertBodyLink.attributes('href')).toBe(
-        '/help/user/project/service_desk.html#use-an-additional-service-desk-alias-email',
+        '/help/user/project/service_desk/configure.html#use-an-additional-service-desk-alias-email',
       );
       expect(alertBodyLink.text()).toBe('How do I create a custom email address?');
     });
@@ -149,6 +149,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            reopenIssueOnExternalParticipantNote: true,
             addExternalParticipantsFromCc: true,
           };
 
@@ -163,6 +164,7 @@ describe('ServiceDeskRoot', () => {
             outgoing_name: 'GitLab Support Bot',
             project_key: 'key',
             service_desk_enabled: true,
+            reopen_issue_on_external_participant_note: true,
             add_external_participants_from_cc: true,
           });
         });
@@ -182,6 +184,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            reopen_issue_on_external_participant_note: true,
             addExternalParticipantsFromCc: true,
           };
 
@@ -221,16 +224,6 @@ describe('ServiceDeskRoot', () => {
     describe('when issue tracker is disabled', () => {
       beforeEach(() => {
         wrapper = createComponent({ isIssueTrackerEnabled: false });
-      });
-
-      it('is not rendered', () => {
-        expect(wrapper.findComponent(CustomEmailWrapper).exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag service_desk_custom_email is disabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent({ glFeatures: { serviceDeskCustomEmail: false } });
       });
 
       it('is not rendered', () => {

@@ -1,0 +1,7 @@
+mutation updateCurrentPage($pageNumber: Int!) {
+  updateCurrentPage(pageNumber: $pageNumber) @client {
+    page {
+      current
+    }
+  }
+}

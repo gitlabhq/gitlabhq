@@ -47,7 +47,6 @@ export const I18N_MODAL_BODY = s__(
 export const I18N_MODAL_PRIMARY = s__('Artifacts|Delete artifact');
 export const I18N_MODAL_CANCEL = __('Cancel');
 
-export const SELECTED_ARTIFACTS_MAX_COUNT = 50;
 export const I18N_BULK_DELETE_MAX_SELECTED = s__(
   'Artifacts|Maximum selected artifacts limit reached',
 );

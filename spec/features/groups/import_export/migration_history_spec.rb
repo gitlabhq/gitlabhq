@@ -26,7 +26,7 @@ RSpec.describe 'Import/Export - GitLab migration history', :js, feature_category
 
     wait_for_requests
 
-    expect(page).to have_content 'GitLab Migration history'
+    expect(page).to have_content 'Direct transfer history'
     expect(page.find('tbody')).to have_css('tr', count: 2)
   end
 end

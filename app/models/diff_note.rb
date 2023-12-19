@@ -8,6 +8,8 @@ class DiffNote < Note
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize
 
+  self.allow_legacy_sti_class = true
+
   def self.noteable_types
     %w[MergeRequest Commit DesignManagement::Design]
   end
@@ -51,7 +53,7 @@ class DiffNote < Note
     end
 
     creation_params = diff_file.diff.to_hash
-      .except(:too_large)
+      .except(:too_large, :generated)
       .merge(diff: diff_file.diff_hunk(diff_line))
 
     create_note_diff_file(creation_params)

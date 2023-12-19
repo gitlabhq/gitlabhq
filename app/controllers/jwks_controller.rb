@@ -2,6 +2,10 @@
 
 class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   def index
+    if ::Feature.enabled?(:cache_control_headers_for_openid_jwks)
+      expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
+    end
+
     render json: { keys: payload }
   end
 

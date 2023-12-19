@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Iterations **(PREMIUM ALL)**
@@ -78,7 +77,7 @@ From there you can create a new iteration or select an iteration to get a more d
 
 NOTE:
 If a project has issue tracking
-[turned off](../../project/settings/index.md#configure-project-features-and-permissions),
+[turned off](../../project/settings/project_features_permissions.md#configure-project-features-and-permissions),
 to view the iterations list, enter its URL. To do so, add: `/-/cadences` to your project or group URL.
 For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
 This is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
@@ -179,7 +178,7 @@ Prerequisites:
 To create an iteration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan > Iterations** and select an iteration cadence.
 1. Select **New iteration**.
 1. Enter the title, a description (optional), a start date, and a due date.
 1. Select **Create iteration**. The iteration details page opens.

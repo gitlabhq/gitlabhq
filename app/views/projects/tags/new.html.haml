@@ -18,7 +18,7 @@
   .form-group.row
     .col-sm-12
       = label_tag :tag_name, _('Tag name')
-      = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control', data: { qa_selector: "tag_name_field" }
+      = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control', data: { testid: 'tag-name-field' }
   .form-group.row
     .col-sm-auto.create-from
       = label_tag :ref, _('Create from')
@@ -28,12 +28,12 @@
   .form-group.row
     .col-sm-12
       = label_tag :message, _('Message')
-      = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { qa_selector: "tag_message_field" }
+      = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { testid: 'tag-message-field' }
       .form-text.text-muted
         = tag_description_help_text
 
   .gl-display-flex
-    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3', data: { qa_selector: "create_tag_button" }, type: 'submit' }) do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3', data: { testid: 'create-tag-button' }, type: 'submit' }) do
       = s_('TagsPage|Create tag')
     = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do
       = s_('TagsPage|Cancel')

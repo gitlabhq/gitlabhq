@@ -48,19 +48,6 @@ RSpec.describe TodosHelper do
     create(:todo, target: project, action: Todo::MEMBER_ACCESS_REQUESTED)
   end
 
-  describe '#todos_count_format' do
-    it 'shows fuzzy count for 100 or more items' do
-      expect(helper.todos_count_format(100)).to eq '99+'
-      expect(helper.todos_count_format(1000)).to eq '99+'
-    end
-
-    it 'shows exact count for 99 or fewer items' do
-      expect(helper.todos_count_format(99)).to eq '99'
-      expect(helper.todos_count_format(50)).to eq '50'
-      expect(helper.todos_count_format(1)).to eq '1'
-    end
-  end
-
   describe '#todo_target_name' do
     context 'when given a design' do
       let(:todo) { design_todo }

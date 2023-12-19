@@ -80,6 +80,8 @@ module CsvBuilder
       attributes.map do |attribute|
         if attribute.respond_to?(:call)
           excel_sanitize(attribute.call(object))
+        elsif object.is_a?(Hash)
+          excel_sanitize(object[attribute])
         else
           excel_sanitize(object.public_send(attribute)) # rubocop:disable GitlabSecurity/PublicSend
         end

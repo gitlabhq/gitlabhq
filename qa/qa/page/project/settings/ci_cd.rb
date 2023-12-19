@@ -8,25 +8,25 @@ module QA
           include QA::Page::Settings::Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do
-            element :autodevops_settings_content
-            element :runners_settings_content
-            element :variables_settings_content
+            element 'autodevops-settings-content'
+            element 'runners-settings-content'
+            element 'variables-settings-content'
           end
 
           def expand_runners_settings(&block)
-            expand_content(:runners_settings_content) do
+            expand_content('runners-settings-content') do
               Settings::Runners.perform(&block)
             end
           end
 
           def expand_ci_variables(&block)
-            expand_content(:variables_settings_content) do
+            expand_content('variables-settings-content') do
               Settings::CiVariables.perform(&block)
             end
           end
 
           def expand_auto_devops(&block)
-            expand_content(:autodevops_settings_content) do
+            expand_content('autodevops-settings-content') do
               Settings::AutoDevops.perform(&block)
             end
           end

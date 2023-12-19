@@ -485,6 +485,7 @@ production: &base
       enabled: true
       # The location where pages are stored (default: shared/pages).
       # path: shared/pages
+    # namespace_in_path: false # Set to true if you want to enable namespace in the URL path. It requires pages nginx to be enabled.
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -1133,7 +1134,8 @@ production: &base
       #     args: {
       #       client_id: 'YOUR_AUTH0_CLIENT_ID',
       #       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-      #       namespace: 'YOUR_AUTH0_DOMAIN' } }
+      #       domain: 'YOUR_AUTH0_DOMAIN',
+      #       scope: 'openid profile email' } }
 
   # FortiAuthenticator settings
   forti_authenticator:
@@ -1190,13 +1192,8 @@ production: &base
 
   ## Repositories settings
   repositories:
-    # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # IMPORTANT: None of the path components may be symlink, because
-    # gitlab-shell invokes Dir.pwd inside the repository path and that results
-    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
       default:
-        path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port). TLS connections are also supported using the system certificate pool (eg: tls://host:port).
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
@@ -1622,7 +1619,8 @@ test:
           args: {
             client_id: 'YOUR_AUTH0_CLIENT_ID',
             client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-            namespace: 'YOUR_AUTH0_DOMAIN' } }
+            domain: 'YOUR_AUTH0_DOMAIN',
+            scope: 'openid profile email' } }
       - { name: 'salesforce',
           app_id: 'YOUR_CLIENT_ID',
           app_secret: 'YOUR_CLIENT_SECRET'

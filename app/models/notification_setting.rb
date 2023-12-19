@@ -70,7 +70,8 @@ class NotificationSetting < ApplicationRecord
   EXCLUDED_WATCHER_EVENTS = [
     :push_to_merge_request,
     :issue_due,
-    :success_pipeline
+    :success_pipeline,
+    :approver
   ].freeze
 
   def self.find_or_create_for(source)

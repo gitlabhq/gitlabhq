@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Docker images **(FREE SELF)**
@@ -42,24 +42,26 @@ To use the GitLab Docker images:
 
 ## Set up the volumes location
 
-Before setting everything else, configure a new environment variable `$GITLAB_HOME`
-pointing to the directory where the configuration, logs, and data files will reside.
-Ensure that the directory exists and appropriate permission have been granted.
+Before setting everything else, create a directory where the configuration, logs,
+and data files will reside. It can be under your user's home directory (for example
+`~/gitlab-docker`), or in a directory like `/srv/gitlab`. To create that directory:
 
-For Linux users, set the path to `/srv/gitlab`:
+```shell
+sudo mkdir -p /srv/gitlab
+```
+
+If you're running Docker with a user other than `root`, ensure appropriate
+permissions have been granted to that directory.
+
+Configure a new environment variable `$GITLAB_HOME` that sets the path to the
+directory you created:
 
 ```shell
 export GITLAB_HOME=/srv/gitlab
 ```
 
-For macOS users, use the user's `$HOME/gitlab` directory:
-
-```shell
-export GITLAB_HOME=$HOME/gitlab
-```
-
-The `GITLAB_HOME` environment variable should be appended to your shell's profile so it is
-applied on all future terminal sessions:
+You can also append the `GITLAB_HOME` environment variable to your shell's
+profile so it is applied on all future terminal sessions:
 
 - Bash: `~/.bash_profile`
 - ZSH: `~/.zshrc`

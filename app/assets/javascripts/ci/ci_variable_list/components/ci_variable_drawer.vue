@@ -29,13 +29,16 @@ import {
   EVENT_ACTION,
   EXPANDED_VARIABLES_NOTE,
   FLAG_LINK_TITLE,
+  MASKED_VALUE_MIN_LENGTH,
   VARIABLE_ACTIONS,
   variableOptions,
+  WHITESPACE_REG_EX,
 } from '../constants';
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
 
 const trackingMixin = Tracking.mixin({ label: DRAWER_EVENT_LABEL });
+const KEY_REGEX = /^\w+$/;
 
 export const i18n = {
   addVariable: s__('CiVariables|Add variable'),
@@ -50,24 +53,37 @@ export const i18n = {
   flags: __('Flags'),
   flagsLinkTitle: FLAG_LINK_TITLE,
   key: __('Key'),
+  keyFeedback: s__("CiVariables|A variable key can only contain letters, numbers, and '_'."),
+  keyHelpText: s__(
+    'CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}',
+  ),
   maskedField: s__('CiVariables|Mask variable'),
   maskedDescription: s__(
     'CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements.',
+  ),
+  maskedValueMinLengthValidationText: s__(
+    'CiVariables|The value must have at least %{charsAmount} characters.',
   ),
   modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
     'CiVariables|Export variable to pipelines running on protected branches and tags only.',
   ),
+  unsupportedCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars}.',
+  ),
+  unsupportedAndWhitespaceCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars} and whitespace characters.',
+  ),
   valueFeedback: {
     rawHelpText: s__('CiVariables|Variable value will be evaluated as raw string.'),
-    maskedReqsNotMet: s__(
-      'CiVariables|This variable value does not meet the masking requirements.',
-    ),
   },
   variableReferenceTitle: s__('CiVariables|Value might contain a variable reference'),
   variableReferenceDescription: s__(
     'CiVariables|Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
+  ),
+  whitespaceCharsValidationText: s__(
+    'CiVariables|This value cannot be masked because it contains the following characters: whitespace characters.',
   ),
   type: __('Type'),
   value: __('Value'),
@@ -146,7 +162,7 @@ export default {
       return regex.test(this.variable.value);
     },
     canSubmit() {
-      return this.variable.key.length > 0 && this.isValueValid;
+      return this.variable.key.length > 0 && this.isKeyValid && this.isValueValid;
     },
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
@@ -156,6 +172,9 @@ export default {
     },
     isExpanded() {
       return !this.variable.raw;
+    },
+    isKeyValid() {
+      return KEY_REGEX.test(this.variable.key);
     },
     isMaskedReqsMet() {
       return !this.variable.masked || this.isValueMasked;
@@ -169,11 +188,76 @@ export default {
     isEditing() {
       return this.mode === EDIT_VARIABLE_ACTION;
     },
+    isMaskedValueContainsWhitespaceChars() {
+      return this.isValueMaskable && WHITESPACE_REG_EX.test(this.variable.value);
+    },
     maskedRegexToUse() {
       return this.variable.raw ? this.maskableRawRegex : this.maskableRegex;
     },
-    maskedReqsNotMetText() {
-      return !this.isMaskedReqsMet ? this.$options.i18n.valueFeedback.maskedReqsNotMet : '';
+    maskedSupportedCharsRegEx() {
+      const supportedChars = this.maskedRegexToUse.replace('^', '').replace(/{(\d,)}\$/, '');
+      return new RegExp(supportedChars, 'g');
+    },
+    maskedValueMinLengthValidationText() {
+      return sprintf(this.$options.i18n.maskedValueMinLengthValidationText, {
+        charsAmount: MASKED_VALUE_MIN_LENGTH,
+      });
+    },
+    unsupportedCharsList() {
+      if (this.isMaskedReqsMet) {
+        return [];
+      }
+
+      return [
+        ...new Set(
+          this.variable.value
+            .replace(WHITESPACE_REG_EX, '')
+            .replace(this.maskedSupportedCharsRegEx, '')
+            .split(''),
+        ),
+      ];
+    },
+    unsupportedChars() {
+      return this.unsupportedCharsList.join(', ');
+    },
+    unsupportedCharsValidationText() {
+      return sprintf(
+        this.$options.i18n.unsupportedCharsValidationText,
+        {
+          unsupportedChars: this.unsupportedChars,
+        },
+        false,
+      );
+    },
+    unsupportedAndWhitespaceCharsValidationText() {
+      return sprintf(
+        this.$options.i18n.unsupportedAndWhitespaceCharsValidationText,
+        {
+          unsupportedChars: this.unsupportedChars,
+        },
+        false,
+      );
+    },
+    maskedValidationIssuesText() {
+      if (this.isMaskedReqsMet) {
+        return '';
+      }
+
+      let validationIssuesText = '';
+
+      if (this.unsupportedCharsList.length && !this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.unsupportedCharsValidationText;
+      } else if (this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.unsupportedAndWhitespaceCharsValidationText;
+      } else if (!this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
+        validationIssuesText = this.$options.i18n.whitespaceCharsValidationText;
+      }
+
+      if (this.variable.value.length < MASKED_VALUE_MIN_LENGTH) {
+        validationIssuesText += ` ${this.maskedValueMinLengthValidationText}`;
+      }
+
+      return validationIssuesText.trim();
     },
     modalActionText() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
@@ -218,9 +302,7 @@ export default {
 
       let property;
       if (this.isValueMaskable) {
-        const supportedChars = this.maskedRegexToUse.replace('^', '').replace(/{(\d,)}\$/, '');
-        const regex = new RegExp(supportedChars, 'g');
-        property = this.variable.value.replace(regex, '');
+        property = this.variable.value.replace(this.maskedSupportedCharsRegEx, '');
       } else if (this.hasVariableReference) {
         property = '$';
       }
@@ -245,6 +327,9 @@ export default {
   awsTokenList,
   flagLink: helpPagePath('ci/variables/index', {
     anchor: 'define-a-cicd-variable-in-the-ui',
+  }),
+  variablesPrecedenceLink: helpPagePath('ci/variables/index', {
+    anchor: 'cicd-variable-precedence',
   }),
   i18n,
   variableOptions,
@@ -339,6 +424,7 @@ export default {
               class="gl-display-flex"
               :title="$options.i18n.flagsLinkTitle"
               :href="$options.flagLink"
+              data-testid="ci-variable-flags-docs-link"
               target="_blank"
             >
               <gl-icon name="question-o" :size="14" />
@@ -377,22 +463,39 @@ export default {
         class="gl-border-none gl-pb-0! gl-mb-n5"
         data-testid="ci-variable-key"
       />
+      <p
+        v-if="variable.key.length > 0 && !isKeyValid"
+        class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-red-500 gl-border-none"
+      >
+        {{ $options.i18n.keyFeedback }}
+      </p>
+      <p class="gl-pt-3! gl-pb-0! gl-mb-0 gl-text-secondary gl-border-none">
+        <gl-sprintf :message="$options.i18n.keyHelpText">
+          <template #link="{ content }"
+            ><gl-link
+              :href="$options.variablesPrecedenceLink"
+              data-testid="ci-variable-precedence-docs-link"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </p>
       <gl-form-group
         :label="$options.i18n.value"
         label-for="ci-variable-value"
         class="gl-border-none gl-mb-n2"
         data-testid="ci-variable-value-label"
-        :invalid-feedback="maskedReqsNotMetText"
+        :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
         <gl-form-textarea
           id="ci-variable-value"
           v-model="variable.value"
+          :spellcheck="false"
           class="gl-border-none gl-font-monospace!"
           rows="3"
           max-rows="10"
           data-testid="ci-variable-value"
-          spellcheck="false"
         />
         <p
           v-if="variable.raw"

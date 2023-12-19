@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Style guide for writing end-to-end tests
@@ -19,10 +19,8 @@ When selecting a single link to navigate, use `click_`.
 For example:
 
 ```ruby
-def click_ci_cd_pipelines
-  within_sidebar do
-    click_element(:link_pipelines)
-  end
+def click_add_badge_button
+  click_element :add_badge_button
 end
 ```
 
@@ -38,12 +36,8 @@ When interacting with multiple elements to go to a page, use `go_to_`.
 For example:
 
 ```ruby
-def go_to_operations_environments
-  hover_operations do
-    within_submenu do
-      click_element(:operations_environments_link)
-    end
-  end
+def go_to_applications
+  click_element('nav-item-link', submenu_item: 'Applications')
 end
 ```
 
@@ -77,7 +71,7 @@ We follow a simple formula roughly based on Hungarian notation.
   - `_menu_item`
 
 NOTE:
-If none of the listed types are suitable, please open a merge request to add an appropriate type to the list.
+If none of the listed types are suitable, open a merge request to add an appropriate type to the list.
 
 ### Examples
 

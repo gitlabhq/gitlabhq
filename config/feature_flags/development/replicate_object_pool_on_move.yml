@@ -1,8 +1,0 @@
----
-name: replicate_object_pool_on_move
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127143
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420720
-milestone: '16.3'
-type: development
-group: group::source code
-default_enabled: true

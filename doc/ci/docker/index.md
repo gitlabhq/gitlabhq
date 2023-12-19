@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Docker integration **(FREE ALL)**
@@ -15,7 +14,7 @@ There are two primary ways to incorporate [Docker](https://www.docker.com) into 
   an application. These jobs can run in Docker containers.
 
   For example, you can tell GitLab CI/CD to use a Node image that's hosted on Docker Hub
-  or in the GitLab Container Registry. Your job then runs in a container that's based on the image.
+  or in the GitLab container registry. Your job then runs in a container that's based on the image.
   The container has all the Node dependencies you need to build your app.
 
 - **Use [Docker](using_docker_build.md) or [kaniko](using_kaniko.md) to build Docker images.**

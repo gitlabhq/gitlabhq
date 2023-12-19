@@ -114,8 +114,8 @@ module Gitlab
       end
       # rubocop: enable Metrics/ParameterLists
 
-      def create_repository(default_branch = nil)
-        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo, default_branch: encode_binary(default_branch))
+      def create_repository(default_branch = nil, object_format: nil)
+        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo, default_branch: encode_binary(default_branch), object_format: gitaly_object_format(object_format))
         gitaly_client_call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.fast_timeout)
       end
 
@@ -363,6 +363,12 @@ module Gitlab
         gitaly_client_call(@repository.storage, :repository_service, :get_file_attributes, request, timeout: GitalyClient.fast_timeout)
       end
 
+      def object_format
+        request = Gitaly::ObjectFormatRequest.new(repository: @gitaly_repo)
+
+        gitaly_client_call(@storage, :repository_service, :object_format, request, timeout: GitalyClient.fast_timeout)
+      end
+
       private
 
       def search_results_from_response(gitaly_response, options = {})
@@ -448,6 +454,15 @@ module Gitlab
         end
 
         entry
+      end
+
+      def gitaly_object_format(format)
+        case format
+        when Repository::FORMAT_SHA1
+          Gitaly::ObjectFormat::OBJECT_FORMAT_SHA1
+        when Repository::FORMAT_SHA256
+          Gitaly::ObjectFormat::OBJECT_FORMAT_SHA256
+        end
       end
     end
   end

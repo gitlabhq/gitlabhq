@@ -1,4 +1,4 @@
-import { GlButton, GlDropdown, GlFormCheckbox, GlLoadingIcon, GlToggle, GlAlert } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlLoadingIcon, GlToggle, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -19,7 +19,10 @@ describe('ServiceDeskSetting', () => {
   const findSuffixFormGroup = () => wrapper.findByTestId('suffix-form-group');
   const findIssueTrackerInfo = () => wrapper.findComponent(GlAlert);
   const findIssueHelpLink = () => wrapper.findByTestId('issue-help-page');
-  const findAddExternalParticipantsFromCcCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findReopenIssueOnExternalParticipantNoteCheckbox = () =>
+    wrapper.findByTestId('reopen-issue-on-external-participant-note');
+  const findAddExternalParticipantsFromCcCheckbox = () =>
+    wrapper.findByTestId('add-external-participants-from-cc');
 
   const createComponent = ({ props = {}, provide = {} } = {}) =>
     extendedWrapper(
@@ -212,6 +215,27 @@ describe('ServiceDeskSetting', () => {
     });
   });
 
+  describe('reopen issue on external participant note checkbox', () => {
+    it('is rendered', () => {
+      wrapper = createComponent();
+      expect(findReopenIssueOnExternalParticipantNoteCheckbox().exists()).toBe(true);
+    });
+
+    it('forwards false as initial value to the checkbox', () => {
+      wrapper = createComponent({ props: { initialReopenIssueOnExternalParticipantNote: false } });
+      expect(findReopenIssueOnExternalParticipantNoteCheckbox().find('input').element.checked).toBe(
+        false,
+      );
+    });
+
+    it('forwards true as initial value to the checkbox', () => {
+      wrapper = createComponent({ props: { initialReopenIssueOnExternalParticipantNote: true } });
+      expect(findReopenIssueOnExternalParticipantNoteCheckbox().find('input').element.checked).toBe(
+        true,
+      );
+    });
+  });
+
   describe('add external participants from cc checkbox', () => {
     it('is rendered', () => {
       wrapper = createComponent();
@@ -249,7 +273,8 @@ describe('ServiceDeskSetting', () => {
           initialSelectedFileTemplateProjectId: 42,
           initialOutgoingName: 'GitLab Support Bot',
           initialProjectKey: 'key',
-          initialAddExternalParticipantsFromCc: false,
+          initialReopenIssueOnExternalParticipantNote: true,
+          initialAddExternalParticipantsFromCc: true,
         },
       });
 
@@ -262,7 +287,8 @@ describe('ServiceDeskSetting', () => {
         fileTemplateProjectId: 42,
         outgoingName: 'GitLab Support Bot',
         projectKey: 'key',
-        addExternalParticipantsFromCc: false,
+        reopenIssueOnExternalParticipantNote: true,
+        addExternalParticipantsFromCc: true,
       };
 
       expect(wrapper.emitted('save')[0]).toEqual([payload]);
@@ -286,6 +312,10 @@ describe('ServiceDeskSetting', () => {
 
     it('does not render template save button', () => {
       expect(findButton().exists()).toBe(false);
+    });
+
+    it('does not render reopen issue on external participant note checkbox', () => {
+      expect(findReopenIssueOnExternalParticipantNoteCheckbox().exists()).toBe(false);
     });
 
     it('does not render add external participants from cc checkbox', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupLink::GroupLinkEntity do
+RSpec.describe GroupLink::GroupLinkEntity, feature_category: :groups_and_projects do
   include_context 'group_group_link'
 
   let(:entity) { described_class.new(group_group_link) }
@@ -10,10 +10,6 @@ RSpec.describe GroupLink::GroupLinkEntity do
 
   it 'matches json schema' do
     expect(entity.to_json).to match_schema('group_link/group_link')
-  end
-
-  it 'correctly exposes `valid_roles`' do
-    expect(entity_hash[:valid_roles]).to include(Gitlab::Access.options_with_owner)
   end
 
   it 'correctly exposes `shared_with_group.avatar_url`' do

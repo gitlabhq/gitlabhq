@@ -1,7 +1,6 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
-import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { createAlert } from '~/alert';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -24,9 +23,8 @@ import {
   mockJobRetryMutationData,
 } from '../mock_data';
 
-const localVue = createLocalVue();
 jest.mock('~/alert');
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -62,7 +60,6 @@ describe('Manual Variables Form', () => {
     ]);
 
     const options = {
-      localVue,
       apolloProvider: mockApollo,
     };
 
@@ -180,6 +177,9 @@ describe('Manual Variables Form', () => {
     beforeEach(async () => {
       await createComponent({
         handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
           playJobMutationHandler: jest.fn().mockResolvedValue(mockJobPlayMutationData),
         },
       });
@@ -211,6 +211,15 @@ describe('Manual Variables Form', () => {
       expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath); // eslint-disable-line import/no-deprecated
     });
+
+    it('does not refetch variables after job is run', async () => {
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('when play mutation is unsuccessful', () => {
@@ -237,6 +246,9 @@ describe('Manual Variables Form', () => {
       await createComponent({
         props: { isRetryable: true },
         handlers: {
+          getJobQueryResponseHandlerWithVariables: jest
+            .fn()
+            .mockResolvedValue(mockJobWithVariablesResponse),
           retryJobMutationHandler: jest.fn().mockResolvedValue(mockJobRetryMutationData),
         },
       });
@@ -252,6 +264,15 @@ describe('Manual Variables Form', () => {
 
       expect(requestHandlers.retryJobMutationHandler).toHaveBeenCalledTimes(1);
       expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath); // eslint-disable-line import/no-deprecated
+    });
+
+    it('does not refetch variables after job is rerun', async () => {
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
+
+      findRunBtn().vm.$emit('click');
+      await waitForPromises();
+
+      expect(requestHandlers.getJobQueryResponseHandlerWithVariables).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Back up and restore GitLab **(FREE SELF)**
@@ -25,196 +25,8 @@ For detailed information on restoring GitLab, see [Restore GitLab](restore_gitla
 
 ## Migrate to a new server
 
-<!-- some details borrowed from GitLab.com move from Azure to GCP detailed at https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md -->
-
-You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
-If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md).
-
-WARNING:
-Avoid uncoordinated data processing by both the new and old servers, where multiple
-servers could connect concurrently and process the same data. For example, when using
-[incoming email](../incoming_email.md), if both GitLab instances are
-processing email at the same time, then both instances miss some data.
-This type of problem can occur with other services as well, such as a
-[non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
-a non-packaged Redis instance, or non-packaged Sidekiq.
-
-Prerequisites:
-
-- Some time before your migration, consider notifying your users of upcoming
-  scheduled maintenance with a [broadcast message banner](../broadcast_messages.md).
-- Ensure your backups are complete and current. Create a complete system-level backup, or
-  take a snapshot of all servers involved in the migration, in case destructive commands
-  (like `rm`) are run incorrectly.
-
-### Prepare the new server
-
-To prepare the new server:
-
-1. Copy the
-   [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
-   from the old server to avoid man-in-the-middle attack warnings.
-   See [Manually replicate the primary site's SSH host keys](../geo/replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys) for example steps.
-1. [Install and configure GitLab](https://about.gitlab.com/install/) except
-   [incoming email](../incoming_email.md):
-   1. Install GitLab.
-   1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
-      Read the
-      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups.html) for more detail.
-   1. If applicable, disable [incoming email](../incoming_email.md).
-   1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
-      Edit `/etc/gitlab/gitlab.rb` and set the following:
-
-      ```ruby
-      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
-      ```
-
-   1. Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-1. Stop GitLab to avoid any potential unnecessary and unintentional data processing:
-
-   ```shell
-   sudo gitlab-ctl stop
-   ```
-
-1. Configure the new server to allow receiving the Redis database and GitLab backup files:
-
-   ```shell
-   sudo rm -f /var/opt/gitlab/redis/dump.rdb
-   sudo chown <your-linux-username> /var/opt/gitlab/redis /var/opt/gitlab/backups
-   ```
-
-### Prepare and transfer content from the old server
-
-1. Ensure you have an up-to-date system-level backup or snapshot of the old server.
-1. Enable [maintenance mode](../maintenance_mode/index.md),
-   if supported by your GitLab edition.
-1. Block new CI/CD jobs from starting:
-   1. Edit `/etc/gitlab/gitlab.rb`, and set the following:
-
-      ```ruby
-      nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
-      ```
-
-   1. Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-1. Disable periodic background jobs:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
-   1. Under the Sidekiq dashboard, select **Cron** tab and then
-      **Disable All**.
-1. Wait for the currently running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
-   To view jobs currently running, on the left sidebar, select **Overviews > Jobs**,
-   and then select **Running**.
-1. Wait for Sidekiq jobs to finish:
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
-   1. Under the Sidekiq dashboard, select **Queues** and then **Live Poll**.
-      Wait for **Busy** and **Enqueued** to drop to 0.
-      These queues contain work that has been submitted by your users;
-      shutting down before these jobs complete may cause the work to be lost.
-      Make note of the numbers shown in the Sidekiq dashboard for post-migration verification.
-1. Flush the Redis database to disk, and stop GitLab other than the services needed for migration:
-
-   ```shell
-   sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket save && sudo gitlab-ctl stop && sudo gitlab-ctl start postgresql && sudo gitlab-ctl start gitaly
-   ```
-
-1. Create a GitLab backup:
-
-   ```shell
-   sudo gitlab-backup create
-   ```
-
-1. Disable the following GitLab services and prevent unintentional restarts by adding the following to the bottom of `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_pages['enable'] = false
-   gitlab_workhorse['enable'] = false
-   grafana['enable'] = false
-   logrotate['enable'] = false
-   gitlab_rails['incoming_email_enabled'] = false
-   nginx['enable'] = false
-   node_exporter['enable'] = false
-   postgres_exporter['enable'] = false
-   postgresql['enable'] = false
-   prometheus['enable'] = false
-   puma['enable'] = false
-   redis['enable'] = false
-   redis_exporter['enable'] = false
-   registry['enable'] = false
-   sidekiq['enable'] = false
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Verify everything is stopped, and confirm no services are running:
-
-   ```shell
-   sudo gitlab-ctl status
-   ```
-
-1. Transfer the Redis database and GitLab backups to the new server:
-
-   ```shell
-   sudo scp /var/opt/gitlab/redis/dump.rdb <your-linux-username>@new-server:/var/opt/gitlab/redis
-   sudo scp /var/opt/gitlab/backups/your-backup.tar <your-linux-username>@new-server:/var/opt/gitlab/backups
-   ```
-
-### Restore data on the new server
-
-1. Restore appropriate file system permissions:
-
-   ```shell
-   sudo chown gitlab-redis /var/opt/gitlab/redis
-   sudo chown gitlab-redis:gitlab-redis /var/opt/gitlab/redis/dump.rdb
-   sudo chown git:root /var/opt/gitlab/backups
-   sudo chown git:git /var/opt/gitlab/backups/your-backup.tar
-   ```
-
-1. [Restore the GitLab backup](#restore-gitlab).
-1. Verify that the Redis database restored correctly:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
-   1. Under the Sidekiq dashboard, verify that the numbers
-      match with what was shown on the old server.
-   1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**
-      to re-enable periodic background jobs.
-1. Test that read-only operations on the GitLab instance work as expected. For example, browse through project repository files, merge requests, and issues.
-1. Disable [Maintenance Mode](../maintenance_mode/index.md), if previously enabled.
-1. Test that the GitLab instance is working as expected.
-1. If applicable, re-enable [incoming email](../incoming_email.md) and test it is working as expected.
-1. Update your DNS or load balancer to point at the new server.
-1. Unblock new CI/CD jobs from starting by removing the custom NGINX configuration
-   you added previously:
-
-   ```ruby
-   # The following line must be removed
-   nginx['custom_gitlab_server_config'] = "location = /api/v4/jobs/request {\n    deny all;\n    return 503;\n  }\n"
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Remove the scheduled maintenance [broadcast message banner](../broadcast_messages.md).
+For detailed information on using back up and restore to migrate to a new server, see
+[Migrate to a new server](migrate_to_new_server.md).
 
 ## Additional notes
 
@@ -223,6 +35,187 @@ GitLab.com and ensure your data is secure. You can't, however, use these
 methods to export or back up your data yourself from GitLab.com.
 
 Issues are stored in the database, and can't be stored in Git itself.
+
+## GitLab backup archive creation process
+
+When working with GitLab backups, you might need to know how GitLab creates backup archives. To create backup archives, GitLab:
+
+1. If creating an incremental backup, extracts the previous backup archive and read its `backup_information.yml` file.
+1. Updates or generates the `backup_information.yml` file.
+1. Runs all backup sub-tasks:
+   - `db` to backup the GitLab PostgreSQL database (not Gitaly Cluster).
+   - `repositories` to back up Git repositories.
+   - `uploads` to back up attachments.
+   - `builds` to back up CI job output logs.
+   - `artifacts` to back up CI job artifacts.
+   - `pages` to back up page content.
+   - `lfs` to back up LFS objects.
+   - `terraform_state` to back up Terraform states.
+   - `registry` to back up container registry images.
+   - `packages` to back up packages.
+   - `ci_secure_files` to back up project-level secure files.
+1. Archives the backup staging area into a tar file.
+1. Optional. Uploads the new backup archive to object-storage.
+1. Cleans up backup staging directory files that are now archived.
+
+## Backup ID
+
+Backup IDs identify individual backup archives. You need the backup ID of a backup archive if you need to restore GitLab and multiple backup archives are available.
+
+Backup archives are saved in a directory set in `backup_path`, which is specified in the `config/gitlab.yml` file.
+
+- By default, backup archives are stored in `/var/opt/gitlab/backups`.
+- By default, backup archive file names are `<backup-id>_gitlab_backup.tar` where `<backup-id>` identifies the time when the
+  backup archive was created, the GitLab version, and the GitLab edition.
+
+For example, if the archive file name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
+
+## Backup staging directory
+
+The backup staging directory is a place to temporarily:
+
+- Store backup artifacts on disk before the GitLab backup archive is created.
+- Extract backup archives on disk before restoring a backup or creating an incremental backup.
+
+This directory is the same directory where completed GitLab backup archives are created. When creating an untarred backup, the backup artifacts are left in this directory and no
+archive is created.
+
+Example backup staging directory with untarred backup:
+
+```plaintext
+backups/
+├── 1701728344_2023_12_04_16.7.0-pre_gitlab_backup.tar
+├── 1701728447_2023_12_04_16.7.0-pre_gitlab_backup.tar
+├── artifacts.tar.gz
+├── backup_information.yml
+├── builds.tar.gz
+├── ci_secure_files.tar.gz
+├── db
+│   ├── ci_database.sql.gz
+│   └── database.sql.gz
+├── lfs.tar.gz
+├── packages.tar.gz
+├── pages.tar.gz
+├── repositories
+│   ├── manifests/
+│   ├── @hashed/
+│   └── @snippets/
+├── terraform_state.tar.gz
+└── uploads.tar.gz
+```
+
+## `backup_information.yml` file
+
+The `backup_information.yml` file saves all backup inputs that are not included in the backup itself. It includes information such as:
+
+- The time the backup was created.
+- The version of GitLab that generated the backup.
+- Any options that were specified, such as skipped sub-tasks.
+
+This information is used by some sub-tasks to determine how:
+
+- To restore.
+- To link data in the backup with external services (such as server-side repository backups).
+
+This file is saved into the backup staging directory.
+
+## Database backups
+
+Database backups are created and restored by a GitLab backup sub-task called `db`. The database sub-task uses `pg_dump` to create [a SQL dump](https://www.postgresql.org/docs/14/backup-dump.html). The output of `pg_dump` is piped through `gzip` in order to create a compressed SQL file. This file is saved to the backup staging directory.
+
+## Repository backups
+
+Repository backups are created and restored by a GitLab backup sub-task called `repositories`. The repositories sub-task uses a Gitaly command
+[`gitaly-backup`](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/gitaly-backup.md) to create Git repository backups:
+
+- GitLab uses its database to tell `gitaly-backup` which repositories to back up.
+- `gitaly-backup` then calls a series of RPCs on Gitaly to collect the repository backup data for each repository. This data is streamed into a directory structure in the GitLab backup staging directory.
+
+```mermaid
+sequenceDiagram
+    box Backup host
+        participant Repositories sub-task
+        participant gitaly-backup
+    end
+
+    Repositories sub-task->>+gitaly-backup: List of repositories
+
+    loop Each repository
+        gitaly-backup->>+Gitaly: ListRefs request
+        Gitaly->>-gitaly-backup: List of Git references
+
+        gitaly-backup->>+Gitaly: CreateBundleFromRefList request
+        Gitaly->>-gitaly-backup: Git bundle file
+
+        gitaly-backup->>+Gitaly: GetCustomHooks request
+        Gitaly->>-gitaly-backup: Custom hooks archive
+    end
+
+    gitaly-backup->>-Repositories sub-task: Success/failure
+```
+
+Storages configured to Gitaly Cluster are backed up the same as standalone Gitaly. When Gitaly Cluster receives the RPC calls from `gitaly-backup`, it is responsible for
+rebuilding its own database. This means that there is no need to backup the Gitaly Cluster database separately. Because backups operate through RPCs, each repository is only backed
+up once no matter the replication factor.
+
+### Server-side repository backups
+
+You can configure repository backups as server-side repository backups. When specified, `gitaly-backup` makes a single RPC call for each repository to create the backup. This RPC
+does not transmit any repository data. Instead, the RPC triggers the Gitaly node that stores that physical repository to upload the backup data directly to object-storage. Because
+the data is no longer transmitted through RPCs from Gitaly, server-side backups require much less network transfer and require no disk storage on the machine that is running the
+backup Rake task. The backups stored on object-storage are linked to the created backup archive by [the backup ID](#backup-id).
+
+```mermaid
+sequenceDiagram
+    box Backup host
+        participant Repositories sub-task
+        participant gitaly-backup
+    end
+
+    Repositories sub-task->>+gitaly-backup: List of repositories
+
+    loop Each repository
+        gitaly-backup->>+Gitaly: BackupRepository request
+
+        Gitaly->>+Object-storage: Git references file
+        Object-storage->>-Gitaly: Success/failure
+
+        Gitaly->>+Object-storage: Git bundle file
+        Object-storage->>-Gitaly: Success/failure
+
+        Gitaly->>+Object-storage: Custom hooks archive
+        Object-storage->>-Gitaly: Success/failure
+
+        Gitaly->>+Object-storage: Backup manifest file
+        Object-storage->>-Gitaly: Success/failure
+
+        Gitaly->>-gitaly-backup: Success/failure
+    end
+
+    gitaly-backup->>-Repositories sub-task: Success/failure
+```
+
+## File backups
+
+The following GitLab backup sub-tasks back up files:
+
+- `uploads`
+- `builds`
+- `artifacts`
+- `pages`
+- `lfs`
+- `terraform_state`
+- `registry`
+- `packages`
+- `ci_secure_files`
+
+These file sub-tasks determine a set of files within a directory specific to the task. This set of files is then passed to `tar`
+to create an archive. This archive is piped (not saved to disk) through `gzip` to save a compressed tar file to the backup staging directory.
+
+Because backups are created from live instances, the files that tar is trying to archive can sometimes be modified while creating the backup. In this case, an alternate "copy"
+strategy can be used. When this strategy is used, `rsync` is first used to create a copy of the files to back up. Then, these copies are passed to `tar` as usual. In this case,
+the machine running the backup Rake task must have enough storage for the copied files and the compressed archive.
 
 ## Related features
 

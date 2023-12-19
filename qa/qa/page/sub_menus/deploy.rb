@@ -14,6 +14,10 @@ module QA
           open_deploy_submenu('Container Registry')
         end
 
+        def go_to_pages_settings
+          open_deploy_submenu('Pages')
+        end
+
         private
 
         def open_deploy_submenu(sub_menu)

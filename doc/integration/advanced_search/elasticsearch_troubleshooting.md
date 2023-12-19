@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Data Stores
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Elasticsearch **(PREMIUM SELF)**
@@ -224,10 +223,6 @@ See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) 
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
-### The indexing process is taking a very long time
-
-The more data present in your GitLab instance, the longer the indexing process takes.
-
 ### There are some projects that weren't indexed, but you don't know which ones
 
 You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
@@ -366,9 +361,36 @@ dig further into these.
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
 Elasticsearch administrator has more experience with.
 
+### Slow initial indexing
+
+The more data your GitLab instance has, the longer the indexing takes.
+You can estimate cluster size with the Rake task `sudo gitlab-rake gitlab:elastic:estimate_cluster_size`.
+
+#### For code documents
+
+Ensure you have enough Sidekiq nodes and processes to efficiently index code, commits, and wikis.
+If your initial indexing is slow, consider [dedicated Sidekiq nodes or processes](../../integration/advanced_search/elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes).
+
+#### For non-code documents
+
+If the initial indexing is slow but Sidekiq has enough nodes and processes,
+you can adjust advanced search worker settings in GitLab.
+For **Requeue indexing workers**, the default value is `false`.
+For **Number of shards for non-code indexing**, the default value is `2`.
+These settings limit indexing to 2000 documents per minute.
+
+To adjust worker settings:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
+1. Expand **Advanced Search**.
+1. Select the **Requeue indexing workers** checkbox.
+1. In the **Number of shards for non-code indexing** text box, enter a value higher than `2`.
+1. Select **Save changes**.
+
 ## Issues with migrations
 
-Please ensure you've read about [Elasticsearch Migrations](../advanced_search/elasticsearch.md#advanced-search-migrations).
+Ensure you've read about [Elasticsearch Migrations](../advanced_search/elasticsearch.md#advanced-search-migrations).
 
 If there is a halted migration and your [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file contain errors, this could potentially be a bug/issue. Escalate to GitLab support if retrying migrations does not succeed.
 
@@ -396,7 +418,7 @@ see details in the [update guide](../../update/upgrading_from_source.md).
 
 ## `Elasticsearch::Transport::Transport::Errors::BadRequest`
 
-If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](elasticsearch.md#system-requirements).
+If you have this exception (just like in the case above but the actual message is different), check that you have the correct Elasticsearch version and you met the other [requirements](elasticsearch.md#system-requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
 ## `Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge`
@@ -420,7 +442,7 @@ Set a custom `gitlab_rails['env']` environment variable, called [`no_proxy`](htt
 WARNING:
 Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
 
-If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, please make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster no longer tries to create any shard replicas):
+If you have a **hard requirement to have a green status for your single node Elasticsearch cluster**, make sure you understand the risks outlined in the previous paragraph and then run the following query to set the number of replicas to `0`(the cluster no longer tries to create any shard replicas):
 
 ```shell
 curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -439,7 +461,7 @@ If you're getting a `health check timeout: no Elasticsearch node available` erro
 Gitlab::Elastic::Indexer::Error: time="2020-01-23T09:13:00Z" level=fatal msg="health check timeout: no Elasticsearch node available"
 ```
 
-You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Please make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
+You probably have not used either `http://` or `https://` as part of your value in the **"URL"** field of the Elasticsearch Integration Menu. Make sure you are using either `http://` or `https://` in this field as the [Elasticsearch client for Go](https://github.com/olivere/elastic) that we are using [needs the prefix for the URL to be accepted as valid](https://github.com/olivere/elastic/commit/a80af35aa41856dc2c986204e2b64eab81ccac3a).
 After you have corrected the formatting of the URL, delete the index (via the [dedicated Rake task](elasticsearch.md#gitlab-advanced-search-rake-tasks)) and [reindex the content of your instance](elasticsearch.md#enable-advanced-search).
 
 ## My Elasticsearch cluster has a plugin and the integration is not working
@@ -529,3 +551,27 @@ migration has failed with NoMethodError:undefined method `<<' for nil:NilClass, 
 ```
 
 If `BackfillProjectPermissionsInBlobs` is the only halted migration, you can upgrade to the latest patch version of GitLab 16.0, which includes [the fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118494). Otherwise, you can ignore the error as it will not affect the current functionality of advanced search.
+
+## `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs stuck in deduplication
+
+In GitLab 16.5 and earlier, the `ElasticIndexInitialBulkCronWorker` and `ElasticIndexBulkCronWorker` jobs might get stuck in deduplication. This issue might prevent advanced search from properly indexing documents even after creating a new index. In GitLab 16.6, `idempotent!` was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135817) for bulk cron workers that perform indexing.
+
+The Sidekiq log might have the following entries:
+
+```shell
+{"severity":"INFO","time":"2023-10-31T10:33:06.998Z","retry":0,"queue":"default","version":0,"queue_namespace":"cronjob","args":[],"class":"ElasticIndexInitialBulkCronWorker",
+...
+"idempotency_key":"resque:gitlab:duplicate:default:<value>","duplicate-of":"91e8673347d4dc84fbad5319","job_size_bytes":2,"pid":12047,"job_status":"deduplicated","message":"ElasticIndexInitialBulkCronWorker JID-5e1af9180d6e8f991fc773c6: deduplicated: until executing","deduplication.type":"until executing"}
+```
+
+To resolve this issue:
+
+1. In a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session), run this command:
+
+   ```shell
+   idempotency_key = "<idempotency_key_from_log_entry>"
+   duplicate_key = "resque:gitlab:#{idempotency_key}:cookie:v2"
+   Gitlab::Redis::Queues.with { |c| c.del(duplicate_key) }
+   ```
+
+1. Replace `<idempotency_key_from_log_entry>` with the actual entry in your log.

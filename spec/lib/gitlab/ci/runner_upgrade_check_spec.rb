@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::RunnerUpgradeCheck, feature_category: :runner_fleet do
+RSpec.describe Gitlab::Ci::RunnerUpgradeCheck, feature_category: :fleet_visibility do
   using RSpec::Parameterized::TableSyntax
 
   subject(:instance) { described_class.new(gitlab_version, runner_releases) }

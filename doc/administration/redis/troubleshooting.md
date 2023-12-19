@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting Redis **(FREE SELF)**
@@ -77,6 +76,11 @@ repl_backlog_size:1048576
 repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 ```
+
+## High CPU usage on Redis instance
+
+High CPU usage on Redis instance can be cause by Sidekiq `BRPOP` calls. The `BRPOP` command is expensive and increases CPU usage on Redis.
+Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
 
 ## Troubleshooting Sentinel
 

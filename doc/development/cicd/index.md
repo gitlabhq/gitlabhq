@@ -1,15 +1,14 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, concepts, howto
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # CI/CD development guidelines
 
 Development guides that are specific to CI/CD are listed here:
 
-- If you are creating new CI/CD templates, please read [the development guide for GitLab CI/CD templates](templates.md).
+- If you are creating new CI/CD templates, read [the development guide for GitLab CI/CD templates](templates.md).
 - If you are adding a new keyword or changing the CI schema, check the [CI schema guide](schema.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)

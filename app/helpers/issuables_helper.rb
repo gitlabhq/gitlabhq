@@ -149,16 +149,6 @@ module IssuablesHelper
     end
   end
 
-  def assigned_open_issues_count_text
-    count = assigned_issuables_count(:issues)
-
-    if count > User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT - 1
-      "#{count - 1}+"
-    else
-      count.to_s
-    end
-  end
-
   def issuable_reference(issuable)
     @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
   end
@@ -248,7 +238,8 @@ module IssuablesHelper
         title: label.title,
         description: label.description,
         color: label.color,
-        text_color: label.text_color
+        text_color: label.text_color,
+        lock_on_merge: label.lock_on_merge
       }
     end
 
@@ -265,7 +256,8 @@ module IssuablesHelper
       initial_labels: initial_labels.to_json,
       issuable_type: issuable.issuable_type,
       labels_filter_base_path: filter_base_path,
-      labels_manage_path: project_labels_path(project)
+      labels_manage_path: project_labels_path(project),
+      supports_lock_on_merge: issuable.supports_lock_on_merge?.to_s
     }
   end
 

@@ -462,37 +462,6 @@ RSpec.describe MergeRequestPolicy do
     end
   end
 
-  context 'when enabling generate diff summary permission' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:mr) { create(:merge_request, target_project: project, source_project: project) }
-    let_it_be(:user) { create(:user) }
-    let(:policy) { permissions(user, mr) }
-
-    context 'when can read_merge_request' do
-      before do
-        project.add_developer(user)
-      end
-
-      it 'allows to generate_diff_summary' do
-        expect(policy).to be_allowed(:generate_diff_summary)
-      end
-    end
-
-    context 'when can not read_merge_request' do
-      it 'does not allow to generate_diff_summary' do
-        expect(policy).not_to be_allowed(:generate_diff_summary)
-      end
-
-      context 'and when is the LLM bot' do
-        let(:user) { create(:user, :llm_bot) }
-
-        it 'allows to generate_diff_summary' do
-          expect(policy).to be_allowed(:generate_diff_summary)
-        end
-      end
-    end
-  end
-
   context 'when the author of the merge request is banned', feature_category: :insider_threat do
     let_it_be(:user) { create(:user) }
     let_it_be(:admin) { create(:user, :admin) }

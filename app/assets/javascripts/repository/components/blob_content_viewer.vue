@@ -79,7 +79,7 @@ export default {
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
-        this.initHighlightWorker(this.blobInfo);
+        this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
       error() {
@@ -204,7 +204,8 @@ export default {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
     isBlameEnabled() {
-      return this.glFeatures.blobBlameInfo && this.blobInfo.language === 'json'; // This feature is currently scoped to JSON files
+      // Blame information within the blob viewer is not yet supported in our fallback (HAML) viewers
+      return this.glFeatures.blobBlameInfo && !this.useFallback;
     },
   },
   watch: {
@@ -295,7 +296,14 @@ export default {
     },
     handleToggleBlame() {
       this.switchViewer(SIMPLE_BLOB_VIEWER);
-      this.showBlame = !this.showBlame;
+
+      if (this.$route?.query?.plain === '0') {
+        // If the user is not viewing plain code and clicks the blame button, we always want to show blame info
+        // For instance, when viewing the rendered version of a Markdown file
+        this.showBlame = true;
+      } else {
+        this.showBlame = !this.showBlame;
+      }
 
       const blame = this.showBlame === true ? '1' : '0';
       if (this.$route?.query?.blame === blame) return;

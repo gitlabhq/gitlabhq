@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webhooks do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:webhooks_path) { project_hooks_path(project) }

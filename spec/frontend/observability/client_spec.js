@@ -18,6 +18,7 @@ describe('buildClient', () => {
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
   const metricsUrl = 'https://example.com/metrics';
+  const metricsSearchUrl = 'https://example.com/metrics/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -26,6 +27,7 @@ describe('buildClient', () => {
     servicesUrl,
     operationsUrl,
     metricsUrl,
+    metricsSearchUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -311,6 +313,16 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
       });
 
+      it('ignores non-array filters', async () => {
+        await client.fetchTraces({
+          filters: {
+            traceId: { operator: '=', value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
+      });
+
       it('ignores unsupported operators', async () => {
         await client.fetchTraces({
           filters: {
@@ -429,8 +441,82 @@ describe('buildClient', () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(metricsUrl, {
         withCredentials: true,
+        params: expect.any(URLSearchParams),
       });
       expect(result).toEqual(mockResponse);
+    });
+
+    describe('query filter', () => {
+      beforeEach(() => {
+        axiosMock.onGet(metricsUrl).reply(200, {
+          metrics: [],
+        });
+      });
+
+      it('does not set any query param without filters', async () => {
+        await client.fetchMetrics();
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('sets the start_with query param based on the search filter', async () => {
+        await client.fetchMetrics({
+          filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
+        });
+        expect(getQueryParam()).toBe('starts_with=foo+bar');
+      });
+
+      it('ignores empty search', async () => {
+        await client.fetchMetrics({
+          filters: {
+            search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
+          },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores unsupported filters', async () => {
+        await client.fetchMetrics({
+          filters: {
+            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          },
+        });
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores non-array search filters', async () => {
+        await client.fetchMetrics({
+          filters: {
+            search: { value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('adds the search limit param if specified with the search filter', async () => {
+        await client.fetchMetrics({
+          filters: { search: [{ value: 'foo' }] },
+          limit: 50,
+        });
+        expect(getQueryParam()).toBe('starts_with=foo&limit=50');
+      });
+
+      it('does not add the search limit param if the search filter is missing', async () => {
+        await client.fetchMetrics({
+          limit: 50,
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('does not add the search limit param if the search filter is empty', async () => {
+        await client.fetchMetrics({
+          limit: 50,
+          search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
+        });
+        expect(getQueryParam()).toBe('');
+      });
     });
 
     it('rejects if metrics are missing', async () => {
@@ -445,6 +531,42 @@ describe('buildClient', () => {
 
       await expect(client.fetchMetrics()).rejects.toThrow(FETCHING_METRICS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_METRICS_ERROR));
+    });
+  });
+
+  describe('fetchMetric', () => {
+    it('fetches the metric from the API', async () => {
+      const data = { results: [] };
+      axiosMock.onGet(metricsSearchUrl).reply(200, data);
+
+      const result = await client.fetchMetric('name', 'type');
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+      });
+      expect(result).toEqual(data.results);
+    });
+
+    it('rejects if results is missing from the response', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, {});
+      const e = 'metrics are missing/invalid in the response';
+
+      await expect(client.fetchMetric('name', 'type')).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
+    });
+
+    it('rejects if metric name is missing', async () => {
+      const e = 'fetchMetric() - metric name is required.';
+      await expect(client.fetchMetric()).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
+    });
+
+    it('rejects if metric type is missing', async () => {
+      const e = 'fetchMetric() - metric type is required.';
+      await expect(client.fetchMetric('name')).rejects.toThrow(e);
+      expectErrorToBeReported(new Error(e));
     });
   });
 });

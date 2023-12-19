@@ -1,14 +1,20 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
+import {
+  STATUS_RUNNING,
+  STATUS_PENDING,
+  STATUS_SUCCEEDED,
+  STATUS_FAILED,
+  STATUS_LABELS,
+} from '~/kubernetes_dashboard/constants';
+import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import k8sPodsQuery from '../graphql/queries/k8s_pods.query.graphql';
-import { PHASE_RUNNING, PHASE_PENDING, PHASE_SUCCEEDED, PHASE_FAILED } from '../constants';
 
 export default {
   components: {
     GlLoadingIcon,
-    GlSingleStat,
+    WorkloadStats,
   },
   apollo: {
     k8sPods: {
@@ -52,20 +58,20 @@ export default {
 
       return [
         {
-          value: this.countPodsByPhase(PHASE_RUNNING),
-          title: this.$options.i18n.runningPods,
+          value: this.countPodsByPhase(STATUS_RUNNING),
+          title: STATUS_LABELS[STATUS_RUNNING],
         },
         {
-          value: this.countPodsByPhase(PHASE_PENDING),
-          title: this.$options.i18n.pendingPods,
+          value: this.countPodsByPhase(STATUS_PENDING),
+          title: STATUS_LABELS[STATUS_PENDING],
         },
         {
-          value: this.countPodsByPhase(PHASE_SUCCEEDED),
-          title: this.$options.i18n.succeededPods,
+          value: this.countPodsByPhase(STATUS_SUCCEEDED),
+          title: STATUS_LABELS[STATUS_SUCCEEDED],
         },
         {
-          value: this.countPodsByPhase(PHASE_FAILED),
-          title: this.$options.i18n.failedPods,
+          value: this.countPodsByPhase(STATUS_FAILED),
+          title: STATUS_LABELS[STATUS_FAILED],
         },
       ];
     },
@@ -76,18 +82,15 @@ export default {
   methods: {
     countPodsByPhase(phase) {
       const filteredPods = this.k8sPods.filter((item) => item.status.phase === phase);
-      if (phase === PHASE_FAILED && filteredPods.length) {
-        this.$emit('failed');
-      }
+
+      const hasFailedState = Boolean(phase === STATUS_FAILED && filteredPods.length);
+      this.$emit('update-failed-state', { pods: hasFailedState });
+
       return filteredPods.length;
     },
   },
   i18n: {
     podsTitle: s__('Environment|Pods'),
-    runningPods: s__('Environment|Running'),
-    pendingPods: s__('Environment|Pending'),
-    succeededPods: s__('Environment|Succeeded'),
-    failedPods: s__('Environment|Failed'),
   },
 };
 </script>
@@ -96,18 +99,6 @@ export default {
     <p class="gl-text-gray-500">{{ $options.i18n.podsTitle }}</p>
 
     <gl-loading-icon v-if="loading" />
-
-    <div
-      v-else-if="podStats && !error"
-      class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-mx-n3 gl-mt-n3"
-    >
-      <gl-single-stat
-        v-for="(stat, index) in podStats"
-        :key="index"
-        class="gl-w-full gl-flex-direction-column gl-align-items-center gl-justify-content-center gl-bg-white gl-border gl-border-gray-a-08 gl-mx-3 gl-p-3 gl-mt-3"
-        :value="stat.value"
-        :title="stat.title"
-      />
-    </div>
+    <workload-stats v-else-if="podStats && !error" :stats="podStats" />
   </div>
 </template>

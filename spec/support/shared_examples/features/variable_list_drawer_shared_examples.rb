@@ -140,7 +140,10 @@ RSpec.shared_examples 'variable list drawer' do
     toggle_masked
     fill_variable('EMPTY_MASK_KEY', '???')
 
-    expect(page).to have_content('This variable value does not meet the masking requirements.')
+    # rubocop:disable Layout/LineLength -- error message is too long
+    expect(page).to have_content('This value cannot be masked because it contains the following characters: ?. The value must have at least 8 characters.')
+    # rubocop:enable Layout/LineLength
+
     page.within('[data-testid="ci-variable-drawer"]') do
       expect(find_button('Add variable', disabled: true)).to be_present
     end

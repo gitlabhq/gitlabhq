@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Rails Console Cheat Sheet **(FREE SELF)**
@@ -56,11 +56,11 @@ This content has been moved to [Activate GitLab EE with a license file or key](.
 
 ### Registry Disk Space Usage by Project
 
-Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
+Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#registry-disk-space-usage-by-project).
 
 ### Run the Cleanup policy now
 
-Find this content in the [Container Registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
+Find this content in the [container registry troubleshooting documentation](../packages/container_registry.md#run-the-cleanup-policy-now).
 
 ## Sidekiq
 

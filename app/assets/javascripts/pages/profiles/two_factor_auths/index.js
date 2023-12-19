@@ -8,7 +8,7 @@ const skippable = twoFactorNode ? parseBoolean(twoFactorNode.dataset.twoFactorSk
 
 if (skippable) {
   const button = `<div class="gl-alert-actions">
-                    <a class="btn gl-button btn-md btn-confirm gl-alert-action" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>
+                    <a class="btn gl-button btn-md btn-confirm gl-alert-action" data-testid="configure-it-later-button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>
                   </div>`;
   const flashAlert = document.querySelector('.flash-alert');
   if (flashAlert) {

@@ -1313,6 +1313,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         attrs[:merge_requests_access_level] = 'disabled'
         attrs[:issues_access_level] = 'disabled'
         attrs[:model_experiments_access_level] = 'disabled'
+        attrs[:model_registry_access_level] = 'disabled'
       end
 
       post api(path, user), params: project
@@ -1323,7 +1324,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         next if %i[
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
-          infrastructure_access_level monitor_access_level model_experiments_access_level
+          infrastructure_access_level monitor_access_level model_experiments_access_level model_registry_access_level
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -2852,16 +2853,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
-
-        context 'when api_redirect_moved_projects is disabled' do
-          it 'returns a 404 error' do
-            stub_feature_flags(api_redirect_moved_projects: false)
-
-            perform_request
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
       end
 
       it 'returns a 404 error if not found' do
@@ -3667,11 +3658,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['error']).to eq 'group_access does not have a valid value'
     end
 
-    it "returns a 400 error when the project-group share is created with an OWNER access level" do
-      post api(path, user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
+    it 'returns a 403 when a maintainer tries to create a link with OWNER access' do
+      user = create(:user)
+      project.add_maintainer(user)
 
-      expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['error']).to eq 'group_access does not have a valid value'
+      expect do
+        post api(path, user), params: { group_id: group.id, group_access: Gitlab::Access::OWNER }
+      end.to not_change { project.reload.project_group_links.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it "returns a 409 error when link is not saved" do
@@ -3700,11 +3695,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'for a valid group' do
       let_it_be(:group) { create(:group, :private) }
       let_it_be(:group_user) { create(:user) }
+      let(:group_access) { Gitlab::Access::DEVELOPER }
 
       before do
         group.add_developer(group_user)
 
-        create(:project_group_link, group: group, project: project)
+        create(:project_group_link, group: group, project: project, group_access: group_access)
       end
 
       it 'returns 204 when deleting a group share' do
@@ -3734,6 +3730,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq '404 Not Found'
+      end
+
+      context 'when a MAINTAINER tries to destroy a link with OWNER access' do
+        let(:group_access) { Gitlab::Access::OWNER }
+
+        it 'returns 403' do
+          user = create(:user)
+          project.add_maintainer(user)
+
+          expect do
+            delete api("/projects/#{project.id}/share/#{group.id}", user)
+          end.to not_change { project.reload.project_group_links.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
@@ -3940,7 +3951,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(Project.find_by(path: project[:path]).analytics_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
-    %i[releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level].each do |field|
+    %i[releases_access_level environments_access_level feature_flags_access_level infrastructure_access_level monitor_access_level model_experiments_access_level model_registry_access_level].each do |field|
       it "sets #{field}" do
         put api(path, user), params: { field => 'private' }
 
@@ -4465,7 +4476,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         it 'returns 200 when repository storage has changed' do
-          stub_storage_settings('test_second_storage' => { 'path' => TestEnv::SECOND_STORAGE_PATH })
+          stub_storage_settings('test_second_storage' => {})
 
           expect do
             Sidekiq::Testing.fake! do

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
+  :clean_gitlab_redis_shared_state do
   shared_examples 'tracking status in redis' do
     describe '.set' do
       it 'stores the job ID' do
@@ -49,6 +50,31 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
 
         with_redis do |redis|
           expect(redis.exists?(key)).to eq(false)
+        end
+      end
+    end
+
+    describe '.expire' do
+      it 'refreshes the expiration time if key is present' do
+        described_class.set('123', 1.minute)
+        described_class.expire('123', 1.hour)
+
+        key = described_class.key_for('123')
+
+        with_redis do |redis|
+          expect(redis.exists?(key)).to eq(true)
+          expect(redis.ttl(key) > 5.minutes).to eq(true)
+        end
+      end
+
+      it 'does nothing if key is not present' do
+        described_class.expire('123', 1.minute)
+
+        key = described_class.key_for('123')
+
+        with_redis do |redis|
+          expect(redis.exists?(key)).to eq(false)
+          expect(redis.ttl(key)).to eq(-2)
         end
       end
     end
@@ -133,11 +159,11 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
 
   context 'with multi-store feature flags turned on' do
     def with_redis(&block)
-      Gitlab::Redis::SidekiqStatus.with(&block)
+      Gitlab::Redis::SharedState.with(&block)
     end
 
-    it 'uses Gitlab::Redis::SidekiqStatus.with' do
-      expect(Gitlab::Redis::SidekiqStatus).to receive(:with).and_call_original
+    it 'uses Gitlab::Redis::SharedState.with' do
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_call_original
       expect(Sidekiq).not_to receive(:redis)
 
       described_class.job_status(%w[123 456 789])
@@ -158,7 +184,7 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues, :clean_gitlab_
 
     it 'uses Sidekiq.redis' do
       expect(Sidekiq).to receive(:redis).and_call_original
-      expect(Gitlab::Redis::SidekiqStatus).not_to receive(:with)
+      expect(Gitlab::Redis::SharedState).not_to receive(:with)
 
       described_class.job_status(%w[123 456 789])
     end

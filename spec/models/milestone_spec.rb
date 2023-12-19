@@ -772,4 +772,24 @@ RSpec.describe Milestone, feature_category: :team_planning do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.with_ids_or_title' do
+    subject(:milestones) { described_class.with_ids_or_title(ids: ids, title: title) }
+
+    let_it_be(:milestone1) { create(:milestone, title: 'Foo') }
+    let_it_be(:milestone2) { create(:milestone) }
+
+    let(:ids) { [milestone1.id] }
+    let(:title) { milestone2.title }
+
+    before do
+      # Milestones below should not be returned
+      create(:milestone, title: 'Bar')
+      create(:milestone, id: 10)
+    end
+
+    it 'returns milestones with matching id or title' do
+      expect(milestones).to contain_exactly(milestone1, milestone2)
+    end
+  end
 end

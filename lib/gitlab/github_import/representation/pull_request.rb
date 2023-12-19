@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class PullRequest
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :iid, :title, :description, :source_branch,
                          :source_branch_sha, :target_branch, :target_branch_sha,

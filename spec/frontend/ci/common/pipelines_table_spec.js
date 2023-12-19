@@ -16,7 +16,7 @@ import {
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
 
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 describe('Pipelines Table', () => {
   let wrapper;

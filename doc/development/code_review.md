@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Code Review Guidelines
@@ -179,7 +179,7 @@ by a reviewer before passing it to a maintainer as described in the
 | `~UX` user-facing changes <sup>3</sup> | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
 | Adding a new JavaScript library <sup>1</sup> | - [Frontend foundations member](https://about.gitlab.com/direction/manage/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
 | A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For RubyGems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
-| `~documentation` or `~UI text` changes | [Technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
+| `~documentation` or `~UI text` changes | [Technical writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
 | End-to-end **and** non-end-to-end changes <sup>4</sup> | [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors). |
 | Only End-to-end changes <sup>4</sup> **or** if the MR author is a [Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
@@ -187,7 +187,8 @@ by a reviewer before passing it to a maintainer as described in the
 | Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
-| Changes related to authentication or authorization | [Manage:Authentication and Authorization team member](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication-and-authorization/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication and Authorization` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
+| Changes related to authentication | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://about.gitlab.com/handbook/engineering/development/dev/manage/authentication/#additional-considerations) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
+| Changes related to custom roles or policies | [Manage:Authorization Engineer](https://gitlab.com/gitlab-org/govern/authorization/approvers). |
 
 1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
 1. We encourage you to seek guidance from a database maintainer if your merge
@@ -199,7 +200,38 @@ by a reviewer before passing it to a maintainer as described in the
    Designers do not require a Product Designer to approve feature changes, unless the changes are community contributions.
 1. End-to-end changes include all files in the `qa` directory.
 
+#### CODEOWNERS approval
+
+Some merge requests require mandatory approval by specific groups.
+See `.gitlab/CODEOWNERS` for definitions.
+
+Mandatory sections in `.gitlab/CODEOWNERS` should only be limited to cases where
+it is necessary due to:
+
+- compliance
+- availability
+- security
+
+When adding a mandatory section, you should track the impact on the new mandatory section
+on merge request rates.
+See the [Verify issue](https://gitlab.com/gitlab-org/gitlab/-/issues/411559) for a good example.
+
+All other cases should not use mandatory sections as we favor
+[responsibility over ridigity](https://handbook.gitlab.com/handbook/values/#freedom-and-responsibility-over-rigidity).
+
+Additionally, the current structure of the monolith means that merge requests
+are likely to touch seemingly unrelated parts.
+Multiple mandatory approvals means that such merge requests require the author
+to seek approvals, which is not efficient.
+
+Efforts to improve this are in:
+
+- <https://gitlab.com/groups/gitlab-org/-/epics/11624>
+- <https://gitlab.com/gitlab-org/gitlab/-/issues/377326>
+
 #### Acceptance checklist
+
+<!-- When editing, remember to announce the change to Engineering Division -->
 
 This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, observability, and maintainability.
 
@@ -250,7 +282,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. You have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
 1. If there are security scan results that are blocking the MR (due to the [scan result policies](https://gitlab.com/gitlab-com/gl-security/security-policies)):
     - For true positive findings, they should be corrected before the merge request is merged. This will remove the AppSec approval required by the scan result policy.
-    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, please ping `@gitlab-com/gl-security/appsec`.
+    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, ping `@gitlab-com/gl-security/appsec`.
 
 ##### Deployment
 
@@ -465,7 +497,7 @@ Here is a summary of the changes, also reflected in this section above.
 
 ### Having your merge request reviewed
 
-Please keep in mind that code review is a process that can take multiple
+Keep in mind that code review is a process that can take multiple
 iterations, and reviewers may spot things later that they may not have seen the
 first time.
 
@@ -619,9 +651,8 @@ WARNING:
     [very specific cases](https://about.gitlab.com/handbook/engineering/workflow/#criteria-for-merging-during-broken-master).
     For other cases, follow these [handbook instructions](https://about.gitlab.com/handbook/engineering/workflow/#merging-during-broken-master).
   - If the latest pipeline was created before the merge request was approved, start a new pipeline to ensure that full RSpec suite has been run. You may skip this step only if the merge request does not contain any backend change.
-  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 6 hours ago**, and **finished less than 2 hours ago**, you
-    may merge without starting a new pipeline as the merge request is close
-    enough to `main`.
+  - If the **latest [merged results pipeline](../ci/pipelines/merged_results_pipelines.md)** was **created less than 4 hours ago**, you
+    may merge without starting a new pipeline as the merge request is close enough to the target branch.
 - When you set the MR to auto-merge, you should take over
   subsequent revisions for anything that would be spotted after that.
 - For merge requests that have had [Squash and merge](../user/project/merge_requests/squash_and_merge.md) set,

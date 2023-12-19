@@ -32,6 +32,7 @@ module MergeRequests
       cancel_review_app_jobs!(merge_request)
       cleanup_environments(merge_request)
       cleanup_refs(merge_request)
+      deactivate_pages_deployments(merge_request)
 
       execute_hooks(merge_request, 'merge')
     end

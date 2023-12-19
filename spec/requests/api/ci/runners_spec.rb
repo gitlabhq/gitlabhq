@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :runner_fleet do
+RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_visibility do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }

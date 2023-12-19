@@ -63,7 +63,7 @@ const Template = ({
     apolloProvider,
     check: {
       identifier: 'need_rebase',
-      status: failed ? 'failed' : 'passed',
+      status: failed ? 'FAILED' : 'SUCCESS',
     },
     mr: { onlyAllowMergeIfPipelineSucceeds },
     canCreatePipelineInTargetProject,

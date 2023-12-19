@@ -46,7 +46,7 @@ module Gitlab
 
       attr_reader :storage, :gl_repository, :gl_project_path, :container
 
-      delegate :list_all_blobs, to: :gitaly_blob_client
+      delegate :list_all_blobs, :list_blobs, to: :gitaly_blob_client
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -84,13 +84,6 @@ module Gitlab
         [self.class, storage, relative_path].hash
       end
 
-      # This method will be removed when Gitaly reaches v1.1.
-      def path
-        File.join(
-          Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
-        )
-      end
-
       # Default branch in the repository
       def root_ref(head_only: false)
         wrapped_gitaly_errors do
@@ -102,9 +95,9 @@ module Gitlab
         gitaly_repository_client.exists?
       end
 
-      def create_repository(default_branch = nil)
+      def create_repository(default_branch = nil, object_format: nil)
         wrapped_gitaly_errors do
-          gitaly_repository_client.create_repository(default_branch)
+          gitaly_repository_client.create_repository(default_branch, object_format: object_format)
         rescue GRPC::AlreadyExists => e
           raise RepositoryExists, e.message
         end
@@ -1214,8 +1207,25 @@ module Gitlab
           gitaly_repository_client
             .get_file_attributes(revision, file_paths, attributes)
             .attribute_infos
+            .map(&:to_h)
         end
       end
+
+      def object_format
+        wrapped_gitaly_errors do
+          gitaly_repository_client.object_format.format
+        end
+      end
+
+      # rubocop: disable CodeReuse/ActiveRecord -- not an active record operation
+      def detect_generated_files(revision, paths)
+        return Set.new if paths.blank?
+
+        get_file_attributes(revision, paths, Gitlab::Git::ATTRIBUTE_OVERRIDES[:generated])
+          .pluck(:path)
+          .to_set
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

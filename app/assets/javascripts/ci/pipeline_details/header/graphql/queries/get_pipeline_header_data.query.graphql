@@ -1,15 +1,16 @@
+#import "ee_else_ce/ci/pipeline_details/header/graphql/fragments/pipeline_header.fragment.graphql"
+
 query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
   project(fullPath: $fullPath) {
     id
     pipeline(iid: $iid) {
-      id
-      iid
       status
       retryable
       cancelable
       userPermissions {
         destroyPipeline
         updatePipeline
+        cancelPipeline
       }
       detailedStatus {
         id
@@ -41,6 +42,19 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       finishedAt
       queuedDuration
       duration
+      name
+      totalJobs
+      refText
+      triggeredByPath
+      stuck
+      child
+      complete
+      latest
+      mergeRequestEventType
+      configSource
+      failureReason
+      source
+      ...PipelineHeaderData
     }
   }
 }

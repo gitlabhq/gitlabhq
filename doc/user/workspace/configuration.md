@@ -1,23 +1,14 @@
 ---
 stage: Create
 group: IDE
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspace configuration **(PREMIUM ALL BETA)**
+# Workspace configuration **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`.
-On GitLab.com, this feature is available.
-The feature is not ready for production use.
-
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 You can use [workspaces](index.md) to create and manage isolated development environments for your GitLab projects.
 Each workspace includes its own set of dependencies, libraries, and tools,
@@ -29,26 +20,19 @@ which you can customize to meet the specific needs of each project.
 
 ### Prerequisites
 
-- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports.
+- Set up a Kubernetes cluster that the GitLab agent supports.
   See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
 - Ensure autoscaling for the Kubernetes cluster is enabled.
-- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+- In the Kubernetes cluster:
+  - Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
   is defined so that volumes can be dynamically provisioned for each workspace.
-- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`)
-  and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and
-  `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
-- In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
-- In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet and update `dns_zone` as needed:
-
-  ```yaml
-  remote_development:
-    enabled: true
-    dns_zone: "workspaces.example.dev"
-  ```
-
-  You can use any agent defined under the root group of your project,
-  provided that remote development is properly configured for that agent.
+  - Install an Ingress controller of your choice (for example, `ingress-nginx`) and make
+  that controller accessible over a domain.
+    - In development environments, add an entry to the `/etc/hosts` file or update your DNS records.
+    - In production environments, point `*.<workspaces.example.dev>` and `<workspaces.example.dev>`
+    to the load balancer exposed by the Ingress controller.
+  - [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
+  - [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
 - You must have at least the Developer role in the root group.
 - In each project you want to use this feature for, create a [devfile](index.md#devfile):
   1. On the left sidebar, select **Search or go to** and find your project.
@@ -101,7 +85,7 @@ When you connect to `gitlab-workspaces-proxy` through the TCP load balancer,
 
 ### Set up `gitlab-workspaces-proxy` for SSH connections
 
-Prerequisite:
+Prerequisites:
 
 - You must have an SSH host key for client verification.
 
@@ -176,18 +160,6 @@ RUN chmod 775 /etc/shadow
 
 USER gitlab-workspaces
 ```
-
-## Disable remote development in the GitLab agent for Kubernetes
-
-You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab.
-To disable remote development in the GitLab agent configuration, set this property:
-
-```yaml
-remote_development:
-  enabled: false
-```
-
-If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
 
 ## Related topics
 

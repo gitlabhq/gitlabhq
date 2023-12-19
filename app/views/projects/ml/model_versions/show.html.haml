@@ -3,4 +3,4 @@
 - breadcrumb_title @model_version.version
 - page_title "#{@model_version.name} / #{@model_version.version}"
 
-= render(Projects::Ml::ShowMlModelVersionComponent.new(model_version: @model_version))
+= render(Projects::Ml::ShowMlModelVersionComponent.new(model_version: @model_version, current_user: current_user))

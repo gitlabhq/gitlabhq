@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Users API **(FREE ALL)**
@@ -136,6 +136,7 @@ GET /users?without_project_bots=true
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
 > - The `auditors` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418023) in GitLab 16.2.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /users
@@ -197,7 +198,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "current_sign_in_ip": "196.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
     "namespace_id": 1,
-    "created_by": null
+    "created_by": null,
+    "email_reset_offered_at": null
   },
   {
     "id": 2,
@@ -235,7 +237,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
     "current_sign_in_ip": "10.165.1.102",
     "last_sign_in_ip": "172.127.2.22",
     "namespace_id": 2,
-    "created_by": null
+    "created_by": null,
+    "email_reset_offered_at": null
   }
 ]
 ```
@@ -380,6 +383,7 @@ Parameters:
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /users/:id
@@ -445,7 +449,8 @@ Example Responses:
   "trial": true,
   "sign_in_count": 1337,
   "namespace_id": 1,
-  "created_by": null
+  "created_by": null,
+  "email_reset_offered_at": null
 }
 ```
 
@@ -569,7 +574,7 @@ Parameters:
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
-| `twitter`                            | No       | Twitter account                                                                                                                                         |
+| `twitter`                            | No       | X (formerly Twitter) account                                                                                                                                         |
 | `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
@@ -620,7 +625,7 @@ Parameters:
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
-| `twitter`                            | No       | Twitter account                                                                                                                                         |
+| `twitter`                            | No       | X (formerly Twitter) account                                                                                                                                         |
 | `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | No       | Username                                                                                                                                                |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
@@ -728,6 +733,7 @@ Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
+> - The `email_reset_offered_at` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610) in GitLab 16.7.
 
 ```plaintext
 GET /user
@@ -783,6 +789,7 @@ Parameters:
   "last_sign_in_ip": "172.127.2.22",
   "namespace_id": 1,
   "created_by": null,
+  "email_reset_offered_at": null,
   "note": null
 }
 ```
@@ -903,6 +910,11 @@ Example response:
 }
 ```
 
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see these
+preferences if `code_suggestions_used_by_default` feature flag is disabled:
+
+- `code_suggestions`
+
 Parameters:
 
 - **none**
@@ -932,6 +944,12 @@ Parameters:
 | `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page.                   |
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs.                   |
 | `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
+
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also can update these parameters:
+
+| Attribute                        | Required | Description                                        |
+|:---------------------------------|:---------|:---------------------------------------------------|
+| `code_suggestions`               | No       | Flag indicating the user allows code suggestions. Argument is experimental and can be removed in the future without notice. In GitLab 16.8 and later, this attribute is ignored if `code_suggestions_used_by_default` feature flag is enabled. |
 
 ## User follow
 
@@ -1704,7 +1722,7 @@ Parameters:
 
 ## Delete email for given user **(FREE SELF)**
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator of a self-managed GitLab instance.
 
@@ -2328,7 +2346,7 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner **(FREE ALL)**
+## Create a runner linked to a user **(FREE ALL)**
 
 Creates a runner linked to the current user.
 

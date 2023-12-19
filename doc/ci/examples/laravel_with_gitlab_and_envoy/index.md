@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 author: Mehran Rasulian
 author_gitlab: mehranrasulian
 ---
@@ -430,19 +430,19 @@ We added the [official PHP 7.4 Docker image](https://hub.docker.com/_/php), whic
 
 We used `docker-php-ext-install` (provided by the official PHP Docker image) to install the PHP extensions we need.
 
-#### Setting Up GitLab Container Registry
+#### Setting Up GitLab container registry
 
-Now that we have our `Dockerfile` let's build and push it to our [GitLab Container Registry](../../../user/packages/container_registry/index.md).
+Now that we have our `Dockerfile` let's build and push it to our [GitLab container registry](../../../user/packages/container_registry/index.md).
 
-> The registry is the place to store and tag images for later use. Developers may want to maintain their own registry for private, company images, or for throw-away images used only in testing. Using GitLab Container Registry means you don't need to set up and administer yet another service or use a public registry.
+> The registry is the place to store and tag images for later use. Developers may want to maintain their own registry for private, company images, or for throw-away images used only in testing. Using GitLab container registry means you don't need to set up and administer yet another service or use a public registry.
 
 On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to enable the Container Registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
+You may need to enable the container registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
-To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password.
+To start using container registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password.
 Make sure you have [Docker](https://docs.docker.com/engine/install/) installed on our machine,
 then run the following commands:
 

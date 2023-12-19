@@ -313,11 +313,11 @@ describe('UserToken', () => {
     describe('multiSelect', () => {
       it('renders check icons in suggestions when multiSelect is true', async () => {
         wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '=' },
+          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
           data: {
             users: mockUsers,
           },
-          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
+          config: { ...mockAuthorToken, multiSelect: true },
           active: true,
           stubs: { Portal: true },
           groupMultiSelectTokens: true,
@@ -327,18 +327,17 @@ describe('UserToken', () => {
 
         const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
-        expect(findIconAtSuggestion(1).exists()).toBe(false);
-        expect(findIconAtSuggestion(2).props('name')).toBe('check');
-        expect(findIconAtSuggestion(3).props('name')).toBe('check');
+        expect(findIconAtSuggestion(0).props('name')).toBe('check');
+        expect(findIconAtSuggestion(1).props('name')).toBe('check');
+        expect(findIconAtSuggestion(2).exists()).toBe(false);
 
         // test for left padding on unchecked items (so alignment is correct)
-        expect(findIconAtSuggestion(4).exists()).toBe(false);
-        expect(suggestions.at(4).find('.gl-pl-6').exists()).toBe(true);
+        expect(suggestions.at(2).find('.gl-pl-6').exists()).toBe(true);
       });
 
       it('renders multiple users when multiSelect is true', async () => {
         wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '=' },
+          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
           data: {
             users: mockUsers,
           },
@@ -363,7 +362,7 @@ describe('UserToken', () => {
 
       it('adds new user to multi-select-values', () => {
         wrapper = createComponent({
-          value: { data: [mockUsers[0].username], operator: '=' },
+          value: { data: [mockUsers[0].username], operator: '||' },
           data: {
             users: mockUsers,
           },
@@ -383,7 +382,7 @@ describe('UserToken', () => {
       it('removes existing user from array', () => {
         const initialUsers = [mockUsers[0].username, mockUsers[1].username];
         wrapper = createComponent({
-          value: { data: initialUsers, operator: '=' },
+          value: { data: initialUsers, operator: '||' },
           data: {
             users: mockUsers,
           },
@@ -399,7 +398,7 @@ describe('UserToken', () => {
 
       it('clears input field after token selected', () => {
         wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '=' },
+          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
           data: {
             users: mockUsers,
           },
@@ -410,7 +409,7 @@ describe('UserToken', () => {
 
         findBaseToken().vm.$emit('token-selected', 'test');
 
-        expect(wrapper.emitted('input')).toEqual([[{ operator: '=', data: '' }]]);
+        expect(wrapper.emitted('input')).toEqual([[{ operator: '||', data: '' }]]);
       });
     });
 

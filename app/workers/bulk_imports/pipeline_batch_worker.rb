@@ -9,7 +9,7 @@ module BulkImports
 
     data_consistency :always # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :importers
-    sidekiq_options dead: false, retry: 3
+    sidekiq_options dead: false, retry: 6
     worker_has_external_dependencies!
     worker_resource_boundary :memory
     idempotent!
@@ -42,6 +42,7 @@ module BulkImports
       @batch = ::BulkImports::BatchTracker.find(batch_id)
 
       @tracker = @batch.tracker
+      @entity = @tracker.entity
       @pending_retry = false
 
       return unless process_batch?
@@ -50,7 +51,11 @@ module BulkImports
 
       try_obtain_lease { run }
     ensure
-      ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id) unless pending_retry
+      unless pending_retry
+        with_context(bulk_import_entity_id: entity.id) do
+          ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
+        end
+      end
     end
 
     def perform_failure(batch_id, exception)
@@ -62,7 +67,7 @@ module BulkImports
 
     private
 
-    attr_reader :batch, :tracker, :pending_retry
+    attr_reader :batch, :tracker, :pending_retry, :entity
 
     def run
       return batch.skip! if tracker.failed? || tracker.finished?
@@ -83,7 +88,7 @@ module BulkImports
       Gitlab::ErrorTracking.track_exception(exception, log_attributes(message: 'Batch tracker failed'))
 
       BulkImports::Failure.create(
-        bulk_import_entity_id: batch.tracker.entity.id,
+        bulk_import_entity_id: tracker.entity.id,
         pipeline_class: tracker.pipeline_name,
         pipeline_step: 'pipeline_batch_worker_run',
         exception_class: exception.class.to_s,
@@ -91,7 +96,9 @@ module BulkImports
         correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
       )
 
-      ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
+      with_context(bulk_import_entity_id: tracker.entity.id) do
+        ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
+      end
     end
 
     def context
@@ -115,7 +122,9 @@ module BulkImports
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)
       log_extra_metadata_on_done(:re_enqueue, true)
 
-      self.class.perform_in(delay, batch.id)
+      with_context(bulk_import_entity_id: entity.id) do
+        self.class.perform_in(delay, batch.id)
+      end
     end
 
     def process_batch?

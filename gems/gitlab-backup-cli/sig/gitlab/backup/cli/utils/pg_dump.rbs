@@ -1,0 +1,25 @@
+module Gitlab
+  module Backup
+    module Cli
+      module Utils
+        class PgDump
+          attr_reader snapshot_id: String
+          attr_reader schemas: Array[String]
+          attr_reader database_name: String
+          attr_reader env: Hash[String,String]
+
+          def initialize: (database_name: String, ?snapshot_id: String?, ?schemas: Array[String], ?env: Hash[String, String]) -> void
+
+          # Spawn a pg_dump process and assign a given output IO
+          #
+          # @param [IO] output the output IO
+          def spawn: (output: IO) -> Integer
+
+          private
+
+          def cmd_args: () -> Array[String]
+        end
+      end
+    end
+  end
+end

@@ -32,13 +32,6 @@ module Sidebars
           _('Repository')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-repo-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'doc-text'
@@ -71,7 +64,7 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: %w[commit commits] },
             item_id: :commits,
-            container_html_options: { id: 'js-onboarding-commits-link', class: 'shortcuts-commits' }
+            container_html_options: { class: 'shortcuts-commits' }
           )
         end
 
@@ -81,8 +74,7 @@ module Sidebars
             link: project_branches_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
             active_routes: { controller: :branches },
-            item_id: :branches,
-            container_html_options: { id: 'js-onboarding-branches-link' }
+            item_id: :branches
           )
         end
 
@@ -102,7 +94,7 @@ module Sidebars
           link = project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
 
           ::Sidebars::MenuItem.new(
-            title: _('Contributor statistics'),
+            title: _('Contributor analytics'),
             link: link,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { path: 'graphs#show' },

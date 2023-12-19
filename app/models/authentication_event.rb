@@ -21,6 +21,8 @@ class AuthenticationEvent < MainClusterwide::ApplicationRecord
 
   scope :for_provider, ->(provider) { where(provider: provider) }
   scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
+  scope :for_user, ->(user) { where(user: user) }
+  scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
 
   def self.providers
     STATIC_PROVIDERS | Devise.omniauth_providers.map(&:to_s)

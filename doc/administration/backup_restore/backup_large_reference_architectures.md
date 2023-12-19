@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Back up and restore large reference architectures **(FREE SELF)**
@@ -17,7 +17,7 @@ This document is intended for environments using:
 - [Linux package (Omnibus) and cloud-native hybrid reference architectures 3,000 users and up](../reference_architectures/index.md)
 - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
 - [Amazon S3](https://aws.amazon.com/s3/) for object storage
-- [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [Container Registry](backup_gitlab.md#container-registry)
+- [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
 
 ## Configure daily backups
 
@@ -48,7 +48,38 @@ There is a feature proposal to add the ability to back up repositories directly 
 
   1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories. Note that
      [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
-  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md). As with other GitLab Rails nodes, this node must have access to your main Postgres database as well as to Gitaly Cluster.
+  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md).
+     As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster.
+  1. Ensure the GitLab application isn't running on this node by disabling most services:
+
+     1. Edit `/etc/gitlab/gitlab.rb` to ensure the following services are disabled.
+        `roles(['application_role'])` disables Redis, PostgreSQL, and Consul, and
+        is the basis of the reference architecture Rails node definition.
+
+        ```ruby
+        roles(['application_role'])
+        gitlab_workhorse['enable'] = false
+        puma['enable'] = false
+        sidekiq['enable'] = false
+        gitlab_kas['enable'] = false
+        gitaly['enable'] = false
+        prometheus_monitoring['enable'] = false
+        ```
+
+     1. Reconfigure GitLab:
+
+        ```shell
+        sudo gitlab-ctl reconfigure
+        ```
+
+     1. The only service that should be left is `logrotate`, you can verify with:
+
+        ```shell
+        gitlab-ctl status
+        ```
+
+     There is [a feature request](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6823) for a role in the Linux package
+     that meets these requirements.
 
 To back up the Git repositories:
 
@@ -65,12 +96,12 @@ To back up the Git repositories:
    sudo gitlab-backup create SKIP=db
    ```
 
-   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the filename will end in `_gitlab_backup.tar`](backup_gitlab.md#backup-timestamp).
+   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the file name will end in `_gitlab_backup.tar`](index.md#backup-id).
 
    Since we configured uploading backups to remote cloud storage, the tar file will be uploaded to the remote region and deleted from disk.
 
-1. Note the [timestamp](backup_gitlab.md#backup-timestamp) of the backup file for the next step. For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`, the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
-1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and the timestamp of the source backup file. Using the example timestamp from the previous step, the command is:
+1. Note the [backup ID](index.md#backup-id) of the backup file for the next step. For example, if the backup archive name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`, the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
+1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and the backup ID of the source backup file. Using the example ID from the previous step, the command is:
 
    ```shell
    sudo gitlab-backup create SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1493107454_2018_04_25_10.6.4-ce
@@ -246,7 +277,7 @@ To restore Git repositories:
    sudo chown git:git /var/opt/gitlab/backups/11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar
    ```
 
-1. Restore the backup, specifying the timestamp of the backup you wish to restore:
+1. Restore the backup, specifying the ID of the backup you wish to restore:
 
    WARNING:
    The restore command requires

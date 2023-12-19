@@ -14,7 +14,9 @@ module API
 
       expose :alert_status, documentation: { type: 'symbol', example: :executable }
       expose :disabled_until, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
-      expose :url_variables, documentation: { type: 'Hash', example: { "token" => "secr3t" }, is_array: true }
+      expose :url_variables,
+        if: ->(_, options) { options[:with_url_variables] != false },
+        documentation: { type: 'Hash', example: { "token" => "secr3t" }, is_array: true }
 
       def url_variables
         object.url_variables.keys.map { { key: _1 } }

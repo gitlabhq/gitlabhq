@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Deploy to Amazon Elastic Container Service **(FREE ALL)**
@@ -39,32 +39,26 @@ For the first step here, you create a demo application from a project template.
 Use a GitLab project template to get started. As the name suggests, these projects provide a
 bare-bones application built on some well-known frameworks.
 
-1. In GitLab, select the plus icon (**{plus-square}**) at the top of the navigation bar, and select
-   **New project**.
-
+1. In GitLab on the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create from template**, where you can choose from a Ruby on Rails, Spring, or
    NodeJS Express project. For this guide, use the Ruby on Rails template.
-
-   ![Select project template](img/rails-template.png)
-
 1. Give your project a name. In this example, it's named `ecs-demo`. Make it public so that you can
    take advantage of the features available in the
    [GitLab Ultimate plan](https://about.gitlab.com/pricing/).
-
 1. Select **Create project**.
 
 Now that you created a demo project, you must containerize the application and push it to the
 container registry.
 
-### Push a containerized application image to GitLab Container Registry
+### Push a containerized application image to GitLab container registry
 
 [ECS](https://aws.amazon.com/ecs/) is a container orchestration service, meaning that you must
 provide a containerized application image during the infrastructure build. To do so, you can use
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
 and [Container Registry](../../../user/packages/container_registry/index.md).
 
-1. Go to **ecs-demo** project on GitLab.
-1. Select **Setup up CI/CD**. It brings you to a `.gitlab-ci.yml`
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
+1. Select **Set up CI/CD**. It brings you to a `.gitlab-ci.yml`
    creation form.
 1. Copy and paste the following content into the empty `.gitlab-ci.yml`. This defines
    a pipeline for continuous deployment to ECS.
@@ -75,7 +69,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
    ```
 
 1. Select **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
-   job containerizes the application and pushes the image to [GitLab Container Registry](../../../user/packages/container_registry/index.md).
+   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/index.md).
 
    ![Create project](img/initial-pipeline.png)
 
@@ -106,7 +100,7 @@ is a specification about how the application image is started by an [ECS service
 1. Select **Container Definitions > Add container**. This opens a container registration form.
 1. Set `web` to **Container name**.
 1. Set `registry.gitlab.com/<your-namespace>/ecs-demo/master:latest` to **Image**.
-   Alternatively, you can copy and paste the image path from the [GitLab Container Registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
+   Alternatively, you can copy and paste the image path from the [GitLab container registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
 
    ![Create project](img/container-name.png)
 
@@ -184,7 +178,7 @@ Now, the demo application is accessible from the internet.
 In this guide, HTTPS/SSL is **not** configured. You can access to the application through HTTP only
 (for example, `http://<ec2-ipv4-address>`).
 
-## Setup Continuous Deployment from GitLab
+## Set up Continuous Deployment from GitLab
 
 Now that you have an application running on ECS, you can set up continuous deployment from GitLab.
 
@@ -213,7 +207,7 @@ Do not share the secret access key in a public place. You must save it in a secu
 You can register the access information in [GitLab CI/CD Variables](../../variables/index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.
 
-1. Go to **ecs-demo** project on GitLab.
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
 1. Go to **Settings > CI/CD > Variables**.
 1. Select **Add Variable** and set the following key-value pairs.
 
@@ -230,8 +224,8 @@ These variables are injected into the pipeline jobs and can access the ECS API.
 
 Change a file in the project and see if it's reflected in the demo application on ECS:
 
-1. Go to **ecs-demo** project on GitLab.
-1. Open the file at **app > views > welcome > `index.html.erb`**.
+1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
+1. Open the `app/views/welcome/index.html.erb` file.
 1. Select **Edit**.
 1. Change the text to `You're on ECS!`.
 1. Select **Commit Changes**. This automatically triggers a new pipeline. Wait until it finishes.

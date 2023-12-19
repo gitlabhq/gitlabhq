@@ -7,9 +7,6 @@ class AwardEmoji < ApplicationRecord
   include Participable
   include GhostUser
   include Importable
-  include IgnorableColumns
-
-  ignore_column :awardable_id_convert_to_bigint, remove_with: '16.7', remove_after: '2023-11-16'
 
   belongs_to :awardable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
@@ -69,7 +66,8 @@ class AwardEmoji < ApplicationRecord
   def url
     return if TanukiEmoji.find_by_alpha_code(name)
 
-    CustomEmoji.for_resource(resource_parent).by_name(name).select(:url).first&.url
+    Groups::CustomEmojiFinder.new(resource_parent, { include_ancestor_groups: true }).execute
+      .by_name(name)&.select(:url)&.first&.url
   end
 
   def expire_cache

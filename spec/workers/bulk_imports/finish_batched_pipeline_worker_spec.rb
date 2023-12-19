@@ -33,6 +33,8 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
     )
   end
 
+  let!(:batch_1) { create(:bulk_import_batch_tracker, :finished, tracker: pipeline_tracker) }
+
   subject(:worker) { described_class.new }
 
   describe '#perform' do
@@ -45,27 +47,30 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
       end
     end
 
+    it 'marks the tracker as finished' do
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+        expect(logger).to receive(:with_entity).with(entity).and_call_original
+
+        expect(logger).to receive(:info).with(
+          a_hash_including('message' => 'Tracker finished')
+        )
+      end
+
+      expect { subject.perform(pipeline_tracker.id) }
+        .to change { pipeline_tracker.reload.finished? }
+        .from(false).to(true)
+    end
+
+    it "calls the pipeline's `#on_finish`" do
+      expect_next_instance_of(pipeline_class) do |pipeline|
+        expect(pipeline).to receive(:on_finish)
+      end
+
+      subject.perform(pipeline_tracker.id)
+    end
+
     context 'when import is in progress' do
-      it 'marks the tracker as finished' do
-        expect_next_instance_of(BulkImports::Logger) do |logger|
-          expect(logger).to receive(:info).with(
-            a_hash_including('message' => 'Tracker finished')
-          )
-        end
-
-        expect { subject.perform(pipeline_tracker.id) }
-          .to change { pipeline_tracker.reload.finished? }
-          .from(false).to(true)
-      end
-
-      it "calls the pipeline's `#on_finish`" do
-        expect_next_instance_of(pipeline_class) do |pipeline|
-          expect(pipeline).to receive(:on_finish)
-        end
-
-        subject.perform(pipeline_tracker.id)
-      end
-
       it 're-enqueues for any started batches' do
         create(:bulk_import_batch_tracker, :started, tracker: pipeline_tracker)
 
@@ -88,14 +93,17 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
     end
 
     context 'when pipeline tracker is stale' do
-      let(:pipeline_tracker) { create(:bulk_import_tracker, :started, :batched, :stale, entity: entity) }
+      before do
+        batch_1.update!(updated_at: 5.hours.ago)
+      end
 
       it 'fails pipeline tracker and its batches' do
-        create(:bulk_import_batch_tracker, :finished, tracker: pipeline_tracker)
-
         expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:with_tracker).with(pipeline_tracker).and_call_original
+          expect(logger).to receive(:with_entity).with(entity).and_call_original
+
           expect(logger).to receive(:error).with(
-            a_hash_including('message' => 'Tracker stale. Failing batches and tracker')
+            a_hash_including('message' => 'Batch stale. Failing batches and tracker')
           )
         end
 

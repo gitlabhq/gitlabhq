@@ -18,7 +18,7 @@ module BulkImports
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
     ].freeze
 
-    RETRIABLE_HTTP_CODES = [429].freeze
+    RETRIABLE_HTTP_CODES = [429, 500, 502, 503, 504].freeze
 
     DEFAULT_RETRY_DELAY_SECONDS = 30
 
@@ -57,7 +57,7 @@ module BulkImports
     end
 
     def retriable_http_code?
-      RETRIABLE_HTTP_CODES.include?(response&.code)
+      RETRIABLE_HTTP_CODES.include?(response&.code.to_i)
     end
 
     def increment(object)

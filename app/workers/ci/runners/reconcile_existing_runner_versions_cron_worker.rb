@@ -9,7 +9,7 @@ module Ci
       include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
       data_consistency :sticky
-      feature_category :runner_fleet
+      feature_category :fleet_visibility
       urgency :low
 
       deduplicate :until_executed

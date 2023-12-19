@@ -8,18 +8,9 @@ class RequeueBackfillFindingIdInVulnerabilities < Gitlab::Database::Migration[2.
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :vulnerabilities,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
-  end
+  # marking no-op
+  # per https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#requeuing-batched-background-migrations
+  def up; end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
-  end
+  def down; end
 end

@@ -14,6 +14,10 @@ module Ml
       model.versions.size
     end
 
+    def candidate_count
+      model.candidates.size
+    end
+
     def latest_package_path
       latest_version&.package_path
     end

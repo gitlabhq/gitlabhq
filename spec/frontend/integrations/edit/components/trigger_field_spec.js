@@ -1,12 +1,17 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 
 import TriggerField from '~/integrations/edit/components/trigger_field.vue';
 import { integrationTriggerEventTitles } from '~/integrations/constants';
 
+Vue.use(Vuex);
+
 describe('TriggerField', () => {
   let wrapper;
+  let store;
 
   const defaultProps = {
     event: { name: 'push_events' },
@@ -15,11 +20,15 @@ describe('TriggerField', () => {
   const mockField = { name: 'push_channel' };
 
   const createComponent = ({ props = {}, isInheriting = false } = {}) => {
-    wrapper = shallowMount(TriggerField, {
-      propsData: { ...defaultProps, ...props },
-      computed: {
+    store = new Vuex.Store({
+      getters: {
         isInheriting: () => isInheriting,
       },
+    });
+
+    wrapper = shallowMount(TriggerField, {
+      propsData: { ...defaultProps, ...props },
+      store,
     });
   };
 

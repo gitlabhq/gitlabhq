@@ -1,3 +1,4 @@
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
@@ -18,10 +19,8 @@ export default () => {
   const fileBlobPermalinkUrl =
     fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
 
-  new ShortcutsNavigation(); // eslint-disable-line no-new
-
-  // eslint-disable-next-line no-new
-  new ShortcutsBlob({
+  addShortcutsExtension(ShortcutsNavigation);
+  addShortcutsExtension(ShortcutsBlob, {
     fileBlobPermalinkUrl,
     fileBlobPermalinkUrlElement,
   });

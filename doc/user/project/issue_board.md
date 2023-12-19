@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Issue boards **(FREE ALL)**
@@ -133,10 +133,10 @@ With [multiple issue boards](#multiple-issue-boards),
 each team can have their own board to organize their workflow individually.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=2IaMXteKSD4">Portfolio Planning - Portfolio Management</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=d9scVJUIF4c">Portfolio Planning - Portfolio Management</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/2IaMXteKSD4" frameborder="0" allowfullscreen> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/d9scVJUIF4c" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 #### Scrum team

@@ -7,6 +7,16 @@ module Types
 
       authorize :read_organization
 
+      field :avatar_url,
+        type: GraphQL::Types::String,
+        null: true,
+        description: 'Avatar URL of the organization.',
+        alpha: { milestone: '16.7' }
+      field :description,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Description of the organization.',
+        alpha: { milestone: '16.7' }
       field :groups,
         Types::GroupType.connection_type,
         null: false,
@@ -33,10 +43,17 @@ module Types
         null: false,
         description: 'Path of the organization.',
         alpha: { milestone: '16.4' }
-      field :web_url, GraphQL::Types::String,
+      field :web_url,
+        GraphQL::Types::String,
         null: false,
         description: 'Web URL of the organization.',
         alpha: { milestone: '16.6' }
+
+      markdown_field :description_html, null: true, alpha: { milestone: '16.7' }, &:organization_detail
+
+      def avatar_url
+        object.avatar_url(only_path: false)
+      end
     end
   end
 end

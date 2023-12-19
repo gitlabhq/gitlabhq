@@ -1,8 +1,7 @@
 ---
 stage: Data Stores
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-type: reference
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 # Exact Code Search **(PREMIUM ALL)**
@@ -33,6 +32,7 @@ This table shows some example queries for exact code search.
 | Query                | Description                                                                           |
 | -------------------- |-------------------------------------------------------------------------------------- |
 | `foo`                | Returns files that contain `foo`                                                      |
+| `foo file:^doc/`     | Returns files that contain `foo` in directories that start with `doc/`                |
 | `"class foo"`        | Returns files that contain the exact string `class foo`                               |
 | `class foo`          | Returns files that contain both `class` and `foo`                                     |
 | `foo or bar`         | Returns files that contain either `foo` or `bar`                                      |
@@ -42,5 +42,5 @@ This table shows some example queries for exact code search.
 | `foo file:js`        | Searches for `foo` in files with names that contain `js`                              |
 | `foo -file:test`     | Searches for `foo` in files with names that do not contain `test`                     |
 | `foo lang:ruby`      | Searches for `foo` in Ruby source code                                                |
-| `foo f:\.js$`        | Searches for `foo` in files with names that end with `.js`                            |
+| `foo file:\.js$`     | Searches for `foo` in files with names that end with `.js`                            |
 | `foo.*bar`           | Searches for strings that match the regular expression `foo.*bar`                     |

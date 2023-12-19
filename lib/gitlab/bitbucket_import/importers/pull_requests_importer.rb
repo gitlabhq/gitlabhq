@@ -26,6 +26,7 @@ module Gitlab
           job_waiter
         rescue StandardError => e
           track_import_failure!(project, exception: e)
+          job_waiter
         end
 
         private

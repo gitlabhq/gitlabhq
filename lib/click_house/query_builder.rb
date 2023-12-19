@@ -61,9 +61,21 @@ module ClickHouse
         end
       end
 
-      new_projections = existing_fields + fields.map(&:to_s)
+      new_projections = (existing_fields + fields).map do |field|
+        if field.is_a?(Symbol)
+          field.to_s
+        else
+          field
+        end
+      end
 
-      new_instance.manager.projections = new_projections.uniq.map { |field| new_instance.table[field] }
+      new_instance.manager.projections = new_projections.uniq.map do |field|
+        if field.is_a?(Arel::Expressions)
+          field
+        else
+          new_instance.table[field.to_s]
+        end
+      end
       new_instance
     end
 

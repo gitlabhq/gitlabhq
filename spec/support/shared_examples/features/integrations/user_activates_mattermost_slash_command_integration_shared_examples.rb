@@ -6,7 +6,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
   end
 
   it 'shows a token placeholder' do
-    token_placeholder = find_field('service_token')['placeholder']
+    token_placeholder = find_field('service-token')['placeholder']
 
     expect(token_placeholder).to eq('')
   end
@@ -14,7 +14,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
   it 'redirects to the integrations page after saving but not activating' do
     token = ('a'..'z').to_a.join
 
-    fill_in 'service_token', with: token
+    fill_in 'service-token', with: token
     click_active_checkbox
     click_save_integration
 
@@ -25,7 +25,7 @@ RSpec.shared_examples 'user activates the Mattermost Slash Command integration' 
   it 'redirects to the integrations page after activating' do
     token = ('a'..'z').to_a.join
 
-    fill_in 'service_token', with: token
+    fill_in 'service-token', with: token
     click_save_integration
 
     expect(page).to have_current_path(edit_path, ignore_query: true)

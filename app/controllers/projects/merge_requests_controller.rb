@@ -41,18 +41,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
-    push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:widget_pipeline_pass_subscription_update, project)
     push_frontend_feature_flag(:mr_request_changes, current_user)
-  end
-
-  before_action only: [:edit] do
-    if can?(current_user, :fill_in_merge_request_template, project)
-      push_frontend_feature_flag(:fill_in_mr_template, project)
-    end
+    push_frontend_feature_flag(:merge_blocked_component, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -345,15 +338,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def discussions
-    if Feature.enabled?(:only_highlight_discussions_requested, project)
-      super do |discussion_notes|
-        note_ids = discussion_notes.flat_map { |x| x.notes.collect(&:id) }
-        merge_request.discussions_diffs.load_highlight(diff_note_ids: note_ids)
-      end
-    else
-      merge_request.discussions_diffs.load_highlight
-
-      super
+    super do |discussion_notes|
+      note_ids = discussion_notes.flat_map { |x| x.notes.collect(&:id) }
+      merge_request.discussions_diffs.load_highlight(diff_note_ids: note_ids)
     end
   end
 
@@ -461,7 +448,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-    @diffs_batch_cache_key = @merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
+
+    if merge_request.diffs_batch_cache_with_max_age?
+      @diffs_batch_cache_key = @merge_request.merge_head_diff&.patch_id_sha
+    end
 
     set_pipeline_variables
 
@@ -471,11 +461,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def get_diffs_count
-    if show_only_context_commits?
-      @merge_request.context_commits_diff.raw_diffs.size
-    else
-      @merge_request.diff_size
-    end
+    return @merge_request.context_commits_diff.raw_diffs.size if show_only_context_commits?
+    return @merge_request.merge_request_diffs.find_by_id(params[:diff_id])&.size if params[:diff_id]
+
+    @merge_request.diff_size
   end
 
   def merge_request_update_params
@@ -598,7 +587,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     when :parsed
       render json: Gitlab::Json.dump(report_comparison[:data]), status: :ok
     when :error
-      render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
+      render json: {
+               errors: [report_comparison[:status_reason]],
+               status_reason: report_comparison[:status_reason]
+             },
+        status: :bad_request
     else
       raise "Failed to build comparison response as comparison yielded unknown status '#{report_comparison[:status]}'"
     end
@@ -629,7 +622,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params = request
       .query_parameters
       .merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)
-    params[:ck] = merge_request.merge_head_diff&.id if merge_request.diffs_batch_cache_with_max_age?
+    params[:ck] = merge_request.merge_head_diff&.patch_id_sha if merge_request.diffs_batch_cache_with_max_age?
 
     diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
   end
@@ -637,16 +630,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def convert_date_to_epoch(date)
     Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
   rescue Date::Error, TypeError
-  end
-
-  def summarize_my_code_review_enabled?
-    namespace = project&.group&.root_ancestor
-    return false if namespace.nil?
-
-    Feature.enabled?(:summarize_my_code_review, current_user) &&
-      namespace.group_namespace? &&
-      namespace.licensed_feature_available?(:summarize_my_mr_code_review) &&
-      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review)
   end
 end
 

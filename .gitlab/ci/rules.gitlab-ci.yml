@@ -45,10 +45,10 @@
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
 .if-merge-request-approved-and-specific-devops-stage: &if-merge-request-approved-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage)/)'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package)/)'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage)/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package)/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
@@ -372,6 +372,7 @@
 .ai-patterns: &ai-patterns
   - "{,ee/,jh/}lib/gitlab/llm/**/*"
   - "{,ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
+  - "{,ee/,jh/}lib/gitlab/duo/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -416,6 +417,12 @@
 
 .qa-patterns: &qa-patterns
   - ".dockerignore"
+  - "{,jh/}qa/**/*"
+
+# Frontend view patterns + .qa-patterns
+.frontend-qa-patterns: &frontend-qa-patterns
+  - "{,ee/,jh/}{app/assets,app/components,app/helpers,app/presenters,app/views}/**/*"
+  # QA changes
   - "{,jh/}qa/**/*"
 
 # Code patterns + .ci-patterns
@@ -905,6 +912,7 @@
       variables:
         ARCH: amd64,arm64
     - <<: *if-ruby3_1-branch
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
@@ -1390,6 +1398,26 @@
       changes: *frontend-build-patterns
       allow_failure: true
 
+.frontend:rules:jest-snapshot:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-all-jest
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+      allow_failure: true
+
 ################
 # Memory rules #
 ################
@@ -1423,12 +1451,27 @@
 ############
 # QA rules #
 ############
+.qa:rules:update-gem-cache:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
+      changes:
+        - qa/Gemfile.lock
+    - <<: *if-schedule-maintenance
+    - <<: *if-security-schedule
+    - <<: *if-foss-schedule
+    - <<: *if-merge-request-labels-update-caches
+
 .qa:rules:code-merge-request-manual:
   rules:
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
+
+.qa:rules:code-merge-request:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-patterns
 
 .qa:rules:internal:
   rules:
@@ -1440,11 +1483,11 @@
     - <<: *if-default-refs
       changes: *code-qa-patterns
 
-.qa:rules:as-if-foss:
+.qa:rules:selectors-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-security-merge-request
-      changes: *code-qa-patterns
+    - <<: *if-merge-request
+      changes: *frontend-qa-patterns
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
 
@@ -1573,11 +1616,6 @@
       changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock  # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
-      variables:
-        UPDATE_QA_CACHE: "true"
-    - <<: *if-merge-request
       changes: *qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
@@ -1616,11 +1654,6 @@
       when: manual
     - <<: *if-merge-request
       changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock  # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
-      variables:
-        UPDATE_QA_CACHE: "true"
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
     - <<: *if-merge-request
@@ -1637,7 +1670,6 @@
     CREATE_TEST_FAILURE_ISSUES: "true"
     PROCESS_TEST_RESULTS: "true"
     KNAPSACK_GENERATE_REPORT: "true"
-    UPDATE_QA_CACHE: "true"
     QA_SAVE_TEST_METRICS: "true"
     QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
@@ -2125,8 +2157,28 @@
       when: never
     - if: '$VERTEX_AI_CREDENTIALS == null'
       when: never
+    - <<: *if-fork-merge-request
+      when: never
+
+.rails:rules:ee-gitlab-duo-chat-optional:
+  rules:
+    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
+    - <<: *if-merge-request
+      changes: *backend-patterns
+      when: manual
+      allow_failure: true
+
+.rails:rules:ee-gitlab-duo-chat-always:
+  rules:
+    - !reference [".rails:rules:ee-gitlab-duo-chat-base", rules]
     - <<: *if-merge-request
       changes: *ai-patterns
+
+.rails:rules:ee-gitlab-duo-chat-qa-full:
+  rules:
+    - !reference [".rails:rules:ee-gitlab-duo-chat-optional", rules]
+    - <<: *if-default-branch-refs
+      changes: *setup-test-env-patterns
       when: manual
       allow_failure: true
 
@@ -2335,6 +2387,7 @@
 
 .rails:rules:clickhouse-changes:
   rules:
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -2588,9 +2641,9 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -2801,6 +2854,8 @@
       changes: *code-backstage-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
+    - <<: *if-default-branch-refs
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request

@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Inactive project deletion **(FREE SELF)**
@@ -23,9 +23,8 @@ For the default setting on GitLab.com, see the [GitLab.com settings page](../use
 
 To configure deletion of inactive projects:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. In the **Inactive project deletion** section, select **Delete inactive projects**.
 1. Configure the settings.
@@ -35,7 +34,7 @@ To configure deletion of inactive projects:
 
 Inactive projects that meet the criteria are scheduled for deletion and a warning email is sent. If the
 projects remain inactive, they are deleted after the specified duration. These projects are deleted even if
-[the project is archived](../user/project/settings/index.md#archive-a-project).
+[the project is archived](../user/project/settings/migrate_projects.md#archive-a-project).
 
 ### Configuration example
 

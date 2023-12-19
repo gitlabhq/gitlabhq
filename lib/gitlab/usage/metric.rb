@@ -37,11 +37,8 @@ module Gitlab
         ::Gitlab::Usage::Metrics::KeyPathProcessor.process(definition.key_path, value)
       end
 
-      def instrumentation_class
-        "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}"
-      end
-
       def instrumentation_object
+        instrumentation_class = "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}"
         @instrumentation_object ||= instrumentation_class.constantize.new(definition.attributes)
       end
     end

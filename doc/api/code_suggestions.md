@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Creation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Code Suggestions API
@@ -19,7 +19,9 @@ POST /code_suggestions/tokens
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/code_suggestions/tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/tokens"
 ```
 
 Example response:
@@ -38,9 +40,12 @@ Example response:
 > - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `code_suggestions_completion_api`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
+
+NOTE:
+This endpoint rate-limits each user to 60 requests per 1-minute window.
 
 Use the AI abstraction layer to generate code completions.
 
@@ -51,7 +56,10 @@ POST /code_suggestions/completions
 Requests to this endpoint are proxied directly to the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions). The documentation for the endpoint is currently the SSoT for named parameters.
 
 ```shell
-curl --request POST --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
+curl --request POST \
+  --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  --data "<JSON_BODY>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/completions"
 ```
 
 Example body:

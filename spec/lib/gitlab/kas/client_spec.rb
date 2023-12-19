@@ -45,25 +45,25 @@ RSpec.describe Gitlab::Kas::Client do
       expect(token).to receive(:audience=).with(described_class::JWT_AUDIENCE)
     end
 
-    describe '#get_connected_agents' do
+    describe '#get_connected_agents_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
-      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest) }
-      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsResponse, agents: connected_agents) }
+      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest) }
+      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsResponse, agents: connected_agents) }
 
       let(:connected_agents) { [double] }
 
-      subject { described_class.new.get_connected_agents(project: project) }
+      subject { described_class.new.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
 
       before do
         expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
           .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
           .and_return(stub)
 
-        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsRequest).to receive(:new)
-          .with(project_id: project.id)
+        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest).to receive(:new)
+          .with(agent_ids: [agent.id])
           .and_return(request)
 
-        expect(stub).to receive(:get_connected_agents)
+        expect(stub).to receive(:get_connected_agents_by_agent_ids)
           .with(request, metadata: { 'authorization' => 'bearer test-token' })
           .and_return(response)
       end

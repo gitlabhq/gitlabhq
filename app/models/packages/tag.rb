@@ -19,6 +19,17 @@ class Packages::Tag < ApplicationRecord
       .limit(FOR_PACKAGES_TAGS_LIMIT)
   end
 
+  def self.for_package_ids_with_distinct_names(package_ids)
+    inner_query = select('DISTINCT ON (name) *').order(:name).for_package_ids(package_ids)
+
+    cte = Gitlab::SQL::CTE.new(:distinct_names_cte, inner_query)
+    cte_alias = cte.table.alias(table_name)
+
+    with(cte.to_arel)
+      .from(cte_alias)
+      .order(updated_at: :desc)
+  end
+
   def ensure_project_id
     self.project_id ||= package.project_id
   end

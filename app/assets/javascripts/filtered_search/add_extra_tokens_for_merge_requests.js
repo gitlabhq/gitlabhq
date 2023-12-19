@@ -8,7 +8,10 @@ import {
   TOKEN_TYPE_SOURCE_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
-export default (IssuableTokenKeys, disableBranchFilter = false) => {
+export default (
+  IssuableTokenKeys,
+  { disableBranchFilter = false, disableEnvironmentFilter = false } = {},
+) => {
   const reviewerToken = {
     formattedKey: TOKEN_TITLE_REVIEWER,
     key: TOKEN_TYPE_REVIEWER,
@@ -171,41 +174,43 @@ export default (IssuableTokenKeys, disableBranchFilter = false) => {
   );
   IssuableTokenKeys.conditions.push(...approvedBy.condition);
 
-  const environmentToken = {
-    formattedKey: __('Environment'),
-    key: 'environment',
-    type: 'string',
-    param: '',
-    symbol: '',
-    icon: 'cloud-gear',
-    tag: 'environment',
-  };
+  if (!disableEnvironmentFilter) {
+    const environmentToken = {
+      formattedKey: __('Environment'),
+      key: 'environment',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'cloud-gear',
+      tag: 'environment',
+    };
 
-  const deployedBeforeToken = {
-    formattedKey: __('Deployed-before'),
-    key: 'deployed-before',
-    type: 'string',
-    param: '',
-    symbol: '',
-    icon: 'clock',
-    tag: 'deployed_before',
-  };
+    const deployedBeforeToken = {
+      formattedKey: __('Deployed-before'),
+      key: 'deployed-before',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'clock',
+      tag: 'deployed_before',
+    };
 
-  const deployedAfterToken = {
-    formattedKey: __('Deployed-after'),
-    key: 'deployed-after',
-    type: 'string',
-    param: '',
-    symbol: '',
-    icon: 'clock',
-    tag: 'deployed_after',
-  };
+    const deployedAfterToken = {
+      formattedKey: __('Deployed-after'),
+      key: 'deployed-after',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'clock',
+      tag: 'deployed_after',
+    };
 
-  IssuableTokenKeys.tokenKeys.push(environmentToken, deployedBeforeToken, deployedAfterToken);
+    IssuableTokenKeys.tokenKeys.push(environmentToken, deployedBeforeToken, deployedAfterToken);
 
-  IssuableTokenKeys.tokenKeysWithAlternative.push(
-    environmentToken,
-    deployedBeforeToken,
-    deployedAfterToken,
-  );
+    IssuableTokenKeys.tokenKeysWithAlternative.push(
+      environmentToken,
+      deployedBeforeToken,
+      deployedAfterToken,
+    );
+  }
 };

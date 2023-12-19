@@ -22,7 +22,11 @@
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)
 
-= render 'shared/issuable/search_bar', type: :merge_requests, disable_target_branch: true
+= render 'shared/issuable/search_bar',
+  type: :merge_requests,
+  disable_target_branch: true,
+  disable_releases: true,
+  disable_environments: true
 
 - if current_user && @no_filters_set
   = render 'no_filter_selected'

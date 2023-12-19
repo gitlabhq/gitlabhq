@@ -27,11 +27,15 @@
   - 1
 - - abuse_spam_abuse_events
   - 1
+- - abuse_trust_score
+  - 1
 - - activity_pub
   - 1
 - - adjourned_project_deletion
   - 1
 - - admin_emails
+  - 1
+- - ai_store_repository_xray
   - 1
 - - analytics_code_review_metrics
   - 1
@@ -73,8 +77,6 @@
   - 2
 - - auto_merge
   - 3
-- - automation_execute_rule
-  - 1
 - - background_migration
   - 1
 - - background_migration_ci_database
@@ -127,6 +129,8 @@
   - 1
 - - bitbucket_server_import_stage_import_repository
   - 1
+- - bitbucket_server_import_stage_import_users
+  - 1
 - - bulk_import
   - 1
 - - bulk_imports_entity
@@ -147,6 +151,8 @@
   - 1
 - - bulk_imports_relation_export
   - 1
+- - bulk_imports_transform_references
+  - 1
 - - chaos
   - 2
 - - chat_notification
@@ -163,7 +169,11 @@
   - 1
 - - ci_llm_generate_config
   - 1
+- - ci_low_urgency_cancel_redundant_pipelines
+  - 1
 - - ci_parse_secure_file_metadata
+  - 1
+- - ci_runners_export_usage_csv
   - 1
 - - ci_runners_process_runner_version_update
   - 1
@@ -182,6 +192,8 @@
 - - compliance_management_merge_requests_compliance_violations
   - 1
 - - compliance_management_pending_status_check
+  - 1
+- - compliance_management_standards_adherence_export_mailer
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
@@ -455,7 +467,11 @@
   - 1
 - - merge_requests_mergeability_check_batch
   - 1
+- - merge_requests_notify_approvers
+  - 1
 - - merge_requests_process_approval_auto_merge
+  - 1
+- - merge_requests_remove_user_approval_rules
   - 1
 - - merge_requests_resolve_todos
   - 1
@@ -507,8 +523,6 @@
   - 1
 - - package_cleanup
   - 1
-- - package_metadata_advisory_scan
-  - 1
 - - package_metadata_global_advisory_scan
   - 1
 - - package_repositories
@@ -516,6 +530,8 @@
 - - packages_composer_cache_update
   - 1
 - - pages
+  - 1
+- - pages_deactivate_mr_deployments
   - 1
 - - pages_domain_ssl_renewal
   - 1
@@ -657,9 +673,13 @@
   - 1
 - - security_orchestration_configuration_create_bot
   - 1
+- - security_orchestration_configuration_remove_bot
+  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_process_scan_result_policy
+  - 1
+- - security_refresh_compliance_framework_security_policies
   - 1
 - - security_refresh_project_policies
   - 1
@@ -674,6 +694,10 @@
 - - security_scans_purge_by_job_id
   - 1
 - - security_sync_scan_policies
+  - 1
+- - security_unenforceable_policy_rules_notification
+  - 1
+- - security_unenforceable_policy_rules_pipeline_notification
   - 1
 - - service_desk_email_receiver
   - 2
@@ -716,6 +740,8 @@
 - - users_track_namespace_visits
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
+  - 1
+- - vulnerabilities_remove_all_vulnerabilities
   - 1
 - - vulnerabilities_statistics_adjustment
   - 1

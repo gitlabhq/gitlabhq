@@ -1,10 +1,4 @@
-import {
-  GlAlert,
-  GlSkeletonLoader,
-  GlButton,
-  GlEmptyState,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlAlert, GlSkeletonLoader, GlEmptyState } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -15,6 +9,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
+import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
@@ -23,13 +18,13 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 
 import {
@@ -74,8 +69,7 @@ describe('WorkItemDetail component', () => {
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
-  const findParent = () => wrapper.findByTestId('work-item-parent');
-  const findParentButton = () => findParent().findComponent(GlButton);
+  const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
@@ -84,11 +78,9 @@ describe('WorkItemDetail component', () => {
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
-  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
-  const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
+  const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
-  const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
   const createComponent = ({
     isGroup = false,
@@ -96,7 +88,7 @@ describe('WorkItemDetail component', () => {
     updateInProgress = false,
     workItemIid = '1',
     handler = successHandler,
-    confidentialityMock = [updateWorkItemMutation, jest.fn()],
+    mutationHandler,
     error = undefined,
     workItemsMvc2Enabled = false,
     linkedWorkItemsEnabled = false,
@@ -105,8 +97,8 @@ describe('WorkItemDetail component', () => {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, handler],
         [groupWorkItemByIidQuery, groupSuccessHandler],
+        [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
-        confidentialityMock,
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -134,6 +126,7 @@ describe('WorkItemDetail component', () => {
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {
+        WorkItemAncestors: true,
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
@@ -236,119 +229,52 @@ describe('WorkItemDetail component', () => {
 
   describe('confidentiality', () => {
     const errorMessage = 'Mutation failed';
-    const confidentialWorkItem = workItemByIidResponseFactory({
-      confidential: true,
-    });
-    const workItem = confidentialWorkItem.data.workspace.workItems.nodes[0];
-
-    // Mocks for work item without parent
-    const withoutParentExpectedInputVars = { id, confidential: true };
-    const toggleConfidentialityWithoutParentHandler = jest.fn().mockResolvedValue({
+    const confidentialWorkItem = workItemByIidResponseFactory({ confidential: true });
+    const mutationHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem,
+          workItem: confidentialWorkItem.data.workspace.workItems.nodes[0],
           errors: [],
         },
       },
     });
-    const withoutParentHandlerMock = jest
-      .fn()
-      .mockResolvedValue(workItemQueryResponseWithoutParent);
-    const confidentialityWithoutParentMock = [
-      updateWorkItemMutation,
-      toggleConfidentialityWithoutParentHandler,
-    ];
-    const confidentialityWithoutParentFailureMock = [
-      updateWorkItemMutation,
-      jest.fn().mockRejectedValue(new Error(errorMessage)),
-    ];
 
-    // Mocks for work item with parent
-    const withParentExpectedInputVars = {
-      id: mockParent.parent.id,
-      taskData: { id, confidential: true },
-    };
-    const toggleConfidentialityWithParentHandler = jest.fn().mockResolvedValue({
-      data: {
-        workItemUpdate: {
-          workItem: {
-            id: workItem.id,
-            descriptionHtml: workItem.description,
-          },
-          task: {
-            workItem,
-            confidential: true,
-          },
-          errors: [],
-        },
-      },
+    it('sends updateInProgress props to child component', async () => {
+      createComponent({ mutationHandler });
+      await waitForPromises();
+
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await nextTick();
+
+      expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
     });
-    const confidentialityWithParentMock = [
-      updateWorkItemTaskMutation,
-      toggleConfidentialityWithParentHandler,
-    ];
-    const confidentialityWithParentFailureMock = [
-      updateWorkItemTaskMutation,
-      jest.fn().mockRejectedValue(new Error(errorMessage)),
-    ];
 
-    describe.each`
-      context        | handlerMock                 | confidentialityMock                 | confidentialityFailureMock                 | inputVariables
-      ${'no parent'} | ${withoutParentHandlerMock} | ${confidentialityWithoutParentMock} | ${confidentialityWithoutParentFailureMock} | ${withoutParentExpectedInputVars}
-      ${'parent'}    | ${successHandler}           | ${confidentialityWithParentMock}    | ${confidentialityWithParentFailureMock}    | ${withParentExpectedInputVars}
-    `(
-      'when work item has $context',
-      ({ handlerMock, confidentialityMock, confidentialityFailureMock, inputVariables }) => {
-        it('sends updateInProgress props to child component', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock,
-          });
+    it('emits workItemUpdated when mutation is successful', async () => {
+      createComponent({ mutationHandler });
+      await waitForPromises();
 
-          await waitForPromises();
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await waitForPromises();
 
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
+      expect(mutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          confidential: true,
+        },
+      });
+    });
 
-          await nextTick();
+    it('shows an alert when mutation fails', async () => {
+      createComponent({ mutationHandler: jest.fn().mockRejectedValue(new Error(errorMessage)) });
+      await waitForPromises();
 
-          expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
-        });
+      findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
+      await waitForPromises();
 
-        it('emits workItemUpdated when mutation is successful', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock,
-          });
-
-          await waitForPromises();
-
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
-          await waitForPromises();
-
-          expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
-          expect(confidentialityMock[1]).toHaveBeenCalledWith({
-            input: inputVariables,
-          });
-        });
-
-        it('shows an alert when mutation fails', async () => {
-          createComponent({
-            handler: handlerMock,
-            confidentialityMock: confidentialityFailureMock,
-          });
-
-          await waitForPromises();
-          findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
-          await waitForPromises();
-          expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
-
-          await nextTick();
-
-          expect(findAlert().exists()).toBe(true);
-          expect(findAlert().text()).toBe(errorMessage);
-        });
-      },
-    );
+      expect(wrapper.emitted('workItemUpdated')).toBeUndefined();
+      expect(findAlert().text()).toBe(errorMessage);
+    });
   });
 
   describe('description', () => {
@@ -366,19 +292,19 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  describe('secondary breadcrumbs', () => {
-    it('does not show secondary breadcrumbs by default', () => {
+  describe('ancestors widget', () => {
+    it('does not show ancestors widget by default', () => {
       createComponent();
 
-      expect(findParent().exists()).toBe(false);
+      expect(findAncestors().exists()).toBe(false);
     });
 
-    it('does not show secondary breadcrumbs if there is not a parent', async () => {
+    it('does not show ancestors widget if there is not a parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
 
-      expect(findParent().exists()).toBe(false);
+      expect(findAncestors().exists()).toBe(false);
     });
 
     it('shows title in the header when there is no parent', async () => {
@@ -396,45 +322,8 @@ describe('WorkItemDetail component', () => {
         return waitForPromises();
       });
 
-      it('shows secondary breadcrumbs if there is a parent', () => {
-        expect(findParent().exists()).toBe(true);
-      });
-
-      it('shows parent breadcrumb icon', () => {
-        expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
-      });
-
-      it('shows parent title and iid', () => {
-        expect(findParentButton().text()).toBe(
-          `${mockParent.parent.title} #${mockParent.parent.iid}`,
-        );
-      });
-
-      it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
-        expect(findParentButton().attributes().href).toBe('../../-/issues/5');
-      });
-
-      it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {
-        const mockParentObjective = {
-          parent: {
-            ...mockParent.parent,
-            workItemType: {
-              id: mockParent.parent.workItemType.id,
-              name: 'Objective',
-              iconName: 'issue-type-objective',
-            },
-          },
-        };
-        const parentResponse = workItemByIidResponseFactory(mockParentObjective);
-        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
-        await waitForPromises();
-
-        expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
-      });
-
-      it('shows work item type and iid', () => {
-        const { iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
-        expect(findParent().text()).toContain(`#${iid}`);
+      it('shows ancestors widget if there is a parent', () => {
+        expect(findAncestors().exists()).toBe(true);
       });
 
       it('does not show title in the header when parent exists', () => {
@@ -769,8 +658,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemTwoColumnViewContainer().classes()).not.toContain('work-item-overview');
       });
 
-      it('does not have sticky header', () => {
-        expect(findIntersectionObserver().exists()).toBe(false);
+      it('does not have sticky header component', () => {
         expect(findStickyHeader().exists()).toBe(false);
       });
 
@@ -789,18 +677,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
       });
 
-      it('does not show sticky header by default', () => {
-        expect(findStickyHeader().exists()).toBe(false);
-      });
-
-      it('has the sticky header when the page is scrolled', async () => {
-        expect(findIntersectionObserver().exists()).toBe(true);
-
-        global.pageYOffset = 100;
-        triggerPageScroll();
-
-        await nextTick();
-
+      it('renders the work item sticky header component', () => {
         expect(findStickyHeader().exists()).toBe(true);
       });
 

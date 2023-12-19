@@ -29,6 +29,14 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
       expect(timelogs).to contain_exactly(timelog1)
     end
 
+    context 'when the project does not exist' do
+      let(:extra_args) { { project_id: "gid://gitlab/Project/#{non_existing_record_id}" } }
+
+      it 'returns an empty set' do
+        expect(timelogs).to be_empty
+      end
+    end
+
     context 'when no dates specified' do
       let(:args) { {} }
 
@@ -135,6 +143,20 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
 
     it 'finds all timelogs within given dates' do
       expect(timelogs).to contain_exactly(timelog1)
+    end
+
+    context 'when the group does not exist' do
+      let_it_be(:error_class) { Gitlab::Graphql::Errors::ResourceNotAvailable }
+
+      let(:extra_args) { { group_id: "gid://gitlab/Group/#{non_existing_record_id}" } }
+
+      it 'returns an error' do
+        expect_graphql_error_to_be_created(error_class,
+          "The resource that you are attempting to access does not exist or " \
+          "you don't have permission to perform this action") do
+          timelogs
+        end
+      end
     end
 
     context 'when only start_date is present' do

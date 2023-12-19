@@ -1,10 +1,8 @@
 ---
 table_name: automation_rules
 description: Stores automation rules and their trigger events
-classes:
-- Automation::Rule
 feature_categories:
-- no_code_automation
+-
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111021
 milestone: '15.9'
 gitlab_schema: gitlab_main

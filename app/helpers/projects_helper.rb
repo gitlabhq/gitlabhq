@@ -88,7 +88,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: inject_classes, data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body' }).html_safe
     end
   end
 
@@ -243,8 +243,8 @@ module ProjectsHelper
   def no_password_message
     push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('topics/git/terminology', anchor: 'pull-and-push') }
     clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }
-    set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_profile_password_path }
-    set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: profile_personal_access_tokens_path }
+    set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_user_settings_password_path }
+    set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: user_settings_personal_access_tokens_path }
 
     message = if current_user.require_password_creation_for_git?
                 _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
@@ -687,7 +687,8 @@ module ProjectsHelper
       featureFlagsAccessLevel: feature.feature_flags_access_level,
       releasesAccessLevel: feature.releases_access_level,
       infrastructureAccessLevel: feature.infrastructure_access_level,
-      modelExperimentsAccessLevel: feature.model_experiments_access_level
+      modelExperimentsAccessLevel: feature.model_experiments_access_level,
+      modelRegistryAccessLevel: feature.model_registry_access_level
     }
   end
 
@@ -789,7 +790,7 @@ module ProjectsHelper
     push_to_schema_breadcrumb(project_name, project_path(project))
 
     link_to project_path(project) do
-      icon = project_icon(project, alt: project_name, class: 'avatar-tile', width: 15, height: 15) if project.avatar_url && !Rails.env.test?
+      icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
       [icon, content_tag("span", project_name, class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
     end
   end

@@ -3,50 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_category: :acquisition do
-  subject { described_class.new(subject_experiment) }
+  subject(:experiment_instance) { described_class.new(subject_experiment) }
 
   let(:subject_experiment) { experiment('namespaced/stub') }
 
-  describe "#enabled?", :saas do
+  describe "#enabled?" do
     before do
       stub_feature_flags(gitlab_experiment: true)
-      allow(subject).to receive(:feature_flag_defined?).and_return(true)
-      allow(subject).to receive(:feature_flag_instance).and_return(double(state: :on))
+      allow(experiment_instance).to receive(:feature_flag_defined?).and_return(true)
+      allow(experiment_instance)
+        .to receive(:feature_flag_instance).and_return(instance_double('Flipper::Feature', state: :on))
     end
 
-    it "is enabled when all criteria are met" do
-      expect(subject).to be_enabled
-    end
-
-    it "isn't enabled if the feature definition doesn't exist" do
-      expect(subject).to receive(:feature_flag_defined?).and_return(false)
-
-      expect(subject).not_to be_enabled
-    end
-
-    it "isn't enabled if we're not in dev or dotcom environments" do
-      expect(Gitlab).to receive(:com?).and_return(false)
-
-      expect(subject).not_to be_enabled
-    end
-
-    it "isn't enabled if the feature flag state is :off" do
-      expect(subject).to receive(:feature_flag_instance).and_return(double(state: :off))
-
-      expect(subject).not_to be_enabled
-    end
-
-    it "isn't enabled if the gitlab_experiment feature flag is false" do
-      stub_feature_flags(gitlab_experiment: false)
-
-      expect(subject).not_to be_enabled
-    end
+    it { is_expected.not_to be_enabled }
   end
 
   describe "#execute_assignment" do
     let(:variants) do
       ->(e) do
-        # rubocop:disable Lint/EmptyBlock
+        # rubocop:disable Lint/EmptyBlock -- Specific for test
         e.control {}
         e.variant(:red) {}
         e.variant(:blue) {}
@@ -63,26 +38,26 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
     it "uses the default value as specified in the yaml" do
       expect(Feature).to receive(:enabled?).with(
         'namespaced_stub',
-        subject,
+        experiment_instance,
         type: :experiment
       ).and_return(false)
 
-      expect(subject.execute_assignment).to be_nil
+      expect(experiment_instance.execute_assignment).to be_nil
     end
 
     it "returns an assigned name" do
-      expect(subject.execute_assignment).to eq(:blue)
+      expect(experiment_instance.execute_assignment).to eq(:blue)
     end
 
     context "when there are no behaviors" do
-      let(:variants) { ->(e) { e.control {} } } # rubocop:disable Lint/EmptyBlock
+      let(:variants) { ->(e) { e.control {} } } # rubocop:disable Lint/EmptyBlock -- Specific for test
 
       it "does not raise an error" do
-        expect { subject.execute_assignment }.not_to raise_error
+        expect { experiment_instance.execute_assignment }.not_to raise_error
       end
     end
 
-    context "for even rollout to non-control", :saas do
+    context "for even rollout to non-control" do
       let(:counts) { Hash.new(0) }
       let(:subject_experiment) { experiment('namespaced/stub') }
 
@@ -91,8 +66,8 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
           allow(instance).to receive(:enabled?).and_return(true)
         end
 
-        subject_experiment.variant(:variant1) {} # rubocop:disable Lint/EmptyBlock
-        subject_experiment.variant(:variant2) {} # rubocop:disable Lint/EmptyBlock
+        subject_experiment.variant(:variant1) {} # rubocop:disable Lint/EmptyBlock -- Specific for test
+        subject_experiment.variant(:variant2) {} # rubocop:disable Lint/EmptyBlock -- Specific for test
       end
 
       it "rolls out relatively evenly to 2 behaviors" do
@@ -102,7 +77,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
       end
 
       it "rolls out relatively evenly to 3 behaviors" do
-        subject_experiment.variant(:variant3) {} # rubocop:disable Lint/EmptyBlock
+        subject_experiment.variant(:variant3) {} # rubocop:disable Lint/EmptyBlock -- Specific for test
 
         100.times { |i| run_cycle(subject_experiment, value: i) }
 
@@ -115,7 +90,7 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
         end
 
         it "rolls out with the expected distribution" do
-          subject_experiment.variant(:variant3) {} # rubocop:disable Lint/EmptyBlock
+          subject_experiment.variant(:variant3) {} # rubocop:disable Lint/EmptyBlock -- Specific for test
 
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
@@ -152,14 +127,14 @@ RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment, feature_catego
 
   describe "#flipper_id" do
     it "returns the expected flipper id if the experiment doesn't provide one" do
-      subject.instance_variable_set(:@experiment, double(id: '__id__'))
-      expect(subject.flipper_id).to eq('Experiment;__id__')
+      experiment_instance.instance_variable_set(:@experiment, instance_double('Gitlab::Experiment', id: '__id__'))
+      expect(experiment_instance.flipper_id).to eq('Experiment;__id__')
     end
 
     it "lets the experiment provide a flipper id so it can override the default" do
       allow(subject_experiment).to receive(:flipper_id).and_return('_my_overridden_id_')
 
-      expect(subject.flipper_id).to eq('_my_overridden_id_')
+      expect(experiment_instance.flipper_id).to eq('_my_overridden_id_')
     end
   end
 end

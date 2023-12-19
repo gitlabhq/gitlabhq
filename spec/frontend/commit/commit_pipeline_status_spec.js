@@ -6,7 +6,7 @@ import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 jest.mock('~/lib/utils/poll');
 jest.mock('visibilityjs');

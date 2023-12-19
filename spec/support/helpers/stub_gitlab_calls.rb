@@ -109,6 +109,14 @@ module StubGitlabCalls
     end
   end
 
+  def stub_commonmark_sourcepos_enabled
+    engine = Banzai::Filter::MarkdownFilter.render_engine(nil)
+
+    allow_next_instance_of(engine) do |instance|
+      allow(instance).to receive(:sourcepos_disabled?).and_return(false)
+    end
+  end
+
   private
 
   def stub_container_registry_tag_manifest_content

@@ -70,8 +70,8 @@ module Gitlab
       # returns a Hash, then the return value of that method will be merged into
       # `extra`. Exceptions can use this mechanism to provide structured data
       # to sentry in addition to their message and back-trace.
-      def track_and_raise_exception(exception, extra = {})
-        process_exception(exception, extra: extra)
+      def track_and_raise_exception(exception, extra = {}, tags = {})
+        process_exception(exception, extra: extra, tags: tags)
 
         raise exception
       end
@@ -90,8 +90,8 @@ module Gitlab
       #
       # Provide an issue URL for follow up.
       # as `issue_url: 'http://gitlab.com/gitlab-org/gitlab/issues/111'`
-      def track_and_raise_for_dev_exception(exception, extra = {})
-        process_exception(exception, extra: extra)
+      def track_and_raise_for_dev_exception(exception, extra = {}, tags = {})
+        process_exception(exception, extra: extra, tags: tags)
 
         raise exception if should_raise_for_dev?
       end
@@ -102,8 +102,8 @@ module Gitlab
       # returns a Hash, then the return value of that method will be merged into
       # `extra`. Exceptions can use this mechanism to provide structured data
       # to sentry in addition to their message and back-trace.
-      def track_exception(exception, extra = {})
-        process_exception(exception, extra: extra)
+      def track_exception(exception, extra = {}, tags = {})
+        process_exception(exception, extra: extra, tags: tags)
       end
 
       # This should be used when you only want to log the exception,
@@ -157,8 +157,8 @@ module Gitlab
         end
       end
 
-      def process_exception(exception, extra:, trackers: default_trackers)
-        context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra)
+      def process_exception(exception, extra:, tags: {}, trackers: default_trackers)
+        context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra, tags)
 
         trackers.each do |tracker|
           tracker.capture_exception(exception, **context_payload)

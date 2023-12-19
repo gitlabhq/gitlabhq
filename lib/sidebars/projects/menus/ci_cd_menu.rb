@@ -27,13 +27,6 @@ module Sidebars
           _('CI/CD')
         end
 
-        override :title_html_options
-        def title_html_options
-          {
-            id: 'js-onboarding-pipelines-link'
-          }
-        end
-
         override :sprite_icon
         def sprite_icon
           'rocket'

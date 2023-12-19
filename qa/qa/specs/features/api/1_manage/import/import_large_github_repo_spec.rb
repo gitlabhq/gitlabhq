@@ -10,14 +10,15 @@ require "etc"
 # Because of this, all expectation check for inclusion rather than exact match to avoid failures if extra issues,
 #   comments, events got created while import was running.
 
-# rubocop:disable Rails/Pluck
+# rubocop:disable Rails/Pluck -- false positive matches
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- slightly specific test which relies on instance variables to track metrics
 module QA
   RSpec.describe 'Manage', :github, requires_admin: 'creates users',
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
     } do
-    describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe 'Project import', product_group: :import_and_integrate do
       let!(:api_client) { Runtime::API::Client.as_admin }
       let!(:user) { create(:user, api_client: api_client) }
       let!(:user_api_client) do
@@ -44,13 +45,13 @@ module QA
       let(:logger) { Runtime::Logger.logger }
       let(:gitlab_address) { QA::Runtime::Scenario.gitlab_address.chomp("/") }
       let(:dummy_url) { "https://example.com" } # this is used to replace all dynamic urls in descriptions and comments
-      let(:api_request_params) { { auto_paginate: true, attempts: 2 } }
+      let(:api_request_params) { { auto_paginate: true, attempts: 3 } }
 
       let(:created_by_pattern) { /\*Created by: \S+\*\n\n/ }
       let(:suggestion_pattern) { /suggestion:-\d+\+\d+/ }
       let(:gh_link_pattern) { %r{https://github.com/#{github_repo}/(issues|pull)} }
       let(:gl_link_pattern) { %r{#{gitlab_address}/#{imported_project.path_with_namespace}/-/(issues|merge_requests)} }
-      # rubocop:disable Lint/MixedRegexpCaptureTypes
+      # rubocop:disable Lint/MixedRegexpCaptureTypes -- optional capture groups
       let(:event_pattern) do
         Regexp.union(
           [
@@ -127,7 +128,7 @@ module QA
               max: 3,
               interval: 1,
               retry_block: ->(exception:, **) { logger.warn("Request to GitHub failed: '#{exception}', retrying") },
-              exceptions: [Octokit::InternalServerError, Octokit::ServerError]
+              exceptions: [Faraday::ServerError, Faraday::ConnectionFailed, Faraday::SSLError]
             )
             builder.use(Faraday::Response::RaiseError) # faraday retry swallows errors, so it needs to be re-raised
           end
@@ -158,6 +159,10 @@ module QA
         with_paginated_request { github_client.list_milestones(github_repo, state: 'all') }.map do |ms|
           { title: ms.title, description: ms.description }
         end
+      end
+
+      let(:gh_milestone_titles) do
+        gh_milestones.map { |milestone| milestone[:title] }
       end
 
       let(:gh_all_issues) do
@@ -198,7 +203,6 @@ module QA
           project.add_name_uuid = false
           project.name = 'imported-project'
           project.github_personal_access_token = Runtime::Env.github_access_token
-          project.additional_access_tokens = Runtime::Env.github_additional_access_tokens
           project.github_repository_path = github_repo
           project.personal_namespace = user.username
           project.api_client = Runtime::API::Client.new(user: user)
@@ -206,6 +210,8 @@ module QA
           project.full_notes_import = true
         end
       end
+
+      let(:status_details) { (@import_status || {}).slice(:import_error, :failed_relations, :correlation_id) }
 
       before do
         QA::Support::Helpers::ImportSource.enable('github')
@@ -218,7 +224,7 @@ module QA
             importer: :github,
             import_finished: false,
             import_time: Time.now - @start
-          }))
+          }.merge(status_details)))
         end
 
         # add additional import time metric
@@ -229,16 +235,14 @@ module QA
             status: example.exception ? "failed" : "passed",
             import_time: @import_time,
             import_finished: true,
-            errors: imported_project.project_import_status[:failed_relations],
             reported_stats: @stats
-          }))
+          }.merge(status_details)))
         end
 
         save_data_json(test_result_data({
           status: example.exception ? "failed" : "passed",
           import_time: @import_time,
           import_finished: true,
-          errors: imported_project.project_import_status[:failed_relations],
           reported_stats: @stats,
           source: {
             data: {
@@ -272,7 +276,7 @@ module QA
             mrs: @mr_diff,
             issues: @issue_diff
           }
-        }))
+        }.merge(status_details)))
       end
 
       it(
@@ -292,14 +296,18 @@ module QA
         fetch_github_objects unless only_stats_comparison
 
         import_status = -> {
-          imported_project.project_import_status.then do |status|
-            @stats = status[:stats]&.slice(:fetched, :imported)
-
-            # fail fast if import explicitly failed
-            raise "Import of '#{imported_project.full_path}' failed!" if status[:import_status] == 'failed'
-
-            status[:import_status]
+          @import_status = Support::Retrier.retry_on_exception(
+            sleep_interval: 1,
+            log: false,
+            message: "Fetching import status"
+          ) do
+            imported_project.project_import_status
           end
+          @stats = @import_status[:stats]&.slice(:fetched, :imported)
+          # fail fast if import explicitly failed
+          raise "Import of '#{imported_project.full_path}' failed!" if @import_status[:import_status] == 'failed'
+
+          @import_status[:import_status]
         }
 
         logger.info("== Waiting for import to be finished ==")
@@ -362,7 +370,14 @@ module QA
         logger.info("== Verifying repository import ==")
         expect(imported_project.description).to eq(gh_repo.description)
         expect(gl_branches).to include(*gh_branches)
-        expect(gl_commits).to include(*gh_commits)
+
+        # When testing with very large repositories, comparing with include will raise 'stack level too deep' error
+        # Compare just the size in this case
+        if gh_commits.size > 10000
+          expect(gl_commits.size).to be >= gh_commits.size
+        else
+          expect(gl_commits).to include(*gh_commits)
+        end
       end
 
       # Verify imported labels
@@ -425,6 +440,7 @@ module QA
       # @return [Array]
       def fetch_issuable_events(id)
         with_paginated_request { github_client.issue_events(github_repo, id) }
+          .reject { |event| deleted_milestone_event?(event) }
           .map { |event| event[:event] }
           .reject { |event| unsupported_events.include?(event) }
       end
@@ -523,7 +539,7 @@ module QA
       def gl_branches
         @gl_branches ||= begin
           logger.debug("= Fetching branches =")
-          imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] }
+          imported_project.repository_branches(auto_paginate: true, attempts: 3).map { |b| b[:name] }
         end
       end
 
@@ -533,7 +549,7 @@ module QA
       def gl_commits
         @gl_commits ||= begin
           logger.debug("= Fetching commits =")
-          imported_project.commits(auto_paginate: true, attempts: 2).map { |c| c[:id] }
+          imported_project.commits(auto_paginate: true, attempts: 3).map { |c| c[:id] }
         end
       end
 
@@ -543,7 +559,7 @@ module QA
       def gl_labels
         @gl_labels ||= begin
           logger.debug("= Fetching labels =")
-          imported_project.labels(auto_paginate: true).map { |label| label.slice(:name, :color) }
+          imported_project.labels(auto_paginate: true, attempts: 3).map { |label| label.slice(:name, :color) }
         end
       end
 
@@ -553,7 +569,7 @@ module QA
       def gl_milestones
         @gl_milestones ||= begin
           logger.debug("= Fetching milestones =")
-          imported_project.milestones(auto_paginate: true).map { |ms| ms.slice(:title, :description) }
+          imported_project.milestones(auto_paginate: true, attempts: 3).map { |ms| ms.slice(:title, :description) }
         end
       end
 
@@ -633,12 +649,23 @@ module QA
       def events(comments, label_events, state_events, milestone_events)
         mapped_label_events = label_events.map { |event| event_mapping["label_#{event[:action]}"] }
         mapped_milestone_events = milestone_events.map { |event| event_mapping["milestone_#{event[:action]}"] }
-        mapped_state_event = state_events.map { |event| event[:state] }
+        # merged events are fetched through comments so duplicates need to be removed
+        mapped_state_event = state_events.map { |event| event[:state] }.reject { |state| state == "merged" }
         mapped_comment_events = comments.map do |c|
           event_mapping[c[:body].match(event_pattern)&.named_captures&.fetch("event", nil)]
         end
 
         [*mapped_label_events, *mapped_milestone_events, *mapped_state_event, *mapped_comment_events].compact
+      end
+
+      # Check if a milestone event is from a deleted milestone
+      #
+      # @param [Hash] event
+      # @return [Boolean]
+      def deleted_milestone_event?(event)
+        return false if %w[milestoned demilestoned].exclude?(event[:event])
+
+        gh_milestone_titles.exclude?(event[:milestone][:title])
       end
 
       # Normalize comments and make them directly comparable
@@ -719,3 +746,4 @@ module QA
   end
 end
 # rubocop:enable Rails/Pluck
+# rubocop:enable RSpec/MultipleMemoizedHelpers

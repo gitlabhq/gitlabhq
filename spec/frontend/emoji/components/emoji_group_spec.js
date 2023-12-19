@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+import { GlButton } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmojiGroup from '~/emoji/components/emoji_group.vue';
 
@@ -10,6 +11,9 @@ function factory(propsData = {}) {
   wrapper = extendedWrapper(
     shallowMount(EmojiGroup, {
       propsData,
+      stubs: {
+        GlButton,
+      },
     }),
   );
 }
@@ -19,7 +23,6 @@ describe('Emoji group component', () => {
     factory({
       emojis: [],
       renderGroup: false,
-      clickEmoji: jest.fn(),
     });
 
     expect(wrapper.findByTestId('emoji-button').exists()).toBe(false);
@@ -29,24 +32,20 @@ describe('Emoji group component', () => {
     factory({
       emojis: ['thumbsup', 'thumbsdown'],
       renderGroup: true,
-      clickEmoji: jest.fn(),
     });
 
     expect(wrapper.findAllByTestId('emoji-button').exists()).toBe(true);
     expect(wrapper.findAllByTestId('emoji-button').length).toBe(2);
   });
 
-  it('calls clickEmoji', () => {
-    const clickEmoji = jest.fn();
-
+  it('emits emoji-click', () => {
     factory({
       emojis: ['thumbsup', 'thumbsdown'],
       renderGroup: true,
-      clickEmoji,
     });
 
-    wrapper.findByTestId('emoji-button').trigger('click');
+    wrapper.findComponent(GlButton).vm.$emit('click');
 
-    expect(clickEmoji).toHaveBeenCalledWith('thumbsup');
+    expect(wrapper.emitted('emoji-click')).toStrictEqual([['thumbsup']]);
   });
 });

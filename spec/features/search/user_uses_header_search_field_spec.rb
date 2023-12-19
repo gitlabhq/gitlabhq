@@ -83,7 +83,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         end
       end
 
-      context 'when clicking merge requests', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332317' do
+      context 'when clicking merge requests' do
         let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignees: [user]) }
 
         it 'shows assigned merge requests' do

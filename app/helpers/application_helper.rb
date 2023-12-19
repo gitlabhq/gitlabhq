@@ -315,8 +315,8 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names << 'with-header' if !show_super_sidebar? || !current_user
-    class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar_padding
+    class_names << 'with-header' unless current_user
+    class_names << 'with-top-bar' unless @hide_top_bar_padding
     class_names << system_message_class
 
     class_names
@@ -376,10 +376,6 @@ module ApplicationHelper
     url = user.mastodon.match UserDetail::MASTODON_VALIDATION_REGEX
 
     external_redirect_path(url: "https://#{url[2]}/@#{url[1]}")
-  end
-
-  def collapsed_sidebar?
-    cookies["sidebar_collapsed"] == "true"
   end
 
   def collapsed_super_sidebar?

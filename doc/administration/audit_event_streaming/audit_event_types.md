@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
 <!---
@@ -47,6 +47,7 @@ Audit event types belong to the following product categories.
 | [`create_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`create_http_namespace_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136047) | Event triggered when a namespace filter for an external audit event destination for a top-level group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/424176) |
 | [`create_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123882) | Event triggered when an instance level external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
+| [`delete_http_namespace_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136302) | Event triggered when a namespace filter for an external audit event destination for a top-level group is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/424177) |
 | [`destroy_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`destroy_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
 | [`event_type_filters_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113081) | Event triggered when a new audit events streaming event type filter is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/344848) |
@@ -54,11 +55,20 @@ Audit event types belong to the following product categories.
 | [`google_cloud_logging_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122025) | Triggered when Google Cloud Logging configuration is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) |
 | [`google_cloud_logging_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122025) | Triggered when Google Cloud Logging configuration is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) |
 | [`google_cloud_logging_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122025) | Triggered when Google Cloud Logging configuration is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) |
+| [`instance_amazon_s3_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137651) | Triggered when instance Amazon S3 configuration for audit events streaming is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/423235) |
+| [`instance_amazon_s3_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138318) | Triggered when instance-level Amazon S3 configuration for audit events streaming is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/423235) |
+| [`instance_amazon_s3_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138310) | Triggered when instance-level Amazon S3 configuration for audit events streaming is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/423235) |
 | [`instance_google_cloud_logging_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130663) | Triggered when Instance level Google Cloud Logging configuration is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/423038) |
 | [`instance_google_cloud_logging_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131752) | Triggered when instance level Google Cloud Logging configuration is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423040) |
 | [`instance_google_cloud_logging_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131790) | Triggered when instance level Google Cloud Logging configuration is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423039) |
 | [`update_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
+
+### Authorization
+
+| Name | Description | Saved to database | Streamed | Introduced in |
+|:-----|:------------|:------------------|:---------|:--------------|
+| [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | Event triggered when a custom role is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) |
 
 ### Code review
 
@@ -170,6 +180,9 @@ Audit event types belong to the following product categories.
 | [`ci_group_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a group level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_group_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_group_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
+| [`ci_instance_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) |
+| [`ci_instance_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI varialbe is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) |
+| [`ci_instance_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) |
 | [`ci_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a project level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) |
@@ -305,6 +318,7 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
 | [`project_feature_model_experiments_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121027) | Model experiments access level was updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412384) |
+| [`project_feature_model_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138399) | Model registry access level was updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) |
 
 ### Not categorized
 
@@ -402,7 +416,7 @@ Audit event types belong to the following product categories.
 | [`user_access_locked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124169) | Event triggered when user access to the instance is locked| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) |
 | [`user_access_unlocked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124973) | Event triggered when user access to the instance is unlocked| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/244) |
 | [`user_disable_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89598) | Audit event triggered when user disables two factor authentication| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) |
-| [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Event triggered on enabling admin mode| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) |
+| [`user_enable_admin_mode`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104754) | Event triggered on enabling Admin Mode| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) |
 
 ### Team planning
 

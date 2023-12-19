@@ -11,7 +11,7 @@ module DesignManagement
     delegate :lfs_enabled?, :storage, :repository_storage, :run_after_commit, to: :project
 
     def repository
-      ::DesignManagement::GitRepository.new(
+      DesignManagement::GitRepository.new(
         full_path,
         self,
         shard: repository_storage,

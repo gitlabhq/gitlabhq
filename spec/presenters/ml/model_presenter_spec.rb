@@ -8,6 +8,8 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
   let_it_be(:model2) { build_stubbed(:ml_models, :with_latest_version_and_package, project: project) }
   let_it_be(:model3) { build_stubbed(:ml_models, :with_versions, project: project) }
 
+  let_it_be(:model4) { build_stubbed(:ml_models, project: project) }
+
   describe '#latest_version_name' do
     subject { model.present.latest_version_name }
 
@@ -40,6 +42,18 @@ RSpec.describe Ml::ModelPresenter, feature_category: :mlops do
         is_expected.to eq(1)
       end
     end
+  end
+
+  describe '#candidate_count' do
+    let(:candidates) { build_stubbed_list(:ml_candidates, 2, experiment: model4.default_experiment) }
+
+    before do
+      allow(model4).to receive(:candidates).and_return(candidates)
+    end
+
+    subject { model4.present.candidate_count }
+
+    it { is_expected.to eq(2) }
   end
 
   describe '#latest_package_path' do

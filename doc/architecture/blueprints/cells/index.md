@@ -4,7 +4,7 @@ creation-date: "2022-09-07"
 authors: [ "@ayufan", "@fzimmer", "@DylanGriffith", "@lohrc", "@tkuah" ]
 coach: "@ayufan"
 approvers: [ "@lohrc" ]
-owning-stage: "~devops::enablement"
+owning-stage: "~devops::data stores"
 participating-stages: []
 ---
 
@@ -85,9 +85,8 @@ In some cases, a table with an ambiguous usage has to be broken down.
 For example: `uploads` are used to store user avatars, as well as uploaded attachments for comments.
 It would be expected that `uploads` is split into `uploads` (describing Group/Project-level attachments) and `global_uploads` (describing, for example, user avatars).
 
-Except for the initial 2-3 quarters this work is highly parallel.
 It is expected that **group::tenant scale** will help other teams to fix their feature set to work with Cells.
-The first 2-3 quarters are required to define a general split of data and build the required tooling.
+The first 2-3 quarters are required to define a general split of data, and build the required tooling and development guidelines.
 
 1. **Instance-wide settings are shared across cluster.**
 
@@ -97,17 +96,21 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is to make `users` cluster-wide.
 
+1. **User can create Organization.**
+
+    The purpose is to create Organizations that are isolated from each other.
+
 1. **User can create Group.** ✓ ([demo](https://www.youtube.com/watch?v=LUyV0ncfdRs))
 
     The purpose is to perform a targeted decomposition of `users` and `namespaces`, because `namespaces` will be stored locally in the Cell.
 
-1. **User can create Project.**
+1. **User can create Project.** ✓ ([demo](https://www.youtube.com/watch?v=Z-2W8MfDwuI))
 
     The purpose is to perform a targeted decomposition of `users` and `projects`, because `projects` will be stored locally in the Cell.
 
-1. **User can create Organization on Cell 2.**
+1. **User can create Project with a README file**
 
-    The purpose is to create Organizations that are isolated from each other.
+    The purpose is to allow `users` to create README files in a project.
 
 1. **User can change profile avatar that is shared in cluster.**
 
@@ -141,6 +144,28 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is to have many Organizations per Cell, but never have a single Organization spanning across many Cells. This is required to ensure that information shown within an Organization is isolated, and does not require fetching information from other Cells.
 
+#### Dependencies
+
+We have identified the following dependencies between the essential workflows.
+
+```mermaid
+flowchart TD
+    A[Create Organization] --> B[Create Group]
+    B --> C[Create Project]
+    L --> D[Create Issue]
+    E --> F[Push to Git repo]
+    E --> G[Create Merge Request]
+    E --> H[Create CI Pipeline]
+    G --> J[Merge when Pipeline Succeeds]
+    H --> J
+    J --> K[Issue gets closed by the reference in MR description]
+    D --> K
+    A --> L[Manage members]
+    B --> L
+    C --> L
+    L --> E[Create file in repository]
+```
+
 ### 3. Additional workflows
 
 Some of these additional workflows might need to be supported, depending on the group decision.
@@ -157,43 +182,7 @@ This list is not exhaustive of work needed to be done.
 
 ### 4. Routing layer
 
-The routing layer is meant to offer a consistent user experience where all Cells are presented under a single domain (for example, `gitlab.com`), instead of having to navigate to separate domains.
-
-The user will be able to use `https://gitlab.com` to access Cell-enabled GitLab.
-Depending on the URL access, it will be transparently proxied to the correct Cell that can serve this particular information.
-For example:
-
-- All requests going to `https://gitlab.com/users/sign_in` are randomly distributed to all Cells.
-- All requests going to `https://gitlab.com/gitlab-org/gitlab/-/tree/master` are always directed to Cell 5, for example.
-- All requests going to `https://gitlab.com/my-username/my-project` are always directed to Cell 1.
-
-1. **Technology.**
-
-    We decide what technology the routing service is written in.
-    The choice is dependent on the best performing language, and the expected way and place of deployment of the routing layer.
-    If it is required to make the service multi-cloud it might be required to deploy it to the CDN provider.
-    Then the service needs to be written using a technology compatible with the CDN provider.
-
-1. **Cell discovery.**
-
-    The routing service needs to be able to discover and monitor the health of all Cells.
-
-1. **User can use single domain to interact with many Cells.**
-
-    The routing service will intelligently route all requests to Cells based on the resource being
-    accessed versus the Cell containing the data.
-
-1. **Router endpoints classification.**
-
-    The stateless routing service will fetch and cache information about endpoints from one of the Cells.
-    We need to implement a protocol that will allow us to accurately describe the incoming request (its fingerprint), so it can be classified by one of the Cells, and the results of that can be cached.
-    We also need to implement a mechanism for negative cache and cache eviction.
-
-1. **GraphQL and other ambiguous endpoints.**
-
-    Most endpoints have a unique sharding key: the Organization, which directly or indirectly (via a Group or Project) can be used to classify endpoints.
-    Some endpoints are ambiguous in their usage (they don't encode the sharding key), or the sharding key is stored deep in the payload.
-    In these cases, we need to decide how to handle endpoints like `/api/graphql`.
+See [Cells: Routing Service](routing-service.md).
 
 ### 5. Cell deployment
 
@@ -268,49 +257,48 @@ Expectations:
 The delivered iterations will focus on solving particular steps of a given key work stream.
 It is expected that initial iterations will be rather slow, because they require substantially more changes to prepare the codebase for data split.
 
-One iteration describes one quarter's worth of work.
+### [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) (FY24Q1)
 
-1. [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) - FY24Q1 - Complete
+- Data access layer: Initial Admin Area settings are shared across cluster.
+- Essential workflows: Allow to share cluster-wide data with database-level data access layer.
 
-    - Data access layer: Initial Admin Area settings are shared across cluster.
-    - Essential workflows: Allow to share cluster-wide data with database-level data access layer
+### [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) (FY24Q2-FY24Q3)
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2, Actual delivery: 16.4 FY24Q3 - Complete
+- Essential workflows: User accounts are shared across cluster.
+- Essential workflows: User can create Group.
 
-    - Essential workflows: User accounts are shared across cluster.
-    - Essential workflows: User can create Group.
+### [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) (FY24Q4-FY25Q1)
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - In Progress
+- Essential workflows: User can create Project.
+- Routing: Technology.
+- Routing: Cell discovery.
 
-    - Essential workflows: User can create Project.
-    - Routing: Technology.
-    - Routing: Cell discovery.
+### [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) (FY25Q1-FY25Q2)
 
-1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
+- Essential workflows: User can create Organization on Cell 2.
 
-    - Essential workflows: User can create Organization on Cell 2.
-    - Data access layer: Cluster-unique identifiers.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
-    - Data access layer: Data access layer.
-    - Routing: User can use single domain to interact with many Cells.
-    - Cell deployment: Extend GitLab Dedicated to support GCP.
+### Iteration 5..N - starting FY25Q3
 
-1. Iteration 5..N - starting FY25Q1
-
-    - Essential workflows: User can push to Git repository.
-    - Essential workflows: User can run CI pipeline.
-    - Essential workflows: Instance-wide settings are shared across cluster.
-    - Essential workflows: User can change profile avatar that is shared in cluster.
-    - Essential workflows: User can create issue.
-    - Essential workflows: User can create merge request, and merge it after it is green.
-    - Essential workflows: User can manage Group and Project members.
-    - Essential workflows: User can manage instance-wide runners.
-    - Essential workflows: User is part of Organization and can only see information from the Organization.
-    - Routing: Router endpoints classification.
-    - Routing: GraphQL and other ambiguous endpoints.
-    - Data access layer: Allow to share cluster-wide data with database-level data access layer.
-    - Data access layer: Cluster-wide deletions.
-    - Data access layer: Database migrations.
+- Data access layer: Cluster-unique identifiers.
+- Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
+- Data access layer: Data access layer.
+- Routing: User can use single domain to interact with many Cells.
+- Cell deployment: Extend GitLab Dedicated to support GCP.
+- Essential workflows: User can create Project with a README file.
+- Essential workflows: User can push to Git repository.
+- Essential workflows: User can run CI pipeline.
+- Essential workflows: Instance-wide settings are shared across cluster.
+- Essential workflows: User can change profile avatar that is shared in cluster.
+- Essential workflows: User can create issue.
+- Essential workflows: User can create merge request, and merge it after it is green.
+- Essential workflows: User can manage Group and Project members.
+- Essential workflows: User can manage instance-wide runners.
+- Essential workflows: User is part of Organization and can only see information from the Organization.
+- Routing: Router endpoints classification.
+- Routing: GraphQL and other ambiguous endpoints.
+- Data access layer: Allow to share cluster-wide data with database-level data access layer.
+- Data access layer: Cluster-wide deletions.
+- Data access layer: Database migrations.
 
 ## Technical proposals
 
@@ -318,7 +306,7 @@ The Cells architecture has long lasting implications to data processing, locatio
 This section links all different technical proposals that are being evaluated.
 
 - [Stateless Router That Uses a Cache to Pick Cell and Is Redirected When Wrong Cell Is Reached](proposal-stateless-router-with-buffering-requests.md)
-- [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/cells/learn`](proposal-stateless-router-with-routes-learning.md)
+- [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/internal/cells/learn`](proposal-stateless-router-with-routes-learning.md)
 
 ## Impacted features
 

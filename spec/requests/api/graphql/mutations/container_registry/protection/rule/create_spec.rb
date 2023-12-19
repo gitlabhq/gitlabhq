@@ -15,7 +15,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   let(:kwargs) do
     {
       project_path: project.full_path,
-      container_path_pattern: container_registry_protection_rule_attributes.container_path_pattern,
+      repository_path_pattern: container_registry_protection_rule_attributes.repository_path_pattern,
       push_protected_up_to_access_level: 'MAINTAINER',
       delete_protected_up_to_access_level: 'MAINTAINER'
     }
@@ -26,7 +26,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       <<~QUERY
       containerRegistryProtectionRule {
         id
-        containerPathPattern
+        repositoryPathPattern
       }
       clientMutationId
       errors
@@ -48,7 +48,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
         'errors' => be_blank,
         'containerRegistryProtectionRule' => {
           'id' => be_present,
-          'containerPathPattern' => kwargs[:container_path_pattern]
+          'repositoryPathPattern' => kwargs[:repository_path_pattern]
         }
       )
     end
@@ -57,7 +57,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       expect { subject }.to change { ::ContainerRegistry::Protection::Rule.count }.by(1)
 
       expect(::ContainerRegistry::Protection::Rule.where(project: project,
-        container_path_pattern: kwargs[:container_path_pattern])).to exist
+        repository_path_pattern: kwargs[:repository_path_pattern])).to exist
     end
   end
 
@@ -84,9 +84,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     }
   end
 
-  context 'with invalid input field `containerPathPattern`' do
+  context 'with invalid input field `repositoryPathPattern`' do
     let(:kwargs) do
-      super().merge(container_path_pattern: '')
+      super().merge(repository_path_pattern: '')
     end
 
     it_behaves_like 'an erroneous response'
@@ -95,7 +95,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     it {
       subject.tap do
-        expect(mutation_response['errors']).to eq ["Container path pattern can't be blank"]
+        expect(mutation_response['errors']).to eq ["Repository path pattern can't be blank"]
       end
     }
   end
@@ -108,9 +108,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     context 'when container name pattern is slightly different' do
       let(:kwargs) do
-        # The field `container_path_pattern` is unique; this is why we change the value in a minimum way
+        # The field `repository_path_pattern` is unique; this is why we change the value in a minimum way
         super().merge(
-          container_path_pattern: "#{existing_container_registry_protection_rule.container_path_pattern}-unique"
+          repository_path_pattern: "#{existing_container_registry_protection_rule.repository_path_pattern}-unique"
         )
       end
 
@@ -121,9 +121,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       end
     end
 
-    context 'when field `container_path_pattern` is taken' do
+    context 'when field `repository_path_pattern` is taken' do
       let(:kwargs) do
-        super().merge(container_path_pattern: existing_container_registry_protection_rule.container_path_pattern,
+        super().merge(repository_path_pattern: existing_container_registry_protection_rule.repository_path_pattern,
           push_protected_up_to_access_level: 'MAINTAINER')
       end
 
@@ -134,12 +134,12 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       it 'returns without error' do
         subject
 
-        expect(mutation_response['errors']).to eq ['Container path pattern has already been taken']
+        expect(mutation_response['errors']).to eq ['Repository path pattern has already been taken']
       end
 
       it 'does not create new container protection rules' do
         expect(::ContainerRegistry::Protection::Rule.where(project: project,
-          container_path_pattern: kwargs[:container_path_pattern],
+          repository_path_pattern: kwargs[:repository_path_pattern],
           push_protected_up_to_access_level: Gitlab::Access::MAINTAINER)).not_to exist
       end
     end

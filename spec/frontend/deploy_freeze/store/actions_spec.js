@@ -36,7 +36,7 @@ describe('deploy freeze store actions', () => {
 
   describe('setSelectedFreezePeriod', () => {
     it('commits SET_SELECTED_TIMEZONE mutation', () => {
-      testAction(
+      return testAction(
         actions.setFreezePeriod,
         {
           id: 3,
@@ -69,7 +69,7 @@ describe('deploy freeze store actions', () => {
 
   describe('setSelectedTimezone', () => {
     it('commits SET_SELECTED_TIMEZONE mutation', () => {
-      testAction(actions.setSelectedTimezone, {}, {}, [
+      return testAction(actions.setSelectedTimezone, {}, {}, [
         {
           payload: {},
           type: types.SET_SELECTED_TIMEZONE,
@@ -80,7 +80,7 @@ describe('deploy freeze store actions', () => {
 
   describe('setFreezeStartCron', () => {
     it('commits SET_FREEZE_START_CRON mutation', () => {
-      testAction(actions.setFreezeStartCron, {}, {}, [
+      return testAction(actions.setFreezeStartCron, {}, {}, [
         {
           type: types.SET_FREEZE_START_CRON,
         },
@@ -90,7 +90,7 @@ describe('deploy freeze store actions', () => {
 
   describe('setFreezeEndCron', () => {
     it('commits SET_FREEZE_END_CRON mutation', () => {
-      testAction(actions.setFreezeEndCron, {}, {}, [
+      return testAction(actions.setFreezeEndCron, {}, {}, [
         {
           type: types.SET_FREEZE_END_CRON,
         },

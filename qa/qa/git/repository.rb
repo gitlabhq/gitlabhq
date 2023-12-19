@@ -331,7 +331,7 @@ module QA
       end
 
       def run_git(command_str, env: env_vars, max_attempts: 1)
-        run(command_str, env: env, max_attempts: max_attempts, log_prefix: 'Git: ')
+        run(command_str, env: env, max_attempts: max_attempts, sleep_internal: 10, log_prefix: 'Git: ')
       end
     end
   end

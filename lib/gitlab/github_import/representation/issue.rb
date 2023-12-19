@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class Issue
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :iid, :title, :description, :milestone_number,
                          :created_at, :updated_at, :state, :assignees,

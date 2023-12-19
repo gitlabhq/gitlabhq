@@ -22,19 +22,16 @@ RSpec.describe Transitionable, feature_category: :code_review_workflow do
   let(:object) { klass.new(transitioning) }
 
   describe '#transitioning?' do
-    where(:transitioning, :feature_flag, :result) do
-      true  | true  | true
-      false | false | false
-      true  | false | false
-      false | true  | false
+    context "when trasnitioning" do
+      let(:transitioning) { true }
+
+      it { expect(object.transitioning?).to eq(true) }
     end
 
-    with_them do
-      before do
-        stub_feature_flags(skip_validations_during_transitions: feature_flag)
-      end
+    context "when not trasnitioning" do
+      let(:transitioning) { false }
 
-      it { expect(object.transitioning?).to eq(result) }
+      it { expect(object.transitioning?).to eq(false) }
     end
   end
 end

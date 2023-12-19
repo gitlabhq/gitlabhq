@@ -7,7 +7,7 @@ module Gitlab
     # This combination fails validation and doesn't make sense:
     # we always allow descendants to disable shared runners
     class FixAllowDescendantsOverrideDisabledSharedRunners < BatchedMigrationJob
-      feature_category :runner_fleet
+      feature_category :fleet_visibility
       operation_name :fix_allow_descendants_override_disabled_shared_runners
 
       def perform

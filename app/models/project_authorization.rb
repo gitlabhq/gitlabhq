@@ -2,6 +2,7 @@
 
 class ProjectAuthorization < ApplicationRecord
   extend SuppressCompositePrimaryKeyWarning
+  include EachBatch
   include FromUnion
 
   belongs_to :user
@@ -13,6 +14,9 @@ class ProjectAuthorization < ApplicationRecord
 
   scope :for_project, ->(projects) { where(project: projects) }
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
+  scope :owners, -> { where(access_level: ::Gitlab::Access::OWNER) }
+
+  scope :preload_user, -> { preload(:user) }
 
   # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205
   before_create :assign_is_unique

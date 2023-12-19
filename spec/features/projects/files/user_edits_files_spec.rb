@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :source_code_management do
   include Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   include Features::BlobSpecHelpers
@@ -51,6 +51,14 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :gr
       editor_set_value('*.rbca')
 
       expect(find('.monaco-editor')).to have_content('*.rbca')
+    end
+
+    it 'shows ref instead of full path when editing a file' do
+      click_link('.gitignore')
+      edit_in_single_file_editor
+
+      expect(page).not_to have_selector('#editor_path')
+      expect(page).to have_selector('#editor_ref')
     end
 
     it 'does not show the edit link if a file is binary' do

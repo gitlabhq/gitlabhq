@@ -14,9 +14,14 @@ module Ci
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
 
+    query_constraints :id, :partition_id
     partitionable scope: :build, partitioned: true
 
-    belongs_to :build, class_name: 'CommitStatus'
+    belongs_to :build, # rubocop: disable Rails/InverseOf -- this relation is not present on CommitStatus
+      ->(metadata) { in_partition(metadata) },
+      partition_foreign_key: :partition_id,
+      class_name: 'CommitStatus'
+
     belongs_to :project
 
     before_create :set_build_project
@@ -31,7 +36,11 @@ module Ci
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
-    scope :scoped_build, -> { where("#{quoted_table_name}.build_id = #{Ci::Build.quoted_table_name}.id") }
+    scope :scoped_build, -> do
+      where(arel_table[:build_id].eq(Ci::Build.arel_table[:id]))
+      .where(arel_table[:partition_id].eq(Ci::Build.arel_table[:partition_id]))
+    end
+
     scope :with_interruptible, -> { where(interruptible: true) }
     scope :with_exposed_artifacts, -> { where(has_exposed_artifacts: true) }
 
@@ -41,6 +50,10 @@ module Ci
         runner_timeout_source: 3,
         job_timeout_source: 4
     }
+
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
+    end
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence

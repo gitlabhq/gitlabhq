@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Multiple Databases
@@ -63,6 +63,136 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 - [Cross-database joins](#suggestions-for-removing-cross-database-joins)
 - [Cross-database transactions](#fixing-cross-database-transactions)
 - [Cross-database foreign keys](#foreign-keys-that-cross-databases)
+
+### Defining a sharding key for all cell-local tables
+
+All tables with the following `gitlab_schema` are considered "cell-local":
+
+- `gitlab_main_cell`
+- `gitlab_ci`
+
+All newly created cell-local tables are required to have a `sharding_key`
+defined in the corresponding `db/docs/` file for that table.
+
+The purpose of the sharding key is documented in the
+[Organization isolation blueprint](../../architecture/blueprints/organization/isolation.md),
+but in short this column is used to provide a standard way of determining which
+Organization owns a particular row in the database. The column will be used in
+the future to enforce constraints on data not cross Organization boundaries. It
+will also be used in the future to provide a uniform way to migrate data
+between Cells.
+
+The actual name of the foreign key can be anything but it must reference a row
+in `projects` or `groups`. The following are examples of valid sharding keys:
+
+- The table entries belong to a project only:
+
+   ```yaml
+   sharding_key:
+     project_id: projects
+   ```
+
+- The table entries belong to a project and the foreign key is `target_project_id`:
+
+   ```yaml
+   sharding_key:
+     target_project_id: projects
+   ```
+
+- The table entries belong to a namespace/group only:
+
+   ```yaml
+   sharding_key:
+     namespace_id: namespaces
+   ```
+
+- The table entries belong to a namespace/group only and the foreign key is `group_id`:
+
+   ```yaml
+   sharding_key:
+     group_id: namespaces
+   ```
+
+- The table entries belong to a namespace or a project:
+
+   ```yaml
+   sharding_key:
+     project_id: projects
+     namespace_id: namespaces
+   ```
+
+#### The sharding key must be immutable
+
+The choice of a `sharding_key` should always be immutable. Therefore, if your feature
+requires a user experience which allows data to be moved between projects or
+groups/namespaces, then you may need to redesign the move feature to create new rows. An
+example of this can be seen in the
+[move an issue feature](../../user/project/issues/managing_issues.md#move-an-issue).
+This feature does not actually change the `project_id` column for an existing
+`issues` row but instead creates a new `issues` row and creates a link in the
+database from the original `issues` row. If there is a particularly challenging
+existing feature that needs to allow moving data you will need to reach out to
+the Tenant Scale team early on to discuss options for how to manage the
+sharding key.
+
+#### Using the same sharding key for projects and namespaces
+
+Developers may also choose to use `namespace_id` only for tables that can
+belong to a project where the feature used by the table is being developed
+following the
+[Consolidating Groups and Projects blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md).
+In that case the `namespace_id` would need to be the ID of the
+`ProjectNamespace` and not the group that the namespace belongs to.
+
+#### Defining a `desired_sharding_key` for automatically backfilling a `sharding_key`
+
+We need to backfill a `sharding_key` to hundreds of tables that do not have one.
+This process will involve creating a merge request like
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800> to add the new
+column, backfill the data from a related table in the database, and then create
+subsequent merge requests to add indexes, foreign keys and not-null
+constraints.
+
+In order to minimize the amount of repetitive effort for developers we've
+introduced a concise declarative way to describe how to backfill the
+`sharding_key` for this specific table. This content will later be used in
+automation to create all the necessary merge requests.
+
+An example of the `desired_sharding_key` was added in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336> and it looks like:
+
+```yaml
+--- # db/docs/security_findings.yml
+table_name: security_findings
+classes:
+- Security::Finding
+
+...
+
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: scanner_id
+        table: vulnerability_scanners
+        sharding_key: project_id
+        belongs_to: scanner
+```
+
+To understand best how this YAML data will be used you can map it onto
+the merge request we created manually in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
+will be to automatically create this. The content of the YAML specifies
+the parent table and its `sharding_key` to backfill from in the batched
+background migration. It also specifies a `belongs_to` relation which
+will be added to the model to automatically populate the `sharding_key` in
+the `before_save`.
+
+There are likely edge cases where this `desired_sharding_key` structure is not
+suitable for backfilling a `sharding_key`. In such cases the team owning the
+table will need to create the necessary merge requests to add the
+`sharding_key` manually.
 
 ### The impact of `gitlab_schema`
 

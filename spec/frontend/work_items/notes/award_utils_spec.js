@@ -2,6 +2,7 @@ import { getMutation, optimisticAwardUpdate } from '~/work_items/notes/award_uti
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mockApollo from 'helpers/mock_apollo_helper';
 import { __ } from '~/locale';
+import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
 import removeAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_remove_award_emoji.mutation.graphql';
@@ -104,6 +105,23 @@ describe('Work item note award utils', () => {
       const updatedNote = getFirstNote(updatedWorkItem);
 
       expect(updatedNote.awardEmoji.nodes).toEqual([]);
+    });
+
+    it.each`
+      description                                      | isGroup  | query
+      ${'calls project query when in project context'} | ${false} | ${workItemNotesByIidQuery}
+      ${'calls group query when in group context'}     | ${true}  | ${groupWorkItemNotesByIidQuery}
+    `('$description', ({ isGroup, query }) => {
+      const note = firstNote;
+      const { name } = mockAwardEmojiThumbsUp;
+      const cacheSpy = { updateQuery: jest.fn() };
+
+      optimisticAwardUpdate({ note, name, fullPath, isGroup, workItemIid })(cacheSpy);
+
+      expect(cacheSpy.updateQuery).toHaveBeenCalledWith(
+        { query, variables: { fullPath, iid: workItemIid } },
+        expect.any(Function),
+      );
     });
   });
 });

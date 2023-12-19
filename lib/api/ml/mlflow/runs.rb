@@ -31,7 +31,7 @@ module API
           end
           post 'create', urgency: :low do
             present candidate_repository.create!(experiment, params[:start_time], params[:tags], params[:run_name]),
-              with: Entities::Ml::Mlflow::GetRun, packages_url: packages_url
+              with: Entities::Ml::Mlflow::GetRun
           end
 
           desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
@@ -43,7 +43,7 @@ module API
             optional :run_uuid, type: String, desc: 'This parameter is ignored'
           end
           get 'get', urgency: :low do
-            present candidate, with: Entities::Ml::Mlflow::GetRun, packages_url: packages_url
+            present candidate, with: Entities::Ml::Mlflow::GetRun
           end
 
           desc 'Searches runs/candidates within a project' do
@@ -83,7 +83,7 @@ module API
               next_page_token: paginator.cursor_for_next_page
             }
 
-            present result, with: Entities::Ml::Mlflow::SearchRuns, packages_url: packages_url
+            present result, with: Entities::Ml::Mlflow::SearchRuns
           end
 
           desc 'Updates a Run.' do
@@ -101,7 +101,7 @@ module API
           post 'update', urgency: :low do
             candidate_repository.update(candidate, params[:status], params[:end_time])
 
-            present candidate, with: Entities::Ml::Mlflow::UpdateRun, packages_url: packages_url
+            present candidate, with: Entities::Ml::Mlflow::UpdateRun
           end
 
           desc 'Logs a metric to a run.' do

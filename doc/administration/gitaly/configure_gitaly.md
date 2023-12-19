@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure Gitaly **(FREE SELF)**
@@ -25,9 +25,9 @@ Configure Gitaly in one of two ways:
 
 The following configuration options are also available:
 
-- Enabling [TLS support](#enable-tls-support).
-- Limiting [RPC concurrency](#limit-rpc-concurrency).
-- Limiting [pack-objects concurrency](#limit-pack-objects-concurrency).
+- Enabling [TLS support](tls_support.md).
+- Limiting [RPC concurrency](concurrency_limiting.md#limit-rpc-concurrency).
+- Limiting [pack-objects concurrency](concurrency_limiting.md#limit-pack-objects-concurrency).
 
 ## About the Gitaly token
 
@@ -95,7 +95,7 @@ the default ports for HTTP and HTTPs communication.
 WARNING:
 Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
 by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
-Another option is to [use TLS](#enable-tls-support).
+Another option is to [use TLS](tls_support.md).
 
 In the following sections, we describe how to configure two Gitaly servers with secret token
 `abc123secret`:
@@ -441,21 +441,13 @@ Configure Gitaly clients in one of two ways:
          default:
            gitaly_address: tcp://gitaly1.internal:8075
            gitaly_token: AUTH_TOKEN_1
-           path: /some/local/path
          storage1:
            gitaly_address: tcp://gitaly1.internal:8075
            gitaly_token: AUTH_TOKEN_1
-           path: /some/local/path
          storage2:
            gitaly_address: tcp://gitaly2.internal:8075
            gitaly_token: AUTH_TOKEN_2
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no data is stored in
-   this folder. This requirement is scheduled to be removed when
-   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Run `sudo -u git -H bundle exec rake gitlab:gitaly:check RAILS_ENV=production` to confirm the
@@ -574,457 +566,6 @@ Disable Gitaly on a GitLab server in one of two ways:
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
-
-## Enable TLS support
-
-Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
-connections, use the `tls://` URL scheme in the `gitaly_address` of the corresponding
-storage entry in the GitLab configuration.
-
-Gitaly provides the same server certificates as client certificates in TLS
-connections to GitLab. This can be used as part of a mutual TLS authentication strategy
-when combined with reverse proxies (for example, NGINX) that validate client certificate
-to grant access to GitLab.
-
-You must supply your own certificates as this isn't provided automatically. The certificate
-corresponding to each Gitaly server must be installed on that Gitaly server.
-
-Additionally, the certificate (or its certificate authority) must be installed on all:
-
-- Gitaly servers.
-- Gitaly clients that communicate with it.
-
-If you use a load balancer, it must be able to negotiate HTTP/2 using the ALPN TLS extension.
-
-### Certificate requirements
-
-- The certificate must specify the address you use to access the Gitaly server. You must add the hostname or IP address as a Subject Alternative Name to the certificate.
-- You can configure Gitaly servers with both an unencrypted listening address `listen_addr` and an
-  encrypted listening address `tls_listen_addr` at the same time. This allows you to gradually
-  transition from unencrypted to encrypted traffic if necessary.
-- The certificate's Common Name field is ignored.
-
-### Configure Gitaly with TLS
-
-Configure Gitaly with TLS in one of two ways:
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Create certificates for Gitaly servers.
-1. On the Gitaly clients, copy the certificates (or their certificate authority) into
-   `/etc/gitlab/trusted-certs`:
-
-   ```shell
-   sudo cp cert.pem /etc/gitlab/trusted-certs/
-   ```
-
-1. On the Gitaly clients, edit `git_data_dirs` in `/etc/gitlab/gitlab.rb` as follows:
-
-   ```ruby
-   git_data_dirs({
-     'default' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
-     'storage1' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
-     'storage2' => { 'gitaly_address' => 'tls://gitaly2.internal:9999' },
-   })
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. On the Gitaly servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate
-   there:
-
-   ```shell
-   sudo mkdir -p /etc/gitlab/ssl
-   sudo chmod 755 /etc/gitlab/ssl
-   sudo cp key.pem cert.pem /etc/gitlab/ssl/
-   sudo chmod 644 key.pem cert.pem
-   ```
-
-1. Copy all Gitaly server certificates (or their certificate authority) to
-   `/etc/gitlab/trusted-certs` on all Gitaly servers and clients
-   so that Gitaly servers and clients trust the certificate when calling into themselves
-   or other Gitaly servers:
-
-   ```shell
-   sudo cp cert1.pem cert2.pem /etc/gitlab/trusted-certs/
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` and add:
-
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
-
-   ```ruby
-   gitaly['configuration'] = {
-      # ...
-      tls_listen_addr: '0.0.0.0:9999',
-      tls: {
-        certificate_path: '/etc/gitlab/ssl/cert.pem',
-        key_path: '/etc/gitlab/ssl/key.pem',
-      },
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. Run `sudo gitlab-rake gitlab:gitaly:check` on the Gitaly client (for example, the
-   Rails application) to confirm it can connect to Gitaly servers.
-1. Verify Gitaly traffic is being served over TLS by
-   [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
-1. Optional. Improve security by:
-   1. Disabling non-TLS connections by commenting out or deleting `gitaly['configuration'][:listen_addr]` in
-      `/etc/gitlab/gitlab.rb`.
-   1. Saving the file.
-   1. [Reconfiguring GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-
-:::TabTitle Self-compiled (source)
-
-1. Create certificates for Gitaly servers.
-1. On the Gitaly clients, copy the certificates into the system trusted certificates:
-
-   ```shell
-   sudo cp cert.pem /usr/local/share/ca-certificates/gitaly.crt
-   sudo update-ca-certificates
-   ```
-
-1. On the Gitaly clients, edit `storages` in `/home/git/gitlab/config/gitlab.yml` as follows:
-
-   ```yaml
-   gitlab:
-     repositories:
-       storages:
-         default:
-           gitaly_address: tls://gitaly1.internal:9999
-           path: /some/local/path
-         storage1:
-           gitaly_address: tls://gitaly1.internal:9999
-           path: /some/local/path
-         storage2:
-           gitaly_address: tls://gitaly2.internal:9999
-           path: /some/local/path
-   ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no data is stored
-   in this folder. This requirement is scheduled to be removed when
-   [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
-
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
-1. On the Gitaly servers, create or edit `/etc/default/gitlab` and add:
-
-   ```shell
-   export SSL_CERT_DIR=/etc/gitlab/ssl
-   ```
-
-1. On the Gitaly servers, create the `/etc/gitlab/ssl` directory and copy your key and certificate there:
-
-   ```shell
-   sudo mkdir -p /etc/gitlab/ssl
-   sudo chmod 755 /etc/gitlab/ssl
-   sudo cp key.pem cert.pem /etc/gitlab/ssl/
-   sudo chmod 644 key.pem cert.pem
-   ```
-
-1. Copy all Gitaly server certificates (or their certificate authority) to the system trusted
-   certificates folder so Gitaly server trusts the certificate when calling into itself or other Gitaly
-   servers.
-
-   ```shell
-   sudo cp cert.pem /usr/local/share/ca-certificates/gitaly.crt
-   sudo update-ca-certificates
-   ```
-
-1. Edit `/home/git/gitaly/config.toml` and add:
-
-   ```toml
-   tls_listen_addr = '0.0.0.0:9999'
-
-   [tls]
-   certificate_path = '/etc/gitlab/ssl/cert.pem'
-   key_path = '/etc/gitlab/ssl/key.pem'
-   ```
-
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
-1. Verify Gitaly traffic is being served over TLS by
-   [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
-1. Optional. Improve security by:
-   1. Disabling non-TLS connections by commenting out or deleting `listen_addr` in
-      `/home/git/gitaly/config.toml`.
-   1. Saving the file.
-   1. [Restarting GitLab](../restart_gitlab.md#self-compiled-installations).
-
-::EndTabs
-
-#### Update the certificates
-
-To update the Gitaly certificates after initial configuration:
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, but no configuration changes have been made to
-`/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn’t affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
-by the Gitaly process:
-
-```shell
-sudo gitlab-ctl restart gitaly
-```
-
-If you change or update the certificates in `/etc/gitlab/trusted-certs` without making changes to the `/etc/gitlab/gitlab.rb` file, you must:
-
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) so the symlinks for the trusted certificates are updated.
-1. Restart Gitaly manually for the certificates to be loaded by the Gitaly process:
-
-   ```shell
-   sudo gitlab-ctl restart gitaly
-   ```
-
-:::TabTitle Self-compiled (source)
-
-If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, you must
-[restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
-
-If you change or update the certificates in `/usr/local/share/ca-certificates`, you must:
-
-1. Run `sudo update-ca-certificates` to update the system's trusted store.
-1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
-
-::EndTabs
-
-### Observe type of Gitaly connections
-
-For information on observing the type of Gitaly connections being served, see the
-[relevant documentation](monitoring.md#queries).
-
-## Limit RPC concurrency
-
-WARNING:
-Enabling limits on your environment should be done with caution and only
-in select circumstances, such as to protect against unexpected traffic.
-When reached, limits _do_ result in disconnects that negatively impact users.
-For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
-
-When cloning or pulling repositories, various RPCs run in the background. In particular, the Git pack RPCs:
-
-- `SSHUploadPackWithSidechannel` (for Git SSH).
-- `PostUploadPackWithSidechannel` (for Git HTTP).
-
-These RPCs can consume a large amount of resources, which can have a significant impact in situations such as:
-
-- Unexpectedly high traffic.
-- Running against [large repositories](../../user/project/repository/managing_large_repositories.md) that don't follow best practices.
-
-You can limit these processes from overwhelming your Gitaly server in these scenarios using the concurrency limits in the Gitaly configuration file. For
-example:
-
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['configuration'] = {
-   # ...
-   concurrency: [
-      {
-         rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
-         max_per_repo: 20,
-         max_queue_wait: '1s',
-         max_queue_size: 10,
-      },
-      {
-         rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
-         max_per_repo: 20,
-         max_queue_wait: '1s',
-         max_queue_size: 10,
-      },
-   ],
-}
-```
-
-- `rpc` is the name of the RPC to set a concurrency limit for per repository.
-- `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
-- `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to
-  be picked up by Gitaly.
-- `max_queue_size` is the maximum size the concurrency queue (per RPC method) can grow to before requests are rejected by
-  Gitaly.
-
-This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
-repository. In the example above:
-
-- Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and
-  `SSHUploadPackWithSidechannel` RPC calls in flight.
-- If another request comes in for a repository that has used up its 20 slots, that request gets
-  queued.
-- If a request waits in the queue for more than 1 second, it is rejected with an error.
-- If the queue grows beyond 10, subsequent requests are rejected with an error.
-
-NOTE:
-When these limits are reached, users are disconnected.
-
-You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
-information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
-
-## Limit pack-objects concurrency
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
-
-Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can
-consume a significant amount of resources, especially in situations such as unexpectedly high traffic or concurrent pulls from a large repository. On GitLab.com, we also
-observe problems with clients that have slow internet connections.
-
-You can limit these processes from overwhelming your Gitaly server by setting pack-objects concurrency limits in the Gitaly configuration file. This setting limits the
-number of in-flight pack-object processes per remote IP address.
-
-WARNING:
-Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
-disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
-[reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
-
-Example configuration:
-
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['pack_objects_limiting'] = {
-   'max_concurrency' => 15,
-   'max_queue_length' => 200,
-   'max_queue_wait' => '60s',
-}
-```
-
-- `max_concurrency` is the maximum number of in-flight pack-object processes per key.
-- `max_queue_length` is the maximum size the concurrency queue (per key) can grow to before requests are rejected by Gitaly.
-- `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to be picked up by Gitaly.
-
-In the example above:
-
-- Each remote IP can have at most 15 simultaneous pack-object processes in flight on a Gitaly node.
-- If another request comes in from an IP that has used up its 15 slots, that request gets queued.
-- If a request waits in the queue for more than 1 minute, it is rejected with an error.
-- If the queue grows beyond 200, subsequent requests are rejected with an error.
-
-When the pack-object cache is enabled, pack-objects limiting kicks in only if the cache is missed. For more, see [Pack-objects cache](#pack-objects-cache).
-
-You can observe the behavior of this queue using Gitaly logs and Prometheus. For more information, see
-[Monitor Gitaly pack-objects concurrency limiting](monitoring.md#monitor-gitaly-pack-objects-concurrency-limiting).
-
-## Adaptive concurrency limiting
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
-
-Gitaly supports two concurrency limits:
-
-- An [RPC concurrency limit](#limit-rpc-concurrency), which allow you to configure a maximum number of simultaneous in-flight requests for each
-  Gitaly RPC. The limit is scoped by RPC and repository.
-- A [Pack-objects concurrency limit](#limit-pack-objects-concurrency), which restricts the number of concurrent Git data transfer request by IP.
-
-If this limit is exceeded, either:
-
-- The request is put in a queue.
-- The request is rejected if the queue is full or if the request remains in the queue for too long.
-
-Both of these concurrency limits can be configured statically. Though static limits can yield good protection results, they have some drawbacks:
-
-- Static limits are not good for all usage patterns. There is no one-size-fits-all value. If the limit is too low, big repositories are
-  negatively impacted. If the limit is too high, the protection is essentially lost.
-- It's tedious to maintain a sane value for the concurrency limit, especially when the workload of each repository changes over time.
-- A request can be rejected even though the server is idle because the rate doesn't factor in the load on the server.
-
-You can overcome all of these drawbacks and keep the benefits of concurrency limiting by configuring adaptive concurrency limits. Adaptive
-concurrency limits are optional and build on the two concurrency limiting types. It uses Additive Increase/Multiplicative Decrease (AIMD)
-algorithm. Each adaptive limit:
-
-- Gradually increases up to a certain upper limit during typical process functioning.
-- Quickly decreases when the host machine has a resource problem.
-
-This mechanism provides some headroom for the machine to "breathe" and speeds up current inflight requests.
-
-![Gitaly Adaptive Concurrency Limit](img/gitaly_adaptive_concurrency_limit.png)
-
-The adaptive limiter calibrates the limits every 30 seconds and:
-
-- Increases the limits by one until reaching the upper limit.
-- Decreases the limits by half when the top-level cgroup has either memory usage that exceeds 90%, excluding highly-evictable page caches,
-  or CPU throttled for 50% or more of the observation time.
-
-Otherwise, the limits increase by one until reaching the upper bound. For more information about technical implementation
-of this system, please refer to [this blueprint](../../architecture/blueprints/gitaly_adaptive_concurrency_limit/index.md).
-
-Adaptive limiting is enabled for each RPC or pack-objects cache individually. However, limits are calibrated at the same time.
-
-### Enable adaptiveness for RPC concurrency
-
-Prerequisites:
-
-- Because adaptive limiting depends on [control groups](#control-groups), control groups must be enabled before using adaptive limiting.
-
-The following is an example to configure an adaptive limit for RPC concurrency:
-
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['configuration'] = {
-    # ...
-    concurrency: [
-        {
-            rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
-            max_queue_wait: '1s',
-            max_queue_size: 10,
-            adaptive: true,
-            min_limit: 10,
-            initial_limit: 20,
-            max_limit: 40
-        },
-        {
-            rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
-            max_queue_wait: '10s',
-            max_queue_size: 20,
-            adaptive: true,
-            min_limit: 10,
-            initial_limit: 50,
-            max_limit: 100
-        },
-   ],
-}
-```
-
-In this example:
-
-- `adaptive` sets whether the adaptiveness is enabled. If set, the `max_per_repo` value is ignored in favor of the following configuration.
-- `initial_limit` is the per-repository concurrency limit to use when Gitaly starts.
-- `max_limit` is the minimum per-repository concurrency limit of the configured RPC. Gitaly increases the current limit
-  until it reaches this number.
-- `min_limit` is the is the minimum per-repository concurrency limit of the configured RPC. When the host machine has a resource problem,
-  Gitaly quickly reduces the limit until reaching this value.
-
-For more information, see [RPC concurrency](#limit-rpc-concurrency).
-
-### Enable adaptiveness for pack-objects concurrency
-
-Prerequisites:
-
-- Because adaptive limiting depends on [control groups](#control-groups), control groups must be enabled before using adaptive limiting.
-
-The following is an example to configure an adaptive limit for pack-objects concurrency:
-
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['pack_objects_limiting'] = {
-   'max_queue_length' => 200,
-   'max_queue_wait' => '60s',
-   'adaptive' => true,
-   'min_limit' => 10,
-   'initial_limit' => 20,
-   'max_limit' => 40
-}
-```
-
-In this example:
-
-- `adaptive` sets whether the adaptiveness is enabled. If set, the value of `max_concurrency` is ignored in favor of the following configuration.
-- `initial_limit` is the per-IP concurrency limit to use when Gitaly starts.
-- `max_limit` is the minimum per-IP concurrency limit for pack-objects. Gitaly increases the current limit until it reaches this number.
-- `min_limit` is the is the minimum per-IP concurrency limit for pack-objects. When the host machine has a resources problem, Gitaly quickly
-  reduces the limit until it reaches this value.
-
-For more information, see [pack-objects concurrency](#limit-pack-objects-concurrency).
 
 ## Control groups
 
@@ -1430,7 +971,7 @@ By default, the cache storage directory is set to a subdirectory of the first Gi
 defined in the configuration file.
 
 Multiple Gitaly processes can use the same directory for cache storage. Each Gitaly process
-uses a unique random string as part of the cache filenames it creates. This means:
+uses a unique random string as part of the cache file names it creates. This means:
 
 - They do not collide.
 - They do not reuse another process's files.
@@ -1708,8 +1249,15 @@ By default, Gitaly doesn't sign commits made using GitLab UI. For example, commi
 - Web IDE.
 - Merge requests.
 
-You can configure Gitaly to sign commits made with the GitLab UI. The commits show as unverified and signed by an unknown
-user. Support for improvements is proposed in [issue 19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+You can configure Gitaly to sign commits made with the GitLab UI.
+
+By default, Gitaly sets the author of a commit as the committer. In this case,
+it is harder to [Verify commits locally](../../user/project/repository/signed_commits/ssh.md#verify-commits-locally)
+because the signature belongs to neither the author nor the committer of the commit.
+
+You can configure Gitaly to reflect that a commit has been committed by your instance by
+setting `committer_email` and `committer_name`. For example, on GitLab.com these configuration options are
+set to `noreply@gitlab.com` and `GitLab`.
 
 Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
@@ -1740,7 +1288,10 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
       # ...
       git: {
         # ...
+        committer_name: 'Your Instance',
+        committer_email: 'noreply@yourinstance.com',
         signing_key: '/etc/gitlab/gitaly/signing_key.gpg',
+        # ...
       },
    }
    ```
@@ -1769,6 +1320,8 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
    ```toml
    [git]
+   committer_name = "Your Instance"
+   committer_email = "noreply@yourinstance.com"
    signing_key = "/etc/gitlab/gitaly/signing_key.gpg"
    ```
 
@@ -1998,53 +1551,6 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 ```toml
 [backup]
 go_cloud_url = "s3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
-```
-
-::EndTabs
-
-## Configure negotiation timeouts
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5574) in GitLab 16.5.
-
-Gitaly supports configurable negotiation timeouts.
-
-Negotiation timeouts can be configured for the `git-upload-pack(1)` and `git-upload-archive(1)`
-operations, which are invoked by a Gitaly node when you execute the `git fetch` and
-`git archive --remote` commands respectively. You might need to increase the negotiation timeout:
-
-- For particularly large repositories.
-- When performing these commands in parallel.
-
-These timeouts affect only the [negotiation phase](https://git-scm.com/docs/pack-protocol/2.2.3#_packfile_negotiation) of
-remote Git operations, not the entire transfer.
-
-Valid values for timeouts follow the format of [`ParseDuration`](https://pkg.go.dev/time#ParseDuration) in Go.
-
-How you configure negotiation timeouts depends on the type of installation you have:
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-Edit `/etc/gitlab/gitlab.rb`:
-
-```ruby
-gitaly['configuration'] = {
-    timeout: {
-        upload_pack_negotiation: '10m',      # 10 minutes
-        upload_archive_negotiation: '20m',   # 20 minutes
-    }
-}
-```
-
-:::TabTitle Self-compiled (source)
-
-Edit `/home/git/gitaly/config.toml`:
-
-```toml
-[timeout]
-upload_pack_negotiation = "10m"
-upload_archive_negotiation = "20m"
 ```
 
 ::EndTabs

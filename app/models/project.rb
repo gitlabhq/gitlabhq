@@ -142,9 +142,8 @@ class Project < ApplicationRecord
   after_create :set_timestamps_for_create
   after_create :check_repository_absence!
 
-  # TODO: Remove this callback after background syncing is implemented. See https://gitlab.com/gitlab-org/gitlab/-/issues/429376.
-  after_update :update_catalog_resource,
-    if: -> { (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) && catalog_resource }
+  after_update :enqueue_catalog_resource_sync_event_worker,
+    if: -> { catalog_resource && (saved_change_to_name? || saved_change_to_description? || saved_change_to_visibility_level?) }
 
   before_destroy :remove_private_deploy_keys
   after_destroy :remove_exports
@@ -187,6 +186,7 @@ class Project < ApplicationRecord
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
   has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
+  has_many :catalog_resource_sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', inverse_of: :project
 
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
@@ -232,7 +232,6 @@ class Project < ApplicationRecord
   has_one :pumble_integration, class_name: 'Integrations::Pumble'
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
-  has_one :shimo_integration, class_name: 'Integrations::Shimo'
   has_one :slack_integration, class_name: 'Integrations::Slack'
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
   has_one :squash_tm_integration, class_name: 'Integrations::SquashTm'
@@ -469,10 +468,6 @@ class Project < ApplicationRecord
   # rubocop:enable Cop/ActiveRecordDependent
   has_many :active_pages_deployments, -> { active }, class_name: 'PagesDeployment', inverse_of: :project
 
-  # Can be too many records. We need to implement delete_all in batches.
-  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/228637
-  has_many :product_analytics_events, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
   has_many :operations_feature_flags, class_name: 'Operations::FeatureFlag'
   has_one :operations_feature_flags_client, class_name: 'Operations::FeatureFlagsClient'
   has_many :operations_feature_flags_user_lists, class_name: 'Operations::FeatureFlags::UserList'
@@ -504,9 +499,9 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
-  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, to: :project_feature, allow_nil: true
+  delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
+  delegate :jira_dvcs_server_last_sync_at, to: :feature_usage
   delegate :last_pipeline, to: :commit, allow_nil: true
 
   with_options to: :team do
@@ -539,8 +534,8 @@ class Project < ApplicationRecord
 
   with_options to: :project_setting do
     delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?, :allow_merge_on_skipped_pipeline=
+    delegate :allow_merge_without_pipeline, :allow_merge_without_pipeline?, :allow_merge_without_pipeline=
     delegate :has_confluence?
-    delegate :has_shimo?
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
     delegate :runner_registration_enabled, :runner_registration_enabled=, :runner_registration_enabled?
     delegate :emails_enabled, :emails_enabled=, :emails_enabled?
@@ -556,6 +551,7 @@ class Project < ApplicationRecord
       delegate :show_default_award_emojis, :show_default_award_emojis=
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
+      delegate :code_suggestions, :code_suggestions=
     end
   end
 
@@ -676,7 +672,6 @@ class Project < ApplicationRecord
   scope :non_archived, -> { where(archived: false) }
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
-  scope :with_jira_dvcs_cloud, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: true)) }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
@@ -780,6 +775,8 @@ class Project < ApplicationRecord
     .order(id: :desc)
   end
 
+  scope :in_organization, -> (organization) { where(organization: organization) }
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -858,6 +855,7 @@ class Project < ApplicationRecord
   cascading_with_parent_namespace :only_allow_merge_if_pipeline_succeeds
   cascading_with_parent_namespace :allow_merge_on_skipped_pipeline
   cascading_with_parent_namespace :only_allow_merge_if_all_discussions_are_resolved
+  cascading_with_parent_namespace :allow_merge_without_pipeline
 
   def self.with_feature_available_for_user(feature, user)
     with_project_feature.merge(ProjectFeature.with_feature_available_for_user(feature, user))
@@ -1731,7 +1729,7 @@ class Project < ApplicationRecord
   def disabled_integrations
     return [] if Rails.env.development?
 
-    names = %w[shimo zentao]
+    names = %w[zentao]
 
     # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
     # The GitLab for Slack app integration is only available when enabled through settings.
@@ -1940,14 +1938,14 @@ class Project < ApplicationRecord
     repository = project_repository || build_project_repository
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
 
-    cleanup if replicate_object_pool_on_move_ff_enabled?
+    cleanup
   end
 
-  def create_repository(force: false, default_branch: nil)
+  def create_repository(force: false, default_branch: nil, object_format: nil)
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    repository.create_repository(default_branch)
+    repository.create_repository(default_branch, object_format: object_format)
     repository.after_create
 
     true
@@ -2763,7 +2761,6 @@ class Project < ApplicationRecord
 
   # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
   def swap_pool_repository!
-    return unless replicate_object_pool_on_move_ff_enabled?
     return unless repository_exists?
 
     old_pool_repository = pool_repository
@@ -2778,7 +2775,7 @@ class Project < ApplicationRecord
 
   def link_pool_repository
     return unless pool_repository
-    return if (pool_repository.shard_name != repository.shard) && replicate_object_pool_on_move_ff_enabled?
+    return if pool_repository.shard_name != repository.shard
 
     pool_repository.link_repository(repository)
   end
@@ -2910,7 +2907,6 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address
-    return unless Feature.enabled?(:service_desk_custom_email, self)
     return unless service_desk_setting&.custom_email_enabled?
 
     service_desk_setting.custom_email
@@ -2993,10 +2989,6 @@ class Project < ApplicationRecord
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
     Projects::GitGarbageCollectWorker
-  end
-
-  def activity_path
-    Gitlab::Routing.url_helpers.activity_project_path(self)
   end
 
   def ci_forward_deployment_enabled?
@@ -3207,6 +3199,11 @@ class Project < ApplicationRecord
                       .limit(INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET + 1).count - 1
   end
   strong_memoize_attr :instance_runner_running_jobs_count
+
+  def code_suggestions_enabled?
+    code_suggestions && (group.nil? || group.code_suggestions)
+  end
+  strong_memoize_attr :code_suggestions_enabled?
 
   private
 
@@ -3471,18 +3468,17 @@ class Project < ApplicationRecord
     RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
   end
 
-  def replicate_object_pool_on_move_ff_enabled?
-    Feature.enabled?(:replicate_object_pool_on_move, self)
-  end
-
   def pool_repository_shard_matches_repository?(pool)
     pool_repository_shard = pool.shard.name
 
     pool_repository_shard == repository_storage
   end
 
-  def update_catalog_resource
-    catalog_resource.sync_with_project!
+  # Catalog resource SyncEvents are created by PG triggers
+  def enqueue_catalog_resource_sync_event_worker
+    run_after_commit do
+      ::Ci::Catalog::Resources::SyncEvent.enqueue_worker
+    end
   end
 end
 

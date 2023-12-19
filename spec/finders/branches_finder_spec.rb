@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BranchesFinder, feature_category: :source_code_management do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:repository) { project.repository }
 
   let(:branch_finder) { described_class.new(repository, params) }
@@ -339,6 +340,60 @@ RSpec.describe BranchesFinder, feature_category: :source_code_management do
           result = subject
 
           expect(result.map(&:name)).to eq(%w[feature feature_conflict few-commits fix flatten-dir])
+        end
+      end
+    end
+  end
+
+  describe '#next_cursor' do
+    subject { branch_finder.next_cursor }
+
+    it 'always nil before #execute call' do
+      is_expected.to be_nil
+    end
+
+    context 'after #execute' do
+      context 'with gitaly pagination' do
+        before do
+          branch_finder.execute(gitaly_pagination: true)
+        end
+
+        context 'without pagination params' do
+          it { is_expected.to be_nil }
+        end
+
+        context 'with pagination params' do
+          let(:params) { { per_page: 5 } }
+
+          it { is_expected.to be_present }
+
+          context 'when all objects can be returned on the same page' do
+            let(:params) { { per_page: 100 } }
+
+            it { is_expected.to be_present }
+          end
+        end
+      end
+
+      context 'without gitaly pagination' do
+        before do
+          branch_finder.execute(gitaly_pagination: false)
+        end
+
+        context 'without pagination params' do
+          it { is_expected.to be_nil }
+        end
+
+        context 'with pagination params' do
+          let(:params) { { per_page: 5 } }
+
+          it { is_expected.to be_nil }
+
+          context 'when all objects can be returned on the same page' do
+            let(:params) { { per_page: 100 } }
+
+            it { is_expected.to be_nil }
+          end
         end
       end
     end

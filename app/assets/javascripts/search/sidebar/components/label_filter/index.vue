@@ -55,7 +55,7 @@ export default {
   },
   i18n: I18N,
   computed: {
-    ...mapState(['useSidebarNavigation', 'searchLabelString', 'query', 'urlQuery', 'aggregations']),
+    ...mapState(['searchLabelString', 'query', 'urlQuery', 'aggregations']),
     ...mapGetters([
       'filteredLabels',
       'filteredUnselectedLabels',
@@ -179,14 +179,10 @@ export default {
 
 <template>
   <div class="gl-pb-0 gl-md-pt-0 label-filter gl-relative">
-    <h5
-      class="gl-my-0"
-      data-testid="label-filter-title"
-      :class="{ 'gl-font-sm': useSidebarNavigation }"
-    >
+    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm" data-testid="label-filter-title">
       {{ $options.labelFilterData.header }}
-    </h5>
-    <div class="gl-my-5">
+    </div>
+    <div>
       <gl-label
         v-for="label in unappliedNewLabels"
         :key="label.key"
@@ -246,12 +242,7 @@ export default {
       v-if="isFocused"
       v-outside="closeDropdown"
       data-testid="header-search-dropdown-menu"
-      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-w-full gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-index-2"
-      :class="{
-        'gl-max-w-none!': useSidebarNavigation,
-        'gl-min-w-full!': useSidebarNavigation,
-        'gl-w-full!': useSidebarNavigation,
-      }"
+      class="header-search-dropdown-menu gl-overflow-y-auto gl-absolute gl-bg-white gl-border-1 gl-rounded-base gl-border-solid gl-border-gray-200 gl-shadow-x0-y2-b4-s0 gl-mt-3 gl-z-index-2 gl-w-full! gl-min-w-full! gl-max-w-none!"
     >
       <div class="header-search-dropdown-content gl-py-2">
         <dropdown-keyboard-navigation

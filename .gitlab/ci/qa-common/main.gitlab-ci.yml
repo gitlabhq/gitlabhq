@@ -5,16 +5,17 @@ workflow:
   name: $PIPELINE_NAME
 
 include:
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.0.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.2.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
+      report_title: "E2E Test Result Summary"
       aws_access_key_id_variable_name: "QA_ALLURE_AWS_ACCESS_KEY_ID"
       aws_secret_access_key_variable_name: "QA_ALLURE_AWS_SECRET_ACCESS_KEY"
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 7.10.2
+    ref: 8.2.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
@@ -68,7 +69,6 @@ stages:
     QA_INTERCEPT_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    GITLAB_QA_OPTS: $EXTRA_GITLAB_QA_OPTS
   before_script:
     - !reference [.qa-base, before_script]
     # Prepend the file paths with the absolute path from inside the container since the files will be read from there
@@ -87,11 +87,11 @@ stages:
     KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
     GIT_STRATEGY: none
   script:
-    - echo "KNAPSACK_TEST_FILE_PATTERN is ${KNAPSACK_TEST_FILE_PATTERN}"
-    # when using qa-image, code runs in /home/gitlab/qa folder
     - bundle exec rake "knapsack:download[test]"
-    - '[ -n "$QA_TESTS" ] && bundle exec rake "knapsack:create_reports_for_selective"'
-    - mkdir -p "$KNAPSACK_DIR" && cp knapsack/*.json "${KNAPSACK_DIR}/"
+    - bundle exec rake "knapsack:create_reports_for_selective"
+  after_script:
+    # when using qa-image, code runs in /home/gitlab/qa folder
+    - mkdir -p "$KNAPSACK_DIR" && cp /home/gitlab/qa/knapsack/*.json "${KNAPSACK_DIR}/"
   allow_failure: true
   artifacts:
     paths:
@@ -167,6 +167,7 @@ stages:
   stage: notify
   variables:
     QA_RSPEC_XML_FILE_PATTERN: "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
+    GITLAB_API_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed

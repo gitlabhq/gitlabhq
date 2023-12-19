@@ -102,12 +102,6 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     end
   end
 
-  it 'pushes service_desk_custom_email feature flag to frontend' do
-    visit edit_project_path(project)
-
-    expect(page).to have_pushed_frontend_feature_flags(serviceDeskCustomEmail: true)
-  end
-
   it 'pushes issue_email_participants feature flag to frontend' do
     visit edit_project_path(project)
 

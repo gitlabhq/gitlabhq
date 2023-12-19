@@ -37,10 +37,6 @@ module Mutations
         result = ::Achievements::UpdateService.new(current_user, achievement, args).execute
         { achievement: result.payload, errors: result.errors }
       end
-
-      def find_object(id:)
-        GitlabSchema.object_from_id(id, expected_type: ::Achievements::Achievement)
-      end
     end
   end
 end

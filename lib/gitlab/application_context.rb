@@ -26,7 +26,8 @@ module Gitlab
       :artifacts_dependencies_size,
       :artifacts_dependencies_count,
       :root_caller_id,
-      :merge_action_status
+      :merge_action_status,
+      :bulk_import_entity_id
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -45,7 +46,8 @@ module Gitlab
       Attribute.new(:artifacts_dependencies_size, Integer),
       Attribute.new(:artifacts_dependencies_count, Integer),
       Attribute.new(:root_caller_id, String),
-      Attribute.new(:merge_action_status, String)
+      Attribute.new(:merge_action_status, String),
+      Attribute.new(:bulk_import_entity_id, Integer)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -95,6 +97,7 @@ module Gitlab
 
     # rubocop: disable Metrics/CyclomaticComplexity
     # rubocop: disable Metrics/PerceivedComplexity
+    # rubocop: disable Metrics/AbcSize
     def to_lazy_hash
       {}.tap do |hash|
         assign_hash_if_value(hash, :caller_id)
@@ -106,6 +109,7 @@ module Gitlab
         assign_hash_if_value(hash, :artifacts_dependencies_size)
         assign_hash_if_value(hash, :artifacts_dependencies_count)
         assign_hash_if_value(hash, :merge_action_status)
+        assign_hash_if_value(hash, :bulk_import_entity_id)
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?
@@ -115,10 +119,12 @@ module Gitlab
         hash[:pipeline_id] = -> { job&.pipeline_id } if set_values.include?(:job)
         hash[:job_id] = -> { job&.id } if set_values.include?(:job)
         hash[:artifact_size] = -> { artifact&.size } if set_values.include?(:artifact)
+        hash[:bulk_import_entity_id] = -> { bulk_import_entity_id } if set_values.include?(:bulk_import_entity_id)
       end
     end
     # rubocop: enable Metrics/CyclomaticComplexity
     # rubocop: enable Metrics/PerceivedComplexity
+    # rubocop: enable Metrics/AbcSize
 
     def use
       Labkit::Context.with_context(to_lazy_hash) { yield }

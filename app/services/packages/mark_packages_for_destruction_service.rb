@@ -43,6 +43,7 @@ module Packages
                            .update_all(status: :pending_destruction)
 
         sync_maven_metadata(loaded_packages)
+        sync_npm_metadata(loaded_packages)
         mark_package_files_for_destruction(loaded_packages)
       end
 
@@ -69,6 +70,15 @@ module Packages
       ::Packages::Maven::Metadata::SyncWorker.bulk_perform_async_with_contexts(
         maven_packages_with_version,
         arguments_proc: -> (package) { [@current_user.id, package.project_id, package.name] },
+        context_proc: -> (package) { { project: package.project, user: @current_user } }
+      )
+    end
+
+    def sync_npm_metadata(packages)
+      npm_packages = packages.select(&:npm?)
+      ::Packages::Npm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
+        npm_packages,
+        arguments_proc: -> (package) { [package.project_id, package.name] },
         context_proc: -> (package) { { project: package.project, user: @current_user } }
       )
     end

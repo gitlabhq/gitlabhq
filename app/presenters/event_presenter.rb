@@ -12,6 +12,8 @@ class EventPresenter < Gitlab::View::Presenter::Delegated
   # Caching `visible_to_user?` method in the presenter because it might be called multiple times.
   delegator_override :visible_to_user?
   def visible_to_user?(user = nil)
+    return super(user) unless user
+
     @visible_to_user_cache.fetch(user&.id) { super(user) }
   end
 

@@ -1,8 +1,6 @@
 import { GlButtonGroup } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -18,15 +16,11 @@ import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 
 Vue.use(VueApollo);
-Vue.use(Vuex);
 
 describe('Board List Header Component', () => {
   let wrapper;
-  let store;
   let fakeApollo;
 
-  const updateListSpy = jest.fn();
-  const toggleListCollapsedSpy = jest.fn();
   const mockClientToggleListCollapsedResolver = jest.fn();
   const updateListHandlerSuccess = jest.fn().mockResolvedValue(updateBoardListResponse);
 
@@ -69,10 +63,6 @@ describe('Board List Header Component', () => {
       );
     }
 
-    store = new Vuex.Store({
-      state: {},
-      actions: { updateList: updateListSpy, toggleListCollapsed: toggleListCollapsedSpy },
-    });
     fakeApollo = createMockApollo(
       [
         [listQuery, listQueryHandler],
@@ -87,7 +77,6 @@ describe('Board List Header Component', () => {
 
     wrapper = shallowMountExtended(BoardListHeader, {
       apolloProvider: fakeApollo,
-      store,
       propsData: {
         list: listMock,
         filterParams: {},
@@ -198,26 +187,34 @@ describe('Board List Header Component', () => {
       expect(icon.props('icon')).toBe('chevron-lg-right');
     });
 
-    it('should dispatch toggleListCollapse when clicking the collapse icon', async () => {
-      createComponent();
+    it('set active board item on client when clicking on card', async () => {
+      createComponent({ listType: ListType.label });
+      await nextTick();
 
       findCaret().vm.$emit('click');
-
       await nextTick();
-      expect(toggleListCollapsedSpy).toHaveBeenCalledTimes(1);
+
+      expect(mockClientToggleListCollapsedResolver).toHaveBeenCalledWith(
+        {},
+        {
+          list: mockLabelList,
+          collapsed: true,
+        },
+        expect.anything(),
+        expect.anything(),
+      );
     });
 
-    it("when logged in it calls list update and doesn't set localStorage", async () => {
+    it("when logged in it doesn't set localStorage", async () => {
       createComponent({ withLocalStorage: false, currentUserId: 1 });
 
       findCaret().vm.$emit('click');
       await nextTick();
 
-      expect(updateListSpy).toHaveBeenCalledTimes(1);
       expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(null);
     });
 
-    it("when logged out it doesn't call list update and sets localStorage", async () => {
+    it('when logged out it sets localStorage', async () => {
       createComponent({
         currentUserId: null,
       });
@@ -225,7 +222,6 @@ describe('Board List Header Component', () => {
       findCaret().vm.$emit('click');
       await nextTick();
 
-      expect(updateListSpy).not.toHaveBeenCalled();
       expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(
         String(!isCollapsed()),
       );
@@ -252,86 +248,67 @@ describe('Board List Header Component', () => {
     });
   });
 
-  describe('Apollo boards', () => {
-    beforeEach(async () => {
-      createComponent({ listType: ListType.label, injectedProps: { isApolloBoard: true } });
-      await nextTick();
+  beforeEach(async () => {
+    createComponent({ listType: ListType.label });
+    await nextTick();
+  });
+
+  it('does not call update list mutation when user is not logged in', async () => {
+    createComponent({ currentUserId: null });
+
+    findCaret().vm.$emit('click');
+    await nextTick();
+
+    expect(updateListHandlerSuccess).not.toHaveBeenCalled();
+  });
+
+  it('calls update list mutation when user is logged in', async () => {
+    createComponent({ currentUserId: 1 });
+
+    findCaret().vm.$emit('click');
+    await nextTick();
+
+    expect(updateListHandlerSuccess).toHaveBeenCalledWith({
+      listId: mockLabelList.id,
+      collapsed: true,
+    });
+  });
+
+  describe('when fetch list query fails', () => {
+    const errorMessage = 'Failed to fetch list';
+    const listQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
+
+    beforeEach(() => {
+      createComponent({
+        listQueryHandler: listQueryHandlerFailure,
+      });
     });
 
-    it('set active board item on client when clicking on card', async () => {
+    it('sets error', async () => {
+      await waitForPromises();
+
+      expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+  });
+
+  describe('when update list mutation fails', () => {
+    const errorMessage = 'Failed to update list';
+    const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
+
+    beforeEach(() => {
+      createComponent({
+        currentUserId: 1,
+        updateListHandler: updateListHandlerFailure,
+      });
+    });
+
+    it('sets error', async () => {
+      await waitForPromises();
+
       findCaret().vm.$emit('click');
-      await nextTick();
+      await waitForPromises();
 
-      expect(mockClientToggleListCollapsedResolver).toHaveBeenCalledWith(
-        {},
-        {
-          list: mockLabelList,
-          collapsed: true,
-        },
-        expect.anything(),
-        expect.anything(),
-      );
-    });
-
-    it('does not call update list mutation when user is not logged in', async () => {
-      createComponent({ currentUserId: null, injectedProps: { isApolloBoard: true } });
-
-      findCaret().vm.$emit('click');
-      await nextTick();
-
-      expect(updateListHandlerSuccess).not.toHaveBeenCalled();
-    });
-
-    it('calls update list mutation when user is logged in', async () => {
-      createComponent({ currentUserId: 1, injectedProps: { isApolloBoard: true } });
-
-      findCaret().vm.$emit('click');
-      await nextTick();
-
-      expect(updateListHandlerSuccess).toHaveBeenCalledWith({
-        listId: mockLabelList.id,
-        collapsed: true,
-      });
-    });
-
-    describe('when fetch list query fails', () => {
-      const errorMessage = 'Failed to fetch list';
-      const listQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
-
-      beforeEach(() => {
-        createComponent({
-          listQueryHandler: listQueryHandlerFailure,
-          injectedProps: { isApolloBoard: true },
-        });
-      });
-
-      it('sets error', async () => {
-        await waitForPromises();
-
-        expect(cacheUpdates.setError).toHaveBeenCalled();
-      });
-    });
-
-    describe('when update list mutation fails', () => {
-      const errorMessage = 'Failed to update list';
-      const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
-
-      beforeEach(() => {
-        createComponent({
-          currentUserId: 1,
-          updateListHandler: updateListHandlerFailure,
-          injectedProps: { isApolloBoard: true },
-        });
-      });
-
-      it('sets error', async () => {
-        await waitForPromises();
-
-        findCaret().vm.$emit('click');
-        await waitForPromises();
-
-        expect(cacheUpdates.setError).toHaveBeenCalled();
-      });
+      expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 });

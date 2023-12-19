@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Tutorial: Set up an analytics-powered website project **(ULTIMATE ALL)**
@@ -70,7 +70,7 @@ To invite a user to the `My website` project:
 1. Select **Invite**.
 
 The invited user should now be a member of the project.
-You can [view, filter, and search for members](../../user/project/members/index.md#filter-and-sort-members) of your project.
+You can [view, filter, and search for members](../../user/project/members/index.md#filter-and-sort-project-members) of your project.
 
 ## Create project labels
 

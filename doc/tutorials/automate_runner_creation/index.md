@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Tutorial: Automate runner creation and registration **(FREE ALL)**
@@ -106,7 +106,7 @@ Before you begin, you need:
   is displayed in the project or group overview page, under the project or group
   name.
 
-Use the access token in the [`POST /user/runners`](../../api/users.md#create-a-runner)
+Use the access token in the [`POST /user/runners`](../../api/users.md#create-a-runner-linked-to-a-user)
 REST endpoint to create a runner:
 
 1. Use `curl` to invoke the endpoint to create a runner:
@@ -212,9 +212,8 @@ runners to Google Compute Engine:
 Now that you've automated your runner creation and automation, you can view
 the runners that use the same configuration in the GitLab UI.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **CI/CD > Runners**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,
    next to **Runners**, select **Show details**.

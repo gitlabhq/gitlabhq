@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          audit_log_profile_path
+          user_settings_authentication_log_path
         end
 
         override :title
@@ -23,7 +23,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { path: 'profiles#audit_log' }
+          { path: 'user_settings#authentication_log' }
         end
       end
     end

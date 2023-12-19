@@ -17,9 +17,6 @@ module Ci
     include UpdatedAtFilterable
     include EachBatch
     include FastDestroyAll::Helpers
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     include IgnorableColumns
     ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
@@ -35,12 +32,14 @@ module Ci
 
     CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
+    INITIAL_PARTITION_VALUE = 100
+    NEXT_PARTITION_VALUE = 101
 
     paginates_per 15
 
     sha_attribute :source_sha
     sha_attribute :target_sha
-    partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }
+    partitionable scope: ->(pipeline) { Ci::Pipeline.current_partition_value(pipeline.project) }
     # Ci::CreatePipelineService returns Ci::Pipeline so this is the only place
     # where we can pass additional information from the service. This accessor
     # is used for storing the processed metadata for linting purposes.
@@ -78,31 +77,31 @@ module Ci
     # Ci:Job models. With that epic, we aim to replace `statuses` with `jobs`.
     #
     # DEPRECATED:
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
-      inverse_of: :pipeline
-    has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
+    has_many :statuses, ->(pipeline) { in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :processables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :latest_statuses_ordered_by_stage, -> (pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :latest_statuses, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :statuses_order_id_desc, ->(pipeline) { in_partition(pipeline).order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
+      inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :bridges, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :builds, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :generic_commit_statuses, ->(pipeline) { in_partition(pipeline) }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus', partition_foreign_key: :partition_id
     #
     # NEW:
-    has_many :all_jobs, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :current_jobs, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :all_processable_jobs, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :current_processable_jobs, -> { latest }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :all_jobs, ->(pipeline) { in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :current_jobs, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :all_processable_jobs, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
+    has_many :current_processable_jobs, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
 
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
-    has_many :latest_builds, -> { latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
+    has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
-    has_many :latest_successful_jobs, -> { latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -111,14 +110,14 @@ module Ci
     has_many :merge_requests_as_head_pipeline, foreign_key: :head_pipeline_id, class_name: 'MergeRequest',
       inverse_of: :head_pipeline
 
-    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
-    has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build',
+    has_many :pending_builds, ->(pipeline) { in_partition(pipeline).pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :failed_builds, ->(pipeline) { in_partition(pipeline).latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build',
       inverse_of: :pipeline
-    has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
-    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
+    has_many :retryable_builds, ->(pipeline) { in_partition(pipeline).latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :cancelable_statuses, ->(pipeline) { in_partition(pipeline).cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
       inverse_of: :pipeline
-    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Processable', inverse_of: :pipeline
-    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :manual_actions, ->(pipeline) { in_partition(pipeline).latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Processable', inverse_of: :pipeline
+    has_many :scheduled_actions, ->(pipeline) { in_partition(pipeline).latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: :auto_canceled_by_id,
       inverse_of: :auto_canceled_by
@@ -152,7 +151,7 @@ module Ci
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
-    delegate :name, to: :pipeline_metadata, allow_nil: true
+    delegate :name, :auto_cancel_on_job_failure, to: :pipeline_metadata, allow_nil: true
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -274,26 +273,6 @@ module Ci
       end
 
       after_transition any => UNLOCKABLE_STATUSES do |pipeline|
-        # This is a temporary flag that we added just in case we need to totally
-        # stop unlocking pipelines due to unexpected issues during rollout.
-        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
-
-        next unless Feature.enabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
-
-        pipeline.run_after_commit do
-          Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
-        end
-      end
-
-      # TODO: Remove this block once we've completed roll-out of ci_unlock_non_successful_pipelines
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/428408
-      after_transition any => :success do |pipeline|
-        # This is a temporary flag that we added just in case we need to totally
-        # stop unlocking pipelines due to unexpected issues during rollout.
-        next if Feature.enabled?(:ci_stop_unlock_pipelines, pipeline.project)
-
-        next unless Feature.disabled?(:ci_unlock_non_successful_pipelines, pipeline.project)
-
         pipeline.run_after_commit do
           Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
         end
@@ -413,7 +392,6 @@ module Ci
 
         pipeline.run_after_commit do
           next if pipeline.child?
-          next unless Feature.enabled?(:widget_pipeline_pass_subscription_update, project) || project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
 
           pipeline.all_merge_requests.opened.each do |merge_request|
             GraphqlTriggers.merge_request_merge_status_updated(merge_request)
@@ -458,20 +436,12 @@ module Ci
     end
 
     scope :with_reports, -> (reports_scope) do
-      where('EXISTS (?)',
-        ::Ci::Build
-          .latest
-          .with_artifacts(reports_scope)
-          .where("#{quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id")
-          .select(1)
-      )
+      where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
     scope :with_only_interruptible_builds, -> do
-      where('NOT EXISTS (?)',
-        Ci::Build.where("#{Ci::Build.quoted_table_name}.commit_id = #{quoted_table_name}.id")
-                 .with_status(STARTED_STATUSES)
-                 .not_interruptible
+      where_not_exists(
+        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).not_interruptible
       )
     end
 
@@ -595,12 +565,24 @@ module Ci
       @auto_devops_pipelines_completed_total ||= Gitlab::Metrics.counter(:auto_devops_pipelines_completed_total, 'Number of completed auto devops pipelines')
     end
 
-    def self.current_partition_value
-      100
+    def self.current_partition_value(project = nil)
+      Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
+        if Feature.enabled?(:ci_current_partition_value_101, project)
+          NEXT_PARTITION_VALUE
+        else
+          INITIAL_PARTITION_VALUE
+        end
+      end
     end
 
     def self.object_hierarchy(relation, options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy.new(relation, options: options)
+    end
+
+    def self.use_partition_id_filter?
+      ::Gitlab::SafeRequestStore.fetch(:ci_builds_partition_id_query_filter) do
+        ::Feature.enabled?(:ci_builds_partition_id_query_filter)
+      end
     end
 
     def uses_needs?
@@ -842,6 +824,13 @@ module Ci
       add_message(:warning, content)
     end
 
+    # Like #drop!, but does not persist the pipeline nor trigger any state
+    # machine callbacks.
+    def set_failed(drop_reason)
+      self.failure_reason = drop_reason.to_s
+      self.status = 'failed'
+    end
+
     # We can't use `messages.error` scope here because messages should also be
     # read when the pipeline is not persisted. Using the scope will return no
     # results as it would query persisted data.
@@ -992,15 +981,15 @@ module Ci
     end
 
     def builds_in_self_and_project_descendants
-      Ci::Build.latest.where(pipeline: self_and_project_descendants)
+      Ci::Build.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def bridges_in_self_and_project_descendants
-      Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
+      Ci::Bridge.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def jobs_in_self_and_project_descendants
-      Ci::Processable.latest.where(pipeline: self_and_project_descendants)
+      Ci::Processable.in_partition(self).latest.where(pipeline: self_and_project_descendants)
     end
 
     def environments_in_self_and_project_descendants(deployment_status: nil)
@@ -1089,6 +1078,10 @@ module Ci
 
     def created_successfully?
       persisted? && failure_reason.blank?
+    end
+
+    def filtered_as_empty?
+      filtered_by_rules? || filtered_by_workflow_rules?
     end
 
     def detailed_status(current_user)

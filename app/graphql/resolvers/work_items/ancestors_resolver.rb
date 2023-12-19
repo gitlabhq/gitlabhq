@@ -38,6 +38,8 @@ module Resolvers
       end
 
       def preload_resource_parents(work_items)
+        return unless current_user
+
         projects = work_items.filter_map(&:project)
         namespaces = work_items.filter_map(&:namespace)
         group_namespaces = namespaces.select { |n| n.type == ::Group.sti_name }
@@ -46,7 +48,11 @@ module Resolvers
         return unless projects.any?
 
         ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
-        ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:namespace), current_user).execute
+
+        if group_namespaces.any?
+          ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:namespace), current_user).execute
+        end
+
         ActiveRecord::Associations::Preloader.new(records: projects, associations: [:namespace]).call
       end
 

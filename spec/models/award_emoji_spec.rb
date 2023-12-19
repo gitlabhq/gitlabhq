@@ -155,6 +155,8 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       end
 
       it 'broadcasts updates on the note when destroyed' do
+        award_emoji.save!
+
         expect(note).to receive(:broadcast_noteable_notes_changed)
         expect(note).to receive(:trigger_note_subscription_update)
 
@@ -185,6 +187,8 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       end
 
       it 'does not broadcast updates on the issue when destroyed' do
+        award_emoji.save!
+
         expect(issue).not_to receive(:broadcast_noteable_notes_changed)
         expect(issue).not_to receive(:trigger_note_subscription_update)
 
@@ -313,6 +317,17 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       new_award = build_award(custom_emoji.name)
 
       expect(new_award.url).to eq(custom_emoji.url)
+    end
+
+    describe 'when inside subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: custom_emoji.group) }
+      let_it_be(:project) { create(:project, namespace: subgroup) }
+
+      it 'is set for custom emoji' do
+        new_award = build_award(custom_emoji.name)
+
+        expect(new_award.url).to eq(custom_emoji.url)
+      end
     end
 
     context 'feature flag disabled' do

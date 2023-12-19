@@ -45,7 +45,10 @@ RSpec.describe "ExternalRedirect::ExternalRedirectController requests", feature_
       [
         ["when url is bad", "url=javascript:alert(1)"],
         ["when url is empty", "url="],
-        ["when url param is missing", ""]
+        ["when url param is missing", ""],
+        ["when url points to self", "url=http://www.example.com/-/external_redirect?url=#{external_url_encoded}"],
+        ["when url points to self encoded",
+          "url=http%3A%2F%2Fwww.example.com/-/external_redirect?url=#{external_url_encoded}"]
       ]
     end
 

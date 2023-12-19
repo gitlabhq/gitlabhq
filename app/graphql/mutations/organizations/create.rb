@@ -2,15 +2,10 @@
 
 module Mutations
   module Organizations
-    class Create < BaseMutation
+    class Create < Base
       graphql_name 'OrganizationCreate'
 
       authorize :create_organization
-
-      field :organization,
-        ::Types::Organizations::OrganizationType,
-        null: true,
-        description: 'Organization created.'
 
       argument :name, GraphQL::Types::String,
         required: true,
@@ -28,7 +23,7 @@ module Mutations
           params: args
         ).execute
 
-        { organization: result.payload, errors: result.errors }
+        { organization: result.payload[:organization], errors: result.errors }
       end
     end
   end

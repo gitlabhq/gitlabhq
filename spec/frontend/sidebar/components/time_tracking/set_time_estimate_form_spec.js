@@ -6,6 +6,7 @@ import setIssueTimeEstimateWithoutErrors from 'test_fixtures/graphql/issue_set_t
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
 import issueSetTimeEstimateMutation from '~/sidebar/queries/issue_set_time_estimate.mutation.graphql';
 
@@ -75,9 +76,12 @@ describe('Set Time Estimate Form', () => {
         timeTracking,
       },
       apolloProvider: createMockApollo([[issueSetTimeEstimateMutation, mutationResolverMock]]),
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          methods: { close: modalCloseMock },
+        }),
+      },
     });
-
-    wrapper.vm.$refs.modal.close = modalCloseMock;
 
     findModal().vm.$emit('show');
     await nextTick();

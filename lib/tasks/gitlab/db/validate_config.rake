@@ -87,7 +87,11 @@ namespace :gitlab do
         # Skip if databases are yet to be provisioned
         next unless connection[:identifier] && shared_connection[:identifier]
 
-        unless connection[:identifier] == shared_connection[:identifier]
+        connection_identifier, shared_connection_identifier = [
+          connection[:identifier], shared_connection[:identifier]
+        ].map { |identifier| identifier.slice("system_identifier", "current_database") }
+
+        unless connection_identifier == shared_connection_identifier
           warnings << "- The '#{connection[:name]}' since it is using 'database_tasks: false' " \
             "should share database with '#{share_with}:'."
         end

@@ -13,7 +13,7 @@ module Ci
     end
 
     def execute
-      # preventing parallel processing over the same event table
+      # To prevent parallel processing over the same event table
       try_obtain_lease { process_events }
 
       enqueue_worker_if_there_still_event
@@ -26,7 +26,7 @@ module Ci
     def process_events
       add_result(estimated_total_events: @sync_event_class.upper_bound_count)
 
-      events = @sync_event_class.preload_synced_relation.first(BATCH_SIZE)
+      events = @sync_event_class.unprocessed_events.preload_synced_relation.first(BATCH_SIZE)
 
       add_result(consumable_events: events.size)
 
@@ -42,12 +42,12 @@ module Ci
         end
       ensure
         add_result(processed_events: processed_events.size)
-        @sync_event_class.id_in(processed_events).delete_all
+        @sync_event_class.mark_records_processed(processed_events)
       end
     end
 
     def enqueue_worker_if_there_still_event
-      @sync_event_class.enqueue_worker if @sync_event_class.exists?
+      @sync_event_class.enqueue_worker if @sync_event_class.unprocessed_events.exists?
     end
 
     def lease_key

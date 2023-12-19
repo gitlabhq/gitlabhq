@@ -13,6 +13,7 @@ module Ci
       feature_category :code_testing
 
       idempotent!
+      deduplicate :until_executed
 
       def perform(pipeline_id)
         pipeline = Ci::Pipeline.find_by_id(pipeline_id)

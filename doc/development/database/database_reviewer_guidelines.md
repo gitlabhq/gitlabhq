@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Database Reviewer Guidelines
@@ -84,7 +84,7 @@ topics and use cases. The most frequently required during database reviewing are
 Database maintainership uses the same process as other projects for identifying maintainers.
 [Follow the general process documented here](https://about.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
 
-For database specific requirements, please see [`Project maintainer process for gitlab-database`](https://about.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
+For database specific requirements, see [`Project maintainer process for gitlab-database`](https://about.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
 
 ## What to do if you feel overwhelmed
 

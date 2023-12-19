@@ -213,7 +213,7 @@ module Gitlab
           match = emoji_param.match(Banzai::Filter::EmojiFilter.emoji_pattern)
           match[1] if match
         end
-        command :award do |name|
+        command :award, :react do |name|
           if name && quick_action_target.user_can_award?(current_user)
             @updates[:emoji_award] = name
           end

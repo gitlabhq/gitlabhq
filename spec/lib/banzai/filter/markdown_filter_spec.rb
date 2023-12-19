@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
   include FilterSpecHelper
 
   describe 'markdown engine from context' do
@@ -19,6 +20,21 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
 
     it 'raise error for unrecognized engines' do
       expect { described_class.render_engine(:foo_bar) }.to raise_error(NameError)
+    end
+  end
+
+  describe 'parse_sourcepos' do
+    where(:sourcepos, :expected) do
+      '1:1-1:4'     | { start: { row: 0, col: 0 }, end: { row: 0, col: 3 } }
+      '12:22-1:456' | { start: { row: 11, col: 21 }, end: { row: 0, col: 455 } }
+      '0:0-0:0'     | { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } }
+      '-1:2-3:-4'   | nil
+    end
+
+    with_them do
+      it 'correctly parses' do
+        expect(described_class.parse_sourcepos(sourcepos)).to eq expected
+      end
     end
   end
 

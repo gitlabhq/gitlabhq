@@ -57,6 +57,16 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           expect(export.batches.count).to eq(11)
         end
       end
+
+      context 'when an error occurs during batches creation' do
+        it 'does not enqueue FinishBatchedRelationExportWorker' do
+          allow(service).to receive(:enqueue_batch_exports).and_raise(StandardError)
+
+          expect(BulkImports::FinishBatchedRelationExportWorker).not_to receive(:perform_async)
+
+          expect { service.execute }.to raise_error(StandardError)
+        end
+      end
     end
 
     context 'when there are no batches to export' do

@@ -28,13 +28,13 @@ export default {
 };
 </script>
 <template>
-  <div id="peek-request-selector" data-qa-selector="request_dropdown" class="view gl-mr-5">
+  <div id="peek-request-selector" data-testid="request-dropdown" class="view gl-mr-5">
     <gl-form-select v-model="currentRequestId" class="gl-px-3! gl-py-2!">
       <option
         v-for="request in requests"
         :key="request.id"
         :value="request.id"
-        data-qa-selector="request_dropdown_option"
+        data-testid="request-dropdown-option"
       >
         {{ request.displayName }}
       </option>

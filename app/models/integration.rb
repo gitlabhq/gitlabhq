@@ -15,6 +15,7 @@ class Integration < ApplicationRecord
 
   UnknownType = Class.new(StandardError)
 
+  self.allow_legacy_sti_class = true
   self.inheritance_column = :type_new
 
   INTEGRATION_NAMES = %w[
@@ -25,10 +26,9 @@ class Integration < ApplicationRecord
     unify_circuit webex_teams youtrack zentao
   ].freeze
 
-  # TODO Shimo is temporary disabled on group and instance-levels.
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    apple_app_store gitlab_slack_application google_play jenkins shimo
+    apple_app_store gitlab_slack_application google_play jenkins
   ].freeze
 
   # Fake integrations to help with local development.
@@ -524,6 +524,17 @@ class Integration < ApplicationRecord
 
   def api_field_names
     fields.reject { _1[:type] == :password || _1[:name] == 'webhook' || (_1.key?(:if) && _1[:if] != true) }.pluck(:name)
+  end
+
+  def self.api_fields
+    fields.map do |field|
+      {
+        required: field.required?,
+        name: field.name.to_sym,
+        type: field.api_type,
+        desc: field.description
+      }
+    end
   end
 
   def form_fields

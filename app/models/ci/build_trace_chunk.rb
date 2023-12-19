@@ -8,11 +8,13 @@ module Ci
     include ::Checksummable
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::OptimisticLocking
-    include SafelyChangeColumnDefault
 
-    columns_changing_default :partition_id
-
-    belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id, inverse_of: :trace_chunks
+    belongs_to :build,
+      ->(trace_chunks) { in_partition(trace_chunks) },
+      class_name: 'Ci::Build',
+      foreign_key: :build_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :trace_chunks
 
     partitionable scope: :build
 

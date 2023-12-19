@@ -34,7 +34,6 @@ export default {
       :key="`${currentKey}-${field.name}`"
       v-bind="field"
       :is-validated="isValidated"
-      :data-qa-selector="`${field.name}_div`"
     />
   </div>
 </template>

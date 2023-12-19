@@ -207,8 +207,6 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'
-    - 'app/graphql/types/issue_connection.rb'
-    - 'app/graphql/types/group_connection.rb'
 
   IgnoreExecutableScripts: true
   AllowedAcronyms:
@@ -839,7 +837,9 @@ Rails/TimeZone:
 Rails/SaveBang:
   Enabled: true
   AllowImplicitReturn: false
-  AllowedReceivers: ['ActionDispatch::TestRequest']
+  AllowedReceivers:
+    - ActionDispatch::TestRequest
+    - Tempfile
   Include:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
@@ -873,7 +873,8 @@ Migration/ReferToIndexByName:
 Migration/CreateTableWithForeignKeys:
   # Disable this cop for all the existing migrations
   Exclude:
-    - !ruby/regexp /\Adb\/(?:post_)?migrate\/(?:201[0-9]\d+|20200[0-8][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])_.+\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
+    - !ruby/regexp /\Adb\/(post_)?migrate\/2022[1-11].*\.rb\z/
 
 Migration/PreventIndexCreation:
   Exclude:
@@ -1102,3 +1103,19 @@ RSpec/UselessDynamicDefinition:
   Exclude:
     - 'spec/factories/**/*'
     - 'ee/spec/factories/**/*'
+
+Database/AvoidUsingPluckWithoutLimit:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+    - 'qa/qa/specs/**/*.rb'
+
+Style/SymbolProc:
+  AllowedMethods:
+    - define_method
+    - mail
+    - respond_to
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/434151
+    - each_batch
+    - each_sub_batch

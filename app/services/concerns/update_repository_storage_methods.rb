@@ -3,6 +3,8 @@
 module UpdateRepositoryStorageMethods
   include Gitlab::Utils::StrongMemoize
 
+  MAX_ERROR_LENGTH = 256
+
   Error = Class.new(StandardError)
 
   attr_reader :repository_storage_move
@@ -44,6 +46,7 @@ module UpdateRepositoryStorageMethods
 
     ServiceResponse.success
   rescue StandardError => e
+    repository_storage_move.update_column(:error_message, e.message.truncate(MAX_ERROR_LENGTH))
     repository_storage_move.do_fail!
 
     Gitlab::ErrorTracking.track_and_raise_exception(e, container_klass: container.class.to_s, container_path: container.full_path)

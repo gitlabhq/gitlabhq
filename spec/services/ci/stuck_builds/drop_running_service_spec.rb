@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :runner_fleet do
+RSpec.describe Ci::StuckBuilds::DropRunningService, feature_category: :fleet_visibility do
   let!(:runner) { create :ci_runner }
   let!(:job) { create(:ci_build, runner: runner, created_at: created_at, updated_at: updated_at, status: status) }
 

@@ -25,7 +25,7 @@ As of July 2018, all the documentation for contributing to the GitLab project ha
 
 ## Security vulnerability disclosure
 
-[View the documentation](doc/development/contributing/index.md#security-vulnerability-disclosure) to find the latest information.
+[View the documentation](https://about.gitlab.com/security/disclosure/) to find the latest information.
 
 ## Code of Conduct
 

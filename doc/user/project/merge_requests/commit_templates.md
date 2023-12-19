@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Commit message templates **(FREE ALL)**
@@ -23,7 +22,7 @@ Commit templates use syntax similar to the syntax for
 Change the commit templates for your project if the default templates don't
 contain the information you need.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for a project.
 
@@ -37,7 +36,7 @@ To do this:
 1. For your desired commit type, enter your default message. You can use both static
    text and [variables](#supported-variables-in-commit-templates). Each template
    is limited to a maximum of 500 characters, though after replacing the templates
-   with data, the final message may be longer.
+   with data, the final message might be longer.
 1. Select **Save changes**.
 
 ## Default template for merge commits

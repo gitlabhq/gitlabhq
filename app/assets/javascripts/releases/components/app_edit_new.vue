@@ -176,7 +176,10 @@ export default {
     </p>
     <form v-if="showForm" class="js-quick-submit" @submit.prevent="submitForm">
       <tag-field />
-      <gl-form-group :label="__('Release title')">
+      <gl-form-group
+        :label="__('Release title')"
+        :description="s__('Release|Leave blank to use the tag name as the release title.')"
+      >
         <gl-form-input
           id="release-title"
           ref="releaseTitleInput"
@@ -194,12 +197,16 @@ export default {
           :extra-links="milestoneComboboxExtraLinks"
         />
       </gl-form-group>
-      <gl-form-group :label="__('Release date')" label-for="release-released-at">
-        <template #label-description>
+      <gl-form-group
+        :label="__('Release date')"
+        :label-description="__('The date when the release is ready.')"
+        label-for="release-released-at"
+      >
+        <template #description>
           <gl-sprintf
             :message="
               __(
-                'The date when the release is ready. A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
+                'A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}.',
               )
             "
           >

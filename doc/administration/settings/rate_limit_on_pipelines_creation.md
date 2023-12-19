@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rate limits on pipeline creation **(FREE SELF)**
@@ -26,8 +25,7 @@ Requests that exceed the limit are logged in the `application_json.log` file.
 
 To limit the number of pipeline requests:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Pipelines Rate Limits**.
 1. Under **Max requests per minute**, enter a value greater than `0`.

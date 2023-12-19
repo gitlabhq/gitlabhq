@@ -107,7 +107,10 @@ module Types
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Organizations::Create, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Organizations::Update, alpha: { milestone: '16.7' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
+    mount_mutation Mutations::Projects::Star, alpha: { milestone: '16.7' }
+    mount_mutation Mutations::BranchRules::Update, alpha: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Releases::Update
     mount_mutation Mutations::Releases::Delete
@@ -136,10 +139,12 @@ module Types
     mount_mutation Mutations::DesignManagement::Update
     mount_mutation Mutations::ContainerExpirationPolicies::Update
     mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, alpha: { milestone: '16.7' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update, alpha: { milestone: '16.7' }
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
     mount_mutation Mutations::Ci::Catalog::Resources::Create, alpha: { milestone: '15.11' }
-    mount_mutation Mutations::Ci::Catalog::Resources::Unpublish, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Ci::Catalog::Resources::Destroy, alpha: { milestone: '16.6' }
     mount_mutation Mutations::Ci::Job::Cancel
     mount_mutation Mutations::Ci::Job::Play
     mount_mutation Mutations::Ci::Job::Retry
@@ -176,13 +181,13 @@ module Types
     mount_mutation Mutations::Packages::DestroyFile
     mount_mutation Mutations::Packages::Protection::Rule::Create, alpha: { milestone: '16.5' }
     mount_mutation Mutations::Packages::Protection::Rule::Delete, alpha: { milestone: '16.6' }
+    mount_mutation Mutations::Packages::Protection::Rule::Update, alpha: { milestone: '16.6' }
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
     mount_mutation Mutations::WorkItems::Create, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::CreateFromTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Delete, alpha: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::DeleteTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Update, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::UpdateTask, alpha: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Export, alpha: { milestone: '15.10' }

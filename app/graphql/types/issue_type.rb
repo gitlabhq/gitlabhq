@@ -91,13 +91,13 @@ module Types
                                             description: 'Web URL of the issue.'
 
     field :emails_disabled, GraphQL::Types::Boolean, null: false,
-                                                     method: :project_emails_disabled?,
-                                                     description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.',
+                                                     method: :parent_emails_disabled?,
+                                                     description: 'Indicates if the parent project or group has email notifications disabled: `true` if email notifications are disabled.',
                                                      deprecated: { reason: 'Use `emails_enabled`', milestone: '16.3' }
 
     field :emails_enabled, GraphQL::Types::Boolean, null: false,
-                                                    method: :project_emails_enabled?,
-                                                    description: 'Indicates if a project has email notifications disabled: `false` if email notifications are disabled.'
+                                                    method: :parent_emails_enabled?,
+                                                    description: 'Indicates if the parent project or group has email notifications disabled: `false` if email notifications are disabled.'
 
     field :human_time_estimate, GraphQL::Types::String, null: true,
                                                         description: 'Human-readable time estimate of the issue.'
@@ -162,7 +162,7 @@ module Types
     field :timelogs, Types::TimelogType.connection_type, null: false,
                                                          description: 'Timelogs on the issue.'
 
-    field :project_id, GraphQL::Types::Int, null: false, method: :project_id,
+    field :project_id, GraphQL::Types::Int, null: true, method: :project_id,
                                             description: 'ID of the issue project.'
 
     field :customer_relations_contacts, Types::CustomerRelations::ContactType.connection_type, null: true,

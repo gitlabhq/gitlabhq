@@ -5,7 +5,7 @@ module BulkImports
     include ApplicationWorker
 
     feature_category :importers
-    sidekiq_options retry: 5
+    sidekiq_options retry: 3
     data_consistency :sticky
 
     idempotent!

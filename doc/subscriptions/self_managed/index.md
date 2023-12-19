@@ -1,8 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab self-managed subscription **(PREMIUM SELF)**
@@ -37,8 +36,7 @@ Prorated charges are not possible without a quarterly usage report.
 View the amount of users in your instance to determine if they exceed the amount
 paid for in your subscription.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Users**.
 
 The lists of users are displayed.
@@ -51,12 +49,10 @@ A user is not counted as a billable user if:
 
 - They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
   [blocked](../../administration/moderate_users.md#block-a-user).
-  If the user occupied a seat prior to being deactivated or blocked,
-  the user is included in the number of [maximum users](#maximum-users).
 - They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
 - They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
-- They have the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
-- They have project or group memberships on an Ultimate subscription.
+- They have only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
+- They do not have project or group memberships on an Ultimate subscription.
 - The account is a GitLab-created service account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
@@ -69,7 +65,7 @@ The amount of **Billable users** is reported once a day in the Admin Area.
 
 ### Maximum users
 
-The number of _maximum users_ reflects the highest number of billable users for the current license period.
+The number of _maximum users_ reflects the highest peak of billable users for the current license period.
 
 ### Users over subscription
 
@@ -220,8 +216,7 @@ Example of a license sync request:
 
 You can manually synchronize your subscription details at any time.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync subscription details**.
 
@@ -231,8 +226,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following details:
@@ -256,8 +250,7 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
@@ -324,9 +317,10 @@ You purchase a subscription for 10 users.
 |:---------------------------------------------------|:-----------------|:--------------|
 | Ten users occupy all 10 seats.                     | 10               | 10            |
 | Two new users join.                                | 12               | 12            |
-| Three users leave and their accounts are removed.  | 9                | 12            |
+| Three users leave and their accounts are blocked.  | 9                | 12            |
+| Four new users join.                               | 13               | 13            |
 
-Users over subscription = 12 - 10 (Maximum users - users in license)
+Users over subscription = 13 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 
@@ -336,13 +330,13 @@ period is prorated from the date of purchase through the end of the subscription
 
 To add seats to a subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/).
-1. Navigate to the **Manage Purchases** page.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
+1. Go to the **Manage Purchases** page.
 1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
-1. Select **Proceed to checkout**.
-1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the system and a credit for what you've already paid. You are only be charged for the net change.
-1. Select **Confirm Upgrade**.
+1. Review the **Purchase summary** section. The system lists the total price for all users on the system and a credit for what you've already paid. You are only charged for the net change.
+1. Enter your payment information.
+1. Select **Purchase seats**.
 
 A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
 
@@ -359,9 +353,7 @@ You should follow these steps during renewal:
 
 1. Prior to the renewal date, prune any inactive or unwanted users by [blocking them](../../administration/moderate_users.md#block-a-user).
 1. Determine if you have a need for user growth in the upcoming subscription.
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and select the **Renew** button beneath your existing subscription.
-The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
-You can hover your mouse on the **Renew** button to see the date when it will become active.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**. The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
 
    NOTE:
    If you need to change your [GitLab tier](https://about.gitlab.com/pricing/), contact our sales team with [the sales contact form](https://about.gitlab.com/sales/) for assistance as this can't be done in the Customers Portal.
@@ -396,10 +388,8 @@ You can view and download your renewal invoice on the Customers Portal [View inv
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Turn on auto-renew** button is displayed, your subscription was canceled
-  previously. Select it to resume automatic renewal.
-- If a **Cancel subscription** button is displayed, your subscription is set to automatically
-  renew at the end of the subscription period. Select it to cancel automatic renewal.
+- If the subscription card displays `Expires on DATE`, your subscription is not set to automatically renew. To enable automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
+- If the subscription card displays `Autorenews on DATE`, your subscription is set to automatically renew at the end of the subscription period. To cancel automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
@@ -408,7 +398,7 @@ If you have difficulty during the renewal process, contact the
 
 There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
-1. Turn off auto-renewal to avoid renewing at a higher seat quantity.
+1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
 1. [Manually renew](#renew-subscription-manually) within 15 days of subscription renewal date, and specify the desired seat quantity.
 1. Work with the Sales team to renew your subscription.
 
@@ -416,9 +406,8 @@ There are several options to renew a subscription for fewer seats, as long as th
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select the **Upgrade** button on the relevant subscription card on the
-   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Upgrade** on the relevant subscription card.
 1. Select the desired upgrade.
 1. Confirm the active form of payment, or add a new form of payment.
 1. Select the **I accept the Privacy Policy and Terms of Service** checkbox.
@@ -438,7 +427,7 @@ The new tier takes effect when the new license is activated.
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
 For information about how to transfer ownership of the Customers Portal account to another person, see
-[Change account owner information](../customers_portal.md#change-account-owner-information).
+[Change profile owner information](../customers_portal.md#change-profile-owner-information).
 
 To add a secondary contact for your subscription:
 
@@ -472,6 +461,10 @@ existing feature requests in the [GitLab](https://gitlab.com/gitlab-org/gitlab/-
 
 These issues are the best avenue for getting updates on specific product plans
 and for communicating directly with the relevant GitLab team members.
+
+## Storage
+
+The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).
 
 ## Troubleshooting
 

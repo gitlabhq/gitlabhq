@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Usage Trends **(FREE SELF)**
@@ -19,8 +19,7 @@ Usage Trends data refreshes daily.
 
 To view Usage Trends:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Analytics > Usage Trends**.
 
 ## Total counts

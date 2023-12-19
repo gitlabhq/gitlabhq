@@ -1,6 +1,7 @@
-query getCiCatalogResourceDetails($id: CiCatalogResourceID!) {
-  ciCatalogResource(id: $id) {
+query getCiCatalogResourceDetails($fullPath: ID!) {
+  ciCatalogResource(fullPath: $fullPath) {
     id
+    webPath
     openIssuesCount
     openMergeRequestsCount
     versions(first: 1) {

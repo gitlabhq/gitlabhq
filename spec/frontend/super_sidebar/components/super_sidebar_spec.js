@@ -1,4 +1,7 @@
 import { nextTick } from 'vue';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import sidebarEventHub from '~/super_sidebar/event_hub';
+import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
@@ -23,6 +26,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trackContextAccess } from '~/super_sidebar/utils';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 
+const { lg, xl } = breakpoints;
 const initialSidebarState = { ...sidebarState };
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
@@ -56,6 +60,8 @@ describe('SuperSidebar component', () => {
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
+  const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
+  const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
   let trackingSpy = null;
 
   const createWrapper = ({
@@ -126,6 +132,11 @@ describe('SuperSidebar component', () => {
     it('renders HelpCenter with sidebarData', () => {
       createWrapper();
       expect(findHelpCenter().props('sidebarData')).toBe(mockSidebarData);
+    });
+
+    it('renders extra info section', () => {
+      createWrapper();
+      expect(wrapper.findComponent(ExtraInfo).exists()).toBe(true);
     });
 
     it('does not render SidebarMenu when items are empty', () => {
@@ -205,6 +216,15 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(wrapper.text()).toContain('Your work');
+    });
+
+    it('handles event toggle-menu-header  correctly', async () => {
+      createWrapper();
+
+      sidebarEventHub.$emit('toggle-menu-header', false);
+
+      await nextTick();
+      expect(findContextHeader().exists()).toBe(false);
     });
 
     describe('item access tracking', () => {
@@ -299,8 +319,8 @@ describe('SuperSidebar component', () => {
       createWrapper();
     });
 
-    it('allows overflow', () => {
-      expect(findNavContainer().classes()).toContain('gl-overflow-auto');
+    it('allows overflow with scroll scrim', () => {
+      expect(findNavContainer().element.tagName).toContain('SCROLL-SCRIM');
     });
   });
 
@@ -312,6 +332,48 @@ describe('SuperSidebar component', () => {
     it('renders trial status widget', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
+    });
+  });
+
+  describe('keyboard interactivity', () => {
+    it('does not bind keydown events on screens xl and above', async () => {
+      jest.spyOn(document, 'addEventListener');
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+      createWrapper();
+
+      isCollapsed.mockReturnValue(false);
+      await nextTick();
+
+      expect(document.addEventListener).not.toHaveBeenCalled();
+    });
+
+    it('binds keydown events on screens below xl', () => {
+      jest.spyOn(document, 'addEventListener');
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      createWrapper();
+
+      expect(document.addEventListener).toHaveBeenCalledWith('keydown', wrapper.vm.focusTrap);
+    });
+  });
+
+  describe('link to Admin area', () => {
+    describe('when user is admin', () => {
+      it('renders', () => {
+        createWrapper({
+          sidebarData: {
+            ...mockSidebarData,
+            is_admin: true,
+          },
+        });
+        expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+      });
+    });
+
+    describe('when user is not admin', () => {
+      it('renders', () => {
+        createWrapper();
+        expect(findAdminLink().exists()).toBe(false);
+      });
     });
   });
 });

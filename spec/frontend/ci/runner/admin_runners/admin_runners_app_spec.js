@@ -50,11 +50,13 @@ import {
 } from '~/ci/runner/constants';
 import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query.graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
+import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 
 import {
   allRunnersData,
   runnersCountData,
+  runnerJobCountData,
   allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
@@ -68,6 +70,7 @@ const mockRunnersCount = runnersCountData.data.runners.count;
 
 const mockRunnersHandler = jest.fn();
 const mockRunnersCountHandler = jest.fn();
+const mockRunnerJobCountHandler = jest.fn();
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
@@ -108,6 +111,7 @@ describe('AdminRunnersApp', () => {
     const handlers = [
       [allRunnersQuery, mockRunnersHandler],
       [allRunnersCountQuery, mockRunnersCountHandler],
+      [runnerJobCountQuery, mockRunnerJobCountHandler],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -137,11 +141,13 @@ describe('AdminRunnersApp', () => {
   beforeEach(() => {
     mockRunnersHandler.mockResolvedValue(allRunnersData);
     mockRunnersCountHandler.mockResolvedValue(runnersCountData);
+    mockRunnerJobCountHandler.mockResolvedValue(runnerJobCountData);
   });
 
   afterEach(() => {
     mockRunnersHandler.mockReset();
     mockRunnersCountHandler.mockReset();
+    mockRunnerJobCountHandler.mockReset();
     showToast.mockReset();
   });
 

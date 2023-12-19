@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Merge requests', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   let(:user) { create(:user) }

@@ -15,7 +15,7 @@ module QA
         end
 
         view 'app/assets/javascripts/blob/filepath_form/components/template_selector.vue' do
-          element :template_selector
+          element 'template-selector'
         end
 
         def add_name(name)
@@ -35,7 +35,7 @@ module QA
         def select_template(template_type, template)
           case template_type
           when '.gitignore', '.gitlab-ci.yml', 'Dockerfile', 'LICENSE'
-            click_element :template_selector
+            click_element 'template-selector'
           else
             raise %(Unsupported template_type "#{template_type}". Please confirm that it is a valid option.)
           end

@@ -8,7 +8,7 @@ def visit_jobs_page
   wait_for_requests
 end
 
-RSpec.describe 'User browses jobs', feature_category: :groups_and_projects do
+RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
   describe 'Jobs', :js do
     let(:project) { create(:project, :repository) }
     let(:user) { create(:user) }

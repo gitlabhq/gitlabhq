@@ -11,11 +11,11 @@ participating-stages: []
 <!-- Blueprints often contain forward-looking statements -->
 <!-- vale gitlab.FutureTense = NO -->
 
-# Container Registry Self-Managed Database Rollout
+# Container registry self-managed database rollout
 
 ## Summary
 
-The latest iteration of the [Container Registry](https://gitlab.com/gitlab-org/container-registry)
+The latest iteration of the [container registry](https://gitlab.com/gitlab-org/container-registry)
 has been rearchitected to use a PostgreSQL database and deployed on GitLab.com.
 Now we must bring the advantages provided by the database to self-managed users.
 While the container registry retains the capacity to run without the new database,
@@ -45,12 +45,12 @@ of the container registry for both GitLab.com and for self-managed users.
 - Progressively rollout the new dependency of a PostgreSQL database instance for the registry for charts and omnibus deployments.
 - Progressively rollout automation for the registry PostgreSQL database instance for charts and omnibus deployments.
 - Develop processes and tools that self-managed admins can use to migrate existing registry deployments to the metadata database.
-- Develop processes and tools that self-managed admins can use spin up fresh installs of the Container Registry which use the metadata database.
+- Develop processes and tools that self-managed admins can use spin up fresh installs of the container registry which use the metadata database.
 - Create a plan which will eventually allow us to fully drop support for original object storage metadata subsystem.
 
 ### Non-Goals
 
-- Developing new Container Registry features outside the scope of enabling admins to migrate to the metadata database.
+- Developing new container registry features outside the scope of enabling admins to migrate to the metadata database.
 - Determining lifecycle support decisions, such as when to default to the database, and when to end support for non-database registries.
 
 ## Proposal
@@ -88,7 +88,7 @@ The metadata database is in early beta for self-managed users. The core migratio
 process for existing registries has been implemented, and online garbage collection
 is fully implemented. Certain database enabled features are only enabled for GitLab.com
 and automatic database provisioning for the registry database is not available.
-Please see the table below for the status of features related to the container
+See the table below for the status of features related to the container
 registry database.
 
 | Feature                     | Description                                                         | Status             | Link                                                                                           |
@@ -161,7 +161,7 @@ import which would lead to greater consistency across all storage driver impleme
 ### The Import Tool
 
 The [import tool](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/database-import-tool.md)
-is a well-validated component of the Container Registry project that we have used
+is a well-validated component of the container registry project that we have used
 from the beginning as a way to perform local testing. This tool is a thin wrapper
 over the core import functionality — the code which handles the import logic has
 been extensively validated.

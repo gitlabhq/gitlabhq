@@ -31,6 +31,7 @@ describe('containsSensitiveToken', () => {
       'token: gloas-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693',
       'https://example.com/feed?feed_token=123456789_abcdefghij',
       'glpat-1234567890 and feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      'token: gldt-cgyKc1k_AsnEpmP-5fRL',
     ];
 
     it.each(sensitiveMessages)('returns true for message: %s', (message) => {

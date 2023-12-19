@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Stage do
+RSpec.describe BulkImports::Projects::Stage, feature_category: :importers do
   subject do
     entity = build(:bulk_import_entity, :project_entity)
 
@@ -15,7 +15,8 @@ RSpec.describe BulkImports::Projects::Stage do
 
       expect(pipelines).to include(
         hash_including({ stage: 0, pipeline: BulkImports::Projects::Pipelines::ProjectPipeline }),
-        hash_including({ stage: 1, pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline })
+        hash_including({ stage: 1, pipeline: BulkImports::Projects::Pipelines::RepositoryPipeline }),
+        hash_including({ stage: 5, pipeline: BulkImports::Projects::Pipelines::ReferencesPipeline })
       )
       expect(pipelines.last).to match(hash_including({ pipeline: BulkImports::Common::Pipelines::EntityFinisher }))
     end

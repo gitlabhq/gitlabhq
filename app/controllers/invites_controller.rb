@@ -125,14 +125,14 @@ class InvitesController < ApplicationController
                             name: member.source.full_name,
                             url: project_url(member.source),
                             title: _("project"),
-                            path: member.source.activity_path
+                            path: project_path(member.source)
                           }
                         when Group
                           {
                             name: member.source.name,
                             url: group_url(member.source),
                             title: _("group"),
-                            path: member.source.activity_path
+                            path: group_path(member.source)
                           }
                         end
   end

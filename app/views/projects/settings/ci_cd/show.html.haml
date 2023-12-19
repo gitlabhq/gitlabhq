@@ -16,7 +16,7 @@
   .settings-content
     = render 'form'
 
-%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'autodevops_settings_content' } }
+%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'autodevops-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = s_('CICD|Auto DevOps')
@@ -34,7 +34,7 @@
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
 - expand_runners = expanded || params[:expand_runners]
-%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expand_runners), data: { qa_selector: 'runners_settings_content' } }
+%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expand_runners), data: { testid: 'runners-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _("Runners")
@@ -58,7 +58,7 @@
     .settings-content
       #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
-%section.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
+%section.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { testid: 'variables-settings-content' } }
   .settings-header
     = render 'ci/variables/header', expanded: expanded
   .settings-content

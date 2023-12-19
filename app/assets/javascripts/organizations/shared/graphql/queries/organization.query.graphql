@@ -1,9 +1,7 @@
-query getOrganization($id: ID!) {
-  organization(id: $id) @client {
-    id
-    name
-    descriptionHtml
-    avatarUrl
-    webUrl
+#import "../fragments/organization.fragment.graphql"
+
+query getOrganization($id: OrganizationsOrganizationID!) {
+  organization(id: $id) {
+    ...Organization
   }
 }

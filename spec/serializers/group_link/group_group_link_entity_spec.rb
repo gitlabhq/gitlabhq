@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupLink::GroupGroupLinkEntity do
+RSpec.describe GroupLink::GroupGroupLinkEntity, feature_category: :groups_and_projects do
   include_context 'group_group_link'
 
   let_it_be(:current_user) { create(:user) }
@@ -15,6 +15,10 @@ RSpec.describe GroupLink::GroupGroupLinkEntity do
 
   it 'matches json schema' do
     expect(entity.to_json).to match_schema('group_link/group_group_link')
+  end
+
+  it 'correctly exposes `valid_roles`' do
+    expect(entity.as_json[:valid_roles]).to include(Gitlab::Access.options_with_owner)
   end
 
   context 'source' do
@@ -59,7 +63,7 @@ RSpec.describe GroupLink::GroupGroupLinkEntity do
         allow(entity).to receive(:direct_member?).and_return(false)
       end
 
-      it 'exposes `can_update` and `can_remove` as `true`' do
+      it 'exposes `can_update` and `can_remove` as `false`' do
         expect(as_json[:can_update]).to be false
         expect(as_json[:can_remove]).to be false
       end

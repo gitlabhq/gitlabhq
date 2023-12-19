@@ -5,12 +5,11 @@ import { sprintf, __, formatNumber } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerCreatedAt from '../runner_created_at.vue';
+import RunnerJobCount from '../runner_job_count.vue';
 import RunnerName from '../runner_name.vue';
 import RunnerTags from '../runner_tags.vue';
 import RunnerTypeBadge from '../runner_type_badge.vue';
 import RunnerManagersBadge from '../runner_managers_badge.vue';
-
-import { formatJobCount } from '../../utils';
 import {
   I18N_LOCKED_RUNNER_DESCRIPTION,
   I18N_VERSION_LABEL,
@@ -25,6 +24,7 @@ export default {
     TimeAgo,
     RunnerSummaryField,
     RunnerCreatedAt,
+    RunnerJobCount,
     RunnerName,
     RunnerTags,
     RunnerTypeBadge,
@@ -51,9 +51,6 @@ export default {
     },
     additionalIpAddressCount() {
       return this.managersCount - 1;
-    },
-    jobCount() {
-      return formatJobCount(this.runner.jobCount);
     },
     createdBy() {
       return this.runner?.createdBy;
@@ -135,7 +132,7 @@ export default {
       </runner-summary-field>
 
       <runner-summary-field icon="pipeline" data-testid="job-count" :tooltip="__('Jobs')">
-        {{ jobCount }}
+        <runner-job-count :runner="runner" />
       </runner-summary-field>
 
       <runner-summary-field icon="calendar">

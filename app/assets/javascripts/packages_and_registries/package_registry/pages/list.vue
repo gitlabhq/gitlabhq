@@ -82,6 +82,7 @@ export default {
         groupSort: this.isGroupPage ? this.sort : undefined,
         packageName: this.filters?.packageName,
         packageType: this.filters?.packageType,
+        packageVersion: this.filters?.packageVersion,
         first: GRAPHQL_PAGE_SIZE,
         ...this.pageParams,
       };
@@ -96,10 +97,10 @@ export default {
       return this.packages?.count;
     },
     hasFilters() {
-      return this.filters.packageName && this.filters.packageType;
+      return this.filters.packageName || this.filters.packageType || this.filters.packageVersion;
     },
     emptySearch() {
-      return !this.filters.packageName && !this.filters.packageType;
+      return !this.filters.packageName && !this.filters.packageType && !this.filters.packageVersion;
     },
     emptyStateTitle() {
       return this.emptySearch

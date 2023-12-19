@@ -3,13 +3,12 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-%h1.page-title.gl-font-size-h-display.d-flex.gl-align-items-center
-  .gl-display-flex.gl-align-items-center.gl-justify-content-center
-    = sprite_icon('github', css_class: 'gl-mr-3', size: 48)
-  = title
-%hr
+.gl-border-solid.gl-border-gray-100.gl-border-0.gl-border-b-1
+  %h1.gl-font-size-h1.gl-my-0.gl-py-4.gl-display-flex.gl-align-items-center.gl-gap-3
+    = sprite_icon('github', size: 24)
+    %span= title
 
-%p
+%p.gl-mt-5
   = import_github_authorize_message
 
 - if github_import_configured? && !has_ci_cd_only_params?
@@ -21,8 +20,9 @@
   %hr
 
 - unless github_import_configured? || has_ci_cd_only_params?
-  .bs-callout.bs-callout-info
-    = import_configure_github_admin_message
+  = render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
+    - c.with_body do
+      = import_configure_github_admin_message
 
 = form_tag personal_access_token_import_github_path, method: :post do
   .form-group

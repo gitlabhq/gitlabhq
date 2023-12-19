@@ -24,6 +24,12 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisitio
     expect { experiment(:example) {} }.not_to raise_error
   end
 
+  describe ".available?" do
+    it 'is false for foss' do
+      expect(described_class).not_to be_available
+    end
+  end
+
   describe "#publish" do
     it "tracks the assignment", :snowplow do
       expect(application_experiment).to receive(:track).with(:assignment)
@@ -169,33 +175,6 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisitio
   end
 
   describe "#process_redirect_url" do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:url, :processed_url) do
-      'https://about.gitlab.com/'                 | 'https://about.gitlab.com/'
-      'https://gitlab.com/'                       | 'https://gitlab.com/'
-      'http://docs.gitlab.com'                    | 'http://docs.gitlab.com'
-      'https://docs.gitlab.com/some/path?foo=bar' | 'https://docs.gitlab.com/some/path?foo=bar'
-      'http://badgitlab.com'                      | nil
-      'https://gitlab.com.nefarious.net'          | nil
-      'https://unknown.gitlab.com'                | nil
-      "https://badplace.com\nhttps://gitlab.com"  | nil
-      'https://gitlabbcom'                        | nil
-      'https://gitlabbcom/'                       | nil
-      'http://gdk.test/foo/bar'                   | 'http://gdk.test/foo/bar'
-      'http://localhost:3000/foo/bar'             | 'http://localhost:3000/foo/bar'
-    end
-
-    with_them do
-      it "returns the url or nil if invalid on SaaS", :saas do
-        expect(application_experiment.process_redirect_url(url)).to eq(processed_url)
-      end
-
-      it "considers all urls invalid when not on SaaS" do
-        expect(application_experiment.process_redirect_url(url)).to be_nil
-      end
-    end
-
     it "generates the correct urls based on where the engine was mounted" do
       url = Rails.application.routes.url_helpers.experiment_redirect_url(application_experiment, url: 'https://docs.gitlab.com')
       expect(url).to include("/-/experiment/namespaced%2Fstub:#{application_experiment.context.key}?https://docs.gitlab.com")
@@ -227,7 +206,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :acquisitio
     it "tracks an event", :snowplow do
       experiment(:top) { |e| e.control { experiment(:nested) {} } }
 
-      expect(Gitlab::Tracking).to have_received(:event).with( # rubocop:disable RSpec/ExpectGitlabTracking
+      expect(Gitlab::Tracking).to have_received(:event).with( # rubocop:disable RSpec/ExpectGitlabTracking -- Testing nested functionality
         'top',
         :nested,
         hash_including(label: 'nested')

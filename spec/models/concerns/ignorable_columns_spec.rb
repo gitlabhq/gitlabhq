@@ -27,6 +27,12 @@ RSpec.describe IgnorableColumns do
     expect { subject.ignore_columns(:name, remove_after: nil, remove_with: 12.6) }.to raise_error(ArgumentError, /Please indicate/)
   end
 
+  it 'allows setting remove_never: true and not setting other remove options' do
+    expect do
+      subject.ignore_columns(%i[name created_at], remove_never: true)
+    end.to change { subject.ignored_columns }.from([]).to(%w[name created_at])
+  end
+
   it 'requires remove_after attribute to be set' do
     expect { subject.ignore_columns(:name, remove_after: "not a date", remove_with: 12.6) }.to raise_error(ArgumentError, /Please indicate/)
   end
@@ -73,9 +79,11 @@ RSpec.describe IgnorableColumns do
   end
 
   describe IgnorableColumns::ColumnIgnore do
-    subject { described_class.new(remove_after, remove_with) }
+    subject { described_class.new(remove_after, remove_with, remove_never) }
 
+    let(:remove_after) { nil }
     let(:remove_with) { double }
+    let(:remove_never) { false }
 
     describe '#safe_to_remove?' do
       context 'after remove_after date has passed' do
@@ -90,6 +98,14 @@ RSpec.describe IgnorableColumns do
         let(:remove_after) { Date.today }
 
         it 'returns false (not safe to remove)' do
+          expect(subject.safe_to_remove?).to be_falsey
+        end
+      end
+
+      context 'with remove_never: true' do
+        let(:remove_never) { true }
+
+        it 'is false' do
           expect(subject.safe_to_remove?).to be_falsey
         end
       end

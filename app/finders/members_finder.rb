@@ -90,10 +90,8 @@ class MembersFinder
 
     # enumerate the columns here since we are enumerating them in the union and want to be immune to
     # column caching issues when adding/removing columns
-    members = Member.select(*Member.column_names)
-          .includes(:user).from([Arel.sql("(#{sql}) AS #{Member.table_name}")]) # rubocop: disable CodeReuse/ActiveRecord
-    # The left join with the table users in the method distinct_on needs to be resolved
-    members.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417456")
+    Member.select(*Member.column_names)
+          .preload(:user).from([Arel.sql("(#{sql}) AS #{Member.table_name}")]) # rubocop: disable CodeReuse/ActiveRecord -- TODO: Usage of `from` forces us to use this.
   end
 
   def distinct_on(union)
@@ -102,8 +100,7 @@ class MembersFinder
     <<~SQL
           SELECT DISTINCT ON (user_id, invite_email) #{member_columns}
           FROM (#{union.to_sql}) AS #{member_union_table}
-          LEFT JOIN users on users.id = member_union.user_id
-          LEFT JOIN project_authorizations on project_authorizations.user_id = users.id
+          LEFT JOIN project_authorizations on project_authorizations.user_id = member_union.user_id
                AND
                project_authorizations.project_id = #{project.id}
           ORDER BY user_id,

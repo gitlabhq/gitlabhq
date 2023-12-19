@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Creation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Code Suggestions development guidelines
@@ -42,7 +42,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 When testing interactions with the Model Gateway, you might want to integrate your local GDK
 with the deployed staging Model Gateway. To do this:
 
-1. You need a [cloud staging license](../../user/project/repository/code_suggestions/self_managed.md#update-gitlab) that has the Code Suggestions add-on, because add-ons are enabled on staging. Drop a note in the `#s_fulfillment` internal Slack channel to request an add-on to your license. See this [handbook page](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
+1. You need a [cloud staging license](../../user/project/repository/code_suggestions/self_managed.md#upgrade-gitlab) that has the Code Suggestions add-on, because add-ons are enabled on staging. Drop a note in the `#s_fulfillment` internal Slack channel to request an add-on to your license. See this [handbook page](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
 1. Set environment variables to point customers-dot to staging, and the Model Gateway to staging:
 
    ```shell

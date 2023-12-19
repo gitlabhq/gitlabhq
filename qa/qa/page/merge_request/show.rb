@@ -66,10 +66,6 @@ module QA
           element 'pipeline-id'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_failed_to_merge.vue' do
-          element 'merge-request-failed-refresh-button'
-        end
-
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_merged.vue' do
           element 'cherry-pick-button'
           element 'revert-button'
@@ -228,6 +224,24 @@ module QA
           has_element?('rebase-message')
         end
 
+        def merge_blocked_component_ff_enabled?
+          element = within_element('.mr-widget-section') do
+            feature_flag_controlled_element(
+              :merge_blocked_component,
+              'chevron-lg-down-icon',
+              'standard-rebase-button'
+            )
+          end
+
+          !(element == 'standard-rebase-button')
+        end
+
+        def expand_merge_checks
+          within_element('.mr-widget-section') do
+            click_element('chevron-lg-down-icon')
+          end
+        end
+
         def has_file?(file_name)
           open_file_tree
 
@@ -254,14 +268,10 @@ module QA
         end
 
         def has_merge_button?
-          refresh
-
-          has_element?('merge-button')
+          has_element?('merge-button', wait: 30)
         end
 
         def has_no_merge_button?
-          refresh
-
           has_no_element?('merge-button')
         end
 
@@ -417,12 +427,6 @@ module QA
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
           click_by_javascript(find_element('mr-code-dropdown'))
           visit_link_in_element('download-plain-diff-menu-item')
-        end
-
-        def wait_for_merge_request_error_message
-          wait_until(max_duration: 30, reload: false) do
-            has_element?('merge-request-failed-refresh-button')
-          end
         end
 
         def click_open_in_web_ide

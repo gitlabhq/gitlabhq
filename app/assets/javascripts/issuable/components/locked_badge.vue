@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-gl-tooltip :title="title" variant="warning">
+  <gl-badge v-gl-tooltip :title="title" variant="warning" data-testid="locked-badge">
     <gl-icon name="lock" />
     <span class="gl-sr-only">{{ __('Locked') }}</span>
   </gl-badge>

@@ -19,7 +19,12 @@ module Types
         field :allows_scoped_labels, GraphQL::Types::Boolean,
           null: true,
           method: :allows_scoped_labels?,
-          description: 'Indicates whether a scoped label is allowed.'
+          description: 'Indicates whether a scoped label is allowed.',
+          deprecated: {
+            milestone: '16.7',
+            replacement: 'WorkItemWidgetDefinitionLabels.allowsScopedLabels',
+            reason: 'Field moved to workItemType widget definition interface'
+          }
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

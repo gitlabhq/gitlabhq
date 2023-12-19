@@ -1,0 +1,8 @@
+---
+name: product_analytics_usage_quota_annual_data
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136932
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432734
+milestone: '16.7'
+type: development
+group: group::product analytics
+default_enabled: false

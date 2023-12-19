@@ -11,5 +11,13 @@ FactoryBot.define do
         e.metadata = FactoryBot.create_list(:ml_experiment_metadata, 2, experiment: e) # rubocop:disable StrategyInCallback
       end
     end
+
+    trait :with_candidates do
+      candidates do
+        Array.new(2) do
+          association(:ml_candidates, project: project)
+        end
+      end
+    end
   end
 end

@@ -9,6 +9,11 @@ module Gitlab
 
       included do
         include ApplicationWorker
+        include GithubImport::Queue
+
+        sidekiq_options retry: 6
+
+        sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
 
         sidekiq_retries_exhausted do |msg, e|
           Gitlab::Import::ImportFailureService.track(
@@ -37,8 +42,6 @@ module Gitlab
         # - Continue their loop from where it left off:
         #   https://gitlab.com/gitlab-org/gitlab/-/blob/024235ec/lib/gitlab/github_import/importer/pull_requests/review_requests_importer.rb#L15
         def resumes_work_when_interrupted!
-          return unless Feature.enabled?(:github_importer_raise_max_interruptions)
-
           sidekiq_options max_retries_after_interruption: MAX_RETRIES_AFTER_INTERRUPTION
         end
       end
@@ -79,7 +82,7 @@ module Gitlab
       # client - An instance of Gitlab::GithubImport::Client.
       # project - An instance of Project.
       def try_import(client, project)
-        project.import_state.refresh_jid_expiration
+        RefreshImportJidWorker.perform_in_the_future(project.id, jid)
 
         import(client, project)
       rescue RateLimitError

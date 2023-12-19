@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Maintenance Mode **(PREMIUM SELF)**
@@ -21,8 +21,7 @@ Maintenance Mode allows most external actions that do not change internal state.
 Enable Maintenance Mode as an administrator in one of these ways:
 
 - **Web UI**:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -46,8 +45,7 @@ Enable Maintenance Mode as an administrator in one of these ways:
 Disable Maintenance Mode in one of three ways:
 
 - **Web UI**:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -162,13 +160,13 @@ You should disable auto deploys during Maintenance Mode, and enable them when it
 
 Terraform integration depends on running CI pipelines, hence it is blocked.
 
-### Container Registry
+### Container registry
 
 `docker push` fails with this error: `denied: requested access to the resource is denied`, but `docker pull` works.
 
-### Package Registry
+### Package registry
 
-Package Registry allows you to install but not publish packages.
+Package registry allows you to install but not publish packages.
 
 ### Background jobs
 
@@ -181,9 +179,8 @@ you should disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Monitoring > Background Jobs**.
 1. In the Sidekiq dashboard, select **Cron** and disable jobs individually or all at once by selecting **Disable All**.
 
 ### Incident management

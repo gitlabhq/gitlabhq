@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
@@ -8,7 +8,10 @@ import SidebarReviewers from '~/sidebar/components/reviewers/sidebar_reviewers.v
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import Mock from '../../mock_data';
+
+jest.mock('~/super_sidebar/user_counts_fetch');
 
 Vue.use(VueApollo);
 
@@ -39,7 +42,7 @@ describe('sidebar reviewers', () => {
     axiosMock = new AxiosMockAdapter(axios);
     mediator = new SidebarMediator(Mock.mediator);
 
-    jest.spyOn(mediator, 'saveReviewers');
+    jest.spyOn(mediator, 'saveReviewers').mockResolvedValue({});
     jest.spyOn(mediator, 'addSelfReview');
   });
 
@@ -58,6 +61,17 @@ describe('sidebar reviewers', () => {
     wrapper.vm.saveReviewers();
 
     expect(mediator.saveReviewers).toHaveBeenCalled();
+  });
+
+  it('re-fetches user counts after saving reviewers', async () => {
+    createComponent();
+
+    expect(fetchUserCounts).not.toHaveBeenCalled();
+
+    wrapper.vm.saveReviewers();
+    await nextTick();
+
+    expect(fetchUserCounts).toHaveBeenCalled();
   });
 
   it('calls the mediator when "reviewBySelf" method is called', () => {

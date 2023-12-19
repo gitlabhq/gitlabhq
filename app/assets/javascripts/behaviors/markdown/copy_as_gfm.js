@@ -152,7 +152,9 @@ export class CopyAsGFM {
     if (lineElements.length > 0) {
       for (let i = 0; i < lineElements.length; i += 1) {
         const lineElement = lineElements[i];
-        codeElement.appendChild(lineElement);
+        const line = document.createElement('span');
+        line.append(...lineElement.childNodes);
+        codeElement.appendChild(line);
         codeElement.appendChild(document.createTextNode('\n'));
       }
     } else {

@@ -1,14 +1,14 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Registry API **(FREE ALL)**
+# Container registry API **(FREE ALL)**
 
 > The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
 
-This API documentation is about the [GitLab Container Registry](../user/packages/container_registry/index.md).
+This API documentation is about the [GitLab container registry](../user/packages/container_registry/index.md).
 
 When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
 from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
@@ -29,11 +29,11 @@ To disable it:
 Feature.disable(:ci_job_token_scope)
 ```
 
-## Change the visibility of the Container Registry
+## Change the visibility of the container registry
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
 
-This controls who can view the Container Registry.
+This controls who can view the container registry.
 
 ```plaintext
 PUT /projects/:id/
@@ -42,21 +42,21 @@ PUT /projects/:id/
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) accessible by the authenticated user. |
-| `container_registry_access_level` | string | no | The desired visibility of the Container Registry. One of `enabled` (default), `private`, or `disabled`. |
+| `container_registry_access_level` | string | no | The desired visibility of the container registry. One of `enabled` (default), `private`, or `disabled`. |
 
 Descriptions of the possible values for `container_registry_access_level`:
 
-- **enabled** (Default): The Container Registry is visible to everyone with access to the project.
-If the project is public, the Container Registry is also public. If the project is internal or
-private, the Container Registry is also internal or private.
+- **enabled** (Default): The container registry is visible to everyone with access to the project.
+If the project is public, the container registry is also public. If the project is internal or
+private, the container registry is also internal or private.
 
-- **private**: The Container Registry is visible only to project members with Reporter role or
-higher. This behavior is similar to that of a private project with Container Registry visibility set
+- **private**: The container registry is visible only to project members with Reporter role or
+higher. This behavior is similar to that of a private project with container registry visibility set
 to **enabled**.
 
-- **disabled**: The Container Registry is disabled.
+- **disabled**: The container registry is disabled.
 
-See the [Container Registry visibility permissions](../user/packages/container_registry/index.md#container-registry-visibility-permissions)
+See the [container registry visibility permissions](../user/packages/container_registry/index.md#container-registry-visibility-permissions)
 for more details about the permissions that this setting grants to users.
 
 ```shell
@@ -80,7 +80,7 @@ Example response:
 }
 ```
 
-## Container Registry pagination
+## Container registry pagination
 
 By default, `GET` requests return 20 results at a time because the API results
 are [paginated](rest/index.md#pagination).
@@ -116,7 +116,8 @@ Example response:
     "project_id": 9,
     "location": "gitlab.example.com:5000/group/project",
     "created_at": "2019-01-10T13:38:57.391Z",
-    "cleanup_policy_started_at": "2020-01-10T15:40:57.391Z"
+    "cleanup_policy_started_at": "2020-01-10T15:40:57.391Z",
+    "status": null
   },
   {
     "id": 2,
@@ -125,7 +126,8 @@ Example response:
     "project_id": 9,
     "location": "gitlab.example.com:5000/group/project/releases",
     "created_at": "2019-01-10T13:39:08.229Z",
-    "cleanup_policy_started_at": "2020-08-17T03:12:35.489Z"
+    "cleanup_policy_started_at": "2020-08-17T03:12:35.489Z",
+    "status": "delete_ongoing"
   }
 ]
 ```
@@ -189,7 +191,7 @@ GET /registry/repositories/:id
 | `id`      | integer/string | yes | The ID of the registry repository accessible by the authenticated user. |
 | `tags`      | boolean | no | If the parameter is included as `true`, the response includes an array of `"tags"`. |
 | `tags_count` | boolean | no | If the parameter is included as `true`, the response includes `"tags_count"`. |
-| `size` | boolean | no | If the parameter is included as `true`, the response includes `"size"`. This is the deduplicated size of all images within the repository. Deduplication eliminates extra copies of identical data. For example, if you upload the same image twice, the Container Registry stores only one copy. This field is only available on GitLab.com for repositories created after `2021-11-04`. |
+| `size` | boolean | no | If the parameter is included as `true`, the response includes `"size"`. This is the deduplicated size of all images within the repository. Deduplication eliminates extra copies of identical data. For example, if you upload the same image twice, the container registry stores only one copy. This field is only available on GitLab.com for repositories created after `2021-11-04`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -215,7 +217,8 @@ Example response:
       "location": "gitlab.example.com:5000/group/project:0.0.1"
     }
   ],
-  "size": 2818413
+  "size": 2818413,
+  "status": "delete_scheduled"
 }
 ```
 
@@ -337,7 +340,7 @@ This action doesn't delete blobs. To delete them and recycle disk space,
 Delete registry repository tags in bulk based on given criteria.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Use the Container Registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
+For an overview, see [Use the container registry API to delete all tags except *](https://youtu.be/Hi19bKe_xsg).
 
 ```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags
@@ -373,8 +376,8 @@ action doesn't delete blobs. To delete them and recycle disk space,
 
 WARNING:
 The number of tags deleted by this API is limited on GitLab.com
-because of the scale of the Container Registry there.
-If your Container Registry has a large number of tags to delete,
+because of the scale of the container registry there.
+If your container registry has a large number of tags to delete,
 only some of them are deleted, and you might need to call this API multiple times.
 To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
@@ -423,7 +426,7 @@ curl --request DELETE --data-urlencode 'name_regex_delete=dev-.+' \
 ## Instance-wide endpoints
 
 Beside the group- and project-specific GitLab APIs explained above,
-the Container Registry has its own endpoints.
+the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).
 

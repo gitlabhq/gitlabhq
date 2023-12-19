@@ -31,7 +31,7 @@ module Ci
         span_class = 'gl-text-orange-500'
       end
 
-      content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner_status_icon', qa_selector: "runner_status_#{status}_content" }) do
+      content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
         sprite_icon(icon, size: size, css_class: icon_class)
       end
     end
@@ -50,16 +50,6 @@ module Ci
         end
       else
         display_name + id
-      end
-    end
-
-    # Due to inability of performing sorting of runners by cached "contacted_at" values we have to show uncached values if sorting by "contacted_asc" is requested.
-    # Please refer to the following issue for more details: https://gitlab.com/gitlab-org/gitlab-foss/issues/55920
-    def runner_contacted_at(runner)
-      if params[:sort] == 'contacted_asc'
-        runner.uncached_contacted_at
-      else
-        runner.contacted_at
       end
     end
 

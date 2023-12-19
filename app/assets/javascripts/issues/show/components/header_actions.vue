@@ -142,8 +142,8 @@ export default {
     deleteButtonText() {
       return sprintf(__('Delete %{issuableType}'), { issuableType: this.issueTypeText });
     },
-    qaSelector() {
-      return this.isClosed ? 'reopen_issue_button' : 'close_issue_button';
+    testId() {
+      return this.isClosed ? 'reopen-issue-button' : 'close-issue-button';
     },
     dropdownText() {
       return sprintf(__('%{issueType} actions'), {
@@ -308,7 +308,7 @@ export default {
 
 <template>
   <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
-    <div class="gl-sm-display-none! w-100">
+    <div class="gl-md-display-none! gl-w-full">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
         ref="issuableActionsDropdownMobile"
@@ -320,7 +320,7 @@ export default {
         :loading="isToggleStateButtonLoading"
         placement="right"
       >
-        <template v-if="showMovedSidebarOptions">
+        <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget
             :iid="String(iid)"
             :full-path="fullPath"
@@ -340,7 +340,7 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="showToggleIssueStateButton"
-          :data-testid="`mobile_${qaSelector}`"
+          :data-testid="`mobile-${testId}`"
           @action="toggleIssueState"
         >
           <template #list-item>{{ buttonText }}</template>
@@ -352,7 +352,7 @@ export default {
         <template v-if="isMrSidebarMoved">
           <gl-disclosure-dropdown-item
             :data-clipboard-text="issuableReference"
-            button-class="js-copy-reference"
+            class="js-copy-reference"
             data-testid="copy-reference"
             @action="copyReference"
             ><template #list-item>{{
@@ -398,7 +398,7 @@ export default {
       v-gl-tooltip.bottom
       :title="$options.i18n.editTitleAndDescription"
       :aria-label="$options.i18n.editTitleAndDescription"
-      class="js-issuable-edit gl-display-none! gl-sm-display-block!"
+      class="js-issuable-edit gl-display-none! gl-md-display-block!"
       data-testid="edit-button"
       @click="edit"
     >
@@ -410,7 +410,7 @@ export default {
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
       v-gl-tooltip.hover
-      class="gl-display-none gl-sm-display-inline-flex!"
+      class="gl-display-none gl-md-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
       placement="left"
@@ -453,7 +453,7 @@ export default {
       <template v-if="isMrSidebarMoved">
         <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
-          button-class="js-copy-reference"
+          class="js-copy-reference"
           data-testid="copy-reference"
           @action="copyReference"
           ><template #list-item>{{

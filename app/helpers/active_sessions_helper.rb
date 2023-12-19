@@ -24,6 +24,6 @@ module ActiveSessionsHelper
   end
 
   def revoke_session_path(active_session)
-    profile_active_session_path(active_session.session_private_id)
+    user_settings_active_session_path(active_session.session_private_id)
   end
 end

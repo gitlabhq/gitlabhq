@@ -15,6 +15,8 @@ module Gitlab
         end
 
         def execute
+          return if skip
+
           log_info(import_stage: 'import_pull_request', message: 'starting', iid: object[:iid])
 
           description = ''
@@ -57,6 +59,15 @@ module Gitlab
         private
 
         attr_reader :object, :project, :formatter, :user_finder
+
+        def skip
+          return false unless object[:source_and_target_project_different]
+
+          message = 'skipping because source and target projects are different'
+          log_info(import_stage: 'import_pull_request', message: message, iid: object[:iid])
+
+          true
+        end
 
         def author_line
           return '' if find_user_id

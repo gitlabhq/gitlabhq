@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Offline environments **(FREE SELF)**
@@ -124,7 +123,7 @@ include:
 ```
 
 The pipeline downloads the Docker images needed for the Security Scanners and saves them as
-[job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [Container Registry](../../packages/container_registry/index.md)
+[job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [container registry](../../packages/container_registry/index.md)
 of the project where the pipeline is executed. These archives can be transferred to another location
 and [loaded](https://docs.docker.com/engine/reference/commandline/load/) in a Docker daemon.
 This method requires a runner with access to both `gitlab.com` (including

@@ -152,19 +152,26 @@ describe('markdownSerializer', () => {
     expect(serialize(paragraph(italic('italics')))).toBe('_italics_');
   });
 
-  it('correctly serializes code blocks wrapped by italics and bold marks', () => {
-    const codeBlockContent = 'code block';
+  it.each`
+    input                          | output
+    ${'code'}                      | ${'`code`'}
+    ${'code `with` backticks'}     | ${'``code `with` backticks``'}
+    ${'this is `inline-code`'}     | ${'`` this is `inline-code` ``'}
+    ${'`inline-code` in markdown'} | ${'`` `inline-code` in markdown ``'}
+    ${'```js'}                     | ${'`` ```js ``'}
+  `('correctly serializes inline code ("$input")', ({ input, output }) => {
+    expect(serialize(paragraph(code(input)))).toBe(output);
+  });
 
-    expect(serialize(paragraph(italic(code(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
-    expect(serialize(paragraph(code(italic(codeBlockContent))))).toBe(`_\`${codeBlockContent}\`_`);
-    expect(serialize(paragraph(bold(code(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
-    expect(serialize(paragraph(code(bold(codeBlockContent))))).toBe(`**\`${codeBlockContent}\`**`);
-    expect(serialize(paragraph(strike(code(codeBlockContent))))).toBe(
-      `~~\`${codeBlockContent}\`~~`,
-    );
-    expect(serialize(paragraph(code(strike(codeBlockContent))))).toBe(
-      `~~\`${codeBlockContent}\`~~`,
-    );
+  it('correctly serializes inline code wrapped by italics and bold marks', () => {
+    const content = 'code';
+
+    expect(serialize(paragraph(italic(code(content))))).toBe(`_\`${content}\`_`);
+    expect(serialize(paragraph(code(italic(content))))).toBe(`_\`${content}\`_`);
+    expect(serialize(paragraph(bold(code(content))))).toBe(`**\`${content}\`**`);
+    expect(serialize(paragraph(code(bold(content))))).toBe(`**\`${content}\`**`);
+    expect(serialize(paragraph(strike(code(content))))).toBe(`~~\`${content}\`~~`);
+    expect(serialize(paragraph(code(strike(content))))).toBe(`~~\`${content}\`~~`);
   });
 
   it('correctly serializes inline diff', () => {
@@ -461,6 +468,52 @@ this is not really json:table but just trying out whether this case works or not
     );
   });
 
+  it('correctly serializes a markdown code block containing a nested code block', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'markdown' },
+          'markdown code block **bold** _italic_ `code`\n\n```js\nvar a = 0;\n```\n\nend markdown code block',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`\`markdown
+markdown code block **bold** _italic_ \`code\`
+
+\`\`\`js
+var a = 0;
+\`\`\`
+
+end markdown code block
+\`\`\`\`
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes a markdown code block containing a markdown code block containing another code block', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'markdown' },
+          '````md\na nested code block\n\n```js\nvar a = 0;\n```\n````',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`\`\`markdown
+\`\`\`\`md
+a nested code block
+
+\`\`\`js
+var a = 0;
+\`\`\`
+\`\`\`\`
+\`\`\`\`\`
+      `.trim(),
+    );
+  });
+
   it('correctly serializes emoji', () => {
     expect(serialize(paragraph(emoji({ name: 'dog' })))).toBe(':dog:');
   });
@@ -603,6 +656,34 @@ this is not really json:table but just trying out whether this case works or not
 + list item 3
   - sub-list item 1
   - sub-list item 2
+      `.trim(),
+    );
+  });
+
+  it('correctly serializes bullet task list with different bullet styles', () => {
+    expect(
+      serialize(
+        taskList(
+          { bullet: '+' },
+          taskItem({ checked: true }, paragraph('list item 1')),
+          taskItem(paragraph('list item 2')),
+          taskItem(
+            paragraph('list item 3'),
+            taskList(
+              { bullet: '-' },
+              taskItem({ checked: true }, paragraph('sub-list item 1')),
+              taskItem(paragraph('sub-list item 2')),
+            ),
+          ),
+        ),
+      ),
+    ).toBe(
+      `
++ [x] list item 1
++ [ ] list item 2
++ [ ] list item 3
+  - [x] sub-list item 1
+  - [ ] sub-list item 2
       `.trim(),
     );
   });

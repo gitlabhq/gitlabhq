@@ -122,12 +122,12 @@ describe('date_format_utility.js', () => {
 describe('formatTimeAsSummary', () => {
   it.each`
     unit         | value   | result
-    ${'months'}  | ${1.5}  | ${'1.5M'}
-    ${'weeks'}   | ${1.25} | ${'1.5w'}
-    ${'days'}    | ${2}    | ${'2d'}
-    ${'hours'}   | ${10}   | ${'10h'}
-    ${'minutes'} | ${20}   | ${'20m'}
-    ${'seconds'} | ${10}   | ${'<1m'}
+    ${'months'}  | ${1.5}  | ${'1.5 months'}
+    ${'weeks'}   | ${1.25} | ${'1.5 weeks'}
+    ${'days'}    | ${2}    | ${'2 days'}
+    ${'hours'}   | ${10}   | ${'10 hours'}
+    ${'minutes'} | ${20}   | ${'20 minutes'}
+    ${'seconds'} | ${10}   | ${'<1 minute'}
     ${'seconds'} | ${0}    | ${'-'}
   `('will format $value $unit to $result', ({ unit, value, result }) => {
     expect(utils.formatTimeAsSummary({ [unit]: value })).toBe(result);

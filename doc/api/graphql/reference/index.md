@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 <!---
@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This documentation is self-generated based on GitLab current GraphQL schema.
 
-The API can be explored interactively using the [GraphiQL IDE](../index.md#graphiql).
+The API can be explored using the [interactive GraphQL explorer](../index.md#interactive-graphql-explorer).
 
 Each table below documents a GraphQL type. Types match loosely to models, but not all
 fields and methods on a model are available via GraphQL.
@@ -64,13 +64,30 @@ Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryabusereportlabelssearchterm"></a>`searchTerm` | [`String`](#string) | Search term to find labels with. |
+
+### `Query.addOnPurchase`
+
+Retrieve the active add-on purchase. This query can be used in GitLab SaaS and self-managed environments.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AddOnPurchase`](#addonpurchase).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaddonpurchaseaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add-on for the add-on purchase. |
+| <a id="queryaddonpurchasenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-on was purchased for. |
 
 ### `Query.aiMessages`
 
@@ -84,7 +101,7 @@ Returns [`AiMessageConnection!`](#aimessageconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -101,7 +118,17 @@ Returns [`AuditEventDefinitionConnection!`](#auditeventdefinitionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+### `Query.auditEventsInstanceAmazonS3Configurations`
+
+Instance-level Amazon S3 configurations for audit events.
+
+Returns [`InstanceAmazonS3ConfigurationTypeConnection`](#instanceamazons3configurationtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.boardList`
 
@@ -151,7 +178,7 @@ Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -187,7 +214,7 @@ Returns [`CiMinutesNamespaceMonthlyUsageConnection`](#ciminutesnamespacemonthlyu
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -234,7 +261,7 @@ Returns [`CiInstanceVariableConnection`](#ciinstancevariableconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -264,7 +291,7 @@ Returns [`CurrentLicense`](#currentlicense).
 
 Get information about current user.
 
-Returns [`UserCore`](#usercore).
+Returns [`CurrentUser`](#currentuser).
 
 ### `Query.designManagement`
 
@@ -280,7 +307,7 @@ Returns [`DevopsAdoptionEnabledNamespaceConnection`](#devopsadoptionenablednames
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -329,21 +356,13 @@ Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
 
 ### `Query.frecentGroups`
 
-A user's frecently visited groups. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
-
-WARNING:
-**Introduced** in 16.6.
-This feature is an Experiment. It can be changed or removed at any time.
+A user's frecently visited groups.
 
 Returns [`[Group!]`](#group).
 
 ### `Query.frecentProjects`
 
-A user's frecently visited projects. Requires the `frecent_namespaces_suggestions` feature flag to be enabled.
-
-WARNING:
-**Introduced** in 16.6.
-This feature is an Experiment. It can be changed or removed at any time.
+A user's frecently visited projects.
 
 Returns [`[Project!]`](#project).
 
@@ -385,7 +404,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -401,7 +420,7 @@ Returns [`InstanceExternalAuditEventDestinationConnection`](#instanceexternalaud
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.instanceGoogleCloudLoggingConfigurations`
 
@@ -411,7 +430,7 @@ Returns [`InstanceGoogleCloudLoggingConfigurationTypeConnection`](#instancegoogl
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.instanceSecurityDashboard`
 
@@ -443,7 +462,7 @@ Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -508,7 +527,7 @@ Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -526,7 +545,7 @@ Returns [`LicenseHistoryEntryConnection`](#licensehistoryentryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.memberRole`
 
@@ -548,11 +567,15 @@ Returns [`MemberRole`](#memberrole).
 
 List of all customizable permissions.
 
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`CustomizablePermissionConnection`](#customizablepermissionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.mergeRequest`
 
@@ -583,6 +606,22 @@ Returns [`Milestone`](#milestone).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querymilestoneid"></a>`id` | [`MilestoneID!`](#milestoneid) | Find a milestone by its ID. |
+
+### `Query.mlModel`
+
+Find machine learning models.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MlModel`](#mlmodel).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 
 ### `Query.namespace`
 
@@ -660,7 +699,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -706,7 +745,7 @@ Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.runnerSetup`
 
@@ -735,7 +774,7 @@ Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -752,6 +791,27 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 | <a id="queryrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
+### `Query.selfManagedAddOnEligibleUsers`
+
+Users within the self-managed instance who are eligible for add-ons.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`AddOnUserConnection`](#addonuserconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryselfmanagedaddoneligibleusersaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add on to filter the eligible users by. |
+| <a id="queryselfmanagedaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
+
 ### `Query.snippets`
 
 Find Snippets visible to the current user.
@@ -760,7 +820,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -781,7 +841,7 @@ Returns [`SubscriptionFutureEntryConnection`](#subscriptionfutureentryconnection
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.syntheticNote`
 
@@ -808,7 +868,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -843,7 +903,7 @@ Returns [`TopicConnection`](#topicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -859,7 +919,7 @@ Returns [`UsageTrendsMeasurementConnection`](#usagetrendsmeasurementconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -890,7 +950,7 @@ Returns [`UserCoreConnection`](#usercoreconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -910,7 +970,7 @@ Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -940,7 +1000,7 @@ Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
@@ -977,6 +1037,27 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 
+### `Query.workItemsByReference`
+
+Find work items by their reference.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemsbyreferencecontextnamespacepath"></a>`contextNamespacePath` | [`ID`](#id) | Full path of the context namespace (project or group). |
+| <a id="queryworkitemsbyreferencerefs"></a>`refs` | [`[String!]!`](#string) | Work item references. Can be either a short reference or URL. |
+
 ### `Query.workspace`
 
 Find a workspace.
@@ -995,7 +1076,7 @@ Returns [`Workspace`](#workspace).
 
 ### `Query.workspaces`
 
-Find workspaces owned by the current user by their IDs.
+Find workspaces across the entire instance. This field is only available to instance admins, it will return an empty result for all non-admins.
 
 WARNING:
 **Introduced** in 16.0.
@@ -1005,15 +1086,18 @@ Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="queryworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="queryworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="queryworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="queryworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="queryworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="queryworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="queryworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+| <a id="queryworkspacesuserids"></a>`userIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by user GlobalIDs. |
 
 ## `Mutation` type
 
@@ -1212,6 +1296,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactusedcdn"></a>`artifactUsedCdn` | [`String`](#string) | Delete jobs matching artifact_used_cdn in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsdependenciescount"></a>`artifactsDependenciesCount` | [`String`](#string) | Delete jobs matching artifacts_dependencies_count in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsartifactsdependenciessize"></a>`artifactsDependenciesSize` | [`String`](#string) | Delete jobs matching artifacts_dependencies_size in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobsbulkimportentityid"></a>`bulkImportEntityId` | [`String`](#string) | Delete jobs matching bulk_import_entity_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobscallerid"></a>`callerId` | [`String`](#string) | Delete jobs matching caller_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientid"></a>`clientId` | [`String`](#string) | Delete jobs matching client_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
@@ -1263,7 +1348,6 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
-| <a id="mutationaiactiontanukibot"></a>`tanukiBot` | [`AiTanukiBotInput`](#aitanukibotinput) | Input for tanuki_bot AI action. |
 
 #### Fields
 
@@ -1426,6 +1510,71 @@ Input type: `AuditEventsAmazonS3ConfigurationUpdateInput`
 | <a id="mutationauditeventsamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.auditEventsInstanceAmazonS3ConfigurationCreate`
+
+Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreatesecretaccesskey"></a>`secretAccessKey` | [`String!`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationcreateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Created instance Amazon S3 configuration. |
+
+### `Mutation.auditEventsInstanceAmazonS3ConfigurationDelete`
+
+Input type: `AuditEventsInstanceAmazonS3ConfigurationDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationdeleteid"></a>`id` | [`AuditEventsInstanceAmazonS3ConfigurationID!`](#auditeventsinstanceamazons3configurationid) | ID of the instance-level Amazon S3 configuration to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.auditEventsInstanceAmazonS3ConfigurationUpdate`
+
+Input type: `AuditEventsInstanceAmazonS3ConfigurationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateaccesskeyxid"></a>`accessKeyXid` | [`String`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateawsregion"></a>`awsRegion` | [`String`](#string) | AWS region where the bucket is created. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatebucketname"></a>`bucketName` | [`String`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateid"></a>`id` | [`AuditEventsInstanceAmazonS3ConfigurationID!`](#auditeventsinstanceamazons3configurationid) | ID of the instance-level Amazon S3 configuration to update. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdatesecretaccesskey"></a>`secretAccessKey` | [`String`](#string) | Secret access key of the Amazon S3 account. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsinstanceamazons3configurationupdateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Updated instance-level Amazon S3 configuration. |
+
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
 Input type: `AuditEventsStreamingDestinationEventsAddInput`
@@ -1586,6 +1735,24 @@ Input type: `AuditEventsStreamingHTTPNamespaceFiltersAddInput`
 | <a id="mutationauditeventsstreaminghttpnamespacefiltersaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsstreaminghttpnamespacefiltersadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsstreaminghttpnamespacefiltersaddnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | Namespace filter created. |
+
+### `Mutation.auditEventsStreamingHttpNamespaceFiltersDelete`
+
+Input type: `AuditEventsStreamingHTTPNamespaceFiltersDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersdeletenamespacefilterid"></a>`namespaceFilterId` | [`AuditEventsStreamingHTTPNamespaceFilterID!`](#auditeventsstreaminghttpnamespacefilterid) | Namespace filter ID. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsstreaminghttpnamespacefiltersdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.auditEventsStreamingInstanceHeadersCreate`
 
@@ -1778,6 +1945,31 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.branchRuleUpdate`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `BranchRuleUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleupdateid"></a>`id` | [`ProtectedBranchID!`](#protectedbranchid) | Global ID of the protected branch. |
+| <a id="mutationbranchruleupdatename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
+| <a id="mutationbranchruleupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path to the project that the branch is associated with. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleupdatebranchrule"></a>`branchRule` | [`BranchRule`](#branchrule) | Branch rule after mutation. |
+| <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.buildForecast`
 
 WARNING:
@@ -1874,28 +2066,6 @@ Input type: `BulkRunnerDeleteInput`
 | <a id="mutationbulkrunnerdeletedeletedids"></a>`deletedIds` | [`[CiRunnerID!]`](#cirunnerid) | IDs of records effectively deleted. Only present if operation was performed synchronously. |
 | <a id="mutationbulkrunnerdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.catalogResourceUnpublish`
-
-WARNING:
-**Introduced** in 16.6.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Input type: `CatalogResourceUnpublishInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourceunpublishid"></a>`id` | [`CiCatalogResourceID!`](#cicatalogresourceid) | Global ID of the catalog resource to unpublish. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationcatalogresourceunpublishclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourceunpublisherrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-
 ### `Mutation.catalogResourcesCreate`
 
 WARNING:
@@ -1909,7 +2079,7 @@ Input type: `CatalogResourcesCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcatalogresourcescreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to convert to a catalog resource. |
+| <a id="mutationcatalogresourcescreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path belonging to the catalog resource. |
 
 #### Fields
 
@@ -1918,29 +2088,27 @@ Input type: `CatalogResourcesCreateInput`
 | <a id="mutationcatalogresourcescreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcatalogresourcescreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.ciAiGenerateConfig`
+### `Mutation.catalogResourcesDestroy`
 
 WARNING:
-**Introduced** in 16.0.
+**Introduced** in 16.6.
 This feature is an Experiment. It can be changed or removed at any time.
 
-Input type: `CiAiGenerateConfigInput`
+Input type: `CatalogResourcesDestroyInput`
 
 #### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationciaigenerateconfigclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationciaigenerateconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path for the project related to the open config editor. |
-| <a id="mutationciaigenerateconfigusercontent"></a>`userContent` | [`String!`](#string) | Content of the user message to be sent to the language model. |
+| <a id="mutationcatalogresourcesdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcesdestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path belonging to the catalog resource. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationciaigenerateconfigclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationciaigenerateconfigerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`DeprecatedAiMessage`](#deprecatedaimessage) | User Chat message. |
+| <a id="mutationcatalogresourcesdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcatalogresourcesdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.ciJobTokenScopeAddProject`
 
@@ -2365,10 +2533,10 @@ Input type: `CreateContainerRegistryProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | ContainerRegistryname protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatecontainerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from deleting container images in the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 | <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
 | <a id="mutationcreatecontainerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationcreatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 #### Fields
 
@@ -3121,6 +3289,31 @@ Input type: `DeleteAnnotationInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeleteannotationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.deleteContainerRegistryProtectionRule`
+
+Deletes a container registry protection rule. Available only when feature flag `container_registry_protected_containers` is enabled.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `DeleteContainerRegistryProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule that was deleted successfully. |
+| <a id="mutationdeletecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.deletePackagesProtectionRule`
 
@@ -5138,9 +5331,10 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
-| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group the member role to mutate is in. |
+| <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID`](#id) | Group the member role to mutate is in. Required for SaaS. |
 | <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
 | <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberrolecreatepermissions"></a>`permissions` | [`[MemberRolePermission!]`](#memberrolepermission) | List of all customizable permissions. |
 | <a id="mutationmemberrolecreatereadcode"></a>`readCode` | [`Boolean`](#boolean) | Permission to read code. |
 | <a id="mutationmemberrolecreatereaddependency"></a>`readDependency` | [`Boolean`](#boolean) | Permission to read dependency. |
 | <a id="mutationmemberrolecreatereadvulnerability"></a>`readVulnerability` | [`Boolean`](#boolean) | Permission to read vulnerability. |
@@ -5152,6 +5346,29 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmemberrolecreatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+
+### `Mutation.memberRoleDelete`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `MemberRoleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroledeleteid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberroledeletememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Deleted member role. |
 
 ### `Mutation.memberRoleUpdate`
 
@@ -5663,7 +5880,9 @@ Input type: `OrganizationCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationorganizationcreateavatar"></a>`avatar` | [`Upload`](#upload) | Avatar for the organization. |
 | <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationcreatedescription"></a>`description` | [`String`](#string) | Description of the organization. |
 | <a id="mutationorganizationcreatename"></a>`name` | [`String!`](#string) | Name for the organization. |
 | <a id="mutationorganizationcreatepath"></a>`path` | [`String!`](#string) | Path for the organization. |
 
@@ -5673,7 +5892,34 @@ Input type: `OrganizationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationorganizationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization created. |
+| <a id="mutationorganizationcreateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
+
+### `Mutation.organizationUpdate`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `OrganizationUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationupdateavatar"></a>`avatar` | [`Upload`](#upload) | Avatar for the organization. |
+| <a id="mutationorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationupdatedescription"></a>`description` | [`String`](#string) | Description of the organization. |
+| <a id="mutationorganizationupdateid"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to mutate. |
+| <a id="mutationorganizationupdatename"></a>`name` | [`String`](#string) | Name for the organization. |
+| <a id="mutationorganizationupdatepath"></a>`path` | [`String`](#string) | Path for the organization. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationorganizationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationorganizationupdateorganization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
 
 ### `Mutation.pagesMarkOnboardingComplete`
 
@@ -6463,6 +6709,28 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
 
+### `Mutation.runnersExportUsage`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `RunnersExportUsageInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnersexportusageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnersexportusagetype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Scope of the runners to include in the report. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrunnersexportusageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnersexportusageerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.runnersRegistrationTokenReset`
 
 Input type: `RunnersRegistrationTokenResetInput`
@@ -6639,6 +6907,7 @@ Input type: `SecurityFindingRevertToDetectedInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsecurityfindingreverttodetectedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingreverttodetectedcomment"></a>`comment` | [`String`](#string) | Comment that explains why finding was reverted to detected status. |
 | <a id="mutationsecurityfindingreverttodetecteduuid"></a>`uuid` | [`String!`](#string) | UUID of the finding to be dismissed. |
 
 #### Fields
@@ -6735,6 +7004,30 @@ Input type: `SecurityTrainingUpdateInput`
 | <a id="mutationsecuritytrainingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritytrainingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecuritytrainingupdatetraining"></a>`training` | [`ProjectSecurityTraining`](#projectsecuritytraining) | Represents the training entity subject to mutation. |
+
+### `Mutation.starProject`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `StarProjectInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationstarprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationstarprojectprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Full path of the project to star or unstar. |
+| <a id="mutationstarprojectstarred"></a>`starred` | [`Boolean!`](#boolean) | Indicates whether to star or unstar the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationstarprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationstarprojectcount"></a>`count` | [`String!`](#string) | Number of stars for the project. |
+| <a id="mutationstarprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.terraformStateDelete`
 
@@ -7171,6 +7464,34 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.updateContainerRegistryProtectionRule`
+
+Updates a container registry protection rule to restrict access to project containers. You can prevent users without certain roles from altering containers. Available only when feature flag `container_registry_protected_containers` is enabled.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UpdateContainerRegistryProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Maximum GitLab access level prevented from deleting a container. For example, `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationupdatecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to be updated. |
+| <a id="mutationupdatecontainerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Maximum GitLab access level prevented from pushing a container. For example, `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="mutationupdatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String`](#string) | Container's repository path pattern of the protection rule. For example, `my-scope/my-project/container-dev-*`. Wildcard character `*` allowed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule after mutation. |
+| <a id="mutationupdatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
 
 These settings can be adjusted by the group Owner or Maintainer.
@@ -7416,6 +7737,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsnpmpackagerequestsforwarding"></a>`npmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
+| <a id="mutationupdatenamespacepackagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 
 #### Fields
@@ -7471,6 +7793,34 @@ Input type: `UpdatePackagesCleanupPolicyInput`
 | <a id="mutationupdatepackagescleanuppolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagescleanuppolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationupdatepackagescleanuppolicypackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy after mutation. |
+
+### `Mutation.updatePackagesProtectionRule`
+
+Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages. Available only when feature flag `packages_protected_packages` is enabled.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UpdatePackagesProtectionRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
+| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`. |
+| <a id="mutationupdatepackagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Maximum GitLab access level unable to push a package. For example, `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
 
 ### `Mutation.updateRequirement`
 
@@ -7669,6 +8019,7 @@ Input type: `UserPreferencesUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationuserpreferencesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="mutationuserpreferencesupdateusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 #### Fields
@@ -7716,6 +8067,8 @@ Input type: `ValueStreamCreateInput`
 | <a id="mutationvaluestreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream name. |
 | <a id="mutationvaluestreamcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace(project or group) the value stream is created in. |
+| <a id="mutationvaluestreamcreatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
+| <a id="mutationvaluestreamcreatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
 
 #### Fields
 
@@ -7766,7 +8119,9 @@ Input type: `ValueStreamUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationvaluestreamupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvaluestreamupdateid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to update. |
-| <a id="mutationvaluestreamupdatename"></a>`name` | [`String!`](#string) | Value stream name. |
+| <a id="mutationvaluestreamupdatename"></a>`name` | [`String`](#string) | Value stream name. |
+| <a id="mutationvaluestreamupdatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
+| <a id="mutationvaluestreamupdatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
 
 #### Fields
 
@@ -7796,6 +8151,29 @@ Input type: `VulnerabilitiesDismissInput`
 | <a id="mutationvulnerabilitiesdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitiesdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` | [`[Vulnerability!]!`](#vulnerability) | Vulnerabilities after state change. |
+
+### `Mutation.vulnerabilitiesRemoveAllFromProject`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `VulnerabilitiesRemoveAllFromProjectInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojectprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of project for which all Vulnerabilities should be removed. The deletion will happen in the background so the changes will not be visible immediately. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiesremoveallfromprojectprojects"></a>`projects` | [`[Project!]!`](#project) | Projects for which the deletion was scheduled. |
 
 ### `Mutation.vulnerabilityConfirm`
 
@@ -8108,33 +8486,6 @@ Input type: `WorkItemDeleteInput`
 | <a id="mutationworkitemdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemdeleteproject"></a>`project` | [`Project`](#project) | Project the deleted work item belonged to. |
 
-### `Mutation.workItemDeleteTask`
-
-Deletes a task in a work item's description.
-
-WARNING:
-**Introduced** in 15.1.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Input type: `WorkItemDeleteTaskInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemdeletetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemdeletetaskid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-| <a id="mutationworkitemdeletetasklockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
-| <a id="mutationworkitemdeletetasktaskdata"></a>`taskData` | [`WorkItemDeletedTaskInput!`](#workitemdeletedtaskinput) | Arguments necessary to delete a task from a work item's description. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemdeletetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemdeletetaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationworkitemdeletetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
-
 ### `Mutation.workItemExport`
 
 WARNING:
@@ -8298,7 +8649,7 @@ Input type: `WorkspaceCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkspacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | ID of the cluster agent the created workspace will be associated with. |
+| <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent the created workspace will be associated with. |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the created workspace. |
 | <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String!`](#string) | Project repo git path containing the devfile used to configure the workspace. |
 | <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` | [`String!`](#string) | Project repo git ref containing the devfile used to configure the workspace. |
@@ -8817,6 +9168,29 @@ The edge type for [`CiBuildNeed`](#cibuildneed).
 | <a id="cibuildneededgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cibuildneededgenode"></a>`node` | [`CiBuildNeed`](#cibuildneed) | The item at the end of the edge. |
 
+#### `CiCatalogResourceComponentConnection`
+
+The connection type for [`CiCatalogResourceComponent`](#cicatalogresourcecomponent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentconnectionedges"></a>`edges` | [`[CiCatalogResourceComponentEdge]`](#cicatalogresourcecomponentedge) | A list of edges. |
+| <a id="cicatalogresourcecomponentconnectionnodes"></a>`nodes` | [`[CiCatalogResourceComponent]`](#cicatalogresourcecomponent) | A list of nodes. |
+| <a id="cicatalogresourcecomponentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourceComponentEdge`
+
+The edge type for [`CiCatalogResourceComponent`](#cicatalogresourcecomponent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourcecomponentedgenode"></a>`node` | [`CiCatalogResourceComponent`](#cicatalogresourcecomponent) | The item at the end of the edge. |
+
 #### `CiCatalogResourceConnection`
 
 The connection type for [`CiCatalogResource`](#cicatalogresource).
@@ -8840,6 +9214,30 @@ The edge type for [`CiCatalogResource`](#cicatalogresource).
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cicatalogresourceedgenode"></a>`node` | [`CiCatalogResource`](#cicatalogresource) | The item at the end of the edge. |
+
+#### `CiCatalogResourceVersionConnection`
+
+The connection type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cicatalogresourceversionconnectionedges"></a>`edges` | [`[CiCatalogResourceVersionEdge]`](#cicatalogresourceversionedge) | A list of edges. |
+| <a id="cicatalogresourceversionconnectionnodes"></a>`nodes` | [`[CiCatalogResourceVersion]`](#cicatalogresourceversion) | A list of nodes. |
+| <a id="cicatalogresourceversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiCatalogResourceVersionEdge`
+
+The edge type for [`CiCatalogResourceVersion`](#cicatalogresourceversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogresourceversionedgenode"></a>`node` | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | The item at the end of the edge. |
 
 #### `CiConfigGroupConnection`
 
@@ -9275,6 +9673,30 @@ The edge type for [`CiStage`](#cistage).
 | ---- | ---- | ----------- |
 | <a id="cistageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cistageedgenode"></a>`node` | [`CiStage`](#cistage) | The item at the end of the edge. |
+
+#### `CiSubscriptionsProjectConnection`
+
+The connection type for [`CiSubscriptionsProject`](#cisubscriptionsproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="cisubscriptionsprojectconnectionedges"></a>`edges` | [`[CiSubscriptionsProjectEdge]`](#cisubscriptionsprojectedge) | A list of edges. |
+| <a id="cisubscriptionsprojectconnectionnodes"></a>`nodes` | [`[CiSubscriptionsProject]`](#cisubscriptionsproject) | A list of nodes. |
+| <a id="cisubscriptionsprojectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiSubscriptionsProjectEdge`
+
+The edge type for [`CiSubscriptionsProject`](#cisubscriptionsproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cisubscriptionsprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cisubscriptionsprojectedgenode"></a>`node` | [`CiSubscriptionsProject`](#cisubscriptionsproject) | The item at the end of the edge. |
 
 #### `ClusterAgentActivityEventConnection`
 
@@ -10064,29 +10486,6 @@ The edge type for [`Deployment`](#deployment).
 | <a id="deploymentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="deploymentedgenode"></a>`node` | [`Deployment`](#deployment) | The item at the end of the edge. |
 
-#### `DeprecatedAiMessageConnection`
-
-The connection type for [`DeprecatedAiMessage`](#deprecatedaimessage).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="deprecatedaimessageconnectionedges"></a>`edges` | [`[DeprecatedAiMessageEdge]`](#deprecatedaimessageedge) | A list of edges. |
-| <a id="deprecatedaimessageconnectionnodes"></a>`nodes` | [`[DeprecatedAiMessage]`](#deprecatedaimessage) | A list of nodes. |
-| <a id="deprecatedaimessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `DeprecatedAiMessageEdge`
-
-The edge type for [`DeprecatedAiMessage`](#deprecatedaimessage).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="deprecatedaimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="deprecatedaimessageedgenode"></a>`node` | [`DeprecatedAiMessage`](#deprecatedaimessage) | The item at the end of the edge. |
-
 #### `DesignAtVersionConnection`
 
 The connection type for [`DesignAtVersion`](#designatversion).
@@ -10736,6 +11135,29 @@ The edge type for [`InheritedCiVariable`](#inheritedcivariable).
 | <a id="inheritedcivariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="inheritedcivariableedgenode"></a>`node` | [`InheritedCiVariable`](#inheritedcivariable) | The item at the end of the edge. |
 
+#### `InstanceAmazonS3ConfigurationTypeConnection`
+
+The connection type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeconnectionedges"></a>`edges` | [`[InstanceAmazonS3ConfigurationTypeEdge]`](#instanceamazons3configurationtypeedge) | A list of edges. |
+| <a id="instanceamazons3configurationtypeconnectionnodes"></a>`nodes` | [`[InstanceAmazonS3ConfigurationType]`](#instanceamazons3configurationtype) | A list of nodes. |
+| <a id="instanceamazons3configurationtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceAmazonS3ConfigurationTypeEdge`
+
+The edge type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instanceamazons3configurationtypeedgenode"></a>`node` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | The item at the end of the edge. |
+
 #### `InstanceExternalAuditEventDestinationConnection`
 
 The connection type for [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination).
@@ -11341,6 +11763,80 @@ The edge type for [`Milestone`](#milestone).
 | ---- | ---- | ----------- |
 | <a id="milestoneedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="milestoneedgenode"></a>`node` | [`Milestone`](#milestone) | The item at the end of the edge. |
+
+#### `MlCandidateConnection`
+
+The connection type for [`MlCandidate`](#mlcandidate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateconnectionedges"></a>`edges` | [`[MlCandidateEdge]`](#mlcandidateedge) | A list of edges. |
+| <a id="mlcandidateconnectionnodes"></a>`nodes` | [`[MlCandidate]`](#mlcandidate) | A list of nodes. |
+| <a id="mlcandidateconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlCandidateConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlCandidateEdge`
+
+The edge type for [`MlCandidate`](#mlcandidate).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlcandidateedgenode"></a>`node` | [`MlCandidate`](#mlcandidate) | The item at the end of the edge. |
+
+#### `MlModelVersionConnection`
+
+The connection type for [`MlModelVersion`](#mlmodelversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionconnectionedges"></a>`edges` | [`[MlModelVersionEdge]`](#mlmodelversionedge) | A list of edges. |
+| <a id="mlmodelversionconnectionnodes"></a>`nodes` | [`[MlModelVersion]`](#mlmodelversion) | A list of nodes. |
+| <a id="mlmodelversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlModelVersionConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlModelVersionEdge`
+
+The edge type for [`MlModelVersion`](#mlmodelversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlmodelversionedgenode"></a>`node` | [`MlModelVersion`](#mlmodelversion) | The item at the end of the edge. |
 
 #### `NamespaceCommitEmailConnection`
 
@@ -13084,6 +13580,29 @@ The edge type for [`UserCore`](#usercore).
 | <a id="usercoreedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="usercoreedgenode"></a>`node` | [`UserCore`](#usercore) | The item at the end of the edge. |
 
+#### `ValueStreamConnection`
+
+The connection type for [`ValueStream`](#valuestream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamconnectionedges"></a>`edges` | [`[ValueStreamEdge]`](#valuestreamedge) | A list of edges. |
+| <a id="valuestreamconnectionnodes"></a>`nodes` | [`[ValueStream]`](#valuestream) | A list of nodes. |
+| <a id="valuestreamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ValueStreamEdge`
+
+The edge type for [`ValueStream`](#valuestream).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="valuestreamedgenode"></a>`node` | [`ValueStream`](#valuestream) | The item at the end of the edge. |
+
 #### `VulnerabilitiesCountByDayConnection`
 
 The connection type for [`VulnerabilitiesCountByDay`](#vulnerabilitiescountbyday).
@@ -13339,7 +13858,6 @@ An abuse report.
 | <a id="abusereportdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="abusereportid"></a>`id` | [`AbuseReportID!`](#abusereportid) | Global ID of the abuse report. |
 | <a id="abusereportlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the abuse report. (see [Connections](#connections)) |
-| <a id="abusereportuserpermissions"></a>`userPermissions` | [`AbuseReportPermissions!`](#abusereportpermissions) | Permissions for the current user on the resource. |
 
 #### Fields with arguments
 
@@ -13351,22 +13869,13 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="abusereportnotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
-
-### `AbuseReportPermissions`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="abusereportpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
-| <a id="abusereportpermissionsreadabusereport"></a>`readAbuseReport` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_abuse_report` on this resource. |
 
 ### `AccessLevel`
 
@@ -13490,7 +13999,7 @@ A user with add-on data.
 | <a id="addonusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="addonuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="addonuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="addonuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="addonuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -13511,7 +14020,7 @@ Returns [`UserAddOnAssignmentConnection`](#useraddonassignmentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13527,7 +14036,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13563,7 +14072,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13599,7 +14108,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13616,7 +14125,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13664,7 +14173,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13682,7 +14191,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13698,7 +14207,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13721,7 +14230,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13738,19 +14247,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="addonuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="addonuserworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="addonuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="addonuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="addonuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="addonuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="addonuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="addonuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AgentConfiguration`
 
@@ -13849,7 +14364,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -13865,7 +14380,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14109,6 +14624,17 @@ Autogenerated return type of AuditEventsStreamingHTTPNamespaceFiltersAdd.
 | <a id="auditeventsstreaminghttpnamespacefiltersaddpayloaderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="auditeventsstreaminghttpnamespacefiltersaddpayloadnamespacefilter"></a>`namespaceFilter` | [`AuditEventStreamingHTTPNamespaceFilter`](#auditeventstreaminghttpnamespacefilter) | Namespace filter created. |
 
+### `AuditEventsStreamingHTTPNamespaceFiltersDeletePayload`
+
+Autogenerated return type of AuditEventsStreamingHTTPNamespaceFiltersDelete.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventsstreaminghttpnamespacefiltersdeletepayloadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="auditeventsstreaminghttpnamespacefiltersdeletepayloaderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `AuditEventsStreamingInstanceHeader`
 
 Represents a HTTP header key/value that belongs to an instance level audit streaming destination.
@@ -14161,7 +14687,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="autocompleteduseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="autocompleteduseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="autocompleteduserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -14178,7 +14704,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14214,7 +14740,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14250,7 +14776,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14279,7 +14805,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14327,7 +14853,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14345,7 +14871,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14361,7 +14887,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14384,7 +14910,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14401,19 +14927,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="autocompleteduserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="autocompleteduserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AwardEmoji`
 
@@ -14527,7 +15059,7 @@ Returns [`BoardEpicConnection`](#boardepicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14543,7 +15075,7 @@ Returns [`BoardListConnection`](#boardlistconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14626,7 +15158,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14663,7 +15195,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14700,7 +15232,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14716,7 +15248,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14780,7 +15312,7 @@ Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -14867,16 +15399,14 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Description of the catalog resource. |
-| <a id="cicatalogresourceforkscount"></a>`forksCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been forked. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. ID of the catalog resource. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Release date of the catalog resource's latest version. |
-| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`Release`](#release) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
+| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open issues that belong to the the catalog resource. |
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Count of open merge requests that belong to the the catalog resource. |
 | <a id="cicatalogresourcereadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. GitLab Flavored Markdown rendering of `readme`. |
-| <a id="cicatalogresourcerootnamespace"></a>`rootNamespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Root namespace of the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.1. This feature is an Experiment. It can be changed or removed at any time. Web path of the catalog resource. |
 
@@ -14890,17 +15420,53 @@ WARNING:
 **Introduced** in 16.2.
 This feature is an Experiment. It can be changed or removed at any time.
 
-Returns [`ReleaseConnection`](#releaseconnection).
+Returns [`CiCatalogResourceVersionConnection`](#cicatalogresourceversionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceversionssort"></a>`sort` | [`ReleaseSort`](#releasesort) | Sort releases by given criteria. |
+| <a id="cicatalogresourceversionssort"></a>`sort` | [`CiCatalogResourceVersionSort`](#cicatalogresourceversionsort) | Sort versions by given criteria. |
+
+### `CiCatalogResourceComponent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. ID of the component. |
+| <a id="cicatalogresourcecomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Inputs for the component. |
+| <a id="cicatalogresourcecomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the component. |
+| <a id="cicatalogresourcecomponentpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Path used to include the component. |
+
+### `CiCatalogResourceComponentInput`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourcecomponentinputdefault"></a>`default` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Default value for the input. |
+| <a id="cicatalogresourcecomponentinputname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the input. |
+| <a id="cicatalogresourcecomponentinputrequired"></a>`required` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Indicates if an input is required. |
+
+### `CiCatalogResourceVersion`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. User that created the version. |
+| <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Commit associated with the version. |
+| <a id="cicatalogresourceversioncomponents"></a>`components` **{warning-solid}** | [`CiCatalogResourceComponentConnection`](#cicatalogresourcecomponentconnection) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Components belonging to the catalog resource. |
+| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was created. |
+| <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Global ID of the version. |
+| <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was released. |
+| <a id="cicatalogresourceversiontagname"></a>`tagName` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the tag associated with the version. |
+| <a id="cicatalogresourceversiontagpath"></a>`tagPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Relative web path to the tag associated with the version. |
 
 ### `CiConfig`
 
@@ -15316,7 +15882,7 @@ Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -15332,7 +15898,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -15453,6 +16019,30 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the agent vulnerabilities. (see [Connections](#connections)) |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
+
+#### Fields with arguments
+
+##### `ClusterAgent.workspaces`
+
+Workspaces associated with the agent.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkspaceConnection`](#workspaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="clusteragentworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="clusteragentworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalID. |
 
 ### `ClusterAgentActivityEvent`
 
@@ -15590,7 +16180,7 @@ Represents a degradation on the compared codequality report.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codequalityreportscomparerreportdegradationdescription"></a>`description` | [`String!`](#string) | Description of the code quality degradation. |
-| <a id="codequalityreportscomparerreportdegradationenginename"></a>`engineName` | [`String!`](#string) | Code quality plugin that reported the degradation. |
+| <a id="codequalityreportscomparerreportdegradationenginename"></a>`engineName` | [`String`](#string) | Code quality plugin that reported the degradation. |
 | <a id="codequalityreportscomparerreportdegradationfilepath"></a>`filePath` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |
 | <a id="codequalityreportscomparerreportdegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | Unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
 | <a id="codequalityreportscomparerreportdegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
@@ -15649,7 +16239,7 @@ Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -15765,10 +16355,23 @@ Represents finding.
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
 | <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Identifiers of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
 | <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. Location of the vulnerability finding. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
+| <a id="comparedsecurityreportfindingscanner"></a>`scanner` | [`ComparedSecurityReportScanner`](#comparedsecurityreportscanner) | Compared report vulnerability scanner. |
 | <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="comparedsecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
 | <a id="comparedsecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
+
+### `ComparedSecurityReportScanner`
+
+Represents a compared report vulnerability scanner.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="comparedsecurityreportscannerexternalid"></a>`externalId` | [`String`](#string) | External ID of the vulnerability scanner. |
+| <a id="comparedsecurityreportscannername"></a>`name` | [`String`](#string) | Name of the vulnerability scanner. |
+| <a id="comparedsecurityreportscannervendor"></a>`vendor` | [`String`](#string) | Vendor of the vulnerability scanner. |
 
 ### `ComplianceFramework`
 
@@ -15784,6 +16387,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkid"></a>`id` | [`ID!`](#id) | Compliance framework ID. |
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
 | <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE ALL)**. |
+| <a id="complianceframeworkprojects"></a>`projects` | [`ProjectConnection`](#projectconnection) | Projects associated with the compliance framework. (see [Connections](#connections)) |
 
 ### `ComplianceStandardsAdherence`
 
@@ -15907,10 +16511,10 @@ A container registry protection rule designed to prevent users with a certain ac
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryprotectionrulecontainerpathpattern"></a>`containerPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `@my-scope/my-container-*`. Wildcard character `*` allowed. |
 | <a id="containerregistryprotectionruledeleteprotecteduptoaccesslevel"></a>`deleteProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 | <a id="containerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container registry protection rule. |
 | <a id="containerregistryprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Max GitLab access level to prevent from pushing container images to the container registry. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
+| <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 
@@ -15920,7 +16524,7 @@ A container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorycandelete"></a>`canDelete` | [`Boolean!`](#boolean) | Can the current user delete the container repository. |
+| <a id="containerrepositorycandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositoryexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositoryexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -15934,6 +16538,7 @@ A container repository.
 | <a id="containerrepositorystatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
 | <a id="containerrepositorytagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with this image. |
 | <a id="containerrepositoryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |
+| <a id="containerrepositoryuserpermissions"></a>`userPermissions` | [`ContainerRepositoryPermissions!`](#containerrepositorypermissions) | Permissions for the current user on the resource. |
 
 ### `ContainerRepositoryDetails`
 
@@ -15943,7 +16548,7 @@ Details of a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorydetailscandelete"></a>`canDelete` | [`Boolean!`](#boolean) | Can the current user delete the container repository. |
+| <a id="containerrepositorydetailscandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorydetailscreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositorydetailsexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositorydetailsexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -15958,6 +16563,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsstatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
 | <a id="containerrepositorydetailstagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with this image. |
 | <a id="containerrepositorydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |
+| <a id="containerrepositorydetailsuserpermissions"></a>`userPermissions` | [`ContainerRepositoryPermissions!`](#containerrepositorypermissions) | Permissions for the current user on the resource. |
 
 #### Fields with arguments
 
@@ -15969,7 +16575,7 @@ Returns [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -15977,6 +16583,14 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
 | <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
+
+### `ContainerRepositoryPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositorypermissionsdestroycontainerrepository"></a>`destroyContainerRepository` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_image` on this resource. |
 
 ### `ContainerRepositoryRegistry`
 
@@ -16010,7 +16624,7 @@ A tag from a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorytagcandelete"></a>`canDelete` | [`Boolean!`](#boolean) | Can the current user delete this tag. |
+| <a id="containerrepositorytagcandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryTagPermissions` type. |
 | <a id="containerrepositorytagcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the tag was created. |
 | <a id="containerrepositorytagdigest"></a>`digest` | [`String`](#string) | Digest of the tag. |
 | <a id="containerrepositorytaglocation"></a>`location` | [`String!`](#string) | URL of the tag. |
@@ -16019,6 +16633,15 @@ A tag from a container repository.
 | <a id="containerrepositorytagrevision"></a>`revision` | [`String`](#string) | Revision of the tag. |
 | <a id="containerrepositorytagshortrevision"></a>`shortRevision` | [`String`](#string) | Short revision of the tag. |
 | <a id="containerrepositorytagtotalsize"></a>`totalSize` | [`BigInt`](#bigint) | Size of the tag. |
+| <a id="containerrepositorytaguserpermissions"></a>`userPermissions` | [`ContainerRepositoryTagPermissions!`](#containerrepositorytagpermissions) | Permissions for the current user on the resource. |
+
+### `ContainerRepositoryTagPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositorytagpermissionsdestroycontainerrepositorytag"></a>`destroyContainerRepositoryTag` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_image` on this resource. |
 
 ### `ContributionAnalyticsContribution`
 
@@ -16073,6 +16696,293 @@ Represents the current license.
 | <a id="currentlicensetype"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="currentlicenseusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
 | <a id="currentlicenseusersoverlicensecount"></a>`usersOverLicenseCount` | [`Int`](#int) | Number of users over the paid users in the license. |
+
+### `CurrentUser`
+
+The currently authenticated GitLab user.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="currentuserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
+| <a id="currentuserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
+| <a id="currentusercallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
+| <a id="currentusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
+| <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="currentuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="currentuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
+| <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="currentusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
+| <a id="currentusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="currentuserid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="currentuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
+| <a id="currentuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
+| <a id="currentuserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
+| <a id="currentuserlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
+| <a id="currentuserlocation"></a>`location` | [`String`](#string) | Location of the user. |
+| <a id="currentusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. Returns `****` if the user is a project bot and the requester does not have permission to view the project. |
+| <a id="currentusernamespace"></a>`namespace` | [`Namespace`](#namespace) | Personal namespace of the user. |
+| <a id="currentusernamespacecommitemails"></a>`namespaceCommitEmails` | [`NamespaceCommitEmailConnection`](#namespacecommitemailconnection) | User's custom namespace commit emails. (see [Connections](#connections)) |
+| <a id="currentuserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
+| <a id="currentuserorganizations"></a>`organizations` **{warning-solid}** | [`OrganizationConnection`](#organizationconnection) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Organizations where the user has access. |
+| <a id="currentuserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
+| <a id="currentuserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="currentuserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
+| <a id="currentuserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
+| <a id="currentuserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
+| <a id="currentusersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
+| <a id="currentuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
+| <a id="currentuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
+| <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
+| <a id="currentuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="currentuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
+| <a id="currentuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
+| <a id="currentuserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
+| <a id="currentuserweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the user. |
+
+#### Fields with arguments
+
+##### `CurrentUser.assignedMergeRequests`
+
+Merge requests assigned to the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
+| <a id="currentuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="currentuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="currentuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="currentuserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
+| <a id="currentuserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="currentuserassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="currentuserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="currentuserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="currentuserassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="currentuserassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="currentuserassignedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="currentuserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="currentuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="currentuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="currentuserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="currentuserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `CurrentUser.authoredMergeRequests`
+
+Merge requests authored by the user.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
+| <a id="currentuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="currentuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="currentuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="currentuserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
+| <a id="currentuserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="currentuserauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="currentuserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="currentuserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="currentuserauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="currentuserauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="currentuserauthoredmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="currentuserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="currentuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="currentuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="currentuserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="currentuserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `CurrentUser.groups`
+
+Groups where the user has access.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentusergroupspermissionscope"></a>`permissionScope` | [`GroupPermission`](#grouppermission) | Filter by permissions the user has on groups. |
+| <a id="currentusergroupssearch"></a>`search` | [`String`](#string) | Search by group name or path. |
+
+##### `CurrentUser.reviewRequestedMergeRequests`
+
+Merge requests assigned to the user for review.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
+| <a id="currentuserreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="currentuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="currentuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="currentuserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
+| <a id="currentuserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="currentuserreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
+| <a id="currentuserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
+| <a id="currentuserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+| <a id="currentuserreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="currentuserreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
+| <a id="currentuserreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
+| <a id="currentuserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="currentuserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="currentuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+
+##### `CurrentUser.savedReply`
+
+Saved reply authored by the user.
+
+Returns [`SavedReply`](#savedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentusersavedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | ID of a saved reply. |
+
+##### `CurrentUser.snippets`
+
+Snippets authored by the user.
+
+Returns [`SnippetConnection`](#snippetconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentusersnippetsids"></a>`ids` | [`[SnippetID!]`](#snippetid) | Array of global snippet IDs. For example, `gid://gitlab/ProjectSnippet/1`. |
+| <a id="currentusersnippetstype"></a>`type` | [`TypeEnum`](#typeenum) | Type of snippet. |
+| <a id="currentusersnippetsvisibility"></a>`visibility` | [`VisibilityScopesEnum`](#visibilityscopesenum) | Visibility of the snippet. |
+
+##### `CurrentUser.starredProjects`
+
+Projects starred by the user.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
+
+##### `CurrentUser.timelogs`
+
+Time logged by the user.
+
+Returns [`TimelogConnection`](#timelogconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentusertimelogsenddate"></a>`endDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or before endDate. |
+| <a id="currentusertimelogsendtime"></a>`endTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or before endTime. |
+| <a id="currentusertimelogsgroupid"></a>`groupId` | [`GroupID`](#groupid) | List timelogs for a group. |
+| <a id="currentusertimelogsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | List timelogs for a project. |
+| <a id="currentusertimelogssort"></a>`sort` | [`TimelogSort`](#timelogsort) | List timelogs in a particular order. |
+| <a id="currentusertimelogsstartdate"></a>`startDate` | [`Time`](#time) | List timelogs within a date range where the logged date is equal to or after startDate. |
+| <a id="currentusertimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
+| <a id="currentusertimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
+
+##### `CurrentUser.todos`
+
+To-do items of the user.
+
+Returns [`TodoConnection`](#todoconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentusertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
+| <a id="currentusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
+| <a id="currentusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="currentusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="currentusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
+| <a id="currentusertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
+
+##### `CurrentUser.workspaces`
+
+Workspaces owned by the current user.
+
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkspaceConnection`](#workspaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="currentuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="currentuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="currentuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `CustomEmoji`
 
@@ -16573,18 +17483,6 @@ Tags for a given deployment.
 | <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
 | <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
 
-### `DeprecatedAiMessage`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="deprecatedaimessagecontent"></a>`content` | [`String`](#string) | Content of the message or null if loading. |
-| <a id="deprecatedaimessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
-| <a id="deprecatedaimessageid"></a>`id` | [`ID`](#id) | Global ID of the message. |
-| <a id="deprecatedaimessageisfetching"></a>`isFetching` | [`Boolean`](#boolean) | Whether the content is still being fetched, for a message with the assistant role. |
-| <a id="deprecatedaimessagerole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
-
 ### `DescriptionVersion`
 
 #### Fields
@@ -16646,7 +17544,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16662,7 +17560,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16678,7 +17576,7 @@ Returns [`DesignVersionConnection!`](#designversionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16755,7 +17653,7 @@ Returns [`DesignConnection!`](#designconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16786,7 +17684,7 @@ Returns [`DesignVersionConnection!`](#designversionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16885,7 +17783,7 @@ Returns [`DesignAtVersionConnection!`](#designatversionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -16951,7 +17849,7 @@ Returns [`DevopsAdoptionSnapshotConnection`](#devopsadoptionsnapshotconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17181,7 +18079,7 @@ Returns [`DeploymentConnection`](#deploymentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17285,7 +18183,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17322,7 +18220,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17359,7 +18257,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17375,7 +18273,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17422,7 +18320,7 @@ Returns [`EpicListConnection`](#epiclistconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17499,7 +18397,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="epicissueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
 | <a id="epicissueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
-| <a id="epicissueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `false` if email notifications are disabled. |
+| <a id="epicissueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if the parent project or group has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="epicissueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="epicissueepicissueid"></a>`epicIssueId` | [`ID!`](#id) | ID of the epic-issue relation. |
 | <a id="epicissueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
@@ -17521,7 +18419,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
 | <a id="epicissuemovedto"></a>`movedTo` | [`Issue`](#issue) | Updated Issue after it got moved to another project. |
 | <a id="epicissueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
-| <a id="epicissueprojectid"></a>`projectId` | [`Int!`](#int) | ID of the issue project. |
+| <a id="epicissueprojectid"></a>`projectId` | [`Int`](#int) | ID of the issue project. |
 | <a id="epicissuerelatedmergerequests"></a>`relatedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests related to the issue. This field can only be resolved for one issue in any single request. (see [Connections](#connections)) |
 | <a id="epicissuerelatedvulnerabilities"></a>`relatedVulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Related vulnerabilities of the issue. (see [Connections](#connections)) |
 | <a id="epicissuerelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relation. |
@@ -17558,7 +18456,7 @@ Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17579,7 +18477,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17595,7 +18493,7 @@ Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17611,7 +18509,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17658,7 +18556,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17888,7 +18786,7 @@ Returns [`CiSecureFileRegistryConnection`](#cisecurefileregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17907,7 +18805,7 @@ Returns [`ContainerRepositoryRegistryConnection`](#containerrepositoryregistryco
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17930,7 +18828,7 @@ Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryco
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17949,7 +18847,7 @@ Returns [`DependencyProxyManifestRegistryConnection`](#dependencyproxymanifestre
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17972,7 +18870,7 @@ Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementreposi
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -17991,7 +18889,7 @@ Returns [`GroupWikiRepositoryRegistryConnection`](#groupwikirepositoryregistryco
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18010,7 +18908,7 @@ Returns [`JobArtifactRegistryConnection`](#jobartifactregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18029,7 +18927,7 @@ Returns [`LfsObjectRegistryConnection`](#lfsobjectregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18048,7 +18946,7 @@ Returns [`MergeRequestDiffRegistryConnection`](#mergerequestdiffregistryconnecti
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18067,7 +18965,7 @@ Returns [`PackageFileRegistryConnection`](#packagefileregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18086,7 +18984,7 @@ Returns [`PagesDeploymentRegistryConnection`](#pagesdeploymentregistryconnection
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18105,7 +19003,7 @@ Returns [`PipelineArtifactRegistryConnection`](#pipelineartifactregistryconnecti
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18124,7 +19022,7 @@ Returns [`ProjectRepositoryRegistryConnection`](#projectrepositoryregistryconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18143,7 +19041,7 @@ Returns [`ProjectWikiRepositoryRegistryConnection`](#projectwikirepositoryregist
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18162,7 +19060,7 @@ Returns [`SnippetRepositoryRegistryConnection`](#snippetrepositoryregistryconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18181,7 +19079,7 @@ Returns [`TerraformStateVersionRegistryConnection`](#terraformstateversionregist
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18200,7 +19098,7 @@ Returns [`UploadRegistryConnection`](#uploadregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18270,7 +19168,6 @@ GPG signature for a signed commit.
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean!`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
-| <a id="groupcustomemoji"></a>`customEmoji` **{warning-solid}** | [`CustomEmojiConnection`](#customemojiconnection) | **Introduced** in 13.6. This feature is an Experiment. It can be changed or removed at any time. Custom emoji within this namespace. |
 | <a id="groupdependencyproxyblobcount"></a>`dependencyProxyBlobCount` | [`Int!`](#int) | Number of dependency proxy blobs cached in the group. |
 | <a id="groupdependencyproxyblobs"></a>`dependencyProxyBlobs` | [`DependencyProxyBlobConnection`](#dependencyproxyblobconnection) | Dependency Proxy blobs. (see [Connections](#connections)) |
 | <a id="groupdependencyproxyimagecount"></a>`dependencyProxyImageCount` | [`Int!`](#int) | Number of dependency proxy images cached in the group. |
@@ -18294,7 +19191,7 @@ GPG signature for a signed commit.
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
+| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String!`](#string) | Name of the namespace. |
@@ -18313,12 +19210,13 @@ GPG signature for a signed commit.
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
-| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
+| <a id="groupvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the group. (see [Connections](#connections)) |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
@@ -18337,7 +19235,7 @@ Returns [`AchievementConnection`](#achievementconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18357,7 +19255,7 @@ Returns [`AddOnUserConnection`](#addonuserconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18422,7 +19320,7 @@ Returns [`BoardConnection`](#boardconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18438,7 +19336,7 @@ Returns [`CiGroupVariableConnection`](#cigroupvariableconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18454,13 +19352,14 @@ Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="groupclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="groupclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Group.codeCoverageActivities`
@@ -18471,7 +19370,7 @@ Returns [`CodeCoverageActivityConnection`](#codecoverageactivityconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18487,13 +19386,15 @@ Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
+| <a id="groupcomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
+| <a id="groupcomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
 
 ##### `Group.contactStateCounts`
 
@@ -18516,7 +19417,7 @@ Returns [`CustomerRelationsContactConnection`](#customerrelationscontactconnecti
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18535,7 +19436,7 @@ Returns [`ContainerRepositoryConnection`](#containerrepositoryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18552,7 +19453,7 @@ Returns [`ContributionAnalyticsContributionConnection`](#contributionanalyticsco
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18560,6 +19461,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
 | <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 93 days after the start date. |
+
+##### `Group.customEmoji`
+
+Custom emoji in this namespace.
+
+WARNING:
+**Introduced** in 13.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CustomEmojiConnection`](#customemojiconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcustomemojiincludeancestorgroups"></a>`includeAncestorGroups` | [`Boolean`](#boolean) | Includes custom emoji from parent groups. |
 
 ##### `Group.customizableDashboardVisualizations`
 
@@ -18573,7 +19494,7 @@ Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardv
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18593,7 +19514,7 @@ Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18623,7 +19544,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18641,7 +19562,7 @@ Returns [`DoraPerformanceScoreCountConnection`](#doraperformancescorecountconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18657,7 +19578,7 @@ Returns [`CiGroupEnvironmentScopeConnection`](#cigroupenvironmentscopeconnection
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18719,7 +19640,7 @@ Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18761,6 +19682,7 @@ Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="groupgitlabsubscriptionspreviewbillableuserchangememberroleid"></a>`memberRoleId` | [`Int`](#int) | Custom role assigned to the users. |
 | <a id="groupgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
 
 ##### `Group.groupMembers`
@@ -18771,7 +19693,7 @@ Returns [`GroupMemberConnection`](#groupmemberconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18790,7 +19712,7 @@ Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18845,7 +19767,7 @@ Returns [`IterationCadenceConnection`](#iterationcadenceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18866,7 +19788,7 @@ Returns [`IterationConnection`](#iterationconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18876,6 +19798,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
 | <a id="groupiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="groupiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
+| <a id="groupiterationsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Whether to include descendant iterations. |
 | <a id="groupiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
 | <a id="groupiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="groupiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
@@ -18903,7 +19826,7 @@ Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18926,7 +19849,7 @@ Returns [`MemberRoleConnection`](#memberroleconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18942,7 +19865,7 @@ Returns [`ComplianceViolationConnection`](#complianceviolationconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18959,7 +19882,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -18994,7 +19917,7 @@ Returns [`MilestoneConnection`](#milestoneconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19031,7 +19954,7 @@ Returns [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizati
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19050,7 +19973,7 @@ Returns [`PackageConnection`](#packageconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19071,7 +19994,7 @@ Returns [`ComplianceStandardsAdherenceConnection`](#compliancestandardsadherence
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19087,7 +20010,7 @@ Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19113,7 +20036,7 @@ Returns [`ReleaseConnection`](#releaseconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19129,7 +20052,7 @@ Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19155,7 +20078,7 @@ Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19172,7 +20095,7 @@ Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19188,7 +20111,7 @@ Returns [`TimelogConnection!`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19228,7 +20151,7 @@ Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19258,7 +20181,7 @@ Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19320,6 +20243,31 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="groupworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
 
+##### `Group.workItemStateCounts`
+
+Counts of work items by state for the namespace. Returns `null` if the `namespace_level_work_items` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Filter work items by author username. |
+| <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="groupworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="groupworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="groupworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="groupworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
 ##### `Group.workItemTypes`
 
 Work item types available to the group.
@@ -19328,7 +20276,7 @@ Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19348,7 +20296,7 @@ Returns [`WorkItemConnection`](#workitemconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19560,6 +20508,24 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
 | <a id="groupvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
 
+##### `GroupValueStreamAnalyticsFlowMetrics.timeToMerge`
+
+Median time from merge request creation to merge request merged.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the merge request. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricstimetomergeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
+
 ### `GroupWikiRepositoryRegistry`
 
 Represents the Geo sync and verification state of a group wiki repository.
@@ -19646,7 +20612,7 @@ Returns [`IncidentManagementOncallShiftConnection`](#incidentmanagementoncallshi
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19714,6 +20680,20 @@ CI/CD variables a project inherites from its parent group and ancestors.
 | <a id="inheritedcivariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
 | <a id="inheritedcivariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
+### `InstanceAmazonS3ConfigurationType`
+
+Stores instance level Amazon S3 configurations for audit event streaming.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceamazons3configurationtypeaccesskeyxid"></a>`accessKeyXid` | [`String!`](#string) | Access key ID of the Amazon S3 account. |
+| <a id="instanceamazons3configurationtypeawsregion"></a>`awsRegion` | [`String!`](#string) | AWS region where the bucket is created. |
+| <a id="instanceamazons3configurationtypebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
+| <a id="instanceamazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="instanceamazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
 ### `InstanceExternalAuditEventDestination`
 
 Represents an external resource to send instance audit events to.
@@ -19761,13 +20741,14 @@ Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="instancesecuritydashboardclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="instancesecuritydashboardclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="instancesecuritydashboardclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `InstanceSecurityDashboard.projects`
@@ -19778,7 +20759,7 @@ Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19864,7 +20845,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="issueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
 | <a id="issueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
-| <a id="issueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if a project has email notifications disabled: `false` if email notifications are disabled. |
+| <a id="issueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if the parent project or group has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="issueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="issueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
 | <a id="issueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
@@ -19885,7 +20866,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuemoved"></a>`moved` | [`Boolean`](#boolean) | Indicates if issue got moved from other project. |
 | <a id="issuemovedto"></a>`movedTo` | [`Issue`](#issue) | Updated Issue after it got moved to another project. |
 | <a id="issueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
-| <a id="issueprojectid"></a>`projectId` | [`Int!`](#int) | ID of the issue project. |
+| <a id="issueprojectid"></a>`projectId` | [`Int`](#int) | ID of the issue project. |
 | <a id="issuerelatedmergerequests"></a>`relatedMergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests related to the issue. This field can only be resolved for one issue in any single request. (see [Connections](#connections)) |
 | <a id="issuerelatedvulnerabilities"></a>`relatedVulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Related vulnerabilities of the issue. (see [Connections](#connections)) |
 | <a id="issuerelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
@@ -19921,7 +20902,7 @@ Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19942,7 +20923,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19958,7 +20939,7 @@ Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -19974,7 +20955,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20125,7 +21106,7 @@ Returns [`JiraProjectConnection`](#jiraprojectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20296,6 +21277,27 @@ Represents an entry from the Cloud License history.
 | <a id="locationblobpath"></a>`blobPath` | [`String`](#string) | HTTP URI path to view the input file in GitLab. |
 | <a id="locationpath"></a>`path` | [`String`](#string) | Path, relative to the root of the repository, of the filewhich was analyzed to detect the dependency. |
 
+### `MLCandidateLinks`
+
+Represents links to perform actions on the candidate.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatelinksartifactpath"></a>`artifactPath` | [`String`](#string) | Path to the artifact. |
+| <a id="mlcandidatelinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the candidate. |
+
+### `MLModelVersionLinks`
+
+Represents links to perform actions on the model version.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the model version. |
+
 ### `MavenMetadata`
 
 Maven metadata.
@@ -20329,6 +21331,7 @@ Represents a member role.
 | <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`[MemberRolePermission!]`](#memberrolepermission) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
 | <a id="memberrolemanageprojectaccesstokens"></a>`manageProjectAccessTokens` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin project access tokens. |
+| <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Total number of members with the custom role. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
 | <a id="memberrolereadcode"></a>`readCode` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read code. |
 | <a id="memberrolereaddependency"></a>`readDependency` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read dependency. |
@@ -20461,7 +21464,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20505,7 +21508,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20521,7 +21524,7 @@ Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20601,7 +21604,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneesavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -20618,7 +21621,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20654,7 +21657,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20690,7 +21693,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20707,7 +21710,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20755,7 +21758,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20773,7 +21776,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20789,7 +21792,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20812,7 +21815,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20829,19 +21832,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestassigneeworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestassigneeworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="mergerequestassigneeworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="mergerequestassigneeworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="mergerequestassigneeworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestassigneeworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestassigneeworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestassigneeworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestAuthor`
 
@@ -20883,7 +21892,7 @@ The author of the merge request.
 | <a id="mergerequestauthorsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -20900,7 +21909,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20936,7 +21945,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20972,7 +21981,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -20989,7 +21998,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21037,7 +22046,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21055,7 +22064,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21071,7 +22080,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21094,7 +22103,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21111,19 +22120,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestauthorworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="mergerequestauthorworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="mergerequestauthorworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestauthorworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestDiff`
 
@@ -21228,7 +22243,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantsavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -21245,7 +22260,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21281,7 +22296,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21317,7 +22332,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21334,7 +22349,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21382,7 +22397,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21400,7 +22415,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21416,7 +22431,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21439,7 +22454,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21456,19 +22471,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestparticipantworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestparticipantworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="mergerequestparticipantworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="mergerequestparticipantworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="mergerequestparticipantworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestparticipantworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestparticipantworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestparticipantworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestPermissions`
 
@@ -21546,7 +22567,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -21563,7 +22584,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21599,7 +22620,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21635,7 +22656,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21652,7 +22673,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21700,7 +22721,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21718,7 +22739,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21734,7 +22755,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21757,7 +22778,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21774,19 +22795,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestreviewerworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="mergerequestreviewerworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="mergerequestreviewerworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="mergerequestreviewerworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `Metadata`
 
@@ -21875,6 +22902,57 @@ Contains statistics about a milestone.
 | <a id="milestonestatsclosedissuescount"></a>`closedIssuesCount` | [`Int`](#int) | Number of closed issues associated with the milestone. |
 | <a id="milestonestatstotalissuescount"></a>`totalIssuesCount` | [`Int`](#int) | Total number of issues associated with the milestone. |
 
+### `MlCandidate`
+
+Candidate for a model version in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
+| <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
+| <a id="mlcandidatename"></a>`name` | [`String!`](#string) | Name of the candidate. |
+
+### `MlModel`
+
+Machine learning model in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
+| <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
+| <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
+| <a id="mlmodelversions"></a>`versions` | [`MlModelVersionConnection`](#mlmodelversionconnection) | Versions of the model. (see [Connections](#connections)) |
+
+### `MlModelVersion`
+
+Version of a machine learning model.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
+| <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
+| <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |
+
+### `MonthlyUsage`
+
+Product analytics events for a specific month and year.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="monthlyusagecount"></a>`count` | [`Int`](#int) | Count of product analytics events. |
+| <a id="monthlyusagemonth"></a>`month` | [`Int!`](#int) | Month of the data. |
+| <a id="monthlyusageyear"></a>`year` | [`Int!`](#int) | Year of the data. |
+
 ### `Namespace`
 
 #### Fields
@@ -21891,7 +22969,7 @@ Contains statistics about a milestone.
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` | [`Boolean!`](#boolean) | Status of the temporary storage increase. |
+| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -21901,7 +22979,7 @@ Contains statistics about a milestone.
 | <a id="namespacerootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
-| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` | [`Time`](#time) | Date until the temporary storage increase is active. |
+| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -21921,7 +22999,7 @@ Returns [`AchievementConnection`](#achievementconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21941,7 +23019,7 @@ Returns [`AddOnUserConnection`](#addonuserconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -21970,13 +23048,15 @@ Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespacecomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
+| <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
+| <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
 
 ##### `Namespace.projects`
 
@@ -21986,7 +23066,7 @@ Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -22012,7 +23092,7 @@ Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -22029,7 +23109,7 @@ Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -22196,6 +23276,9 @@ Active period time range for on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationavatarurl"></a>`avatarUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Avatar URL of the organization. |
+| <a id="organizationdescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Description of the organization. |
+| <a id="organizationdescriptionhtml"></a>`descriptionHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. GitLab Flavored Markdown rendering of `description`. |
 | <a id="organizationid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization. |
 | <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name of the organization. |
 | <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Users with access to the organization. |
@@ -22216,7 +23299,7 @@ Returns [`GroupConnection!`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -22519,6 +23602,7 @@ Namespace-level Package Registry settings.
 | <a id="packagesettingsnpmpackagerequestsforwardinglocked"></a>`npmPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether npm package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettingsnugetduplicateexceptionregex"></a>`nugetDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
+| <a id="packagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean!`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
 
@@ -22729,7 +23813,7 @@ Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -22761,7 +23845,7 @@ Returns [`PipelineSecurityReportFindingConnection`](#pipelinesecurityreportfindi
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23000,7 +24084,6 @@ Represents vulnerability finding of a security report on the pipeline.
 | ---- | ---- | ----------- |
 | <a id="projectactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
-| <a id="projectaiconversations"></a>`aiConversations` **{warning-solid}** | [`ProjectConversations`](#projectconversations) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Ai Chat conversations related to a given project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
 | <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
@@ -23011,6 +24094,8 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
+| <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Triggers a new pipeline in the downstream project when a pipeline successfullycompletes on the(upstream) project. (see [Connections](#connections)) |
+| <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Triggers a new pipeline in the(downstream) project when a pipeline successfullycompletes on the upstream project. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
@@ -23026,6 +24111,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Flow metrics for value stream analytics. |
+| <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
@@ -23036,6 +24122,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
 | <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
+| <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
@@ -23044,6 +24131,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
 | <a id="projectlfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if the project has Large File Storage (LFS) enabled. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectmergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge Requests are enabled for the current user. |
 | <a id="projectmergerequestsffonlyenabled"></a>`mergeRequestsFfOnlyEnabled` | [`Boolean`](#boolean) | Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. |
@@ -23054,12 +24142,14 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectonlyallowmergeifallstatuscheckspassed"></a>`onlyAllowMergeIfAllStatusChecksPassed` | [`Boolean`](#boolean) | Indicates that merges of merge requests should be blocked unless all status checks have passed. |
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
+| <a id="projectopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in 16.3. This feature is an Experiment. It can be changed or removed at any time. List of pipeline trigger tokens. |
+| <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
 | <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Product Analytics instrumentation key assigned to the project. |
 | <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
@@ -23093,6 +24183,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projecttrackingkey"></a>`trackingKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Tracking key assigned to the project. |
 | <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
+| <a id="projectvaluestreams"></a>`valueStreams` | [`ValueStreamConnection`](#valuestreamconnection) | Value streams available to the project. (see [Connections](#connections)) |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
@@ -23139,7 +24230,7 @@ Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23160,7 +24251,7 @@ Returns [`AlertManagementHttpIntegrationConnection`](#alertmanagementhttpintegra
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23176,7 +24267,7 @@ Returns [`AlertManagementIntegrationConnection`](#alertmanagementintegrationconn
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23228,7 +24319,7 @@ Returns [`BoardConnection`](#boardconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23272,7 +24363,7 @@ Returns [`CiProjectVariableConnection`](#ciprojectvariableconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23291,6 +24382,7 @@ Returns [`ClusterAgent`](#clusteragent).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectclusteragenthasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="projectclusteragenthasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="projectclusteragenthasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 | <a id="projectclusteragentname"></a>`name` | [`String!`](#string) | Name of the cluster agent. |
 
@@ -23302,13 +24394,14 @@ Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
+| <a id="projectclusteragentshasremotedevelopmentenabled"></a>`hasRemoteDevelopmentEnabled` | [`Boolean`](#boolean) | Returns only cluster agents which have been enabled with the remote development feature. |
 | <a id="projectclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Project.commitReferences`
@@ -23335,7 +24428,7 @@ Returns [`ContainerRepositoryConnection`](#containerrepositoryconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23356,7 +24449,7 @@ Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardv
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23376,7 +24469,7 @@ Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23406,7 +24499,7 @@ Returns [`DastProfileConnection`](#dastprofileconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23434,7 +24527,7 @@ Returns [`DastSiteValidationConnection`](#dastsitevalidationconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23468,7 +24561,7 @@ Returns [`DependencyConnection`](#dependencyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23513,7 +24606,7 @@ Returns [`EnvironmentConnection`](#environmentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23548,7 +24641,7 @@ Returns [`NamespaceConnection`](#namespaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23569,6 +24662,7 @@ Returns [`PreviewBillableUserChange`](#previewbillableuserchange).
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeaddgroupid"></a>`addGroupId` | [`Int`](#int) | Group ID to add. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduseremails"></a>`addUserEmails` | [`[String!]`](#string) | User emails to add. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangeadduserids"></a>`addUserIds` | [`[Int!]`](#int) | User IDs to add. |
+| <a id="projectgitlabsubscriptionspreviewbillableuserchangememberroleid"></a>`memberRoleId` | [`Int`](#int) | Custom role assigned to the users. |
 | <a id="projectgitlabsubscriptionspreviewbillableuserchangerole"></a>`role` | [`GitlabSubscriptionsUserRole!`](#gitlabsubscriptionsuserrole) | Role of users being added to group. |
 
 ##### `Project.incidentManagementEscalationPolicies`
@@ -23579,7 +24673,7 @@ Returns [`EscalationPolicyTypeConnection`](#escalationpolicytypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23608,7 +24702,7 @@ Returns [`IncidentManagementOncallScheduleConnection`](#incidentmanagementoncall
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23637,7 +24731,7 @@ Returns [`TimelineEventTypeConnection`](#timelineeventtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23653,7 +24747,7 @@ Returns [`InheritedCiVariableConnection`](#inheritedcivariableconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23768,7 +24862,7 @@ Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23823,7 +24917,7 @@ Returns [`IterationCadenceConnection`](#iterationcadenceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23844,7 +24938,7 @@ Returns [`IterationConnection`](#iterationconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23854,6 +24948,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
 | <a id="projectiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
 | <a id="projectiterationsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Whether to include ancestor iterations. Defaults to true. |
+| <a id="projectiterationsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Whether to include descendant iterations. |
 | <a id="projectiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
 | <a id="projectiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="projectiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
@@ -23881,7 +24976,7 @@ Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23910,7 +25005,7 @@ Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23931,7 +25026,7 @@ Returns [`MemberRoleConnection`](#memberroleconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23959,7 +25054,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -23993,7 +25088,7 @@ Returns [`MilestoneConnection`](#milestoneconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24016,7 +25111,7 @@ Returns [`NestedEnvironmentConnection`](#nestedenvironmentconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24039,7 +25134,7 @@ Returns [`NetworkPolicyConnection`](#networkpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24055,7 +25150,7 @@ Returns [`PackageConnection`](#packageconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24103,7 +25198,7 @@ Returns [`PipelineScheduleConnection`](#pipelinescheduleconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24120,7 +25215,7 @@ Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24137,16 +25232,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.productAnalyticsEventsStored`
 
-Count of all events used, filtered optionally by month.
+Count of all events used, broken down by month.
 
-Returns [`Int`](#int).
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`[MonthlyUsage!]`](#monthlyusage).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectproductanalyticseventsstoredmonth"></a>`month` | [`Int`](#int) | Month for the period to return. |
-| <a id="projectproductanalyticseventsstoredyear"></a>`year` | [`Int`](#int) | Year for the period to return. |
+| <a id="projectproductanalyticseventsstoredmonthselection"></a>`monthSelection` | [`[MonthSelectionInput!]!`](#monthselectioninput) | Selection for the period to return. |
 
 ##### `Project.projectMembers`
 
@@ -24156,7 +25254,7 @@ Returns [`MemberInterfaceConnection`](#memberinterfaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24186,7 +25284,7 @@ Returns [`ReleaseConnection`](#releaseconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24222,7 +25320,7 @@ Returns [`RequirementConnection`](#requirementconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24246,7 +25344,7 @@ Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24271,7 +25369,7 @@ Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24288,7 +25386,7 @@ Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24345,7 +25443,7 @@ Returns [`ServiceConnection`](#serviceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24362,7 +25460,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24391,7 +25489,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24418,7 +25516,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24434,7 +25532,7 @@ Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24464,7 +25562,7 @@ Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnec
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24497,6 +25595,31 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="projectvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
 
+##### `Project.workItemStateCounts`
+
+Counts of work items by state for the project.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Filter work items by author username. |
+| <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="projectworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="projectworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="projectworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="projectworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="projectworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
 ##### `Project.workItemTypes`
 
 Work item types available to the project.
@@ -24505,7 +25628,7 @@ Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24525,7 +25648,7 @@ Returns [`WorkItemConnection`](#workitemconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -24556,14 +25679,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectcicdsettingmergetrainsskiptrainallowed"></a>`mergeTrainsSkipTrainAllowed` | [`Boolean!`](#boolean) | Whether merge immediately is allowed for merge trains. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 
-### `ProjectConversations`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectconversationsciconfigmessages"></a>`ciConfigMessages` **{warning-solid}** | [`DeprecatedAiMessageConnection`](#deprecatedaimessageconnection) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Messages generated by open ai and the user. |
-
 ### `ProjectDataTransfer`
 
 #### Fields
@@ -24572,6 +25687,17 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectdatatransferegressnodes"></a>`egressNodes` | [`EgressNodeConnection`](#egressnodeconnection) | Data nodes. (see [Connections](#connections)) |
 | <a id="projectdatatransfertotalegress"></a>`totalEgress` | [`BigInt`](#bigint) | Total egress for that project in that period of time. |
+
+### `ProjectFeatureAccess`
+
+Represents the access level required by the user to access a project feature.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectfeatureaccessintegervalue"></a>`integerValue` | [`Int`](#int) | Integer representation of access level. |
+| <a id="projectfeatureaccessstringvalue"></a>`stringValue` | [`ProjectFeatureAccessLevel`](#projectfeatureaccesslevel) | String representation of access level. |
 
 ### `ProjectMember`
 
@@ -24848,6 +25974,23 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimenot"></a>`not` | [`NegatedValueStreamAnalyticsIssueFilterInput`](#negatedvaluestreamanalyticsissuefilterinput) | Argument used for adding negated filters. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
 | <a id="projectvaluestreamanalyticsflowmetricsleadtimeweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.timeToMerge`
+
+Median time from merge request creation to merge request merged.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergefrom"></a>`from` | [`Time!`](#time) | Timestamp marking the start date and time. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergelabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergemilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the merge request. |
+| <a id="projectvaluestreamanalyticsflowmetricstimetomergeto"></a>`to` | [`Time!`](#time) | Timestamp marking the end date and time. |
 
 ### `ProjectWikiRepositoryRegistry`
 
@@ -25138,7 +26281,7 @@ Returns [`RepositoryBlobConnection`](#repositoryblobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -25182,7 +26325,7 @@ Returns [`TreeConnection`](#treeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -25285,7 +26428,7 @@ Returns [`Blame`](#blame).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobblamefromline"></a>`fromLine` | [`Int`](#int) | Range starting from the line. Cannot be less than 1 or greater than `to_line`. |
-| <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be less than 1 or less than `to_line`. |
+| <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be smaller than `from_line` or greater than `from_line` + 100. |
 
 ### `RepositoryCodeownerError`
 
@@ -25349,7 +26492,7 @@ Returns [`TestReportConnection`](#testreportconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -25744,7 +26887,7 @@ Returns [`SentryErrorConnection`](#sentryerrorconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -25847,7 +26990,7 @@ Returns [`SnippetBlobConnection`](#snippetblobconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -25863,7 +27006,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26491,7 +27634,7 @@ Core representation of a GitLab user.
 | <a id="usercoresavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -26508,7 +27651,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26544,7 +27687,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26580,7 +27723,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26597,7 +27740,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26645,7 +27788,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26663,7 +27806,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26679,7 +27822,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26702,7 +27845,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26719,19 +27862,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Workspaces owned by the current user.
 
+WARNING:
+**Introduced** in 16.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
+| <a id="usercoreworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
+| <a id="usercoreworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
+| <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
+| <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `UserMergeRequestInteraction`
 
@@ -26766,6 +27915,7 @@ fields relate to interactions between the two entities.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean!`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 ### `UserStatus`
@@ -26789,6 +27939,7 @@ fields relate to interactions between the two entities.
 | <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
 | <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
 | <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Project the value stream belongs to, returns empty if it belongs to a group. |
+| <a id="valuestreamstages"></a>`stages` | [`[ValueStreamStage!]`](#valuestreamstage) | Value Stream stages. |
 
 ### `ValueStreamAnalyticsMetric`
 
@@ -26824,6 +27975,20 @@ Represents a recorded measurement (object count) for the requested group.
 | <a id="valuestreammetriclinktypelabel"></a>`label` | [`String!`](#string) | Label for the link. |
 | <a id="valuestreammetriclinktypename"></a>`name` | [`String!`](#string) | Name of the link group. |
 | <a id="valuestreammetriclinktypeurl"></a>`url` | [`String!`](#string) | Drill-down URL. |
+
+### `ValueStreamStage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstagecustom"></a>`custom` | [`Boolean!`](#boolean) | Whether the stage is customized. |
+| <a id="valuestreamstageendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | End event identifier. |
+| <a id="valuestreamstageendeventlabel"></a>`endEventLabel` | [`Label`](#label) | Label associated with end event. |
+| <a id="valuestreamstagehidden"></a>`hidden` | [`Boolean!`](#boolean) | Whether the stage is hidden. |
+| <a id="valuestreamstagename"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="valuestreamstagestarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent!`](#valuestreamstageevent) | Start event identifier. |
+| <a id="valuestreamstagestarteventlabel"></a>`startEventLabel` | [`Label`](#label) | Label associated with start event. |
 
 ### `VulnerabilitiesCountByDay`
 
@@ -26871,6 +28036,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | <a id="vulnerabilitymessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.1. message field has been removed from security reports schema. |
+| <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
 | <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, GENERIC). `Scan Type` in the UI. |
@@ -26901,7 +28067,7 @@ Returns [`VulnerabilityIssueLinkConnection!`](#vulnerabilityissuelinkconnection)
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -26917,7 +28083,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -27561,6 +28727,18 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
 
+### `WorkItemStateCountsType`
+
+Represents total number of work items for the represented states.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatecountstypeall"></a>`all` | [`Int`](#int) | Number of work items for the project or group. |
+| <a id="workitemstatecountstypeclosed"></a>`closed` | [`Int`](#int) | Number of work items with state CLOSED for the project or group. |
+| <a id="workitemstatecountstypeopened"></a>`opened` | [`Int`](#int) | Number of work items with state OPENED for the project or group. |
+
 ### `WorkItemType`
 
 #### Fields
@@ -27570,6 +28748,7 @@ Check permissions for the current user on a work item.
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+| <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` **{warning-solid}** | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Available widgets for the work item type. |
 
 ### `WorkItemWidgetAssignees`
 
@@ -27579,9 +28758,9 @@ Represents an assignees widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean`](#boolean) | Indicates whether multiple assignees are allowed. |
+| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.allowsMultipleAssignees`](#workitemwidgetdefinitionassigneesallowsmultipleassignees). |
 | <a id="workitemwidgetassigneesassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the work item. (see [Connections](#connections)) |
-| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's project. |
+| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.canInviteMembers`](#workitemwidgetdefinitionassigneescaninvitemembers). |
 | <a id="workitemwidgetassigneestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAwardEmoji`
@@ -27617,13 +28796,57 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcurrentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
+
+### `WorkItemWidgetDefinitionAssignees`
+
+Represents an assignees widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Indicates whether multiple assignees are allowed. |
+| <a id="workitemwidgetdefinitionassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's parent. |
+| <a id="workitemwidgetdefinitionassigneestype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionGeneric`
+
+Represents a generic widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitiongenerictype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionHierarchy`
+
+Represents a hierarchy widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionhierarchyallowedchildtypes"></a>`allowedChildTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Allowed child types for the work item type. (see [Connections](#connections)) |
+| <a id="workitemwidgetdefinitionhierarchytype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionLabels`
+
+Represents a labels widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionlabelsallowsscopedlabels"></a>`allowsScopedLabels` | [`Boolean!`](#boolean) | Indicates whether scoped labels are available. |
+| <a id="workitemwidgetdefinitionlabelstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDescription`
 
@@ -27684,7 +28907,7 @@ Represents the labels widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetlabelsallowsscopedlabels"></a>`allowsScopedLabels` | [`Boolean`](#boolean) | Indicates whether a scoped label is allowed. |
+| <a id="workitemwidgetlabelsallowsscopedlabels"></a>`allowsScopedLabels` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`WorkItemWidgetDefinitionLabels.allowsScopedLabels`](#workitemwidgetdefinitionlabelsallowsscopedlabels). |
 | <a id="workitemwidgetlabelslabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetlabelstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
@@ -27715,7 +28938,7 @@ Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -27754,7 +28977,7 @@ Returns [`DiscussionConnection`](#discussionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
 
@@ -28155,6 +29378,7 @@ Values for scoping catalog resources.
 | Value | Description |
 | ----- | ----------- |
 | <a id="cicatalogresourcescopeall"></a>`ALL` | All catalog resources visible to the current user. |
+| <a id="cicatalogresourcescopenamespaces"></a>`NAMESPACES` | Catalog resources belonging to authorized namespaces of the user. |
 
 ### `CiCatalogResourceSort`
 
@@ -28168,6 +29392,17 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortlatest_released_at_desc"></a>`LATEST_RELEASED_AT_DESC` | Latest release date by descending order. |
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
+
+### `CiCatalogResourceVersionSort`
+
+Values for sorting catalog resource versions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cicatalogresourceversionsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="cicatalogresourceversionsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="cicatalogresourceversionsortreleased_at_asc"></a>`RELEASED_AT_ASC` | Released at by ascending order. |
+| <a id="cicatalogresourceversionsortreleased_at_desc"></a>`RELEASED_AT_DESC` | Released at by descending order. |
 
 ### `CiConfigIncludeType`
 
@@ -28785,6 +30020,8 @@ Values for sorting dependencies.
 | <a id="dependencysortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="dependencysortpackager_asc"></a>`PACKAGER_ASC` | Packager by ascending order. |
 | <a id="dependencysortpackager_desc"></a>`PACKAGER_DESC` | Packager by descending order. |
+| <a id="dependencysortseverity_asc"></a>`SEVERITY_ASC` | Severity by ascending order. |
+| <a id="dependencysortseverity_desc"></a>`SEVERITY_DESC` | Severity by descending order. |
 
 ### `DeploymentApprovalSummaryStatus`
 
@@ -28866,6 +30103,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatusdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Discussions must be resolved before merging. |
 | <a id="detailedmergestatusdraft_status"></a>`DRAFT_STATUS` | Merge request must not be draft before merging. |
 | <a id="detailedmergestatusexternal_status_checks"></a>`EXTERNAL_STATUS_CHECKS` | Status checks must pass. |
+| <a id="detailedmergestatusjira_association"></a>`JIRA_ASSOCIATION` | Either the title or description must reference a Jira issue. |
 | <a id="detailedmergestatusmergeable"></a>`MERGEABLE` | Branch can be merged. |
 | <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
@@ -29265,12 +30503,13 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="issuetypeepic"></a>`EPIC` **{warning-solid}** | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Epic issue type. Available only when feature flag `namespace_level_work_items` is enabled. |
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in 15.6. This feature is an Experiment. It can be changed or removed at any time. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
-| <a id="issuetypetask"></a>`TASK` **{warning-solid}** | **Introduced** in 15.2. This feature is an Experiment. It can be changed or removed at any time. Task issue type. |
+| <a id="issuetypetask"></a>`TASK` | Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
 
 ### `IterationSearchableField`
@@ -29341,6 +30580,7 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletypemetrics_referee"></a>`METRICS_REFEREE` | METRICS REFEREE job artifact file type. |
 | <a id="jobartifactfiletypenetwork_referee"></a>`NETWORK_REFEREE` | NETWORK REFEREE job artifact file type. |
 | <a id="jobartifactfiletypeperformance"></a>`PERFORMANCE` | PERFORMANCE job artifact file type. |
+| <a id="jobartifactfiletyperepository_xray"></a>`REPOSITORY_XRAY` | REPOSITORY XRAY job artifact file type. |
 | <a id="jobartifactfiletyperequirements"></a>`REQUIREMENTS` | REQUIREMENTS job artifact file type. |
 | <a id="jobartifactfiletyperequirements_v2"></a>`REQUIREMENTS_V2` | REQUIREMENTS V2 job artifact file type. |
 | <a id="jobartifactfiletypesast"></a>`SAST` | SAST job artifact file type. |
@@ -29406,8 +30646,8 @@ Member role permission.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows admin access to group members. |
-| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows admin access to the merge requests. |
+| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows to admin group members. |
+| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows to approve merge requests. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Allows admin access to the vulnerability reports. |
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows to archive projects. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Allows manage access to the project access tokens. |
@@ -29519,17 +30759,17 @@ Representation of mergeability check identifier.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Mergeability check identifier is broken_status. |
-| <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Mergeability check identifier is ci_must_pass. |
-| <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Mergeability check identifier is conflict. |
-| <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Mergeability check identifier is discussions_not_resolved. |
-| <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Mergeability check identifier is draft_status. |
-| <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Mergeability check identifier is merge_request_blocked. |
-| <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Mergeability check identifier is need_rebase. |
-| <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Mergeability check identifier is not_approved. |
-| <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Mergeability check identifier is not_open. |
-| <a id="mergeabilitycheckidentifierpolicies_denied"></a>`POLICIES_DENIED` | Mergeability check identifier is policies_denied. |
-| <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Mergeability check identifier is status_checks_must_pass. |
+| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Checks whether the merge request is broken. |
+| <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Checks whether CI has passed. |
+| <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Checks whether the merge request has a conflict. |
+| <a id="mergeabilitycheckidentifierdiscussions_not_resolved"></a>`DISCUSSIONS_NOT_RESOLVED` | Checks whether the merge request has open discussions. |
+| <a id="mergeabilitycheckidentifierdraft_status"></a>`DRAFT_STATUS` | Checks whether the merge request is draft. |
+| <a id="mergeabilitycheckidentifierjira_association_missing"></a>`JIRA_ASSOCIATION_MISSING` | Checks whether the title or description references a Jira issue. |
+| <a id="mergeabilitycheckidentifiermerge_request_blocked"></a>`MERGE_REQUEST_BLOCKED` | Checks whether the merge request is blocked. |
+| <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Checks whether the merge request needs to be rebased. |
+| <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Checks whether the merge request is approved. |
+| <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Checks whether the merge request is open. |
+| <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
 
 ### `MergeabilityCheckStatus`
 
@@ -29887,6 +31127,16 @@ Current state of the product analytics stack.
 | <a id="productanalyticsstateloading_instance"></a>`LOADING_INSTANCE` | Stack is currently initializing. |
 | <a id="productanalyticsstatewaiting_for_events"></a>`WAITING_FOR_EVENTS` | Stack is waiting for events from users. |
 
+### `ProjectFeatureAccessLevel`
+
+Access level of a project feature.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectfeatureaccessleveldisabled"></a>`DISABLED` | Not enabled for anyone. |
+| <a id="projectfeatureaccesslevelenabled"></a>`ENABLED` | Enabled for everyone able to access the project. |
+| <a id="projectfeatureaccesslevelprivate"></a>`PRIVATE` | Enabled only for team members. |
+
 ### `ProjectMemberRelation`
 
 Project member relation.
@@ -30100,7 +31350,6 @@ State of a Sentry error.
 | <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | PumbleService type. |
 | <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | PushoverService type. |
 | <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | RedmineService type. |
-| <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
 | <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
 | <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |
@@ -30290,6 +31539,8 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
+| <a id="usercalloutfeaturenameenumcode_suggestions_ga_non_owner_alert"></a>`CODE_SUGGESTIONS_GA_NON_OWNER_ALERT` | Callout feature name for code_suggestions_ga_non_owner_alert. |
+| <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
 | <a id="usercalloutfeaturenameenumeoa_bronze_plan_banner"></a>`EOA_BRONZE_PLAN_BANNER` | Callout feature name for eoa_bronze_plan_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
@@ -30360,11 +31611,43 @@ Possible identifier types for a measurement.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="valuestreamdashboardmetriccontributors"></a>`CONTRIBUTORS` | Contributor count. EXPERIMENTAL: Only available on the SaaS version of GitLab when the ClickHouse database backend is enabled. |
 | <a id="valuestreamdashboardmetricgroups"></a>`GROUPS` | Group count. |
 | <a id="valuestreamdashboardmetricissues"></a>`ISSUES` | Issue count. |
 | <a id="valuestreamdashboardmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |
 | <a id="valuestreamdashboardmetricpipelines"></a>`PIPELINES` | Pipeline count. |
 | <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
+
+### `ValueStreamStageEvent`
+
+Stage event identifiers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="valuestreamstageeventcode_stage_start"></a>`CODE_STAGE_START` | Code stage start event. |
+| <a id="valuestreamstageeventissue_closed"></a>`ISSUE_CLOSED` | Issue closed event. |
+| <a id="valuestreamstageeventissue_created"></a>`ISSUE_CREATED` | Issue created event. |
+| <a id="valuestreamstageeventissue_deployed_to_production"></a>`ISSUE_DEPLOYED_TO_PRODUCTION` | Issue deployed to production event. |
+| <a id="valuestreamstageeventissue_first_added_to_board"></a>`ISSUE_FIRST_ADDED_TO_BOARD` | Issue first added to board event. |
+| <a id="valuestreamstageeventissue_first_assigned_at"></a>`ISSUE_FIRST_ASSIGNED_AT` | Issue first assigned at event. |
+| <a id="valuestreamstageeventissue_first_associated_with_milestone"></a>`ISSUE_FIRST_ASSOCIATED_WITH_MILESTONE` | Issue first associated with milestone event. |
+| <a id="valuestreamstageeventissue_first_mentioned_in_commit"></a>`ISSUE_FIRST_MENTIONED_IN_COMMIT` | Issue first mentioned in commit event. |
+| <a id="valuestreamstageeventissue_label_added"></a>`ISSUE_LABEL_ADDED` | Issue label added event. |
+| <a id="valuestreamstageeventissue_label_removed"></a>`ISSUE_LABEL_REMOVED` | Issue label removed event. |
+| <a id="valuestreamstageeventissue_last_edited"></a>`ISSUE_LAST_EDITED` | Issue last edited event. |
+| <a id="valuestreamstageeventissue_stage_end"></a>`ISSUE_STAGE_END` | Issue stage end event. |
+| <a id="valuestreamstageeventmerge_request_closed"></a>`MERGE_REQUEST_CLOSED` | Merge request closed event. |
+| <a id="valuestreamstageeventmerge_request_created"></a>`MERGE_REQUEST_CREATED` | Merge request created event. |
+| <a id="valuestreamstageeventmerge_request_first_assigned_at"></a>`MERGE_REQUEST_FIRST_ASSIGNED_AT` | Merge request first assigned at event. |
+| <a id="valuestreamstageeventmerge_request_first_commit_at"></a>`MERGE_REQUEST_FIRST_COMMIT_AT` | Merge request first commit at event. |
+| <a id="valuestreamstageeventmerge_request_first_deployed_to_production"></a>`MERGE_REQUEST_FIRST_DEPLOYED_TO_PRODUCTION` | Merge request first deployed to production event. |
+| <a id="valuestreamstageeventmerge_request_label_added"></a>`MERGE_REQUEST_LABEL_ADDED` | Merge request label added event. |
+| <a id="valuestreamstageeventmerge_request_label_removed"></a>`MERGE_REQUEST_LABEL_REMOVED` | Merge request label removed event. |
+| <a id="valuestreamstageeventmerge_request_last_build_finished"></a>`MERGE_REQUEST_LAST_BUILD_FINISHED` | Merge request last build finished event. |
+| <a id="valuestreamstageeventmerge_request_last_build_started"></a>`MERGE_REQUEST_LAST_BUILD_STARTED` | Merge request last build started event. |
+| <a id="valuestreamstageeventmerge_request_last_edited"></a>`MERGE_REQUEST_LAST_EDITED` | Merge request last edited event. |
+| <a id="valuestreamstageeventmerge_request_merged"></a>`MERGE_REQUEST_MERGED` | Merge request merged event. |
+| <a id="valuestreamstageeventplan_stage_start"></a>`PLAN_STAGE_START` | Plan stage start event. |
 
 ### `VerificationStateEnum`
 
@@ -30712,6 +31995,12 @@ A `AuditEventsGoogleCloudLoggingConfigurationID` is a global ID. It is encoded a
 
 An example `AuditEventsGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1"`.
 
+### `AuditEventsInstanceAmazonS3ConfigurationID`
+
+A `AuditEventsInstanceAmazonS3ConfigurationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsInstanceAmazonS3ConfigurationID` is: `"gid://gitlab/AuditEvents::Instance::AmazonS3Configuration/1"`.
+
 ### `AuditEventsInstanceExternalAuditEventDestinationID`
 
 A `AuditEventsInstanceExternalAuditEventDestinationID` is a global ID. It is encoded as a string.
@@ -30723,6 +32012,12 @@ An example `AuditEventsInstanceExternalAuditEventDestinationID` is: `"gid://gitl
 A `AuditEventsInstanceGoogleCloudLoggingConfigurationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsInstanceGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/AuditEvents::Instance::GoogleCloudLoggingConfiguration/1"`.
+
+### `AuditEventsStreamingHTTPNamespaceFilterID`
+
+A `AuditEventsStreamingHTTPNamespaceFilterID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsStreamingHTTPNamespaceFilterID` is: `"gid://gitlab/AuditEvents::Streaming::HTTP::NamespaceFilter/1"`.
 
 ### `AuditEventsStreamingHeaderID`
 
@@ -30779,6 +32074,18 @@ An example `CiBuildID` is: `"gid://gitlab/Ci::Build/1"`.
 A `CiCatalogResourceID` is a global ID. It is encoded as a string.
 
 An example `CiCatalogResourceID` is: `"gid://gitlab/Ci::Catalog::Resource/1"`.
+
+### `CiCatalogResourcesComponentID`
+
+A `CiCatalogResourcesComponentID` is a global ID. It is encoded as a string.
+
+An example `CiCatalogResourcesComponentID` is: `"gid://gitlab/Ci::Catalog::Resources::Component/1"`.
+
+### `CiCatalogResourcesVersionID`
+
+A `CiCatalogResourcesVersionID` is a global ID. It is encoded as a string.
+
+An example `CiCatalogResourcesVersionID` is: `"gid://gitlab/Ci::Catalog::Resources::Version/1"`.
 
 ### `CiJobArtifactID`
 
@@ -31195,6 +32502,24 @@ A `MilestoneID` is a global ID. It is encoded as a string.
 
 An example `MilestoneID` is: `"gid://gitlab/Milestone/1"`.
 
+### `MlCandidateID`
+
+A `MlCandidateID` is a global ID. It is encoded as a string.
+
+An example `MlCandidateID` is: `"gid://gitlab/Ml::Candidate/1"`.
+
+### `MlModelID`
+
+A `MlModelID` is a global ID. It is encoded as a string.
+
+An example `MlModelID` is: `"gid://gitlab/Ml::Model/1"`.
+
+### `MlModelVersionID`
+
+A `MlModelVersionID` is a global ID. It is encoded as a string.
+
+An example `MlModelVersionID` is: `"gid://gitlab/Ml::ModelVersion/1"`.
+
 ### `NamespaceID`
 
 A `NamespaceID` is a global ID. It is encoded as a string.
@@ -31312,6 +32637,12 @@ An example `ProjectID` is: `"gid://gitlab/Project/1"`.
 A `ProjectImportStateID` is a global ID. It is encoded as a string.
 
 An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
+
+### `ProtectedBranchID`
+
+A `ProtectedBranchID` is a global ID. It is encoded as a string.
+
+An example `ProtectedBranchID` is: `"gid://gitlab/ProtectedBranch/1"`.
 
 ### `ReleaseID`
 
@@ -31605,6 +32936,7 @@ Implementations:
 Implementations:
 
 - [`AmazonS3ConfigurationType`](#amazons3configurationtype)
+- [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype)
 
 ##### Fields
 
@@ -31692,7 +33024,7 @@ Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -31854,7 +33186,7 @@ Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -31976,6 +33308,7 @@ Implementations:
 
 - [`AddOnUser`](#addonuser)
 - [`AutocompletedUser`](#autocompleteduser)
+- [`CurrentUser`](#currentuser)
 - [`MergeRequestAssignee`](#mergerequestassignee)
 - [`MergeRequestAuthor`](#mergerequestauthor)
 - [`MergeRequestParticipant`](#mergerequestparticipant)
@@ -32017,7 +33350,7 @@ Implementations:
 | <a id="usersavedreplies"></a>`savedReplies` | [`SavedReplyConnection`](#savedreplyconnection) | Saved replies authored by the user. (see [Connections](#connections)) |
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
-| <a id="usertwitter"></a>`twitter` | [`String`](#string) | Twitter username of the user. |
+| <a id="usertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
 | <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
@@ -32034,7 +33367,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32070,7 +33403,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32106,7 +33439,7 @@ Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32123,7 +33456,7 @@ Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32171,7 +33504,7 @@ Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32189,7 +33522,7 @@ Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32205,7 +33538,7 @@ Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32228,7 +33561,7 @@ Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
 
@@ -32240,24 +33573,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="usertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="usertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="usertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
-
-###### `User.workspaces`
-
-Workspaces owned by the current user.
-
-Returns [`WorkspaceConnection`](#workspaceconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-####### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="userworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Array of global workspace IDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="userworkspacesincludeactualstates"></a>`includeActualStates` | [`[String!]`](#string) | Includes all workspaces that match any of the actual states. |
-| <a id="userworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project id. |
 
 #### `WorkItemWidget`
 
@@ -32287,6 +33602,21 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgettype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+#### `WorkItemWidgetDefinition`
+
+Implementations:
+
+- [`WorkItemWidgetDefinitionAssignees`](#workitemwidgetdefinitionassignees)
+- [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
+- [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)
+- [`WorkItemWidgetDefinitionLabels`](#workitemwidgetdefinitionlabels)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitiontype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ## Input types
 
@@ -32399,15 +33729,6 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aisummarizereviewinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-
-### `AiTanukiBotInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aitanukibotinputquestion"></a>`question` | [`String!`](#string) | GitLab documentation question for AI to answer. |
-| <a id="aitanukibotinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AlertManagementPayloadAlertFieldInput`
 
@@ -32692,6 +34013,17 @@ Represents an escalation rule.
 | ---- | ---- | ----------- |
 | <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will not have these labels. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
+
+### `MonthSelectionInput`
+
+A year and month input for querying product analytics usage data.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="monthselectioninputmonth"></a>`month` | [`Int!`](#int) | Month of the period to return. |
+| <a id="monthselectioninputyear"></a>`year` | [`Int!`](#int) | Year of the period to return. |
 
 ### `NegatedBoardIssueInput`
 
@@ -32978,6 +34310,32 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="updatediffimagepositioninputx"></a>`x` | [`Int`](#int) | X position of the note. |
 | <a id="updatediffimagepositioninputy"></a>`y` | [`Int`](#int) | Y position of the note. |
 
+### `ValueStreamSettingInput`
+
+Attributes for value stream setting.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamsettinginputprojectidsfilter"></a>`projectIdsFilter` | [`[ProjectID!]`](#projectid) | Projects' global IDs used to filter value stream data. |
+
+### `ValueStreamStageInput`
+
+Attributes for value stream stage.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamstageinputcustom"></a>`custom` | [`Boolean`](#boolean) | Whether the stage is customized. If false, it assigns a built-in default stage by name. |
+| <a id="valuestreamstageinputendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | End event identifier. |
+| <a id="valuestreamstageinputendeventlabelid"></a>`endEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the end event identifier. |
+| <a id="valuestreamstageinputhidden"></a>`hidden` | [`Boolean`](#boolean) | Whether the stage is hidden. |
+| <a id="valuestreamstageinputname"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="valuestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
+| <a id="valuestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
+
 ### `VulnerabilityIdentifierInput`
 
 #### Arguments
@@ -33020,16 +34378,6 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="workitemconverttaskinputlockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
 | <a id="workitemconverttaskinputtitle"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
 | <a id="workitemconverttaskinputworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |
-
-### `WorkItemDeletedTaskInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemdeletedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the task referenced in the work item's description. |
-| <a id="workitemdeletedtaskinputlinenumberend"></a>`lineNumberEnd` | [`Int!`](#int) | Last line in the Markdown source that defines the list item task. |
-| <a id="workitemdeletedtaskinputlinenumberstart"></a>`lineNumberStart` | [`Int!`](#int) | First line in the Markdown source that defines the list item task. |
 
 ### `WorkItemUpdatedTaskInput`
 

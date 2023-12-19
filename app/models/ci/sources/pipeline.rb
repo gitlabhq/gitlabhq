@@ -5,20 +5,12 @@ module Ci
     class Pipeline < Ci::ApplicationRecord
       include Ci::Partitionable
       include Ci::NamespacedModelName
-      include SafelyChangeColumnDefault
-      include IgnorableColumns
-
-      ignore_columns [
-        :pipeline_id_convert_to_bigint, :source_pipeline_id_convert_to_bigint
-      ], remove_with: '16.6', remove_after: '2023-10-22'
-
-      columns_changing_default :partition_id, :source_partition_id
 
       self.table_name = "ci_sources_pipelines"
 
       belongs_to :project, class_name: "::Project"
       belongs_to :pipeline, class_name: "Ci::Pipeline", inverse_of: :source_pipeline
-      belongs_to :build, class_name: "Ci::Build", foreign_key: :source_job_id, inverse_of: :sourced_pipelines
+      belongs_to :build, class_name: 'Ci::Build', foreign_key: :source_job_id, inverse_of: :sourced_pipelines
 
       belongs_to :source_project, class_name: "::Project", foreign_key: :source_project_id
       belongs_to :source_job, class_name: "CommitStatus", foreign_key: :source_job_id

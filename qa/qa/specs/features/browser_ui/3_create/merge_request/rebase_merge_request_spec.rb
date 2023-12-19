@@ -22,10 +22,17 @@ module QA
         ])
 
         merge_request.visit!
-
         Page::MergeRequest::Show.perform do |mr_page|
-          expect(mr_page).to have_content('Merge blocked: the source branch must be rebased onto the target branch.', wait: 20)
-          expect(mr_page).to be_fast_forward_not_possible
+          if mr_page.merge_blocked_component_ff_enabled?
+            expect(mr_page).to have_content('Merge blocked: 1 check failed', wait: 20)
+            mr_page.expand_merge_checks
+            expect(mr_page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
+          else
+            expect(mr_page).to have_content('Merge blocked: the source branch must be rebased onto the target branch.', wait: 20)
+            expect(mr_page).to be_fast_forward_not_possible
+            page.refresh
+          end
+
           expect(mr_page).not_to have_merge_button
           expect(merge_request.project.commits.size).to eq(2)
 

@@ -55,5 +55,26 @@ RSpec.describe JwksController, feature_category: :system_access do
         end
       end
     end
+
+    it 'has cache control header' do
+      get jwks_url
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Cache-Control']).to include('max-age=86400', 'public', 'must-revalidate', 'no-transform')
+    end
+
+    context 'when cache_control_headers_for_openid_jwks feature flag is disabled' do
+      before do
+        stub_feature_flags(cache_control_headers_for_openid_jwks: false)
+      end
+
+      it 'does not have cache control header' do
+        get jwks_url
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Cache-Control']).not_to include('max-age=86400', 'public',
+          'no-transform')
+      end
+    end
   end
 end

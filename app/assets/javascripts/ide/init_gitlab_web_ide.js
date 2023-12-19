@@ -6,10 +6,13 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
-import { getBaseConfig } from './lib/gitlab_web_ide/get_base_config';
-import { setupRootElement } from './lib/gitlab_web_ide/setup_root_element';
+import {
+  getBaseConfig,
+  getOAuthConfig,
+  setupRootElement,
+  handleTracking,
+} from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
-import { handleTracking } from './lib/gitlab_web_ide/handle_tracking_event';
 
 const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
   const remotePath = cleanLeadingSeparator(remotePathArg);
@@ -51,15 +54,21 @@ export const initGitlabWebIDE = async (el) => {
     : null;
   const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
 
+  const oauthConfig = getOAuthConfig(el.dataset);
+  const httpHeaders = oauthConfig
+    ? undefined
+    : // Use same headers as defined in axios_utils (not needed in oauth)
+      {
+        [csrf.headerKey]: csrf.token,
+        'X-Requested-With': 'XMLHttpRequest',
+      };
+
   // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
   start(rootEl, {
     ...getBaseConfig(),
     nonce,
-    // Use same headers as defined in axios_utils
-    httpHeaders: {
-      [csrf.headerKey]: csrf.token,
-      'X-Requested-With': 'XMLHttpRequest',
-    },
+    httpHeaders,
+    auth: oauthConfig,
     projectPath,
     ref,
     filePath,

@@ -89,7 +89,7 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
     end
 
     it 'renders fields and button disabled' do
-      expect(page).to have_field('GitLab source instance URL', disabled: true)
+      expect(page).to have_field('GitLab source instance base URL', disabled: true)
       expect(page).to have_field('Personal access token', disabled: true)
       expect(page).to have_button('Connect instance', disabled: true)
     end

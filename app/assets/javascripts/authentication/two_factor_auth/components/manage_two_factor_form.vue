@@ -119,7 +119,6 @@ export default {
         type="password"
         name="current_password"
         :state="currentPasswordState"
-        data-qa-selector="current_password_field"
       />
     </gl-form-group>
 

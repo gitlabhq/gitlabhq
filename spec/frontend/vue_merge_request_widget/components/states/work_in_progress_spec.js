@@ -42,6 +42,9 @@ describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', ()
         mergeRequest: {
           __typename: 'MergeRequest',
           id: TEST_MR_ID,
+          draft: true,
+          title: TEST_MR_TITLE,
+          mergeableDiscussionsState: false,
           userPermissions: {
             updateMergeRequest: canUpdateMergeRequest,
           },
@@ -177,6 +180,19 @@ describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', ()
 
     it('does not render mark ready button', () => {
       expect(findWIPButton().exists()).toBe(false);
+    });
+  });
+
+  describe('when project is null', () => {
+    beforeEach(async () => {
+      draftQuerySpy.mockResolvedValue({ data: { project: null } });
+      createComponent();
+      await waitForPromises();
+    });
+
+    // This is to mitigate https://gitlab.com/gitlab-org/gitlab/-/issues/413627
+    it('does not throw any error', () => {
+      expect(wrapper.exists()).toBe(true);
     });
   });
 });

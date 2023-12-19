@@ -7,7 +7,7 @@ RSpec.describe Types::IssueTypeEnum, feature_category: :team_planning do
 
   it 'exposes all the existing issue type values except epic' do
     expect(described_class.values.keys).to match_array(
-      %w[ISSUE INCIDENT TEST_CASE REQUIREMENT TASK OBJECTIVE KEY_RESULT]
+      %w[ISSUE INCIDENT TEST_CASE REQUIREMENT TASK OBJECTIVE KEY_RESULT EPIC]
     )
   end
 end

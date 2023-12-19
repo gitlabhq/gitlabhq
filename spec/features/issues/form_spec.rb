@@ -148,12 +148,12 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
       click_button _('Select label')
       wait_for_all_requests
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid('sidebar-labels') do
         click_button label.title
         click_button label2.title
         click_button _('Close')
         wait_for_requests
-        page.within('[data-testid="embedded-labels-list"]') do
+        within_testid('embedded-labels-list') do
           expect(page).to have_content(label.title)
           expect(page).to have_content(label2.title)
         end
@@ -188,13 +188,13 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid 'sidebar-labels' do
         click_button label.title
         click_button _('Close')
 
         wait_for_requests
 
-        page.within('[data-testid="embedded-labels-list"]') do
+        within_testid('embedded-labels-list') do
           expect(page).to have_content(label.title)
         end
 
@@ -205,7 +205,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid 'sidebar-labels' do
         click_button label.title, class: 'dropdown-item'
         click_button _('Close')
 
@@ -221,7 +221,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid 'sidebar-labels' do
         search_field = find('input[type="search"]')
 
         search_field.native.send_keys(label.title)
@@ -238,7 +238,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     it 'displays an error message when submitting an invalid form' do
       click_button 'Create issue'
 
-      page.within('[data-testid="issue-title-input-field"]') do
+      within_testid('issue-title-input-field') do
         expect(page).to have_text(_('This field is required.'))
       end
     end
@@ -463,14 +463,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid 'sidebar-labels' do
         click_button label.title
         click_button label2.title
         click_button _('Close')
 
         wait_for_requests
 
-        page.within('[data-testid="embedded-labels-list"]') do
+        within_testid('embedded-labels-list') do
           expect(page).to have_content(label.title)
           expect(page).to have_content(label2.title)
         end
@@ -580,14 +580,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
         wait_for_all_requests
 
-        page.within '[data-testid="sidebar-labels"]' do
+        within_testid 'sidebar-labels' do
           click_button _('Create project label')
 
           wait_for_requests
         end
 
         page.within '.js-labels-create' do
-          find('[data-testid="label-title-input"]').fill_in with: 'test label'
+          find_by_testid('label-title-input').fill_in with: 'test label'
           first('.suggest-colors-dropdown a').click
 
           click_button 'Create'

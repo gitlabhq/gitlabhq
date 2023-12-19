@@ -2,4 +2,4 @@ migration_job_name: UpdateWorkspacesConfigVersion
 description: Update config_version to 2 and force_include_all_resources to true for existing workspaces
 feature_category: remote_development
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131402
-milestone: 16.5
+milestone: '16.5'

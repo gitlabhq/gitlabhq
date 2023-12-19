@@ -18,6 +18,17 @@ RSpec.describe Gitlab::Database::Migrations::PgBackendPid, feature_category: :da
 
       expect { |b| patched_instance.with_advisory_lock_connection(&b) }.to yield_with_args(:conn)
     end
+
+    it 're-yields with same arguments and wraps it with calls to .say even when error is raised' do
+      patched_instance = klass.prepend(described_class).new
+      expect(Gitlab::Database::Migrations::PgBackendPid).to receive(:say).twice
+
+      expect do
+        patched_instance.with_advisory_lock_connection do
+          raise ActiveRecord::ConcurrentMigrationError, 'test'
+        end
+      end.to raise_error ActiveRecord::ConcurrentMigrationError
+    end
   end
 
   describe '.patch!' do

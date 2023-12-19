@@ -1,0 +1,38 @@
+empty_image:
+  image:
+
+multi_image_array:
+  image:
+    - alpine:latest
+    - ubuntu:latest
+
+image_without_name:
+  image:
+    entrypoint: ["/bin/sh", "-c"]
+
+image_with_invalid_entrypoint:
+  image:
+    name: my-postgres:11.7
+    entrypoint: "/usr/local/bin/db-postgres" # must be array
+
+image_with_empty_pull_policy:
+  image:
+    name: postgres:11.6
+    pull_policy: []
+
+invalid_image_platform:
+  image:
+    name: alpine:latest
+    docker:
+      platform: ["arm64"] # The expected value is a string, not an array
+
+invalid_image_executor_opts:
+  image:
+    name: alpine:latest
+    docker:
+      unknown_key: test
+
+image_with_empty_executor_opts:
+  image:
+    name: alpine:latest
+    docker:

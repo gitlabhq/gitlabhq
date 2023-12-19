@@ -1512,7 +1512,6 @@ RSpec.describe Notify do
 
     context 'for service desk issues' do
       before do
-        stub_feature_flags(service_desk_custom_email: false)
         issue.update!(external_author: 'service.desk@example.com')
         issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
@@ -1558,42 +1557,30 @@ RSpec.describe Notify do
           end
         end
 
-        context 'when service_desk_custom_email is active' do
-          before do
-            stub_feature_flags(service_desk_custom_email: true)
+        context 'when custom email is enabled' do
+          let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+          let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+          let_it_be(:settings) do
+            create(
+              :service_desk_setting,
+              project: project,
+              custom_email: 'supersupport@example.com'
+            )
           end
 
-          it_behaves_like 'a mail with default delivery method'
-
-          it 'uses service bot name by default' do
-            expect_sender(Users::Internal.support_bot)
+          before_all do
+            verification.mark_as_finished!
+            project.reset
+            settings.update!(custom_email_enabled: true)
           end
 
-          context 'when custom email is enabled' do
-            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
-            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+          it 'uses custom email and service bot name in "from" header' do
+            expect_sender(Users::Internal.support_bot, sender_email: 'supersupport@example.com')
+          end
 
-            let_it_be(:settings) do
-              create(
-                :service_desk_setting,
-                project: project,
-                custom_email: 'supersupport@example.com'
-              )
-            end
-
-            before_all do
-              verification.mark_as_finished!
-              project.reset
-              settings.update!(custom_email_enabled: true)
-            end
-
-            it 'uses custom email and service bot name in "from" header' do
-              expect_sender(Users::Internal.support_bot, sender_email: 'supersupport@example.com')
-            end
-
-            it 'uses SMTP delivery method and has correct settings' do
-              expect_service_desk_custom_email_delivery_options(settings)
-            end
+          it 'uses SMTP delivery method and has correct settings' do
+            expect_service_desk_custom_email_delivery_options(settings)
           end
         end
       end
@@ -1623,42 +1610,30 @@ RSpec.describe Notify do
           end
         end
 
-        context 'when service_desk_custom_email is active' do
-          before do
-            stub_feature_flags(service_desk_custom_email: true)
+        context 'when custom email is enabled' do
+          let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+          let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+          let_it_be(:settings) do
+            create(
+              :service_desk_setting,
+              project: project,
+              custom_email: 'supersupport@example.com'
+            )
           end
 
-          it_behaves_like 'a mail with default delivery method'
-
-          it 'uses author\'s name in "from" header' do
-            expect_sender(first_note.author)
+          before_all do
+            verification.mark_as_finished!
+            project.reset
+            settings.update!(custom_email_enabled: true)
           end
 
-          context 'when custom email is enabled' do
-            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
-            let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+          it 'uses custom email and author\'s name in "from" header' do
+            expect_sender(first_note.author, sender_email: project.service_desk_setting.custom_email)
+          end
 
-            let_it_be(:settings) do
-              create(
-                :service_desk_setting,
-                project: project,
-                custom_email: 'supersupport@example.com'
-              )
-            end
-
-            before_all do
-              verification.mark_as_finished!
-              project.reset
-              settings.update!(custom_email_enabled: true)
-            end
-
-            it 'uses custom email and author\'s name in "from" header' do
-              expect_sender(first_note.author, sender_email: project.service_desk_setting.custom_email)
-            end
-
-            it 'uses SMTP delivery method and has correct settings' do
-              expect_service_desk_custom_email_delivery_options(settings)
-            end
+          it 'uses SMTP delivery method and has correct settings' do
+            expect_service_desk_custom_email_delivery_options(settings)
           end
         end
       end

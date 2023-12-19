@@ -1,0 +1,8 @@
+---
+name: encoding_logs_tree
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136323
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432559
+milestone: '16.7'
+type: development
+group: group::source code
+default_enabled: false

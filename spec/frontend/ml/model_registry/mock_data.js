@@ -1,3 +1,45 @@
+export const newCandidate = () => ({
+  params: [
+    { name: 'Algorithm', value: 'Decision Tree' },
+    { name: 'MaxDepth', value: '3' },
+  ],
+  metrics: [
+    { name: 'AUC', value: '.55', step: 0 },
+    { name: 'Accuracy', value: '.99', step: 1 },
+    { name: 'Accuracy', value: '.98', step: 2 },
+    { name: 'Accuracy', value: '.97', step: 3 },
+    { name: 'F1', value: '.1', step: 3 },
+  ],
+  metadata: [
+    { name: 'FileName', value: 'test.py' },
+    { name: 'ExecutionTime', value: '.0856' },
+  ],
+  info: {
+    iid: 'candidate_iid',
+    eid: 'abcdefg',
+    pathToArtifact: 'path_to_artifact',
+    experimentName: 'The Experiment',
+    pathToExperiment: 'path/to/experiment',
+    status: 'SUCCESS',
+    path: 'path_to_candidate',
+    ciJob: {
+      name: 'test',
+      path: 'path/to/job',
+      mergeRequest: {
+        path: 'path/to/mr',
+        iid: 1,
+        title: 'Some MR',
+      },
+      user: {
+        path: 'path/to/ci/user',
+        name: 'CI User',
+        username: 'ciuser',
+        avatar: '/img.png',
+      },
+    },
+  },
+});
+
 const LATEST_VERSION = {
   version: '1.2.3',
 };
@@ -14,7 +56,21 @@ export const makeModel = ({ latestVersion } = { latestVersion: LATEST_VERSION })
 
 export const MODEL = makeModel();
 
-export const MODEL_VERSION = { version: '1.2.3', model: MODEL };
+export const makeModelVersion = ({
+  version = '1.2.3',
+  model = MODEL,
+  packageId = 12,
+  description = 'Model version description',
+} = {}) => ({
+  version,
+  model,
+  packageId,
+  description,
+  projectPath: 'path/to/project',
+  candidate: newCandidate(),
+});
+
+export const MODEL_VERSION = makeModelVersion();
 
 export const mockModels = [
   {

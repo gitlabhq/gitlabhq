@@ -14,6 +14,7 @@ module Ci
       total_branches = project.repository_exists? ? project.repository.branch_count : 0
 
       {
+        "ci-catalog-path" => explore_catalog_index_path,
         "ci-config-path": project.ci_config_path_or_default,
         "ci-examples-help-page-path" => help_page_path('ci/examples/index'),
         "ci-help-page-path" => help_page_path('ci/index'),
@@ -34,7 +35,7 @@ module Ci
         "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index', anchor: 'simulate-a-cicd-pipeline'),
         "total-branches" => total_branches,
         "uses-external-config" => uses_external_config?(project) ? 'true' : 'false',
-        "validate-tab-illustration-path" => image_path('illustrations/project-run-CICD-pipelines-sm.svg'),
+        "validate-tab-illustration-path" => image_path('illustrations/empty-state/empty-devops-md.svg'),
         "yml-help-page-path" => help_page_path('ci/yaml/index')
       }
     end

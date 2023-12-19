@@ -10,7 +10,7 @@ module BulkImports
     loggable_arguments 2, 3
     data_consistency :always
     feature_category :importers
-    sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 3
+    sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
     worker_resource_boundary :memory
 
     sidekiq_retries_exhausted do |job, exception|

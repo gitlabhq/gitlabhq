@@ -1,3 +1,4 @@
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
@@ -17,6 +18,10 @@ const createComponent = () => {
       'right-sidebar-items': `
         <button class="js-todo">Todo</button>
       `,
+    },
+    stubs: {
+      GlButton,
+      GlIcon,
     },
   });
 };
@@ -62,9 +67,8 @@ describe('IssuableSidebarRoot', () => {
       const buttonEl = findToggleSidebarButton();
 
       expect(buttonEl.exists()).toBe(true);
-      expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
-      expect(buttonEl.find('span').text()).toBe('Collapse sidebar');
-      expect(wrapper.findByTestId('icon-collapse').isVisible()).toBe(true);
+      expect(buttonEl.attributes('title')).toBe('Collapse sidebar');
+      expect(wrapper.findByTestId('chevron-double-lg-right-icon').isVisible()).toBe(true);
     });
 
     describe('when collapsing the sidebar', () => {
@@ -116,12 +120,12 @@ describe('IssuableSidebarRoot', () => {
       assertPageLayoutClasses({ isExpanded: false });
     });
 
-    it('renders sidebar toggle button with text and icon', () => {
+    it('renders sidebar toggle button with title and icon', () => {
       const buttonEl = findToggleSidebarButton();
 
       expect(buttonEl.exists()).toBe(true);
-      expect(buttonEl.attributes('title')).toBe('Toggle sidebar');
-      expect(wrapper.findByTestId('icon-expand').isVisible()).toBe(true);
+      expect(buttonEl.attributes('title')).toBe('Expand sidebar');
+      expect(wrapper.findByTestId('chevron-double-lg-left-icon').isVisible()).toBe(true);
     });
   });
 

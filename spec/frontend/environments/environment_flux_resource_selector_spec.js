@@ -25,7 +25,7 @@ const DEFAULT_PROPS = {
   fluxResourcePath: '',
 };
 
-describe('~/environments/components/form.vue', () => {
+describe('~/environments/components/flux_resource_selector.vue', () => {
   let wrapper;
 
   const kustomizationItem = {

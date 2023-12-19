@@ -50,6 +50,11 @@ export default {
           id: convertToGraphQLId(TYPENAME_COMMIT_STATUS, this.jobId),
         };
       },
+      skip() {
+        // variables list always contains one empty variable
+        // skip refetch if form already has non-empty variables
+        return this.variables.length > 1;
+      },
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       update(data) {
         const jobVariables = cloneDeep(data?.project?.job?.manualVariables?.nodes);

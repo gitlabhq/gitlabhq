@@ -4,7 +4,6 @@ module ServiceDesk
   module CustomEmails
     class DestroyService < BaseService
       def execute
-        return error_feature_flag_disabled unless feature_flag_enabled?
         return error_user_not_authorized unless legitimate_user?
         return error_does_not_exist unless verification? || credential? || setting?
 

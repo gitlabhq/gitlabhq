@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Checks::TimedLogger do
+RSpec.describe Gitlab::Checks::TimedLogger, feature_category: :source_code_management do
   let!(:timeout) { 50.seconds }
   let!(:start) { Time.now }
   let!(:ref) { "bar" }

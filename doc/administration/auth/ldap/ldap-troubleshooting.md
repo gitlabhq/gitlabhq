@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting LDAP **(FREE SELF)**
@@ -167,9 +166,8 @@ may see the following message: `Access denied for your LDAP account`.
 
 We have a workaround, based on toggling the access level of affected users:
 
-1. As an administrator, on the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Users**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Users**.
 1. Select the name of the affected user.
 1. In the upper-right corner, select **Edit**.
 1. Change the user's access level from `Regular` to `Administrator` (or vice versa).
@@ -225,9 +223,8 @@ field contains no data:
 
 To resolve this:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, go to **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand both of the following:
    - **Account and limit**.
    - **Sign-up restrictions**.
@@ -369,8 +366,7 @@ things to debug the situation.
 - Ensure the correct [LDAP group link is added to the GitLab group](ldap_synchronization.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Overview > Users**.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
@@ -660,6 +656,25 @@ end
 
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
+
+## Could not authenticate from AzureActivedirectoryV2 because "Invalid grant"
+
+When converting from LDAP to SAML you might get an error in Azure that states the following:
+
+```plaintext
+Authentication failure! invalid_credentials: OAuth2::Error, invalid_grant.
+```
+
+This issue occurs when both of the following are true:
+
+- LDAP identities still exist for users after SAML has been configured for those users.
+- You disable LDAP for those users.
+
+You would receive both LDAP and Azure metadata in the logs, which generates the error in Azure.
+
+The workaround for a single user is to remove the LDAP identity from the user in **Admin > Identities**.
+
+To remove multiple LDAP identities, use either of the workarounds for the [`Could not authenticate you from Ldapmain because "Unknown provider"` error](#could-not-authenticate-you-from-ldapmain-because-unknown-provider).
 
 ## `Could not authenticate you from Ldapmain because "Unknown provider"`
 

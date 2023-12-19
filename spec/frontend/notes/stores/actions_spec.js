@@ -1129,9 +1129,12 @@ describe('Actions Notes Store', () => {
 
   describe('setConfidentiality', () => {
     it('calls the correct mutation with the correct args', () => {
-      testAction(actions.setConfidentiality, true, { noteableData: { confidential: false } }, [
-        { type: mutationTypes.SET_ISSUE_CONFIDENTIAL, payload: true },
-      ]);
+      return testAction(
+        actions.setConfidentiality,
+        true,
+        { noteableData: { confidential: false } },
+        [{ type: mutationTypes.SET_ISSUE_CONFIDENTIAL, payload: true }],
+      );
     });
   });
 

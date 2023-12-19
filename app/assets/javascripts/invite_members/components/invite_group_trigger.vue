@@ -28,12 +28,7 @@ export default {
 </script>
 
 <template>
-  <gl-button
-    :class="classes"
-    data-qa-selector="invite_a_group_button"
-    data-test-id="invite-group-button"
-    @click="openModal"
-  >
+  <gl-button :class="classes" data-testid="invite-group-button" @click="openModal">
     {{ displayText }}
   </gl-button>
 </template>

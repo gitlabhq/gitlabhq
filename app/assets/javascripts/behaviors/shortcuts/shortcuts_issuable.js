@@ -16,12 +16,9 @@ import {
   MR_COPY_SOURCE_BRANCH_NAME,
   ISSUABLE_COPY_REF,
 } from './keybindings';
-import Shortcuts from './shortcuts';
 
-export default class ShortcutsIssuable extends Shortcuts {
-  constructor() {
-    super();
-
+export default class ShortcutsIssuable {
+  constructor(shortcuts) {
     this.branchInMemoryButton = document.createElement('button');
     this.branchClipboardInstance = new ClipboardJS(this.branchInMemoryButton);
     this.branchClipboardInstance.on('success', () => {
@@ -40,7 +37,7 @@ export default class ShortcutsIssuable extends Shortcuts {
       toast(s__('GlobalShortcuts|Unable to copy the reference at this time.'));
     });
 
-    this.bindCommands([
+    shortcuts.addAll([
       [ISSUE_MR_CHANGE_ASSIGNEE, () => ShortcutsIssuable.openSidebarDropdown('assignee')],
       [ISSUE_MR_CHANGE_MILESTONE, () => ShortcutsIssuable.openSidebarDropdown('milestone')],
       [ISSUABLE_CHANGE_LABEL, () => ShortcutsIssuable.openSidebarDropdown('labels')],

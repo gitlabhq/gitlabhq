@@ -258,7 +258,7 @@ describe('Badges store actions', () => {
 
     it('dispatches requestLoadBadges and receiveLoadBadges for successful response', async () => {
       const dummyData = 'this is just some data';
-      const dummyReponse = [
+      const dummyResponse = [
         createDummyBadgeResponse(),
         createDummyBadgeResponse(),
         createDummyBadgeResponse(),
@@ -266,11 +266,11 @@ describe('Badges store actions', () => {
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestLoadBadges', dummyData]]);
         dispatch.mockClear();
-        return [HTTP_STATUS_OK, dummyReponse];
+        return [HTTP_STATUS_OK, dummyResponse];
       });
 
       await actions.loadBadges({ state, dispatch }, dummyData);
-      const badges = dummyReponse.map(transformBackendBadge);
+      const badges = dummyResponse.map(transformBackendBadge);
 
       expect(dispatch.mock.calls).toEqual([['receiveLoadBadges', badges]]);
     });
@@ -377,15 +377,15 @@ describe('Badges store actions', () => {
     });
 
     it('dispatches requestRenderedBadge and receiveRenderedBadge for successful response', async () => {
-      const dummyReponse = createDummyBadgeResponse();
+      const dummyResponse = createDummyBadgeResponse();
       endpointMock.replyOnce(() => {
         expect(dispatch.mock.calls).toEqual([['requestRenderedBadge']]);
         dispatch.mockClear();
-        return [HTTP_STATUS_OK, dummyReponse];
+        return [HTTP_STATUS_OK, dummyResponse];
       });
 
       await actions.renderBadge({ state, dispatch });
-      const renderedBadge = transformBackendBadge(dummyReponse);
+      const renderedBadge = transformBackendBadge(dummyResponse);
 
       expect(dispatch.mock.calls).toEqual([['receiveRenderedBadge', renderedBadge]]);
     });

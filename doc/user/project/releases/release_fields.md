@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Release fields
@@ -182,7 +182,7 @@ to store any artifacts from a release or tag pipeline,
 that can also be used for attaching binary files to an individual release entry.
 You basically need to:
 
-1. [Push the artifacts to the Generic Package Registry](../../packages/generic_packages/index.md#publish-a-package-file).
+1. [Push the artifacts to the Generic package registry](../../packages/generic_packages/index.md#publish-a-package-file).
 1. [Attach the package link to the release](#links).
 
 The following example generates release assets, publishes them

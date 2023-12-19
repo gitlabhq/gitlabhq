@@ -266,7 +266,6 @@ export default {
         class="gl-form-input-xl"
         name="deploy_token_expires_at"
         :value="formattedExpiryDate"
-        data-qa-selector="deploy_token_expires_at_field"
       />
     </gl-form-group>
     <gl-form-group
@@ -298,7 +297,6 @@ export default {
             :key="scope.id"
             v-model="scope.value"
             :name="scope.id"
-            :data-qa-selector="`${scope.id}_checkbox`"
           >
             {{ scope.scopeName }}
             <template #help>{{ scope.helpText }}</template>

@@ -299,7 +299,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: commits **(PREMIUM ALL)**
 
@@ -375,7 +375,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: notes **(PREMIUM ALL)**
 
@@ -690,7 +690,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `commits` **(PREMIUM ALL)**
 
@@ -766,7 +766,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `notes` **(PREMIUM ALL)**
 
@@ -1071,12 +1071,12 @@ Filters are available for this scope:
 To use a filter, include it in your query. For example: `a query filename:some_name*`.
 You may use wildcards (`*`) to use glob matching.
 
-Wiki blobs searches are performed on both filenames and contents. Search
+Wiki blobs searches are performed on both file names and contents. Search
 results:
 
-- Found in filenames are displayed before results found in contents.
+- Found in file names are displayed before results found in contents.
 - May contain multiple matches for the same blob because the search string
-  might be found in both the filename and content, or might appear multiple
+  might be found in both the file name and content, or might appear multiple
   times in the content.
 
 ```shell
@@ -1103,7 +1103,7 @@ Example response:
 ```
 
 NOTE:
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` are intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `commits` **(PREMIUM ALL)**
 
@@ -1155,11 +1155,11 @@ Filters are available for this scope:
 To use a filter, include it in your query. For example: `a query filename:some_name*`.
 You may use wildcards (`*`) to use glob matching.
 
-Blobs searches are performed on both filenames and contents. Search results:
+Blobs searches are performed on both file names and contents. Search results:
 
-- Found in filenames are displayed before results found in contents.
+- Found in file names are displayed before results found in contents.
 - May contain multiple matches for the same blob because the search string
-  might be found in both the filename and content, or might appear multiple
+  might be found in both the file name and content, or might appear multiple
   times in the content.
 
 ```shell

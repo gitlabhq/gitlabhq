@@ -4,12 +4,13 @@ module Ci
   class PendingBuild < Ci::ApplicationRecord
     include EachBatch
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     belongs_to :project
-    belongs_to :build, class_name: 'Ci::Build'
+
+    belongs_to :build, # rubocop: disable Rails/InverseOf -- this relation is not present on build
+      ->(pending_build) { in_partition(pending_build) },
+      class_name: 'Ci::Build',
+      partition_foreign_key: :partition_id
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
 
     partitionable scope: :build

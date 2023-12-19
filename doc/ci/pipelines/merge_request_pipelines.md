@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 
@@ -39,19 +39,20 @@ Both of these types of pipelines can appear on the **Pipelines** tab of a merge 
 
 ## Types of merge request pipelines
 
+> - The `detached` label was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352939) to `merge request` in GitLab 14.9.
+> - The `merged results` label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132975) in GitLab 16.5.
+
 The three types of merge request pipelines are:
 
 - Merge request pipelines, which run on the changes in the merge request's
-  source branch. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352939)
-  in GitLab 14.9, these pipelines display a `merge request` label to indicate that the
-  pipeline ran only on the contents of the source branch, ignoring the target branch.
-  In GitLab 14.8 and earlier, the label is `detached`.
+  source branch, ignoring the target branch. These pipelines display a `merge request` label in pipeline lists.
 - [Merged results pipelines](merged_results_pipelines.md), which run on
   the result of combining the source branch's changes with the target branch.
+  These pipelines display a `merged results` label in pipeline lists.
 - [Merge trains](merge_trains.md), which run when merging multiple merge requests
   at the same time. The changes from each merge request are combined into the
   target branch with the changes in the earlier enqueued merge requests, to ensure
-  they all work together.
+  they all work together. These pipelines display a `merge train` label in pipeline lists.
 
 ## Prerequisites
 
@@ -136,7 +137,7 @@ Pipelines for forks display with the **fork** badge in the parent project:
 
 ![Pipeline ran in fork](img/pipeline_fork_v13_7.png)
 
-### Run pipelines in the parent project **(PREMIUM ALL)**
+### Run pipelines in the parent project
 
 Project members in the parent project can trigger a merge request pipeline
 for a merge request submitted from a fork project. This pipeline:

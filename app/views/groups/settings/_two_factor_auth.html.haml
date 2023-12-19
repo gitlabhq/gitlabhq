@@ -9,7 +9,7 @@
 .form-group
   = f.gitlab_ui_checkbox_component :require_two_factor_authentication,
       _('All users in this group must set up two-factor authentication'),
-      checkbox_options: { data: { qa_selector: 'require_2fa_checkbox' } }
+      checkbox_options: { data: { testid: 'require-2fa-checkbox' } }
 .form-group
   = f.label :two_factor_grace_period, _('Delay 2FA enforcement (hours)')
   = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto gl-form-input gl-mb-3'

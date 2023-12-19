@@ -13,8 +13,9 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, isNumber } from 'lodash';
 import { createAlert } from '~/alert';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,7 +29,6 @@ import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/i
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { STATUSES } from '../../constants';
-import ImportStatusCell from '../../components/import_status.vue';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
@@ -36,7 +36,9 @@ import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
 import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
+import ImportHistoryLink from './import_history_link.vue';
 import ImportSourceCell from './import_source_cell.vue';
+import ImportStatusCell from './import_status.vue';
 import ImportTargetCell from './import_target_cell.vue';
 
 const VALIDATION_DEBOUNCE_TIME = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
@@ -60,6 +62,7 @@ export default {
     ImportTargetCell,
     ImportStatusCell,
     ImportActionsCell,
+    ImportHistoryLink,
     PaginationBar,
     HelpPopover,
   },
@@ -143,7 +146,7 @@ export default {
     {
       key: 'progress',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
+      tdAttr: { 'data-testid': 'import-status-indicator' },
     },
     {
       key: 'actions',
@@ -283,10 +286,18 @@ export default {
     this.statusPoller = new StatusPoller({
       pollPath: this.jobsPath,
       updateImportStatus: (update) => {
-        this.$apollo.mutate({
-          mutation: updateImportStatusMutation,
-          variables: { id: update.id, status: update.status_name },
-        });
+        try {
+          this.$apollo.mutate({
+            mutation: updateImportStatusMutation,
+            variables: {
+              id: update.id,
+              status: update.status_name,
+              hasFailures: update.has_failures,
+            },
+          });
+        } catch (error) {
+          Sentry.captureException(error);
+        }
       },
     });
 
@@ -315,7 +326,7 @@ export default {
     qaRowAttributes(group, type) {
       if (type === 'row') {
         return {
-          'data-qa-selector': 'import_item',
+          'data-testid': 'import-item',
           'data-qa-source-group': group.fullPath,
         };
       }
@@ -337,6 +348,16 @@ export default {
       }
 
       return group.progress?.status || STATUSES.NONE;
+    },
+
+    hasFailures(group) {
+      return group.progress?.hasFailures;
+    },
+
+    showHistoryLink(group) {
+      // We need to check for `isNumber` to make sure `id` is passed from the backend
+      // and not "LOCAL-PROGRESS-${id}" as defined by client_factory.js
+      return group.progress?.id && isNumber(group.progress.id);
     },
 
     updateImportTarget(group, changes) {
@@ -570,11 +591,11 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1"
+      class="gl-display-flex gl-align-items-center gl-border-solid gl-border-gray-100 gl-border-0 gl-border-b-1"
     >
-      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1gl-display-flex">
-        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-        {{ s__('BulkImport|Import groups from GitLab') }}
+      <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
+        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+        <span>{{ s__('BulkImport|Import groups by direct transfer') }}</span>
       </h1>
       <gl-link :href="historyPath" class="gl-ml-auto">{{ s__('BulkImport|History') }}</gl-link>
     </div>
@@ -735,7 +756,6 @@ export default {
         <gl-table
           ref="table"
           class="gl-w-full import-table"
-          data-qa-selector="import_table"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
           thead-class="gl-sticky gl-z-index-2 gl-bg-gray-10"
@@ -786,7 +806,13 @@ export default {
             />
           </template>
           <template #cell(progress)="{ item: group }">
-            <import-status-cell :status="group.visibleStatus" class="gl-line-height-32" />
+            <import-status-cell :status="group.visibleStatus" :has-failures="hasFailures(group)" />
+            <import-history-link
+              v-if="showHistoryLink(group)"
+              :id="group.progress.id"
+              :history-path="historyPath"
+              class="gl-display-inline-block gl-mt-2"
+            />
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell

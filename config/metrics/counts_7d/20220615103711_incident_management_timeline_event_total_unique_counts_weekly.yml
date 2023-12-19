@@ -20,9 +20,7 @@ options:
     - incident_management_timeline_event_created
     - incident_management_timeline_event_edited
     - incident_management_timeline_event_deleted
-performance_indicator_type:
-  - gmau
-  - paid_gmau
+performance_indicator_type: []
 distribution:
 - ce
 - ee

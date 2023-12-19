@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Feature development
@@ -96,6 +96,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Application limits](application_limits.md)
 - [AI features](ai_features/index.md)
+- [Application settings](application_settings.md)
 
 ### Import and Export
 

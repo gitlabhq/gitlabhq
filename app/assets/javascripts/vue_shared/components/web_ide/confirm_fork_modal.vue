@@ -82,7 +82,6 @@ export default {
           attributes: {
             href: this.forkPath,
             variant: 'confirm',
-            'data-qa-selector': 'fork_project_button',
           },
         },
       };
@@ -94,7 +93,6 @@ export default {
 <template>
   <gl-modal
     :visible="visible"
-    data-qa-selector="confirm_fork_modal"
     :modal-id="modalId"
     :title="$options.i18n.title"
     :action-primary="btnActions.primary"

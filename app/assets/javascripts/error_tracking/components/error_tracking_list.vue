@@ -22,7 +22,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import { sanitizeUrl } from '~/lib/utils/url_utility';
+import { sanitizeUrl, joinPaths } from '~/lib/utils/url_utility';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,
@@ -225,7 +225,7 @@ export default {
       if (!isValidErrorId(errorId)) {
         return 'about:blank';
       }
-      return `error_tracking/${errorId}/details`;
+      return joinPaths(this.listPath, errorId, 'details');
     },
     goToNextPage() {
       this.pageValue = this.$options.NEXT_PAGE;

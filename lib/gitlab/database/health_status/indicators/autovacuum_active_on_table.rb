@@ -26,6 +26,10 @@ module Gitlab
           attr_reader :tables
 
           def enabled?
+            if tables.include?('ci_builds') && Feature.enabled?(:skip_autovacuum_health_check_for_ci_builds, type: :ops)
+              return false
+            end
+
             Feature.enabled?(:batched_migrations_health_status_autovacuum, type: :ops)
           end
 

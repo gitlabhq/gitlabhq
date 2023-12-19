@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab CI/CD variables **(FREE ALL)**
@@ -130,7 +129,7 @@ all variables become available to the pipeline.
 
 You can add CI/CD variables to a project's settings.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a project member with the Maintainer role.
 
@@ -159,7 +158,7 @@ or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 You can make a CI/CD variable available to all projects in a group.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a group member with the Owner role.
 
@@ -188,14 +187,13 @@ are recursively inherited.
 
 You can make a CI/CD variable available to all projects and groups in a GitLab instance.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To add an instance variable:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD** and expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -262,7 +260,7 @@ to prevent commands such as `env`/`printenv` from printing secret variables.
 You can mask a project, group, or instance CI/CD variable so the value of the variable
 does not display in job logs.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
@@ -306,7 +304,7 @@ temporary merge commit, not a branch or tag, do not have access to these variabl
 [Merge request pipelines](../pipelines/merge_request_pipelines.md), which do not use
 a temporary merge commit, can access these variables if the branch is a protected branch.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
@@ -626,7 +624,7 @@ Expanded variables treat values with the `$` character as a reference to another
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
 disable variable expansion for the variable
 
-Prerequisite:
+Prerequisites:
 
 - You must have the same role or access level as required to [define a CI/CD variable in the UI](#define-a-cicd-variable-in-the-ui).
 
@@ -640,12 +638,15 @@ To disable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
+> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default.
+
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines
 which variables take precedence.
 
 The order of precedence for variables is (from highest to lowest):
 
+1. [Scan Execution Policies variables](../../user/application_security/policies/scan-execution-policies.md).
 1. These variables all have the same (highest) precedence:
    - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).

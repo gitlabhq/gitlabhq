@@ -30,7 +30,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") { |f| f.puts config.to_yaml }
 
         [
-          %w[bin/install] + repository_storage_paths_args,
+          %w[bin/install],
           %w[make build]
         ].each do |cmd|
           unless Kernel.system(*cmd)
@@ -45,21 +45,6 @@ namespace :gitlab do
     desc "GitLab | Shell | Setup gitlab-shell"
     task setup: :gitlab_environment do
       setup_gitlab_shell
-    end
-
-    desc "GitLab | Shell | Build missing projects"
-    task build_missing_projects: :gitlab_environment do
-      Project.find_each(batch_size: 1000) do |project|
-        path_to_repo = project.repository.path_to_repo
-        if File.exist?(path_to_repo)
-          print '-'
-        elsif Gitlab::Shell.new.create_repository(project.repository_storage,
-                                              project.disk_path)
-          print '.'
-        else
-          print 'F'
-        end
-      end
     end
   end
 

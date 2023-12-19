@@ -4,10 +4,13 @@ module Repositories
   class TreeFinder
     CommitMissingError = Class.new(StandardError)
 
+    attr_reader :next_cursor
+
     def initialize(project, params = {})
       @project = project
       @repository = project.repository
       @params = params
+      @next_cursor = nil
     end
 
     def execute(gitaly_pagination: false)
@@ -16,7 +19,11 @@ module Repositories
       request_params = { recursive: recursive, rescue_not_found: rescue_not_found }
       request_params[:pagination_params] = pagination_params if gitaly_pagination
 
-      repository.tree(commit.id, path, **request_params).sorted_entries
+      tree = repository.tree(commit.id, path, **request_params)
+
+      @next_cursor = tree.cursor&.next_cursor if gitaly_pagination
+
+      tree.sorted_entries
     end
 
     def total

@@ -11,8 +11,7 @@ class ProjectGroupLink < ApplicationRecord
   validates :project_id, presence: true
   validates :group, presence: true
   validates :group_id, uniqueness: { scope: [:project_id], message: N_("already shared with this group") }
-  validates :group_access, presence: true
-  validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
+  validates :group_access, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validate :different_group
 
   scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
@@ -22,20 +21,16 @@ class ProjectGroupLink < ApplicationRecord
   alias_method :shared_with_group, :group
   alias_method :shared_from, :project
 
-  def self.access_options
-    Gitlab::Access.options
-  end
-
-  def self.default_access
-    Gitlab::Access::DEVELOPER
-  end
-
   def self.search(query)
     joins(:group).merge(Group.search(query))
   end
 
   def human_access
-    self.class.access_options.key(self.group_access)
+    Gitlab::Access.human_access(self.group_access)
+  end
+
+  def owner_access?
+    group_access.to_i == Gitlab::Access::OWNER
   end
 
   private

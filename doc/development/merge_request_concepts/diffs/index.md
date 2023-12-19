@@ -1,10 +1,13 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Working with diffs
+
+This page contains developer documentation for diffs. For the user documentation,
+see [Diffs in merge requests](../../../user/project/merge_requests/versions.md).
 
 We rely on different sources to present diffs. These include:
 
@@ -18,7 +21,7 @@ We rely on different sources to present diffs. These include:
 
 In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only:
 `https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on GitLab Diffs and Commenting on Diffs
-functionality to share domain-specific knowledge with anyone who may work in this part of the
+functionality to share domain-specific knowledge with anyone who works in this part of the
 codebase in the future:
 
 <!-- vale gitlab.Spelling = YES -->
@@ -28,7 +31,7 @@ codebase in the future:
 - Slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
 - [PDF slides](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/)
 
-Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details may
+Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details might
 have changed since then, it should still serve as a good introduction.
 
 ## Architecture overview

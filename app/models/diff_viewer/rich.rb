@@ -7,7 +7,10 @@ module DiffViewer
     included do
       self.type = :rich
       self.switcher_icon = 'doc-text'
-      self.switcher_title = _('rendered diff')
+
+      def self.switcher_title
+        _('rendered diff')
+      end
     end
   end
 end

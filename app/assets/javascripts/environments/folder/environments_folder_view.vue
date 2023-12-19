@@ -4,6 +4,7 @@ import DeleteEnvironmentModal from '../components/delete_environment_modal.vue';
 import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 import environmentsMixin from '../mixins/environments_mixin';
 import EnvironmentsPaginationApiMixin from '../mixins/environments_pagination_api_mixin';
+import ConfirmRollbackModal from '../components/confirm_rollback_modal.vue';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     GlTab,
     GlTabs,
     StopEnvironmentModal,
+    ConfirmRollbackModal,
   },
 
   mixins: [environmentsMixin, EnvironmentsPaginationApiMixin],
@@ -42,6 +44,7 @@ export default {
   <div :class="cssContainerClass">
     <stop-environment-modal :environment="environmentInStopModal" />
     <delete-environment-modal :environment="environmentInDeleteModal" />
+    <confirm-rollback-modal :environment="environmentInRollbackModal" />
 
     <h4 class="gl-font-weight-normal" data-testid="folder-name">
       {{ s__('Environments|Environments') }} /

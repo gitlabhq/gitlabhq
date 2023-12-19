@@ -3,6 +3,7 @@
 class AbuseReportPolicy < ::BasePolicy
   rule { admin }.policy do
     enable :read_abuse_report
+    enable :read_note
     enable :create_note
   end
 end

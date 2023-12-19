@@ -3,31 +3,28 @@
 module ClickHouse
   module MigrationSupport
     class Migrator
-      class << self
-        attr_accessor :migrations_paths
-      end
-
       attr_accessor :logger
 
-      self.migrations_paths = ["db/click_house/migrate"]
+      def self.migrations_paths(database_name)
+        File.join("db/click_house/migrate", database_name.to_s)
+      end
 
-      def initialize(direction, migrations, schema_migration, target_version = nil, logger = Gitlab::AppLogger)
+      def initialize(
+        direction, migrations, schema_migration, target_version = nil, step = nil,
+        logger = Gitlab::AppLogger
+      )
         @direction         = direction
         @target_version    = target_version
-        @migrated_versions = {}
+        @step              = step
         @migrations        = migrations
         @schema_migration  = schema_migration
         @logger            = logger
 
         validate(@migrations)
-
-        migrations.map(&:database).uniq.each do |database|
-          @schema_migration.create_table(database)
-        end
       end
 
       def current_version
-        @migrated_versions.values.flatten.max || 0
+        migrated.max || 0
       end
 
       def current_migration
@@ -35,64 +32,50 @@ module ClickHouse
       end
       alias_method :current, :current_migration
 
-      def run
-        run_without_lock
-      end
-
       def migrate
-        migrate_without_lock
+        ClickHouse::MigrationSupport::ExclusiveLock.execute_migration do
+          migrate_without_lock
+        end
       end
 
       def runnable
         runnable = migrations[start..finish]
 
         if up?
-          runnable.reject { |m| ran?(m) }
+          runnable = runnable.reject { |m| ran?(m) }
         else
           # skip the last migration if we're headed down, but not ALL the way down
           runnable.pop if target
-          runnable.find_all { |m| ran?(m) }
+          runnable = runnable.find_all { |m| ran?(m) }
         end
+
+        runnable = runnable.take(@step) if @step && !@target_version
+        runnable
       end
 
       def migrations
         down? ? @migrations.reverse : @migrations.sort_by(&:version)
       end
 
-      def pending_migrations(database)
-        already_migrated = migrated(database)
-
-        migrations.reject { |m| already_migrated.include?(m.version) }
+      def migrated
+        @migrated_versions || load_migrated
       end
 
-      def migrated(database)
-        @migrated_versions[database] || load_migrated(database)
-      end
-
-      def load_migrated(database)
-        @migrated_versions[database] = Set.new(@schema_migration.all_versions(database).map(&:to_i))
+      def load_migrated
+        @migrated_versions = Set.new(@schema_migration.all_versions.map(&:to_i))
       end
 
       private
 
-      # Used for running a specific migration.
-      def run_without_lock
-        migration = migrations.detect { |m| m.version == @target_version }
-
-        raise ClickHouse::MigrationSupport::UnknownMigrationVersionError, @target_version if migration.nil?
-
-        execute_migration(migration)
-      end
-
       # Used for running multiple migrations up to or down to a certain value.
       def migrate_without_lock
-        raise ClickHouse::MigrationSupport::UnknownMigrationVersionError, @target_version if invalid_target?
+        raise ClickHouse::MigrationSupport::Errors::UnknownMigrationVersionError, @target_version if invalid_target?
 
         runnable.each(&method(:execute_migration)) # rubocop: disable Performance/MethodObjectAsBlock -- Execute through proxy
       end
 
       def ran?(migration)
-        migrated(migration.database).include?(migration.version.to_i)
+        migrated.include?(migration.version.to_i)
       end
 
       # Return true if a valid version is not provided.
@@ -104,15 +87,13 @@ module ClickHouse
       end
 
       def execute_migration(migration)
-        database = migration.database
-
-        return if down? && migrated(database).exclude?(migration.version.to_i)
-        return if up? && migrated(database).include?(migration.version.to_i)
+        return if down? && migrated.exclude?(migration.version.to_i)
+        return if up? && migrated.include?(migration.version.to_i)
 
         logger.info "Migrating to #{migration.name} (#{migration.version})" if logger
 
         migration.migrate(@direction)
-        record_version_state_after_migrating(database, migration.version)
+        record_version_state_after_migrating(migration.version)
       rescue StandardError => e
         msg = "An error has occurred, all later migrations canceled:\n\n#{e}"
         raise StandardError, msg, e.backtrace
@@ -132,19 +113,19 @@ module ClickHouse
 
       def validate(migrations)
         name, = migrations.group_by(&:name).find { |_, v| v.length > 1 }
-        raise ClickHouse::MigrationSupport::DuplicateMigrationNameError, name if name
+        raise ClickHouse::MigrationSupport::Errors::DuplicateMigrationNameError, name if name
 
         version, = migrations.group_by(&:version).find { |_, v| v.length > 1 }
-        raise ClickHouse::MigrationSupport::DuplicateMigrationVersionError, version if version
+        raise ClickHouse::MigrationSupport::Errors::DuplicateMigrationVersionError, version if version
       end
 
-      def record_version_state_after_migrating(database, version)
+      def record_version_state_after_migrating(version)
         if down?
-          migrated(database).delete(version)
-          @schema_migration.create!(database, version: version.to_s, active: 0)
+          migrated.delete(version)
+          @schema_migration.create!(version: version.to_s, active: 0)
         else
-          migrated(database) << version
-          @schema_migration.create!(database, version: version.to_s)
+          migrated << version
+          @schema_migration.create!(version: version.to_s)
         end
       end
 

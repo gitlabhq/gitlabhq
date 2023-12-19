@@ -22,11 +22,16 @@ export default class PersistentUserCallout {
 
   init() {
     const followLink = this.container.querySelector('.js-follow-link');
+    const closeAndFollowLink = this.container.querySelector('.js-close-and-follow-link');
 
     if (this.closeButtons.length) {
       this.handleCloseButtonCallout();
     } else if (followLink) {
       this.handleFollowLinkCallout(followLink);
+    }
+
+    if (closeAndFollowLink) {
+      this.handleFollowLinkCallout(closeAndFollowLink);
     }
   }
 

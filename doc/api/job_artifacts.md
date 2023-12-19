@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Job Artifacts API **(FREE ALL)**
@@ -18,7 +18,7 @@ available in the Premium and Ultimate tier.
 Get the job's artifacts zipped archive of a project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts
@@ -80,7 +80,7 @@ is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 NOTE:
 If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
@@ -148,7 +148,7 @@ the job's artifacts zipped archive. The file is extracted from the archive and
 streamed to the client.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
@@ -184,7 +184,7 @@ Possible response status codes:
 
 Download a single artifact file for a specific job of the latest **successful** pipeline
 for the given reference name from inside the job's artifacts archive.
-The file is extracted from the archive and streamed to the client.
+The file is extracted from the archive and streamed to the client, with the `plain/text` content type.
 
 The artifact file provides more detail than what is available in the
 [CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).
@@ -194,7 +194,7 @@ are searched in hierarchical order from parent to child. For example, if both pa
 have a job with the same name, the artifact from the parent pipeline is returned.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
-as the request might redirect through a CND.
+as the request might redirect through a CDN.
 
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
@@ -326,7 +326,7 @@ of the regular cleanup of expired job artifacts. Job logs are never deleted.
 The regular cleanup occurs asynchronously on a schedule, so there might be a short delay
 before artifacts are deleted.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 

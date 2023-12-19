@@ -24,7 +24,6 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
     - Please see the security release [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
     - Trigger the [`e2e:package-and-test` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
-  - [ ] Milestone is set to the version this backport applies to. A closed milestone can be assigned via [quick actions].
   - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label
 
@@ -32,7 +31,6 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 
 ## Maintainer checklist
 
-- [ ] Correct milestone is applied and the title is matching across all backports.
 - [ ] Assigned (_not_ as reviewer) to `@gitlab-release-tools-bot` with passing CI pipelines.
 - [ ] Correct `~severity::x` label is applied to this merge request and the related security issue.
 

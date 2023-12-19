@@ -26,19 +26,26 @@ class ClickHouseTestRunner
     clear_db
 
     # run the schema SQL files
-    migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths
-    schema_migration = ClickHouse::MigrationSupport::SchemaMigration
-    migration_context = ClickHouse::MigrationSupport::MigrationContext.new(migrations_paths, schema_migration)
-    migrate(nil, migration_context)
+    migrations_paths = ClickHouse::MigrationSupport::Migrator.migrations_paths(:main)
+    connection = ::ClickHouse::Connection.new(:main)
+    schema_migration = ClickHouse::MigrationSupport::SchemaMigration.new(connection)
+    schema_migration.ensure_table
+    migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection,
+      migrations_paths, schema_migration)
+    migrate(migration_context, nil)
 
     @ensure_schema = true
+  end
+
+  def reset_schema_cache!
+    @ensure_schema = nil
   end
 
   private
 
   def tables_for(db)
     @tables ||= {}
-    @tables[db] ||= lookup_tables(db) - [ClickHouse::MigrationSupport::SchemaMigration.table_name]
+    @tables[db] ||= lookup_tables(db) - %w[schema_migrations]
   end
 end
 # rubocop: enable Gitlab/NamespacedClass
@@ -50,6 +57,7 @@ RSpec.configure do |config|
     with_net_connect_allowed do
       if example.example.metadata[:click_house] == :without_migrations
         click_house_test_runner.clear_db
+        click_house_test_runner.reset_schema_cache!
       else
         click_house_test_runner.ensure_schema
         click_house_test_runner.truncate_tables

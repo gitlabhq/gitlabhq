@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Clusters::ClustersController < Clusters::BaseController
+class Clusters::ClustersController < ::Clusters::BaseController
   include RoutableActions
 
   before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]

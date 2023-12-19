@@ -1,39 +1,11 @@
 ---
-stage: Create
-group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../gitlab-basics/add-file.md'
+remove_date: '2024-02-03'
 ---
 
-# Git add **(FREE ALL)**
+This document was moved to [another location](../../gitlab-basics/add-file.md).
 
-Adds content to the index or staging area.
-
-- Adds a list of file:
-
-  ```shell
-  git add <files>
-  ```
-
-- Adds all files including deleted ones:
-
-  ```shell
-  git add -A
-  ```
-
-- Add all text files in current dir:
-
-  ```shell
-  git add *.txt
-  ```
-
-- Add all text file in the project:
-
-  ```shell
-  git add "*.txt*"
-  ```
-
-- Adds all files in directory:
-
-  ```shell
-  git add views/layouts/
-  ```
+<!-- This redirect file can be deleted after <2024-02-03>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

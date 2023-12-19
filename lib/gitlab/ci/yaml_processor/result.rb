@@ -8,7 +8,8 @@ module Gitlab
       class Result
         attr_reader :errors, :warnings,
                     :root_variables, :root_variables_with_prefill_data,
-                    :stages, :jobs, :workflow_rules, :workflow_name
+                    :stages, :jobs,
+                    :workflow_rules, :workflow_name, :workflow_auto_cancel
 
         def initialize(ci_config: nil, errors: [], warnings: [])
           @ci_config = ci_config
@@ -71,6 +72,7 @@ module Gitlab
 
           @workflow_rules = @ci_config.workflow_rules
           @workflow_name = @ci_config.workflow_name&.strip
+          @workflow_auto_cancel = @ci_config.workflow_auto_cancel
         end
 
         def stage_builds_attributes(stage)

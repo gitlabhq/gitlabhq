@@ -1,7 +1,7 @@
 - event = event.present
 
 - if event.visible_to_user?(current_user)
-  .event-item{ class: current_path?('users#activity') ? 'user-profile-activity gl-border-bottom-0 gl-pl-7! gl-pb-3' : '' }
+  .event-item.gl-border-bottom-0.gl-pb-3{ class: current_path?('users#activity') ? 'user-profile-activity gl-pl-7!' : 'project-activity-item' }
     .event-item-timestamp.gl-font-sm
       #{time_ago_with_tooltip(event.created_at)}
 

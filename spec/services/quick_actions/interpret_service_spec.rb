@@ -554,14 +554,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    shared_examples 'award command' do
-      it 'toggle award 100 emoji if content contains /award :100:' do
+    shared_examples 'react command' do |command|
+      it "toggle award 100 emoji if content contains #{command} :100:" do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(emoji_award: "100")
       end
 
-      it 'returns the award message' do
+      it 'returns the reaction message' do
         _, _, message = service.execute(content, issuable)
 
         expect(message).to eq('Toggled :100: emoji award.')
@@ -1861,56 +1861,59 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    context '/award command' do
-      it_behaves_like 'award command' do
-        let(:content) { '/award :100:' }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'award command' do
-        let(:content) { '/award :100:' }
-        let(:issuable) { merge_request }
-      end
-
-      it_behaves_like 'award command' do
-        let(:content) { '/award :100:' }
-        let(:issuable) { work_item }
-      end
-
-      context 'ignores command with no argument' do
-        it_behaves_like 'failed command' do
-          let(:content) { '/award' }
+    %w[/react /award].each do |command|
+      context "#{command} command" do
+        it_behaves_like 'react command', command do
+          let(:content) { "#{command} :100:" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'failed command' do
-          let(:content) { '/award' }
+        it_behaves_like 'react command', command do
+          let(:content) { "#{command} :100:" }
+          let(:issuable) { merge_request }
+        end
+
+        it_behaves_like 'react command', command do
+          let(:content) { "#{command} :100:" }
           let(:issuable) { work_item }
         end
-      end
 
-      context 'ignores non-existing / invalid  emojis' do
-        it_behaves_like 'failed command' do
-          let(:content) { '/award noop' }
-          let(:issuable) { issue }
+        context 'ignores command with no argument' do
+          it_behaves_like 'failed command' do
+            let(:content) { command }
+            let(:issuable) { issue }
+          end
+
+          it_behaves_like 'failed command' do
+            let(:content) { command }
+            let(:issuable) { work_item }
+          end
         end
 
-        it_behaves_like 'failed command' do
-          let(:content) { '/award :lorem_ipsum:' }
-          let(:issuable) { issue }
+        context 'ignores non-existing / invalid  emojis' do
+          it_behaves_like 'failed command' do
+            let(:content) { "#{command} noop" }
+            let(:issuable) { issue }
+          end
+
+          it_behaves_like 'failed command' do
+            let(:content) { "#{command} :lorem_ipsum:" }
+            let(:issuable) { issue }
+          end
+
+          it_behaves_like 'failed command' do
+            let(:content) { "#{command} :lorem_ipsum:" }
+            let(:issuable) { work_item }
+          end
         end
 
-        it_behaves_like 'failed command' do
-          let(:content) { '/award :lorem_ipsum:' }
-          let(:issuable) { work_item }
+        context 'if issuable is a Commit' do
+          let(:content) { "#{command} :100:" }
+          let(:issuable) { commit }
+
+          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/434446
+          it_behaves_like 'failed command', "Could not apply award command."
         end
-      end
-
-      context 'if issuable is a Commit' do
-        let(:content) { '/award :100:' }
-        let(:issuable) { commit }
-
-        it_behaves_like 'failed command', 'Could not apply award command.'
       end
     end
 
@@ -2185,6 +2188,36 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect(message).to eq('Submitted the current review.')
         end
       end
+
+      context 'when parameters are passed' do
+        context 'with approve parameter' do
+          it 'calls MergeRequests::ApprovalService service' do
+            expect_next_instance_of(
+              MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request)
+            end
+
+            _, _, message = service.execute('/submit_review approve', merge_request)
+
+            expect(message).to eq('Submitted the current review.')
+          end
+        end
+
+        context 'with review state parameter' do
+          it 'calls MergeRequests::UpdateReviewerStateService service' do
+            expect_next_instance_of(
+              MergeRequests::UpdateReviewerStateService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request, 'requested_changes')
+            end
+
+            _, _, message = service.execute('/submit_review requested_changes', merge_request)
+
+            expect(message).to eq('Submitted the current review.')
+          end
+        end
+      end
     end
 
     context 'request_changes command' do
@@ -2374,6 +2407,30 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           end
         end
 
+        context 'when participants limit on issue is reached' do
+          before do
+            issue.issue_email_participants.create!(email: 'user@example.com')
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
+          end
+
+          let(:content) { '/invite_email a@gitlab.com' }
+
+          it_behaves_like 'failed command',
+            "No email participants were added. Either none were provided, or they already exist."
+        end
+
+        context 'when only some emails can be added because of participants limit' do
+          before do
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 1)
+          end
+
+          let(:content) { '/invite_email a@gitlab.com b@gitlab.com' }
+
+          it 'only adds one new email' do
+            expect { add_emails }.to change { issue.issue_email_participants.count }.by(1)
+          end
+        end
+
         context 'with feature flag disabled' do
           before do
             stub_feature_flags(issue_email_participants: false)
@@ -2382,6 +2439,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           it 'does not add any participants' do
             expect { add_emails }.not_to change { issue.issue_email_participants.count }
           end
+        end
+      end
+
+      it 'is part of the available commands' do
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :invite_email))
+      end
+
+      context 'with non-persisted issue' do
+        let(:issuable) { build(:issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :invite_email))
         end
       end
     end

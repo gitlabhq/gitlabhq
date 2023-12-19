@@ -1,6 +1,7 @@
 <script>
 import { kebabCase } from 'lodash';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
+import { NAV_ITEM_LINK_ACTIVE_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
 
@@ -61,9 +62,7 @@ export default {
       return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
     computedLinkClasses() {
-      return {
-        'gl-bg-t-gray-a-08': this.isActive,
-      };
+      return this.isActive ? NAV_ITEM_LINK_ACTIVE_CLASS : null;
     },
     isActive() {
       return !this.isExpanded && this.item.is_active;
@@ -109,9 +108,9 @@ export default {
     <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />
     <button
       :id="`menu-section-button-${itemId}`"
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-2 gl-py-2 gl-px-3 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
+      class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-2 gl-py-2 gl-px-3 gl-text-black-normal! gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
-      data-qa-selector="menu_section_button"
+      data-testid="menu-section-button"
       :data-qa-section-name="item.title"
       v-bind="buttonProps"
       @click="isExpanded = !isExpanded"
@@ -126,7 +125,11 @@ export default {
       ></span>
       <span class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
+          <gl-icon
+            v-if="item.icon"
+            :name="item.icon"
+            class="super-sidebar-nav-item-icon gl-m-auto"
+          />
         </slot>
       </span>
 
@@ -153,7 +156,7 @@ export default {
       :id="itemId"
       v-model="isExpanded"
       class="gl-list-style-none gl-p-0 gl-m-0 gl-transition-duration-medium gl-transition-timing-function-ease"
-      data-qa-selector="menu_section"
+      data-testid="menu-section"
       :data-qa-section-name="item.title"
     >
       <slot>

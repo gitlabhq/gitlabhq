@@ -131,6 +131,7 @@
     height: $gl-padding-24;
     border-radius: $gl-padding-24;
     font-size: $gl-font-size-xs;
+    position: relative;
 
     @include media-breakpoint-down(md) {
       min-width: auto;
@@ -140,15 +141,9 @@
     }
   }
 
-  .user-avatar-link:not(:only-child) {
-    margin-left: -$gl-padding;
-
-    &:nth-of-type(1) {
-      z-index: 2;
-    }
-
-    &:nth-of-type(2) {
-      z-index: 1;
+  .user-avatar-link {
+    &:not(:last-of-type) {
+      @include gl-mr-n3;
     }
   }
 

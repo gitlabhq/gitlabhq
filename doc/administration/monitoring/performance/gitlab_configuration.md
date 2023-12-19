@@ -1,7 +1,7 @@
 ---
-stage: Monitor
+stage: Service Management
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Configuration **(FREE SELF)**
@@ -9,10 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Performance Monitoring is disabled by default. To enable it and change any of its
 settings:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Metrics and profiling**
-  (`/admin/application_settings/metrics_and_profiling`).
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Metrics and profiling**.
 1. Add the necessary configuration changes.
 1. Restart all GitLab for the changes to take effect:
 

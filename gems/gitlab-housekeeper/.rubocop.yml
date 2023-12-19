@@ -1,0 +1,14 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gitlab/HTTParty:
+  Enabled: false
+
+Rails/Output:
+  Enabled: false
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+Rails/NegateInclude:
+  Enabled: false

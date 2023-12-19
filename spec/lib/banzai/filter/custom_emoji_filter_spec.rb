@@ -55,4 +55,12 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
       filter('<p>:tanuki:</p> <p>:party-parrot:</p>')
     end.not_to exceed_all_query_limit(control_count.count)
   end
+
+  it 'uses custom emoji from ancestor group' do
+    subgroup = create(:group, parent: group)
+
+    doc = filter('<p>:tanuki:</p>', group: subgroup)
+
+    expect(doc.css('gl-emoji').size).to eq 1
+  end
 end

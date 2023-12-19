@@ -5,12 +5,7 @@ require 'spec_helper'
 RSpec.describe Import::GithubService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
-  let_it_be(:access_params) do
-    {
-      github_access_token: 'github-complex-token',
-      additional_access_tokens: %w[foo bar]
-    }
-  end
+  let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
 
   let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
   let(:user_namespace_path) { user.namespace_path }
@@ -37,7 +32,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       .to receive(:write)
       .with(
         optional_stages: optional_stages,
-        additional_access_tokens: access_params[:additional_access_tokens],
         timeout_strategy: timeout_strategy
       )
   end
@@ -98,7 +92,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         expect(settings)
           .to have_received(:write)
           .with(optional_stages: nil,
-            additional_access_tokens: access_params[:additional_access_tokens],
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -124,7 +117,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: nil,
-            additional_access_tokens: access_params[:additional_access_tokens],
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -157,7 +149,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             .to have_received(:write)
             .with(
               optional_stages: nil,
-              additional_access_tokens: access_params[:additional_access_tokens],
               timeout_strategy: timeout_strategy
             )
           expect_snowplow_event(
@@ -194,7 +185,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            additional_access_tokens: access_params[:additional_access_tokens],
             timeout_strategy: timeout_strategy
           )
       end
@@ -210,7 +200,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            additional_access_tokens: access_params[:additional_access_tokens],
             timeout_strategy: timeout_strategy
           )
       end
@@ -224,7 +213,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            additional_access_tokens: %w[foo bar],
             timeout_strategy: timeout_strategy
           )
       end

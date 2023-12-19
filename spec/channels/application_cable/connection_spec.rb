@@ -43,6 +43,16 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
     end
   end
 
+  context 'when bearer header is provided' do
+    let(:user_pat) { create(:personal_access_token) }
+
+    it 'finds user by PAT' do
+      connect(ActionCable.server.config.mount_path, headers: { Authorization: "Bearer #{user_pat.token}" })
+
+      expect(connection.current_user).to eq(user_pat.user)
+    end
+  end
+
   context 'when session cookie is not set' do
     it 'sets current_user to nil' do
       connect

@@ -42,7 +42,7 @@ describe('DateToken', () => {
     findDatepicker().vm.$emit('close');
 
     expect(findGlFilteredSearchToken().emitted()).toEqual({
-      complete: [[]],
+      complete: [['2014-10-13']],
       select: [['2014-10-13']],
     });
   });

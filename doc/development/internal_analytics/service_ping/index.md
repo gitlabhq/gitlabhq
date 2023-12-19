@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Service Ping development guidelines
@@ -361,7 +361,7 @@ Rake tasks exist to export Service Ping data in different formats.
 - The Rake tasks export the Redis counter class or the line of the Redis block for `redis_usage_data`.
 - The Rake tasks calculate the `alt_usage_data` metrics.
 
-In the home directory of your local GitLab installation run the following Rake tasks for the YAML and JSON versions respectively:
+In the home directory of your local GitLab installation run the following Rake tasks for either the YAML or the JSON versions:
 
 ```shell
 # for YAML export of SQL queries

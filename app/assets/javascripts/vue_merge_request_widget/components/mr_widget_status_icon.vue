@@ -1,6 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_MERGED, STATUS_EMPTY } from '~/issues/constants';
 import StatusIcon from './extensions/status_icon.vue';
 
 export default {
@@ -24,6 +24,9 @@ export default {
     isMerged() {
       return this.status === STATUS_MERGED;
     },
+    isEmpty() {
+      return this.status === STATUS_EMPTY;
+    },
   },
 };
 </script>
@@ -33,6 +36,7 @@ export default {
       <gl-icon v-if="isMerged" name="merge" :size="16" class="gl-text-blue-500" />
       <gl-icon v-else-if="isClosed" name="merge-request-close" :size="16" class="gl-text-red-500" />
       <gl-icon v-else-if="status === 'approval'" name="approval" :size="16" />
+      <status-icon v-else-if="isEmpty" icon-name="neutral" :level="1" class="gl-m-0!" />
       <status-icon v-else :is-loading="isLoading" :icon-name="status" :level="1" class="gl-m-0!" />
     </div>
   </div>

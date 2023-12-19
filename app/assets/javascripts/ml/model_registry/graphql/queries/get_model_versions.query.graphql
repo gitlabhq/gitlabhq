@@ -1,0 +1,22 @@
+query getModelVersions($id: MlModelID!, $first: Int, $last: Int, $after: String, $before: String) {
+  mlModel(id: $id) {
+    id
+    versions(after: $after, before: $before, first: $first, last: $last) {
+      count
+      nodes {
+        id
+        version
+        createdAt
+        _links {
+          showPath
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

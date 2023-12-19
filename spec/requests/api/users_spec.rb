@@ -182,6 +182,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
           expect(json_response.first).not_to have_key('created_by')
+          expect(json_response.first).not_to have_key('email_reset_offered_at')
         end
       end
 
@@ -194,6 +195,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
             expect(json_response.first).not_to have_key('created_by')
+            expect(json_response.first).not_to have_key('email_reset_offered_at')
           end
         end
 
@@ -203,6 +205,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
+            expect(json_response.first).to have_key('email_reset_offered_at')
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
           end
 
@@ -2962,6 +2965,39 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response["view_diffs_file_by_file"]).to eq(user.user_preference.view_diffs_file_by_file)
         expect(json_response["show_whitespace_in_diffs"]).to eq(user.user_preference.show_whitespace_in_diffs)
+      end
+    end
+  end
+
+  describe "PUT /user/preferences" do
+    let(:path) { '/user/preferences' }
+
+    context "when unauthenticated" do
+      it "returns authentication error" do
+        put api(path)
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated" do
+      it "updates user preferences" do
+        user.user_preference.view_diffs_file_by_file = false
+        user.user_preference.show_whitespace_in_diffs = true
+        user.save!
+
+        put api(path, user), params: {
+          view_diffs_file_by_file: true,
+          show_whitespace_in_diffs: false
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response["view_diffs_file_by_file"]).to eq(true)
+        expect(json_response["show_whitespace_in_diffs"]).to eq(false)
+
+        user.reload
+
+        expect(json_response["view_diffs_file_by_file"]).to eq(user.view_diffs_file_by_file)
+        expect(json_response["show_whitespace_in_diffs"]).to eq(user.show_whitespace_in_diffs)
       end
     end
   end

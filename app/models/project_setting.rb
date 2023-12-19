@@ -11,18 +11,6 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
 
-  ignore_columns %i[
-    encrypted_product_analytics_clickhouse_connection_string
-    encrypted_product_analytics_clickhouse_connection_string_iv
-    encrypted_jitsu_administrator_password
-    encrypted_jitsu_administrator_password_iv
-    jitsu_host
-    jitsu_project_xid
-    jitsu_administrator_email
-  ], remove_with: '16.5', remove_after: '2023-09-22'
-
-  ignore_column :jitsu_key, remove_with: '16.7', remove_after: '2023-11-17'
-
   attr_encrypted :cube_api_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_32,
@@ -51,6 +39,7 @@ class ProjectSetting < ApplicationRecord
   validates :issue_branch_template, length: { maximum: Issue::MAX_BRANCH_TEMPLATE }
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
   validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
+  validates :code_suggestions, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :pages_unique_domain,
     uniqueness: { if: -> { pages_unique_domain.present? } },

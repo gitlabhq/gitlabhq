@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Wiki **(FREE ALL)**
@@ -272,7 +272,7 @@ A `_sidebar` example, formatted with Markdown:
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
 can enable or disable a project wiki by following the instructions in
-[Sharing and permissions](../settings/index.md#configure-project-features-and-permissions).
+[Sharing and permissions](../settings/project_features_permissions.md#configure-project-features-and-permissions).
 
 Administrators for self-managed GitLab installs can
 [configure additional wiki settings](../../../administration/wikis/index.md).

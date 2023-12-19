@@ -6,6 +6,7 @@ import { shallowMountExtended, extendedWrapper } from 'helpers/vue_test_utils_he
 import InlineConflictLines from '~/merge_conflicts/components/inline_conflict_lines.vue';
 import ParallelConflictLines from '~/merge_conflicts/components/parallel_conflict_lines.vue';
 import component from '~/merge_conflicts/merge_conflict_resolver_app.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { createStore } from '~/merge_conflicts/store';
 import { decorateFiles } from '~/merge_conflicts/utils';
 import { conflictsMock } from '../mock_data';
@@ -49,6 +50,7 @@ describe('Merge Conflict Resolver App', () => {
   const findInlineConflictLines = (w = wrapper) => w.findComponent(InlineConflictLines);
   const findParallelConflictLines = (w = wrapper) => w.findComponent(ParallelConflictLines);
   const findCommitMessageTextarea = () => wrapper.findByTestId('commit-message');
+  const findClipboardButton = (w = wrapper) => w.findComponent(ClipboardButton);
 
   it('shows the amount of conflicts', () => {
     mountComponent();
@@ -129,6 +131,21 @@ describe('Merge Conflict Resolver App', () => {
 
         expect(parallelConflictLinesComponent.exists()).toBe(true);
         expect(parallelConflictLinesComponent.props('file')).toEqual(decoratedMockFiles[0]);
+      });
+    });
+
+    describe('clipboard button', () => {
+      it('exists', () => {
+        mountComponent();
+        expect(findClipboardButton().exists()).toBe(true);
+      });
+
+      it('has the correct props', () => {
+        mountComponent();
+        expect(findClipboardButton().attributes()).toMatchObject({
+          text: decoratedMockFiles[0].filePath,
+          title: 'Copy file path',
+        });
       });
     });
   });

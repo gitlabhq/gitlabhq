@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLoadingIcon, GlBanner } from '@gitlab/ui';
+import feedbackBannerIllustration from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -112,6 +113,9 @@ export default {
     feedbackBannerClasses() {
       return this.isChildComponent ? 'gl-my-2' : 'gl-mb-4';
     },
+    feedbackBannerIllustration() {
+      return feedbackBannerIllustration;
+    },
   },
   methods: {
     updateTreeList(data) {
@@ -145,11 +149,11 @@ export default {
       >
         <gl-banner
           v-if="!feedbackBannerDismissed"
-          variant="introduction"
           :class="feedbackBannerClasses"
           :title="$options.i18n.feedbackBannerTitle"
           :button-text="$options.i18n.feedbackBannerButton"
           :button-link="$options.AGENT_FEEDBACK_ISSUE"
+          :svg-path="feedbackBannerIllustration"
           @close="handleBannerClose"
         >
           <p>{{ $options.i18n.feedbackBannerText }}</p>

@@ -4,6 +4,7 @@ import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import AbuseReportDiscussion from '~/admin/abuse_report/components/notes/abuse_report_discussion.vue';
 import AbuseReportNote from '~/admin/abuse_report/components/notes/abuse_report_note.vue';
+import AbuseReportAddNote from '~/admin/abuse_report/components/notes/abuse_report_add_note.vue';
 
 import {
   mockAbuseReport,
@@ -19,6 +20,7 @@ describe('Abuse Report Discussion', () => {
   const findAbuseReportNotes = () => wrapper.findAllComponents(AbuseReportNote);
   const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
+  const findAbuseReportAddNote = () => wrapper.findComponent(AbuseReportAddNote);
 
   const createComponent = ({
     discussion = mockDiscussionWithNoReplies,
@@ -43,6 +45,7 @@ describe('Abuse Report Discussion', () => {
       expect(findAbuseReportNote().props()).toMatchObject({
         abuseReportId: mockAbuseReportId,
         note: mockDiscussionWithNoReplies[0],
+        showReplyButton: true,
       });
     });
 
@@ -50,8 +53,12 @@ describe('Abuse Report Discussion', () => {
       expect(findTimelineEntryItem().exists()).toBe(false);
     });
 
-    it('should not show the the toggle replies widget wrapper when no replies', () => {
+    it('should not show the toggle replies widget wrapper when there are no replies', () => {
       expect(findToggleRepliesWidget().exists()).toBe(false);
+    });
+
+    it('should not show the comment form there are no replies', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(false);
     });
   });
 
@@ -74,6 +81,69 @@ describe('Abuse Report Discussion', () => {
       findToggleRepliesWidget().vm.$emit('toggle');
       await nextTick();
       expect(findAbuseReportNotes()).toHaveLength(1);
+    });
+
+    it('should show the comment form', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(true);
+
+      expect(findAbuseReportAddNote().props()).toMatchObject({
+        abuseReportId: mockAbuseReportId,
+        discussionId: mockDiscussionWithReplies[0].discussion.id,
+        isNewDiscussion: false,
+      });
+    });
+
+    it('should show the reply button only for the main comment', () => {
+      expect(findAbuseReportNotes().at(0).props('showReplyButton')).toBe(true);
+
+      expect(findAbuseReportNotes().at(1).props('showReplyButton')).toBe(false);
+      expect(findAbuseReportNotes().at(2).props('showReplyButton')).toBe(false);
+    });
+  });
+
+  describe('Replying to a comment when it has no replies', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('should show comment form when `startReplying` is emitted', async () => {
+      expect(findAbuseReportAddNote().exists()).toBe(false);
+
+      findAbuseReportNote().vm.$emit('startReplying');
+      await nextTick();
+
+      expect(findAbuseReportAddNote().exists()).toBe(true);
+      expect(findAbuseReportAddNote().props('showCommentForm')).toBe(true);
+    });
+
+    it('should hide the comment form when `cancelEditing` is emitted', async () => {
+      findAbuseReportNote().vm.$emit('startReplying');
+      await nextTick();
+
+      findAbuseReportAddNote().vm.$emit('cancelEditing');
+      await nextTick();
+
+      expect(findAbuseReportAddNote().exists()).toBe(false);
+    });
+  });
+
+  describe('Replying to a comment with replies', () => {
+    beforeEach(() => {
+      createComponent({
+        discussion: mockDiscussionWithReplies,
+      });
+    });
+
+    it('should show reply textarea, but not comment form', () => {
+      expect(findAbuseReportAddNote().exists()).toBe(true);
+      expect(findAbuseReportAddNote().props('showCommentForm')).toBe(false);
+    });
+
+    it('should show comment form when reply button on main comment is clicked', async () => {
+      findAbuseReportNotes().at(0).vm.$emit('startReplying');
+      await nextTick();
+
+      expect(findAbuseReportAddNote().props('showCommentForm')).toBe(true);
     });
   });
 });

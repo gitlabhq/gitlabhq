@@ -4,6 +4,6 @@ import { CI_RESOURCES_PAGE_NAME, CI_RESOURCE_DETAILS_PAGE_NAME } from './constan
 export const createRoutes = (listComponent) => {
   return [
     { name: CI_RESOURCES_PAGE_NAME, path: '', component: listComponent },
-    { name: CI_RESOURCE_DETAILS_PAGE_NAME, path: '/:id', component: CiResourceDetailsPage },
+    { name: CI_RESOURCE_DETAILS_PAGE_NAME, path: '/:id+', component: CiResourceDetailsPage },
   ];
 };

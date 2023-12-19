@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Integrations API **(FREE ALL)**
@@ -78,11 +78,11 @@ Example response:
 ]
 ```
 
-## Apple App Store
+## Apple App Store Connect
 
-### Set up Apple App Store
+### Set up Apple App Store Connect
 
-Set up the Apple App Store integration for a project.
+Set up the Apple App Store Connect integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/apple_app_store
@@ -92,10 +92,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `app_store_issuer_id` | string | true | The Apple App Store Connect Issuer ID. |
-| `app_store_key_id` | string | true | The Apple App Store Connect Key ID. |
-| `app_store_private_key` | string | true | The Apple App Store Connect Private Key. |
-| `app_store_protected_refs` | boolean | false | Set variables only on protected branches and tags. Defaults to `true` (enabled). |
+| `app_store_issuer_id` | string | true | Apple App Store Connect issuer ID. |
+| `app_store_key_id` | string | true | Apple App Store Connect key ID. |
+| `app_store_private_key_file_name` | string | true | Apple App Store Connect private key file name. |
+| `app_store_private_key` | string | true | Apple App Store Connect private key. |
+| `app_store_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
 
 ### Disable Apple App Store
 
@@ -127,8 +128,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | User API token. User must have access to task. All comments are attributed to this user. |
-| `restrict_to_branch` | string | false | Comma-separated list of branches to be are automatically inspected. Leave blank to include all branches. |
+| `api_key` | string | true | User API token. The user must have access to the task. All comments are attributed to this user. |
+| `restrict_to_branch` | string | false | Comma-separated list of branches to be automatically inspected. Leave blank to include all branches. |
 
 ### Disable Asana
 
@@ -677,7 +678,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | GitHub API token with `repo:status` OAuth scope. |
 | `repository_url` | string | true | GitHub repository URL. |
-| `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names). |
+| `static_context` | boolean | false | Append the hostname of your GitLab instance to the [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names). |
 
 ### Disable GitHub
 

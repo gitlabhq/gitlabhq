@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Group DevOps Adoption **(ULTIMATE ALL)**
@@ -30,7 +30,7 @@ how to use those features.
 
 ## View DevOps Adoption
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 

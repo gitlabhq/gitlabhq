@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Sign-in restrictions **(FREE SELF)**
@@ -12,8 +12,7 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
@@ -76,11 +75,11 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 
 To enable Admin Mode through the UI:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**.
-1. In the **Admin Mode** section, select the **Require additional authentication for administrative tasks** checkbox.
+1. Select **Enable Admin Mode**.
+1. Select **Save changes**.
 
 ### Turn on Admin Mode for your session
 
@@ -181,8 +180,7 @@ For example, if you include the following information in the noted text box:
 
 To access this text box:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 ```

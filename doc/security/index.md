@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Secure your installation **(FREE ALL)**
@@ -24,6 +23,7 @@ type: index
 - [Proxying images](asset_proxy.md)
 - [CI/CD variables](../ci/variables/index.md#cicd-variable-security)
 - [Token overview](token_overview.md)
+- [Rotate secrets of third-party integrations](rotate_integrations_secrets.md)
 - [Maximum decompressed file size for imported archives](../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives)
 - [Responding to security incidents](responding_to_security_incidents.md)
 

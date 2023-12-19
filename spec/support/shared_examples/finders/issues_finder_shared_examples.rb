@@ -269,6 +269,34 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             end
           end
         end
+
+        context 'when querying group-level items' do
+          let(:params) { { group_id: group.id, issue_types: %w[issue epic] } }
+
+          it 'includes group-level items' do
+            expect(items).to contain_exactly(item1, item5, group_level_item)
+          end
+
+          context 'when user has access to confidential items' do
+            before do
+              group.add_reporter(user)
+            end
+
+            it 'includes confidential group-level items' do
+              expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
+            end
+          end
+
+          context 'when namespace_level_work_items is disabled' do
+            before do
+              stub_feature_flags(namespace_level_work_items: false)
+            end
+
+            it 'only returns project-level items' do
+              expect(items).to contain_exactly(item1, item5)
+            end
+          end
+        end
       end
 
       context 'filtering by author' do

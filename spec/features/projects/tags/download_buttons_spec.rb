@@ -38,17 +38,5 @@ RSpec.describe 'Download buttons in tags page', feature_category: :source_code_m
       let(:path_to_visit) { project_tags_path(project) }
       let(:ref) { tag }
     end
-
-    context 'with artifacts' do
-      before do
-        visit project_tags_path(project)
-      end
-
-      it 'shows download artifacts button' do
-        href = latest_succeeded_project_artifacts_path(project, "#{tag}/download", job: 'build')
-
-        expect(page).to have_link build.name, href: href
-      end
-    end
   end
 end

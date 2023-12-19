@@ -111,7 +111,8 @@ module Analytics
             :author_id,
             :state_id,
             :start_event_timestamp,
-            :end_event_timestamp
+            :end_event_timestamp,
+            :duration_in_milliseconds
           ]
         end
 
@@ -125,7 +126,8 @@ module Analytics
             :author_id,
             :state_id,
             :start_event_timestamp,
-            :end_event_timestamp
+            :end_event_timestamp,
+            :duration_in_milliseconds
           ]
         end
 

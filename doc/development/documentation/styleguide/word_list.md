@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
@@ -50,7 +50,7 @@ Don't use backticks.
 Spell out **two-factor authentication** in sentence case for the first use and in topic titles, and **2FA**
 thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
 
-- Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first log in.
+- Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first sign in.
 
 ## above
 
@@ -77,27 +77,14 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
-## active voice
-
-Use active voice instead of passive.
-
-Use:
-
-- The contributor writes the documentation.
-
-Instead of:
-
-- The documentation is written by contributors.
-
-NOTE:
-If you can add the phrase "by zombies" to the phrase,
-the construction is passive. For example, `The button is selected by zombies`
-is passive. `Zombies select the button` is active.
-
 ## Admin Area
 
 Use title case for **Admin Area**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
+
+## Admin Mode
+
+Use title case for **Admin Mode**. The UI uses title case.
 
 ## administrator
 
@@ -235,8 +222,8 @@ Try to avoid **below** when referring to an example or table in a documentation 
 
 Use uppercase for **Beta**. For example: **The XYZ feature is in Beta.** or **This Beta release is ready to test.**
 
-You might also want to link to [this section](../../../policy/experiment-beta-support.md#beta)
-in the handbook when writing about Beta features.
+You might also want to link to [this topic](../../../policy/experiment-beta-support.md#beta)
+when writing about Beta features.
 
 ## blacklist
 
@@ -307,9 +294,18 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 - Use `git checkout` to check out a branch locally.
 - Check out the files you want to edit.
 
+## CI, CD
+
+When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** alone.
+
 ## CI/CD
 
-CI/CD is always uppercase. No need to spell it out on first use.
+**CI/CD** is always uppercase. No need to spell it out on first use.
+
+You can omit **CI/CD** when the context is clear, especially after the first use. For example:
+
+- Test your code in a **CI/CD pipeline**. Configure the **pipeline** to run for merge requests.
+- Store the value in a **CI/CD variable**. Set the **variable** to masked.
 
 ## CI/CD minutes
 
@@ -384,6 +380,18 @@ Use **compute minutes** instead of these (or similar) terms:
 
 For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
+## configuration
+
+When you update a collection of settings, call it a **configuration**.
+
+## configure
+
+Use **configure** after a feature or product has been [set up](#setup-set-up).
+For example:
+
+1. Set up your installation.
+1. Configure your installation.
+
 ## confirmation dialog
 
 Use **confirmation dialog** to describe the dialog that asks you to confirm an action. For example:
@@ -394,7 +402,7 @@ Do not use **confirmation box** or **confirmation dialog box**. See also [**dial
 
 ## container registry
 
-When documenting the GitLab container registry features and functionality, use lower case.
+When documenting the GitLab container registry features and functionality, use lowercase.
 
 Use:
 
@@ -505,6 +513,13 @@ To be more upbeat and precise, do not use **downgrade**. Focus instead on the ac
 - For changing to earlier GitLab versions, use [**roll back**](#roll-back).
 - For changing to lower GitLab tiers, use **change the subscription tier**.
 
+## download
+
+Use **download** to describe saving data to a user's device. For details, see
+[the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/download).
+
+Do not confuse download with [export](#export).
+
 ## dropdown list
 
 Use **dropdown list** to refer to the UI element. Do not use **dropdown** without **list** after it.
@@ -611,13 +626,40 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use uppercase for **Experiment**. For example: **The XYZ feature is an Experiment.** or **This Experiment is ready to test.**
 
-You might also want to link to [this section](../../../policy/experiment-beta-support.md#experiment)
-in the handbook when writing about Experiment features.
+You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
+when writing about Experiment features.
+
+## export
+
+Use **export** to indicate translating raw data,
+which is not represented by a file in GitLab, into a standard file format.
+
+You can differentiate **export** from **download** because:
+
+- Often, you can use export options to change the output.
+- Exported data is not necessarily downloaded to a user's device.
+
+For example:
+
+- Export the contents of your report to CSV format.
+
+Do not confuse with [download](#download).
 
 ## FAQ
 
 We want users to find information quickly, and they rarely search for the term **FAQ**.
 Information in FAQs belongs with other similar information, under an easily searchable topic title.
+
+## feature
+
+You should rarely need to use the word **feature**. Instead, explain what GitLab does.
+For example, use:
+
+- Use merge requests to incorporate changes into the target branch.
+
+Instead of:
+
+- Use the merge request feature to incorporate changes into the target branch.
 
 ## field
 
@@ -641,6 +683,12 @@ of the fields at once. For example:
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
 
+## file name
+
+Use two words for **file name**. When using file name as a variable, use `<file_name>`.
+
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+
 ## filter
 
 When you are viewing a list of items, like issues or merge requests, you filter the list by
@@ -655,13 +703,18 @@ Do not use **foo** in product documentation. You can use it in our API and contr
 ## fork
 
 A **fork** is a project that was created from a **upstream project** by using the
-[forking process](../../../topics/git/terminology.md#fork).
+forking process.
 
 The **upstream project** (also known as the **source project**) and the **fork** have a **fork relationship** and are
 **linked**.
 
-If the [**fork relationship** is removed](../../../user/project/repository/forking_workflow.md#unlink-a-fork), the
+If the **fork relationship** is removed, the
 **fork** is **unlinked** from the **upstream project**.
+
+## full screen
+
+Use two words for **full screen**.
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## future tense
 
@@ -698,7 +751,8 @@ Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.
 
-On first use on a page, use **GitLab Duo `<featurename>`**. For example:
+On first use on a page, use **GitLab Duo `<featurename>`**. As of Dec, 2023,
+the following are the names of GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Suggestions
@@ -709,6 +763,7 @@ On first use on a page, use **GitLab Duo `<featurename>`**. For example:
 - GitLab Duo Code review summary
 - GitLab Duo Code explanation
 - GitLab Duo Vulnerability summary
+- GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
 - GitLab Duo Git suggestions
 - GitLab Duo Root cause analysis
@@ -966,7 +1021,15 @@ Do not use **limitations**. Use **known issues** instead.
 
 ## log in, log on
 
-Do not use **log in** or **log on**. Use [sign in](#sign-in-sign-in) instead. If the user interface has **Log in**, you can use it.
+Do not use:
+
+- **log in**.
+- **log on**.
+- **login**
+
+Use [sign in](#sign-in-sign-in) instead.
+
+However, if the user interface has **Log in**, you should match the UI.
 
 ## logged-in user, logged in user
 
@@ -984,6 +1047,14 @@ Instead of:
 
 - In GitLab 14.1 and lower.
 - In GitLab 14.1 and older.
+
+## machine learning
+
+Use lowercase for **machine learning**.
+
+When machine learning is used as an adjective, like **a machine learning model**,
+do not hyphenate. While a hyphen might be more grammatically correct, we risk
+becoming inconsistent if we try to be more precise.
 
 ## Maintainer
 
@@ -1252,9 +1323,14 @@ Do not use bold.
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 An Owner is the highest role a user can have.
 
-## Package Registry
+## package registry
 
-Use title case for the GitLab Package Registry.
+When documenting the GitLab package registry features and functionality, use lowercase.
+
+Use:
+
+- The GitLab package registry supports A, B, and C.
+- You can publish a package to your project's package registry.
 
 ## page
 
@@ -1289,9 +1365,15 @@ see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-
 Use **Premium**, in uppercase, for the subscription tier.  When you refer to **Premium**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
+## preferences
+
+Use **preferences** to describe user-specific, system-level settings like theme and layout.
+
 ## prerequisites
 
 Use **prerequisites** when documenting the tasks that must be completed or the conditions that must be met before a user can complete a task. Do not use **requirements**.
+
+**Prerequisites** must always be plural, even if the list includes only one item.
 
 For more information, see [the task topic type](../topic_types/task.md).
 
@@ -1367,6 +1449,17 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 Use title case for **Repository Mirroring**.
 
+## resolution, resolve
+
+Use **resolution** when the troubleshooting solution fixes the issue permanently.
+A resolution usually involves file and code changes to correct the problem.
+For example:
+
+- To resolve this issue, update the `.gitlab-ci.yml` file.
+- One resolution is to update the `.gitlab-ci.yml` file.
+
+See also [workaround](#workaround).
+
 ## requirements
 
 When documenting the tasks that must be completed or the conditions that must be met before a user can complete the steps:
@@ -1375,6 +1468,10 @@ When documenting the tasks that must be completed or the conditions that must be
 - Use **before you begin** for tutorials. For more information, see [the tutorial page type](../topic_types/tutorial.md).
 
 Do not use **requirements**.
+
+## reset
+
+Use **reset** to describe the action associated with resetting an item to a new state.
 
 ## respectively
 
@@ -1388,6 +1485,10 @@ Instead of:
 
 - Select **Create user** or **Save changes** if you created a new user or
   edited an existing one respectively.
+
+## restore
+
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/r/restore) for guidance on **restore**.
 
 ## review app
 
@@ -1508,18 +1609,37 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 - Your remote office setup is amazing.
 - To set up your remote office correctly, consider the ergonomics of your work area.
 
+Do not confuse **set up** with [**configure**](#configure).
+**Set up** implies that it's the first time you've done something. For example:
+
+1. Set up your installation.
+1. Configure your installation.
+
+## settings
+
+A **setting** changes the default behavior of the product. A **setting** consists of a key/value pair,
+typically represented by a label with one or more options.
+
 ## sign in, sign-in
 
-Use **sign in** or **sign in to** as a verb to describe the action of signing in.
+To describe the action of signing in, use:
 
-Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
+- **sign in**.
+- **sign in to** as a verb. For example: Use your password to sign in to GitLab.
 
-If the user interface has different words, use those.
+You can also use:
 
-You can use **sign-in** as a noun or adjective. For example, **sign-in page** or
-**sign-in restrictions**.
+- **sign-in** as a noun or adjective. For example: **sign-in page** or
+  **sign-in restrictions**.
+- **single sign-on**.
 
-You can use **single sign-on**.
+Do not use:
+
+- **sign on**.
+- **sign into**.
+- [**log on**, **log in**, or **log into**](#log-in-log-on).
+
+If the user interface has different words, you can use those.
 
 ## sign up
 
@@ -1709,6 +1829,10 @@ See also [**enter**](#enter).
 Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
+## undo
+
+See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/u/undo) for guidance on **undo**.
+
 ## units of measurement
 
 Use a space between the number and the unit of measurement. For example, **128 GB**.
@@ -1762,6 +1886,19 @@ Do not use **useful**. If the user doesn't find the process to be useful, we los
 You create a **user account**. The user account has an [access level](#access-level).
 When you add a **user account** to a group or project, the user account becomes a **member**.
 
+## using
+
+Avoid **using** in most cases. It hides the subject and makes the phrase more difficult to translate.
+Use **by using**, **that use**, or re-write the sentence.
+
+For example:
+
+- Instead of: The files using storage...
+- Use: The files that use storage...
+
+- Instead of: Change directories using the command line.
+- Use: Change directories by using the command line. Or even better: To change directories, use the command line.
+
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
@@ -1776,6 +1913,13 @@ Thereafter, use **Value stream forecasting** by itself.
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## Vulnerability resolution
+
+Use sentence case for **Vulnerability resolution**.
+
+On first mention on a page, use **GitLab Duo Vulnerability resolution**.
+Thereafter, use **Vulnerability resolution** by itself.
 
 ## Vulnerability summary
 
@@ -1797,6 +1941,16 @@ Instead of:
 - We created a feature for you to add widgets.
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+## workaround
+
+Use **workaround** when the troubleshooting solution is a temporary fix.
+A workaround is usually an immediate fix and might have ongoing issues.
+For example:
+
+- The workaround is to temporarily pin your template to the deprecated version.
+
+See also [resolution](#resolution-resolve).
 
 ## while
 

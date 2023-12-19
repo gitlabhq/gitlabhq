@@ -1,13 +1,13 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Analyze GitLab usage **(FREE ALL)**
 
 GitLab provides different types of analytics insights at the instance, group, and project level.
-These insights appear on the left sidebar, under [**Analyze**](../project/settings/index.md#disable-project-analytics).
+These insights appear on the left sidebar, under [**Analyze**](../project/settings/project_features_permissions.md#disable-project-analytics).
 
 ## Instance-level analytics
 
@@ -33,12 +33,11 @@ Use group-level analytics to get insights into your groups':
 
 Use project-level analytics to get insights into your projects':
 
-- [Analytics dashboards](analytics_dashboards.md), enabled with the `combined_analytics_dashboards_editor`
-  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
+- [Analytics dashboards](analytics_dashboards.md)
 - [Security Dashboards](../application_security/security_dashboard/index.md)
 - [CI/CD analytics and DORA metrics](ci_cd_analytics.md)
 - [Code review analytics](code_review_analytics.md)
-- [Contributor statistics](../../user/analytics/contributor_statistics.md)
+- [Contributor analytics](../../user/analytics/contributor_analytics.md)
 - [Insights](../project/insights/index.md)
 - [Issue analytics](../../user/analytics/issue_analytics.md)
 - [Merge request analytics](merge_request_analytics.md), enabled with the `project_merge_request_analytics`

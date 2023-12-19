@@ -8,10 +8,10 @@ import state from './state';
 
 Vue.use(Vuex);
 
-export default ({ initialState, endpoints, hasPagination }) =>
+export default ({ initialState, endpoints }) =>
   new Vuex.Store({
     state: { ...state(), ...initialState },
-    actions: actionsFactory({ endpoints, hasPagination }),
+    actions: actionsFactory({ endpoints }),
     mutations,
     getters,
   });

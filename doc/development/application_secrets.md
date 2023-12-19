@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Application secrets
@@ -46,4 +46,4 @@ GitLab.com environments prior to changing this file.
 ## Further iteration
 
 We may either deprecate or remove this automatic secret generation `01_secret_token.rb` in the future.
-Please see [issue 222690](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.
+See [issue 222690](https://gitlab.com/gitlab-org/gitlab/-/issues/222690) for more information.

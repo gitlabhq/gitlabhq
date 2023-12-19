@@ -147,7 +147,7 @@ function filterObjToQueryParams(filterObj) {
   const filterParams = new URLSearchParams();
 
   Object.keys(SUPPORTED_FILTERS).forEach((filterName) => {
-    const filterValues = filterObj[filterName] || [];
+    const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
     const validFilters = filterValues.filter((f) =>
       SUPPORTED_FILTERS[filterName].includes(f.operator),
     );
@@ -251,10 +251,26 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
-async function fetchMetrics(metricsUrl) {
+async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   try {
+    const params = new URLSearchParams();
+
+    if (Array.isArray(filters.search)) {
+      const searchPrefix = filters.search
+        .map((f) => f.value)
+        .join(' ')
+        .trim();
+
+      if (searchPrefix) {
+        params.append('starts_with', searchPrefix);
+        if (limit) {
+          params.append('limit', limit);
+        }
+      }
+    }
     const { data } = await axios.get(metricsUrl, {
       withCredentials: true,
+      params,
     });
     if (!Array.isArray(data.metrics)) {
       throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -265,12 +281,46 @@ async function fetchMetrics(metricsUrl) {
   }
 }
 
+async function fetchMetric(searchUrl, name, type) {
+  try {
+    if (!name) {
+      throw new Error('fetchMetric() - metric name is required.');
+    }
+    if (!type) {
+      throw new Error('fetchMetric() - metric type is required.');
+    }
+
+    const params = new URLSearchParams({
+      mname: name,
+      mtype: type,
+    });
+
+    const { data } = await axios.get(searchUrl, {
+      params,
+      withCredentials: true,
+    });
+    if (!Array.isArray(data.results)) {
+      throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+    return data.results;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
 export function buildClient(config) {
   if (!config) {
     throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
   }
 
-  const { provisioningUrl, tracingUrl, servicesUrl, operationsUrl, metricsUrl } = config;
+  const {
+    provisioningUrl,
+    tracingUrl,
+    servicesUrl,
+    operationsUrl,
+    metricsUrl,
+    metricsSearchUrl,
+  } = config;
 
   if (typeof provisioningUrl !== 'string') {
     throw new Error('provisioningUrl param must be a string');
@@ -292,6 +342,10 @@ export function buildClient(config) {
     throw new Error('metricsUrl param must be a string');
   }
 
+  if (typeof metricsSearchUrl !== 'string') {
+    throw new Error('metricsSearchUrl param must be a string');
+  }
+
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
@@ -299,6 +353,7 @@ export function buildClient(config) {
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
-    fetchMetrics: () => fetchMetrics(metricsUrl),
+    fetchMetrics: (options) => fetchMetrics(metricsUrl, options),
+    fetchMetric: (metricName, metricType) => fetchMetric(metricsSearchUrl, metricName, metricType),
   };
 }

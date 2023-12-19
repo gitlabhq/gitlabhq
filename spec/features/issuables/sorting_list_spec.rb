@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
+  include Features::SortingHelpers
   include ListboxHelpers
 
   let(:project) { create(:project, :public) }
@@ -195,8 +196,7 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
       it 'supports sorting in asc and desc order' do
         visit_issues_with_state(project, 'opened')
 
-        click_button('Created date')
-        click_on('Updated date')
+        pajamas_sort_by 'Updated date', from: 'Created date'
 
         expect(page).to have_css('.issue:first-child', text: last_updated_issuable.title)
         expect(page).to have_css('.issue:last-child', text: first_updated_issuable.title)

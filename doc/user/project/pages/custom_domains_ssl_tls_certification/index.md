@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Pages custom domains **(FREE ALL)**
@@ -273,7 +273,7 @@ meet these requirements.
 
 **Do not** open certificates or encryption keys in
 regular text editors. Always use code editors (such as
-Sublime Text, Atom, Dreamweaver, Brackets, etc).
+Sublime Text, Dreamweaver, Brackets, etc).
 
 ## Force HTTPS for GitLab Pages websites
 

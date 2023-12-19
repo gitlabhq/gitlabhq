@@ -22,6 +22,7 @@
     window.gl.mrWidgetData.can_view_false_positive = '#{@merge_request.project.licensed_feature_available?(:sast_fp_reduction).to_s}';
     window.gl.mrWidgetData.user_preferences_gitpod_path = '#{profile_preferences_path(anchor: 'user_gitpod_enabled')}';
     window.gl.mrWidgetData.user_profile_enable_gitpod_path = '#{profile_path(user: { gitpod_enabled: true })}';
+    window.gl.mrWidgetData.saml_approval_path = window.gl.mrWidgetData.saml_approval_path
 
 %h2#merge-request-widgets-heading.gl-sr-only
   = _("Merge request reports")

@@ -18,10 +18,11 @@ module Gitlab
         # https://github.com/puma/puma/pull/3094
         status_code ||= 500
 
-        if Raven.configuration.capture_allowed?
-          Raven.capture_exception(ex, tags: { handler: 'puma_low_level' },
-            extra: { puma_env: env, status_code: status_code })
-        end
+        Gitlab::ErrorTracking.track_exception(
+          ex,
+          { puma_env: env, status_code: status_code },
+          { handler: 'puma_low_level' }
+        )
 
         # note the below is just a Rack response
         [status_code, {}, message]

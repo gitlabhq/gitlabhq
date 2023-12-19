@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Tutorial: Set up a scan result policy **(ULTIMATE ALL)**
@@ -30,6 +30,7 @@ The namespace used for this tutorial must:
    - **Project name**: `sast-scan-result-policy`.
    - Select the **Enable Static Application Security Testing (SAST)** checkbox.
 1. Select **Create project**.
+1. Go to the newly created project and create [protected branches](../../user/project/protected_branches.md).
 
 ## Add a scan result policy
 

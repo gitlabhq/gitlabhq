@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
 import JobContainerItem from '~/ci/job_details/components/sidebar/job_container_item.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import job from 'jest/ci/jobs_mock_data';
 
 describe('JobContainerItem', () => {

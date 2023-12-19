@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Usage statistics **(FREE SELF)**
@@ -71,12 +71,16 @@ In the following table, you can see:
 | [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
 | [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
+| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
+| [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
+| [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |
+| [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md) | GitLab 16.7 and later |
+| [CI/CD for GitHub](../../ci/ci_cd_for_external_repos/github_integration.md) | GitLab 16.7 and later |
 
 ### Enable registration features
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. If not enabled, select the **Enable Service Ping** checkbox.
@@ -107,8 +111,7 @@ If you disable version check, this information isn't collected.
 
 ### Enable or disable version check
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** checkbox.
@@ -144,8 +147,7 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 To enable or disable Service Ping:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the  **Enable Service Ping** checkbox.
@@ -207,8 +209,7 @@ the Admin Area.
 You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Preview payload**.
 
@@ -225,8 +226,7 @@ or if the Service Ping [cron job](../../development/internal_analytics/service_p
 To upload the payload manually:
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Download payload**.
 1. Save the JSON file.

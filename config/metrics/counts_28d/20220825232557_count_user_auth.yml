@@ -12,8 +12,6 @@ time_frame: 28d
 data_source: database
 instrumentation_class: CountUserAuthMetric
 data_category: optional
-performance_indicator_type:
-- smau
 distribution:
 - ce
 - ee

@@ -16,13 +16,15 @@ describe('Jobs Store Mutations', () => {
   describe('SET_JOB_LOG_OPTIONS', () => {
     it('should set jobEndpoint', () => {
       mutations[types.SET_JOB_LOG_OPTIONS](stateCopy, {
-        endpoint: '/group1/project1/-/jobs/99.json',
-        pagePath: '/group1/project1/-/jobs/99',
+        jobEndpoint: '/group1/project1/-/jobs/99.json',
+        logEndpoint: '/group1/project1/-/jobs/99/trace',
+        testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
       });
 
       expect(stateCopy).toMatchObject({
-        jobLogEndpoint: '/group1/project1/-/jobs/99',
         jobEndpoint: '/group1/project1/-/jobs/99.json',
+        logEndpoint: '/group1/project1/-/jobs/99/trace',
+        testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
       });
     });
   });
@@ -113,7 +115,7 @@ describe('Jobs Store Mutations', () => {
           it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
 
-            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '');
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, {}, '');
 
             expect(stateCopy.jobLog).toEqual([
               {
@@ -133,7 +135,7 @@ describe('Jobs Store Mutations', () => {
           it('sets the parsed log', () => {
             mutations[types.RECEIVE_JOB_LOG_SUCCESS](stateCopy, mockLog);
 
-            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, [], '#L1');
+            expect(utils.logLinesParser).toHaveBeenCalledWith(mockLog.lines, {}, '#L1');
 
             expect(stateCopy.jobLog).toEqual([
               {
@@ -214,9 +216,17 @@ describe('Jobs Store Mutations', () => {
 
   describe('TOGGLE_COLLAPSIBLE_LINE', () => {
     it('toggles the `isClosed` property of the provided object', () => {
-      const section = { isClosed: true };
-      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, section);
-      expect(section.isClosed).toEqual(false);
+      stateCopy.jobLogSections = {
+        'step-script': { isClosed: true },
+      };
+
+      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, 'step-script');
+
+      expect(stateCopy.jobLogSections['step-script'].isClosed).toEqual(false);
+
+      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, 'step-script');
+
+      expect(stateCopy.jobLogSections['step-script'].isClosed).toEqual(true);
     });
   });
 
@@ -312,6 +322,36 @@ describe('Jobs Store Mutations', () => {
 
     it('resets jobs', () => {
       expect(stateCopy.jobs).toEqual([]);
+    });
+  });
+
+  describe('ENTER_FULLSCREEN_SUCCESS', () => {
+    beforeEach(() => {
+      mutations[types.ENTER_FULLSCREEN_SUCCESS](stateCopy);
+    });
+
+    it('sets fullScreenEnabled to true', () => {
+      expect(stateCopy.fullScreenEnabled).toEqual(true);
+    });
+  });
+
+  describe('EXIT_FULLSCREEN_SUCCESS', () => {
+    beforeEach(() => {
+      mutations[types.EXIT_FULLSCREEN_SUCCESS](stateCopy);
+    });
+
+    it('sets fullScreenEnabled to false', () => {
+      expect(stateCopy.fullScreenEnabled).toEqual(false);
+    });
+  });
+
+  describe('FULL_SCREEN_CONTAINER_SET_UP', () => {
+    beforeEach(() => {
+      mutations[types.FULL_SCREEN_CONTAINER_SET_UP](stateCopy, true);
+    });
+
+    it('sets fullScreenEnabled to true', () => {
+      expect(stateCopy.fullScreenContainerSetUp).toEqual(true);
     });
   });
 });

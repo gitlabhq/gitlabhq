@@ -9,7 +9,9 @@ Gitlab::Seeder.quiet do
     admin: true,
     confirmed_at: DateTime.now,
     password_expires_at: DateTime.now
-  )
+  ) do |user|
+    user.assign_personal_namespace
+  end
 
   print '.'
 end

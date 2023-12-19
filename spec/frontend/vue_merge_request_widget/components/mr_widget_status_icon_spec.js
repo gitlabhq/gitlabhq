@@ -54,5 +54,12 @@ describe('MR widget status icon component', () => {
       expect(findIcon().exists()).toBe(true);
       expect(findIcon().props().name).toBe('merge-request-close');
     });
+
+    it('renders empty status icon', () => {
+      createWrapper({ status: 'empty' });
+
+      expect(findStatusIcon().exists()).toBe(true);
+      expect(findStatusIcon().props().iconName).toBe('neutral');
+    });
   });
 });

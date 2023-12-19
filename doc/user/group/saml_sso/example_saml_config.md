@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Example group SAML and SCIM configurations **(PREMIUM SAAS)**
@@ -40,9 +39,6 @@ This section has screenshots for the elements of Azure Active Directory configur
 ### User claims and attributes
 
 ![Azure AD user claims](img/AzureAD-claims.png)
-
-NOTE:
-Attribute names starting with phrases such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/` are not supported.
 
 ### SCIM mapping
 

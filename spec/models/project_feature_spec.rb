@@ -31,6 +31,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     specify { expect(subject.package_registry_access_level).to eq(ProjectFeature::ENABLED) }
     specify { expect(subject.container_registry_access_level).to eq(ProjectFeature::ENABLED) }
     specify { expect(subject.model_experiments_access_level).to eq(ProjectFeature::ENABLED) }
+    specify { expect(subject.model_registry_access_level).to eq(ProjectFeature::ENABLED) }
   end
 
   describe 'PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT' do

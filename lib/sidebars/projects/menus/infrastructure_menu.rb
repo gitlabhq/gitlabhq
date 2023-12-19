@@ -55,22 +55,8 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: [:cluster_agents, :clusters] },
             container_html_options: { class: 'shortcuts-kubernetes' },
-            hint_html_options: kubernetes_hint_html_options,
             item_id: :kubernetes
           )
-        end
-
-        def kubernetes_hint_html_options
-          return {} unless context.show_cluster_hint
-
-          { disabled: true,
-            data: { trigger: 'manual',
-                    container: 'body',
-                    placement: 'right',
-                    highlight: Users::CalloutsHelper::GKE_CLUSTER_INTEGRATION,
-                    highlight_priority: Users::Callout.feature_names[:GKE_CLUSTER_INTEGRATION],
-                    dismiss_endpoint: callouts_path,
-                    auto_devops_help_path: help_page_path('topics/autodevops/index') } }
         end
 
         def terraform_states_menu_item

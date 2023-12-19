@@ -72,11 +72,20 @@ export default Node.create({
   addInputRules() {
     const { editor } = this;
     const { assetResolver } = this.options;
-    const referenceInputRegex = /(?:^|\s)([\w/]*([!&#])\d+(\+?s?))(?:\s|\n)/m;
+    const referenceInputRegex = /(?:^|\s)([\w/]*([#!&%$@~]|\[vulnerability:)[\w.]+(\+?s?\]?))(?:\s|\n)/m;
     const referenceTypes = {
       '#': 'issue',
       '!': 'merge_request',
       '&': 'epic',
+      '%': 'milestone',
+      $: 'snippet',
+      '@': 'user',
+      '~': 'label',
+      '[vulnerability:': 'vulnerability',
+    };
+    const nodeTypes = {
+      label: editor.schema.nodes.referenceLabel,
+      default: editor.schema.nodes.reference,
     };
 
     return [
@@ -91,22 +100,26 @@ export default Node.create({
             text,
             expandedText,
             fullyExpandedText,
+            backgroundColor,
           } = await assetResolver.resolveReference(referenceId);
 
           if (!text) return;
 
           let referenceText = text;
-          if (expansionType === '+') referenceText = expandedText;
-          if (expansionType === '+s') referenceText = fullyExpandedText;
+          if (expansionType === '+') referenceText = expandedText || text;
+          if (expansionType === '+s') referenceText = fullyExpandedText || text;
 
           const position = findReference(editor, referenceId);
           if (!position) return;
 
+          const nodeType = nodeTypes[referenceType] || nodeTypes.default;
+
           editor.view.dispatch(
             editor.state.tr.replaceWith(position, position + referenceId.length, [
-              this.type.create({
+              nodeType.create({
                 referenceType,
                 originalText: referenceId,
+                color: backgroundColor,
                 href,
                 text: referenceText,
               }),

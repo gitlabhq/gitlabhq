@@ -20,7 +20,7 @@
           %strong= link_to user.linkedin, "https://www.linkedin.com/in/#{user.linkedin}"
       - unless user.twitter.blank?
         %li
-          %span.light= _('Twitter:')
+          %span.light= _('X (formerly Twitter):')
           %strong= link_to user.twitter, "https://twitter.com/#{user.twitter}"
       - unless user.website_url.blank?
         %li

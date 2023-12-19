@@ -31,7 +31,6 @@ export default {
     'fullPath',
     'boardType',
     'isEpicBoard',
-    'isApolloBoard',
   ],
   props: {
     boardId: {
@@ -62,9 +61,6 @@ export default {
           fullPath: this.fullPath,
           boardId: this.boardId,
         };
-      },
-      skip() {
-        return !this.isApolloBoard;
       },
       update(data) {
         const { board } = data.workspace;
@@ -110,7 +106,7 @@ export default {
         class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-flex-grow-1 gl-lg-mb-0 gl-mb-3 gl-w-full gl-min-w-0"
       >
         <boards-selector
-          :board-apollo="board"
+          :board="board"
           :is-current-board-loading="isLoading"
           @switchBoard="$emit('switchBoard', $event)"
         />

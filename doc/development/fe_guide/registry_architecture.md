@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Registry architecture
@@ -12,8 +12,8 @@ already exists to unify the user and developer experiences.
 
 Existing registries:
 
-- Package Registry
-- Container Registry
+- Package registry
+- Container registry
 - Terraform Module Registry
 - Dependency Proxy
 
@@ -82,7 +82,7 @@ main pieces of the desired UI and UX of a registry page. The most important comp
 When adding a new registry:
 
 - Leverage the shared components that already exist. It's good to look at how the components are
-  structured and used in the more mature registries (for example, the Package Registry).
+  structured and used in the more mature registries (for example, the package registry).
 - If it's in line with the backend requirements, we suggest using GraphQL for the API. This helps in
   dealing with the innate performance issue of registries.
 - If possible, we recommend using [Vue Router](https://v3.router.vuejs.org/)

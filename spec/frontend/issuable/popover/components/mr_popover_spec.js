@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MRPopover from '~/issuable/popover/components/mr_popover.vue';
 import mergeRequestQuery from '~/issuable/popover/queries/merge_request.query.graphql';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 describe('MR Popover', () => {
   let wrapper;

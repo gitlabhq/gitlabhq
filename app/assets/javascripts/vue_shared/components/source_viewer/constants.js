@@ -14,6 +14,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   clean: 'clean',
   clojure: 'clojure',
   cmake: 'cmake',
+  codeowners: 'codeowners',
   coffeescript: 'coffeescript',
   coq: 'coq',
   cpp: 'cpp',

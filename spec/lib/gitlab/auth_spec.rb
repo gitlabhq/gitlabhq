@@ -45,26 +45,26 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode read_observability write_observability create_runner k8s_proxy ai_features]
     end
 
-    it 'contains for non-admin user all non-default scopes without ADMIN access and without observability scopes and ai_features' do
+    it 'contains for non-admin user all non-default scopes without ADMIN access and without observability scopes' do
       user = build_stubbed(:user, admin: false)
 
-      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy ai_features]
     end
 
-    it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes and ai_features' do
+    it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes' do
       user = build_stubbed(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy ai_features]
     end
 
-    it 'contains for project all resource bot scopes without ai_features' do
-      expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
+    it 'contains for project all resource bot scopes' do
+      expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy ai_features]
     end
 
     it 'contains for group all resource bot scopes' do
       group = build_stubbed(:group).tap { |g| g.namespace_settings = build_stubbed(:namespace_settings, namespace: g) }
 
-      expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
+      expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy ai_features]
     end
 
     it 'contains for unsupported type no scopes' do
@@ -73,34 +73,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     it 'optional_scopes contains all non-default scopes' do
       expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode openid profile email read_observability write_observability create_runner k8s_proxy ai_features]
-    end
-
-    describe 'ai_features scope' do
-      let(:resource) { nil }
-
-      subject { described_class.available_scopes_for(resource) }
-
-      context 'when resource is user', 'and user has a group with ai features' do
-        let(:resource) { build_stubbed(:user) }
-
-        it { is_expected.not_to include(:ai_features) }
-      end
-
-      context 'when resource is project' do
-        let(:resource) { build_stubbed(:project) }
-
-        it 'does not include ai_features scope' do
-          is_expected.not_to include(:ai_features)
-        end
-      end
-
-      context 'when resource is group' do
-        let(:resource) { build_stubbed(:group) }
-
-        it 'does not include ai_features scope' do
-          is_expected.not_to include(:ai_features)
-        end
-      end
     end
 
     context 'with observability_tracing feature flag' do
@@ -114,7 +86,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
           end
 
-          expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+          expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy ai_features]
         end
 
         it 'contains for project all resource bot scopes without observability scopes' do
@@ -123,7 +95,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
           project = build_stubbed(:project, namespace: group)
 
-          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy ai_features]
         end
       end
 
@@ -140,17 +112,17 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         it 'contains for group all resource bot scopes including observability scopes' do
-          expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
+          expect(subject.available_scopes_for(group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy ai_features]
         end
 
         it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes' do
           user = build_stubbed(:user, admin: true)
 
-          expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy]
+          expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy ai_features]
         end
 
         it 'contains for project all resource bot scopes including observability scopes' do
-          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy]
+          expect(subject.available_scopes_for(project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry read_observability write_observability create_runner k8s_proxy ai_features]
         end
 
         it 'contains for other group all resource bot scopes without observability scopes' do
@@ -159,7 +131,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             g.namespace_settings = build_stubbed(:namespace_settings, namespace: g)
           end
 
-          expect(subject.available_scopes_for(other_group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+          expect(subject.available_scopes_for(other_group)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy ai_features]
         end
 
         it 'contains for other project all resource bot scopes without observability scopes' do
@@ -169,7 +141,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           end
           other_project = build_stubbed(:project, namespace: other_group)
 
-          expect(subject.available_scopes_for(other_project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy]
+          expect(subject.available_scopes_for(other_project)).to match_array %i[api read_api read_repository write_repository read_registry write_registry create_runner k8s_proxy ai_features]
         end
       end
     end

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { clone } from 'lodash';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import IdeStatusBar from '~/ide/components/ide_status_bar.vue';
@@ -28,7 +28,7 @@ describe('IdeStatusBar component', () => {
       currentProjectId: TEST_PROJECT_ID,
       projects: {
         ...store.state.projects,
-        [TEST_PROJECT_ID]: _.clone(projectData),
+        [TEST_PROJECT_ID]: clone(projectData),
       },
       ...state,
     });
@@ -100,7 +100,7 @@ describe('IdeStatusBar component', () => {
         currentMergeRequestId: TEST_MERGE_REQUEST_ID,
         projects: {
           [TEST_PROJECT_ID]: {
-            ..._.clone(projectData),
+            ...clone(projectData),
             mergeRequests: {
               [TEST_MERGE_REQUEST_ID]: {
                 web_url: TEST_MERGE_REQUEST_URL,

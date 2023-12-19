@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Productivity analytics **(PREMIUM ALL)**
@@ -22,14 +22,14 @@ To view merge request data for projects, use [Merge request analytics](../analyt
 
 ## View productivity analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Productivity analytics**.
 1. Optional. Filter results:
-   1. Select a project from the dropdown list.
+   1. From the **Projects** dropdown list, select a project.
    1. To filter results by author, milestone, or label,
    select **Filter results...** and enter a value.
    1. To adjust the date range:
@@ -38,19 +38,16 @@ Prerequisite:
 
 ## View time metrics for merge requests
 
-Use the following charts in productivity analytics to view the velocity of your merge requests:
-
-- **Time to merge**: number of days it took for a
-merge requests to merge after they were created.
-- **Trendline**: number of merge requests that were merged in a specific time period.
+To view time metrics for merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Productivity analytics**.
-
-To filter time metrics:
-
-1. To filter the **Trendline** chart, in the **Time to merge** chart, select a column.
-1. To view a specific merge request, below the charts, select a merge request from the **List**.
+   Time metrics are displayed on the following charts:
+   - **Time to merge**: number of days it took for a merge requests to merge after they were created.
+   - **Trendline**: number of merge requests that were merged in a specific time period.
+1. Optional. Filter the results:
+   - To filter the **Trendline** chart, in the **Time to merge** chart, select a bar.
+   - To view a specific merge request, below the charts, from the **List** table select a merge request.
 
 ## View commit statistics
 
@@ -58,11 +55,9 @@ To view commit statistics for your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Productivity analytics**.
-1. Under the **Trendline** scatterplot, view the commit statistics:
+   Commit statistics are displayed under the **Trendline** scatterplot:
    - The left histogram shows the number of hours between commits, comments, and merges.
    - The right histogram shows the number of commits and changes per merge request.
-
-To filter commit statistics:
-
-1. To view different types of commit data, select the dropdown list next to each histogram.
-1. To view a specific merge request, below the charts, select a merge request from the **List**.
+1. Optional. Filter results:
+   - To view different types of commit data, from the dropdown list next to each histogram, select an option.
+   - To view a specific merge request, below the charts, from the **List** table select a merge request.

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Install an offline self-managed GitLab instance **(FREE SELF)**
@@ -98,7 +98,7 @@ Follow these steps to enable SSL for your fresh instance. These steps reflect th
    sudo gitlab-ctl reconfigure
    ```
 
-## Enabling the GitLab Container Registry
+## Enabling the GitLab container registry
 
 Follow these steps to enable the container registry. These steps reflect those for
 [configuring the container registry under an existing domain](../../administration/packages/container_registry.md#configure-container-registry-under-an-existing-gitlab-domain):

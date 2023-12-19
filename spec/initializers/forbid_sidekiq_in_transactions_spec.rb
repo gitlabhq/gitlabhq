@@ -46,6 +46,10 @@ RSpec.describe 'Sidekiq::Worker' do
   context 'for mailers' do
     let(:mailer_class) do
       Class.new(ApplicationMailer) do
+        def self.name
+          'Notify'
+        end
+
         def test_mail; end
       end
     end

@@ -56,15 +56,6 @@ export default {
       required: false,
       default: null,
     },
-    terminalPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    projectPath: {
-      type: String,
-      required: true,
-    },
     subscriptionsMoreMinutesUrl: {
       type: String,
       required: false,
@@ -88,9 +79,9 @@ export default {
       'isJobLogSizeVisible',
       'isScrollBottomDisabled',
       'isScrollTopDisabled',
-      'isScrolledToBottomBeforeReceivingJobLog',
       'hasError',
       'selectedStage',
+      'fullScreenEnabled',
     ]),
     ...mapGetters([
       'headerTime',
@@ -104,6 +95,7 @@ export default {
       'isScrollingDown',
       'emptyStateAction',
       'hasOfflineRunnersForProject',
+      'fullScreenAPIAndContainerAvailable',
     ]),
 
     shouldRenderContent() {
@@ -182,6 +174,8 @@ export default {
       'stopPolling',
       'toggleScrollButtons',
       'toggleScrollAnimation',
+      'enterFullscreen',
+      'exitFullscreen',
     ]),
     onHideManualVariablesForm() {
       this.showUpdateVariablesState = false;
@@ -262,7 +256,6 @@ export default {
           v-if="shouldRenderSharedRunnerLimitWarning"
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
-          :project-path="projectPath"
           :subscriptions-more-minutes-url="subscriptionsMoreMinutesUrl"
         />
 
@@ -303,9 +296,13 @@ export default {
             :is-scrolling-down="isScrollingDown"
             :is-complete="isJobLogComplete"
             :job-log="jobLog"
+            :full-screen-mode-available="fullScreenAPIAndContainerAvailable"
+            :full-screen-enabled="fullScreenEnabled"
             @scrollJobLogTop="scrollTop"
             @scrollJobLogBottom="scrollBottom"
             @searchResults="setSearchResults"
+            @enterFullscreen="enterFullscreen"
+            @exitFullscreen="exitFullscreen"
           />
           <log :search-results="searchResults" />
         </div>

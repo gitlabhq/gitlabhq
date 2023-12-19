@@ -5,7 +5,7 @@ module Emails
     def verification_instructions_email(email, token:)
       @token = token
       @expires_in_minutes = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES
-      @password_link = edit_profile_password_url
+      @password_link = edit_user_settings_password_url
       @two_fa_link = help_page_url('user/profile/account/two_factor_authentication')
 
       headers = {

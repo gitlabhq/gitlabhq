@@ -1,11 +1,15 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer_new.vue';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
-import { EVENT_ACTION, EVENT_LABEL_VIEWER } from '~/vue_shared/components/source_viewer/constants';
+import {
+  EVENT_ACTION,
+  EVENT_LABEL_VIEWER,
+  CODEOWNERS_FILE_NAME,
+} from '~/vue_shared/components/source_viewer/constants';
 import Tracking from '~/tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
@@ -13,6 +17,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
 import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 import * as utils from '~/vue_shared/components/source_viewer/utils';
+import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 
 import {
   BLOB_DATA_MOCK,
@@ -43,16 +48,17 @@ describe('Source Viewer component', () => {
   const blameInfo =
     BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
-  const createComponent = ({ showBlame = true } = {}) => {
+  const createComponent = ({ showBlame = true, blob = {} } = {}) => {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
 
     wrapper = shallowMountExtended(SourceViewer, {
       apolloProvider: fakeApollo,
       mocks: { $route: { hash } },
       propsData: {
-        blob: BLOB_DATA_MOCK,
+        blob: { ...blob, ...BLOB_DATA_MOCK },
         chunks: CHUNKS_MOCK,
         projectPath: 'test',
+        currentRef: 'main',
         showBlame,
       },
     });
@@ -111,22 +117,18 @@ describe('Source Viewer component', () => {
       });
 
       it('calls the query only once per chunk', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'query');
-
         // We trigger the `appear` event multiple times here in order to simulate the user scrolling past the chunk more than once.
         // In this scenario we only want to query the backend once.
         await triggerChunkAppear();
         await triggerChunkAppear();
 
-        expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(1);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
       });
 
       it('requests blame information for overlapping chunk', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'query');
-
         await triggerChunkAppear(1);
 
-        expect(wrapper.vm.$apollo.query).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(2);
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
           expect.objectContaining({ fromLine: 71, toLine: 110 }),
         );
@@ -154,6 +156,22 @@ describe('Source Viewer component', () => {
   describe('hash highlighting', () => {
     it('calls highlightHash with expected parameter', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
+  });
+
+  describe('Codeowners validation', () => {
+    const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
+
+    it('does not render codeowners validation when file is not CODEOWNERS', async () => {
+      await createComponent();
+      await nextTick();
+      expect(findCodeownersValidation().exists()).toBe(false);
+    });
+
+    it('renders codeowners validation when file is CODEOWNERS', async () => {
+      await createComponent({ blob: { name: CODEOWNERS_FILE_NAME } });
+      await nextTick();
+      expect(findCodeownersValidation().exists()).toBe(true);
     });
   });
 });

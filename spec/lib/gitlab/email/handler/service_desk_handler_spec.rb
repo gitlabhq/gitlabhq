@@ -19,6 +19,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
   let_it_be(:group) { create(:group, :private, :crm_enabled, name: "email") }
 
+  let(:expected_subject) { "The message subject! @all" }
   let(:expected_description) do
     "Service desk stuff!\n\n```\na = b\n```\n\n`/label ~label1`\n`/assign @user1`\n`/close`\n![image](uploads/image.png)"
   end
@@ -43,7 +44,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         expect(new_issue.author).to eql(Users::Internal.support_bot)
         expect(new_issue.confidential?).to be true
         expect(new_issue.all_references.all).to be_empty
-        expect(new_issue.title).to eq("The message subject! @all")
+        expect(new_issue.title).to eq(expected_subject)
         expect(new_issue.description).to eq(expected_description.strip)
         expect(new_issue.email&.email_message_id).to eq(message_id)
       end
@@ -114,6 +115,40 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         let(:to_address) { project.service_desk_incoming_address }
 
         it_behaves_like 'a new issue request'
+
+        context 'when more than the defined limit of participants are in Cc header' do
+          before do
+            stub_const("IssueEmailParticipants::CreateService::MAX_NUMBER_OF_RECORDS", 6)
+          end
+
+          let(:cc_addresses) { Array.new(6) { |i| "user#{i}@example.com" }.join(', ') }
+          let(:author_email) { 'from@example.com' }
+          let(:expected_subject) { "Issue title" }
+          let(:expected_description) do
+            <<~DESC
+            Issue description
+
+            ![image](uploads/image.png)
+            DESC
+          end
+
+          let(:email_raw) do
+            <<~EMAIL
+            From: #{author_email}
+            To: #{to_address}
+            Cc: #{cc_addresses}
+            Message-ID: <#{message_id}>
+            Subject: #{expected_subject}
+
+            Issue description
+            EMAIL
+          end
+
+          # Author email plus 5 from Cc
+          let(:issue_email_participants_count) { 6 }
+
+          it_behaves_like 'a new issue request'
+        end
 
         context 'when no CC header is present' do
           let(:email_raw) do
@@ -462,7 +497,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
         end
 
-        shared_examples 'a handler that does not verify the custom email' do |error_identifier|
+        shared_examples 'a handler that does not verify the custom email' do
           it 'does not verify the custom email address' do
             # project has no owner, so only notify verification triggerer
             expect(Notify).to receive(:service_desk_verification_result_email).once
@@ -477,20 +512,32 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
         end
 
-        shared_examples 'a handler that verifies Service Desk custom email verification emails' do
+        context 'when using incoming_email address' do
+          before do
+            stub_incoming_email_setting(enabled: true, address: 'support+%{key}@example.com')
+          end
+
           it_behaves_like 'an early exiting handler'
 
           context 'with valid service desk settings' do
             let_it_be(:user) { create(:user) }
+            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
 
-            let!(:settings) { create(:service_desk_setting, project: project, custom_email: 'custom-support-email@example.com') }
-            let!(:verification) { create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user) }
+            let_it_be_with_reload(:settings) do
+              create(:service_desk_setting, project: project, custom_email: 'custom-support-email@example.com')
+            end
+
+            let_it_be_with_reload(:verification) do
+              create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user)
+            end
 
             let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
 
-            before do
+            before_all do
               project.add_maintainer(user)
+            end
 
+            before do
               allow(message_delivery).to receive(:deliver_later)
               allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
             end
@@ -521,7 +568,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
                 verification.update!(token: 'XXXXXXXXXXXX')
               end
 
-              it_behaves_like 'a handler that does not verify the custom email', 'incorrect_token'
+              it_behaves_like 'a handler that does not verify the custom email' do
+                let(:error_identifier) { 'incorrect_token' }
+              end
             end
 
             context 'and verification email ingested too late' do
@@ -529,7 +578,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
                 verification.update!(triggered_at: ServiceDesk::CustomEmailVerification::TIMEFRAME.ago)
               end
 
-              it_behaves_like 'a handler that does not verify the custom email', 'mail_not_received_within_timeframe'
+              it_behaves_like 'a handler that does not verify the custom email' do
+                let(:error_identifier) { 'mail_not_received_within_timeframe' }
+              end
             end
 
             context 'and from header differs from custom email address' do
@@ -537,27 +588,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
                 settings.update!(custom_email: 'different-from@example.com')
               end
 
-              it_behaves_like 'a handler that does not verify the custom email', 'incorrect_from'
+              it_behaves_like 'a handler that does not verify the custom email' do
+                let(:error_identifier) { 'incorrect_from' }
+              end
             end
           end
-
-          context 'when service_desk_custom_email feature flag is disabled' do
-            before do
-              stub_feature_flags(service_desk_custom_email: false)
-            end
-
-            it 'does not trigger the verification process and adds an issue instead' do
-              expect { receiver.execute }.to change { Issue.count }.by(1)
-            end
-          end
-        end
-
-        context 'when using incoming_email address' do
-          before do
-            stub_incoming_email_setting(enabled: true, address: 'support+%{key}@example.com')
-          end
-
-          it_behaves_like 'a handler that verifies Service Desk custom email verification emails'
         end
 
         context 'when using service_desk_email address' do
@@ -567,7 +602,35 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
           end
 
-          it_behaves_like 'a handler that verifies Service Desk custom email verification emails'
+          it_behaves_like 'an early exiting handler'
+
+          context 'with valid service desk settings' do
+            let_it_be(:user) { create(:user) }
+            let_it_be(:credentials) { create(:service_desk_custom_email_credential, project: project) }
+
+            let_it_be_with_reload(:settings) do
+              create(:service_desk_setting, project: project, custom_email: 'custom-support-email@example.com')
+            end
+
+            let_it_be_with_reload(:verification) do
+              create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user)
+            end
+
+            let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
+
+            before_all do
+              project.add_maintainer(user)
+            end
+
+            before do
+              allow(message_delivery).to receive(:deliver_later)
+              allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
+            end
+
+            it_behaves_like 'a handler that does not verify the custom email' do
+              let(:error_identifier) { 'incorrect_forwarding_target' }
+            end
+          end
         end
       end
     end

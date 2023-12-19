@@ -453,10 +453,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       before do
         # We only need a backup of the repositories for this test
         stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,terraform_state,registry')
-        stub_storage_settings(second_storage_name => {
-                                'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
-                                'path' => TestEnv::SECOND_STORAGE_PATH
-                              })
+        stub_storage_settings(second_storage_name => {})
       end
 
       shared_examples 'includes repositories in all repository storages' do

@@ -1,12 +1,26 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GraphQL API style guide
 
 This document outlines the style guide for the GitLab [GraphQL API](../api/graphql/index.md).
+
+## Vision
+
+We want the GraphQL API to be the **primary** means of interacting
+programmatically with GitLab. To achieve this, it needs full coverage - anything
+possible in the REST API should also be possible in the GraphQL API.
+
+To help us meet this vision, the frontend should use GraphQL in preference to
+the REST API for new features.
+The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning).
+
+There are no plans to deprecate the REST API. To reduce the technical burden of
+supporting two APIs in parallel, they should share implementations as much as
+possible.
 
 ## How GitLab implements GraphQL
 
@@ -44,7 +58,7 @@ For example, the one for [GitLab.com](https://gitlab.com/-/graphql-explorer).
 
 The GraphQL framework has some specific gotchas to be aware of, and domain expertise is required to ensure they are satisfied.
 
-If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
+If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, have a look at
 [our GraphQL review guide](graphql_guide/reviewing.md).
 
 ## Reading GraphQL logs
@@ -78,7 +92,7 @@ a connection.
 
 ### Max complexity
 
-Complexity is explained [on our client-facing API page](../api/graphql/index.md#max-query-complexity).
+Complexity is explained [on our client-facing API page](../api/graphql/index.md#maximum-query-complexity).
 
 Fields default to adding `1` to a query's complexity score, but developers can
 [specify a custom complexity](#field-complexity) when defining a field.
@@ -174,8 +188,8 @@ See the [deprecating schema items](#deprecating-schema-items) section for how to
 
 ### Breaking change exemptions
 
-Schema items [marked as alpha](#mark-schema-items-as-alpha) are exempt from the deprecation process,
-and can be removed or changed at any time without notice.
+See the
+[GraphQL API breaking change exemptions documentation](../api/graphql/index.md#breaking-change-exemptions).
 
 ## Global IDs
 
@@ -190,6 +204,7 @@ See also:
 - [Exposing Global IDs](#exposing-global-ids).
 - [Mutation arguments](#object-identifier-arguments).
 - [Deprecating Global IDs](#deprecate-global-ids).
+- [Customer-facing Global ID documentation](../api/graphql/index.md#global-ids).
 
 We have a custom scalar type (`Types::GlobalIDType`) which should be used as the
 type of input and output arguments when the value is a `GlobalID`. The benefits
@@ -204,6 +219,35 @@ Consider using this type for all new arguments and result types. Remember that
 it is perfectly possible to parameterize this type with a concern or a
 supertype, if you want to accept a wider range of objects (such as
 `GlobalIDType[Issuable]` vs `GlobalIDType[Issue]`).
+
+## Optimizations
+
+By default, GraphQL tends to introduce N+1 problems unless you actively try to minimize them.
+
+For stability and scalability, you must ensure that our queries do not suffer from N+1
+performance issues.
+
+The following are a list of tools to help you to optimize your GraphQL code:
+
+- [Look ahead](#look-ahead) allows you to preload data based on which fields are selected in the query.
+- [Batch loading](graphql_guide/batchloader.md) allows you batch database queries together to be executed in one statement.
+- [`BatchModelLoader`](graphql_guide/batchloader.md#the-batchmodelloader) is the recommended way to lookup
+  records by ID to leverage batch loading.
+- [`before_connection_authorization`](#before_connection_authorization) allows you to address N+1 problems
+  specific to [type authorization](#authorization) permission checks.
+- [Limit maximum field call count](#limit-maximum-field-call-count) allows you to restrict how many times
+  a field can return data where optimizations cannot be improved.
+
+## How to see N+1 problems in development
+
+N+1 problems can be discovered during development of a feature by:
+
+- Tailing `development.log` while you execute GraphQL queries that return collections of data.
+  [Bullet](../development/profiling.md#bullet) may help.
+- Observing the [performance bar](../administration/monitoring/performance/performance_bar.md) if
+  executing queries in the GitLab UI.
+- Adding a [request spec](#testing-tips-and-tricks) that asserts there are no (or limited) N+1
+  problems with the feature.
 
 ## Types
 
@@ -447,7 +491,7 @@ field :tags,
 ### Field complexity
 
 The GitLab GraphQL API uses a _complexity_ score to limit performing overly complex queries.
-Complexity is described in [our client documentation](../api/graphql/index.md#max-query-complexity) on the topic.
+Complexity is described in [our client documentation](../api/graphql/index.md#maximum-query-complexity) on the topic.
 
 Complexity limits are defined in [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb).
 
@@ -806,9 +850,10 @@ The documentation mentions that the old Global ID style is now deprecated.
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
 [Alpha](../policy/experiment-beta-support.md#experiment).
 
-An item marked as Alpha is [exempt from the deprecation process](#breaking-change-exemptions) and can be removed
-at any time without notice. Mark an item as Alpha when it is
-subject to change and not ready for public use.
+An item marked as Alpha is
+[exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be
+removed at any time without notice. Mark an item as Alpha when it is subject to
+change and not ready for public use.
 
 NOTE:
 Only mark new items as Alpha. Never mark existing items
@@ -833,8 +878,8 @@ mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.
 
 Alpha GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An Alpha item
 appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
-Alpha field in [GraphiQL](../api/graphql/index.md#graphiql). However, be aware that the GraphiQL
-autocomplete editor doesn't suggest deprecated fields.
+Alpha field in the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) (GraphiQL).
+However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
 
 The item shows as Alpha in our generated GraphQL documentation and its GraphQL schema description.
 
@@ -1091,7 +1136,7 @@ To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
 
 Arguments can be defined in the resolver in the same way as in a mutation.
-See the [Mutation arguments](#object-identifier-arguments) section.
+See the [Arguments](#arguments) section.
 
 To limit the amount of queries performed, we can use [BatchLoader](graphql_guide/batchloader.md).
 
@@ -1260,32 +1305,9 @@ field :jobs, resolver: JobsResolver, description: 'All jobs.'
 field :job, resolver: JobsResolver.single, description: 'A single job.'
 ```
 
-### Correct use of `Resolver#ready?`
+### Optimizing Resolvers
 
-Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
-We can use `#ready?` to perform set-up, validation or early-return without invoking `#resolve`.
-
-Good reasons to use `#ready?` include:
-
-- validating mutually exclusive arguments (see [validating arguments](#validating-arguments))
-- Returning `Relation.none` if we know before-hand that no results are possible
-- Performing setup such as initializing instance variables (although consider lazily initialized methods for this)
-
-Implementations of [`Resolver#ready?(**args)`](https://graphql-ruby.org/api-doc/1.10.9/GraphQL/Schema/Resolver#ready%3F-instance_method) should
-return `(Boolean, early_return_data)` as follows:
-
-```ruby
-def ready?(**args)
-  [false, 'have this instead']
-end
-```
-
-For this reason, whenever you call a resolver (mainly in tests - as framework
-abstractions Resolvers should not be considered re-usable, finders are to be
-preferred), remember to call the `ready?` method and check the boolean flag
-before calling `resolve`! An example can be seen in our [`GraphqlHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
-
-### Look-Ahead
+#### Look-Ahead
 
 The full query is known in advance during execution, which means we can make use
 of [lookahead](https://graphql-ruby.org/queries/lookahead.html) to optimize our
@@ -1367,6 +1389,54 @@ end
 
 For an example of real world use,
 see [`ResolvesMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/concerns/resolves_merge_requests.rb).
+
+#### `before_connection_authorization`
+
+A `before_connection_authorization` hook can help resolvers eliminate N+1 problems that originate from
+[type authorization](graphql_guide/authorization.md#type-authorization) permission checks.
+
+The `before_connection_authorization` method receives the resolved nodes and the current user. In
+the block, use `ActiveRecord::Associations::Preloader` or a `Preloaders::` class to preload data
+for the type authorization check.
+
+Example:
+
+```ruby
+class LabelsResolver < BaseResolver
+  before_connection_authorization do |labels, current_user|
+    Preloaders::LabelsPreloader.new(labels, current_user).preload_all
+  end
+end
+```
+
+#### BatchLoading
+
+See [GraphQL BatchLoader](graphql_guide/batchloader.md).
+
+### Correct use of `Resolver#ready?`
+
+Resolvers have two public API methods as part of the framework: `#ready?(**args)` and `#resolve(**args)`.
+We can use `#ready?` to perform set-up, validation, or early-return without invoking `#resolve`.
+
+Good reasons to use `#ready?` include:
+
+- Validating mutually exclusive arguments.
+- Returning `Relation.none` if we know before-hand that no results are possible.
+- Performing setup such as initializing instance variables (although consider lazily initialized methods for this).
+
+Implementations of [`Resolver#ready?(**args)`](https://graphql-ruby.org/api-doc/1.10.9/GraphQL/Schema/Resolver#ready%3F-instance_method) should
+return `(Boolean, early_return_data)` as follows:
+
+```ruby
+def ready?(**args)
+  [false, 'have this instead']
+end
+```
+
+For this reason, whenever you call a resolver (mainly in tests because framework
+abstractions Resolvers should not be considered re-usable, finders are to be
+preferred), remember to call the `ready?` method and check the boolean flag
+before calling `resolve`! An example can be seen in our [`GraphqlHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/2d395f32d2efbb713f7bc861f96147a2a67e92f2/spec/support/helpers/graphql_helpers.rb#L20-27).
 
 ### Negated arguments
 
@@ -1554,85 +1624,6 @@ Examples:
 - `NoteDelete`
 
 If you need advice for mutation naming, canvass the Slack `#graphql` channel for feedback.
-
-### Arguments
-
-Arguments for a mutation are defined using `argument`.
-
-Example:
-
-```ruby
-argument :my_arg, GraphQL::Types::String,
-         required: true,
-         description: "A description of the argument."
-```
-
-#### Nullability
-
-Arguments can be marked as `required: true` which means the value must be present and not `null`.
-If a required argument's value can be `null`, use the `required: :nullable` declaration.
-
-Example:
-
-```ruby
-argument :due_date,
-         Types::TimeType,
-         required: :nullable,
-         description: 'The desired due date for the issue. Due date is removed if null.'
-```
-
-In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
-This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
-
-```ruby
-{ due_date: null } # => OK
-{ due_date: "2025-01-10" } # => OK
-{  } # => invalid (not given)
-```
-
-#### Keywords
-
-Each GraphQL `argument` defined is passed to the `#resolve` method
-of a mutation as keyword arguments.
-
-Example:
-
-```ruby
-def resolve(my_arg:)
-  # Perform mutation ...
-end
-```
-
-#### Input Types
-
-`graphql-ruby` wraps up arguments into an
-[input type](https://graphql.org/learn/schema/#input-types).
-
-For example, the
-[`mergeRequestSetDraft` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_draft.rb)
-defines these arguments (some
-[through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
-
-```ruby
-argument :project_path, GraphQL::Types::ID,
-         required: true,
-         description: "The project the merge request to mutate is in."
-
-argument :iid, GraphQL::Types::String,
-         required: true,
-         description: "The IID of the merge request to mutate."
-
-argument :draft,
-         GraphQL::Types::Boolean,
-         required: false,
-         description: <<~DESC
-           Whether or not to set the merge request as a draft.
-         DESC
-```
-
-These arguments automatically generate an input type called
-`MergeRequestSetDraftInput` with the 3 arguments we specified and the
-`clientMutationId`.
 
 ### Object identifier arguments
 
@@ -1947,36 +1938,110 @@ code so that we have a single source of truth and we do not trigger a subscripti
 
 For more information, see [GraphQL pagination](graphql_guide/pagination.md).
 
-## Validating arguments
+## Arguments
 
-For validations of single arguments, use the
-[`prepare` option](https://github.com/rmosolgo/graphql-ruby/blob/master/guides/fields/arguments.md)
-as usual.
-
-Sometimes a mutation or resolver may accept a number of optional
-arguments, but we still want to validate that at least one of the optional
-arguments is provided. In this situation, consider using the `#ready?`
-method in your mutation or resolver to provide the validation. The
-`#ready?` method is called before any work is done in the
-`#resolve` method.
+[Arguments](https://graphql-ruby.org/fields/arguments.html) for a resolver or mutation are defined using `argument`.
 
 Example:
 
 ```ruby
-def ready?(**args)
-  if args.values_at(:body, :position).compact.blank?
-    raise Gitlab::Graphql::Errors::ArgumentError,
-          'body or position arguments are required'
-  end
+argument :my_arg, GraphQL::Types::String,
+         required: true,
+         description: "A description of the argument."
+```
 
-  # Always remember to call `#super`
-  super
+### Nullability
+
+Arguments can be marked as `required: true` which means the value must be present and not `null`.
+If a required argument's value can be `null`, use the `required: :nullable` declaration.
+
+Example:
+
+```ruby
+argument :due_date,
+         Types::TimeType,
+         required: :nullable,
+         description: 'The desired due date for the issue. Due date is removed if null.'
+```
+
+In the above example, the `due_date` argument must be given, but unlike the GraphQL spec, the value can be `null`.
+This allows 'unsetting' the due date in a single mutation rather than creating a new mutation for removing the due date.
+
+```ruby
+{ due_date: null } # => OK
+{ due_date: "2025-01-10" } # => OK
+{  } # => invalid (not given)
+```
+
+#### Nullability and required: false
+
+If an argument is marked `required: false` the client is permitted to send `null` as a value.
+Often this is undesirable.
+
+If an argument is optional but `null` is not an allowed value, use validation to ensure that passing `null` returns an error:
+
+```ruby
+argument :name, GraphQL::Types::String,
+         required: false,
+         validates: { allow_null: false }
+```
+
+Alternatively, if you wish to allow `null` when it is not an allowed value, you can replace it with a default value:
+
+```ruby
+argument :name, GraphQL::Types::String,
+         required: false,
+         default_value: "No Name Provided",
+         replace_null_with_default: true
+```
+
+See [Validation](https://graphql-ruby.org/fields/validation.html),
+[Nullability](https://graphql-ruby.org/fields/arguments.html#nullability) and
+[Default Values](https://graphql-ruby.org/fields/arguments.html#default-values) for more details.
+
+### Keywords
+
+Each GraphQL `argument` defined is passed to the `#resolve` method
+of a mutation as keyword arguments.
+
+Example:
+
+```ruby
+def resolve(my_arg:)
+  # Perform mutation ...
 end
 ```
 
-In the future this may be able to be done using `OneOf Input Objects` if
-[this RFC](https://github.com/graphql/graphql-spec/pull/825)
-is merged.
+### Input Types
+
+`graphql-ruby` wraps up arguments into an
+[input type](https://graphql.org/learn/schema/#input-types).
+
+For example, the
+[`mergeRequestSetDraft` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/set_draft.rb)
+defines these arguments (some
+[through inheritance](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/merge_requests/base.rb)):
+
+```ruby
+argument :project_path, GraphQL::Types::ID,
+         required: true,
+         description: "The project the merge request to mutate is in."
+
+argument :iid, GraphQL::Types::String,
+         required: true,
+         description: "The IID of the merge request to mutate."
+
+argument :draft,
+         GraphQL::Types::Boolean,
+         required: false,
+         description: <<~DESC
+           Whether or not to set the merge request as a draft.
+         DESC
+```
+
+These arguments automatically generate an input type called
+`MergeRequestSetDraftInput` with the 3 arguments we specified and the
+`clientMutationId`.
 
 ## GitLab custom scalars
 
@@ -2063,7 +2128,7 @@ additional items:
 Integration tests can also verify the following items, because they invoke the
 full stack:
 
-- An argument or scalar's [`prepare`](#validating-arguments) applies correctly.
+- An argument or scalar's validations apply correctly.
 - Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
 - An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
 - Objects resolve successfully, and there are no N+1 issues.
@@ -2213,101 +2278,6 @@ end
   in `app/graphql/types/ci/pipeline_type.rb` should be stored in
   `spec/requests/api/graphql/ci/pipeline_spec.rb` regardless of the query being
   used to fetch the pipeline data.
-
-- There can be possible cyclic dependencies in our GraphQL types.
-  See [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974#issuecomment-1084444214)
-  and [Fix unresolved name due to cyclic definition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84202/diffs#diff-content-32d14251082fd45412e1fdbf5820e62d157e70d2).
-
-  In particular, this can happen with `connection_type`. Typically we might use the following in a resolver:
-
-  ```ruby
-  type Types::IssueType.connection_type, null: true
-  ```
-
-  However this might cause a cyclic definition, which can result in errors like:
-
-  ```ruby
-  NameError: uninitialized constant Resolvers::GroupIssuesResolver
-
-  or
-
-  GraphQL::Pagination::Connections::ImplementationMissingError
-  ```
-
-  though you might see something different.
-
-  To fix this, we must create a new file that encapsulates the connection type,
-  and then reference it using double quotes. This gives a delayed resolution,
-  and the proper connection type. For example:
-
-  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
-  originally contained the line
-
-  ```ruby
-  type Types::IssueType.connection_type, null: true
-  ```
-
-  Running the specs locally for this file caused the
-  `NameError: uninitialized constant Resolvers::GroupIssuesResolver` error.
-
-  The fix was to create a new file, [app/graphql/types/issue_connection.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection.rb) with the
-  line:
-
-  ```ruby
-  Types::IssueConnection = Types::IssueType.connection_type
-  ```
-
-  and in [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
-  we use the line
-
-  ```ruby
-  type "Types::IssueConnection", null: true
-  ```
-
-  Only use this style if you are having spec failures. We should not typically
-  use this pattern. This issue should disappear after we've upgraded to `2.x`.
-
-- There can be instances where a spec fails because the class is not loaded correctly.
-  It relates to the
-  [circular dependencies problem](https://github.com/rmosolgo/graphql-ruby/issues/1929) and
-  [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974).
-
-  Unfortunately, the errors generated don't really indicate what the problem is. For example,
-  remove the quotes from the `Rspec.describe` in
-  [ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb).
-  Then run `rspec ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb`.
-
-  This generates errors with the expectations. For example:
-
-  ```ruby
-  1) Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver#resolve user is authorized filtering the results when given an array of project IDs finds the filtered compliance violations
-  Failure/Error: expect(subject).to contain_exactly(compliance_violation)
-
-     expected collection contained:  [#<MergeRequests::ComplianceViolation id: 4, violating_user_id: 26, merge_request_id: 4, reason: "approved_by_committer", severity_level: "low">]
-     actual collection contained:    [#<MergeRequests::ComplianceViolation id: 4, violating_user_id: 26, merge_request_id: 4, reason: "app...er_id: 27, merge_request_id: 5, reason: "approved_by_merge_request_author", severity_level: "high">]
-     the extra elements were:        [#<MergeRequests::ComplianceViolation id: 5, violating_user_id: 27, merge_request_id: 5, reason: "approved_by_merge_request_author", severity_level: "high">]
-  # ./ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb:55:in `block (6 levels) in <top (required)>'
-  ```
-
-  However, this is not a case of the wrong result being generated, it's because of the loading order
-  of the `ComplianceViolationResolver` class.
-
-  The only way we've found to fix this is by quoting the class name in the spec. For example, changing
-
-  ```ruby
-  RSpec.describe Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver do
-  ```
-
-  into:
-
-  ```ruby
-  RSpec.describe 'Resolvers::ComplianceManagement::MergeRequests::ComplianceViolationResolver' do
-  ```
-
-  See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87295#note_946174036) for some discussion.
-
-  Only use this style if you are having spec failures. We should not typically use this pattern.
-  This issue may disappear after we've upgraded to `2.x`.
 
 - When testing resolvers using `GraphqlHelpers#resolve`, arguments for the resolver can be handled two ways.
 

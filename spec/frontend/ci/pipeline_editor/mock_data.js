@@ -22,18 +22,17 @@ export const commonOptions = {
   usesExternalConfig: 'false',
   validateTabIllustrationPath: 'illustrations/tab',
   ymlHelpPagePath: 'help/ci/yml',
-  aiChatAvailable: 'true',
 };
 
 export const editorDatasetOptions = {
   initialBranchName: 'production',
   pipelineEtag: 'pipelineEtag',
+  ciCatalogPath: '/explore/catalog',
   ...commonOptions,
 };
 
 export const expectedInjectValues = {
   ...commonOptions,
-  aiChatAvailable: true,
   usesExternalConfig: false,
   totalBranches: 10,
 };

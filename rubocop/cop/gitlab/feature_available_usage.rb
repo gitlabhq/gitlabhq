@@ -29,6 +29,7 @@ module RuboCop
           releases
           infrastructure
           model_experiments
+          model_registry
         ].freeze
         EE_FEATURES = %i[requirements].freeze
         ALL_FEATURES = (FEATURES + EE_FEATURES).freeze

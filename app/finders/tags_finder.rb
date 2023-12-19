@@ -8,8 +8,9 @@ class TagsFinder < GitRefsFinder
              repository.tags_sorted_by(sort)
            end
 
-    by_search(tags)
-
+    by_search(tags).tap do |records|
+      set_next_cursor(records) if gitaly_pagination
+    end
   rescue ArgumentError => e
     raise Gitlab::Git::InvalidPageToken, "Invalid page token: #{page_token}" if e.message.include?('page token')
 

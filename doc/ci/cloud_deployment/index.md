@@ -1,8 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Deploy to AWS from GitLab CI/CD **(FREE ALL)**
@@ -61,7 +60,7 @@ deploy:
 
 GitLab provides a Docker image that includes the AWS CLI:
 
-- Images are hosted in the GitLab Container Registry. The latest image is
+- Images are hosted in the GitLab container registry. The latest image is
   `registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest`.
 - [Images are stored in a GitLab repository](https://gitlab.com/gitlab-org/cloud-deploy/-/tree/master/aws).
 
@@ -102,7 +101,7 @@ To deploy to your ECS cluster:
    | `CI_AWS_ECS_CLUSTER`           | The name of the AWS ECS cluster that you're targeting for your deployments. |
    | `CI_AWS_ECS_SERVICE`           | The name of the targeted service tied to your AWS ECS cluster. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
    | `CI_AWS_ECS_TASK_DEFINITION`   | If the task definition is in ECS, the name of the task definition tied to the service. |
-   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the filename, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
+   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the file name, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
 
    WARNING:
    If you define both `CI_AWS_ECS_TASK_DEFINITION_FILE` and `CI_AWS_ECS_TASK_DEFINITION`,
@@ -120,7 +119,7 @@ To deploy to your ECS cluster:
 
 1. Commit and push your updated `.gitlab-ci.yml` to your project's repository.
 
-Your application Docker image is rebuilt and pushed to the GitLab Container Registry.
+Your application Docker image is rebuilt and pushed to the GitLab container registry.
 If your image is located in a private registry, make sure your task definition is
 [configured with a `repositoryCredentials` attribute](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html).
 

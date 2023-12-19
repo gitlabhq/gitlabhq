@@ -38,6 +38,26 @@ RSpec.describe 'Destroying multiple packages', feature_category: :package_regist
       end
 
       it_behaves_like 'returning response status', :success
+
+      context 'when npm package' do
+        let_it_be_with_reload(:packages1) { create_list(:npm_package, 3, project: project1, name: 'test-package-1') }
+        let_it_be_with_reload(:packages2) { create_list(:npm_package, 2, project: project2, name: 'test-package-2') }
+
+        it 'enqueues the worker to sync a metadata cache' do
+          arguments = []
+
+          expect(Packages::Npm::CreateMetadataCacheWorker)
+            .to receive(:bulk_perform_async_with_contexts).and_wrap_original do |original_method, *args|
+            packages = args.first
+            arguments = packages.map(&args.second[:arguments_proc]).uniq
+            original_method.call(*args)
+          end
+
+          mutation_request
+
+          expect(arguments).to contain_exactly([project1.id, 'test-package-1'], [project2.id, 'test-package-2'])
+        end
+      end
     end
 
     shared_examples 'denying the mutation request' do

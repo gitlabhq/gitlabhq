@@ -5,7 +5,12 @@ require 'spec_helper'
 RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops do
   let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, :with_artifact, name: 'candidate0') }
   let_it_be(:candidate2) do
-    create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
+    create(:ml_candidates, experiment: candidate.experiment, name: 'candidate2', project: candidate.project)
+  end
+
+  let_it_be(:existing_model) { create(:ml_models, project: candidate2.project) }
+  let_it_be(:existing_model_version) do
+    create(:ml_model_versions, model: existing_model, candidate: candidate2)
   end
 
   let(:project) { candidate.project }
@@ -38,8 +43,8 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   describe 'validation' do
     let_it_be(:model) { create(:ml_models, project: candidate.project) }
-    let_it_be(:model_version1) { create(:ml_model_versions, model: model) }
-    let_it_be(:model_version2) { create(:ml_model_versions, model: model) }
+    let_it_be(:model_version1) { create(:ml_model_versions, model: model, candidate: nil) }
+    let_it_be(:model_version2) { create(:ml_model_versions, model: model, candidate: nil) }
     let_it_be(:validation_candidate) do
       create(:ml_candidates, model_version: model_version1, project: candidate.project)
     end
@@ -231,6 +236,14 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     end
   end
 
+  describe '#without_model_version' do
+    subject { described_class.without_model_version }
+
+    it 'finds only candidates without model version' do
+      expect(subject).to match_array([candidate])
+    end
+  end
+
   describe 'from_ci?' do
     subject { candidate }
 
@@ -272,8 +285,8 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
   context 'with loose foreign key on ml_candidates.ci_build_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:ci_build) }
-      let!(:model) { create(:ml_candidates, ci_build: parent) }
+      let_it_be(:parent) { create(:ci_build) }
+      let_it_be(:model) { create(:ml_candidates, ci_build: parent) }
     end
   end
 end

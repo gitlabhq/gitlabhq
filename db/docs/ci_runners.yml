@@ -4,7 +4,7 @@ classes:
 - Ci::Runner
 feature_categories:
 - runner
-- runner_fleet
+- fleet_visibility
 - runner_saas
 description: Registered CI runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62

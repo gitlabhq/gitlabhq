@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Issues workflow
@@ -27,7 +26,7 @@ Do **not** create publicly viewable issues for suspected security vulnerabilitie
 
 ### Feature proposals
 
-To create a feature proposal, open an issue in the issue tracker using the 
+To create a feature proposal, open an issue in the issue tracker using the
 [**Feature Proposal - detailed** issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed).
 
 In order to help track feature proposals, we use the
@@ -35,7 +34,7 @@ In order to help track feature proposals, we use the
 Users that are not members of the project cannot add labels via the UI.
 Instead, use [reactive label commands](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#reactive-label-and-unlabel-commands).
 
-Please keep feature proposals as small and simple as possible, complex ones
+Keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
 For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
@@ -78,7 +77,7 @@ You are very welcome to help the GitLab team triage issues.
 
 The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
-on those issues. Please select someone with relevant experience from the
+on those issues. Select someone with relevant experience from the
 [GitLab team](https://about.gitlab.com/company/team/).
 If there is nobody mentioned with that expertise, look in the commit history for
 the affected files to find someone.
@@ -121,7 +120,7 @@ with a reference to an issue describing the regression, and then to update that
 note with a reference to the merge request that fixes it as it becomes available.
 
 If you're a contributor who doesn't have the required permissions to update
-other users' notes, please post a new note with a reference to both the issue
+other users' notes, post a new note with a reference to both the issue
 and the merge request.
 
 The release manager will

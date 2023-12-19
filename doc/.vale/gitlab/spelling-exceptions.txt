@@ -177,6 +177,7 @@ Codecov
 codenames
 Codepen
 CodeSandbox
+Codey
 Cognito
 Coinbase
 colocate
@@ -883,7 +884,6 @@ sharded
 sharding
 SHAs
 shfmt
-Shimo
 Shippo
 Shopify
 Sidekiq

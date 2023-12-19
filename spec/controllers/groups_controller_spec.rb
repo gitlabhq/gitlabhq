@@ -251,7 +251,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
               post :create, params: { group: { parent_id: group.id, path: 'subgroup' } }
 
               expect(response).to be_redirect
-              expect(response.body).to match(%r{http://test.host/#{group.path}/subgroup})
+              expect(response.location).to eq("http://test.host/#{group.path}/subgroup")
             end
           end
 

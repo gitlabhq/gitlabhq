@@ -115,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    codequalityReportAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     endpointCodequality: {
       type: String,
       required: false,
@@ -147,6 +152,7 @@ export default {
       subscribedToVirtualScrollingEvents: false,
       autoScrolled: false,
       activeProject: undefined,
+      hasScannerError: false,
     };
   },
   apollo: {
@@ -157,26 +163,31 @@ export default {
         return { fullPath: this.projectPath, iid: this.iid };
       },
       skip() {
-        const codeQualityBoolean = Boolean(this.endpointCodequality);
+        if (this.hasScannerError) {
+          return true;
+        }
 
-        return !this.sastReportsInInlineDiff || (!codeQualityBoolean && !this.sastReportAvailable);
+        return (
+          !this.sastReportsInInlineDiff ||
+          (!this.codequalityReportAvailable && !this.sastReportAvailable)
+        );
       },
       update(data) {
-        const codeQualityBoolean = Boolean(this.endpointCodequality);
         const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
 
         this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
-          (!codeQualityBoolean || codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
+          (!this.codequalityReportAvailable ||
+            codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
         ) {
-          this.getMRCodequalityAndSecurityReportStopPolling(
-            this.$apollo.queries.getMRCodequalityAndSecurityReports,
-          );
+          this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }
 
         if (sastReport?.status === FINDINGS_STATUS_ERROR && this.sastReportAvailable) {
           this.fetchScannerFindingsError();
+
+          this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }
 
         if (codequalityReportsComparer?.report?.newErrors) {
@@ -192,6 +203,7 @@ export default {
       },
       error() {
         this.fetchScannerFindingsError();
+        this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
       },
     },
   },
@@ -432,8 +444,9 @@ export default {
       this.setDrawer({});
     },
     fetchScannerFindingsError() {
+      this.hasScannerError = true;
       createAlert({
-        message: __('Something went wrong fetching the Scanner Findings. Please try again.'),
+        message: __('Something went wrong fetching the scanner findings. Please try again.'),
       });
     },
     subscribeToEvents() {
@@ -444,9 +457,6 @@ export default {
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
-    },
-    getMRCodequalityAndSecurityReportStopPolling(query) {
-      query.stopPolling();
     },
     unsubscribeFromEvents() {
       diffsEventHub.$off(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);

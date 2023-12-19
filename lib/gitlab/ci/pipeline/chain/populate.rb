@@ -18,8 +18,15 @@ module Gitlab
             pipeline.stages = @command.pipeline_seed.stages
 
             if stage_names.empty?
-              return error('Pipeline will not run for the selected trigger. ' \
-                'The rules configuration prevented any jobs from being added to the pipeline.')
+              if Feature.enabled?(:always_set_pipeline_failure_reason, @command.project)
+                drop_reason = :filtered_by_rules
+              end
+
+              return error(
+                'Pipeline will not run for the selected trigger. ' \
+                  'The rules configuration prevented any jobs from being added to the pipeline.',
+                drop_reason: drop_reason
+              )
             end
 
             if pipeline.invalid?

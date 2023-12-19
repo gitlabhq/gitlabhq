@@ -6,13 +6,13 @@ import {
   GlModal,
   GlButton,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import {
   STATUS_CLOSED,
@@ -132,11 +132,11 @@ describe('HeaderActions component', () => {
   const findDesktopDropdownItems = () =>
     findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
-  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-item"]`);
-  const findNotificationWidget = () => wrapper.find(`[data-testid="notification-toggle"]`);
-  const findLockIssueWidget = () => wrapper.find(`[data-testid="lock-issue-toggle"]`);
-  const findCopyRefenceDropdownItem = () => wrapper.find(`[data-testid="copy-reference"]`);
-  const findCopyEmailItem = () => wrapper.find(`[data-testid="copy-email"]`);
+  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
+  const findNotificationWidget = () => wrapper.findByTestId('notification-toggle');
+  const findLockIssueWidget = () => wrapper.findByTestId('lock-issue-toggle');
+  const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
+  const findCopyEmailItem = () => wrapper.findByTestId('copy-email');
 
   const findModal = () => wrapper.findComponent(GlModal);
 
@@ -176,7 +176,7 @@ describe('HeaderActions component', () => {
       window.gon.current_user_id = 1;
     }
 
-    return shallowMount(HeaderActions, {
+    return shallowMountExtended(HeaderActions, {
       apolloProvider: createMockApollo(handlers),
       store,
       provide: {
@@ -624,6 +624,10 @@ describe('HeaderActions component', () => {
         findCopyRefenceDropdownItem().vm.$emit('action');
 
         expect(toast).toHaveBeenCalledWith('Reference copied');
+      });
+
+      it('contains copy reference class', () => {
+        expect(findCopyRefenceDropdownItem().classes()).toContain('js-copy-reference');
       });
     });
   });

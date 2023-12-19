@@ -1,0 +1,21 @@
+%section.settings.as-security-txt.no-animate#js-security-txt-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('SecurityTxt|Add security contact information')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = s_('SecurityTxt|Configure a %{codeOpen}security.txt%{codeClose} file.').html_safe % {codeOpen: '<code>'.html_safe, codeClose: '</code>'.html_safe}
+      = link_to _('Learn more.'), help_page_path('administration/settings/security_contact_information'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-security-txt-settings'), html: { class: 'fieldset-form', id: 'security-txt-settings' } do |f|
+      = form_errors(@application_setting)
+
+      .form-group
+        = f.label :security_txt_content do
+          = s_("SecurityTxt|Content for security.txt")
+        = f.text_area :security_txt_content, class: 'form-control gl-form-input', rows: 8
+        .form-text.text-muted
+          = s_('SecurityTxt|When present, this will be publicly available at %{codeOpen}https://gitlab.example.com/.well-known/security.txt%{codeClose}. Maximum 2048 characters.').html_safe % {codeOpen: '<code>'.html_safe, codeClose: '</code>'.html_safe}
+      = f.submit _('Save changes'), pajamas_button: true

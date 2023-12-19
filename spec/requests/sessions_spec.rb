@@ -7,6 +7,10 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
   let(:user) { create(:user) }
 
+  it_behaves_like 'Base action controller' do
+    subject(:request) { get new_user_session_path }
+  end
+
   context 'for authentication', :allow_forgery_protection do
     it 'logout does not require a csrf token' do
       login_as(user)
@@ -41,7 +45,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
         post user_session_path(user: { login: user.username, password: user.password })
 
-        expect(response).to redirect_to(activity_group_path(member.source))
+        expect(response).to redirect_to(group_path(member.source))
       end
     end
 

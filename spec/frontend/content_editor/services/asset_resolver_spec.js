@@ -3,6 +3,11 @@ import {
   RESOLVED_ISSUE_HTML,
   RESOLVED_MERGE_REQUEST_HTML,
   RESOLVED_EPIC_HTML,
+  RESOLVED_LABEL_HTML,
+  RESOLVED_SNIPPET_HTML,
+  RESOLVED_MILESTONE_HTML,
+  RESOLVED_USER_HTML,
+  RESOLVED_VULNERABILITY_HTML,
 } from '../test_constants';
 
 describe('content_editor/services/asset_resolver', () => {
@@ -48,6 +53,32 @@ describe('content_editor/services/asset_resolver', () => {
       text: '!1 (merged)',
     };
 
+    const resolvedLabel = {
+      backgroundColor: 'rgb(230, 84, 49)',
+      href: '/gitlab-org/gitlab-shell/-/issues?label_name=Aquanix',
+      text: 'Aquanix',
+    };
+
+    const resolvedSnippet = {
+      href: '/gitlab-org/gitlab-shell/-/snippets/25',
+      text: '$25',
+    };
+
+    const resolvedMilestone = {
+      href: '/gitlab-org/gitlab-shell/-/milestones/5',
+      text: '%v4.0',
+    };
+
+    const resolvedUser = {
+      href: '/root',
+      text: '@root',
+    };
+
+    const resolvedVulnerability = {
+      href: '/gitlab-org/gitlab-shell/-/security/vulnerabilities/1',
+      text: '[vulnerability:1]',
+    };
+
     describe.each`
       referenceType      | referenceId | sentMarkdown     | returnedHtml                   | resolvedReference
       ${'issue'}         | ${'#1'}     | ${'#1 #1+ #1+s'} | ${RESOLVED_ISSUE_HTML}         | ${resolvedIssue}
@@ -59,7 +90,9 @@ describe('content_editor/services/asset_resolver', () => {
         it(`resolves ${referenceType} reference to href, text, title and summary`, async () => {
           renderMarkdown.mockResolvedValue(returnedHtml);
 
-          expect(await assetResolver.resolveReference(referenceId)).toEqual(resolvedReference);
+          expect(await assetResolver.resolveReference(referenceId)).toMatchObject(
+            resolvedReference,
+          );
         });
 
         it.each`
@@ -70,6 +103,26 @@ describe('content_editor/services/asset_resolver', () => {
         `('strips suffix ("$suffix") before resolving', ({ suffix }) => {
           assetResolver.resolveReference(referenceId + suffix);
           expect(renderMarkdown).toHaveBeenCalledWith(sentMarkdown);
+        });
+      },
+    );
+
+    describe.each`
+      referenceType      | referenceId            | returnedHtml                   | resolvedReference
+      ${'label'}         | ${'~Aquanix'}          | ${RESOLVED_LABEL_HTML}         | ${resolvedLabel}
+      ${'snippet'}       | ${'$25'}               | ${RESOLVED_SNIPPET_HTML}       | ${resolvedSnippet}
+      ${'milestone'}     | ${'%v4.0'}             | ${RESOLVED_MILESTONE_HTML}     | ${resolvedMilestone}
+      ${'user'}          | ${'@root'}             | ${RESOLVED_USER_HTML}          | ${resolvedUser}
+      ${'vulnerability'} | ${'[vulnerability:1]'} | ${RESOLVED_VULNERABILITY_HTML} | ${resolvedVulnerability}
+    `(
+      'for reference type $referenceType',
+      ({ referenceType, referenceId, returnedHtml, resolvedReference }) => {
+        it(`resolves ${referenceType} reference to href, text and additional props (if any)`, async () => {
+          renderMarkdown.mockResolvedValue(returnedHtml);
+
+          expect(await assetResolver.resolveReference(referenceId)).toMatchObject(
+            resolvedReference,
+          );
         });
       },
     );

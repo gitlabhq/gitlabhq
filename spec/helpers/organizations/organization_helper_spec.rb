@@ -94,9 +94,12 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
 
   describe '#home_organization_setting_app_data' do
     it 'returns expected json' do
+      current_user = build_stubbed(:user)
+      allow(helper).to receive(:current_user).and_return(current_user)
+
       expect(Gitlab::Json.parse(helper.home_organization_setting_app_data)).to eq(
         {
-          'initial_selection' => 1
+          'initial_selection' => current_user.user_preference.home_organization_id
         }
       )
     end
@@ -119,10 +122,13 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_user_app_data' do
-    it 'returns expected data object' do
-      expect(helper.organization_user_app_data(organization)).to eq(
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_user_app_data(organization))).to eq(
         {
-          organization_gid: organization.to_global_id
+          'organization_gid' => organization.to_global_id.to_s,
+          'paths' => {
+            'admin_user' => admin_user_path(:id)
+          }
         }
       )
     end

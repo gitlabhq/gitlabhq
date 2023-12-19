@@ -4,10 +4,11 @@ module Pages
   class LookupPath
     include Gitlab::Utils::StrongMemoize
 
-    def initialize(project, trim_prefix: nil, domain: nil)
-      @project = project
+    def initialize(deployment:, domain: nil, trim_prefix: nil)
+      @deployment = deployment
+      @project = deployment.project
       @domain = domain
-      @trim_prefix = trim_prefix || project.full_path
+      @trim_prefix = trim_prefix || @project.full_path
     end
 
     def project_id
@@ -45,11 +46,7 @@ module Pages
     strong_memoize_attr :source
 
     def prefix
-      if url_builder.namespace_pages?
-        '/'
-      else
-        "#{project.full_path.delete_prefix(trim_prefix)}/"
-      end
+      ensure_leading_and_trailing_slash(prefix_value)
     end
     strong_memoize_attr :prefix
 
@@ -73,23 +70,24 @@ module Pages
 
     private
 
-    attr_reader :project, :trim_prefix, :domain
-
-    # project.active_pages_deployments is already loaded from the database,
-    # so selecting from the array to avoid N+1
-    # this will change with when serving multiple versions on
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133261
-    def deployment
-      project
-        .active_pages_deployments
-        .to_a
-        .find { |deployment| deployment.path_prefix.blank? }
-    end
-    strong_memoize_attr :deployment
+    attr_reader :project, :deployment, :trim_prefix, :domain
 
     def url_builder
       Gitlab::Pages::UrlBuilder.new(project)
     end
     strong_memoize_attr :url_builder
+
+    def prefix_value
+      return deployment.path_prefix if url_builder.namespace_pages?
+
+      [project.full_path.delete_prefix(trim_prefix), deployment.path_prefix].compact.join('/')
+    end
+
+    def ensure_leading_and_trailing_slash(value)
+      value
+        .to_s
+        .then { |s| s.start_with?("/") ? s : "/#{s}" }
+        .then { |s| s.end_with?("/") ? s : "#{s}/" }
+    end
   end
 end

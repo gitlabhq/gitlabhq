@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions, mapState } from 'vuex';
 import BoardListHeader from 'ee_else_ce/boards/components/board_list_header.vue';
 import { isListDraggable } from '../boards_util';
 import BoardList from './board_list.vue';
@@ -10,7 +8,6 @@ export default {
     BoardListHeader,
     BoardList,
   },
-  inject: ['isApolloBoard'],
   props: {
     list: {
       type: Object,
@@ -25,48 +22,21 @@ export default {
       type: Object,
       required: true,
     },
-    highlightedListsApollo: {
+    highlightedLists: {
       type: Array,
       required: false,
       default: () => [],
     },
   },
   computed: {
-    ...mapState(['filterParams', 'highlightedLists']),
-    ...mapGetters(['getBoardItemsByList']),
-    highlightedListsToUse() {
-      return this.isApolloBoard ? this.highlightedListsApollo : this.highlightedLists;
-    },
     highlighted() {
-      return this.highlightedListsToUse.includes(this.list.id);
-    },
-    listItems() {
-      return this.isApolloBoard ? [] : this.getBoardItemsByList(this.list.id);
+      return this.highlightedLists.includes(this.list.id);
     },
     isListDraggable() {
       return isListDraggable(this.list);
     },
-    filtersToUse() {
-      return this.isApolloBoard ? this.filters : this.filterParams;
-    },
   },
   watch: {
-    filterParams: {
-      handler() {
-        if (!this.isApolloBoard && this.list.id && !this.list.collapsed) {
-          this.fetchItemsForList({ listId: this.list.id });
-        }
-      },
-      deep: true,
-      immediate: true,
-    },
-    'list.id': {
-      handler(id) {
-        if (!this.isApolloBoard && id) {
-          this.fetchItemsForList({ listId: this.list.id });
-        }
-      },
-    },
     highlighted: {
       handler(highlighted) {
         if (highlighted) {
@@ -77,9 +47,6 @@ export default {
       },
       immediate: true,
     },
-  },
-  methods: {
-    ...mapActions(['fetchItemsForList']),
   },
 };
 </script>
@@ -101,17 +68,11 @@ export default {
     >
       <board-list-header
         :list="list"
-        :filter-params="filtersToUse"
+        :filter-params="filters"
         :board-id="boardId"
         @setActiveList="$emit('setActiveList', $event)"
       />
-      <board-list
-        ref="board-list"
-        :board-id="boardId"
-        :board-items="listItems"
-        :list="list"
-        :filter-params="filtersToUse"
-      />
+      <board-list ref="board-list" :board-id="boardId" :list="list" :filter-params="filters" />
     </div>
   </div>
 </template>

@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # CI/CD pipelines **(FREE ALL)**
@@ -126,7 +125,7 @@ you can filter the pipeline list by:
 pipeline column to display the pipeline ID or the pipeline IID.
 
 If you use VS Code to edit your GitLab CI/CD configuration, the
-[GitLab Workflow VS Code extension](../../user/project/repository/vscode.md) helps you
+[GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md) helps you
 [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
 and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
 
@@ -263,18 +262,11 @@ In the example below, the `production` stage has a job with a manual action:
 
 ![Pipelines example](img/manual_pipeline_v14_2.png)
 
-#### Start multiple manual actions in a stage
+#### Start all manual jobs in a stage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27188) in GitLab 11.11.
-
-Multiple manual actions in a single stage can be started at the same time using the "Play all manual"
-After you select this action, each individual manual action is triggered and refreshed
-to an updated status.
-
-This functionality is only available:
-
-- For users with at least the Developer role.
-- If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
+If a stage contains only manual jobs, you can start all the jobs at the same time
+by selecting **Play all manual** (**{play}**) above the stage. If the stage contains
+non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
 

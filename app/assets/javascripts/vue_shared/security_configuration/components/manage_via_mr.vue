@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { featureToMutationMap } from 'ee_else_ce/security_configuration/components/constants';
+import { featureToMutationMap } from 'ee_else_ce/security_configuration/constants';
 import { parseErrorMessage } from '~/lib/utils/error_message';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { sprintf, s__ } from '~/locale';
@@ -110,7 +110,6 @@ export default {
     :loading="isLoading"
     :variant="variant"
     :category="category"
-    :data-qa-selector="`${feature.type}_mr_button`"
     @click="mutate"
     >{{ $options.i18n.buttonLabel }}</gl-button
   >

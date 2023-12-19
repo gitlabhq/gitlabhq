@@ -40,6 +40,7 @@ export default () => {
     const filePath = `${editBlobForm.data('blobFilename')}`;
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
+    const projectPath = editBlobForm.data('project-path');
     const isMarkdown = editBlobForm.data('is-markdown');
     const previewMarkdownPath = editBlobForm.data('previewMarkdownPath');
     const commitButton = $('.js-commit-button');
@@ -54,6 +55,7 @@ export default () => {
           filePath,
           currentAction,
           projectId,
+          projectPath,
           isMarkdown,
           previewMarkdownPath,
         });

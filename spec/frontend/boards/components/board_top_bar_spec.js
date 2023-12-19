@@ -1,8 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -21,17 +19,10 @@ import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
 import { mockProjectBoardResponse, mockGroupBoardResponse } from '../mock_data';
 
 Vue.use(VueApollo);
-Vue.use(Vuex);
 
 describe('BoardTopBar', () => {
   let wrapper;
   let mockApollo;
-
-  const createStore = () => {
-    return new Vuex.Store({
-      state: {},
-    });
-  };
 
   const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
   const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
@@ -43,14 +34,12 @@ describe('BoardTopBar', () => {
     projectBoardQueryHandler = projectBoardQueryHandlerSuccess,
     groupBoardQueryHandler = groupBoardQueryHandlerSuccess,
   } = {}) => {
-    const store = createStore();
     mockApollo = createMockApollo([
       [projectBoardQuery, projectBoardQueryHandler],
       [groupBoardQuery, groupBoardQueryHandler],
     ]);
 
     wrapper = shallowMount(BoardTopBar, {
-      store,
       apolloProvider: mockApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
@@ -67,7 +56,7 @@ describe('BoardTopBar', () => {
         isIssueBoard: true,
         isEpicBoard: false,
         isGroupBoard: true,
-        isApolloBoard: false,
+        // isApolloBoard: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },
@@ -127,45 +116,41 @@ describe('BoardTopBar', () => {
     });
   });
 
-  describe('Apollo boards', () => {
-    it.each`
-      boardType            | queryHandler                       | notCalledHandler
-      ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-      ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
-    `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
-      createComponent({
-        provide: {
-          boardType,
-          isProjectBoard: boardType === WORKSPACE_PROJECT,
-          isGroupBoard: boardType === WORKSPACE_GROUP,
-          isApolloBoard: true,
-        },
-      });
-
-      await nextTick();
-
-      expect(queryHandler).toHaveBeenCalled();
-      expect(notCalledHandler).not.toHaveBeenCalled();
+  it.each`
+    boardType            | queryHandler                       | notCalledHandler
+    ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+    ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+  `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
+    createComponent({
+      provide: {
+        boardType,
+        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isGroupBoard: boardType === WORKSPACE_GROUP,
+      },
     });
 
-    it.each`
-      boardType
-      ${WORKSPACE_GROUP}
-      ${WORKSPACE_PROJECT}
-    `('sets error when $boardType board query fails', async ({ boardType }) => {
-      createComponent({
-        provide: {
-          boardType,
-          isProjectBoard: boardType === WORKSPACE_PROJECT,
-          isGroupBoard: boardType === WORKSPACE_GROUP,
-          isApolloBoard: true,
-        },
-        groupBoardQueryHandler: boardQueryHandlerFailure,
-        projectBoardQueryHandler: boardQueryHandlerFailure,
-      });
+    await nextTick();
 
-      await waitForPromises();
-      expect(cacheUpdates.setError).toHaveBeenCalled();
+    expect(queryHandler).toHaveBeenCalled();
+    expect(notCalledHandler).not.toHaveBeenCalled();
+  });
+
+  it.each`
+    boardType
+    ${WORKSPACE_GROUP}
+    ${WORKSPACE_PROJECT}
+  `('sets error when $boardType board query fails', async ({ boardType }) => {
+    createComponent({
+      provide: {
+        boardType,
+        isProjectBoard: boardType === WORKSPACE_PROJECT,
+        isGroupBoard: boardType === WORKSPACE_GROUP,
+      },
+      groupBoardQueryHandler: boardQueryHandlerFailure,
+      projectBoardQueryHandler: boardQueryHandlerFailure,
     });
+
+    await waitForPromises();
+    expect(cacheUpdates.setError).toHaveBeenCalled();
   });
 });

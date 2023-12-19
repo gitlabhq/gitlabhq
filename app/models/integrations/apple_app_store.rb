@@ -21,21 +21,31 @@ module Integrations
     field :app_store_issuer_id,
       section: SECTION_TYPE_CONNECTION,
       required: true,
-      title: -> { s_('AppleAppStore|The Apple App Store Connect Issuer ID.') }
+      title: -> { s_('AppleAppStore|Apple App Store Connect issuer ID') },
+      description: -> { s_('AppleAppStore|Apple App Store Connect issuer ID.') }
 
     field :app_store_key_id,
       section: SECTION_TYPE_CONNECTION,
       required: true,
-      title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
+      title: -> { s_('AppleAppStore|Apple App Store Connect key ID') },
+      description: -> { s_('AppleAppStore|Apple App Store Connect key ID.') }
 
-    field :app_store_private_key_file_name, section: SECTION_TYPE_CONNECTION
-    field :app_store_private_key, api_only: true
+    field :app_store_private_key_file_name,
+      description: -> { s_('Apple App Store Connect private key file name.') },
+      section: SECTION_TYPE_CONNECTION,
+      required: true
+
+    field :app_store_private_key,
+      description: -> { s_('Apple App Store Connect private key.') },
+      required: true,
+      api_only: true
 
     field :app_store_protected_refs,
       type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('AppleAppStore|Protected branches and tags only') },
-      checkbox_label: -> { s_('AppleAppStore|Only set variables on protected branches and tags') }
+      description: -> { s_('AppleAppStore|Set variables on protected branches and tags only.') },
+      checkbox_label: -> { s_('AppleAppStore|Set variables on protected branches and tags only.') }
 
     def self.title
       'Apple App Store Connect'
@@ -55,10 +65,10 @@ module Integrations
 
       # rubocop:disable Layout/LineLength
       texts = [
-        s_("Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."),
-        s_("After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."),
+        s_("Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."),
+        s_("After you enable the integration, the following protected variables are created for CI/CD use:"),
         variable_list.join('<br>'),
-        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
+        s_(format("For more information, see the <a href='%{url}' target='_blank'>documentation</a>.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
       ]
       # rubocop:enable Layout/LineLength
 

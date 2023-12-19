@@ -6,7 +6,6 @@ module ServiceDesk
       attr_reader :ramp_up_error
 
       def execute
-        return error_feature_flag_disabled unless Feature.enabled?(:service_desk_custom_email, project)
         return error_settings_missing unless settings.present?
         return error_user_not_authorized unless can?(current_user, :admin_project, project)
 
@@ -53,6 +52,9 @@ module ServiceDesk
       rescue Net::SMTPAuthenticationError
         # incorrect username or password
         @ramp_up_error = :invalid_credentials
+      rescue Net::ReadTimeout
+        # Server is slow to respond
+        @ramp_up_error = :read_timeout
       end
 
       def handle_error_case

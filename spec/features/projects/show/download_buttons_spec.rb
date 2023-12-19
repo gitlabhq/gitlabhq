@@ -36,23 +36,5 @@ RSpec.describe 'Projects > Show > Download buttons', feature_category: :groups_a
 
   describe 'when checking project main page' do
     it_behaves_like 'archive download buttons'
-
-    context 'with artifacts' do
-      before do
-        visit project_path(project)
-      end
-
-      it 'shows download artifacts button' do
-        href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
-
-        expect(page).to have_link build.name, href: href
-      end
-
-      it 'download links have download attribute' do
-        page.all('a', text: 'Download').each do |link|
-          expect(link[:download]).to eq ''
-        end
-      end
-    end
   end
 end

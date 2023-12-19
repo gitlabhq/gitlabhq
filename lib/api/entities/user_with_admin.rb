@@ -7,6 +7,7 @@ module API
       expose :note
       expose :namespace_id
       expose :created_by, with: UserBasic
+      expose :email_reset_offered_at
     end
   end
 end

@@ -1,0 +1,9 @@
+query CurrentUserFrecentProjects {
+  frecentProjects {
+    id
+    name
+    namespace: nameWithNamespace
+    webUrl
+    avatarUrl
+  }
+}

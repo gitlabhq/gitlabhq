@@ -1,0 +1,35 @@
+- name: Automatic claims of enterprise users
+  description: |  # Do not modify this line, instead modify the lines below.
+    When a GitLab.com user's primary email address matches an existing verified domain, the user is automatically claimed as an enterprise user. This gives the group Owner more user management controls and visibility into the user's account. After a user becomes an enterprise user, they can only change their primary email to an email their organization owns as per its verified domains.
+  stage: govern
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/enterprise_user/#automatic-claims-of-enterprise-users
+  image_url: https://about.gitlab.com/images/16_6/automatic-claims-of-enterprise-users.png
+  published_at: 2023-11-16
+  release: 16.6
+
+- name: Minimal forking - only include the default branch
+  description: |  # Do not modify this line, instead modify the lines below.
+    In previous versions of GitLab, when forking a repository, the fork always included all branches within the repository. Now you can create a fork with only the default branch, reducing complexity and storage space. Create minimal forks if you don't need the changes that are currently being worked on in other branches. The default method of forking will not change and continue to include all branches within the repository. The new option shows which branch is the default, so that you are aware of exactly which branch will be included in the new fork.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/forking_workflow.html#create-a-fork
+  image_url: https://about.gitlab.com/images/16_6/create-minimal-forking-default-branch.png
+  published_at: 2023-11-16
+  release: 16.6
+
+- name: Improved UI for CI/CD variable management
+  description: |  # Do not modify this line, instead modify the lines below.
+    CI/CD variables are a fundamental part of GitLab CI/CD, and we felt that we could offer a better experience for working with variables from the settings UI. So in this release we've updated the UI to use a new drawer that improves the flow of adding and editing CI/CD variables. For example, the masking validation used to only happen when you tried to save the CI/CD variable, and if it failed you'd have to restart from scratch. But now with the new drawer, you get real time validation so you can adjust on the fly without needed to redo anything! Your [feedback for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/428807) is always valued and appreciated.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/variables/#define-a-cicd-variable-in-the-ui
+  image_url: https://about.gitlab.com/images/16_6/ci_variables_drawer.png
+  published_at: 2023-11-16
+  release: 16.6

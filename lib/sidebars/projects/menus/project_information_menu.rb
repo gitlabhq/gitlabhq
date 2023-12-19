@@ -18,11 +18,6 @@ module Sidebars
           { class: 'shortcuts-project-information' }
         end
 
-        override :extra_nav_link_html_options
-        def extra_nav_link_html_options
-          { class: 'home' }
-        end
-
         override :title
         def title
           _('Project information')
@@ -75,10 +70,7 @@ module Sidebars
             link: project_project_members_path(context.project),
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :project_members },
-            item_id: :members,
-            container_html_options: {
-              id: 'js-onboarding-members-link'
-            }
+            item_id: :members
           )
         end
       end

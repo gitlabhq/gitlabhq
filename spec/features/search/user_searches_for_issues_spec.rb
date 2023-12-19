@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
+  include ListboxHelpers
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 
@@ -10,8 +11,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
   let!(:issue2) { create(:issue, :closed, :confidential, title: 'issue Bar', project: project) }
 
   def search_for_issue(search)
-    fill_in('dashboard_search', with: search)
-    find('.gl-search-box-by-click-search-button').click
+    submit_dashboard_search(search)
     select_search_scope('Issues')
   end
 
@@ -92,7 +92,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
         wait_for_requests
 
         page.within('[data-testid="project-filter"]') do
-          click_on(project.name)
+          select_listbox_item project.name
         end
 
         search_for_issue(issue1.title)

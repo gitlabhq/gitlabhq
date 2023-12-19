@@ -8,12 +8,13 @@ import {
   GlTableLite,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
+import { isEqual } from 'lodash';
 
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { getBulkImportsHistory } from '~/rest_api';
+import { joinPaths, getParameterValues } from '~/lib/utils/url_utility';
+import { getBulkImportHistory, getBulkImportsHistory } from '~/rest_api';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 
@@ -92,7 +93,6 @@ export default {
     tableCell({
       key: 'status',
       label: __('Status'),
-      tdAttr: { 'data-qa-selector': 'import_status_indicator' },
     }),
   ],
 
@@ -110,12 +110,18 @@ export default {
     showDetailsLink() {
       return this.glFeatures.bulkImportDetailsPage;
     },
+
+    paginationConfigCopy() {
+      return { ...this.paginationConfig };
+    },
   },
 
   watch: {
-    paginationConfig: {
-      handler() {
-        this.loadHistoryItems();
+    paginationConfigCopy: {
+      handler(newValue, oldValue) {
+        if (!isEqual(newValue, oldValue)) {
+          this.loadHistoryItems();
+        }
       },
       deep: true,
     },
@@ -159,10 +165,19 @@ export default {
   },
 
   methods: {
+    fetchFn(params) {
+      const bulkImportId = getParameterValues('bulk_import_id')[0];
+
+      return bulkImportId
+        ? getBulkImportHistory(bulkImportId, params)
+        : getBulkImportsHistory(params);
+    },
+
     async loadHistoryItems() {
       try {
         this.loading = true;
-        const { data: historyItems, headers } = await getBulkImportsHistory({
+
+        const { data: historyItems, headers } = await this.fetchFn({
           page: this.paginationConfig.page,
           per_page: this.paginationConfig.perPage,
         });
@@ -217,14 +232,11 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-border-solid gl-border-gray-200 gl-border-0 gl-border-b-1 gl-display-flex gl-align-items-center"
-    >
-      <h1 class="gl-my-0 gl-py-4 gl-font-size-h1">
-        <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6 gl-mb-2 gl-display-inline gl-mr-2" />
-        {{ s__('BulkImport|GitLab Migration history') }}
-      </h1>
-    </div>
+    <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
+      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+      <span>{{ s__('BulkImport|Direct transfer history') }}</span>
+    </h1>
+
     <gl-loading-icon v-if="loading" size="lg" class="gl-mt-5" />
     <gl-empty-state
       v-else-if="!hasHistoryItems"

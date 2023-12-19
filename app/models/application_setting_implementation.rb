@@ -110,6 +110,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        instance_level_ai_beta_features_enabled: false,
         instance_level_code_suggestions_enabled: false,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
@@ -263,6 +264,7 @@ module ApplicationSettingImplementation
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
+        can_create_organization: true,
         bulk_import_enabled: false,
         bulk_import_max_download_file_size: 5120,
         allow_runner_registration_token: true,
@@ -272,7 +274,8 @@ module ApplicationSettingImplementation
         ci_max_includes: 150,
         allow_account_deletion: true,
         gitlab_shell_operation_limit: 600,
-        project_jobs_api_rate_limit: 600
+        project_jobs_api_rate_limit: 600,
+        security_txt_content: nil
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
@@ -566,6 +569,16 @@ module ApplicationSettingImplementation
     Gitlab::SSHPublicKey.supported_types.each do |key_type|
       set_max_key_restriction!(key_type)
     end
+  end
+
+  def repository_storages_with_default_weight
+    # config file config/gitlab.yml becomes SSOT for this API
+    # see https://gitlab.com/gitlab-org/gitlab/-/issues/426091#note_1675160909
+    storages_map = Gitlab.config.repositories.storages.keys.map do |storage|
+      [storage, repository_storages_weighted[storage] || 0]
+    end
+
+    Hash[storages_map]
   end
 
   private

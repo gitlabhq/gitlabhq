@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter, feature_category: :importers do
-  let(:project) { double(:project, id: 4, import_source: 'foo/bar') }
-  let(:client) { double(:client) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
@@ -83,6 +83,10 @@ RSpec.describe Gitlab::GithubImport::Importer::IssuesImporter, feature_category:
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
+    before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
+    end
+
     it 'imports each issue in parallel' do
       importer = described_class.new(project, client)
 

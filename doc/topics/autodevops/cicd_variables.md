@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # CI/CD variables
@@ -133,7 +133,7 @@ Auto DevOps detects CI/CD variables starting with `K8S_SECRET_`,
 and makes them available to the deployed application as
 environment variables.
 
-Prerequisite:
+Prerequisites:
 
 - The variable value must be a single line.
 

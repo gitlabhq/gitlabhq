@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
+import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { thWidthPercent } from '~/lib/utils/table_utility';
 import { sprintf } from '~/locale';
 import {
@@ -19,6 +19,7 @@ export default {
     GlSprintf,
     StorageTypeIcon,
     GlPopover,
+    NumberToHumanSize,
   },
   props: {
     storageTypes: {
@@ -32,7 +33,6 @@ export default {
         linkTitle,
       });
     },
-    numberToHumanSize,
   },
   projectTableFields: [
     {
@@ -92,9 +92,7 @@ export default {
     </template>
 
     <template #cell(value)="{ item }">
-      <span :data-testid="item.id + '-value'">
-        {{ numberToHumanSize(item.value, 1) }}
-      </span>
+      <number-to-human-size :value="item.value" :data-testid="item.id + '-value'" />
 
       <template v-if="item.warning">
         <gl-icon

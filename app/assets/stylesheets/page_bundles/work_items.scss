@@ -215,3 +215,130 @@ $work-item-sticky-header-height: 52px;
     font-weight: normal;
   }
 }
+
+// Disclosure hierarchy component, used for Ancestors widget
+
+$disclosure-hierarchy-chevron-dimension: 1.2rem;
+
+@mixin hierarchy-active-item-color {
+  background-color: var(--gray-50, $gray-50);
+
+  &::after {
+    background-color: var(--gray-50, $gray-50);
+  }
+}
+
+@mixin hierarchy-path-chevron {
+  content: '';
+  @include gl-absolute;
+  @include gl-reset-bg;
+  top: 0.39rem;
+  right: px-to-rem(-9px);
+  width: $disclosure-hierarchy-chevron-dimension;
+  height: $disclosure-hierarchy-chevron-dimension;
+  transform: rotate(45deg) skew(14deg, 14deg);
+}
+
+.disclosure-hierarchy-button {
+  @include gl-pl-4;
+  @include gl-py-3;
+  @include gl-display-flex;
+  @include gl-relative;
+  @include gl-font-sm;
+  border: 1px solid var(--gray-100, $gray-100);
+  @include gl-border-r-none;
+  @include gl-border-l-none;
+  @include gl-line-height-normal;
+  padding-right: $grid-size;
+  max-width: $gl-spacing-scale-20;
+  background: var(--gray-10, $white);
+
+  @include media-breakpoint-up(sm) {
+    max-width: $gl-spacing-scale-48;
+  }
+
+  &::before,
+  &::after {
+    @include hierarchy-path-chevron;
+    border: 1px solid var(--gray-100, $gray-100);
+    border-color: inherit;
+    @include gl-border-b-transparent;
+    @include gl-border-l-transparent;
+    @include gl-reset-bg;
+    @include gl-rounded-top-left-small;
+    @include gl-rounded-bottom-right-small;
+  }
+
+  &::before {
+    background: var(--gray-10, $white);
+    left: -10px;
+    z-index: 1;
+  }
+
+  &::after {
+    z-index: 0;
+  }
+
+  .disclosure-hierarchy-item:first-child & {
+    @include gl-pl-3;
+    border-left: 1px solid var(--gray-100, $gray-100);
+    @include gl-rounded-top-left-base;
+    @include gl-rounded-bottom-left-base;
+
+    &::before {
+      @include gl-display-none;
+    }
+
+    &:active,
+    &:focus,
+    &:focus:active {
+      // Custom focus
+      box-shadow: 1px 1px 0 1px $blue-400, 2px -1px 0 1px $blue-400, -1px 1px 0 1px $blue-400, -1px -1px 0 1px $blue-400 !important;
+    }
+  }
+
+  .disclosure-hierarchy-item:last-child & {
+    @include gl-pr-4;
+    border-right: 1px solid var(--gray-100, $gray-100);
+    @include gl-rounded-top-right-base;
+    @include gl-rounded-bottom-right-base;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  &[disabled] {
+    color: $gl-text-color-disabled;
+    @include gl-cursor-not-allowed;
+  }
+
+  &:not([disabled]):hover {
+    @include gl-border-gray-400;
+    @include hierarchy-active-item-color;
+    color: var(--gray-900, $gray-900);
+
+    &::after {
+      border-left: 1px solid var(--gray-50, $gray-50);
+      border-bottom: 1px solid var(--gray-50, $gray-50);
+      z-index: 3;
+    }
+  }
+
+  &:active,
+  &:focus,
+  &:focus:active {
+    // Custom focus
+    box-shadow: 1px 1px 0 1px $blue-400, 2px -1px 0 1px $blue-400 !important;
+    outline: none;
+    border-top: 1px solid var(--gray-400, $gray-400);
+    border-bottom: 1px solid var(--gray-400, $gray-400);
+    @include hierarchy-active-item-color;
+    z-index: 2;
+    @include gl-rounded-small;
+
+    &::before, &::after {
+      box-shadow: 2px -2px 0 1px $blue-400;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+query getAllowedWorkItemChildTypes($id: WorkItemID!) {
+  workItem(id: $id) {
+    id
+    workItemType {
+      id
+      name
+      widgetDefinitions {
+        type
+        ... on WorkItemWidgetDefinitionHierarchy {
+          allowedChildTypes {
+            nodes {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

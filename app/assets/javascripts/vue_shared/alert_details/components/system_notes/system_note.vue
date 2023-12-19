@@ -36,7 +36,7 @@ export default {
   <li
     :id="noteAnchorId"
     class="timeline-entry note system-note note-wrapper gl-p-0!"
-    data-qa-selector="alert_system_note_container"
+    data-testid="alert-system-note-container"
   >
     <div class="gl-display-inline-flex gl-align-items-center gl-relative">
       <div

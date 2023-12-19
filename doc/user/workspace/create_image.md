@@ -1,19 +1,14 @@
 ---
 stage: Create
 group: IDE
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create a custom workspace image that supports arbitrary user IDs **(PREMIUM ALL BETA)**
+# Tutorial: Create a custom workspace image that supports arbitrary user IDs **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
-
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
 You can then use this custom image with any [workspace](index.md) you create in GitLab.
@@ -23,12 +18,12 @@ To create a custom workspace image that supports arbitrary user IDs, you'll:
 1. [Create a base Dockerfile](#create-a-base-dockerfile).
 1. [Add support for arbitrary user IDs](#add-support-for-arbitrary-user-ids).
 1. [Build the custom workspace image](#build-the-custom-workspace-image).
-1. [Push the custom workspace image to the GitLab Container Registry](#push-the-custom-workspace-image-to-the-gitlab-container-registry).
+1. [Push the custom workspace image to the GitLab container registry](#push-the-custom-workspace-image-to-the-gitlab-container-registry).
 1. [Use the custom workspace image in GitLab](#use-the-custom-workspace-image-in-gitlab).
 
 ## Prerequisites
 
-- A GitLab account with permission to create and push container images to the GitLab Container Registry
+- A GitLab account with permission to create and push container images to the GitLab container registry
 - Docker installation
 
 ## Create a base Dockerfile
@@ -78,9 +73,9 @@ docker run -ti my-gitlab-workspace sh
 
 You should now be able to run commands as the `gitlab-workspaces` user.
 
-## Push the custom workspace image to the GitLab Container Registry
+## Push the custom workspace image to the GitLab container registry
 
-To push the custom workspace image to the GitLab Container Registry:
+To push the custom workspace image to the GitLab container registry:
 
 1. Sign in to your GitLab account:
 
@@ -88,19 +83,19 @@ To push the custom workspace image to the GitLab Container Registry:
    docker login registry.gitlab.com
    ```
 
-1. Tag the image with the GitLab Container Registry URL:
+1. Tag the image with the GitLab container registry URL:
 
    ```shell
    docker tag my-gitlab-workspace registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
    ```
 
-1. Push the image to the GitLab Container Registry:
+1. Push the image to the GitLab container registry:
 
    ```shell
    docker push registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
    ```
 
-Now that you've pushed the custom workspace image to the GitLab Container Registry, you can use the image in GitLab.
+Now that you've pushed the custom workspace image to the GitLab container registry, you can use the image in GitLab.
 
 ## Use the custom workspace image in GitLab
 

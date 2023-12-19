@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Product Analytics
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Product analytics **(ULTIMATE ALL EXPERIMENT)**
@@ -19,12 +19,11 @@ On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
+For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about Product Analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.
-- [Schedule a call](https://calendly.com/jheimbuck/30-minute-call) with the team.
 
 ## How product analytics works
 
@@ -32,7 +31,7 @@ Product analytics uses several tools:
 
 - [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in ClickHouse.
+- [**Cube**](https://cube.dev/docs/) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -74,12 +73,11 @@ This feature is not ready for production use.
 To track events in your project applications on a self-managed instance,
 you must enable and configure product analytics.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator of a self-managed GitLab instance.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Analytics** tab and find the **Product analytics** section.
 1. Select **Enable product analytics** and enter the configuration values.
@@ -224,7 +222,7 @@ You can [query the funnel data with the REST API](../../api/product_analytics.md
 To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
 
 NOTE:
-The `afterDate` filter is not supported. Please use `beforeDate` or `inDateRange`.
+The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
 
 ```json
 {
@@ -299,12 +297,8 @@ If the request is successful, the returned JSON includes an array of rows of res
 
 ## View product analytics usage quota
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 with a [flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 with a [flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427838) in GitLab 16.7. Feature flag `product_analytics_usage_quota` removed.
 
 Product analytics usage quota is calculated from the number of events received from instrumented applications.
 The tab displays the monthly totals for the group, and a breakdown of usage per project. Current month shows events counted to date.

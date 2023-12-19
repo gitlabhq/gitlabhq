@@ -146,16 +146,14 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
-  shared_examples 'a custom email verification process result email with error' do |error_identifier, expected_text|
-    context "when having #{error_identifier} error" do
-      before do
-        service_desk_setting.custom_email_verification.error = error_identifier
-      end
+  shared_examples 'a custom email verification process result email with error' do
+    before do
+      service_desk_setting.custom_email_verification.error = error_identifier
+    end
 
-      it 'contains correct error message headline in text part' do
-        # look for text part because we can ignore HTML tags then
-        expect(subject.text_part.body).to match(expected_text)
-      end
+    it 'contains correct error message headline in text part' do
+      # look for text part because we can ignore HTML tags then
+      expect(subject.text_part.body).to match(expected_text)
     end
   end
 
@@ -178,6 +176,11 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'uses SMTP delivery method and custom email settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
+
+      # Don't use ActionMailer::Base.smtp_settings, because it only contains explicitly set values.
+      merged_default_settings = Mail::SMTP.new({}).settings
+      # When forcibly used the configuration has a higher timeout. Ensure it's the default!
+      expect(subject.delivery_method.settings[:read_timeout]).to eq(merged_default_settings[:read_timeout])
 
       expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
     end
@@ -537,7 +540,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       }
     end
 
-    subject { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
+    subject(:mail) { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
 
     it_behaves_like 'a custom email verification process email'
 
@@ -547,6 +550,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'forcibly uses SMTP delivery method and has correct settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
+      expect(mail.delivery_method.settings[:read_timeout]).to eq(described_class::VERIFICATION_EMAIL_TIMEOUT)
 
       # defaults are unchanged after email overrode settings
       expect(Mail::SMTP.new({}).settings).to include(expected_delivery_method_defaults)
@@ -557,7 +561,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     it 'uses verification email address as recipient' do
-      expect(subject.to).to eq([service_desk_setting.custom_email_address_for_verification])
+      expect(mail.to).to eq([service_desk_setting.custom_email_address_for_verification])
     end
 
     it 'contains verification token' do
@@ -591,10 +595,40 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'a custom email verification process email'
     it_behaves_like 'a custom email verification process notification email'
-    it_behaves_like 'a custom email verification process result email with error', 'smtp_host_issue', 'SMTP host issue'
-    it_behaves_like 'a custom email verification process result email with error', 'invalid_credentials', 'Invalid credentials'
-    it_behaves_like 'a custom email verification process result email with error', 'mail_not_received_within_timeframe', 'Verification email not received within timeframe'
-    it_behaves_like 'a custom email verification process result email with error', 'incorrect_from', 'Incorrect From header'
-    it_behaves_like 'a custom email verification process result email with error', 'incorrect_token', 'Incorrect verification token'
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'smtp_host_issue' }
+      let(:expected_text) { 'SMTP host issue' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'invalid_credentials' }
+      let(:expected_text) { 'Invalid credentials' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'mail_not_received_within_timeframe' }
+      let(:expected_text) { 'Verification email not received within timeframe' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'incorrect_from' }
+      let(:expected_text) { 'Incorrect From header' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'incorrect_token' }
+      let(:expected_text) { 'Incorrect verification token' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'read_timeout' }
+      let(:expected_text) { 'Read timeout' }
+    end
+
+    it_behaves_like 'a custom email verification process result email with error' do
+      let(:error_identifier) { 'incorrect_forwarding_target' }
+      let(:expected_text) { 'Incorrect forwarding target' }
+    end
   end
 end

@@ -12,10 +12,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
   end
 
   let(:step) { described_class.new(pipeline, command) }
+  let(:ff_always_set_pipeline_failure_reason) { true }
 
   describe '#perform!' do
     context 'when pipeline has been skipped by workflow configuration' do
       before do
+        stub_feature_flags(always_set_pipeline_failure_reason: ff_always_set_pipeline_failure_reason)
+
         allow(step).to receive(:workflow_rules_result)
           .and_return(
             double(pass?: false, variables: {})
@@ -38,6 +41,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
 
       it 'saves workflow_rules_result' do
         expect(command.workflow_rules_result.variables).to eq({})
+      end
+
+      it 'sets the failure reason', :aggregate_failures do
+        expect(pipeline).to be_failed
+        expect(pipeline).to be_filtered_by_workflow_rules
+      end
+
+      context 'when always_set_pipeline_failure_reason is disabled' do
+        let(:ff_always_set_pipeline_failure_reason) { false }
+
+        it 'does not set the failure reason', :aggregate_failures do
+          expect(pipeline).not_to be_failed
+          expect(pipeline.failure_reason).to be_blank
+        end
       end
     end
 
@@ -66,6 +83,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
 
       it 'saves workflow_rules_result' do
         expect(command.workflow_rules_result.variables).to eq({ 'VAR1' => 'val2', 'VAR2' => 3 })
+      end
+
+      it 'does not set a failure reason' do
+        expect(pipeline).not_to be_filtered_by_workflow_rules
       end
     end
   end

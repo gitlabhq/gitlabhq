@@ -97,6 +97,27 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
           )
         end.to raise_error(RuntimeError, /boom/)
       end
+
+      context 'with tags' do
+        let(:tags) { { 'mytag' => 2 } }
+
+        before do
+          sentry_payload[:tags].merge!(tags)
+        end
+
+        it 'includes additional tags' do
+          expect(Raven).to receive(:capture_exception).with(exception, sentry_payload)
+          expect(Sentry).to receive(:capture_exception).with(exception, sentry_payload)
+
+          expect do
+            described_class.track_and_raise_for_dev_exception(
+              exception,
+              { issue_url: issue_url, some_other_info: 'info' },
+              tags
+            )
+          end.to raise_error(RuntimeError, /boom/)
+        end
+      end
     end
 
     context 'when exceptions for dev should not be raised' do
@@ -181,8 +202,10 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
   end
 
   describe '.track_exception' do
+    let(:tags) { {} }
+
     subject(:track_exception) do
-      described_class.track_exception(exception, extra)
+      described_class.track_exception(exception, extra, tags)
     end
 
     before do
@@ -205,6 +228,18 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
       track_exception
 
       expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(logger_payload)
+    end
+
+    context 'with tags' do
+      let(:tags) { { 'mytag' => 2 } }
+
+      it 'includes the tags' do
+        track_exception
+
+        expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(
+          hash_including({ 'tags.mytag' => 2 })
+        )
+      end
     end
 
     context 'with filterable parameters' do

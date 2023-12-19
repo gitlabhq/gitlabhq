@@ -18,6 +18,8 @@ import {
   TRACK_TOGGLE_TRAINING_PROVIDER_LABEL,
   TRACK_PROVIDER_LEARN_MORE_CLICK_ACTION,
   TRACK_PROVIDER_LEARN_MORE_CLICK_LABEL,
+  TEMP_PROVIDER_LOGOS,
+  TEMP_PROVIDER_URLS,
 } from '~/security_configuration/constants';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
@@ -26,7 +28,6 @@ import {
   updateSecurityTrainingCache,
   updateSecurityTrainingOptimisticResponse,
 } from '~/security_configuration/graphql/cache_utils';
-import { TEMP_PROVIDER_LOGOS, TEMP_PROVIDER_URLS } from './constants';
 
 const i18n = {
   providerQueryErrorMessage: __(

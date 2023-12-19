@@ -1,8 +1,7 @@
 ---
-type: reference, dev
 stage: Create
 group: Code Review
-info: "See the Technical Writers assigned to Development Guidelines: https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 ---
 
 # Merge request concepts
@@ -28,7 +27,7 @@ The merge widget is the component of the merge request where the `merge` button 
 
 ![merge widget](../img/merge_widget_v14_7.png)
 
-This area of the merge request is where all of the options and commit messages are defined prior to merging. It also contains information about what is in the merge request, what issues may be closed, and other important information to the merging process.
+This area of the merge request is where all of the options and commit messages are defined prior to merging. It also contains information about what is in the merge request, what issues are closed, and other information important to the merging process.
 
 ## Report widgets
 

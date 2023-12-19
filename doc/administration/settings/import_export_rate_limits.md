@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rate limits for imports and exports of project and groups **(FREE SELF)**
@@ -12,8 +12,7 @@ You can configure the rate limits for imports and exports of projects and groups
 
 To change a rate limit:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Import and export rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user, not per IP address.

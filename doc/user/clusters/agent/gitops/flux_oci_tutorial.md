@@ -8,7 +8,7 @@ info: A tutorial for deploying an OCI artifact using Flux
 
 This tutorial teaches you how to package your Kubernetes manifests into an [OCI](https://opencontainers.org/)
 artifact and deploy them to your cluster using Flux. You'll set up a sample manifest project, configure it to
-store manifests as an artifact in the project's Container Registry, and configure Flux to sync the artifact. With this
+store manifests as an artifact in the project's container registry, and configure Flux to sync the artifact. With this
 setup, you can run additional steps in GitLab pipelines before Flux picks up the changes
 from the OCI image.
 
@@ -63,7 +63,7 @@ First, create a repository for your Kubernetes manifests:
 ## Configure the manifest repository to create an OCI artifact
 
 Next, configure [GitLab CI/CD](../../../../ci/index.md) to package your manifests into an OCI artifact,
-and push the artifact to the [GitLab Container Registry](../../../packages/container_registry/index.md):
+and push the artifact to the [GitLab container registry](../../../packages/container_registry/index.md):
 
 1. In the root of `web-app-manifests`, create and push a [`.gitlab-ci.yml`](../../../../ci/index.md#the-gitlab-ciyml-file) file with the following contents:
 
@@ -92,9 +92,9 @@ and push the artifact to the [GitLab Container Registry](../../../packages/conta
 
    - Uses `kustomization.yaml` to render your final Kubernetes manifests.
    - Packages your manifests into an OCI artifact.
-   - Pushes the OCI artifact to the Container Registry.
+   - Pushes the OCI artifact to the container registry.
 
-   After the pipeline has completed, you can check your OCI artifact with the Container Registry UI.
+   After the pipeline has completed, you can check your OCI artifact with the container registry UI.
 
 ## Configure Flux to sync your artifact
 

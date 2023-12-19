@@ -1,8 +1,7 @@
 ---
-type: howto
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Make new users confirm email **(FREE SELF)**
@@ -11,9 +10,8 @@ GitLab can be configured to require confirmation of a user's email address when
 the user signs up. When this setting is enabled, the user is unable to sign in until
 they confirm their email address.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Sign-up restrictions** and look for the **Email confirmation settings** options.
 
 ## Confirmation token expiry

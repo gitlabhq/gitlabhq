@@ -41,6 +41,7 @@ module API
         end
       end
 
+      expose :code_suggestions, documentation: { type: 'boolean' }
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
       expose :archived?, as: :archived, documentation: { type: 'boolean' }
@@ -85,6 +86,7 @@ module API
       expose(:infrastructure_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :infrastructure) }
       expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
       expose(:model_experiments_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_experiments) }
+      expose(:model_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_registry) }
 
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 ---
 
@@ -133,7 +133,7 @@ SAML, and Kerberos. Here are some documents you might be interested in reading:
 - [Linux package documentation](https://docs.gitlab.com/omnibus/)
 - [Integration documentation](../../integration/index.md)
 - [GitLab Pages configuration](../../administration/pages/index.md)
-- [GitLab Container Registry configuration](../../administration/packages/container_registry.md)
+- [GitLab container registry configuration](../../administration/packages/container_registry.md)
 
 <!-- ## Troubleshooting
 

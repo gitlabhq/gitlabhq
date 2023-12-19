@@ -29,6 +29,8 @@ module Gitlab
           {
             authorize_params: { gl_auth_type: 'login' }
           }
+        when ->(provider_name) { AuthHelper.saml_providers.include?(provider_name.to_sym) }
+          { attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements }
         else
           {}
         end
@@ -61,7 +63,7 @@ module Gitlab
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
       when Hash, GitlabSettings::Options
-        hash_arguments = arguments.deep_symbolize_keys.deep_merge(defaults)
+        hash_arguments = merge_hash_defaults_and_args(defaults, arguments)
         normalized = normalize_hash_arguments(hash_arguments)
 
         # A Hash from the configuration will be passed as is.
@@ -78,6 +80,15 @@ module Gitlab
       end
 
       provider_arguments
+    end
+
+    def merge_hash_defaults_and_args(defaults, arguments)
+      return arguments.to_hash if defaults.empty?
+
+      revert_merging = Gitlab::Utils.to_boolean(ENV['REVERT_OMNIAUTH_DEFAULT_MERGING'])
+      return arguments.to_hash.deep_symbolize_keys.deep_merge(defaults) if revert_merging
+
+      defaults.deep_merge(arguments.deep_symbolize_keys)
     end
 
     def normalize_hash_arguments(args)

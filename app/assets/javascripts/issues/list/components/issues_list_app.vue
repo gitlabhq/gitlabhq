@@ -107,6 +107,7 @@ import {
   getInitialPageParams,
   getSortKey,
   getSortOptions,
+  groupMultiSelectFilterTokens,
   isSortKey,
   mapWorkItemWidgetsToIssueFields,
   updateUpvotesCount,
@@ -384,6 +385,7 @@ export default {
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
           preloadedUsers,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,
@@ -396,6 +398,7 @@ export default {
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
@@ -803,7 +806,12 @@ export default {
         sortKey = defaultSortKey;
       }
 
-      this.filterTokens = getFilterTokens(window.location.search);
+      const tokens = getFilterTokens(window.location.search);
+      if (this.glFeatures.groupMultiSelectTokens) {
+        this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
+      } else {
+        this.filterTokens = tokens;
+      }
 
       this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(

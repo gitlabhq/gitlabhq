@@ -15,7 +15,7 @@ export default {
     text: s__('Members|Remove group'),
     attributes: {
       variant: 'danger',
-      'data-qa-selector': 'remove_group_button',
+      'data-testid': 'remove-group-button',
     },
   },
   csrf,
@@ -69,7 +69,7 @@ export default {
     :action-primary="$options.actionPrimary"
     :action-cancel="$options.actionCancel"
     size="sm"
-    data-qa-selector="remove_group_link_modal_content"
+    data-testid="remove-group-link-modal-content"
     @primary="handlePrimary"
     @hide="hideRemoveGroupLinkModal"
   >

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Use Sigstore for keyless signing and verification **(FREE SAAS)**
@@ -142,7 +142,7 @@ You can use Sigstore and npm, together with GitLab CI/CD, to digitally sign buil
 CLI provenance generation allows users to trust and verify that the package they are downloading and using is from you and the
 build system that built it.
 
-For more information on how to publish npm packages, see [GitLab npm Package Registry](../../user/packages/npm_registry/index.md).
+For more information on how to publish npm packages, see [GitLab npm package registry](../../user/packages/npm_registry/index.md).
 
 ### Sigstore
 

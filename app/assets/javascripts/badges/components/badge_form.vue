@@ -183,9 +183,7 @@ export default {
         })
         .catch((error) => {
           createAlert({
-            message: s__(
-              'Badges|Adding the badge failed, please check the entered URLs and try again.',
-            ),
+            message: s__('Badges|Failed to add new badge. Check the URLs, then try again.'),
           });
           throw error;
         });
@@ -215,7 +213,7 @@ export default {
     @submit.prevent.stop="onSubmit"
   >
     <gl-form-group :label="s__('Badges|Name')" label-for="badge-name" class="gl-max-w-48">
-      <gl-form-input id="badge-name" v-model="name" data-qa-selector="badge_name_field" />
+      <gl-form-input id="badge-name" v-model="name" data-testid="badge-name-field" />
     </gl-form-group>
 
     <div class="form-group">
@@ -224,7 +222,7 @@ export default {
       <input
         id="badge-link-url"
         v-model="linkUrl"
-        data-qa-selector="badge_link_url_field"
+        data-testid="badge-link-url-field"
         type="URL"
         class="form-control gl-form-input gl-max-w-80"
         required
@@ -240,7 +238,7 @@ export default {
       <input
         id="badge-image-url"
         v-model="imageUrl"
-        data-qa-selector="badge_image_url_field"
+        data-testid="badge-image-url-field"
         type="URL"
         class="form-control gl-form-input gl-max-w-80"
         required
@@ -272,7 +270,7 @@ export default {
         type="submit"
         variant="confirm"
         category="primary"
-        data-qa-selector="add_badge_button"
+        data-testid="add-badge-button"
         class="gl-mr-3"
       >
         {{ saveText }}

@@ -72,17 +72,14 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
               entity.update!(source_xid: nil)
 
               expect_next_instance_of(BulkImports::Logger) do |logger|
+                expect(logger).to receive(:with_entity).with(entity).and_call_original
+
                 expect(logger).to receive(:error).with(
                   a_hash_including(
-                    'bulk_import_entity_id' => entity.id,
-                    'bulk_import_id' => entity.bulk_import_id,
-                    'bulk_import_entity_type' => entity.source_type,
-                    'source_full_path' => entity.source_full_path,
                     'exception.backtrace' => anything,
                     'exception.class' => 'NoMethodError',
                     'exception.message' => /^undefined method `model_id' for nil:NilClass/,
-                    'message' => 'Failed to fetch source entity id',
-                    'source_version' => entity.bulk_import.source_version_info.to_s
+                    'message' => 'Failed to fetch source entity id'
                   )
                 ).twice
               end
@@ -148,7 +145,9 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
       entity = create(:bulk_import_entity, bulk_import: bulk_import)
       error = 'Exhausted error!'
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:with_entity).with(entity).and_call_original
+
         expect(logger)
           .to receive(:error)
           .with(hash_including('message' => "Request to export #{entity.source_type} failed"))

@@ -1,15 +1,5 @@
-- if show_super_sidebar?
-  - top_bar_class = 'top-bar-fixed container-fluid'
-  - top_bar_container_class = nil
-- else
-  - top_bar_class = [@no_top_bar_container ? 'container-fluid' : container_class, @content_class]
-  - top_bar_container_class = 'gl-border-b'
-
-%div{ class: top_bar_class, data: { testid: 'top-bar' } }
-  .top-bar-container.gl-display-flex.gl-align-items-center.gl-gap-2{ :class => top_bar_container_class }
-    - if show_super_sidebar?
-      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle gl-ml-n3', aria: { controls: 'super-sidebar', expanded: 'false', label: _('Primary navigation sidebar') } })
-    - elsif defined?(@left_sidebar)
-      = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'toggle-mobile-nav gl-ml-n3', data: { testid: 'toggle-mobile-nav-button' }, aria: { label: _('Open sidebar') } })
+%div{ class: 'top-bar-fixed container-fluid', data: { testid: 'top-bar' } }
+  .top-bar-container.gl-display-flex.gl-align-items-center.gl-gap-2
+    = render Pajamas::ButtonComponent.new(icon: 'sidebar', category: :tertiary, button_options: { class: 'js-super-sidebar-toggle-expand super-sidebar-toggle gl-ml-n3', aria: { controls: 'super-sidebar', expanded: 'false', label: _('Primary navigation sidebar') } })
     = render "layouts/nav/breadcrumbs/breadcrumbs"
     = render_if_exists "layouts/nav/ask_duo_button"

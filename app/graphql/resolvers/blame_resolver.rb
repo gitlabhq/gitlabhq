@@ -14,7 +14,7 @@ module Resolvers
     argument :to_line, GraphQL::Types::Int,
       required: false,
       default_value: 1,
-      description: 'Range ending on the line. Cannot be less than 1 or less than `to_line`.'
+      description: 'Range ending on the line. Cannot be smaller than `from_line` or greater than `from_line` + 100.'
 
     alias_method :blob, :object
 
@@ -48,15 +48,18 @@ module Resolvers
     end
 
     def validate_line_params!(args)
-      if args[:from_line] <= 0 || args[:to_line] <= 0
-        raise Gitlab::Graphql::Errors::ArgumentError,
-          '`from_line` and `to_line` must be greater than or equal to 1'
-      end
+      raise_greater_than_one unless args[:from_line] >= 1
+      raise_greater_than_one unless args[:to_line] >= 1
 
-      return unless args[:from_line] > args[:to_line]
+      return unless args[:to_line] < args[:from_line] || args[:to_line] >= args[:from_line] + 100
 
       raise Gitlab::Graphql::Errors::ArgumentError,
-        '`to_line` must be greater than or equal to `from_line`'
+        '`to_line` must be greater than or equal to `from_line` and smaller than `from_line` + 100'
+    end
+
+    def raise_greater_than_one
+      raise Gitlab::Graphql::Errors::ArgumentError,
+        '`from_line` and `to_line` must be greater than or equal to 1'
     end
   end
 end

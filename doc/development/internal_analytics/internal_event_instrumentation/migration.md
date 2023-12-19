@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Migrating existing tracking to internal event tracking
@@ -23,7 +23,7 @@ The event triggered by Internal Events has some special properties compared to p
 1. The `label`, `property` and `value` attributes are not used within Internal Events and are always empty.
 1. The `category` is automatically set to `InternalEventTracking`
 
-Please make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
+Make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
 
 ### Backend
 
@@ -42,18 +42,13 @@ Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, 
 
 In addition, you have to create definitions for the metrics that you would like to track.
 
-To generate metric definitions, you can use the generator like this:
+To generate metric definitions, you can use the generator:
 
 ```shell
-bin/rails g gitlab:analytics:internal_events \
-  --time_frames=7d 28d\
-  --group=project_management \
-  --stage=plan \
-  --section=dev \
-  --event=ci_templates_unique \
-  --unique=user.id \
-  --mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
+ruby scripts/internal_events/cli.rb
 ```
+
+The generator walks you through the required inputs step-by-step.
 
 ### Frontend
 

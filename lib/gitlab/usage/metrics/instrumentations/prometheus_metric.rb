@@ -18,7 +18,7 @@ module Gitlab
           # end
           def value
             with_prometheus_client(verify: false, fallback: FALLBACK) do |client|
-              super(client)
+              self.class.metric_value.call(client)
             end
           end
         end

@@ -160,18 +160,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       with_them do
         it { is_expected.to eq(result) }
       end
-
-      context "with FF restrict_ci_job_token_for_public_and_internal_projects disabled" do
-        before do
-          stub_feature_flags(restrict_ci_job_token_for_public_and_internal_projects: false)
-        end
-
-        let(:accessed_project) { unscoped_public_project }
-
-        it "restricts public and internal outbound projects not in allowlist" do
-          is_expected.to eq(false)
-        end
-      end
     end
   end
 end

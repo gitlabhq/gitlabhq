@@ -1,7 +1,15 @@
-query getOrganizationUsers($id: OrganizationsOrganizationID!) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getOrganizationUsers(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String!
+  $after: String!
+) {
   organization(id: $id) {
     id
-    organizationUsers {
+    organizationUsers(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         badges {
           text
@@ -10,7 +18,16 @@ query getOrganizationUsers($id: OrganizationsOrganizationID!) {
         id
         user {
           id
+          username
+          avatarUrl
+          name
+          publicEmail
+          createdAt
+          lastActivityOn
         }
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

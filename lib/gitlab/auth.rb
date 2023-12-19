@@ -436,8 +436,7 @@ module Gitlab
       end
 
       def unavailable_scopes_for_resource(resource)
-        unavailable_observability_scopes_for_resource(resource) +
-          unavailable_ai_features_scopes_for_resource(resource)
+        unavailable_observability_scopes_for_resource(resource)
       end
 
       def unavailable_observability_scopes_for_resource(resource)
@@ -445,10 +444,6 @@ module Gitlab
           Gitlab::Observability.should_enable_observability_auth_scopes?(resource)
 
         OBSERVABILITY_SCOPES
-      end
-
-      def unavailable_ai_features_scopes_for_resource(_resource)
-        AI_FEATURES_SCOPES
       end
 
       def non_admin_available_scopes

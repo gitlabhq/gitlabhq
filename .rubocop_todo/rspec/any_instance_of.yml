@@ -36,7 +36,7 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/requests/omniauth_kerberos_spec.rb'
     - 'ee/spec/requests/repositories/git_http_controller_spec.rb'
     - 'ee/spec/services/ee/git/branch_push_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/create_from_vulnerability_data_service_spec.rb'
+    - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/services/ee/users/create_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_service_spec.rb'

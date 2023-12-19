@@ -8,3 +8,22 @@ description: Stores project records
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: "<6.0"
 gitlab_schema: gitlab_main_cell
+schema_inconsistencies:
+- type: missing_indexes
+  object_name: index_service_desk_enabled_projects_on_id_creator_id_created_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
+- type: missing_indexes
+  object_name: index_projects_on_mirror_id_where_mirror_and_trigger_builds
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
+- type: missing_indexes
+  object_name: index_projects_on_mirror_creator_id_created_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
+- type: missing_indexes
+  object_name: index_projects_on_id_service_desk_enabled
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
+- type: missing_indexes
+  object_name: idx_projects_id_created_at_disable_overriding_approvers_true
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884
+- type: missing_indexes
+  object_name: idx_projects_id_created_at_disable_overriding_approvers_false
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137884

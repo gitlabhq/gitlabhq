@@ -1,0 +1,8 @@
+---
+name: collapse_generated_diff_files
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138013
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432670
+milestone: '16.7'
+type: development
+group: group::code review
+default_enabled: false

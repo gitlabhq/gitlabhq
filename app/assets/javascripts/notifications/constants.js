@@ -55,5 +55,6 @@ export const i18n = {
     reopen_merge_request: s__('NotificationEvent|Reopen merge request'),
     merge_when_pipeline_succeeds: s__('NotificationEvent|Merge when pipeline succeeds'),
     success_pipeline: s__('NotificationEvent|Successful pipeline'),
+    approver: s__('NotificationEvent|Added as approver'),
   },
 };

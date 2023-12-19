@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Anti-Abuse
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # reCAPTCHA **(FREE SELF)**
@@ -17,9 +17,8 @@ To use reCAPTCHA, first create a site and private key.
 1. Go to the [Google reCAPTCHA page](https://www.google.com/recaptcha/admin).
 1. To get reCAPTCHA v2 keys, fill in the form and select **Submit**.
 1. Sign in to your GitLab server as an administrator.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Reporting**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. In the reCAPTCHA fields, enter the keys you obtained in the previous steps.
 1. Select the **Enable reCAPTCHA** checkbox.

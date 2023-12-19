@@ -1,8 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: concepts, reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Filtering outbound requests **(FREE SELF)**
@@ -38,7 +37,7 @@ can get the GitLab server to make `POST` HTTP requests to endpoints that delete 
 
 ### Allow requests to the local network from webhooks and integrations
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
@@ -50,23 +49,21 @@ To prevent exploitation of insecure internal web services, all webhook and integ
 
 To allow access to these addresses:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Select the **Allow requests to the local network from webhooks and integrations** checkbox.
 
 ### Prevent requests to the local network from system hooks
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 [System hooks](../administration/system_hooks.md) can make requests to the local network by default. To prevent system hook requests to the local network:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
 
@@ -74,15 +71,14 @@ Prerequisite:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the GitLab instance.
 
 To filter requests by blocking many requests:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. Select the **Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist** checkbox.
 
@@ -100,15 +96,14 @@ rules.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To allow outbound requests to certain IP addresses and domains:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Network**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
 1. Expand **Outbound requests**.
 1. In **Local IP addresses and domain names that hooks and integrations can access**, enter your IP addresses and domains.
 

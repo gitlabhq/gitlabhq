@@ -145,6 +145,11 @@ export default {
       required: false,
       default: '',
     },
+    cssClasses: {
+      type: String,
+      required: false,
+      default: 'gl-sm-ml-3',
+    },
   },
   data() {
     return {
@@ -329,7 +334,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-sm-ml-3">
+  <div :class="cssClasses">
     <gl-disclosure-dropdown
       v-if="hasActions"
       :variant="isBlob ? 'confirm' : 'default'"

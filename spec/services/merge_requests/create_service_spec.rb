@@ -52,7 +52,7 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         end.to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
-      it 'creates exactly 1 create MR event', :sidekiq_might_not_need_inline do
+      it 'creates exactly 1 create MR event', :sidekiq_inline do
         attributes = {
           action: :created,
           target_id: merge_request.id,

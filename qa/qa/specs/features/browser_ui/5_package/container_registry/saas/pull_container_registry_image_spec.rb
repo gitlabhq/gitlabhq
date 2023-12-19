@@ -9,7 +9,11 @@ module QA
       end
 
       it 'pulls an image from an existing repository',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412799' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412799',
+        quarantine: {
+          type: :test_environment,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/435585"
+        } do
         project = build(:project, path_with_namespace: 'gitlab-qa/container-registry-sanity').reload!
         project.visit!
 

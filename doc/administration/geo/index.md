@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Geo **(PREMIUM SELF)**
@@ -115,15 +115,16 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4 or later
   - [Ubuntu](https://ubuntu.com) 16.04 or later
-- PostgreSQL 12 or 13 with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
+- [Supported PostgreSQL versions](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/postgresql-upgrade-cadence.html) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
   - Note,[PostgreSQL 12 is deprecated](../../update/deprecations.md#postgresql-12-deprecated) and is removed in GitLab 16.0.
+- All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
+  - Where possible, you should also use the same operating system version on all
+  Geo sites. If using different operating system versions between Geo sites, you
+  **must** [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
+    across Geo sites to avoid silent corruption of database indexes.
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
 - All sites must run the same GitLab version.
-- All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
-  - If using different operating system versions between Geo sites,
-    [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
-    across Geo sites to avoid silent corruption of database indexes.
 - All sites must define the same [repository storages](../repository_storage_paths.md).
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
@@ -159,9 +160,8 @@ public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.
 
@@ -245,17 +245,29 @@ Linux package-managed database. External databases are not supported.
 In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
 [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
-Pausing and resuming replication is done through a command-line tool from the node in the secondary site where the `postgresql` service is enabled.
+If you plan to allow user activity on your secondary sites during the upgrade,
+do not pause replication for a [zero downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
+One known effect is that more and more Git fetches get redirected or proxied to the primary site. There may be additional unknown effects.
 
-If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_node_name` on the application node.
+Pausing and resuming replication is done through a command-line tool from a specific node in the secondary site. Depending on your database architecture,
+this will target either the `postgresql` or `patroni` service:
 
-**To Pause: (from secondary)**
+- If you are using a single node for all services on your secondary site, you must run the commands on this single node.
+- If you have a standalone PostgreSQL node on your secondary site, you must run the commands on this standalone PostgreSQL node.
+- If your secondary site is using a Patroni cluster, you must run these commands on the secondary Patroni standby leader node.
+
+If you aren't using a single node for all services on your secondary site, ensure that the `/etc/gitlab/gitlab.rb` on your PostgreSQL or Patroni nodes
+contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_node_name` on the application node.
+
+**To Pause: (from secondary site)**
+
+Also, be aware that if PostgreSQL is restarted after pausing replication (either by restarting the VM or restarting the service with `gitlab-ctl restart postgresql`), PostgreSQL automatically resumes replication, which is something you wouldn't want during an upgrade or in a planned failover scenario.
 
 ```shell
 gitlab-ctl geo-replication-pause
 ```
 
-**To Resume: (from secondary)**
+**To Resume: (from secondary site)**
 
 ```shell
 gitlab-ctl geo-replication-resume
@@ -273,9 +285,9 @@ For information on configuring Geo with Object storage, see [Geo with Object sto
 
 For information on using Geo in disaster recovery situations to mitigate data-loss and restore services, see [Disaster Recovery](disaster_recovery/index.md).
 
-### Replicating the Container Registry
+### Replicating the container registry
 
-For more information on how to replicate the Container Registry, see [Container Registry for a **secondary** site](replication/container_registry.md).
+For more information on how to replicate the container registry, see [Container registry for a **secondary** site](replication/container_registry.md).
 
 ### Geo secondary proxy
 

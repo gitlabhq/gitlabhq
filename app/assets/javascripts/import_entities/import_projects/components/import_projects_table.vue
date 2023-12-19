@@ -105,10 +105,7 @@ export default {
 
   mounted() {
     this.fetchJobs();
-
-    if (!this.paginatable) {
-      this.fetchRepos();
-    }
+    this.fetchRepos();
   },
 
   beforeDestroy() {

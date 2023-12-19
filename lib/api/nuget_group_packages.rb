@@ -38,6 +38,10 @@ module API
       end
       strong_memoize_attr :project_or_group_without_auth
 
+      def symbol_server_enabled?
+        project_or_group_without_auth.package_settings.nuget_symbol_server_enabled
+      end
+
       def require_authenticated!
         unauthorized! unless current_user
       end

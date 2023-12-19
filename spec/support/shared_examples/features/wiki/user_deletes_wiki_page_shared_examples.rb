@@ -22,7 +22,7 @@ RSpec.shared_examples 'User deletes wiki page' do
     specify 'deletes a page', :js do
       click_on('Edit')
       click_on('Delete')
-      find('[data-testid="confirm_deletion_button"]').click
+      find('[data-testid="confirm-deletion-button"]').click
 
       expect(page).to have_content('Wiki page was successfully deleted.')
     end

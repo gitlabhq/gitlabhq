@@ -8,6 +8,7 @@ module Gitlab
   module Utils
     extend self
     DoubleEncodingError = Class.new(StandardError)
+    ConcurrentRubyThreadIsUsedError = Class.new(StandardError)
 
     def allowlisted?(absolute_path, allowlist)
       path = absolute_path.downcase
@@ -258,6 +259,24 @@ module Gitlab
 
         untrimmed = trimmed
       end
+    end
+
+    def restrict_within_concurrent_ruby
+      previous = Thread.current[:restrict_within_concurrent_ruby]
+      Thread.current[:restrict_within_concurrent_ruby] = true
+
+      yield
+    ensure
+      Thread.current[:restrict_within_concurrent_ruby] = previous
+    end
+
+    # Running external methods can allocate I/O bound resources (like PostgreSQL connection or Gitaly)
+    # This is forbidden when running within a concurrent Ruby thread, for example `async` HTTP requests
+    # provided by the `gitlab-http` gem.
+    def raise_if_concurrent_ruby!(what)
+      return unless Thread.current[:restrict_within_concurrent_ruby]
+
+      raise ConcurrentRubyThreadIsUsedError, "Cannot run '#{what}' if running from `Concurrent::Promise`."
     end
   end
 end

@@ -1,9 +1,13 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
+import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import eventHub from '../event_hub';
 import {
   sidebarState,
   SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
@@ -18,16 +22,19 @@ import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
 import SidebarHoverPeekBehavior from './sidebar_hover_peek_behavior.vue';
+import ScrollScrim from './scroll_scrim.vue';
 
 export default {
   components: {
     GlButton,
     UserBar,
     HelpCenter,
+    ExtraInfo,
     SidebarMenu,
     SidebarPeekBehavior,
     SidebarHoverPeekBehavior,
     SidebarPortalTarget,
+    ScrollScrim,
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
@@ -37,6 +44,7 @@ export default {
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
+    adminArea: s__('Navigation|Admin Area'),
   },
   inject: ['showTrialStatusWidget'],
   props: {
@@ -51,6 +59,7 @@ export default {
       showPeekHint: false,
       isMouseover: false,
       breakpoint: null,
+      showSuperSidebarContextHeader: true,
     };
   },
   computed: {
@@ -68,6 +77,13 @@ export default {
       };
     },
   },
+  watch: {
+    'sidebarState.isCollapsed': {
+      handler() {
+        this.setupFocusTrapListener();
+      },
+    },
+  },
   created() {
     const {
       is_logged_in: isLoggedIn,
@@ -80,9 +96,12 @@ export default {
     }
   },
   mounted() {
+    this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
+    eventHub.$on('toggle-menu-header', this.onToggleMenuHeader);
   },
   beforeDestroy() {
+    document.removeEventListener('keydown', this.focusTrap);
     Mousetrap.unbind(keysFor(TOGGLE_SUPER_SIDEBAR));
   },
   methods: {
@@ -92,6 +111,17 @@ export default {
         property: 'nav_sidebar',
       });
       toggleSuperSidebarCollapsed(!isCollapsed(), true);
+    },
+    setupFocusTrapListener() {
+      /**
+       * Only trap focus when sidebar displays over page content to avoid
+       * focus moving to page content and being obscured by the sidebar
+       */
+      if (GlBreakpointInstance.windowWidth() < breakpoints.xl && !this.sidebarState.isCollapsed) {
+        document.addEventListener('keydown', this.focusTrap);
+      } else {
+        document.removeEventListener('keydown', this.focusTrap);
+      }
     },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
@@ -122,6 +152,26 @@ export default {
         this.sidebarState.isCollapsed = true;
       }
     },
+    focusTrap(event) {
+      const { keyCode, shiftKey } = event;
+      const firstFocusableElement = this.$refs.userBar.$el.querySelector('a');
+      const lastFocusableElement = this.$refs.helpCenter.$el.querySelector('button');
+
+      if (keyCode !== TAB_KEY_CODE) return;
+
+      if (shiftKey) {
+        if (document.activeElement === firstFocusableElement) {
+          lastFocusableElement.focus();
+          event.preventDefault();
+        }
+      } else if (document.activeElement === lastFocusableElement) {
+        firstFocusableElement.focus();
+        event.preventDefault();
+      }
+    },
+    onToggleMenuHeader(forceState) {
+      this.showSuperSidebarContextHeader = forceState;
+    },
   },
 };
 </script>
@@ -144,7 +194,6 @@ export default {
       class="super-sidebar"
       :class="peekClasses"
       data-testid="super-sidebar"
-      data-qa-selector="navbar"
       :inert="sidebarState.isCollapsed"
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
@@ -152,18 +201,19 @@ export default {
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
       </h2>
-      <user-bar :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
+      <user-bar ref="userBar" :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
-          class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-py-3"
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
         />
         <trial-status-popover />
       </div>
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
-        <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
+        <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
           <div
+            v-if="showSuperSidebarContextHeader"
             id="super-sidebar-context-header"
             class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
           >
@@ -178,9 +228,20 @@ export default {
             :update-pins-url="sidebarData.update_pins_url"
           />
           <sidebar-portal-target />
-        </div>
-        <div class="gl-p-3">
-          <help-center :sidebar-data="sidebarData" />
+        </scroll-scrim>
+        <div class="gl-p-2">
+          <help-center ref="helpCenter" :sidebar-data="sidebarData" />
+          <gl-button
+            v-if="sidebarData.is_admin"
+            class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
+            data-testid="sidebar-admin-link"
+            :href="sidebarData.admin_url"
+            icon="admin"
+            size="small"
+          >
+            {{ $options.i18n.adminArea }}
+          </gl-button>
+          <extra-info />
         </div>
       </div>
     </nav>

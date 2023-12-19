@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Data Stores
 group: Tenant Scale
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Rate limit on Projects API **(FREE SELF)**
@@ -16,8 +15,7 @@ You can configure the rate limit per IP address for unauthenticated requests to 
 
 To change the rate limit:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Projects API rate limit**.
 1. In the **Maximum requests per 10 minutes per IP address** text box, enter the new value.

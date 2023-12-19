@@ -387,6 +387,36 @@ RSpec.describe Blob do
         expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
       end
     end
+
+    context 'when the blob is GitlabCiYml' do
+      it 'returns a matching viewer for .gitlab-ci.yml' do
+        blob = fake_blob(path: '.gitlab-ci.yml')
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::GitlabCiYml)
+      end
+
+      it 'returns nil for non .gitlab-ci.yml' do
+        blob = fake_blob(path: 'custom-ci.yml')
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+
+      context 'when the project has a custom CI config path' do
+        let(:project) { build(:project, ci_config_path: 'custom-ci.yml') }
+
+        it 'returns a matching viewer for the custom CI file' do
+          blob = fake_blob(path: 'custom-ci.yml')
+
+          expect(blob.auxiliary_viewer).to be_a(BlobViewer::GitlabCiYml)
+        end
+
+        it 'returns nil for the incorrect CI file' do
+          blob = fake_blob(path: '.gitlab-ci.yml')
+
+          expect(blob.auxiliary_viewer).to be_nil
+        end
+      end
+    end
   end
 
   describe '#rendered_as_text?' do

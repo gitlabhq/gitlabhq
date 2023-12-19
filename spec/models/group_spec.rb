@@ -11,10 +11,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
-    it { is_expected.to have_many(:owners).through(:all_group_members) }
+    it { is_expected.to have_many(:owners).through(:all_owner_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -391,8 +392,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           expect(internal_group.errors[:visibility_level]).to include('private is not allowed since this group contains projects with higher visibility.')
         end
 
-        it 'is valid if higher visibility project is deleted' do
+        it 'is valid if higher visibility project is currently undergoing deletion' do
           internal_project.update_attribute(:pending_delete, true)
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_valid
+        end
+
+        it 'is valid if higher visibility project is pending deletion via marked_for_deletion_at' do
+          internal_project.update_attribute(:marked_for_deletion_at, Time.current)
           internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
 
           expect(internal_group).to be_valid
@@ -917,6 +925,18 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_1, group_2, group_4, group_3]) }
     end
 
+    context 'when sort by path_asc' do
+      let(:sort) { 'path_asc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path)) }
+    end
+
+    context 'when sort by path_desc' do
+      let(:sort) { 'path_desc' }
+
+      it { is_expected.to eq([group_1, group_2, group_3, group_4].sort_by(&:path).reverse) }
+    end
+
     context 'when sort by recently_created' do
       let(:sort) { 'created_desc' }
 
@@ -1257,40 +1277,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#avatar_type' do
-    let(:user) { create(:user) }
-
-    before do
-      group.add_member(user, GroupMember::MAINTAINER)
-    end
-
-    it "is true if avatar is image" do
-      group.update_attribute(:avatar, 'uploads/avatar.png')
-      expect(group.avatar_type).to be_truthy
-    end
-
-    it "is false if avatar is html page" do
-      group.update_attribute(:avatar, 'uploads/avatar.html')
-      group.avatar_type
-
-      expect(group.errors.added?(:avatar, "file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico, webp")).to be true
-    end
-  end
-
-  describe '#avatar_url' do
-    let!(:group) { create(:group, :with_avatar) }
-    let(:user) { create(:user) }
-
-    context 'when avatar file is uploaded' do
-      before do
-        group.add_maintainer(user)
-      end
-
-      it 'shows correct avatar url' do
-        expect(group.avatar_url).to eq(group.avatar.url)
-        expect(group.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, group.avatar.url].join)
-      end
-    end
+  it_behaves_like Avatarable do
+    let(:model) { create(:group, :with_avatar) }
   end
 
   describe '.search' do
@@ -3011,14 +2999,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group = build(:group)
 
       expect(group.to_ability_name).to eq('group')
-    end
-  end
-
-  describe '#activity_path' do
-    it 'returns the group activity_path' do
-      expected_path = "/groups/#{group.name}/-/activity"
-
-      expect(group.activity_path).to eq(expected_path)
     end
   end
 

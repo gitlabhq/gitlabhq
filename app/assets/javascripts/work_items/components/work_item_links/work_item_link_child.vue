@@ -213,10 +213,10 @@ export default {
 </script>
 
 <template>
-  <li class="tree-item">
+  <li class="tree-item gl-p-0! gl-border-bottom-0!">
     <div
       class="gl-display-flex gl-align-items-flex-start"
-      :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"
+      :class="{ 'gl-ml-5 gl-pl-2': canHaveChildren && !hasChildren && hasIndirectChildren }"
     >
       <gl-button
         v-if="hasChildren"
@@ -227,7 +227,7 @@ export default {
         category="tertiary"
         size="small"
         :loading="isLoadingChildren"
-        class="gl-px-0! gl-py-3! gl-mr-3"
+        class="gl-px-0! gl-py-3! gl-mr-2"
         data-testid="expand-child"
         @click="toggleItem"
       />

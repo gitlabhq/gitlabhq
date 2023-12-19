@@ -8,6 +8,7 @@ import {
 import { last } from 'lodash';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getUsers, getGroups, getDeployKeys } from '~/projects/settings/api/access_dropdown_api';
 import AccessDropdown, { i18n } from '~/projects/settings/components/access_dropdown.vue';
@@ -77,6 +78,7 @@ describe('Access Level Dropdown', () => {
     label,
     disabled,
     preselectedItems,
+    stubs = {},
   } = {}) => {
     wrapper = shallowMountExtended(AccessDropdown, {
       propsData: {
@@ -90,6 +92,7 @@ describe('Access Level Dropdown', () => {
       stubs: {
         GlSprintf,
         GlDropdown,
+        ...stubs,
       },
     });
   };
@@ -373,15 +376,22 @@ describe('Access Level Dropdown', () => {
   });
 
   describe('on dropdown open', () => {
+    const focusInput = jest.fn();
+
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        stubs: {
+          GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+            methods: { focusInput },
+          }),
+        },
+      });
     });
 
     it('should set the search input focus', () => {
-      wrapper.vm.$refs.search.focusInput = jest.fn();
       findDropdown().vm.$emit('shown');
 
-      expect(wrapper.vm.$refs.search.focusInput).toHaveBeenCalled();
+      expect(focusInput).toHaveBeenCalled();
     });
   });
 

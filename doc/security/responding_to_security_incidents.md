@@ -1,14 +1,17 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Responding to security incidents **(FREE SELF)**
 
 When a security incident occurs, you should follow the processes defined by your organization. However, you might consider some
 additional steps. These suggestions are intended to supplement existing security incident response processes within your organization.
+
+Administrators can choose to
+[provide public security contact information](../administration/settings/security_contact_information.md)
+to support receiving reports of security issues from security researchers.
 
 ## Suspected compromised user account
 
@@ -48,7 +51,7 @@ If you suspect that your GitLab instance has been compromised, consider taking t
 - Review the [Credentials Inventory](../administration/credentials_inventory.md), if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database,
   CI/CD pipelines, or elsewhere.
-- Upgrade to the latest version of GitLab and adopt a plan to upgrade after every security patch release.
+- Update to the latest version of GitLab and adopt a plan to update after every security patch release.
 
 In addition, the suggestions below are common steps taken in incident response plans when servers are compromised by malicious actors.
 

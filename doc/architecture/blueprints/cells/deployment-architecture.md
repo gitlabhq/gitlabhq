@@ -96,7 +96,7 @@ The differences compared to [Initial Cells deployment](#3-initial-cells-deployme
 
 The differences compared to [Hybrid Cells deployment](#4-hybrid-cells-deployment---initial-complete-cells-architecture) are:
 
-- The Routing Service is expanded to support [GitLab Pages](../../../user/project/pages/index.md) and [GitLab Container Registry](../../../user/packages/container_registry/index.md).
+- The Routing Service is expanded to support [GitLab Pages](../../../user/project/pages/index.md) and [GitLab container registry](../../../user/packages/container_registry/index.md).
 - Each Cell has all services isolated.
 - It is allowed that some Cells will follow a [hybrid architecture](#4-hybrid-cells-deployment---initial-complete-cells-architecture).
 
@@ -134,7 +134,7 @@ As per the architecture, the above services are required to be run Cell-local:
 | Service             |                 | Uses                            | Migrate from cluster-wide to Cell                                       | Description                                                                              |
 | ------------------- | --------------- | ------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | **GitLab Pages**    | GitLab-built    | Routing Service, Rails API      | No problem                                                              | Serving CI generated pages under `.gitlab.io` or custom domains                          |
-| **GitLab Registry** | GitLab-built    | Object Storage, PostgreSQL      | Non-trivial data migration in case of split                             | Service to provide GitLab Container Registry                                             |
+| **GitLab Registry** | GitLab-built    | Object Storage, PostgreSQL      | Non-trivial data migration in case of split                             | Service to provide GitLab container registry                                             |
 | **Gitaly Cluster**  | GitLab-built    | Disk storage, PostgreSQL        | No problem: Built-in migration routines to balance Gitaly nodes         | Gitaly holds Git repository data. Many Gitaly clusters can be configured in application. |
 | **Elasticsearch**   | Managed service | Many nodes required by sharding | Time consuming: Rebuild cluster from scratch                            | Search across all projects                                                               |
 | **Object Storage**  | Managed service |                                 | Not straightforward: Rather hard to selectively migrate between buckets | Holds all user and CI uploaded files that is served by GitLab                            |

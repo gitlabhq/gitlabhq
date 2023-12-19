@@ -1,0 +1,8 @@
+---
+name: enforce_acceptance_of_changed_terms
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136039
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430799
+milestone: '16.7'
+type: development
+group: group::authentication
+default_enabled: false

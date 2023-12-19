@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, concepts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge request approvals **(PREMIUM SELF)**
@@ -19,8 +18,7 @@ and can no longer be changed:
 
 To enable merge request approval settings for an instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Push Rules**.
 1. Expand **Merge request approvals**.
 1. Choose the required options.

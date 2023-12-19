@@ -112,7 +112,7 @@ export const I18N_ERROR_SMTP_HOST_ISSUE_DESC = s__(
 );
 export const I18N_ERROR_INVALID_CREDENTIALS_LABEL = s__('ServiceDesk|Invalid credentials');
 export const I18N_ERROR_INVALID_CREDENTIALS_DESC = s__(
-  'ServiceDesk|The given credentials (username and password) were rejected by the SMTP server.',
+  'ServiceDesk|The given credentials (username and password) were rejected by the SMTP server, or you need to explicitly set an authentication method.',
 );
 export const I18N_ERROR_MAIL_NOT_RECEIVED_IN_TIMEFRAME_LABEL = s__(
   'ServiceDesk|Verification email not received within timeframe',
@@ -127,6 +127,16 @@ export const I18N_ERROR_INCORRECT_FROM_DESC = s__(
 export const I18N_ERROR_INCORRECT_TOKEN_LABEL = s__('ServiceDesk|Incorrect verification token');
 export const I18N_ERROR_INCORRECT_TOKEN_DESC = s__(
   "ServiceDesk|The received email didn't contain the verification token that was sent to your email address.",
+);
+export const I18N_ERROR_READ_TIMEOUT_LABEL = s__('ServiceDesk|Read timeout');
+export const I18N_ERROR_READ_TIMEOUT_DESC = s__(
+  'ServiceDesk|The SMTP server did not respond in time.',
+);
+export const I18N_ERROR_INCORRECT_FORWARDING_TARGET_LABEL = s__(
+  'ServiceDesk|Incorrect forwarding target',
+);
+export const I18N_ERROR_INCORRECT_FORWARDING_TARGET_DESC = s__(
+  'ServiceDesk|Forward all emails to the custom email address to %{incomingEmail}.',
 );
 
 export const I18N_VERIFICATION_ERRORS = {
@@ -149,5 +159,13 @@ export const I18N_VERIFICATION_ERRORS = {
   incorrect_token: {
     label: I18N_ERROR_INCORRECT_TOKEN_LABEL,
     description: I18N_ERROR_INCORRECT_TOKEN_DESC,
+  },
+  read_timeout: {
+    label: I18N_ERROR_READ_TIMEOUT_LABEL,
+    description: I18N_ERROR_READ_TIMEOUT_DESC,
+  },
+  incorrect_forwarding_target: {
+    label: I18N_ERROR_INCORRECT_FORWARDING_TARGET_LABEL,
+    description: I18N_ERROR_INCORRECT_FORWARDING_TARGET_DESC,
   },
 };

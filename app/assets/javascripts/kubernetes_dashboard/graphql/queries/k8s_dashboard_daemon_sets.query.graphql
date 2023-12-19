@@ -1,0 +1,16 @@
+query getK8sDashboardDaemonSets($configuration: LocalConfiguration) {
+  k8sDaemonSets(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    status {
+      numberMisscheduled
+      numberReady
+      desiredNumberScheduled
+    }
+  }
+}

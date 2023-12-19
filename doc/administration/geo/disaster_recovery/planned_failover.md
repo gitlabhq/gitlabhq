@@ -1,8 +1,7 @@
 ---
 stage: Systems
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Disaster recovery for planned failover **(PREMIUM SELF)**
@@ -45,7 +44,7 @@ be adapted for use with any other file-based data.
 ### Container registry
 
 By default, the container registry is not automatically replicated to secondary
-sites and this needs to be manually configured, see [Container Registry for a secondary site](../replication/container_registry.md).
+sites and this needs to be manually configured, see [container registry for a secondary site](../replication/container_registry.md).
 
 If you are using local storage on your current primary site for the container
 registry, you can `rsync` the container registry objects to the secondary
@@ -154,9 +153,8 @@ ensure these processes are close to 100% as possible during active use.
 
 On the **secondary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Geo > Sites**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the site more
@@ -183,9 +181,8 @@ This [content was moved to another location](background_verification.md).
 
 On the **primary** site:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Messages**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Messages**.
 1. Add a message notifying users on the maintenance window.
    You can check under **Geo > Sites** to estimate how long it
    takes to finish syncing.
@@ -197,9 +194,8 @@ To ensure that all data is replicated to a secondary site, updates (write reques
 be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
 1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
@@ -211,8 +207,7 @@ be disabled on the **primary** site:
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
 1. On the **primary** site:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
       those with `geo` in the name to drop to 0.
@@ -227,8 +222,7 @@ be disabled on the **primary** site:
       - The Geo log cursor is up to date (0 events behind).
 
 1. On the **secondary** site:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
       queues to drop to 0 queued and 0 running jobs.

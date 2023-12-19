@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Translating GitLab
@@ -96,7 +96,7 @@ For example, in German, the word _user_ can be translated into _Benutzer_ (male)
 
 ### Updating the glossary
 
-To propose additions to the glossary, please
+To propose additions to the glossary, 
 [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
 
 ## French translation guidelines

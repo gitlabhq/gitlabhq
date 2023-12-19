@@ -57,36 +57,6 @@ RSpec.describe Gitlab::GithubImport::MilestoneFinder, :clean_gitlab_redis_cache,
         expect(finder.id_for(issuable)).to eq(milestone.id)
       end
     end
-
-    context 'with FF import_fallback_to_db_empty_cache disabled' do
-      before do
-        stub_feature_flags(import_fallback_to_db_empty_cache: false)
-      end
-
-      it 'returns nil if object does not exist' do
-        missing_issuable = double(:issuable, milestone_number: 999)
-
-        expect(finder.id_for(missing_issuable)).to be_nil
-      end
-
-      it 'does not fetch object id from database if not in cache' do
-        expect(finder.id_for(issuable)).to be_nil
-      end
-
-      it 'fetches object id from cache if present' do
-        finder.build_cache
-
-        expect(finder.id_for(issuable)).to eq(milestone.id)
-      end
-
-      it 'returns -1 if cache is -1' do
-        key = finder.cache_key_for(milestone.iid)
-
-        Gitlab::Cache::Import::Caching.write(key, -1)
-
-        expect(finder.id_for(issuable)).to eq(-1)
-      end
-    end
   end
 
   describe '#build_cache' do

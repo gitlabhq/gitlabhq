@@ -7,7 +7,6 @@ RSpec.describe API::Helpers::ImportGithubHelpers, feature_category: :importers d
     helper = Class.new.include(described_class).new
     def helper.params = {
       personal_access_token: 'foo',
-      additional_access_tokens: 'bar',
       github_hostname: 'github.example.com'
     }
     helper
@@ -21,7 +20,7 @@ RSpec.describe API::Helpers::ImportGithubHelpers, feature_category: :importers d
 
   describe '#access_params' do
     it 'makes the passed in personal access token and extra tokens accessible' do
-      expect(subject.access_params).to eq({ github_access_token: 'foo', additional_access_tokens: 'bar' })
+      expect(subject.access_params).to eq({ github_access_token: 'foo' })
     end
   end
 

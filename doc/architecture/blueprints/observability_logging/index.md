@@ -121,7 +121,7 @@ Hence the decision to only support Log objects seems like a boring and simple so
 Similar to traces, logging data ingestion will be done at the Ingress level.
 As part of [the forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) flow, Traefik will forward the request to Gatekeeper which in turn leverages Redis for counting.
 This is currently done only for [the ingestion path](https://gitlab.com/gitlab-org/opstrace/opstrace/-/merge_requests/2236).
-Please check the MR description for more details on how it works.
+Check the MR description for more details on how it works.
 The read path rate limiting implementation is tracked [here](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2356).
 
 ### Database schema
@@ -629,4 +629,4 @@ Long-term, we will need a way to monitor the number of user queries that failed 
 
 ## Iterations
 
-Please refer to [Observability Group planning epic](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/92) and its linked issues for up-to-date information.
+Refer to [Observability Group planning epic](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/92) and its linked issues for up-to-date information.

@@ -81,6 +81,7 @@ class Namespace < ApplicationRecord
 
   has_one :cluster_enabled_grant, inverse_of: :namespace, class_name: 'Clusters::ClusterEnabledGrant'
   has_many :work_items, inverse_of: :namespace
+  has_many :work_items_dates_source, inverse_of: :namespace, class_name: 'WorkItems::DatesSource'
   has_many :issues, inverse_of: :namespace
 
   has_many :timelog_categories, class_name: 'TimeTracking::TimelogCategory'
@@ -95,7 +96,7 @@ class Namespace < ApplicationRecord
     length: { maximum: 255 }
   validates :name, uniqueness: { scope: [:type, :parent_id] }, if: -> { parent_id.present? }
 
-  validates :description, length: { maximum: 255 }
+  validates :description, length: { maximum: 500 }
 
   validates :path,
     presence: true,

@@ -182,7 +182,7 @@ module API
           end
 
           def track_push_package_event
-            if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY && params[:file].size > 0 # rubocop: disable Style/ZeroLengthPredicate
+            if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY
               track_package_event('push_package', :conan, category: 'API::ConanPackages', project: project, namespace: project.namespace)
             end
           end
@@ -196,7 +196,7 @@ module API
           end
 
           def create_package_file_with_type(file_type, current_package)
-            unless params[:file].size == 0 # rubocop: disable Style/ZeroLengthPredicate
+            unless params[:file].empty_size?
               # conan sends two upload requests, the first has no file, so we skip record creation if file.size == 0
               ::Packages::Conan::CreatePackageFileService.new(
                 current_package,
@@ -212,7 +212,7 @@ module API
 
             current_package = find_or_create_package
 
-            track_push_package_event
+            track_push_package_event unless params[:file].empty_size?
 
             create_package_file_with_type(file_type, current_package)
           rescue ObjectStorage::RemoteStoreError => e

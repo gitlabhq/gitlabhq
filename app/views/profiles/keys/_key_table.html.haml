@@ -3,7 +3,7 @@
 
 - if @keys.any?
   .table-holder
-    %table.table.b-table.gl-table.b-table-stacked-md.gl-mt-n1.gl-mb-n2.ssh-keys-list{ data: { qa_selector: 'ssh_keys_list' } }
+    %table.table.b-table.gl-table.b-table-stacked-md.gl-mt-n1.gl-mb-n2.ssh-keys-list{ data: { testid: 'ssh-keys-list' } }
       %thead.d-none.d-md-table-header-group
         %tr
           %th= _('Title')

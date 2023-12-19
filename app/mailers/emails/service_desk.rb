@@ -7,6 +7,7 @@ module Emails
     include ::ServiceDesk::CustomEmails::Logger
 
     EMAIL_ATTACHMENTS_SIZE_LIMIT = 10.megabytes.freeze
+    VERIFICATION_EMAIL_TIMEOUT = 7
 
     included do
       layout 'service_desk', only: [:service_desk_thank_you_email, :service_desk_new_note_email]
@@ -138,7 +139,7 @@ module Emails
     end
 
     def inject_service_desk_custom_email(force: false)
-      return mail if !service_desk_custom_email_enabled? && !force
+      return mail if !@service_desk_setting&.custom_email_enabled? && !force
       return mail unless @service_desk_setting.custom_email_credential.present?
 
       # Only set custom email reply address if it's enabled, not when we force it.
@@ -146,11 +147,15 @@ module Emails
 
       log_info(project: @project)
 
-      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
-    end
+      delivery_options = @service_desk_setting.custom_email_credential.delivery_options
+      # We force the use of custom email settings when sending out the verification email.
+      # If the credentials aren't correct some servers tend to take a while to answer
+      # which leads to some Net::ReadTimeout errors which disguises the
+      # real configuration issue.
+      # We increase the timeout for verification emails only.
+      delivery_options[:read_timeout] = VERIFICATION_EMAIL_TIMEOUT if force
 
-    def service_desk_custom_email_enabled?
-      Feature.enabled?(:service_desk_custom_email, @project) && @service_desk_setting&.custom_email_enabled?
+      mail.delivery_method(::Mail::SMTP, delivery_options)
     end
 
     def inject_service_desk_custom_email_reply_address
@@ -163,7 +168,7 @@ module Emails
     end
 
     def service_desk_sender_email_address
-      return unless service_desk_custom_email_enabled?
+      return unless @service_desk_setting&.custom_email_enabled?
 
       @service_desk_setting.custom_email
     end

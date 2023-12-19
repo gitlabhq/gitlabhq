@@ -128,6 +128,11 @@
             %strong
               = Gitlab::Access.human_access_with_none(@user.highest_role)
 
+          %li
+            %span.light= _("Email reset removed at:")
+            %strong
+              = @user.email_reset_offered_at || _('never')
+
           = render_if_exists 'admin/users/using_license_seat', user: @user
 
           - if @user.ldap_user?

@@ -196,7 +196,7 @@ function install_gitlab_gem() {
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.1.4"
+  run_timed_command "gem install test_file_finder --no-document --version 0.2.1"
 }
 
 function install_activesupport_gem() {
@@ -452,4 +452,22 @@ function download_local_gems() {
     tar -zxf "${output}" --strip-component 1
     rm "${output}"
   done
+}
+
+function define_trigger_branch_in_build_env() {
+  target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
+  stable_branch_regex="^[0-9-]+-stable(-ee)?$"
+
+  echo "target_branch_name: ${target_branch_name}"
+
+  if [[ $target_branch_name =~ $stable_branch_regex  ]]
+  then
+    export TRIGGER_BRANCH="${target_branch_name%-ee}"
+  else
+    export TRIGGER_BRANCH=master
+  fi
+
+  if [ -f "$BUILD_ENV" ]; then
+    echo "TRIGGER_BRANCH=${TRIGGER_BRANCH}" >> $BUILD_ENV
+  fi
 }

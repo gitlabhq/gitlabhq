@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Pages access control **(FREE ALL)**
@@ -15,8 +15,9 @@ on your GitLab instance. When enabled, only authenticated
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v=tSPAr5mQYc8).
 
-1. Navigate to your project's **Settings > General** and expand **Visibility, project features, permissions**.
-
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,
    that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/index.md#access-control).
 

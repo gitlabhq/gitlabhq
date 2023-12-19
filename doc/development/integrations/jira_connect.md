@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Set up a Jira development environment
@@ -73,7 +73,7 @@ To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [J
    ```
 
 1. Restart GDK.
-1. Go to `http://127.0.0.1:3000/-/profile/personal_access_tokens`.
+1. Go to `http://127.0.0.1:3000/-/user_settings/personal_access_tokens`.
 1. Create a new token with the `api` scope and copy the token.
 1. Go to `http://localhost:9292`.
 1. Paste the token and select **Install GitLab.com Jira Cloud app**.

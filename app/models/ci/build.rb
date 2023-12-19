@@ -15,11 +15,18 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
+    self.allow_legacy_sti_class = true
+
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
-    belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :builds
+    belongs_to :pipeline,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::Pipeline',
+      foreign_key: :commit_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
@@ -38,7 +45,12 @@ module Ci
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
-    has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
+    has_many :trace_chunks,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::BuildTraceChunk',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id
     has_many :report_results, class_name: 'Ci::BuildReportResult', foreign_key: :build_id, inverse_of: :build
     has_one :namespace, through: :project
 
@@ -48,7 +60,12 @@ module Ci
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
-    has_many :job_annotations, class_name: 'Ci::JobAnnotation', foreign_key: :job_id, inverse_of: :job
+    has_many :job_annotations,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobAnnotation',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :build
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
@@ -57,7 +74,12 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
-    has_one :runner_manager_build, class_name: 'Ci::RunnerManagerBuild', foreign_key: :build_id, inverse_of: :build,
+    has_one :runner_manager_build,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::RunnerManagerBuild',
+      foreign_key: :build_id,
+      inverse_of: :build,
+      partition_foreign_key: :partition_id,
       autosave: true
     has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
 
@@ -88,11 +110,6 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-
-    scope :not_interruptible, -> do
-      joins(:metadata)
-        .where.not(Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) })
-    end
 
     scope :unstarted, -> { where(runner_id: nil) }
 
@@ -179,6 +196,10 @@ module Ci
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
 
+    scope :in_merge_request, ->(merge_request) do
+      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request))
+    end
+
     acts_as_taggable
 
     add_authentication_token_field :token,
@@ -210,7 +231,11 @@ module Ci
            yaml_variables when environment coverage_regex
            description tag_list protected needs_attributes
            job_variables_attributes resource_group scheduling_type
-           ci_stage partition_id id_tokens].freeze
+           ci_stage partition_id id_tokens interruptible].freeze
+      end
+
+      def supported_keyset_orderings
+        { id: [:desc] }
       end
     end
 
@@ -356,6 +381,10 @@ module Ci
           project: project
         })
       end
+    end
+
+    def self.ids_in_merge_request(merge_request_ids)
+      in_merge_request(merge_request_ids).pluck(:id)
     end
 
     def build_matcher
@@ -700,13 +729,17 @@ module Ci
     end
 
     def artifacts_public?
-      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
+      return true if job_artifacts_archive.nil? # To backward compatibility return true if no artifacts found
 
+      job_artifacts_archive.public_access?
+    end
+
+    def artifact_is_public_in_config?
       artifacts_public = options.dig(:artifacts, :public)
 
       return true if artifacts_public.nil? # Default artifacts:public to true
 
-      options.dig(:artifacts, :public)
+      artifacts_public
     end
 
     def artifacts_metadata_entry(path, **options)
@@ -918,7 +951,7 @@ module Ci
       job_artifacts.all_reports
     end
 
-    # Consider this object to have a structural integrity problems
+    # Consider this object to have an unknown job problem
     def doom!
       transaction do
         now = Time.current

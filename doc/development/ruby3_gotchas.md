@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Ruby 3 gotchas
@@ -150,7 +150,7 @@ We run automated detection for this warning in tests via `deprecation_toolkit`,
 but it relies on the fact that `Kernel#warn` emits a warning, so stubbing out this call will effectively remove the call to warn, which means `deprecation_toolkit` will never see the deprecation warnings.
 Stubbing out the implementation removes that warning, and we never pick it up, so the build is green.
 
-Please refer to [issue 364099](https://gitlab.com/gitlab-org/gitlab/-/issues/364099) for more context.
+Refer to [issue 364099](https://gitlab.com/gitlab-org/gitlab/-/issues/364099) for more context.
 
 ## Testing in `irb` and `rails console`
 

@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_management do
   let(:worker) { described_class.new }
 
+  specify do
+    expect(worker.class.click_house_worker_attrs).to match(
+      a_hash_including(migration_lock_ttl: ClickHouse::MigrationSupport::ExclusiveLock::DEFAULT_CLICKHOUSE_WORKER_TTL)
+    )
+  end
+
   it_behaves_like 'an idempotent worker' do
     context 'when the event_sync_worker_for_click_house feature flag is on', :click_house do
       before do
@@ -63,10 +69,31 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
           end
 
           it 'inserts all records' do
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+              { status: :processed, records_inserted: 4, reached_end_of_table: true })
+
             worker.perform
 
             events = ClickHouse::Client.select('SELECT * FROM events', :main)
             expect(events.size).to eq(4)
+          end
+
+          context 'when new records are inserted while processing' do
+            it 'does not process new records created during the iteration' do
+              expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+                { status: :processed, records_inserted: 4,
+                  reached_end_of_table: true })
+
+              # Simulating the case when there is an insert during the iteration
+              call_count = 0
+              allow(worker).to receive(:next_batch).and_wrap_original do |method|
+                call_count += 1
+                create(:event) if call_count == 3
+                method.call
+              end
+
+              worker.perform
+            end
           end
         end
 
@@ -96,6 +123,9 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
           end
 
           it 'syncs records after the cursor' do
+            expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
+              { status: :processed, records_inserted: 3, reached_end_of_table: true })
+
             worker.perform
 
             events = ClickHouse::Client.select('SELECT id FROM events ORDER BY id', :main)
@@ -121,7 +151,7 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
 
     context 'when clickhouse is not configured' do
       before do
-        allow(ClickHouse::Client.configuration).to receive(:databases).and_return({})
+        allow(ClickHouse::Client).to receive(:database_configured?).and_return(false)
       end
 
       it 'skips execution' do
@@ -135,7 +165,7 @@ RSpec.describe ClickHouse::EventsSyncWorker, feature_category: :value_stream_man
   context 'when exclusive lease error happens' do
     it 'skips execution' do
       stub_feature_flags(event_sync_worker_for_click_house: true)
-      allow(ClickHouse::Client.configuration).to receive(:databases).and_return({ main: :some_db })
+      allow(ClickHouse::Client).to receive(:database_configured?).with(:main).and_return(true)
 
       expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { status: :skipped })

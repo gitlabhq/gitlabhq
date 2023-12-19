@@ -16,7 +16,7 @@ module Packages
       def perform(project_id, package_name)
         project = Project.find_by_id(project_id)
 
-        return unless project && Feature.enabled?(:npm_metadata_cache, project)
+        return unless project
 
         ::Packages::Npm::CreateMetadataCacheService
           .new(project, package_name)

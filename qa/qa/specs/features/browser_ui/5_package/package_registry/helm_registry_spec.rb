@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, :reliable, product_group: :package_registry do
     describe 'Helm Registry', :external_api_calls do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
@@ -65,7 +65,7 @@ module QA
           end
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 800)
+            expect(job).to be_successful(timeout: 180)
           end
 
           Page::Project::Menu.perform(&:go_to_package_registry)
@@ -97,7 +97,7 @@ module QA
           end
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 800)
+            expect(job).to be_successful(timeout: 180)
           end
         end
       end

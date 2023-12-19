@@ -1,8 +1,7 @@
 ---
-type: reference
-stage: Monitor
+stage: Service Management
 group: Respond
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Incident management rate limits **(ULTIMATE SELF)**
@@ -30,8 +29,7 @@ Requests that exceed the limit are logged into `auth.log`.
 
 To set inbound incident management alert limits:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Incident Management Limits**.
 1. Select the **Enable Incident Management inbound alert limit** checkbox.

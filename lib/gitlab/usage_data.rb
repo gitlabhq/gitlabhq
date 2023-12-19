@@ -157,28 +157,7 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def features_usage_data
-        features_usage_data_ce
-      end
-
-      def features_usage_data_ce
-        {
-          instance_auto_devops_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.auto_devops_enabled? },
-          container_registry_enabled: alt_usage_data(fallback: nil) { Gitlab.config.registry.enabled },
-          dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
-          gitlab_shared_runners_enabled: alt_usage_data(fallback: nil) { Gitlab.config.gitlab_ci.shared_runners_enabled },
-          gravatar_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gravatar_enabled? },
-          ldap_enabled: alt_usage_data(fallback: nil) { Gitlab.config.ldap.enabled },
-          mattermost_enabled: alt_usage_data(fallback: nil) { Gitlab.config.mattermost.enabled },
-          omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
-          prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
-          prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
-          reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::IncomingEmail.enabled? },
-          signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
-          grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
-          gitpod_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.gitpod_enabled? }
-        }
-      end
+      def features_usage_data = {}
 
       def components_usage_data
         {
@@ -365,7 +344,6 @@ module Gitlab
           users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
           user_auth_by_provider: distinct_count_user_auth_by_provider(time_period),
-          unique_users_all_imports: unique_users_all_imports(time_period),
           bulk_imports: {
             gitlab_v1: count(::BulkImport.where(**time_period, source_type: :gitlab))
           },
@@ -417,7 +395,6 @@ module Gitlab
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
           projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_cloud.where(time_period), :creator_id),
           projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
@@ -563,18 +540,6 @@ module Gitlab
           gitlab_migration: add_metric('CountBulkImportsEntitiesMetric', time_frame: time_frame, options: { source_type: :group_entity })
         }
       end
-
-      # rubocop:disable CodeReuse/ActiveRecord
-      def unique_users_all_imports(time_period)
-        project_imports = distinct_count(::Project.where(time_period).where.not(import_type: nil), :creator_id)
-        bulk_imports = distinct_count(::BulkImport.where(time_period), :user_id)
-        jira_issue_imports = distinct_count(::JiraImportState.where(time_period), :user_id)
-        csv_issue_imports = distinct_count(::Issues::CsvImport.where(time_period), :user_id)
-        group_imports = distinct_count(::GroupImportState.where(time_period), :user_id)
-
-        add(project_imports, bulk_imports, jira_issue_imports, csv_issue_imports, group_imports)
-      end
-      # rubocop:enable CodeReuse/ActiveRecord
 
       # rubocop:disable CodeReuse/ActiveRecord
       def distinct_count_user_auth_by_provider(time_period)

@@ -151,7 +151,7 @@ describe('common_utils', () => {
       jest.spyOn(window, 'scrollBy');
       document.body.innerHTML += `
         <div id="parent">
-          <div class="navbar-gitlab" style="position: fixed; top: 0; height: 50px;"></div>
+          <div class="header-logged-out" style="position: fixed; top: 0; height: 50px;"></div>
           <div style="height: 2000px; margin-top: 50px;"></div>
           <div id="user-content-test" style="height: 2000px;"></div>
         </div>

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Federated Learning of Cohorts (FLoC) **(FREE SELF)**
@@ -22,8 +22,7 @@ Permissions-Policy: interest-cohort=()
 
 To enable it:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Federated Learning of Cohorts (FLoC)**.
 1. Select the **Participate in FLoC** checkbox.

@@ -178,7 +178,7 @@ module Types
     field :twitter,
           type: ::GraphQL::Types::String,
           null: true,
-          description: 'Twitter username of the user.'
+          description: 'X (formerly Twitter) username of the user.'
 
     field :discord,
           type: ::GraphQL::Types::String,
@@ -229,5 +229,3 @@ module Types
     end
   end
 end
-
-Types::UserInterface.prepend_mod

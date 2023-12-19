@@ -9,7 +9,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -41,14 +40,10 @@ func TestGoCloudObjectUpload(t *testing.T) {
 
 	cancel()
 
-	testhelper.Retry(t, 5*time.Second, func() error {
+	require.Eventually(t, func() bool {
 		exists, err := bucket.Exists(ctx, objectName)
 		require.NoError(t, err)
 
-		if exists {
-			return fmt.Errorf("file %s is still present", objectName)
-		}
-
-		return nil
-	})
+		return !exists
+	}, 5*time.Second, time.Millisecond, fmt.Sprintf("file %s is still present", objectName))
 }

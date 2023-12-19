@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure Gitaly Cluster **(FREE SELF)**
@@ -50,7 +50,7 @@ default value. The default value depends on the GitLab version.
 Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
 important for:
 
-- Gitaly node health checks. Nodes must be able to respond 1 second or faster.
+- Gitaly node health checks. Nodes must be able to respond within 1 second.
 - Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 
@@ -278,6 +278,7 @@ praefect['configuration'] = {
    database: {
       # ...
       host: POSTGRESQL_HOST,
+      user: 'praefect',
       port: 5432,
       password: PRAEFECT_SQL_PASSWORD,
       dbname: 'praefect_production',
@@ -725,7 +726,7 @@ Updates to example must be made at:
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
 
-- Ensure Gitaly is [configured for TLS](configure_gitaly.md#enable-tls-support) and use a `tls://` URL scheme in the `gitaly_address`
+- Ensure Gitaly is [configured for TLS](tls_support.md) and use a `tls://` URL scheme in the `gitaly_address`
   of the corresponding storage entry in the GitLab configuration.
 - Bring your own certificates because this isn't provided automatically. The certificate
   corresponding to each Praefect server must be installed on that Praefect server.
@@ -739,7 +740,7 @@ Note the following:
 - The certificate must specify the address you use to access the Praefect server. You must add the hostname or IP
   address as a Subject Alternative Name to the certificate.
 - When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
-  [Gitaly TLS enabled](configure_gitaly.md#enable-tls-support), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
+  [Gitaly TLS enabled](tls_support.md), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
   environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell
@@ -843,13 +844,7 @@ For self-compiled installations:
        storages:
          default:
            gitaly_address: tls://PRAEFECT_LOADBALANCER_HOST:3305
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no
-   data is stored in this folder. This requirement is scheduled to be removed when
-   [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Copy all Praefect server certificates, or their certificate authority, to the system
@@ -980,13 +975,7 @@ with Praefect service discovery address, such as `praefect.service.consul`.
        storages:
          default:
            gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
-           path: /some/local/path
    ```
-
-   NOTE:
-   `/some/local/path` should be set to a local folder that exists, however no
-   data is stored in this folder. [Issue 375254](https://gitlab.com/gitlab-org/gitlab/-/issues/375254)
-   proposes to remove this requirement.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
@@ -1337,8 +1326,7 @@ Particular attention should be shown to:
 
 1. Check that the Praefect storage is configured to store new repositories:
 
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Settings > Repository**.
    1. Expand the **Repository storage** section.
 

@@ -49,7 +49,7 @@ Gitlab::Experiment.configure do |config|
   #
   valid_domains = %w[about.gitlab.com docs.gitlab.com gitlab.com gdk.test localhost]
   config.redirect_url_validator = lambda do |url|
-    Gitlab.com? && (url = URI.parse(url)) && valid_domains.include?(url.host)
+    ApplicationExperiment.available? && (url = URI.parse(url)) && valid_domains.include?(url.host)
   rescue URI::InvalidURIError
     false
   end
@@ -83,19 +83,5 @@ Gitlab::Experiment.configure do |config|
     def deprecated(*args, version:, stack: 0)
       super if Gitlab.dev_or_test_env?
     end
-
-    # Maintain a list of resolved deprecations to ensure that no new uses appear.
-    #
-    # Once a resolved deprecation warning has been added here, any future use will
-    # raise an exception.
-    #
-    ActiveSupport::Deprecation.disallowed_warnings += [
-      # 'Gitlab::Experiment 0.8 (instead use `control`)', # don't use `use`
-      # 'Gitlab::Experiment 0.8 (instead use `candidate`)', # don't use `try`
-      # 'Gitlab::Experiment 0.8 (instead use `variant(:variant_name)`)', # don't use `try(:variant_name)`
-      # 'Gitlab::Experiment 0.8 (instead use `assigned(:candidate)`)', # don't use variant(:variant_name) to assign
-      # 'Gitlab::Experiment 0.8 (instead use `assigned`)', # don't use variant.name to get the assigned variant
-      # 'Gitlab::Experiment 0.8, instead register variants using:', # don't use public `*_behavior` methods
-    ]
   end)
 end

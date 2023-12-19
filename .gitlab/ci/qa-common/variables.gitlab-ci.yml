@@ -6,9 +6,9 @@ variables:
   REGISTRY_GROUP: "gitlab-org"
   ALLURE_JOB_NAME: $CI_PROJECT_NAME
   COLORIZED_LOGS: "true"
+  FEATURE_FLAGS: ""
   QA_LOG_LEVEL: "info"
   QA_TESTS: ""
-  QA_FEATURE_FLAGS: ""
   # run all tests by default when package-and-test is included natively in other projects
   # this will be overridden when selective test execution is used in gitlab canonical project
   QA_RUN_ALL_TESTS: "true"

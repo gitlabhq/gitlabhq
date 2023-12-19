@@ -115,7 +115,7 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
   end
 
   # for the licensed tests, refer to ee/spec/views/admin/application_settings/general.html.haml_spec.rb
-  describe 'instance-level code suggestions settings', :without_license, feature_category: :code_suggestions do
+  describe 'instance-level ai-powered settings', :without_license, feature_category: :code_suggestions do
     before do
       allow(::Gitlab).to receive(:org_or_com?).and_return(gitlab_org_or_com?)
 
@@ -125,6 +125,7 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
     shared_examples 'does not render the form' do
       it 'does not render the form' do
         expect(rendered).not_to have_field('application_setting_instance_level_code_suggestions_enabled')
+        expect(rendered).not_to have_field('application_setting_instance_level_ai_beta_features_enabled')
       end
     end
 

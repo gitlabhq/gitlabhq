@@ -94,14 +94,12 @@ export default {
       return awardList.some((award) => award.user.id === this.currentUserId);
     },
     createAwardList(name, list) {
-      const url = list.length ? list[0].url : null;
-
       return {
         name,
         list,
         title: this.getAwardListTitle(list, name),
         classes: this.getAwardClassBindings(list),
-        html: glEmojiTag(name, { url }),
+        html: glEmojiTag(name),
       };
     },
     getAwardListTitle(awardsList, name) {

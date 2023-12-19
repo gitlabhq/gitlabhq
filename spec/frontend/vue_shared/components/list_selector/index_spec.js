@@ -7,6 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import UserItem from '~/vue_shared/components/list_selector/user_item.vue';
 import GroupItem from '~/vue_shared/components/list_selector/group_item.vue';
+import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item.vue';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -20,16 +21,19 @@ describe('List Selector spec', () => {
   let fakeApollo;
 
   const USERS_MOCK_PROPS = {
-    title: 'Users',
     projectPath: 'some/project/path',
     groupPath: 'some/group/path',
     type: 'users',
   };
 
   const GROUPS_MOCK_PROPS = {
-    title: 'Groups',
     projectPath: 'some/project/path',
     type: 'groups',
+  };
+
+  const DEPLOY_KEYS_MOCK_PROPS = {
+    projectPath: 'some/project/path',
+    type: 'deployKeys',
   };
 
   const groupsAutocompleteQuerySuccess = jest.fn().mockResolvedValue(GROUPS_RESPONSE_MOCK);
@@ -56,6 +60,7 @@ describe('List Selector spec', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findAllUserComponents = () => wrapper.findAllComponents(UserItem);
   const findAllGroupComponents = () => wrapper.findAllComponents(GroupItem);
+  const findAllDeployKeyComponents = () => wrapper.findAllComponents(DeployKeyItem);
 
   beforeEach(() => {
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(USERS_RESPONSE_MOCK);
@@ -252,6 +257,48 @@ describe('List Selector spec', () => {
 
         expect(wrapper.emitted('delete')).toEqual([[name]]);
       });
+    });
+  });
+
+  describe('Deploy keys type', () => {
+    beforeEach(() => createComponent(DEPLOY_KEYS_MOCK_PROPS));
+
+    it('renders a correct title', () => {
+      expect(findTitle().exists()).toBe(true);
+      expect(findTitle().text()).toContain('Deploy keys');
+    });
+
+    it('renders the correct icon', () => {
+      expect(findIcon().props('name')).toBe('key');
+    });
+
+    describe('selected items', () => {
+      const selectedKey = { title: 'MyKey', owner: 'peter', id: '123' };
+      const selectedItems = [selectedKey];
+      beforeEach(() => createComponent({ ...DEPLOY_KEYS_MOCK_PROPS, selectedItems }));
+
+      it('renders a heading with the total selected items', () => {
+        expect(findTitle().text()).toContain('Deploy keys');
+        expect(findTitle().text()).toContain('1');
+      });
+
+      it('renders a deploy key component for each selected item', () => {
+        expect(findAllDeployKeyComponents().length).toBe(selectedItems.length);
+        expect(findAllDeployKeyComponents().at(0).props()).toMatchObject({
+          data: selectedKey,
+          canDelete: true,
+        });
+      });
+
+      it('emits a delete event when a delete event is emitted from the deploy key component', () => {
+        const id = '123';
+        findAllDeployKeyComponents().at(0).vm.$emit('delete', id);
+
+        expect(wrapper.emitted('delete')).toEqual([[id]]);
+      });
+
+      // TODO - add a test for the select event once we have API integration
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/432494
     });
   });
 });

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
   subject(:importer) { described_class.new(project, client, parallel: parallel) }
 
   let(:parallel) { true }
-  let(:project) { instance_double(Project, id: 4, import_source: 'foo/bar', import_state: nil) }
+  let(:project) { build(:project, id: 4, import_source: 'foo/bar', import_state: nil) }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:github_collaborator) do
@@ -74,6 +74,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
     before do
+      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
         .and_return([github_collaborator])
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'outside')

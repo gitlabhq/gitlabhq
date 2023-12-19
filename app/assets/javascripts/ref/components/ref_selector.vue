@@ -28,12 +28,17 @@ export default {
   },
   inheritAttrs: false,
   props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     enabledRefTypes: {
       type: Array,
       required: false,
       default: () => ALL_REF_TYPES,
       validator: (val) =>
-        // It has to be an arrray
+        // It has to be an array
         isArray(val) &&
         // with at least one item
         val.length > 0 &&
@@ -234,6 +239,10 @@ export default {
       this.debouncedSearch();
     },
     selectRef(ref) {
+      if (this.disabled) {
+        return;
+      }
+
       this.setSelectedRef(ref);
       this.$emit('input', this.selectedRef);
     },
@@ -262,6 +271,7 @@ export default {
       :toggle-class="extendedToggleButtonClass"
       :toggle-text="buttonText"
       :icon="dropdownIcon"
+      :disabled="disabled"
       v-bind="$attrs"
       v-on="$listeners"
       @hidden="$emit('hide')"

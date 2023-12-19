@@ -7,6 +7,8 @@ module Gitlab
     module ObjectImporter
       extend ActiveSupport::Concern
 
+      FAILED_IMPORT_STATES = %w[canceled failed].freeze
+
       included do
         include ApplicationWorker
 
@@ -33,8 +35,10 @@ module Gitlab
 
         return unless project
 
-        if project.import_state&.canceled?
-          info(project.id, message: 'project import canceled')
+        import_state = project.import_status
+
+        if FAILED_IMPORT_STATES.include?(import_state)
+          info(project.id, message: "project import #{import_state}")
           return
         end
 

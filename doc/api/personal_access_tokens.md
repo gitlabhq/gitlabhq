@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Personal access tokens API **(FREE ALL)**
@@ -211,13 +211,16 @@ Example response:
 
 Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week.
 
+In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+
 ```plaintext
 POST /personal_access_tokens/:id/rotate
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer/string | yes | ID of personal access token |
+| Attribute | Type      | Required | Description         |
+|-----------|-----------|----------|---------------------|
+| `id` | integer/string | yes      | ID of personal access token |
+| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
 NOTE:
 Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user.

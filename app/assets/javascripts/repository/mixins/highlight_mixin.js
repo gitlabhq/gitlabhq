@@ -3,11 +3,14 @@ import {
   EVENT_ACTION,
   EVENT_LABEL_FALLBACK,
   LINES_PER_CHUNK,
+  ROUGE_TO_HLJS_LANGUAGE_MAP,
 } from '~/vue_shared/components/source_viewer/constants';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import LineHighlighter from '~/blob/line_highlighter';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import Tracking from '~/tracking';
+import axios from '~/lib/utils/axios_utils';
+import { TEXT_FILE_TYPE } from '../constants';
 
 /*
  * This mixin is intended to be used as an interface between our highlight worker and Vue components
@@ -27,8 +30,9 @@ export default {
       this.track(EVENT_ACTION, { label, property: language });
     },
     isUnsupportedLanguage(language) {
+      const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
       const supportedLanguages = Object.keys(languageLoader);
-      const isUnsupportedLanguage = !supportedLanguages.includes(language);
+      const isUnsupportedLanguage = !supportedLanguages.includes(mappedLanguage);
 
       return LEGACY_FALLBACKS.includes(language) || isUnsupportedLanguage;
     },
@@ -36,11 +40,26 @@ export default {
       this.trackEvent(EVENT_LABEL_FALLBACK, language);
       this?.onError();
     },
-    initHighlightWorker({ rawTextBlob, language, fileType }) {
-      if (language !== 'json' || !this.glFeatures.highlightJsWorker) return;
+    async handleLFSBlob(externalStorageUrl, rawPath, language) {
+      await axios
+        .get(externalStorageUrl || rawPath)
+        .then(({ data }) => this.instructWorker(data, language))
+        .catch(() => this.$emit('error'));
+    },
+    initHighlightWorker(blob, isUsingLfs) {
+      const { rawTextBlob, language, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
+
+      if (!this.glFeatures.highlightJsWorker || simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
 
       if (this.isUnsupportedLanguage(language)) {
         this.handleUnsupportedLanguage(language);
+        return;
+      }
+
+      this.highlightWorker.onmessage = this.handleWorkerMessage;
+
+      if (isUsingLfs) {
+        this.handleLFSBlob(externalStorageUrl, rawPath, language);
         return;
       }
 
@@ -63,8 +82,6 @@ export default {
       const firstSeventyLines = rawTextBlob.split(/\r?\n/).slice(0, LINES_PER_CHUNK).join('\n');
 
       this.chunks = splitIntoChunks(language, firstSeventyLines);
-
-      this.highlightWorker.onmessage = this.handleWorkerMessage;
 
       // Instruct the worker to highlight the first 70 lines ASAP, this improves perceived performance.
       this.instructWorker(firstSeventyLines, language);

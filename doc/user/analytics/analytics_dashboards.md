@@ -1,7 +1,7 @@
 ---
-stage: Analyze
+stage: Monitor
 group: Product Analytics
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Analytics dashboards **(ULTIMATE ALL EXPERIMENT)**
@@ -64,12 +64,8 @@ Your dashboard files are versioned in source control with the rest of a project'
 
 ## Dashboard designer
 
-> Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
 
 You can use the dashboard designer to:
 
@@ -81,12 +77,8 @@ You can use the dashboard designer to:
 
 ## Visualization designer
 
-> Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
 
 NOTE:
 This feature is only compatible with the [product analytics](../product_analytics/index.md) data source.
@@ -98,7 +90,7 @@ You can use the dashboard designer to:
 
 ## View project dashboards
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Developer role for the project.
 
@@ -107,6 +99,60 @@ To view a list of dashboards (both built-in and custom) for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
+
+### View the value streams dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards` and `project_analytics_dashboard_dynamic_vsd`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- Overview background aggregation for Value Streams Dashboards must be enabled.
+
+To view the Value Streams Dashboard as an analytics dashboard for a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
+
+## View group dashboards
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the group.
+
+To view a list of dashboards (both built-in and custom) for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select the dashboard you want to view.
+
+### View the value streams dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+To view the Value Streams Dashboard as an analytics dashboard for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
 
 ## Change the location of dashboards
 
@@ -231,7 +277,7 @@ To create a custom visualization:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
-1. Select **Visualization Designer**.
+1. Select **Visualization designer**.
 1. In the **Visualization title** field, enter the name of your visualization.
 1. From the **Visualization type** dropdown list, select a visualization type.
 1. In the **What metric do you want to visualize?** section, select the metric you want to query.

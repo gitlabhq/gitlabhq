@@ -56,6 +56,12 @@ RSpec.describe GitlabUploader, feature_category: :shared do
     end
   end
 
+  describe '#empty_size?' do
+    it 'is true' do
+      expect(subject.empty_size?).to eq(true)
+    end
+  end
+
   describe '#cache!' do
     it 'moves the file from the working directory to the cache directory' do
       # One to get the work dir, the other to remove it

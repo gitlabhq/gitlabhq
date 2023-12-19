@@ -25,11 +25,12 @@ class CommitStatus < Ci::ApplicationRecord
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
 
+  query_constraints :id, :partition_id
   partitionable scope: :pipeline, partitioned: true
 
   belongs_to :user
   belongs_to :project
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses
+  belongs_to :pipeline, ->(build) { in_partition(build) }, class_name: 'Ci::Pipeline', foreign_key: :commit_id, inverse_of: :statuses, partition_foreign_key: :partition_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_jobs
   belongs_to :ci_stage, class_name: 'Ci::Stage', foreign_key: :stage_id
 
@@ -85,7 +86,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :for_project_paths, -> (paths) do
     # Pluck is used to split this query. Splitting the query is required for database decomposition for `ci_*` tables.
     # https://docs.gitlab.com/ee/development/database/transaction_guidelines.html#database-decomposition-and-sharding
-    project_ids = Project.where_full_path_in(Array(paths)).pluck(:id)
+    project_ids = Project.where_full_path_in(Array(paths), use_includes: false).pluck(:id)
 
     for_project(project_ids)
   end
@@ -96,6 +97,11 @@ class CommitStatus < Ci::ApplicationRecord
 
   scope :with_project_preload, -> do
     preload(project: :namespace)
+  end
+
+  scope :scoped_pipeline, -> do
+    where(arel_table[:commit_id].eq(Ci::Pipeline.arel_table[:id]))
+    .where(arel_table[:partition_id].eq(Ci::Pipeline.arel_table[:partition_id]))
   end
 
   scope :match_id_and_lock_version, -> (items) do
@@ -231,6 +237,10 @@ class CommitStatus < Ci::ApplicationRecord
 
   def self.locking_enabled?
     false
+  end
+
+  def self.use_partition_id_filter?
+    Ci::Pipeline.use_partition_id_filter?
   end
 
   def locking_enabled?

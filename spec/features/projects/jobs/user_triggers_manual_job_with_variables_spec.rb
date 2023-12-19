@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User triggers manual job with variables', :js, feature_category: :groups_and_projects do
+RSpec.describe 'User triggers manual job with variables', :js, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository, namespace: user.namespace) }

@@ -123,55 +123,6 @@ module Gitlab
           end
         end
 
-        describe 'interruptible entry' do
-          describe 'interruptible job' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec', interruptible: true })
-            end
-
-            it { expect(rspec_build[:interruptible]).to be_truthy }
-          end
-
-          describe 'interruptible job with default value' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec' })
-            end
-
-            it { expect(rspec_build).not_to have_key(:interruptible) }
-          end
-
-          describe 'uninterruptible job' do
-            let(:config) do
-              YAML.dump(rspec: { script: 'rspec', interruptible: false })
-            end
-
-            it { expect(rspec_build[:interruptible]).to be_falsy }
-          end
-
-          it "returns interruptible when overridden for job" do
-            config = YAML.dump({ default: { interruptible: true },
-                                 rspec: { script: "rspec" } })
-
-            config_processor = described_class.new(config).execute
-            builds = config_processor.builds.select { |b| b[:stage] == "test" }
-
-            expect(builds.size).to eq(1)
-            expect(builds.first).to eq({
-              stage: "test",
-              stage_idx: 2,
-              name: "rspec",
-              only: { refs: %w[branches tags] },
-              options: { script: ["rspec"] },
-              interruptible: true,
-              allow_failure: false,
-              when: "on_success",
-              job_variables: [],
-              root_variables_inheritance: true,
-              scheduling_type: :stage
-            })
-          end
-        end
-
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do
@@ -542,6 +493,27 @@ module Gitlab
 
           it 'parses the workflow:name' do
             expect(subject.workflow_name).to be_nil
+          end
+        end
+
+        context 'with auto_cancel' do
+          let(:config) do
+            <<-YML
+              workflow:
+                auto_cancel:
+                  on_new_commit: interruptible
+                  on_job_failure: all
+
+              hello:
+                script: echo world
+            YML
+          end
+
+          it 'parses the workflow:auto_cancel as workflow_auto_cancel' do
+            expect(subject.workflow_auto_cancel).to eq({
+              on_new_commit: 'interruptible',
+              on_job_failure: 'all'
+            })
           end
         end
       end
@@ -1304,6 +1276,46 @@ module Gitlab
               options: {
                 script: ["exit 0"],
                 services: [{ name: "postgres:11.9", pull_policy: ["if-not-present"] }]
+              },
+              allow_failure: false,
+              when: "on_success",
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            })
+          end
+        end
+
+        context 'when image and service have docker options' do
+          let(:config) do
+            <<~YAML
+            test:
+              script: exit 0
+              image:
+                name: ruby:2.7
+                docker:
+                  platform: linux/amd64
+              services:
+                - name: postgres:11.9
+                  docker:
+                    platform: linux/amd64
+            YAML
+          end
+
+          it { is_expected.to be_valid }
+
+          it "returns with image" do
+            expect(processor.builds).to contain_exactly({
+              stage: "test",
+              stage_idx: 2,
+              name: "test",
+              only: { refs: %w[branches tags] },
+              options: {
+                script: ["exit 0"],
+                image: { name: "ruby:2.7",
+                         executor_opts: { docker: { platform: 'linux/amd64' } } },
+                services: [{ name: "postgres:11.9",
+                             executor_opts: { docker: { platform: 'linux/amd64' } } }]
               },
               allow_failure: false,
               when: "on_success",

@@ -11,33 +11,33 @@ module QA
           include Page::Component::NamespaceSelect
 
           view 'app/views/groups/edit.html.haml' do
-            element :permission_lfs_2fa_content
+            element 'permissions-settings'
             element 'advanced-settings-content'
           end
 
           view 'app/views/groups/settings/_permissions.html.haml' do
-            element :save_permissions_changes_button
+            element 'save-permissions-changes-button'
           end
 
           view 'app/views/groups/settings/_general.html.haml' do
-            element :group_name_field
-            element :save_name_visibility_settings_button
+            element 'group-name-field'
+            element 'save-name-visibility-settings-button'
           end
 
           view 'app/views/groups/settings/_lfs.html.haml' do
-            element :lfs_checkbox
+            element 'lfs-checkbox'
           end
 
           view 'app/views/shared/_allow_request_access.html.haml' do
-            element :request_access_checkbox
+            element 'request-access-checkbox'
           end
 
           view 'app/views/groups/settings/_two_factor_auth.html.haml' do
-            element :require_2fa_checkbox
+            element 'require-2fa-checkbox'
           end
 
           view 'app/views/groups/settings/_project_creation_level.html.haml' do
-            element :project_creation_level_dropdown
+            element 'project-creation-level-dropdown'
           end
 
           view 'app/views/groups/settings/_transfer.html.haml' do
@@ -49,66 +49,66 @@ module QA
           end
 
           def set_group_name(name)
-            find_element(:group_name_field).send_keys([:command, 'a'], :backspace)
-            find_element(:group_name_field).set name
+            find_element('group-name-field').send_keys([:command, 'a'], :backspace)
+            find_element('group-name-field').set name
           end
 
           def click_save_name_visibility_settings_button
-            click_element(:save_name_visibility_settings_button)
+            click_element('save-name-visibility-settings-button')
           end
 
           def set_lfs_enabled
-            expand_content(:permission_lfs_2fa_content)
-            check_element(:lfs_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            check_element('lfs-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_lfs_disabled
-            expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:lfs_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            uncheck_element('lfs-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_request_access_enabled
-            expand_content(:permission_lfs_2fa_content)
-            check_element(:request_access_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            check_element('request-access-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_request_access_disabled
-            expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:request_access_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            uncheck_element('request-access-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_require_2fa_enabled
-            expand_content(:permission_lfs_2fa_content)
-            check_element(:require_2fa_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            check_element('require-2fa-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_require_2fa_disabled
-            expand_content(:permission_lfs_2fa_content)
-            uncheck_element(:require_2fa_checkbox, true)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            uncheck_element('require-2fa-checkbox', true)
+            click_element('save-permissions-changes-button')
           end
 
           def set_project_creation_level(value)
-            expand_content(:permission_lfs_2fa_content)
-            select_element(:project_creation_level_dropdown, value)
-            click_element(:save_permissions_changes_button)
+            expand_content('permissions-settings')
+            select_element('project-creation-level-dropdown', value)
+            click_element('save-permissions-changes-button')
           end
 
           def toggle_request_access
-            expand_content(:permission_lfs_2fa_content)
+            expand_content('permissions-settings')
 
-            if find_element(:request_access_checkbox, visible: false).checked?
-              uncheck_element(:request_access_checkbox, true)
+            if find_element('request-access-checkbox', visible: false).checked?
+              uncheck_element('request-access-checkbox', true)
             else
-              check_element(:request_access_checkbox, true)
+              check_element('request-access-checkbox', true)
             end
 
-            click_element(:save_permissions_changes_button)
+            click_element('save-permissions-changes-button')
           end
 
           def transfer_group(source_group, target_group)

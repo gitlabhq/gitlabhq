@@ -1,16 +1,23 @@
 ---
 stage: Govern
 group: Anti-Abuse
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Moderate users  **(FREE ALL)**
+# Moderate users  **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
 
 This is the group-level documentation. For self-managed instances, see the [administration documentation](../../administration/moderate_users.md).
 
 A group Owner can moderate user access by banning and unbanning users.
+You should ban a user when you want to block them from the group.
+
+A banned user:
+
+- Cannot access the group or any of repositories.
+- Cannot use [slash commands](../project/integrations/gitlab_slack_application.md#slash-commands).
+- Does not occupy a [seat](../free_user_limit.md).
 
 ## Unban a user
 

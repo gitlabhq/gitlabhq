@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Epics **(PREMIUM ALL)**
@@ -20,10 +20,10 @@ Use epics:
 - To discuss and collaborate on feature ideas and scope at a high level.
 
 <div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=kdE-yb6Puuo">GitLab Epics - Setting up your Organization with GitLab</a>.
+  See the video: <a href="https://www.youtube.com/watch?v=c0EwYYUZppw">GitLab Epics - Setting up your Organization with GitLab</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/kdE-yb6Puuo" frameborder="0" allowfullscreen> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/c0EwYYUZppw" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 ## Relationships between epics and issues

@@ -28,7 +28,7 @@ module QA
       #
       # There are unit tests to verify the accuracy of GitLab's determination of repo size, so for this test we
       # attempt to detect large differences that could indicate a regression to previous behavior.
-      it 'matches cloned repo usage to reported usage',
+      it 'matches cloned repo usage to reported usage', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/365196' do
         project = create(:project, name: project_name)
 

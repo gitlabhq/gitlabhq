@@ -1,6 +1,7 @@
 ---
 table_name: feature_gates
 classes:
+- Feature::BypassLoadBalancer::FlipperGate
 - Feature::FlipperGate
 - Flipper::Adapters::ActiveRecord::Gate
 feature_categories:

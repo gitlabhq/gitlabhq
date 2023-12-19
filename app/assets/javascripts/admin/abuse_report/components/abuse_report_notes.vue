@@ -6,6 +6,7 @@ import SkeletonLoadingContainer from '~/vue_shared/components/notes/skeleton_not
 import { SKELETON_NOTES_COUNT } from '~/admin/abuse_report/constants';
 import abuseReportNotesQuery from '../graphql/notes/abuse_report_notes.query.graphql';
 import AbuseReportDiscussion from './notes/abuse_report_discussion.vue';
+import AbuseReportAddNote from './notes/abuse_report_add_note.vue';
 
 export default {
   name: 'AbuseReportNotes',
@@ -16,6 +17,7 @@ export default {
   components: {
     SkeletonLoadingContainer,
     AbuseReportDiscussion,
+    AbuseReportAddNote,
   },
   props: {
     abuseReportId: {
@@ -60,6 +62,9 @@ export default {
       const discussionId = discussion.notes.nodes[0].id;
       return discussionId.split('/')[discussionId.split('/').length - 1];
     },
+    updateKey() {
+      this.addNoteKey = uniqueId(`abuse-report-add-note-${this.abuseReportId}`);
+    },
   },
 };
 </script>
@@ -86,6 +91,16 @@ export default {
             :abuse-report-id="abuseReportId"
           />
         </ul>
+        <div class="js-comment-form">
+          <ul class="notes notes-form timeline">
+            <abuse-report-add-note
+              :key="addNoteKey"
+              :is-new-discussion="true"
+              :abuse-report-id="abuseReportId"
+              @cancelEditing="updateKey"
+            />
+          </ul>
+        </div>
       </template>
     </div>
   </div>

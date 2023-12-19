@@ -28,22 +28,6 @@ module Resolvers
 
           finder.execute.count
         end
-
-        # :project level: no customization, returning the original resolver
-        # :group level: add the project_ids argument
-        def self.[](context = :project)
-          case context
-          when :project
-            self
-          when :group
-            Class.new(self) do
-              argument :project_ids, [GraphQL::Types::ID],
-                required: false,
-                description: 'Project IDs within the group hierarchy.'
-            end
-
-          end
-        end
       end
     end
   end

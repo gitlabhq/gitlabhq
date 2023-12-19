@@ -22,6 +22,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    supportsLockOnMerge: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     labelsFilterBasePath: {
       type: String,
       required: true,
@@ -42,8 +47,16 @@ export default {
 
       return `${basePath}?${filterParam}[]=${encodeURIComponent(title)}`;
     },
-    showScopedLabel(label) {
+    scopedLabel(label) {
       return this.allowScopedLabels && isScopedLabel(label);
+    },
+    isLabelLocked(label) {
+      // These particular labels were initialized from HAML data, so the attributes are
+      // in snake case instead of camel case
+      return label.lock_on_merge && this.supportsLockOnMerge;
+    },
+    showCloseButton(label) {
+      return this.allowLabelRemove && !this.isLabelLocked(label);
     },
     removeLabel(labelId) {
       this.$emit('onLabelRemove', labelId);
@@ -63,8 +76,8 @@ export default {
       :description="label.description"
       :background-color="label.color"
       :target="buildFilterUrl(label)"
-      :scoped="showScopedLabel(label)"
-      :show-close-button="allowLabelRemove"
+      :scoped="scopedLabel(label)"
+      :show-close-button="showCloseButton(label)"
       :disabled="disabled"
       tooltip-placement="top"
       @close="removeLabel(label.id)"

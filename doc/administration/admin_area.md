@@ -1,15 +1,15 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Admin Area **(FREE SELF)**
 
 The Admin Area provides a web UI to manage and configure features of GitLab
-self-managed instances. If you are an administrator,to access the Admin Area:
+self-managed instances. If you are an administrator, to access the Admin Area:
 
+- In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin Area**.
 - In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin Area**.
 - In GitLab 16.0 and earlier: on the top bar, select **Main menu > Admin**.
 
@@ -22,8 +22,7 @@ You can administer all projects in the GitLab instance from the Admin Area's Pro
 
 To access the Projects page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Projects**.
 1. Select the **All**, **Private**, **Internal**, or **Public** tab to list only
    projects of that criteria.
@@ -74,8 +73,7 @@ You can combine the filter options. For example, to list only public projects wi
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 
 To list users matching a specific criteria, select one of the following tabs on the **Users** page:
@@ -119,8 +117,7 @@ This allows the administrator to "see what the user sees," and take actions on b
 You can impersonate a user in the following ways:
 
 - Through the UI:
-  1. On the left sidebar, select **Search or go to**.
-  1. Select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin Area**.
   1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. Select **Impersonate**.
@@ -138,8 +135,7 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 When using authentication providers, administrators can see the identities for a user:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. From the list of users, select a user.
 1. Select **Identities**.
@@ -185,8 +181,7 @@ GitLab billing is based on the number of [**Billable users**](../subscriptions/s
 
 You must be an administrator to manually add emails to users:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
@@ -202,8 +197,7 @@ The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and
 
 By default, users can create top level groups. To prevent a user from creating a top level group:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
@@ -218,8 +212,7 @@ You can administer all groups in the GitLab instance from the Admin Area's Group
 
 To access the Groups page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Groups**.
 
 For each group, the page displays their name, description, size, number of projects in the group,
@@ -238,22 +231,20 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 - > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 - > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-[Topics](../user/project/working_with_projects.md#explore-topics) are used to categorize and find similar projects.
+[Topics](../user/project/settings/project_features_permissions.md#project-topics) are used to categorize and find similar projects.
 
 ### View all topics
 
 To view all topics in the GitLab instance:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 
 For each topic, the page displays its name and the number of projects labeled with the topic.
 
 ### Search for topics
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 1. In the search box, enter your search criteria.
    The topic search is case-insensitive and applies partial matching.
@@ -262,8 +253,7 @@ For each topic, the page displays its name and the number of projects labeled wi
 
 To create a topic:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 1. Select **New topic**.
 1. Enter the **Topic slug (name)** and **Topic title**.
@@ -282,8 +272,7 @@ Do not include sensitive information in the name of a topic.
 You can edit a topic's name, title, description, and avatar at any time.
 To edit a topic:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 1. Select **Edit** in that topic's row.
 1. Edit the topic slug (name), title, description, or avatar.
@@ -294,8 +283,7 @@ To edit a topic:
 If you no longer need a topic, you can permanently remove it.
 To remove a topic:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 1. To remove a topic, select **Remove** in that topic's row.
 
@@ -307,8 +295,7 @@ After a merged topic is deleted, you cannot restore it.
 
 To merge topics:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Topics**.
 1. Select **Merge topics**.
 1. From the **Source topic** dropdown list, select the topic you want to merge and remove.
@@ -322,8 +309,7 @@ page. For more details, see [Gitaly](gitaly/index.md).
 
 To access the **Gitaly Servers** page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Gitaly Servers**.
 
 For each Gitaly server, the following details are listed:
@@ -347,8 +333,7 @@ You can administer all runners in the GitLab instance from the Admin Area's **Ru
 
 To access the **Runners** page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Runners**.
 
 #### Search and filter runners
@@ -374,8 +359,7 @@ You can also filter runners by status, type, and tag. To filter:
 
 You can delete multiple runners at the same time.
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Runners**.
 1. To the left of the runners you want to delete, select the checkbox.
    To select all of the runners on the page, select the checkbox above
@@ -405,8 +389,7 @@ You can administer all jobs in the GitLab instance from the Admin Area's Jobs pa
 
 To access the Jobs page:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Jobs**. All jobs are listed, in descending order of job ID.
 1. Select the **All** tab to list all jobs. Select the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.

@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Compliance frameworks **(PREMIUM ALL)**
@@ -25,7 +25,7 @@ or deleted at the subgroup or project level. Project owners can choose a framewo
 
 ## Add a compliance framework to a project
 
-Prerequisite:
+Prerequisites:
 
 - The group to which the project belongs must have a compliance framework.
 
@@ -336,7 +336,7 @@ cannot change them:
   non-modifiable and are always run.
 - Explicitly set any [variables](../../ci/yaml/index.md#variables) the job references. This:
   - Ensures that project-level pipeline configurations do not set them and alter their
-    behavior.
+    behavior. For example, see `before_script` and `after_script` configuration in the [example configuration](#example-configuration).
   - Includes any jobs that drive the logic of your job.
 - Explicitly set the [container image](../../ci/yaml/index.md#image) to run the job in. This ensures that your script
   steps execute in the correct environment.

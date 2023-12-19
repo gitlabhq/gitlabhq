@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
-  let_it_be(:candidate) { build(:ml_candidates) }
+  let_it_be(:candidate) { build_stubbed(:ml_candidates, internal_id: 1) }
 
-  subject { described_class.new(candidate, packages_url: 'http://example.com').as_json }
+  subject { described_class.new(candidate).as_json }
 
   context 'when start_time is nil' do
     it { expect(subject[:start_time]).to eq(0) }
@@ -66,8 +66,19 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
   end
 
   describe 'artifact_uri' do
-    it 'is not implemented' do
-      expect(subject[:artifact_uri]).to eq("http://example.com#{candidate.artifact_root}")
+    context 'when candidate does not belong to a model version' do
+      it 'returns the generic package (legacy) format of the artifact_uri' do
+        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/generic#{candidate.artifact_root}")
+      end
+    end
+
+    context 'when candidate belongs to a model version' do
+      let!(:version) { create(:ml_model_versions, :with_package) }
+      let!(:candidate) { version.candidate }
+
+      it 'returns the model version format of the artifact_uri' do
+        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/ml_models/#{version.model.name}/#{version.version}")
+      end
     end
   end
 

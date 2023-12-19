@@ -36,3 +36,17 @@ empty_pull_policy:
   services:
     - name: postgres:11.6
       pull_policy: []
+
+invalid_service_executor_opts:
+  script: echo "Specifying platform."
+  services:
+    - name: mysql:5.7
+      docker:
+        unknown_key: test
+
+invalid_service_platform:
+  script: echo "Specifying platform."
+  services:
+    - name: mysql:5.7
+      docker:
+        platform: ["arm64"] # The expected value is a string, not an array

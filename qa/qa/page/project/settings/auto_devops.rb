@@ -6,13 +6,13 @@ module QA
       module Settings
         class AutoDevops < Page::Base
           view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
-            element :enable_autodevops_checkbox
-            element :save_changes_button
+            element 'enable-autodevops-checkbox'
+            element 'save-changes-button'
           end
 
           def enable_autodevops
-            check_element(:enable_autodevops_checkbox)
-            click_element(:save_changes_button)
+            check_element('enable-autodevops-checkbox')
+            click_element('save-changes-button')
           end
         end
       end

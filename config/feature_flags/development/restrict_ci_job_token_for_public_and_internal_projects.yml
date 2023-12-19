@@ -1,8 +1,0 @@
----
-name: restrict_ci_job_token_for_public_and_internal_projects
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135263
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417172
-milestone: '16.6'
-type: development
-group: group::pipeline security
-default_enabled: true

@@ -5,7 +5,7 @@ require 'spec_helper'
 NULL_LOGGER = Gitlab::JsonLogger.new('/dev/null')
 TAG_LIST = Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder::TAG_LIST.to_set
 
-RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature_category: :runner_fleet do
+RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature_category: :fleet_visibility do
   subject(:seeder) do
     described_class.new(NULL_LOGGER, projects_to_runners: projects_to_runners, job_count: job_count)
   end

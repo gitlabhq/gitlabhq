@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "required": [
+    "registered_models",
+    "next_page_token"
+  ],
+  "properties": {
+    "registered_models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "creation_timestamp": {
+            "type": "integer"
+          },
+          "last_updated_timestamp": {
+            "type": "integer"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "value"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

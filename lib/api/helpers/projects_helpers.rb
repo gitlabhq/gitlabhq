@@ -40,6 +40,7 @@ module API
         optional :infrastructure_access_level, type: String, values: %w[disabled private enabled], desc: 'Infrastructure access level. One of `disabled`, `private` or `enabled`'
         optional :monitor_access_level, type: String, values: %w[disabled private enabled], desc: 'Monitor access level. One of `disabled`, `private` or `enabled`'
         optional :model_experiments_access_level, type: String, values: %w[disabled private enabled], desc: 'Model experiments access level. One of `disabled`, `private` or `enabled`'
+        optional :model_registry_access_level, type: String, values: %w[disabled private enabled], desc: 'Model registry access level. One of `disabled`, `private` or `enabled`'
 
         optional :emails_disabled, type: Boolean, desc: 'Deprecated: Use emails_enabled instead.'
         optional :emails_enabled, type: Boolean, desc: 'Enable email notifications'
@@ -197,6 +198,7 @@ module API
           :infrastructure_access_level,
           :monitor_access_level,
           :model_experiments_access_level,
+          :model_registry_access_level,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

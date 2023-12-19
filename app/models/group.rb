@@ -23,24 +23,29 @@ class Group < Namespace
 
   extend ::Gitlab::Utils::Override
 
+  self.allow_legacy_sti_class = true
+
   README_PROJECT_PATH = 'gitlab-profile'
 
   def self.sti_name
     'Group'
   end
 
-  has_many :all_group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
-  has_many :namespace_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
+  def self.supported_keyset_orderings
+    { name: [:asc] }
+  end
+
+  has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
+  has_many :group_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
-  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
     through: :group_members
-  has_many :owners, -> {
-    where(members: { access_level: Gitlab::Access::OWNER })
-    .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
-  }, through: :all_group_members, source: :user
+  has_many :owners, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
+    through: :all_owner_members, source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -248,12 +253,20 @@ class Group < Namespace
     end
   end
 
+  scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
+  scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
+
   class << self
     def sort_by_attribute(method)
-      if method == 'storage_size_desc'
+      case method.to_s
+      when 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
         reorder('storage_size DESC, namespaces.id DESC')
+      when 'path_asc'
+        order_path_asc
+      when 'path_desc'
+        order_path_desc
       else
         order_by(method)
       end
@@ -400,7 +413,7 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects?(level = self.visibility_level)
-    !projects.without_deleted.where('visibility_level > ?', level).exists?
+    !projects.not_aimed_for_deletion.where('visibility_level > ?', level).exists?
   end
 
   def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
@@ -434,15 +447,8 @@ class Group < Namespace
     )
   end
 
-  def add_member(user, access_level, current_user: nil, expires_at: nil, ldap: false)
-    Members::Groups::CreatorService.add_member( # rubocop:disable CodeReuse/ServiceClass
-      self,
-      user,
-      access_level,
-      current_user: current_user,
-      expires_at: expires_at,
-      ldap: ldap
-    )
+  def add_member(user, access_level, ...)
+    Members::Groups::CreatorService.add_member(self, user, access_level, ...) # rubocop:disable CodeReuse/ServiceClass
   end
 
   def add_guest(user, current_user = nil)
@@ -790,10 +796,6 @@ class Group < Namespace
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
   strong_memoize_attr :has_project_with_service_desk_enabled?
-
-  def activity_path
-    Gitlab::Routing.url_helpers.activity_group_path(self)
-  end
 
   # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)

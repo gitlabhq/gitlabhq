@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Review apps **(FREE ALL)**
@@ -70,7 +70,7 @@ as mentioned above. To facilitate this, and if you are using Kubernetes, you can
 **Enable review apps** and GitLab prompts you with a template code block that
 you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
-Prerequisite:
+Prerequisites:
 
 - You need at least the Developer role for the project.
 

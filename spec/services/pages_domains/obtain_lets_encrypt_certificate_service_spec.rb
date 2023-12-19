@@ -188,4 +188,28 @@ RSpec.describe PagesDomains::ObtainLetsEncryptCertificateService, feature_catego
       service.execute
     end
   end
+
+  context 'when the domain URL is longer than 64 characters' do
+    let(:long_domain) { "a.b.c.#{'d' * 63}" }
+    let(:pages_domain) { create(:pages_domain, :without_certificate, :without_key, domain: long_domain) }
+    let(:service) { described_class.new(pages_domain) }
+
+    it 'logs an error and does not proceed with certificate acquisition' do
+      expect(Gitlab::AppLogger).to receive(:error).with(
+        hash_including(
+          message: "Domain name too long for Let's Encrypt certificate",
+          pages_domain: long_domain,
+          pages_domain_bytesize: long_domain.bytesize,
+          max_allowed_bytesize: described_class::MAX_DOMAIN_LENGTH,
+          project_id: pages_domain.project_id
+        )
+      )
+
+      # Ensure that the certificate acquisition is not attempted
+      expect(::PagesDomains::CreateAcmeOrderService).not_to receive(:new)
+      expect(PagesDomainSslRenewalWorker).not_to receive(:perform_in)
+
+      service.execute
+    end
+  end
 end

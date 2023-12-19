@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 describe('EntitySelect', () => {
   let wrapper;
   let fetchItemsMock;
-  let fetchInitialSelectionTextMock;
+  let fetchInitialSelectionMock;
 
   // Mocks
   const itemMock = {
@@ -96,16 +96,16 @@ describe('EntitySelect', () => {
     });
 
     it("fetches the initially selected value's name", async () => {
-      fetchInitialSelectionTextMock = jest.fn().mockImplementation(() => itemMock.text);
+      fetchInitialSelectionMock = jest.fn().mockImplementation(() => itemMock);
       createComponent({
         props: {
-          fetchInitialSelectionText: fetchInitialSelectionTextMock,
+          fetchInitialSelection: fetchInitialSelectionMock,
           initialSelection: itemMock.value,
         },
       });
       await nextTick();
 
-      expect(fetchInitialSelectionTextMock).toHaveBeenCalledTimes(1);
+      expect(fetchInitialSelectionMock).toHaveBeenCalledTimes(1);
       expect(findListbox().props('toggleText')).toBe(itemMock.text);
     });
   });
@@ -188,7 +188,7 @@ describe('EntitySelect', () => {
         findListbox().vm.$emit('reset');
         await nextTick();
 
-        expect(Object.keys(wrapper.emitted('input')[2][0]).length).toBe(0);
+        expect(wrapper.emitted('input')[2][0]).toEqual({});
       });
     });
   });

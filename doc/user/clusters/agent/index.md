@@ -1,7 +1,7 @@
 ---
 stage: Deploy
 group: Environments
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Connecting a Kubernetes cluster with GitLab
@@ -63,12 +63,19 @@ GitLab in a Kubernetes cluster, you might need a different version of Kubernetes
 You can upgrade your
 Kubernetes version to a supported version at any time:
 
-- 1.27 (support ends on July 22, 2024 or when 1.30 becomes supported)
-- 1.26 (support ends on March 22, 2024 or when 1.29 becomes supported)
+- 1.27 (support ends on July 18, 2024 or when 1.30 becomes supported)
+- 1.26 (support ends on March 21, 2024 or when 1.29 becomes supported)
 - 1.25 (support ends on October 22, 2023 or when 1.28 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
+
+When a new version of Kubernetes is released, we will:
+
+- Update this page with the results of our early smoke tests within approximately
+  four weeks.
+- If we expect a delay in releasing new version support, we will update this page
+  with the expected GitLab support version within approximately eight weeks.
 
 When installing the agent, use a Helm version compatible with your Kubernetes version. Other versions of Helm might not work. For a list of compatible versions, see the [Helm version support policy](https://helm.sh/docs/topics/version_skew/).
 

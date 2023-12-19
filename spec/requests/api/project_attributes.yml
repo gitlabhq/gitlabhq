@@ -151,6 +151,7 @@ project_setting:
     - legacy_open_source_license_available
     - prevent_merge_without_jira_issue
     - only_allow_merge_if_all_status_checks_passed
+    - allow_merge_without_pipeline
     - warn_about_potentially_unwanted_characters
     - previous_default_branch
     - project_id
@@ -195,5 +196,6 @@ build_service_desk_setting: # service_desk_setting
     - encrypted_custom_email_smtp_password_iv
     - custom_email_smtp_password
     - add_external_participants_from_cc
+    - reopen_issue_on_external_participant_note
   remapped_attributes:
     project_key: service_desk_address

@@ -22,6 +22,12 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
       stub_feature_flags(disable_all_mention: false)
     end
 
+    it 'returns results in correct order' do
+      expect(service_result.pluck(:username)).to eq([
+        'all', developer.username, parent_group.full_path, subgroup.full_path
+      ])
+    end
+
     it 'includes `All Group Members`' do
       group.add_developer(create(:user))
 

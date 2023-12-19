@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Import API **(FREE ALL)**
@@ -53,7 +53,6 @@ curl --request POST \
       "attachments_import": true,
       "collaborators_import": true
     },
-    "additional_access_tokens": "foo,bar"
 }'
 ```
 
@@ -65,8 +64,6 @@ The following keys are available for `optional_stages`:
 - `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.
 
 For more information, see [Select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
-
-You can supply multiple personal access tokens in `additional_access_tokens` from different user accounts to import projects faster.
 
 Example response:
 
@@ -180,7 +177,7 @@ If you do not specify `target_namespace`, the project imports to your personal u
 
 Prerequisites:
 
-- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
+- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md).
 
 ```plaintext
 POST /import/bitbucket_server

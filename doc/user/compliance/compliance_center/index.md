@@ -1,8 +1,7 @@
 ---
-type: reference, howto
 stage: Govern
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Compliance center **(ULTIMATE ALL)**
@@ -16,13 +15,13 @@ See report and manage standards adherence, violations, and compliance frameworks
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/414495) in GitLab 16.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can
-[disable the feature flags](../../../administration/feature_flags.md) named `compliance_adherence_report` and `adherence_report_ui`. On GitLab.com,
-this feature is available.
+> - [Feature flag `compliance_adherence_report` and `adherence_report_ui`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137398) removed in GitLab 16.7.
+> - Standards adherence filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413734) in GitLab 16.7.
 
 Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
+
+When a project is added or an associated project or group setting is changed, an adherence scan is run on that project to update the standards adherence for that project. The date in the
+**Last Scanned** column reflects any changes.
 
 ### View the standards adherence dashboard
 
@@ -33,7 +32,13 @@ Prerequisites:
 To view the standards adherence dashboard for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
+
+You can filter the standards adherence dashboard on:
+
+- The project that the check was performed on.
+- The type of check that was performed on a project.
+- The standard that the check belongs to.
 
 ### GitLab standard
 
@@ -101,7 +106,7 @@ Prerequisites:
 To view the compliance violations report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 
 You can sort the compliance report on:
 
@@ -188,9 +193,9 @@ Prerequisites:
 To export a report of merge request compliance violations for projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Violations** tab.
-1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export violations report**.
 
 A report is compiled and delivered to your email inbox as an attachment.
 
@@ -235,8 +240,9 @@ If the commit has a related merge commit, then the following are also included:
 To generate the Chain of Custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
-1. Select **List of all merge commits**.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export chain of custody report**.
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
@@ -251,10 +257,10 @@ details for the provided commit SHA.
 To generate a commit-specific Chain of Custody report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
-1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
-   (**{chevron-lg-down}**).
-1. Enter the commit SHA, and then select **Export commit custody report**.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export custody report of a specific commit**.
+1. Enter the commit SHA, and then select **Export custody report**.
 
 Depending on your version of GitLab, the Chain of Custody report is either sent through email or available for download.
 
@@ -283,7 +289,7 @@ Prerequisites:
 To view the compliance projects report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 
 ### Apply a compliance framework to projects in a group
@@ -300,7 +306,7 @@ Prerequisites:
 To apply a compliance framework to one project in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
 1. Select an existing compliance framework or create a new one.
@@ -308,7 +314,7 @@ To apply a compliance framework to one project in a group:
 To apply a compliance framework to multiple projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
@@ -329,14 +335,14 @@ Prerequisites:
 To remove a compliance framework from one project in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
@@ -358,9 +364,9 @@ Prerequisites:
 To export a report of compliance frameworks on projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
-1. On the page, select the **Projects** tab.
-1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export list of project frameworks**.
 
 A report is compiled and delivered to your email inbox as an attachment.
 
@@ -371,13 +377,13 @@ A report is compiled and delivered to your email inbox as an attachment.
 To filter the list of compliance frameworks:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
 1. In the search field:
    1. Select the attribute you want to filter by.
    1. Select an operator.
    1. Select from the list of options or enter text for the search.
-1. Select **Search** (**{search}**).
+1. Select **Search**.
 
 Repeat this process to filter by multiple attributes.
 
@@ -406,5 +412,5 @@ Prerequisites:
 To view the compliance projects report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure > Compliance center**.
+1. Select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.

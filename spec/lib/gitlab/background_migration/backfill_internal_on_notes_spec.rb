@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillInternalOnNotes, :migration, schema: 20220920124709 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillInternalOnNotes, :migration, schema: 20211202041233 do
   let(:notes_table) { table(:notes) }
 
   let!(:confidential_note) { notes_table.create!(id: 1, confidential: true, internal: false) }

@@ -31,7 +31,7 @@ describe('OrganizationsView', () => {
     ${'when not loading and has no organizations'} | ${false} | ${[]}            | ${MOCK_ORG_EMPTY_STATE_SVG} | ${MOCK_NEW_ORG_URL}
   `('$description', ({ loading, orgsData, emptyStateSvg, emptyStateUrl }) => {
     beforeEach(() => {
-      createComponent({ loading, organizations: orgsData });
+      createComponent({ loading, organizations: { nodes: orgsData, pageInfo: {} } });
     });
 
     it(`does ${loading ? '' : 'not '}render loading icon`, () => {
@@ -52,6 +52,32 @@ describe('OrganizationsView', () => {
       expect(
         findGlEmptyState().exists() && findGlEmptyState().attributes('primarybuttonlink'),
       ).toBe(emptyStateUrl);
+    });
+  });
+
+  describe('when `OrganizationsList` emits `next` event', () => {
+    const endCursor = 'mockEndCursor';
+
+    beforeEach(() => {
+      createComponent({ loading: false, organizations: { nodes: organizations, pageInfo: {} } });
+      findOrganizationsList().vm.$emit('next', endCursor);
+    });
+
+    it('emits `next` event', () => {
+      expect(wrapper.emitted('next')).toEqual([[endCursor]]);
+    });
+  });
+
+  describe('when `OrganizationsList` emits `prev` event', () => {
+    const startCursor = 'mockStartCursor';
+
+    beforeEach(() => {
+      createComponent({ loading: false, organizations: { nodes: organizations, pageInfo: {} } });
+      findOrganizationsList().vm.$emit('prev', startCursor);
+    });
+
+    it('emits `next` event', () => {
+      expect(wrapper.emitted('prev')).toEqual([[startCursor]]);
     });
   });
 });

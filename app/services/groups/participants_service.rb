@@ -12,8 +12,8 @@ module Groups
         noteable_owner +
         participants_in_noteable +
         all_members +
-        groups +
-        group_hierarchy_users
+        group_hierarchy_users +
+        groups
 
       render_participants_as_hash(participants.uniq)
     end

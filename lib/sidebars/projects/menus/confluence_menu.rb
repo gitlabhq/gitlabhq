@@ -26,13 +26,6 @@ module Sidebars
           'confluence.svg'
         end
 
-        override :image_html_options
-        def image_html_options
-          {
-            alt: title
-          }
-        end
-
         override :render?
         def render?
           context.project.has_confluence?

@@ -58,7 +58,7 @@ describe('IntegrationStatus', () => {
     });
 
     it('sets collapse component as invisible by default', () => {
-      expect(findCollapse().props('visible')).toBeUndefined();
+      expect(findCollapse().props('visible')).toBe(false);
     });
   });
 
@@ -73,7 +73,7 @@ describe('IntegrationStatus', () => {
     });
 
     it('sets collapse component as visible', () => {
-      expect(findCollapse().attributes('visible')).toBe('true');
+      expect(findCollapse().props('visible')).toBe(true);
     });
   });
 

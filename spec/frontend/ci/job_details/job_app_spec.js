@@ -4,7 +4,6 @@ import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
@@ -29,8 +28,9 @@ describe('Job App', () => {
   let mock;
 
   const initSettings = {
-    endpoint: `${TEST_HOST}jobs/123.json`,
-    pagePath: `${TEST_HOST}jobs/123`,
+    jobEndpoint: '/group1/project1/-/jobs/99.json',
+    logEndpoint: '/group1/project1/-/jobs/99/trace',
+    testReportSummaryUrl: '/group1/project1/-/jobs/99/test_report_summary.json',
   };
 
   const props = {
@@ -50,8 +50,8 @@ describe('Job App', () => {
   };
 
   const setupAndMount = async ({ jobData = {}, jobLogData = {} } = {}) => {
-    mock.onGet(initSettings.endpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
-    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(HTTP_STATUS_OK, jobLogData);
+    mock.onGet(initSettings.jobEndpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
+    mock.onGet(initSettings.logEndpoint).reply(HTTP_STATUS_OK, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 

@@ -1,7 +1,7 @@
 import { GlButton, GlAvatarLink, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobHeader from '~/ci/job_details/components/job_header.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 

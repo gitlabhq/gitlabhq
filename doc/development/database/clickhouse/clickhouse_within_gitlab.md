@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # ClickHouse within GitLab
@@ -204,6 +204,26 @@ end
 
 NOTE:
 It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
+
+## Implementing Sidekiq workers
+
+Sidekiq workers leveraging ClickHouse databases should include the `ClickHouseWorker` module.
+This ensures that the worker is paused while database migrations are running,
+and that migrations do not run while the worker is active.
+
+```ruby
+# events_sync_worker.rb
+# frozen_string_literal: true
+
+module ClickHouse
+  class EventsSyncWorker
+    include ApplicationWorker
+    include ClickHouseWorker
+
+    ...
+  end
+end
+```
 
 ## Testing
 

@@ -70,3 +70,11 @@ export default {
     :items="items"
   />
 </template>
+
+<style scoped>
+/* TODO: Use max-height prop when gitlab-ui got updated.
+See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2374 */
+::v-deep .gl-new-dropdown-inner {
+  max-height: 310px !important;
+}
+</style>

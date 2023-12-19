@@ -10,9 +10,8 @@ module Gitlab
           class BaseInput
             ArgumentNotValidError = Class.new(StandardError)
 
-            # Checks whether the class matches the type in the specification
             def self.matches?(spec)
-              raise NotImplementedError
+              spec.is_a?(Hash) && spec[:type] == type_name
             end
 
             # Human readable type used in error messages

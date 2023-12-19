@@ -50,7 +50,8 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
       'value_type' => value_type,
       'status' => status,
       'instrumentation_class' => instrumentation_class,
-      'time_frame' => 'all'
+      'time_frame' => 'all',
+      'data_source' => 'redis_hll'
     }
   end
 end

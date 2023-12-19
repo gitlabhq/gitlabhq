@@ -54,8 +54,8 @@ module WorkItems
     end
     strong_memoize_attr :namespace
 
-    override :by_project
-    def by_project(items)
+    override :by_parent
+    def by_parent(items)
       items
     end
   end

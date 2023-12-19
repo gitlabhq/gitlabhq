@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Troubleshooting SCIM **(FREE ALL)**
@@ -18,20 +18,17 @@ When the user is added back to the SCIM app, GitLab does not create a new user b
 From August 11, 2023, the `skip_saml_identity_destroy_during_scim_deprovision` feature flag is enabled.
 
 For a user de-provisioned by SCIM from that date, their SAML identity is not removed.
-
 When that user is added back to the SCIM app:
 
 - Their SCIM identity `active` attribute is set to `true`.
 - They can sign in using SSO.
 
 For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
+To solve this problem, the user must [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 
-To solve this problem:
+### Self-managed GitLab
 
-1. Have the user sign in directly to GitLab.
-1. [Manually link](scim_setup.md#link-scim-and-saml-identities) their account.
-
-Alternatively, self-managed administrators can [add a user identity](../../../administration/admin_area.md#user-identities).
+For a self-managed GitLab instance, administrators of that instance can instead [add the user identity themselves](../../../administration/admin_area.md#user-identities). This might save time if administrators need to re-add multiple identities.
 
 ## User cannot sign in
 
@@ -129,6 +126,47 @@ to verify if SCIM parameters configured in an identity provider's SCIM app are c
 For example, use these values as a definitive source on why an account was provisioned with a certain set of
 details. This information can help where an account was SCIM provisioned with details that do not match
 the SCIM app configuration.
+
+## Member's email address is not linked error in SCIM log
+
+When you attempt to provision a SCIM user on GitLab.com, GitLab checks to see if
+a user with that email address already exists. You might see the following error
+when the:
+
+- User exists, but does not have a SAML identity linked.
+- User exists, has a SAML identity, **and** has a SCIM identity that is set to `active: false`.
+
+```plaintext
+The member's email address is not linked to a SAML account or has an inactive
+SCIM identity.
+```
+
+This error message is returned with the status `412`.
+
+This might prevent the affected end user from accessing their account correctly.
+
+The first workaround is:
+
+1. Have the end user [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+1. After the user has done this, initiate a SCIM sync from your identity provider.
+If the SCIM sync completes without the same error, GitLab has
+successfully linked the SCIM identity to the existing user account, and the user
+should now be able to sign in using SAML SSO.
+
+If the error persists, the user most likely already exists, has both a SAML and
+SCIM identity, and a SCIM identity that is set to `active: false`. To resolve
+this:
+
+1. Optional. If you did not save your SCIM token when you first configured SCIM, [generate a new token](scim_setup.md#configure-gitlab). If you generate a new SCIM token, you **must** update the token in your identity provider's SCIM configuration, or SCIM will stop working.
+1. Locate your SCIM token.
+1. Use the API to [get a single SCIM provisioned user](/ee/development/internal_api/index.md#get-a-single-scim-provisioned-user).
+1. Check the returned information to make sure that:
+   - The user's identifier (`id`) and email match what your identity provider is sending.
+   - `active` is set to `false`.
+   If any of this information does not match, [contact GitLab Support](https://support.gitlab.com/).
+1. Use the API to [update the SCIM provisioned user's `active` value to `true`](/ee/development/internal_api/index.md#update-a-single-scim-provisioned-user).
+1. If the update returns a status code `204`, have the user attempt to sign in
+using SAML SSO.
 
 ## Azure Active Directory
 

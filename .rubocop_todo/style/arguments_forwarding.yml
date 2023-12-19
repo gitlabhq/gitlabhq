@@ -110,7 +110,6 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/legacy_github_import/client.rb'
     - 'lib/gitlab/memory/watchdog/configuration.rb'
     - 'lib/gitlab/metrics/prometheus.rb'
-    - 'lib/gitlab/nav/top_nav_view_model_builder.rb'
     - 'lib/gitlab/quick_actions/dsl.rb'
     - 'lib/gitlab/rack_attack.rb'
     - 'lib/gitlab/redis/multi_store.rb'

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Workflow extension for VS Code
@@ -37,6 +37,7 @@ you can [configure](https://marketplace.visualstudio.com/items?itemName=GitLab.g
 - [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
 - [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
 - [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
+- [GitLab Duo Chat](../../user/gitlab_duo_chat.md#gitlab-workflow-extension-for-vs-code).
 
 ## Report issues with the extension
 

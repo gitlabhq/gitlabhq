@@ -32,13 +32,14 @@ module Types
         field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',
           alpha: { milestone: '16.1' }
 
-        field :versions, Types::ReleaseType.connection_type, null: true,
+        field :versions, Types::Ci::Catalog::Resources::VersionType.connection_type, null: true,
           description: 'Versions of the catalog resource. This field can only be ' \
                        'resolved for one catalog resource in any single request.',
-          resolver: Resolvers::Ci::Catalog::VersionsResolver,
+          resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver,
           alpha: { milestone: '16.2' }
 
-        field :latest_version, Types::ReleaseType, null: true, description: 'Latest version of the catalog resource.',
+        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
+          description: 'Latest version of the catalog resource.',
           alpha: { milestone: '16.1' }
 
         field :latest_released_at, Types::TimeType, null: true,
@@ -47,14 +48,6 @@ module Types
 
         field :star_count, GraphQL::Types::Int, null: false,
           description: 'Number of times the catalog resource has been starred.',
-          alpha: { milestone: '16.1' }
-
-        field :forks_count, GraphQL::Types::Int, null: false, calls_gitaly: true,
-          description: 'Number of times the catalog resource has been forked.',
-          alpha: { milestone: '16.1' }
-
-        field :root_namespace, Types::NamespaceType, null: true,
-          description: 'Root namespace of the catalog resource.',
           alpha: { milestone: '16.1' }
 
         markdown_field :readme_html, null: false,
@@ -73,39 +66,13 @@ module Types
         end
 
         def latest_version
-          BatchLoader::GraphQL.for(object.project).batch do |projects, loader|
-            latest_releases = ReleasesFinder.new(projects, current_user, latest: true).execute
+          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
+            latest_versions = ::Ci::Catalog::Resources::VersionsFinder.new(
+              catalog_resources, current_user, latest: true).execute
 
-            latest_releases.index_by(&:project).each do |project, latest_release|
-              loader.call(project, latest_release)
+            latest_versions.index_by(&:catalog_resource).each do |catalog_resource, latest_version|
+              loader.call(catalog_resource, latest_version)
             end
-          end
-        end
-
-        def forks_count
-          BatchLoader::GraphQL.wrap(object.forks_count)
-        end
-
-        def root_namespace
-          BatchLoader::GraphQL.for(object.project_id).batch do |project_ids, loader|
-            projects = Project.id_in(project_ids)
-
-            # This preloader uses traversal_ids to obtain Group-type root namespaces.
-            # It also preloads each project's immediate parent namespace, which effectively
-            # preloads the User-type root namespaces since they cannot be nested (parent == root).
-            Preloaders::ProjectRootAncestorPreloader.new(projects, :group).execute
-            root_namespaces = projects.map(&:root_ancestor)
-
-            # NamespaceType requires the `:read_namespace` ability. We must preload the policy for
-            # Group-type namespaces to avoid N+1 queries caused by the authorization requests.
-            group_root_namespaces = root_namespaces.select { |n| n.type == ::Group.sti_name }
-            Preloaders::GroupPolicyPreloader.new(group_root_namespaces, current_user).execute
-
-            # For User-type namespaces, the authorization request requires preloading the owner objects.
-            user_root_namespaces = root_namespaces.select { |n| n.type == ::Namespaces::UserNamespace.sti_name }
-            ActiveRecord::Associations::Preloader.new(records: user_root_namespaces, associations: :owner).call
-
-            projects.each { |project| loader.call(project.id, project.root_ancestor) }
           end
         end
 

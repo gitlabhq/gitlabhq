@@ -1,13 +1,12 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Migrating from CircleCI **(FREE ALL)**
 
-If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../introduction/index.md),
+If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../index.md),
 and start making use of all its powerful features.
 
 We have collected several resources that you may find useful before starting to migrate.

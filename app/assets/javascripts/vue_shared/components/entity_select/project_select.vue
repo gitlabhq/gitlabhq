@@ -120,24 +120,29 @@ export default {
             membership: this.membership,
           });
         })();
-        projects = data.map((item) => ({
-          text: item.name_with_namespace || item.name,
-          value: String(item.id),
-        }));
+        projects = data.map((project) => this.mapProjectData(project));
       } catch (error) {
         this.handleError({ message: FETCH_PROJECTS_ERROR, error });
       }
       return { items: projects, totalPages: 1 };
     },
-    async fetchProjectName(projectId) {
-      let projectName = '';
+    async fetchInitialProject(projectId) {
       try {
-        const { data: project } = await Api.project(projectId);
-        projectName = project.name_with_namespace;
+        const response = await Api.project(projectId);
+
+        return this.mapProjectData(response.data);
       } catch (error) {
         this.handleError({ message: FETCH_PROJECT_ERROR, error });
+
+        return {};
       }
-      return projectName;
+    },
+    mapProjectData(project) {
+      return {
+        ...project,
+        text: project.name_with_namespace || project.name,
+        value: String(project.id),
+      };
     },
     handleError({ message, error }) {
       Sentry.captureException(error);
@@ -163,7 +168,7 @@ export default {
     :header-text="$options.i18n.selectProject"
     :default-toggle-text="$options.i18n.searchForProject"
     :fetch-items="fetchProjects"
-    :fetch-initial-selection-text="fetchProjectName"
+    :fetch-initial-selection="fetchInitialProject"
     :block="block"
     clearable
     v-on="$listeners"

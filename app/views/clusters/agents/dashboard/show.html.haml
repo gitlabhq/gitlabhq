@@ -1,0 +1,6 @@
+- breadcrumb_title s_('KubernetesDashboard|Dashboard')
+- add_to_breadcrumbs s_('KubernetesDashboard|Agents'), kubernetes_dashboard_path
+- page_title s_('KubernetesDashboard|Dashboard')
+
+.js-kubernetes-app{ data: { base_path: kubernetes_dashboard_path, agent: @agent.to_json, kas_tunnel_url: ::Gitlab::Kas.tunnel_url } }
+  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

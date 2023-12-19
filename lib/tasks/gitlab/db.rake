@@ -5,6 +5,7 @@ databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 def each_database(databases, include_geo: false)
   ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
     next if database == 'embedding'
+    next if database == 'jh'
     next if !include_geo && database == 'geo'
 
     yield database
@@ -90,12 +91,17 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
+      configure_pg_databases
+      configure_clickhouse_databases
+    end
+
+    def configure_pg_databases
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
       databases_loaded = []
 
       if databases_with_tasks.size == 1
-        next unless databases_with_tasks.first.name == 'main'
+        return unless databases_with_tasks.first.name == 'main'
 
         connection = Gitlab::Database.database_base_models['main'].connection
         databases_loaded << configure_database(connection)
@@ -107,10 +113,16 @@ namespace :gitlab do
         end
       end
 
-      if databases_loaded.present? && databases_loaded.all?
-        Rake::Task["gitlab:db:lock_writes"].invoke
-        Rake::Task['db:seed_fu'].invoke
-      end
+      return unless databases_loaded.present? && databases_loaded.all?
+
+      Rake::Task["gitlab:db:lock_writes"].invoke
+      Rake::Task['db:seed_fu'].invoke
+    end
+
+    def configure_clickhouse_databases
+      return unless Feature.enabled?(:run_clickhouse_migrations_automatically, type: :ops)
+
+      Rake::Task['gitlab:clickhouse:migrate'].invoke(true)
     end
 
     def configure_database(connection, database_name: nil)
@@ -223,12 +235,12 @@ namespace :gitlab do
       # :nocov:
     end
 
-    # During testing, db:test:load restores the database schema from scratch
+    # During testing, db:test:load_schema restores the database schema from scratch
     # which does not include dynamic partitions. We cannot rely on application
     # initializers here as the application can continue to run while
     # a rake task reloads the database schema.
-    Rake::Task['db:test:load'].enhance do
-      # Due to bug in `db:test:load` if many DBs are used
+    Rake::Task['db:test:load_schema'].enhance do
+      # Due to bug in `db:test:load_schema` if many DBs are used
       # the `ActiveRecord::Base.connection` might be switched to another one
       # This is due to `if should_reconnect`:
       # https://github.com/rails/rails/blob/a81aeb63a007ede2fe606c50539417dada9030c7/activerecord/lib/active_record/railties/databases.rake#L622

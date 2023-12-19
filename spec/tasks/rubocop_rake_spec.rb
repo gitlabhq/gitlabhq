@@ -4,9 +4,9 @@
 require 'fast_spec_helper'
 require 'tmpdir'
 require 'fileutils'
+require 'gitlab/rspec/next_instance_of'
 
 require_relative '../support/silence_stdout'
-require_relative '../support/helpers/next_instance_of'
 require_relative '../support/matchers/abort_matcher'
 require_relative '../../rubocop/formatter/todo_formatter'
 require_relative '../../rubocop/todo_dir'

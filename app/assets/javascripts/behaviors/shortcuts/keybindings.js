@@ -538,12 +538,9 @@ const GLOBAL_SHORTCUTS_GROUP = {
     GO_TO_YOUR_TODO_LIST,
     TOGGLE_PERFORMANCE_BAR,
     HIDE_APPEARING_CONTENT,
+    TOGGLE_SUPER_SIDEBAR,
   ],
 };
-
-if (gon.use_new_navigation) {
-  GLOBAL_SHORTCUTS_GROUP.keybindings.push(TOGGLE_SUPER_SIDEBAR);
-}
 
 export const EDITING_SHORTCUTS_GROUP = {
   id: 'editing',

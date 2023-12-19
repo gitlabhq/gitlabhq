@@ -4,10 +4,7 @@ module Gitlab
   module GithubImport
     module Representation
       class ProtectedBranch
-        include ToHash
-        include ExposeAttribute
-
-        attr_reader :attributes
+        include Representable
 
         expose_attribute :id, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
                          :required_pull_request_reviews, :require_code_owner_reviews, :allowed_to_push_users

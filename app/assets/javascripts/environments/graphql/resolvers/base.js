@@ -6,13 +6,13 @@ import {
   normalizeHeaders,
 } from '~/lib/utils/common_utils';
 
+import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import pollIntervalQuery from '../queries/poll_interval.query.graphql';
 import environmentToRollbackQuery from '../queries/environment_to_rollback.query.graphql';
 import environmentToStopQuery from '../queries/environment_to_stop.query.graphql';
 import environmentToDeleteQuery from '../queries/environment_to_delete.query.graphql';
 import environmentToChangeCanaryQuery from '../queries/environment_to_change_canary.query.graphql';
 import isEnvironmentStoppingQuery from '../queries/is_environment_stopping.query.graphql';
-import pageInfoQuery from '../queries/page_info.query.graphql';
 
 const buildErrors = (errors = []) => ({
   errors,
@@ -59,13 +59,18 @@ export const baseQueries = (endpoint) => ({
       };
     });
   },
-  folder(_, { environment: { folderPath }, scope, search }) {
-    return axios.get(folderPath, { params: { scope, search, per_page: 3 } }).then((res) => ({
-      activeCount: res.data.active_count,
-      environments: res.data.environments.map(mapEnvironment),
-      stoppedCount: res.data.stopped_count,
-      __typename: 'LocalEnvironmentFolder',
-    }));
+  folder(_, { environment: { folderPath }, scope, search, perPage, page }) {
+    // eslint-disable-next-line camelcase
+    const per_page = perPage || 3;
+    const pageNumber = page || 1;
+    return axios
+      .get(folderPath, { params: { scope, search, per_page, page: pageNumber } })
+      .then((res) => ({
+        activeCount: res.data.active_count,
+        environments: res.data.environments.map(mapEnvironment),
+        stoppedCount: res.data.stopped_count,
+        __typename: 'LocalEnvironmentFolder',
+      }));
   },
   isLastDeployment(_, { environment }) {
     return environment?.lastDeployment?.isLast;
@@ -73,7 +78,7 @@ export const baseQueries = (endpoint) => ({
 });
 
 export const baseMutations = {
-  stopEnvironmentREST(_, { environment }, { client }) {
+  stopEnvironmentREST(_, { environment }, { client, cache }) {
     client.writeQuery({
       query: isEnvironmentStoppingQuery,
       variables: { environment },
@@ -82,6 +87,9 @@ export const baseMutations = {
     return axios
       .post(environment.stopPath)
       .then(() => buildErrors())
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+      })
       .catch(() => {
         client.writeQuery({
           query: isEnvironmentStoppingQuery,
@@ -93,10 +101,11 @@ export const baseMutations = {
         ]);
       });
   },
-  deleteEnvironment(_, { environment: { deletePath } }) {
+  deleteEnvironment(_, { environment: { deletePath } }, { cache }) {
     return axios
       .delete(deletePath)
       .then(() => buildErrors())
+      .then(() => cache.evict({ fieldName: 'folder' }))
       .catch(() =>
         buildErrors([
           s__(
@@ -105,10 +114,13 @@ export const baseMutations = {
         ]),
       );
   },
-  rollbackEnvironment(_, { environment, isLastDeployment }) {
+  rollbackEnvironment(_, { environment, isLastDeployment }, { cache }) {
     return axios
       .post(environment?.retryUrl)
       .then(() => buildErrors())
+      .then(() => {
+        cache.evict({ fieldName: 'folder' });
+      })
       .catch(() => {
         buildErrors([
           isLastDeployment

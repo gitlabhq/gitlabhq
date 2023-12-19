@@ -4,7 +4,7 @@ import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import Poll from '~/lib/utils/poll';
 import { __, s__, sprintf } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import CommitPipelineService from '../services/commit_pipeline_service';
 
 export default {
@@ -92,7 +92,7 @@ export default {
 </script>
 <template>
   <div class="gl-ml-5">
-    <gl-loading-icon v-if="isLoading" size="lg" label="Loading pipeline status" />
+    <gl-loading-icon v-if="isLoading" size="sm" label="Loading pipeline status" />
     <a v-else :href="ciStatus.details_path">
       <ci-icon :status="ciStatus" :title="statusTitle" :aria-label="statusTitle" />
     </a>

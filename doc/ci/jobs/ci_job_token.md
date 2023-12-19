@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab CI/CD job token **(FREE ALL)**
@@ -12,11 +12,11 @@ When a pipeline job is about to run, GitLab generates a unique token and injects
 You can use a GitLab CI/CD job token to authenticate with specific API endpoints:
 
 - Packages:
-  - [Package Registry](../../user/packages/package_registry/index.md#to-build-packages).
+  - [Package registry](../../user/packages/package_registry/index.md#to-build-packages).
   - [Packages API](../../api/packages.md) (project-level).
-  - [Container Registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
+  - [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
     (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
-  - [Container Registry API](../../api/container_registry.md)
+  - [Container registry API](../../api/container_registry.md)
     (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled).
 - [Get job artifacts](../../api/job_artifacts.md#get-job-artifacts).
 - [Get job token's job](../../api/jobs.md#get-job-tokens-job).
@@ -120,12 +120,12 @@ the following actions without being added to the allowlist:
 To limit access to these actions to only the projects on the allowlist, set the visibility
 of each feature to be only accessible to project members:
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer role for the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
    - The ability to fetch artifacts is controlled by the CI/CD visibility setting.
@@ -145,7 +145,7 @@ your maintainers, the job token could be used in an attempt to access your proje
 You can disable the job token scope allowlist for testing or a similar reason,
 but you should enable it again as soon as possible.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
@@ -166,7 +166,7 @@ You can also disable the allowlist [with the API](../../api/graphql/reference/in
 You can add projects to the allowlist for a project. Projects added to the allowlist
 can make API calls from running pipelines by using the CI/CD job token.
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role in the current project. If the allowed project
   is internal or private, you must have at least the Guest role in that project.
@@ -210,7 +210,7 @@ to make an API request to project `B`, then `B` must be added to the allowlist f
 
 > **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
-Prerequisite:
+Prerequisites:
 
 - You must not have more than 200 projects added to the token's scope.
 

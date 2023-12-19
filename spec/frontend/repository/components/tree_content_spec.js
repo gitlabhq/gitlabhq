@@ -162,25 +162,18 @@ describe('Repository table component', () => {
   describe('commit data', () => {
     const path = '';
 
-    it('loads commit data for both top and bottom batches when row-appear event is emitted', () => {
-      const rowNumber = 50;
-
+    it('loads commit data for the nearest page', () => {
       createComponent({ path });
-      findFileTable().vm.$emit('row-appear', rowNumber);
+      findFileTable().vm.$emit('row-appear', 49);
+      findFileTable().vm.$emit('row-appear', 15);
 
-      expect(isRequested).toHaveBeenCalledWith(rowNumber);
+      expect(isRequested).toHaveBeenCalledWith(49);
+      expect(isRequested).toHaveBeenCalledWith(15);
 
       expect(loadCommits.mock.calls).toEqual([
-        ['', path, '', rowNumber, 'heads'],
-        ['', path, '', rowNumber - 25, 'heads'],
+        ['', path, '', 25, 'heads'],
+        ['', path, '', 0, 'heads'],
       ]);
-    });
-
-    it('loads commit data once if rowNumber is zero', () => {
-      createComponent({ path });
-      findFileTable().vm.$emit('row-appear', 0);
-
-      expect(loadCommits.mock.calls).toEqual([['', path, '', 0, 'heads']]);
     });
   });
 

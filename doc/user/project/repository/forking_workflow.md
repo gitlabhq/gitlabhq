@@ -1,10 +1,10 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project forking workflow **(FREE ALL)**
+# Forks **(FREE ALL)**
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,
@@ -69,6 +69,10 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
 
+Prerequisite:
+
+- The fork must be created from an [unprotected branch](../protected_branches.md) in upstream repository.
+
 To update your fork from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to**.
@@ -78,7 +82,7 @@ To update your fork from the GitLab UI:
    information box to determine if your fork is ahead, behind, or both. In this example,
    the fork is behind the upstream repository:
 
-   ![Information box for a fork 23552 commits behind the upstream repository](img/update-fork_v15_11.png)
+   ![Information box for a fork some commits behind the upstream repository](img/update-fork_v16_6.png)
 
 1. If your fork is **ahead** of the upstream repository, select
    **Create merge request** to propose adding your fork's changes to the upstream repository.

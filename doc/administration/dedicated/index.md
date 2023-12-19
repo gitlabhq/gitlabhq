@@ -1,7 +1,7 @@
 ---
 stage: SaaS Platforms
 group: GitLab Dedicated
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: 'Learn how to configure your GitLab Dedicated instance.'
 ---
 
@@ -60,7 +60,7 @@ It can take up to 3 hours to create the GitLab Dedicated tenant. When the setup 
 Available scheduled maintenance windows, performed outside standard working hours:
 
 - APAC: Wednesday 1 PM - 5 PM UTC
-- EU: Tuesday 1 AM - 5 AM UTC
+- EMEA: Tuesday 1 AM - 5 AM UTC
 - AMER Option 1: Tuesday 7 AM - 11 AM UTC
 - AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
 
@@ -214,11 +214,33 @@ Make sure the AWS KMS keys are replicated to your desired primary, secondary and
 
 ## Configuration changes
 
+### Configuration change policy
+
+Configuration changes requested with a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) are batched up and applied during your environment's weekly four-hour maintenance window.
+
+This policy does not apply to configuration changes made by a GitLab Dedicated tenant admin [using Switchboard](#configuration-changes-in-switchboard).
+
+To have a change considered for an upcoming weekly maintenance window, all required information
+must be submitted in full two business days before the start of the window.
+
+A configuration change might not be applied during an upcoming weekly maintenance window, even if
+it meets the minimum lead time. If GitLab needs to perform high-priority maintenance tasks that
+run beyond the maintenance window, configuration changes will be postponed to the following week.
+
+Changes requested with a support ticket cannot be applied outside of a weekly maintenance window unless it qualifies for
+[emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).
+
+### Configuration changes in Switchboard
+
 Switchboard empowers the user to make limited configuration changes to their Dedicated Tenant Instance. As Switchboard matures further configuration changes will be made available.
 
-To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request. You can request configuration changes for the options originally specified during onboarding, or for any of the following optional features.
+To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request.
 
-The turnaround time to process configuration change requests is [documented in the GitLab handbook](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#handling-configuration-changes-for-tenant-environments).
+You can request configuration changes for some of the options originally specified during onboarding, or for any of the following optional features.
+
+Configuration changes made with Switchboard can be applied immediately or deferred until your next scheduled weekly [maintenance window](#maintenance-window).
+
+When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch.
 
 ### Inbound Private Link
 
@@ -226,7 +248,7 @@ The turnaround time to process configuration change requests is [documented in t
 
 To enable the Inbound Private Link:
 
-1. In the body of your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), include the IAM Principal for the AWS user or role in your own AWS Organization that's establishing the VPC endpoint in your AWS account. GitLab Dedicated uses this IAM Principal for access-control. This IAM principal is the only one able to set up an endpoint to the service.
+1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). In the body of your support ticket, include the IAM principal for the AWS user or role in your AWS organization that's establishing the VPC endpoint in your AWS account. The IAM principal must be an [IAM role principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-roles) or [IAM user principal](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-users). GitLab Dedicated uses this IAM Principal for access-control. This IAM principal is the only one able to set up an endpoint to the service.
 1. After your IAM Principal has been allowlisted, GitLab [creates the Endpoint Service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) and communicates the `Service Endpoint Name` on the support ticket. The service name is generated by AWS upon creation of the service endpoint.
    - GitLab handles the domain verification for the Private DNS name, so that DNS resolution of the tenant instance domain name in your VPC resolves to the PrivateLink endpoint.
    - GitLab makes the Endpoint Service available in the Availability Zones you specified during the initial onboarding. If you did not specify any Availability Zones, GitLab randomly selects the Availability Zones IDs.
@@ -304,7 +326,9 @@ GitLab Dedicated limits the number of reverse PrivateLink connections to 10.
 
 ### IP allowlist
 
-GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist.
+GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned.
+
+IP addresses that have been added to your IP allowlist can be viewed on the Configuration page in Switchboard. You can add or remove IP addresses from your allowlist with Switchboard or a support request.
 
 #### Add an IP to the allowlist with Switchboard
 
@@ -315,11 +339,11 @@ GitLab Dedicated allows you to control which IP addresses can access your instan
 1. Select **Add Item**.
 1. Enter the IP address and description. To add another IP address, repeat steps 5 and 6.
 1. Select **Save**.
-1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
+1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
 
 #### Add an IP to the allowlist with a Support Request
 
-Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). After the configuration has been applied, when an IP not on the allowlist tries to access your instance, the connection is refused.
+Specify a comma separated list of IP addresses that can access your GitLab Dedicated instance in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The IP addresses are then added to the IP allowlist for your instance.
 
 ### SAML
 
@@ -410,6 +434,23 @@ To enable group sync:
 1. Add the [required elements](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync) to the SAML configuration block you provide in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Configure the [Group Links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 
+### Add users to a tenant instance
+
+Tenant administrators can add Switchboard users to their tenant instance. There are two types of users:
+
+- **Read only**: Users can only view tenant data.
+- **Admin**: Users can edit the tenant configuration and manage users.
+
+To add a new user to your GitLab Dedicated instance:
+
+1. From the **Tenants** page, select **Manage** next to the tenant instance.
+1. From the top of the page, select **Users**.
+1. Select **New user**.
+1. Enter the **Email** and select a **Role** for the user.
+1. Select **Create**.
+
+An invitation to use Switchboard is sent to the user.
+
 ### Access to application logs
 
 GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:
@@ -419,3 +460,11 @@ To gain read only access to this bucket:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title "Customer Log Access". In the body of the ticket, include a list of IAM Principal ARNs (users or roles) that are fetching the logs from S3.
 1. GitLab then informs you of the name of the S3 bucket. Your nominated users/roles are then able to list and get all objects in the S3 bucket.
+
+You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to the S3 bucket works as expected.
+
+#### Bucket contents and structure
+
+The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
+
+The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/kinesis/data-firehose/).

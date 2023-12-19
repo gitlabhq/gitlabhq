@@ -38,8 +38,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
       project.add_maintainer(user2)
 
       sign_in(user)
-
-      set_cookie('sidebar_collapsed', 'true')
     end
 
     context 'no lists' do

@@ -17,6 +17,7 @@ type ClientBulkImportSourceGroupConnection {
 type ClientBulkImportProgress {
   id: ID!
   status: String!
+  hasFailures: Boolean
   message: String
 }
 
@@ -79,5 +80,5 @@ input ImportRequestInput {
 
 extend type Mutation {
   importGroups(importRequests: [ImportRequestInput!]!): [ClientBulkImportSourceGroup!]!
-  updateImportStatus(id: ID, status: String!): ClientBulkImportProgress
+  updateImportStatus(id: ID, status: String!, hasFailures: Boolean): ClientBulkImportProgress
 }

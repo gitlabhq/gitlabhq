@@ -1,6 +1,5 @@
 - page_title @organization.name if @organization
 - header_title @organization.name, organization_path(@organization) if @organization
 - nav(%w[index new].include?(params[:action]) ? "your_work" : "organization")
-- @left_sidebar = true
 
 = render template: "layouts/application"

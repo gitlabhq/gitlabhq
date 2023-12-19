@@ -85,7 +85,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     end
   end
 
-  describe '#current_runner_manager', :freeze_time, feature_category: :runner_fleet do
+  describe '#current_runner_manager', :freeze_time, feature_category: :fleet_visibility do
     let(:runner) { create(:ci_runner, token: 'foo') }
     let(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
 

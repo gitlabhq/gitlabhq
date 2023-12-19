@@ -4,7 +4,8 @@
     "AlertManagementPrometheusIntegration"
   ],
   "AmazonS3ConfigurationInterface": [
-    "AmazonS3ConfigurationType"
+    "AmazonS3ConfigurationType",
+    "InstanceAmazonS3ConfigurationType"
   ],
   "BaseHeaderInterface": [
     "AuditEventStreamingHeader",
@@ -150,6 +151,7 @@
   "User": [
     "AddOnUser",
     "AutocompletedUser",
+    "CurrentUser",
     "MergeRequestAssignee",
     "MergeRequestAuthor",
     "MergeRequestParticipant",
@@ -201,5 +203,11 @@
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
     "WorkItemWidgetWeight"
+  ],
+  "WorkItemWidgetDefinition": [
+    "WorkItemWidgetDefinitionAssignees",
+    "WorkItemWidgetDefinitionGeneric",
+    "WorkItemWidgetDefinitionHierarchy",
+    "WorkItemWidgetDefinitionLabels"
   ]
 }

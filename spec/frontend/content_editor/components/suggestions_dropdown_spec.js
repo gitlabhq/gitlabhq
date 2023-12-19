@@ -1,5 +1,6 @@
-import { GlAvatarLabeled, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import SuggestionsDropdown from '~/content_editor/components/suggestions_dropdown.vue';
 
@@ -14,11 +15,17 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
           command: jest.fn(),
           ...propsData,
         },
+        stubs: ['gl-emoji'],
       }),
     );
   };
 
-  const exampleUser = { username: 'root', avatar_url: 'root_avatar.png', type: 'User' };
+  const exampleUser = {
+    username: 'root',
+    avatar_url: 'root_avatar.png',
+    type: 'User',
+    name: 'Administrator',
+  };
   const exampleIssue = { iid: 123, title: 'Test Issue' };
   const exampleMergeRequest = { iid: 224, title: 'Test MR' };
   const exampleMilestone1 = { iid: 21, title: '13' };
@@ -61,11 +68,14 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     title: 'Project creation QueryRecorder logs',
   };
   const exampleEmoji = {
-    c: 'people',
-    e: '😃',
-    d: 'smiling face with open mouth',
-    u: '6.0',
-    name: 'smiley',
+    emoji: {
+      c: 'people',
+      e: '😃',
+      d: 'smiling face with open mouth',
+      u: '6.0',
+      name: 'smiley',
+    },
+    fieldValue: 'smiley',
   };
 
   const insertedEmojiProps = {
@@ -93,6 +103,68 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     });
 
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(loading);
+  });
+
+  it('selects first item if query is not empty and items are available', async () => {
+    buildWrapper({
+      propsData: {
+        char: '@',
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'member',
+        },
+        items: [exampleUser],
+        query: 'ro',
+      },
+    });
+
+    await nextTick();
+
+    expect(
+      wrapper.findByTestId('content-editor-suggestions-dropdown').find('li').classes(),
+    ).toContain('focused');
+  });
+
+  describe('when query is defined', () => {
+    it.each`
+      nodeType       | referenceType      | reference               | query        | expectedHTML
+      ${'reference'} | ${'user'}          | ${exampleUser}          | ${'r'}       | ${'<strong class="gl-text-body!">r</strong>oot'}
+      ${'reference'} | ${'user'}          | ${exampleUser}          | ${'r'}       | ${'Administ<strong class="gl-text-body!">r</strong>ator'}
+      ${'reference'} | ${'issue'}         | ${exampleIssue}         | ${'test'}    | ${'<strong class="gl-text-body!">Test</strong> Issue'}
+      ${'reference'} | ${'issue'}         | ${exampleIssue}         | ${'12'}      | ${'<strong class="gl-text-body!">12</strong>3'}
+      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}  | ${'test'}    | ${'<strong class="gl-text-body!">Test</strong> MR'}
+      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}  | ${'22'}      | ${'<strong class="gl-text-body!">22</strong>4'}
+      ${'reference'} | ${'epic'}          | ${exampleEpic}          | ${'rem'}     | ${'❓ <strong class="gl-text-body!">Rem</strong>ote Development | Solution validation'}
+      ${'reference'} | ${'epic'}          | ${exampleEpic}          | ${'88'}      | ${'gitlab-org&amp;<strong class="gl-text-body!">88</strong>84'}
+      ${'reference'} | ${'milestone'}     | ${exampleMilestone1}    | ${'1'}       | ${'<strong class="gl-text-body!">1</strong>3'}
+      ${'reference'} | ${'command'}       | ${exampleCommand}       | ${'due'}     | ${'<strong class="gl-text-body!">due</strong>'}
+      ${'reference'} | ${'command'}       | ${exampleCommand}       | ${'due'}     | ${'Set <strong class="gl-text-body!">due</strong> date'}
+      ${'reference'} | ${'label'}         | ${exampleLabel1}        | ${'c'}       | ${'<strong class="gl-text-body!">C</strong>reate'}
+      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability} | ${'network'} | ${'System procs <strong class="gl-text-body!">network</strong> activity'}
+      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability} | ${'85'}      | ${'60<strong class="gl-text-body!">85</strong>0147'}
+      ${'reference'} | ${'snippet'}       | ${exampleSnippet}       | ${'project'} | ${'<strong class="gl-text-body!">Project</strong> creation QueryRecorder logs'}
+      ${'reference'} | ${'snippet'}       | ${exampleSnippet}       | ${'242'}     | ${'<strong class="gl-text-body!">242</strong>0859'}
+      ${'emoji'}     | ${'emoji'}         | ${exampleEmoji}         | ${'sm'}      | ${'<strong class="gl-text-body!">sm</strong>iley'}
+    `(
+      'highlights query as bolded in $referenceType text',
+      ({ nodeType, referenceType, reference, query, expectedHTML }) => {
+        buildWrapper({
+          propsData: {
+            char: '@',
+            nodeType,
+            nodeProps: {
+              referenceType,
+            },
+            items: [reference],
+            query,
+          },
+        });
+
+        expect(wrapper.findByTestId('content-editor-suggestions-dropdown').html()).toContain(
+          expectedHTML,
+        );
+      },
+    );
   });
 
   describe('on item select', () => {
@@ -146,7 +218,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
   });
 
   describe('rendering user references', () => {
-    it('displays avatar labeled component', () => {
+    it('displays avatar component', () => {
       buildWrapper({
         propsData: {
           char: '@',
@@ -157,13 +229,11 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         },
       });
 
-      expect(wrapper.findComponent(GlAvatarLabeled).attributes()).toEqual(
-        expect.objectContaining({
-          label: exampleUser.username,
-          shape: 'circle',
-          src: exampleUser.avatar_url,
-        }),
-      );
+      expect(wrapper.findComponent(GlAvatar).attributes()).toMatchObject({
+        entityname: exampleUser.username,
+        shape: 'circle',
+        src: exampleUser.avatar_url,
+      });
     });
 
     describe.each`
@@ -273,20 +343,46 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       it('displays emoji', () => {
         const testEmojis = [
           {
-            c: 'people',
-            e: '😄',
-            d: 'smiling face with open mouth and smiling eyes',
-            u: '6.0',
-            name: 'smile',
+            emoji: {
+              c: 'people',
+              e: '😄',
+              d: 'smiling face with open mouth and smiling eyes',
+              u: '6.0',
+              name: 'smile',
+            },
+            fieldValue: 'smile',
           },
           {
-            c: 'people',
-            e: '😸',
-            d: 'grinning cat face with smiling eyes',
-            u: '6.0',
-            name: 'smile_cat',
+            emoji: {
+              c: 'people',
+              e: '😸',
+              d: 'grinning cat face with smiling eyes',
+              u: '6.0',
+              name: 'smile_cat',
+            },
+            fieldValue: 'smile_cat',
           },
-          { c: 'people', e: '😃', d: 'smiling face with open mouth', u: '6.0', name: 'smiley' },
+          {
+            emoji: {
+              c: 'people',
+              e: '😃',
+              d: 'smiling face with open mouth',
+              u: '6.0',
+              name: 'smiley',
+            },
+            fieldValue: 'smiley',
+          },
+          {
+            emoji: {
+              c: 'custom',
+              e: null,
+              d: 'party-parrot',
+              u: 'custom',
+              name: 'party-parrot',
+              src: 'https://cultofthepartyparrot.com/parrots/hd/parrot.gif',
+            },
+            fieldValue: 'party-parrot',
+          },
         ];
 
         buildWrapper({
@@ -298,11 +394,41 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
           },
         });
 
-        testEmojis.forEach((testEmoji) => {
-          expect(wrapper.text()).toContain(testEmoji.e);
-          expect(wrapper.text()).toContain(testEmoji.d);
-          expect(wrapper.text()).toContain(testEmoji.name);
-        });
+        expect(wrapper.findAllComponents('gl-emoji-stub').at(0).html()).toMatchInlineSnapshot(`
+          <gl-emoji-stub
+            data-name="smile"
+            data-unicode-version="6.0"
+            title="smiling face with open mouth and smiling eyes"
+          >
+            😄
+          </gl-emoji-stub>
+        `);
+        expect(wrapper.findAllComponents('gl-emoji-stub').at(1).html()).toMatchInlineSnapshot(`
+          <gl-emoji-stub
+            data-name="smile_cat"
+            data-unicode-version="6.0"
+            title="grinning cat face with smiling eyes"
+          >
+            😸
+          </gl-emoji-stub>
+        `);
+        expect(wrapper.findAllComponents('gl-emoji-stub').at(2).html()).toMatchInlineSnapshot(`
+          <gl-emoji-stub
+            data-name="smiley"
+            data-unicode-version="6.0"
+            title="smiling face with open mouth"
+          >
+            😃
+          </gl-emoji-stub>
+        `);
+        expect(wrapper.findAllComponents('gl-emoji-stub').at(3).html()).toMatchInlineSnapshot(`
+          <gl-emoji-stub
+            data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif"
+            data-name="party-parrot"
+            data-unicode-version="custom"
+            title="party-parrot"
+          />
+        `);
       });
     });
   });

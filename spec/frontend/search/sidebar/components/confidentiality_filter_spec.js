@@ -22,23 +22,11 @@ describe('ConfidentialityFilter', () => {
 
   const findRadioFilter = () => wrapper.findComponent(RadioFilter);
 
-  describe('old sidebar', () => {
-    beforeEach(() => {
-      createComponent({ useSidebarNavigation: false });
-    });
-
-    it('renders the component', () => {
-      expect(findRadioFilter().exists()).toBe(true);
-    });
+  beforeEach(() => {
+    createComponent();
   });
 
-  describe('new sidebar', () => {
-    beforeEach(() => {
-      createComponent({ useSidebarNavigation: true });
-    });
-
-    it('renders the component', () => {
-      expect(findRadioFilter().exists()).toBe(true);
-    });
+  it('renders the component', () => {
+    expect(findRadioFilter().exists()).toBe(true);
   });
 });

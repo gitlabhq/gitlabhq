@@ -1,7 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
@@ -15,17 +13,11 @@ import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   mockList,
   mockGroupProjects,
-  mockIssue,
-  mockIssue2,
   mockProjectBoardResponse,
   mockGroupBoardResponse,
 } from '../mock_data';
 
-Vue.use(Vuex);
 Vue.use(VueApollo);
-
-const addListNewIssuesSpy = jest.fn().mockResolvedValue();
-const mockActions = { addListNewIssue: addListNewIssuesSpy };
 
 const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
 const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
@@ -36,20 +28,12 @@ const mockApollo = createMockApollo([
 ]);
 
 const createComponent = ({
-  state = {},
-  actions = mockActions,
-  getters = { getBoardItemsByList: () => () => [] },
   isGroupBoard = true,
   data = { selectedProject: mockGroupProjects[0] },
   provide = {},
 } = {}) =>
   shallowMount(BoardNewIssue, {
     apolloProvider: mockApollo,
-    store: new Vuex.Store({
-      state,
-      actions,
-      getters,
-    }),
     propsData: {
       list: mockList,
       boardId: 'gid://gitlab/Board/1',
@@ -63,7 +47,6 @@ const createComponent = ({
       isGroupBoard,
       boardType: 'group',
       isEpicBoard: false,
-      isApolloBoard: false,
       ...provide,
     },
     stubs: {
@@ -82,6 +65,32 @@ describe('Issue boards new issue form', () => {
     await nextTick();
   });
 
+  it.each`
+    boardType            | queryHandler                       | notCalledHandler
+    ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+    ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+  `(
+    'fetches $boardType board and emits addNewIssue event',
+    async ({ boardType, queryHandler, notCalledHandler }) => {
+      wrapper = createComponent({
+        provide: {
+          boardType,
+          isProjectBoard: boardType === WORKSPACE_PROJECT,
+          isGroupBoard: boardType === WORKSPACE_GROUP,
+        },
+      });
+
+      await nextTick();
+      findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
+
+      await nextTick();
+
+      expect(queryHandler).toHaveBeenCalled();
+      expect(notCalledHandler).not.toHaveBeenCalled();
+      expect(wrapper.emitted('addNewIssue')[0][0]).toMatchObject({ title: 'Foo' });
+    },
+  );
+
   it('renders board-new-item component', () => {
     const boardNewItem = findBoardNewItem();
     expect(boardNewItem.exists()).toBe(true);
@@ -90,51 +99,6 @@ describe('Issue boards new issue form', () => {
       formEventPrefix: 'toggle-issue-form-',
       submitButtonTitle: 'Create issue',
       disableSubmit: false,
-    });
-  });
-
-  it('calls addListNewIssue action when `board-new-item` emits form-submit event', async () => {
-    findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
-
-    await nextTick();
-    expect(addListNewIssuesSpy).toHaveBeenCalledWith(expect.any(Object), {
-      list: mockList,
-      issueInput: {
-        title: 'Foo',
-        labelIds: [],
-        assigneeIds: [],
-        milestoneId: undefined,
-        projectPath: mockGroupProjects[0].fullPath,
-        moveAfterId: undefined,
-      },
-    });
-  });
-
-  describe('when list has an existing issues', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        getters: {
-          getBoardItemsByList: () => () => [mockIssue, mockIssue2],
-        },
-        isGroupBoard: true,
-      });
-    });
-
-    it('uses the first issue ID as moveAfterId', async () => {
-      findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
-
-      await nextTick();
-      expect(addListNewIssuesSpy).toHaveBeenCalledWith(expect.any(Object), {
-        list: mockList,
-        issueInput: {
-          title: 'Foo',
-          labelIds: [],
-          assigneeIds: [],
-          milestoneId: undefined,
-          projectPath: mockGroupProjects[0].fullPath,
-          moveAfterId: mockIssue.id,
-        },
-      });
     });
   });
 
@@ -167,34 +131,5 @@ describe('Issue boards new issue form', () => {
 
       expect(projectSelect.exists()).toBe(false);
     });
-  });
-
-  describe('Apollo boards', () => {
-    it.each`
-      boardType            | queryHandler                       | notCalledHandler
-      ${WORKSPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-      ${WORKSPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
-    `(
-      'fetches $boardType board and emits addNewIssue event',
-      async ({ boardType, queryHandler, notCalledHandler }) => {
-        wrapper = createComponent({
-          provide: {
-            boardType,
-            isProjectBoard: boardType === WORKSPACE_PROJECT,
-            isGroupBoard: boardType === WORKSPACE_GROUP,
-            isApolloBoard: true,
-          },
-        });
-
-        await nextTick();
-        findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
-
-        await nextTick();
-
-        expect(queryHandler).toHaveBeenCalled();
-        expect(notCalledHandler).not.toHaveBeenCalled();
-        expect(wrapper.emitted('addNewIssue')[0][0]).toMatchObject({ title: 'Foo' });
-      },
-    );
   });
 });

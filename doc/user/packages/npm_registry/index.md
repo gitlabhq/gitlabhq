@@ -1,20 +1,20 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# npm packages in the Package Registry **(FREE ALL)**
+# npm packages in the package registry **(FREE ALL)**
 
 For documentation of the specific API endpoints that the npm package manager client uses, see the [npm API documentation](../../../api/packages/npm.md).
 
 Learn how to build an [npm](../workflows/build_packages.md#npm) or [yarn](../workflows/build_packages.md#yarn) package.
 
-Watch a [video demo](https://youtu.be/yvLxtkvsFDA) of how to publish npm packages to the GitLab Package Registry.
+Watch a [video demo](https://youtu.be/yvLxtkvsFDA) of how to publish npm packages to the GitLab package registry.
 
-## Publish to GitLab Package Registry
+## Publish to GitLab package registry
 
-### Authentication to the Package Registry
+### Authentication to the package registry
 
 You need an token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
 
@@ -43,7 +43,7 @@ If you plan to install a package through the [instance level](#install-from-the-
   of the project with the source code of the package itself. The scope should be lowercase.
 - The package name can be anything you want
 
-| Project URL                                             | Package Registry in | Scope     | Full package name      |
+| Project URL                                             | Package registry in | Scope     | Full package name      |
 | ------------------------------------------------------- | ------------------- | --------- | ---------------------- |
 | `https://gitlab.com/my-org/engineering-group/analytics` | Analytics           | `@my-org` | `@my-org/package-name` |
 
@@ -81,11 +81,11 @@ Associate your [token](#authentication-to-the-package-registry) with the `"${NPM
 NPM_TOKEN=your_token npm publish
 ```
 
-Your package should now publish to the Package Registry.
+Your package should now publish to the package registry.
 
 ## Publishing a package by using a CI/CD pipeline
 
-When publishing by using a CI/CD pipeline, you can use the [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` to authenticate with your project's Package Registry. We use these variables to create a `.npmrc` file [for authentication](#authenticating-via-the-npmrc) during execution of your CI/CD job.
+When publishing by using a CI/CD pipeline, you can use the [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` to authenticate with your project's package registry. We use these variables to create a `.npmrc` file [for authentication](#authenticating-via-the-npmrc) during execution of your CI/CD job.
 
 WARNING:
 When generating the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port,
@@ -109,7 +109,7 @@ publish-npm:
 
 - Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope) of the package that is being published.
 
-Your package is published to the Package Registry when the `publish-npm` job in your pipeline runs.
+Your package is published to the package registry when the `publish-npm` job in your pipeline runs.
 
 ## Install a package
 
@@ -121,9 +121,9 @@ You can install a package from a GitLab project, group, or instance:
 - **Group-level**: Use when you have many npm packages in different projects in the same GitLab group.
 - **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
 
-### Authenticate to the Package Registry
+### Authenticate to the package registry
 
-You must authenticate to the Package Registry to install a package from a private project or a private group.
+You must authenticate to the package registry to install a package from a private project or a private group.
 No authentication is needed if the project or the group is public.
 
 To authenticate with `npm`:
@@ -171,7 +171,7 @@ are not supported.
 WARNING:
 To install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
 
-1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
+1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -194,7 +194,7 @@ To install a package from the instance level, the package must have been publish
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
 
-1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
+1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -214,7 +214,7 @@ To install a package from the instance level, the package must have been publish
 
 ### Install from the project level
 
-1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
+1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -231,6 +231,18 @@ To install a package from the instance level, the package must have been publish
    ```shell
    npm install @scope/my-package
    ```
+
+### Package forwarding to npmjs.com
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+
+When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
+
+Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
+
+Group owners can disable this behavior in the group **Packages and registries** settings.
+
+Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/epics/3608).
 
 ## Deprecate a package
 
@@ -267,14 +279,6 @@ npm deprecate @scope/package ""
 
 ## Helpful hints
 
-### Package forwarding to npmjs.com
-
-When an npm package is not found in the Package Registry, the request is forwarded to [npmjs.com](https://www.npmjs.com/). The forward is performed by sending an HTTP redirect back to the requesting client.
-
-Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
-
-Group owners can disable this behavior in the group Packages and Registries settings.
-
 ### Install npm packages from other organizations
 
 You can route package requests to organizations and users outside of GitLab.
@@ -289,7 +293,7 @@ and use your organization's URL. The name is case-sensitive and must match the n
 
 ### npm metadata
 
-The GitLab Package Registry exposes the following attributes to the npm client.
+The GitLab package registry exposes the following attributes to the npm client.
 These are similar to the [abbreviated metadata format](https://github.com/npm/registry/blob/9e368cf6aaca608da5b2c378c0d53f475298b916/docs/responses/package-metadata.md#abbreviated-metadata-format):
 
 - `name`
@@ -407,7 +411,7 @@ And the `.npmrc` file should look like:
 
 If you get this error, ensure that:
 
-- The Package Registry is enabled in your project settings. Although the Package Registry is enabled by default, it's possible to [disable it](../package_registry/index.md#disable-the-package-registry).
+- The package registry is enabled in your project settings. Although the package registry is enabled by default, it's possible to [disable it](../package_registry/index.md#disable-the-package-registry).
 - Your token is not expired and has appropriate permissions.
 - A package with the same name or version doesn't already exist within the given scope.
 - The scoped packages URL includes a trailing slash:

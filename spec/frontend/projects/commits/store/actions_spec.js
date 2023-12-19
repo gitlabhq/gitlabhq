@@ -53,7 +53,7 @@ describe('Project commits actions', () => {
       const data = [{ id: 1 }];
 
       mock.onGet(path).replyOnce(HTTP_STATUS_OK, data);
-      testAction(
+      return testAction(
         actions.fetchAuthors,
         null,
         state,
@@ -66,7 +66,7 @@ describe('Project commits actions', () => {
       const path = '/-/autocomplete/users.json';
       mock.onGet(path).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-      testAction(actions.fetchAuthors, null, state, [], [{ type: 'receiveAuthorsError' }]);
+      return testAction(actions.fetchAuthors, null, state, [], [{ type: 'receiveAuthorsError' }]);
     });
   });
 });

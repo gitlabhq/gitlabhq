@@ -713,7 +713,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
           {
             name: 'latest',
             digest: 'sha256:6c3c624b58dbbcd3c0dd82b4c53f04191247c6eebdaab7c610cf7d66709b3',
-            config_digest: 'sha256:66b1132a0173910b01ee694462c99efbe1b9ab5bf8083231232312',
+            config_digest: nil,
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567892,
             created_at: 10.minutes.ago,
@@ -742,7 +742,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         expect(return_value[:pagination]).to eq(response_body[:pagination])
 
         return_value[:tags].each_with_index do |tag, index|
-          expected_revision = tags_response[index][:config_digest].to_s.split(':')[1]
+          expected_revision = tags_response[index][:config_digest].to_s.split(':')[1].to_s
 
           expect(tag.is_a?(ContainerRegistry::Tag)).to eq(true)
           expect(tag).to have_attributes(

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure an external Sidekiq instance **(FREE SELF)**
@@ -200,9 +200,9 @@ To set up multiple Sidekiq nodes:
    sudo gitlab-ctl reconfigure
    ```
 
-## Configure the Container Registry when using an external Sidekiq
+## Configure the container registry when using an external Sidekiq
 
-If you're using the Container Registry and it's running on a different
+If you're using the container registry and it's running on a different
 node than Sidekiq, follow the steps below.
 
 1. Edit `/etc/gitlab/gitlab.rb`, and configure the registry URL:
@@ -217,7 +217,7 @@ node than Sidekiq, follow the steps below.
    sudo gitlab-ctl reconfigure
    ```
 
-1. In the instance where Container Registry is hosted, copy the `registry.key`
+1. In the instance where container registry is hosted, copy the `registry.key`
    file to the Sidekiq node.
 
 ## Configure the Sidekiq metrics server

@@ -139,6 +139,8 @@ module API
         authorize!(:create_deployment, user_project)
         authorize!(:create_environment, user_project)
 
+        render_api_error!({ ref: ["The branch or tag does not exist"] }, 400) unless user_project.commit(declared_params[:ref])
+
         environment = user_project
           .environments
           .find_or_create_by_name(params[:environment])

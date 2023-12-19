@@ -1,7 +1,4 @@
 import $ from 'jquery';
-import ContextualSidebar from './contextual_sidebar';
-import initFlyOutNav from './fly_out_nav';
-import { setNotification } from './whats_new/utils/notification';
 
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
@@ -88,36 +85,11 @@ function initInviteMembers() {
     .catch(() => {});
 }
 
-function initWhatsNewComponent() {
-  const appEl = document.getElementById('whats-new-app');
-  if (!appEl) return;
-
-  setNotification(appEl);
-
-  const triggerEl = document.querySelector('.js-whats-new-trigger');
-  if (!triggerEl) return;
-
-  triggerEl.addEventListener('click', () => {
-    import(/* webpackChunkName: 'whatsNewApp' */ '~/whats_new')
-      .then(({ default: initWhatsNew }) => {
-        initWhatsNew(appEl);
-      })
-      .catch(() => {});
-  });
-}
-
 function initDeferred() {
   initScrollingTabs();
-  initWhatsNewComponent();
   initInviteMembers();
 }
 
 export default function initLayoutNav() {
-  if (!gon.use_new_navigation) {
-    const contextualSidebar = new ContextualSidebar();
-    contextualSidebar.bindEvents();
-    initFlyOutNav();
-  }
-
   requestIdleCallback(initDeferred);
 }

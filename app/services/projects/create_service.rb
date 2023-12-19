@@ -17,6 +17,7 @@ module Projects
       @relations_block = @params.delete(:relations_block)
       @default_branch = @params.delete(:default_branch)
       @readme_template = @params.delete(:readme_template)
+      @repository_object_format = @params.delete(:repository_object_format)
 
       build_topics
     end
@@ -212,6 +213,13 @@ module Projects
       ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
     end
 
+    def repository_object_format
+      return Repository::FORMAT_SHA1 unless Feature.enabled?(:support_sha256_repositories, current_user)
+      return Repository::FORMAT_SHA256 if @repository_object_format == Repository::FORMAT_SHA256
+
+      Repository::FORMAT_SHA1
+    end
+
     def readme_content
       readme_attrs = {
         default_branch: default_branch
@@ -242,7 +250,7 @@ module Projects
 
             next if @project.import?
 
-            unless @project.create_repository(default_branch: default_branch)
+            unless @project.create_repository(default_branch: default_branch, object_format: repository_object_format)
               raise 'Failed to create repository'
             end
           end

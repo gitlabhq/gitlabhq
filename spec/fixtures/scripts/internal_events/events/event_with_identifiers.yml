@@ -1,0 +1,20 @@
+---
+description: Engineer uses Internal Event CLI to define a new event
+category: InternalEventTracking
+action: internal_events_cli_used
+identifiers:
+- project
+- namespace
+- user
+product_section: analytics
+product_stage: monitor
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

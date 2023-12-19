@@ -371,7 +371,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             sha: merge_request.diff_head_sha,
             user: user,
             merge_request: merge_request,
-            status: :running)
+            status: :pending)
           merge_request.update_head_pipeline
         end
 

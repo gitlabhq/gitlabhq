@@ -164,6 +164,12 @@ export const specialFilterValues = [
   FILTER_STARTED,
 ];
 
+export const TYPE_TOKEN_EPIC_OPTION = {
+  icon: 'epic',
+  title: __('Epic'),
+  value: 'epic',
+};
+
 export const TYPE_TOKEN_OBJECTIVE_OPTION = {
   icon: 'issue-type-objective',
   title: s__('WorkItem|Objective'),

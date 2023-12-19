@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::StorageSettings, feature_category: :gitaly do
   describe "#initialize" do
-    context 'when the storage contains no path' do
+    context 'when the storage contains no gitaly_address' do
       it 'raises an error' do
         expect do
           described_class.new("foo" => {})
-        end.to raise_error(described_class::InvalidConfigurationError)
+        end.to raise_error(described_class::InvalidConfigurationError, described_class::INVALID_STORAGE_MESSAGE)
       end
     end
 
@@ -23,21 +23,13 @@ RSpec.describe Gitlab::GitalyClient::StorageSettings, feature_category: :gitaly 
     context 'when the storage is valid' do
       it 'raises no error' do
         expect do
-          described_class.new("path" => Rails.root)
+          described_class.new("gitaly_address" => "unix:tmp/tests/gitaly/gitaly.socket")
         end.not_to raise_error
       end
     end
   end
 
   describe '.gitaly_address' do
-    context 'when the storage settings have no gitaly address but one is requested' do
-      it 'raises an error' do
-        expect do
-          described_class.new("path" => Rails.root).gitaly_address
-        end.to raise_error("key not found: \"gitaly_address\"")
-      end
-    end
-
     context 'when the storage settings have a gitaly address and one is requested' do
       it 'returns the setting value' do
         expect(described_class.new("path" => Rails.root, "gitaly_address" => "test").gitaly_address).to eq("test")

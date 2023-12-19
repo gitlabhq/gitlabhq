@@ -165,7 +165,7 @@ describe('setFilters', () => {
       issuableType: TYPE_ISSUE,
     };
 
-    testAction(
+    return testAction(
       actions.setFilters,
       filters,
       state,
@@ -441,7 +441,7 @@ describe('fetchMilestones', () => {
 
 describe('createList', () => {
   it('should dispatch createIssueList action', () => {
-    testAction({
+    return testAction({
       action: actions.createList,
       payload: { backlog: true },
       expectedActions: [{ type: 'createIssueList', payload: { backlog: true } }],
@@ -560,7 +560,7 @@ describe('addList', () => {
   };
 
   it('should commit RECEIVE_ADD_LIST_SUCCESS mutation and  dispatch fetchItemsForList action', () => {
-    testAction({
+    return testAction({
       action: actions.addList,
       payload: mockLists[1],
       state: { ...getters },
@@ -1007,7 +1007,7 @@ describe('moveItem', () => {
   it('should dispatch moveIssue action with payload', () => {
     const payload = { mock: 'payload' };
 
-    testAction({
+    return testAction({
       action: actions.moveItem,
       payload,
       expectedActions: [{ type: 'moveIssue', payload }],
@@ -1017,7 +1017,7 @@ describe('moveItem', () => {
 
 describe('moveIssue', () => {
   it('should dispatch a correct set of actions', () => {
-    testAction({
+    return testAction({
       action: actions.moveIssue,
       payload: mockMoveIssueParams,
       state: mockMoveState,
@@ -1092,7 +1092,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('moveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.moveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1101,7 +1101,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('undoMoveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.undoMoveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1169,7 +1169,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('moveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.moveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1178,7 +1178,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('undoMoveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.undoMoveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1244,7 +1244,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('moveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.moveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1253,7 +1253,7 @@ describe('moveIssueCard and undoMoveIssueCard', () => {
       });
 
       it('undoMoveIssueCard commits a correct set of actions', () => {
-        testAction({
+        return testAction({
           action: actions.undoMoveIssueCard,
           state,
           payload: getMoveData(state, params),
@@ -1298,7 +1298,7 @@ describe('updateMovedIssueCard', () => {
   ])(
     'should commit UPDATE_BOARD_ITEM with a correctly updated issue data when %s',
     (_, { state, moveData, updatedIssue }) => {
-      testAction({
+      return testAction({
         action: actions.updateMovedIssue,
         payload: moveData,
         state,
@@ -1363,7 +1363,7 @@ describe('updateIssueOrder', () => {
       },
     });
 
-    testAction(
+    return testAction(
       actions.updateIssueOrder,
       { moveData },
       state,
@@ -1395,7 +1395,7 @@ describe('updateIssueOrder', () => {
       },
     });
 
-    testAction(
+    return testAction(
       actions.updateIssueOrder,
       { moveData },
       state,
@@ -1448,7 +1448,7 @@ describe('addListItem', () => {
       inProgress: true,
     };
 
-    testAction(
+    return testAction(
       actions.addListItem,
       payload,
       {},
@@ -1475,7 +1475,7 @@ describe('addListItem', () => {
       position: 0,
     };
 
-    testAction(
+    return testAction(
       actions.addListItem,
       payload,
       {},
@@ -1503,7 +1503,7 @@ describe('removeListItem', () => {
       itemId: mockIssue.id,
     };
 
-    testAction(actions.removeListItem, payload, {}, [
+    return testAction(actions.removeListItem, payload, {}, [
       { type: types.REMOVE_BOARD_ITEM_FROM_LIST, payload },
       { type: types.REMOVE_BOARD_ITEM, payload: mockIssue.id },
     ]);
@@ -1608,7 +1608,7 @@ describe('addListNewIssue', () => {
         },
       });
 
-      testAction({
+      return testAction({
         action: actions.addListNewIssue,
         payload: {
           issueInput: mockIssue,
@@ -1651,7 +1651,7 @@ describe('addListNewIssue', () => {
         },
       });
 
-      testAction({
+      return testAction({
         action: actions.addListNewIssue,
         payload: {
           issueInput: mockIssue,
@@ -1700,7 +1700,7 @@ describe('setActiveIssueLabels', () => {
       value: labels,
     };
 
-    testAction(
+    return testAction(
       actions.setActiveIssueLabels,
       input,
       { ...state, ...getters },
@@ -1721,7 +1721,7 @@ describe('setActiveIssueLabels', () => {
       value: [labels[1]],
     };
 
-    testAction(
+    return testAction(
       actions.setActiveIssueLabels,
       { ...input, removeLabelIds: [getIdFromGraphQLId(labels[0].id)] },
       { ...state, ...getters },
@@ -1962,7 +1962,7 @@ describe('toggleBoardItemMultiSelection', () => {
   const boardItem2 = mockIssue2;
 
   it('should commit mutation ADD_BOARD_ITEM_TO_SELECTION if item is not on selection state', () => {
-    testAction(
+    return testAction(
       actions.toggleBoardItemMultiSelection,
       boardItem,
       { selectedBoardItems: [] },
@@ -1977,7 +1977,7 @@ describe('toggleBoardItemMultiSelection', () => {
   });
 
   it('should commit mutation REMOVE_BOARD_ITEM_FROM_SELECTION if item is on selection state', () => {
-    testAction(
+    return testAction(
       actions.toggleBoardItemMultiSelection,
       boardItem,
       { selectedBoardItems: [mockIssue] },
@@ -1992,7 +1992,7 @@ describe('toggleBoardItemMultiSelection', () => {
   });
 
   it('should additionally commit mutation ADD_BOARD_ITEM_TO_SELECTION for active issue and dispatch unsetActiveId', () => {
-    testAction(
+    return testAction(
       actions.toggleBoardItemMultiSelection,
       boardItem2,
       { activeId: mockActiveIssue.id, activeBoardItem: mockActiveIssue, selectedBoardItems: [] },
@@ -2013,7 +2013,7 @@ describe('toggleBoardItemMultiSelection', () => {
 
 describe('resetBoardItemMultiSelection', () => {
   it('should commit mutation RESET_BOARD_ITEM_SELECTION', () => {
-    testAction({
+    return testAction({
       action: actions.resetBoardItemMultiSelection,
       state: { selectedBoardItems: [mockIssue] },
       expectedMutations: [
@@ -2027,7 +2027,7 @@ describe('resetBoardItemMultiSelection', () => {
 
 describe('toggleBoardItem', () => {
   it('should dispatch resetBoardItemMultiSelection and unsetActiveId when boardItem is the active item', () => {
-    testAction({
+    return testAction({
       action: actions.toggleBoardItem,
       payload: { boardItem: mockIssue },
       state: {
@@ -2038,7 +2038,7 @@ describe('toggleBoardItem', () => {
   });
 
   it('should dispatch resetBoardItemMultiSelection and setActiveId when boardItem is not the active item', () => {
-    testAction({
+    return testAction({
       action: actions.toggleBoardItem,
       payload: { boardItem: mockIssue },
       state: {
@@ -2054,7 +2054,7 @@ describe('toggleBoardItem', () => {
 
 describe('setError', () => {
   it('should commit mutation SET_ERROR', () => {
-    testAction({
+    return testAction({
       action: actions.setError,
       payload: { message: 'mayday' },
       expectedMutations: [
@@ -2085,7 +2085,7 @@ describe('setError', () => {
 
 describe('unsetError', () => {
   it('should commit mutation SET_ERROR with undefined as payload', () => {
-    testAction({
+    return testAction({
       action: actions.unsetError,
       expectedMutations: [
         {

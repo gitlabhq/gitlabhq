@@ -410,7 +410,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
 
       let(:other_project_files) do
         {
-          '/component-x/template.yml' => <<~YAML
+          '/templates/component-x/template.yml' => <<~YAML
           component_x_job:
             script: echo Component X
           YAML

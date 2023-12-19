@@ -844,7 +844,7 @@ export default class Notes {
     const selector = this.getEditFormSelector($target);
     const $editForm = $(selector);
 
-    $editForm.insertBefore('.diffs');
+    $editForm.insertBefore('.js-snippets-note-edit-form-holder');
     $editForm.find('.js-comment-save-button').enable();
     $editForm.find('.js-finish-edit-warning').hide();
   }

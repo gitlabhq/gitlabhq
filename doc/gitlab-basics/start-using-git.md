@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: howto, tutorial
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Introduction to using Git through the command line."
 ---
 
@@ -62,13 +61,13 @@ If your computer doesn't recognize `git` as a command, you must [install Git](..
 ## Configure Git
 
 To start using Git from your computer, you must enter your credentials
-to identify yourself as the author of your work. The username and email address
+to identify yourself as the author of your work. The full name and email address
 should match the ones you use in GitLab.
 
-1. In your shell, add your user name:
+1. In your shell, add your full name:
 
    ```shell
-   git config --global user.name "your_username"
+   git config --global user.name "John Doe"
    ```
 
 1. Add your email address:
@@ -140,6 +139,7 @@ You can also
 
 Clone with HTTPS when you want to authenticate each time you perform an operation
 between your computer and GitLab.
+[OAuth credential helpers](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease the number of times you must manually authenticate, making HTTPS a seamless experience.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to clone.
 1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with HTTPS**.
@@ -222,7 +222,7 @@ To add a remote to your local copy:
    git remote add origin git@gitlab.com:username/projectpath.git
    ```
 
-After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlabcom).
+After you've done that, you can [stage your files](#add-and-commit-local-changes) and [upload them to GitLab](#send-changes-to-gitlab).
 
 #### View your remote repositories
 
@@ -354,7 +354,7 @@ As a shortcut, you can add all local changes to staging and commit them with one
 git commit -a -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
 ```
 
-### Send changes to GitLab.com
+### Send changes to GitLab
 
 To push all local changes to the remote repository:
 
@@ -369,7 +369,7 @@ git push origin main
 ```
 
 Sometimes Git does not allow you to push to a repository. Instead,
-you must [force an update](../topics/git/git_rebase.md#force-push).
+you must [force an update](../topics/git/git_rebase.md#force-pushing).
 
 ### Delete all changes in the branch
 
@@ -438,7 +438,7 @@ changes from the original repository. It is common to call this remote repositor
 
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`
-to [push local changes](#send-changes-to-gitlabcom) and create merge requests.
+to [push local changes](#send-changes-to-gitlab) and create merge requests.
 
 <!-- ## Troubleshooting
 

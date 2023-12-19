@@ -13,9 +13,6 @@ module Ci
     include FileStoreMounter
     include EachBatch
     include Gitlab::Utils::StrongMemoize
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 
@@ -61,7 +58,8 @@ module Ci
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json',
       cyclonedx: 'gl-sbom.cdx.json',
-      annotations: 'gl-annotations.json'
+      annotations: 'gl-annotations.json',
+      repository_xray: 'gl-repository-xray.json'
     }.freeze
 
     INTERNAL_TYPES = {
@@ -81,6 +79,7 @@ module Ci
       lsif: :zip,
       cyclonedx: :gzip,
       annotations: :gzip,
+      repository_xray: :gzip,
 
       # Security reports and license scanning reports are raw artifacts
       # because they used to be fetched by the frontend, but this is not the case anymore.
@@ -224,7 +223,8 @@ module Ci
       cluster_image_scanning: 27, ## EE-specific
       cyclonedx: 28, ## EE-specific
       requirements_v2: 29, ## EE-specific
-      annotations: 30
+      annotations: 30,
+      repository_xray: 31 ## EE-specifric
     }
 
     # `file_location` indicates where actual files are stored.
@@ -365,8 +365,6 @@ module Ci
     end
 
     def public_access?
-      return true unless Feature.enabled?(:non_public_artifacts, type: :development)
-
       public_accessibility?
     end
 

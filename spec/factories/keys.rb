@@ -17,7 +17,7 @@ FactoryBot.define do
 
     trait :expired_today do
       to_create { |key| key.save!(validate: false) }
-      expires_at { Date.today.beginning_of_day + 3.hours }
+      expires_at { Date.current.beginning_of_day + 3.hours }
     end
 
     trait :without_md5_fingerprint do

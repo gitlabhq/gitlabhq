@@ -1355,6 +1355,30 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '#sync_npm_metadata_cache' do
+    let_it_be(:package) { create(:npm_package) }
+
+    subject { package.sync_npm_metadata_cache }
+
+    it 'enqueues a sync worker job' do
+      expect(::Packages::Npm::CreateMetadataCacheWorker)
+        .to receive(:perform_async).with(package.project_id, package.name)
+
+      subject
+    end
+
+    context 'with a non npm package' do
+      let_it_be(:package) { create(:maven_package) }
+
+      it 'does not enqueue a sync worker job' do
+        expect(::Packages::Npm::CreateMetadataCacheWorker)
+          .not_to receive(:perform_async)
+
+        subject
+      end
+    end
+  end
+
   describe '#mark_package_files_for_destruction' do
     let_it_be(:package) { create(:npm_package, :pending_destruction) }
 

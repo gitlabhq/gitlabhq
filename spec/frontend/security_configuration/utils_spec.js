@@ -1,5 +1,5 @@
 import { augmentFeatures, translateScannerNames } from '~/security_configuration/utils';
-import { SCANNER_NAMES_MAP } from '~/security_configuration/components/constants';
+import { SCANNER_NAMES_MAP } from '~/security_configuration/constants';
 
 describe('augmentFeatures', () => {
   const mockSecurityFeatures = [

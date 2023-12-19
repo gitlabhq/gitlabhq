@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::RunnerProjectsController, feature_category: :runner_fleet do
+RSpec.describe Admin::RunnerProjectsController, feature_category: :fleet_visibility do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 

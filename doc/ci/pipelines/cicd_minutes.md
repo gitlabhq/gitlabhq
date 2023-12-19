@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Compute quota **(PREMIUM ALL)**
@@ -53,15 +52,14 @@ By default, GitLab instances do not have a compute quota.
 The default value for the quota is `0`, which is unlimited.
 However, you can change this default value.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a GitLab administrator.
 
 To change the default quota that applies to all namespaces:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Compute quota** box, enter a limit.
 1. Select **Save changes**.
@@ -75,15 +73,14 @@ If a quota is already defined for a specific namespace, this value does not chan
 You can override the global value and set a compute quota
 for a specific namespace.
 
-Prerequisite:
+Prerequisites:
 
 - You must be a GitLab administrator.
 
 To set a compute quota for a namespace:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Overview > Groups**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Compute quota** box, enter the maximum number of compute minutes.
 1. Select **Save changes**.
@@ -97,7 +94,7 @@ If you set a quota for a subgroup, it is not used.
 
 ## View compute usage
 
-Prerequisite:
+Prerequisites:
 
 - You must have access to the build to view the total usage and quota summary for a namespace associated with a build.
 - Access to **Usage Quotas** page is based on your role in the associated namespace or group.
@@ -106,7 +103,7 @@ Prerequisite:
 
 > Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -125,7 +122,7 @@ subgroups, sorted in descending order of compute usage.
 
 > Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 
-Prerequisite:
+Prerequisites:
 
 - The namespace must be your personal namespace.
 
@@ -164,7 +161,7 @@ You can find pricing for additional compute minutes on the
 
 ### Purchase compute minutes for a group **(FREE SAAS)**
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 
@@ -183,7 +180,7 @@ namespace.
 
 ### Purchase compute minutes for a personal namespace **(FREE SAAS)**
 
-Prerequisite:
+Prerequisites:
 
 - The namespace must be your personal namespace.
 

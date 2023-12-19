@@ -27,6 +27,8 @@ Redis::Cluster::SlotLoader.prepend(Gitlab::Patch::SlotLoader)
 Redis::Cluster::CommandLoader.prepend(Gitlab::Patch::CommandLoader)
 Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
 
+ConnectionPool.prepend(Gitlab::Instrumentation::ConnectionPool)
+
 if Gitlab::Redis::Workhorse.params[:cluster].present?
   raise "Do not configure workhorse with a Redis Cluster as pub/sub commands are not cluster-compatible."
 end
@@ -37,5 +39,5 @@ end
 # 2. Rails.cache
 # 3. HTTP clients
 Gitlab::Redis::ALL_CLASSES.each do |redis_instance|
-  redis_instance.with { nil }
+  redis_instance.with { nil } unless redis_instance == Gitlab::Redis::ClusterSharedState
 end

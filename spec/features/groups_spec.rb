@@ -485,7 +485,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       it 'only displays "New subgroup" button' do
         visit group_path(group)
 
-        page.within '[data-testid="group-buttons"]' do
+        within_testid 'group-buttons' do
           expect(page).to have_link('New subgroup')
           expect(page).not_to have_link('New project')
         end
@@ -502,7 +502,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
         sign_in(user)
 
         visit group_path(group)
-        page.within '[data-testid="group-buttons"]' do
+        within_testid 'group-buttons' do
           expect(page).to have_link('New project')
           expect(page).not_to have_link('New subgroup')
         end
@@ -515,7 +515,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
 
         visit group_path(group)
 
-        page.within '[data-testid="group-buttons"]' do
+        within_testid 'group-buttons' do
           expect(page).to have_link('New subgroup')
           expect(page).to have_link('New project')
         end
@@ -542,7 +542,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
         it 'does not display the "New project" button' do
           visit group_path(group)
 
-          page.within '[data-testid="group-buttons"]' do
+          within_testid 'group-buttons' do
             expect(page).not_to have_link('New project')
           end
         end

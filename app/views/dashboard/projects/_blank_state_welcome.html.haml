@@ -1,6 +1,8 @@
 - link_classes = "blank-state blank-state-link gl-text-body gl-display-flex gl-align-items-center gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base gl-mb-5"
 
 .gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
+  = render_if_exists "dashboard/projects/blank_state_extra_info"
+
   - if current_user.can_create_project?
     = link_to new_project_path, class: link_classes, data: { testid: 'new-project-button' } do
       .blank-state-icon

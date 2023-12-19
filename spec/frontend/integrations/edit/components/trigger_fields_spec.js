@@ -1,22 +1,31 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
+import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { placeholderForType } from 'jh_else_ce/integrations/constants';
-
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
+
+Vue.use(Vuex);
 
 describe('TriggerFields', () => {
   let wrapper;
+  let store;
 
   const defaultProps = {
     type: 'slack',
   };
 
   const createComponent = (props, isInheriting = false) => {
-    wrapper = mountExtended(TriggerFields, {
-      propsData: { ...defaultProps, ...props },
-      computed: {
+    store = new Vuex.Store({
+      getters: {
         isInheriting: () => isInheriting,
       },
+    });
+
+    wrapper = mountExtended(TriggerFields, {
+      propsData: { ...defaultProps, ...props },
+      store,
     });
   };
 

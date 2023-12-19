@@ -16,14 +16,15 @@ describe('CI Editor Header', () => {
   const createComponent = ({
     showHelpDrawer = false,
     showJobAssistantDrawer = false,
-    showAiAssistantDrawer = false,
     aiChatAvailable = false,
     aiCiConfigGenerator = false,
+    ciCatalogPath = '/explore/catalog',
   } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CiEditorHeader, {
         provide: {
           aiChatAvailable,
+          ciCatalogPath,
           glFeatures: {
             aiCiConfigGenerator,
           },
@@ -31,7 +32,6 @@ describe('CI Editor Header', () => {
         propsData: {
           showHelpDrawer,
           showJobAssistantDrawer,
-          showAiAssistantDrawer,
         },
       }),
     );
@@ -39,7 +39,7 @@ describe('CI Editor Header', () => {
 
   const findLinkBtn = () => wrapper.findByTestId('template-repo-link');
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
-  const findAiAssistnantBtn = () => wrapper.findByTestId('ai-assistant-drawer-toggle');
+  const findCatalogRepoLinkButton = () => wrapper.findByTestId('catalog-repo-link');
 
   afterEach(() => {
     unmockTracking();
@@ -55,29 +55,32 @@ describe('CI Editor Header', () => {
       label,
     });
   };
-  describe('Ai Assistant toggle button', () => {
-    describe('when feature is unavailable', () => {
-      it('should not show ai button when feature toggle is off', () => {
-        createComponent({ aiChatAvailable: true });
-        mockTracking(undefined, wrapper.element, jest.spyOn);
-        expect(findAiAssistnantBtn().exists()).toBe(false);
-      });
 
-      it('should not show ai button when feature is unavailable', () => {
-        createComponent({ aiCiConfigGenerator: true });
-        mockTracking(undefined, wrapper.element, jest.spyOn);
-        expect(findAiAssistnantBtn().exists()).toBe(false);
-      });
+  describe('component repo link button', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
-    describe('when feature is available', () => {
-      it('should show ai button', () => {
-        createComponent({ aiCiConfigGenerator: true, aiChatAvailable: true });
-        mockTracking(undefined, wrapper.element, jest.spyOn);
-        expect(findAiAssistnantBtn().exists()).toBe(true);
-      });
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('finds the CI/CD Catalog button', () => {
+      expect(findCatalogRepoLinkButton().exists()).toBe(true);
+    });
+
+    it('has the external-link icon', () => {
+      expect(findCatalogRepoLinkButton().props('icon')).toBe('external-link');
+    });
+
+    it('tracks the click on the Catalog button', () => {
+      const { browseCatalog } = pipelineEditorTrackingOptions.actions;
+
+      testTracker(findCatalogRepoLinkButton(), browseCatalog);
     });
   });
+
   describe('link button', () => {
     beforeEach(() => {
       createComponent();

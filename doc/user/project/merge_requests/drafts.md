@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, concepts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Draft merge requests **(FREE ALL)**
@@ -56,7 +55,8 @@ are notified.
 When you view or search in your project's merge requests list, to include or exclude
 draft merge requests:
 
-1. Go to your project and select **Code > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests**.
 1. To filter by merge request status, select **Open**, **Merged**, **Closed**,
    or **All** in the navigation bar.
 1. Select the search box to display a list of filters and select **Draft**, or
@@ -78,7 +78,7 @@ if you want to run [merged results pipelines](../../../ci/pipelines/merged_resul
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
 one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
+important to describe those, too. Think of things that might go wrong and include them here.
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 

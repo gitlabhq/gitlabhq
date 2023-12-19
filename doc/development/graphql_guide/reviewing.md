@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # GraphQL API merge request checklist
@@ -54,7 +54,7 @@ GraphQL is a framework with many moving parts. It's important that the framework
 - Do not manually invoke framework bits. For example, do not instantiate resolvers during execution and instead let the framework do that.
 - You can subclass resolvers, as in `MyResolver.single` (see [deriving resolvers](../api_graphql_styleguide.md#deriving-resolvers)).
 - Use the `ready?` method for more complex argument logic (see [correct use of resolver#ready](../api_graphql_styleguide.md#correct-use-of-resolverready)).
-- Use the `prepare` method for more complex argument validation (see [validating arguments](../api_graphql_styleguide.md#validating-arguments)).
+- Use the `prepare` method for more complex argument validation (see [Preprocessing](https://graphql-ruby.org/fields/arguments.html#preprocessing)).
 
 For details, see [resolver guide](../api_graphql_styleguide.md#writing-resolvers).
 
@@ -68,7 +68,8 @@ For details, see [authorization guide](authorization.md).
 
 Ensure:
 
-- You avoid N+1s with [BatchLoader](batchloader.md) or [Lookahead](../api_graphql_styleguide.md#look-ahead) when appropriate.
+- You have [checked for N+1s](../api_graphql_styleguide.md#how-to-see-n1-problems-in-development) and
+  used [optimizations](../api_graphql_styleguide.md#optimizations) to remove N+1s whenever possible.
 - You use [laziness](../api_graphql_styleguide.md#laziness) appropriately.
 
 ### Use appropriate types

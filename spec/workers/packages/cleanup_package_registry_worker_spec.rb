@@ -80,6 +80,28 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, feature_category: :packag
       end
     end
 
+    context 'with nuget symbols pending destruction' do
+      let_it_be(:nuget_symbol) { create(:nuget_symbol, :stale) }
+
+      include_examples 'an idempotent worker' do
+        it 'queues the cleanup job' do
+          expect(Packages::Nuget::CleanupStaleSymbolsWorker).to receive(:perform_with_capacity)
+
+          perform
+        end
+      end
+    end
+
+    context 'with no nuget symbols pending destruction' do
+      include_examples 'an idempotent worker' do
+        it 'does not queue the cleanup job' do
+          expect(Packages::Nuget::CleanupStaleSymbolsWorker).not_to receive(:perform_with_capacity)
+
+          perform
+        end
+      end
+    end
+
     describe 'counts logging' do
       let_it_be(:processing_package_file) { create(:package_file, status: :processing) }
 

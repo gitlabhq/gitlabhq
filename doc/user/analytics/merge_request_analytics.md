@@ -2,7 +2,7 @@
 description: "Merge request analytics help you understand the efficiency of your code review process, and the productivity of your team." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 stage: Plan
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge request analytics **(PREMIUM ALL)**
@@ -23,7 +23,7 @@ You can use merge request analytics to identify:
 
 ## View merge request analytics
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Reporter role.
 

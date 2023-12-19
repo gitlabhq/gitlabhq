@@ -1,7 +1,7 @@
 ---
 stage: Data Stores
 group: Database
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Understanding EXPLAIN plans
@@ -571,8 +571,8 @@ what if we slightly change the purpose of it? What if instead of retrieving all
 projects with `visibility_level` 0 or 20, we retrieve those that a user
 interacted with somehow?
 
-Fortunately, GitLab has an answer for this, and it's a table called
-`user_interacted_projects`. This table has the following schema:
+Prior to GitLab 16.7, GitLab used a table named `user_interacted_projects` to track user interactions with projects.
+This table had the following schema:
 
 ```sql
 Table "public.user_interacted_projects"

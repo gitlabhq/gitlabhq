@@ -33,35 +33,27 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
-  context 'when report JSON is invalid' do
-    let(:raw_report_data) { '{ ' }
+  context 'when report is invalid' do
+    context 'when report JSON is invalid' do
+      let(:raw_report_data) { '{ ' }
 
-    it 'handles errors and adds them to the report' do
-      expect(report).to receive(:add_error).with(a_string_including("Report JSON is invalid:"))
+      it 'handles errors and adds them to the report' do
+        expect(report).to receive(:add_error).with(a_string_including("Report JSON is invalid:"))
 
-      expect { parse! }.not_to raise_error
+        expect { parse! }.not_to raise_error
+      end
     end
-  end
 
-  context 'when report uses an unsupported spec version' do
-    let(:report_data) { base_report_data.merge({ 'specVersion' => '1.3' }) }
+    context 'when report does not conform to the CycloneDX schema' do
+      let(:report_valid?) { false }
+      let(:validator_errors) { %w[error1 error2] }
 
-    it 'reports unsupported version as an error' do
-      expect(report).to receive(:add_error).with("Unsupported CycloneDX spec version. Must be one of: 1.4")
+      it 'reports all errors returned by the validator' do
+        expect(report).to receive(:add_error).with("error1")
+        expect(report).to receive(:add_error).with("error2")
 
-      parse!
-    end
-  end
-
-  context 'when report does not conform to the CycloneDX schema' do
-    let(:report_valid?) { false }
-    let(:validator_errors) { %w[error1 error2] }
-
-    it 'reports all errors returned by the validator' do
-      expect(report).to receive(:add_error).with("error1")
-      expect(report).to receive(:add_error).with("error2")
-
-      parse!
+        parse!
+      end
     end
   end
 
@@ -109,25 +101,26 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
 
     it 'adds each component, ignoring unused attributes' do
       expect(report).to receive(:add_component)
-        .with(
-          an_object_having_attributes(
-            name: "activesupport",
-            version: "5.1.4",
-            component_type: "library",
-            purl: an_object_having_attributes(type: "gem")
-          )
-        )
+                          .with(
+                            an_object_having_attributes(
+                              name: "activesupport",
+                              version: "5.1.4",
+                              component_type: "library",
+                              purl: an_object_having_attributes(type: "gem")
+                            )
+                          )
       expect(report).to receive(:add_component)
-        .with(
-          an_object_having_attributes(
-            name: "byebug",
-            version: "10.0.0",
-            component_type: "library",
-            purl: an_object_having_attributes(type: "gem")
-          )
-        )
+                          .with(
+                            an_object_having_attributes(
+                              name: "byebug",
+                              version: "10.0.0",
+                              component_type: "library",
+                              purl: an_object_having_attributes(type: "gem")
+                            )
+                          )
       expect(report).to receive(:add_component)
-        .with(an_object_having_attributes(name: "minimal-component", version: nil, component_type: "library"))
+                          .with(an_object_having_attributes(name: "minimal-component", version: nil,
+                            component_type: "library"))
 
       parse!
     end

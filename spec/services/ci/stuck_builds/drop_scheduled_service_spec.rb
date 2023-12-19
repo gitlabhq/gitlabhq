@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::StuckBuilds::DropScheduledService, feature_category: :runner_fleet do
+RSpec.describe Ci::StuckBuilds::DropScheduledService, feature_category: :fleet_visibility do
   let_it_be(:runner) { create :ci_runner }
 
   let!(:job) { create :ci_build, :scheduled, scheduled_at: scheduled_at, runner: runner }

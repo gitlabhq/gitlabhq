@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlFilteredSearchToken } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { sortableFields } from '~/packages_and_registries/package_registry/utils';
 import component from '~/packages_and_registries/package_registry/components/list/package_search.vue';
@@ -7,7 +8,11 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
 
-import { TOKEN_TYPE_TYPE } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  OPERATORS_IS,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_VERSION,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('Package Search', () => {
   let wrapper;
@@ -74,6 +79,13 @@ describe('Package Search', () => {
           token: PackageTypeToken,
           type: TOKEN_TYPE_TYPE,
           icon: 'package',
+          operators: OPERATORS_IS,
+        }),
+        expect.objectContaining({
+          token: GlFilteredSearchToken,
+          type: TOKEN_TYPE_VERSION,
+          icon: 'doc-versions',
+          operators: OPERATORS_IS,
         }),
       ]),
       sortableFields: sortableFields(isGroupPage),
@@ -102,6 +114,7 @@ describe('Package Search', () => {
         filters: {
           packageName: '',
           packageType: undefined,
+          packageVersion: '',
         },
         sort: payload.sort,
         sorting: payload.sorting,
@@ -114,6 +127,7 @@ describe('Package Search', () => {
       sort: 'CREATED_FOO',
       filters: [
         { type: 'type', value: { data: 'Generic', operator: '=' }, id: 'token-3' },
+        { type: 'version', value: { data: '1.0.1', operator: '=' }, id: 'token-6' },
         { id: 'token-4', type: 'filtered-search-term', value: { data: 'gl' } },
         { id: 'token-5', type: 'filtered-search-term', value: { data: '' } },
       ],
@@ -133,6 +147,7 @@ describe('Package Search', () => {
         filters: {
           packageName: 'gl',
           packageType: 'GENERIC',
+          packageVersion: '1.0.1',
         },
         sort: payload.sort,
         sorting: payload.sorting,

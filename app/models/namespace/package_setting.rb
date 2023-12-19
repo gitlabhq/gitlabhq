@@ -23,6 +23,7 @@ class Namespace::PackageSetting < ApplicationRecord
   validates :generic_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
   validates :nuget_duplicates_allowed, inclusion: { in: [true, false] }
   validates :nuget_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
+  validates :nuget_symbol_server_enabled, inclusion: { in: [true, false] }
 
   class << self
     def duplicates_allowed?(package)

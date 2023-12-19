@@ -32,7 +32,7 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
 
         fill_in 'issue_title', with: issue_title
 
-        page.within("[data-testid='project-select-dropdown']") do
+        within_testid('project-select-dropdown') do
           find('button.gl-new-dropdown-toggle').click
 
           find('.gl-new-dropdown-item').click

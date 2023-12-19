@@ -9,7 +9,6 @@ describe('PasswordInput', () => {
     title: 'This field is required',
     id: 'new_user_password',
     minimumPasswordLength: '8',
-    qaSelector: 'new_user_password_field',
     testid: 'new_user_password',
     autocomplete: 'new-password',
     name: 'new_user',

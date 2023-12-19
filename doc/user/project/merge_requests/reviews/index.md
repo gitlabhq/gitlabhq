@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge request reviews **(FREE ALL)**
@@ -15,7 +14,7 @@ from the user interface. When your work is reviewed, your team members can choos
 to accept or reject it.
 
 You can review merge requests from the GitLab interface. If you install the
-[GitLab Workflow VS Code extension](../../repository/vscode.md), you can also
+[GitLab Workflow VS Code extension](../../../../editor_extensions/visual_studio_code/index.md), you can also
 review merge requests in Visual Studio Code.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

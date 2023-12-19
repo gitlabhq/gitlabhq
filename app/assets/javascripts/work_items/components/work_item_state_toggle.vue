@@ -3,7 +3,6 @@ import { GlButton, GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
-import { getUpdateWorkItemMutation } from '~/work_items/components/update_work_item';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_UPDATING,
@@ -12,6 +11,7 @@ import {
   STATE_EVENT_REOPEN,
   TRACKING_CATEGORY_SHOW,
 } from '../constants';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 
 export default {
   components: {
@@ -32,11 +32,6 @@ export default {
     workItemType: {
       type: String,
       required: true,
-    },
-    workItemParentId: {
-      type: String,
-      required: false,
-      default: null,
     },
     showAsDropdownItem: {
       type: Boolean,
@@ -75,24 +70,19 @@ export default {
   },
   methods: {
     async updateWorkItem() {
-      const input = {
-        id: this.workItemId,
-        stateEvent: this.isWorkItemOpen ? STATE_EVENT_CLOSE : STATE_EVENT_REOPEN,
-      };
-
       this.updateInProgress = true;
 
       try {
         this.track('updated_state');
 
-        const { mutation, variables } = getUpdateWorkItemMutation({
-          workItemParentId: this.workItemParentId,
-          input,
-        });
-
         const { data } = await this.$apollo.mutate({
-          mutation,
-          variables,
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              stateEvent: this.isWorkItemOpen ? STATE_EVENT_CLOSE : STATE_EVENT_REOPEN,
+            },
+          },
         });
 
         const errors = data.workItemUpdate?.errors;
@@ -102,7 +92,6 @@ export default {
         }
       } catch (error) {
         const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
-
         this.$emit('error', msg);
         Sentry.captureException(error);
       }

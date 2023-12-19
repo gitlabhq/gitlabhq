@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Community programs
@@ -46,7 +46,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 #### Screenshot 1: License overview
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
+1. Select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
 1. Take a screenshot of the project overview that clearly displays the license you've chosen for your project.
 
 ![License overview](img/license-overview.png)

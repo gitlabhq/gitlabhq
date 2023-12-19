@@ -17,6 +17,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, feature_category: :pa
       context 'when it is successful' do
         it 'marks the package and package files as pending destruction' do
           expect(package).to receive(:sync_maven_metadata).and_call_original
+          expect(package).to receive(:sync_npm_metadata_cache).and_call_original
           expect(package).to receive(:mark_package_files_for_destruction).and_call_original
           expect { service.execute }.to change { package.status }.from('default').to('pending_destruction')
         end
@@ -45,6 +46,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, feature_category: :pa
           response = service.execute
 
           expect(package).not_to receive(:sync_maven_metadata)
+          expect(package).not_to receive(:sync_npm_metadata_cache)
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_error
           expect(response.message).to eq("Failed to mark the package as pending destruction")

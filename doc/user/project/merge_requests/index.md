@@ -1,13 +1,12 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: index, reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Merge requests **(FREE ALL)**
 
-To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
+A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
 When you open a merge request, you can visualize and collaborate on the changes before merge.
 Merge requests include:
@@ -463,7 +462,7 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 
 ### Close a merge request from the Rails console **(FREE SELF)**
 
-If closing a merge request doesn't work through the UI or API, you may want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If closing a merge request doesn't work through the UI or API, you might want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -477,7 +476,7 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 
 ### Delete a merge request from the Rails console **(FREE SELF)**
 
-If deleting a merge request doesn't work through the UI or API, you may want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If deleting a merge request doesn't work through the UI or API, you might want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Any command that changes data directly could be damaging if not run correctly,
@@ -514,6 +513,7 @@ This error can happen if your merge request:
 
 - Contains many diffs.
 - Is many commits behind the target branch.
+- References a Git LFS file that is locked.
 
 Users in self-managed installations can request an administrator review server logs
 to determine the cause of the error. GitLab SaaS users should

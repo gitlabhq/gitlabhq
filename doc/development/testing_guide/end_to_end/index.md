@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # End-to-end Testing
@@ -78,7 +78,7 @@ subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
       and polls for the resulting status. We call this a _status attribution_.
 
 1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
-   1. Docker image is being built and pushed to its Container Registry.
+   1. Docker image is being built and pushed to its container registry.
    1. Once Docker images are built and pushed jobs in `test` stage are started
 
 1. In the `Test` stage:
@@ -266,7 +266,7 @@ use the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa/tree/ma
 
 On the other hand, if you would like to run against a local development GitLab
 environment, you can use the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/).
-Please refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md#how-can-i-use-it)
+Refer to the instructions in the [QA README](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/README.md#how-can-i-use-it)
 and the section below.
 
 ### Running tests that require special setup
@@ -302,7 +302,7 @@ Continued reading:
 
 ## Where can you ask for help?
 
-You can ask question in the `#quality` channel on Slack (GitLab internal) or
+You can ask question in the `#test-platform` channel on Slack (GitLab internal) or
 you can find an issue you would like to work on in
 [the `gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name%5B%5D=QA&label_name%5B%5D=test), or
 [the `gitlab-qa` issue tracker](https://gitlab.com/gitlab-org/gitlab-qa/-/issues?label_name%5B%5D=new+scenario).

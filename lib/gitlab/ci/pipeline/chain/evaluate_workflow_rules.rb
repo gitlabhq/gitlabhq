@@ -11,7 +11,16 @@ module Gitlab
           def perform!
             @command.workflow_rules_result = workflow_rules_result
 
-            error('Pipeline filtered out by workflow rules.') unless workflow_passed?
+            return if workflow_passed?
+
+            if Feature.enabled?(:always_set_pipeline_failure_reason, @command.project)
+              drop_reason = :filtered_by_workflow_rules
+            end
+
+            error(
+              'Pipeline filtered out by workflow rules.',
+              drop_reason: drop_reason
+            )
           end
 
           def break?

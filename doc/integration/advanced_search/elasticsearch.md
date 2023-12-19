@@ -1,8 +1,7 @@
 ---
-type: reference
 stage: Data Stores
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Elasticsearch **(PREMIUM ALL)**
@@ -162,15 +161,14 @@ These errors may occur when indexing Git repository data.
 
 ## Enable advanced search
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To enable advanced search:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 
    NOTE:
    To see the **Advanced Search** section, you need an active GitLab Premium
@@ -212,9 +210,8 @@ You can only use the **Index all projects** setting to perform
 initial indexing, not to re-create an index from scratch.
 To enable advanced search with **Index all projects**:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
 1. Select **Index all projects**.
 1. Optional. Select **Check progress** to see the status of background jobs.
@@ -404,9 +401,8 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable languages support:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
 1. Select **Save changes** for the changes to take effect.
@@ -426,9 +422,8 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 To disable the Elasticsearch integration:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Clear the **Elasticsearch indexing** and **Search with Elasticsearch enabled** checkboxes.
 1. Select **Save changes**.
 1. Optional. For Elasticsearch instances that are still online, delete existing indices:
@@ -443,9 +438,8 @@ To disable the Elasticsearch integration:
 
 ## Unpause Indexing
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
@@ -467,9 +461,8 @@ You can use zero-downtime reindexing to configure index settings or mappings tha
 To trigger the reindexing process:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
 
@@ -483,9 +476,8 @@ While the reindexing is running, you can follow its progress under that same sec
 
 #### Elasticsearch zero-downtime reindexing
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
    find the following options:
 
@@ -532,9 +524,8 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. On the left sidebar, select **Settings > Advanced Search**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Advanced Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
@@ -603,7 +594,7 @@ This should return something similar to:
       {
         "_index": "gitlab-production-migrations",
         "_type": "_doc",
-        "_id": "20201105181100",
+        "_id": "20230209195404",
         "_score": 1,
         "_source": {
           "completed": true
@@ -666,7 +657,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`.
 | [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                         | Indexes all epics from the groups where Elasticsearch is enabled.
 | [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Indexes all wikis from the groups where Elasticsearch is enabled.
-| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100. |
+| [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall indexing status of all project repository data (code, commits, and wikis). The status is calculated by dividing the number of indexed projects by the total number of projects and multiplying by 100. This task does not include non-repository data such as issues, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. This command results in a complete wipe of the index, and it should be used with caution.                                                                                              |
 | [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indices (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |
 | [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Removes the GitLab indices and aliases (if they exist) on the Elasticsearch instance.                                                                                                                                   |

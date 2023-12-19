@@ -6,6 +6,11 @@ module Gitlab
       class RepositoryImporter
         include Loggable
 
+        LABELS = [{ title: 'bug', color: '#FF0000' },
+          { title: 'enhancement', color: '#428BCA' },
+          { title: 'proposal', color: '#69D100' },
+          { title: 'task', color: '#7F8C8D' }].freeze
+
         def initialize(project)
           @project = project
         end
@@ -62,8 +67,9 @@ module Gitlab
         end
 
         def create_labels
-          importer = Gitlab::BitbucketImport::Importer.new(project)
-          importer.create_labels
+          LABELS.each do |label_params|
+            ::Labels::FindOrCreateService.new(nil, project, label_params).execute(skip_authorization: true)
+          end
         end
 
         def wiki

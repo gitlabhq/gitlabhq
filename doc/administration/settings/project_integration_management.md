@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Project integration administration **(FREE SELF)**
@@ -23,14 +23,13 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ## Manage instance-level default settings for a project integration
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To manage instance-level default settings for a project integration:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -65,14 +64,13 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove an instance-level default setting
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To remove an instance-level default setting:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -83,14 +81,13 @@ Resetting an instance-level default setting removes the integration from all pro
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
 
-Prerequisite:
+Prerequisites:
 
 - You must have administrator access to the instance.
 
 To view projects in your instance that [use custom settings](../../user/project/integrations/index.md#use-custom-settings-for-a-project-or-group-integration):
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.

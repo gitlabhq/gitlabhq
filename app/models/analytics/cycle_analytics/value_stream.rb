@@ -42,6 +42,13 @@ module Analytics
         namespace.project
       end
 
+      def to_global_id
+        return super if persisted?
+
+        # Returns default name as id for built in value stream at FOSS level
+        name
+      end
+
       private
 
       def max_value_streams_count

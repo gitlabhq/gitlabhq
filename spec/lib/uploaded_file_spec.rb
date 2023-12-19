@@ -294,4 +294,8 @@ RSpec.describe UploadedFile, feature_category: :package_registry do
     it { expect(described_class.new(temp_file.path).sanitize_filename('..')).to eq('_..') }
     it { expect(described_class.new(temp_file.path).sanitize_filename('')).to eq('unnamed') }
   end
+
+  describe '#empty_size?' do
+    it { expect(described_class.new(temp_file.path).empty_size?).to eq(true) }
+  end
 end

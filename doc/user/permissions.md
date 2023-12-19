@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Permissions and roles **(FREE ALL)**
@@ -74,9 +74,9 @@ The following table lists project permissions available for each role:
 | [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>View agents                                                                                                               |          |          | ✓         | ✓          | ✓        |
 | [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>Manage agents                                                                                                             |          |          |           | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/delete_container_registry_images.md#use-a-cleanup-policy) |          |          |          | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                               |          |          | ✓         | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (19) | ✓ (19) | ✓         | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Remove a Container Registry image                                                                                     |          |          | ✓         | ✓          | ✓        |
+| [Container registry](packages/container_registry/index.md):<br>Push an image to the container registry                                                                               |          |          | ✓         | ✓          | ✓        |
+| [Container registry](packages/container_registry/index.md):<br>Pull an image from the container registry                                                                             | ✓ (19) | ✓ (19) | ✓         | ✓          | ✓        |
+| [Container registry](packages/container_registry/index.md):<br>Remove a container registry image                                                                                     |          |          | ✓         | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/pages_access_control.md)                                       | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Manage                                                                                                                                    |          |          |           | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                                                                              |          |          |           | ✓          | ✓        |
@@ -121,8 +121,9 @@ The following table lists project permissions available for each role:
 | [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View License Compliance reports                                                                                     | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
 | [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View License list                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [License approval policies](../user/compliance/license_approval_policies.md):<br>Manage license policy                                                                                               |          |          |           | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>See list                                                                                                                       |          | ✓        | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>View a merge request                                                                                                           | ✓ (1)    | ✓        | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                                                                                |          |          | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>View list                                                                                                                       | (25)       | ✓        | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Approve (8)                                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Assign                                                                                                                         |          |          | ✓         | ✓          | ✓        |
@@ -133,6 +134,12 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](project/merge_requests/index.md#resolve-a-thread)                                                                      |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage [merge approval rules](project/merge_requests/approvals/settings.md) (project settings)                                 |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                                                                                         |          |          |           |            | ✓        |
+| [Objectives and key results](okrs.md):<br>Add a child OKR                                                                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Objectives and key results](okrs.md):<br>Add a linked item                                                                                                                          | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Objectives and key results](okrs.md):<br>Create                                                                                                                                     | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Objectives and key results](okrs.md):<br>View                                                                                                                                       | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Objectives and key results](okrs.md):<br>Change confidentiality                                                                                                                     |          | ✓        | ✓         | ✓          | ✓        |
+| [Objectives and key results](okrs.md):<br>Edit                                                                                                                                       |          | ✓        | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Pull a package                                                                                                                             | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Publish a package                                                                                                                          |          |          | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Delete a package                                                                                                                           |          |          |           | ✓          | ✓        |
@@ -208,6 +215,7 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md)           |          |          | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Add a linked item | ✓      | ✓        | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Create (17)     |          | ✓        | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Edit              |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Remove from issue |          | ✓         | ✓         | ✓          | ✓        |
@@ -244,12 +252,13 @@ The following table lists project permissions available for each role:
 16. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
 17. Authors and assignees can modify the title and description even if they don't have the Reporter role.
 18. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
-19. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
+19. The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
 20. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 21. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
 22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
-23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API and assign that role to the users.
+23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users.
 24. In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
+25. Members with the Guest role can view the list of MRs in public projects. Private projects restrict Guests from viewing MR lists.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -268,26 +277,27 @@ More details about the permissions for some project-level features follow.
 
 | Action                                                                                                                    | Non-member | Guest   | Reporter | Developer | Maintainer | Owner |
 |---------------------------------------------------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
-| See that artifacts exist                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| View a list of jobs                                                                                                       | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View and download artifacts                                                                                               | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View [environments](../ci/environments/index.md)                                                                          | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| View job logs and job details page                                                                                        | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines and pipeline details pages                                                                                 | ✓ (1)    | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
-| View pipelines tab in MR                                                                                                  | ✓ (3)    | ✓ (3) | ✓        | ✓         | ✓          | ✓     |
-| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2) | ✓        | ✓         | ✓          | ✓     |
+| See that artifacts exist                                                                                                  | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| View a list of jobs                                                                                                       | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View and download artifacts                                                                                               | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View [environments](../ci/environments/index.md)                                                                          | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| View job logs and job details page                                                                                        | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View pipelines and pipeline details pages                                                                                 | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View pipelines tab in MR                                                                                                  | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
+| [View vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |       | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
 | View and download project-level [Secure Files](../api/secure_files.md)                                                    |            |         |          | ✓         | ✓          | ✓     |
-| Cancel and retry jobs                                                                                                     |            |         |          | ✓         | ✓          | ✓     |
+| Retry jobs                                                                                                                |            |         |          | ✓         | ✓          | ✓     |
+| Cancel jobs                                                                                                               |            |         |          | ✓ (7)     | ✓  (7)     | ✓ (7) |
 | Create new [environments](../ci/environments/index.md)                                                                    |            |         |          | ✓         | ✓          | ✓     |
-| Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (4)   | ✓          | ✓     |
+| Delete job logs or job artifacts                                                                                          |            |         |          | ✓ (4)     | ✓          | ✓     |
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
-| Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)   | ✓ (5)    | ✓     |
+| Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)     | ✓ (5)      | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
-| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)   | ✓ (6)    | ✓     |
+| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)     | ✓ (6)      | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
-| Add project runners to project                                                                                           |            |         |          |           | ✓          | ✓     |
+| Add project runners to project                                                                                            |            |         |          |           | ✓          | ✓     |
 | Clear runner caches manually                                                                                              |            |         |          |           | ✓          | ✓     |
 | Enable shared runners in project                                                                                          |            |         |          |           | ✓          | ✓     |
 | Manage CI/CD settings                                                                                                     |            |         |          |           | ✓          | ✓     |
@@ -308,6 +318,7 @@ More details about the permissions for some project-level features follow.
      run for a non-protected branch.
 5. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 6. If the user if [part of a group with at least the Reporter role](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)
+7. Cancellation permissions can be [customized via the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs)
 
 <!-- markdownlint-enable MD029 -->
 
@@ -363,8 +374,8 @@ The following table lists group permissions available for each role:
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
 | Enable/disable package request forwarding                                               |       |          |           | ✓          | ✓     |
-| Pull a Container Registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
-| Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
+| Pull a container registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
+| Remove a container registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |
@@ -404,6 +415,7 @@ The following table lists group permissions available for each role:
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
+| Manage group-level custom roles                                                         |       |          |           |            | ✓     |
 
 <!-- markdownlint-disable MD029 -->
 
@@ -436,8 +448,8 @@ For more information, see
 
 Users with the Minimal Access role do not:
 
-- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - Automatically have access to projects and subgroups in that root group.
+- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab SaaS namespace.
 
 Owners must explicitly add these users to the specific subgroups and
 projects.
@@ -465,6 +477,6 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Project aliases](../user/project/import/index.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
-- [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
+- [Container registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
 - [Read-only namespaces](../user/read_only_namespaces.md)

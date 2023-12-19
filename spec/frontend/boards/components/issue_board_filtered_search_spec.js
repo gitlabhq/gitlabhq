@@ -23,6 +23,9 @@ describe('IssueBoardFilter', () => {
         fullPath: 'gitlab-org',
         isGroupBoard: true,
       },
+      mocks: {
+        $apollo: {},
+      },
     });
   };
 

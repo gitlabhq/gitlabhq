@@ -5,9 +5,11 @@ query mergeRequestLabels($fullPath: ID!, $iid: String!) {
     id
     issuable: mergeRequest(iid: $iid) {
       id
+      supportsLockOnMerge
       labels {
         nodes {
           ...Label
+          lockOnMerge
         }
       }
     }

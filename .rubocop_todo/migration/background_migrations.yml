@@ -1,15 +1,6 @@
 ---
 Migration/BackgroundMigrations:
   Exclude:
-    - 'db/post_migrate/20220328100456_schedule20220328_reset_duplicate_ci_runners_token_encrypted_values_on_projects.rb'
-    - 'db/post_migrate/20220328100457_schedule20220328_reset_duplicate_ci_runners_token_values_on_projects.rb'
-    - 'db/post_migrate/20220331133802_schedule_backfill_topics_title.rb'
-    - 'db/post_migrate/20220407163559_schedule_purging_stale_security_scans.rb'
-    - 'db/post_migrate/20220420061450_backfill_null_note_discussion_ids.rb'
-    - 'db/post_migrate/20220420214703_schedule_backfill_draft_status_on_merge_requests_corrected_regex.rb'
-    - 'db/post_migrate/20220425121435_backfill_integrations_enable_ssl_verification.rb'
-    - 'db/post_migrate/20220502173045_reset_too_many_tags_skipped_registry_imports.rb'
-    - 'db/post_migrate/20220506124021_schedule_populate_requirements_issue_id.rb'
     - 'ee/db/geo/post_migrate/20220202101354_migrate_job_artifact_registry.rb'
     - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'

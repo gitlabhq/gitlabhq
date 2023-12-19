@@ -183,7 +183,10 @@ export const composerMetadata = () => ({
 export const pypiMetadata = () => ({
   __typename: 'PypiMetadata',
   id: 'pypi-1',
+  authorEmail: '"C. Schultz" <cschultz@example.com>',
+  keywords: 'dog,puppy,voting,election',
   requiredPython: '1.0.0',
+  summary: 'A module for collecting votes from beagles.',
 });
 
 export const mavenMetadata = () => ({

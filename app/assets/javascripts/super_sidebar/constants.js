@@ -25,9 +25,6 @@ export const helpCenterState = Vue.observable({
   showTanukiBotChatDrawer: false,
 });
 
-export const MAX_FREQUENT_PROJECTS_COUNT = 5;
-export const MAX_FREQUENT_GROUPS_COUNT = 3;
-
 export const SUPER_SIDEBAR_PEEK_OPEN_DELAY = 200;
 export const SUPER_SIDEBAR_PEEK_CLOSE_DELAY = 500;
 export const SUPER_SIDEBAR_PEEK_STATE_CLOSED = 'closed';
@@ -57,6 +54,18 @@ export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
 
 export const DROPDOWN_Y_OFFSET = 4;
 
-export const NAV_ITEM_LINK_ACTIVE_CLASS = 'gl-bg-t-gray-a-08';
+export const NAV_ITEM_LINK_ACTIVE_CLASS = 'super-sidebar-nav-item-current';
 
 export const IMPERSONATING_OFFSET = 34;
+
+// Frequent items constants
+export const FREQUENT_ITEMS = {
+  MAX_COUNT: 20,
+  ELIGIBLE_FREQUENCY: 3,
+};
+
+export const FIFTEEN_MINUTES_IN_MS = 900000;
+
+export const STORAGE_KEY = {
+  projects: 'frequent-projects',
+};

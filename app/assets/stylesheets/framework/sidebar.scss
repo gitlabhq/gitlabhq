@@ -53,11 +53,20 @@
       height: $gl-padding;
     }
   }
+
+  .right-sidebar-header {
+    flex-wrap: wrap;
+  }
 }
 
 .right-sidebar-expanded {
   padding-right: 0;
   z-index: $zindex-dropdown-menu;
+
+  .right-sidebar-header {
+    padding-block: $gl-spacing-scale-4;
+    margin-left: 20px;
+  }
 
   .inline-block {
     @include gl-display-inline-block;
@@ -99,7 +108,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $gray-50;
+  border-left: 1px solid $border-color;
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {
@@ -321,7 +330,7 @@
 .right-sidebar {
   &:not(.right-sidebar-merge-requests) {
     @include right-sidebar;
-    top: $calc-application-bars-height;
+    top: $calc-application-header-height;
 
     @include media-breakpoint-down(md) {
       z-index: 251;
@@ -402,7 +411,7 @@
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
-    border-bottom: 1px solid $border-gray-normal;
+    border-bottom: 1px solid $border-color;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $right-sidebar-inner-width;
@@ -479,6 +488,10 @@
   &.right-sidebar-expanded {
     &:not(.right-sidebar-merge-requests) {
       width: $right-sidebar-width;
+    }
+
+    .issuable-sidebar-header {
+      @include gl-py-5;
     }
 
     .value {
@@ -578,7 +591,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-gray-normal;
+      border-bottom: 1px solid $border-color;
     }
 
     .hide-collapsed {
@@ -589,7 +602,7 @@
       width: 100%;
       height: $sidebar-toggle-height;
       margin-left: 0;
-      border-bottom: 1px solid $border-white-normal;
+      border-bottom: 1px solid $border-color;
       border-radius: 0;
     }
 

@@ -9,6 +9,11 @@ module QA
       before do
         Flow::Login.sign_in
 
+        # Since the test immediately navigates to the MR after pushing a commit,
+        # the MR is blocked for 10 seconds
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/431984
+        project.update_approval_configuration(reset_approvals_on_push: false)
+
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.commit_message = 'to be squashed'

@@ -17,6 +17,32 @@ RSpec.describe WorkItems::Widgets::Assignees do
     it { is_expected.to include(:assignee_ids) }
   end
 
+  describe '.can_invite_members?' do
+    let(:user) { build_stubbed(:user) }
+
+    subject(:execute) { described_class.can_invite_members?(user, resource_parent) }
+
+    context 'when resource_parent is a project' do
+      let(:resource_parent) { build_stubbed(:project) }
+
+      it 'checks the ability with the correct permission' do
+        expect(user).to receive(:can?).with(:admin_project_member, resource_parent)
+
+        execute
+      end
+    end
+
+    context 'when resource_parent is a group' do
+      let(:resource_parent) { build_stubbed(:group) }
+
+      it 'checks the ability with the correct permission' do
+        expect(user).to receive(:can?).with(:admin_group_member, resource_parent)
+
+        execute
+      end
+    end
+  end
+
   describe '#type' do
     subject { described_class.new(work_item).type }
 

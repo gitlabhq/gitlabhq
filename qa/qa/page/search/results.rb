@@ -4,11 +4,6 @@ module QA
   module Page
     module Search
       class Results < QA::Page::Base
-        view 'app/assets/javascripts/search/sidebar/components/scope_legacy_navigation.vue' do
-          element :code_tab, ':data-qa-selector="qaSelectorValue(item)"' # rubocop:disable QA/ElementWithPattern
-          element :projects_tab, ':data-qa-selector="qaSelectorValue(item)"' # rubocop:disable QA/ElementWithPattern
-        end
-
         view 'app/views/search/results/_blob_data.html.haml' do
           element :result_item_content
           element :file_title_content
@@ -20,7 +15,7 @@ module QA
         end
 
         def switch_to_code
-          click_element(:nav_item_link, submenu_item: 'Code')
+          click_element('nav-item-link', submenu_item: 'Code')
         end
 
         def switch_to_projects

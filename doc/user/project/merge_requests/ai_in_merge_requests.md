@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Duo in merge requests **(ULTIMATE SAAS EXPERIMENT)**
@@ -61,8 +61,7 @@ This feature is an [Experiment](../../../policy/experiment-beta-support.md) on G
 When you've completed your review of a merge request and are ready to [submit your review](reviews/index.md#submit-a-review), generate a GitLab Duo Code review summary:
 
 1. When you are ready to submit your review, select **Finish review**.
-1. Select **AI Actions** (**{tanuki}**).
-1. Select **Summarize my code review**.
+1. Select **Summarize my pending comments**.
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
@@ -80,7 +79,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
-When preparing to merge your merge request you may wish to edit the proposed squash or merge commit message.
+When preparing to merge your merge request you might wish to edit the proposed squash or merge commit message.
 
 To generate a commit message with GitLab Duo:
 
@@ -93,7 +92,7 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The filename
+- The file name
 
 ## Generate suggested tests in merge requests
 
@@ -118,4 +117,4 @@ Feedback on this experimental feature can be provided in [issue 408995](https://
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The filename
+- The file name

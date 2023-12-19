@@ -12,8 +12,8 @@ module Resolvers
       def resolve
         return [] unless can_read_connected_agents?
 
-        BatchLoader::GraphQL.for(agent.id).batch(key: project, default_value: []) do |agent_ids, loader|
-          agents = get_connected_agents.group_by(&:agent_id).slice(*agent_ids)
+        BatchLoader::GraphQL.for(agent.id).batch(default_value: []) do |agent_ids, loader|
+          agents = get_connected_agents(agent_ids).group_by(&:agent_id)
 
           agents.each do |agent_id, connections|
             loader.call(agent_id, connections)
@@ -27,8 +27,8 @@ module Resolvers
         current_user.can?(:admin_cluster, project)
       end
 
-      def get_connected_agents
-        kas_client.get_connected_agents(project: project)
+      def get_connected_agents(agent_ids)
+        kas_client.get_connected_agents_by_agent_ids(agent_ids: agent_ids)
       rescue GRPC::BadStatus, Gitlab::Kas::Client::ConfigurationError => e
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, e.class.name
       end

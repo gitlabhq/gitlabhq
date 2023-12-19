@@ -1,7 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pumble **(FREE ALL)**
@@ -26,8 +26,7 @@ notifications:
 1. To enable the integration for your group or project:
    1. In your group or project, on the left sidebar, select **Settings > Integrations**.
 1. To enable the integration for your instance:
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Settings > Integrations**.
 1. Select the **Pumble** integration.
 1. Ensure that the **Active** toggle is enabled.

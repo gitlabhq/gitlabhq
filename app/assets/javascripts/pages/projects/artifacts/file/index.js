@@ -1,5 +1,6 @@
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { BlobViewer } from '~/blob/viewer/index';
 
-new ShortcutsNavigation(); // eslint-disable-line no-new
+addShortcutsExtension(ShortcutsNavigation);
 new BlobViewer(); // eslint-disable-line no-new

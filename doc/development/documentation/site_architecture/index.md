@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
 # Documentation site architecture
@@ -61,7 +61,7 @@ Then you can use one of these approaches:
   [to the global navigation](global_nav.md#add-a-navigation-entry), but keep the rest
   of the documentation in the external repository. The landing page is indexed and
   searchable on <https://docs.gitlab.com>, but the rest of the documentation is not.
-  For example, the [GitLab Workflow extension for VS Code](../../../user/project/repository/vscode.md).
+  For example, the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md).
   We do not encourage the use of [pages with lists of links](../topic_types/index.md#pages-and-topics-to-avoid),
   so only use this option if the recommended options are not feasible.
 
@@ -77,3 +77,19 @@ code review. For docs changes in merge requests, whenever a change to files unde
 is made, Danger Bot leaves a comment with further instructions about the documentation
 process. This is configured in the `Dangerfile` in the GitLab repository under
 [/danger/documentation/](https://gitlab.com/gitlab-org/gitlab/-/tree/master/danger/documentation).
+
+## Request a documentation survey banner
+
+To reach to a wider audience, you can request
+[a survey banner](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md#survey-banner).
+
+Only one banner can exist at any given time. Priority is given based on who
+asked for the banner first.
+
+To request a survey banner:
+
+1. [Open an issue](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/new?issue[title]=Survey%20banner%20request&issuable_template=Survey%20banner%20request)
+   in the `gitlab-docs` project and use the "Survey banner request" template.
+1. Fill in the details in the issue description.
+1. Create the issue and someone from the Technical Writing team will handle your request.
+1. When you no longer need the banner, ping the person assigned to the issue and ask them to remove it.

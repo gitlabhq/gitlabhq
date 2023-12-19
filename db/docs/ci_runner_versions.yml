@@ -3,7 +3,7 @@ table_name: ci_runner_versions
 classes:
 - Ci::RunnerVersion
 feature_categories:
-- runner_fleet
+- fleet_visibility
 description: Information about used Ci::Runner versions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90982
 milestone: '15.2'

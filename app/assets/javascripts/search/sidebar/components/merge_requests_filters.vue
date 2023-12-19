@@ -1,7 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState } from 'vuex';
-import { HR_DEFAULT_CLASSES } from '../constants';
+import { mapGetters } from 'vuex';
 import { statusFilterData } from './status_filter/data';
 import StatusFilter from './status_filter/index.vue';
 import FiltersTemplate from './filters_template.vue';
@@ -17,18 +16,11 @@ export default {
   },
   computed: {
     ...mapGetters(['currentScope']),
-    ...mapState(['useSidebarNavigation', 'searchType']),
     showArchivedFilter() {
       return archivedFilterData.scopes.includes(this.currentScope);
     },
     showStatusFilter() {
       return Object.values(statusFilterData.scopes).includes(this.currentScope);
-    },
-    showDivider() {
-      return !this.useSidebarNavigation;
-    },
-    hrClasses() {
-      return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];
     },
   },
 };
@@ -37,7 +29,6 @@ export default {
 <template>
   <filters-template>
     <status-filter v-if="showStatusFilter" class="gl-mb-5" />
-    <hr v-if="showArchivedFilter && showDivider" :class="hrClasses" />
     <archived-filter v-if="showArchivedFilter" class="gl-mb-5" />
   </filters-template>
 </template>

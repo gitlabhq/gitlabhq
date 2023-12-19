@@ -18,9 +18,15 @@ module StubRequests
   end
 
   def stub_dns(url, ip_address:, port: 80)
+    debug_with_puts "beginning of stub_dns"
     url = parse_url(url)
+    debug_with_puts "before socket = Socket.sockaddr_in"
     socket = Socket.sockaddr_in(port, ip_address)
+    debug_with_puts "after socket = Socket.sockaddr_in"
+
+    debug_with_puts "before addr = Addrinfo.new(socket)"
     addr = Addrinfo.new(socket)
+    debug_with_puts "after addr = Addrinfo.new(socket)"
 
     # See Gitlab::UrlBlocker
     allow(Addrinfo).to receive(:getaddrinfo)
@@ -51,5 +57,13 @@ module StubRequests
 
   def parse_url(url)
     url.is_a?(URI) ? url : URI(url)
+  end
+
+  # TODO: Remove the debug_with_puts statements below! Used for debugging purposes.
+  # TODO: https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/323#note_1688925316
+  def debug_with_puts(message)
+    return unless ENV['CI'] # rubocop:disable RSpec/AvoidConditionalStatements -- Debug information only in the CI
+
+    puts "[#{Time.current}] #{message}"
   end
 end

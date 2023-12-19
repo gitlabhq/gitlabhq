@@ -3,7 +3,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DetailRow from '~/ci/job_details/components/sidebar/sidebar_detail_row.vue';
 import SidebarJobDetailsContainer from '~/ci/job_details/components/sidebar/sidebar_job_details_container.vue';
 import createStore from '~/ci/job_details/store';
-import job from 'jest/ci/jobs_mock_data';
+import job, { testSummaryData, testSummaryDataWithFailures } from 'jest/ci/jobs_mock_data';
 
 describe('Job Sidebar Details Container', () => {
   let store;
@@ -12,6 +12,7 @@ describe('Job Sidebar Details Container', () => {
   const findJobTimeout = () => wrapper.findByTestId('job-timeout');
   const findJobTags = () => wrapper.findByTestId('job-tags');
   const findAllDetailsRow = () => wrapper.findAllComponents(DetailRow);
+  const findTestSummary = () => wrapper.findByTestId('test-summary');
 
   const createWrapper = ({ props = {} } = {}) => {
     store = createStore();
@@ -21,6 +22,9 @@ describe('Job Sidebar Details Container', () => {
         store,
         stubs: {
           DetailRow,
+        },
+        provide: {
+          pipelineTestReportUrl: '/root/test-unit-test-reports/-/pipelines/512/test_report',
         },
       }),
     );
@@ -87,6 +91,37 @@ describe('Job Sidebar Details Container', () => {
 
         expect(findAllDetailsRow().at(0).text()).toBe('Duration: 6 seconds');
       });
+    });
+  });
+
+  describe('Test summary details', () => {
+    it('displays the test summary section', async () => {
+      createWrapper();
+
+      await store.dispatch('receiveJobSuccess', job);
+      await store.dispatch('receiveTestSummarySuccess', testSummaryData);
+
+      expect(findTestSummary().exists()).toBe(true);
+      expect(findTestSummary().text()).toContain('Test summary');
+      expect(findTestSummary().text()).toContain('1');
+    });
+
+    it('does not display the test summary section', async () => {
+      createWrapper();
+
+      await store.dispatch('receiveJobSuccess', job);
+
+      expect(findTestSummary().exists()).toBe(false);
+    });
+
+    it('displays the failure count message', async () => {
+      createWrapper();
+
+      await store.dispatch('receiveJobSuccess', job);
+      await store.dispatch('receiveTestSummarySuccess', testSummaryDataWithFailures);
+
+      expect(findTestSummary().text()).toContain('Test summary');
+      expect(findTestSummary().text()).toContain('1 of 2 failed');
     });
   });
 

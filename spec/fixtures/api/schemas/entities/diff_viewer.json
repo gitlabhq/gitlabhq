@@ -26,6 +26,12 @@
         "boolean"
       ]
     },
+    "generated": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
     "whitespace_only": {
       "type": [
         "boolean",

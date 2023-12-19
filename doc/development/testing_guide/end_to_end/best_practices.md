@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # End-to-end testing Best Practices
@@ -128,7 +128,7 @@ end
 1. Every `describe`, `context`, and `it` blocks should have a short description attached
 1. Keep descriptions as concise as possible.
     1. Long descriptions or multiple conditionals could be a sign it should be split up (additional `context` blocks).
-    1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/word_list.md#active-voice).
+    1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/index.md#active-voice).
 1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 1. Inside the `Rspec.describe` block is a `describe` block with the name of the feature being tested
 1. Optional `context` blocks define what the conditions being tested are
@@ -361,7 +361,7 @@ When you add a new test that requires administrator access, apply the RSpec meta
 When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
 
 NOTE:
-If the _only_ action in the test that requires administrator access is to toggle a feature flag, please use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
+If the _only_ action in the test that requires administrator access is to toggle a feature flag, use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
 
 ## Prefer `Commit` resource over `ProjectPush`
 

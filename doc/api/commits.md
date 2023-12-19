@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Commits API **(FREE ALL)**
@@ -43,7 +43,8 @@ GET /projects/:id/repository/commits
 | `trailers` | boolean | no | Parse and include [Git trailers](https://git-scm.com/docs/git-interpret-trailers) for every commit |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
 Example response:
@@ -65,7 +66,9 @@ Example response:
     "parent_ids": [
       "6104942438c14ec7bd21c6cd5bd995272b3faff6"
     ],
-    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
+    "trailers": {},
+    "extended_trailers": {}
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -76,11 +79,13 @@ Example response:
     "committer_name": "ExampleName",
     "committer_email": "user@example.com",
     "created_at": "2021-09-20T09:06:12.201+00:00",
-    "message": "Sanitize for network graph",
+    "message": "Sanitize for network graph\nCc: John Doe <johndoe@gitlab.com>\nCc: Jane Doe <janedoe@gitlab.com>",
     "parent_ids": [
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
     ],
-    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
+    "trailers": { "Cc": "Jane Doe <janedoe@gitlab.com>" },
+    "extended_trailers": { "Cc": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }
   }
 ]
 ```
@@ -152,8 +157,11 @@ PAYLOAD=$(cat << 'JSON'
 }
 JSON
 )
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data "$PAYLOAD" "https://gitlab.example.com/api/v4/projects/1/repository/commits"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data "$PAYLOAD" \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
 Example response:
@@ -227,7 +235,8 @@ Parameters:
 | `stats` | boolean | no | Include commit stats. Default is true |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main"
 ```
 
 Example response:
@@ -282,7 +291,8 @@ Parameters:
 | `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
 ```
 
 Example response:
@@ -316,8 +326,10 @@ Parameters:
 | `message` | string | no | A custom commit message to use for the new commit. [Introduced in GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62481)
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "branch=main" "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/cherry_pick"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "branch=main" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/cherry_pick"
 ```
 
 Example response:
@@ -388,8 +400,10 @@ Parameters:
 | `dry_run` | boolean        | no       | Does not commit any changes. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231032) in GitLab 13.3 |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=main" \
-     "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "branch=main" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
 ```
 
 Example response:
@@ -455,7 +469,8 @@ Parameters:
 | `unidiff` | boolean | no | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
 ```
 
 Example response:
@@ -491,7 +506,8 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/comments"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/comments"
 ```
 
 Example response:
@@ -548,9 +564,13 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "note=Nice picture\!" --form "path=README.md" --form "line=11" --form "line_type=new" \
-     "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "note=Nice picture\!" \
+  --form "path=README.md" \
+  --form "line=11" \
+  --form "line_type=new" \
+  --url "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments"
 ```
 
 Example response:
@@ -589,7 +609,8 @@ Parameters:
 | `sha`     | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/4604744a1c64de00ff62e1e8a6766919923d2b41/discussions"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/4604744a1c64de00ff62e1e8a6766919923d2b41/discussions"
 ```
 
 Example response:
@@ -652,7 +673,8 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses"
 ```
 
 Example response:
@@ -730,7 +752,9 @@ POST /projects/:id/statuses/:sha
 | `pipeline_id` |  integer  | no  | The ID of the pipeline to set status. Use in case of several pipeline on same SHA.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:
@@ -774,7 +798,8 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `sha`     | string  | yes   | The commit SHA
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
 ```
 
 Example response:
@@ -846,7 +871,8 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
 ```
 
 Example response if commit is GPG signed:

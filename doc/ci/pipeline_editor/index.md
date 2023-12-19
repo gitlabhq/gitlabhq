@@ -1,8 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Pipeline editor **(FREE ALL)**
@@ -45,7 +44,11 @@ The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint 
 in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
-you can use the CI lint tool. To access it, go to **Build > Pipeline editor** and select the **Lint** tab.
+you can use the CI lint tool:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipeline editor**.
+1. Select the **Lint** tab.
 
 This tool checks for syntax and logical errors but goes into more detail than the
 automatic [validation](#validate-ci-configuration) in the editor.
