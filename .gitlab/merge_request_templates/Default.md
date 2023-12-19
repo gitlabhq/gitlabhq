@@ -10,6 +10,11 @@ especially important if they didn't participate in the discussion.
 
 %{first_multiline_commit}
 
+## MR acceptance checklist
+
+**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
+It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
+
 ## Screenshots or screen recordings
 
 _Screenshots are required for UI changes, and strongly recommended for all other merge requests._
@@ -38,12 +43,6 @@ Example below:
 1. Visit any group or project member pages such as `http://127.0.0.1:3000/groups/flightjs/-/group_members`
 1. Click the `invite members` button.
 -->
-
-## MR acceptance checklist
-
-This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability.
-
-* [ ] I have evaluated the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) for this MR.
 
 <!-- template sourced from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Default.md -->
 

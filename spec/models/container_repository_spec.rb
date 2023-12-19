@@ -1148,9 +1148,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe '.find_or_create_from_path' do
+  describe '.find_or_create_from_path!' do
     let(:repository) do
-      described_class.find_or_create_from_path(ContainerRegistry::Path.new(path))
+      described_class.find_or_create_from_path!(ContainerRegistry::Path.new(path))
     end
 
     let(:repository_path) { ContainerRegistry::Path.new(path) }
@@ -1239,7 +1239,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         Thread.new do
           true while wait_for_it
 
-          described_class.find_or_create_from_path(path)
+          described_class.find_or_create_from_path!(path)
         end
       end
       wait_for_it = false

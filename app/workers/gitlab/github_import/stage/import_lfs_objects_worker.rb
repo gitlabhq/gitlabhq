@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        include GithubImport::Queue
         include StageMethods
 
         # Importer::LfsObjectsImporter can resume work when interrupted as

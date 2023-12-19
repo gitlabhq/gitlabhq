@@ -618,12 +618,11 @@ class ContainerRepository < ApplicationRecord
     self.new(project: path.repository_project, name: path.repository_name)
   end
 
-  def self.find_or_create_from_path(path)
-    repository = safe_find_or_create_by(
-      project: path.repository_project,
+  def self.find_or_create_from_path!(path)
+    ContainerRepository.upsert({
+      project_id: path.repository_project.id,
       name: path.repository_name
-    )
-    return repository if repository.persisted?
+    }, unique_by: %i[project_id name])
 
     find_by_path!(path)
   end

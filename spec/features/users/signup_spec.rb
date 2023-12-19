@@ -339,11 +339,24 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
       end
 
       context 'when invisible captcha detects malicious behaviour' do
-        it 'prevents from signing up' do
-          visit new_user_registration_path
+        context 'with form submitted quicker than timestamp_threshold', :freeze_time do
+          it 'prevents from signing up' do
+            visit new_user_registration_path
 
-          expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
-          expect(page).to have_content('That was a bit too quick! Please resubmit.')
+            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+            expect(page).to have_content('That was a bit too quick! Please resubmit.')
+          end
+        end
+
+        context 'with honeypot field is filled' do
+          it 'prevents from signing up' do
+            visit new_user_registration_path
+
+            find_field('If you are human, please ignore this field.',
+              visible: false).execute_script("this.value = 'bot'")
+
+            expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
+          end
         end
       end
     end

@@ -63,7 +63,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     end
   end
 
-  shared_examples 'an erroneous reponse' do
+  shared_examples 'an erroneous response' do
     it { subject.tap { expect(mutation_response).to be_blank } }
     it { expect { subject }.not_to change { package_protection_rule.reload.updated_at } }
   end
@@ -92,7 +92,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
   context 'with invalid input param `pushProtectedUpToAccessLevel`' do
     let(:input) { super().merge(push_protected_up_to_access_level: nil) }
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { is_expected.tap { expect_graphql_errors_to_include(/pushProtectedUpToAccessLevel can't be blank/) } }
   end
@@ -100,7 +100,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
   context 'with invalid input param `packageNamePattern`' do
     let(:input) { super().merge(package_name_pattern: '') }
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { is_expected.tap { expect_graphql_errors_to_include(/packageNamePattern can't be blank/) } }
   end
@@ -125,7 +125,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
       stub_feature_flags(packages_protected_packages: false)
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it 'returns error of disabled feature flag' do
       is_expected.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) }

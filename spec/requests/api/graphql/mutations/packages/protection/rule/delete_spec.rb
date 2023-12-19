@@ -15,7 +15,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
 
   subject { post_graphql_mutation(mutation, current_user: current_user) }
 
-  shared_examples 'an erroneous reponse' do
+  shared_examples 'an erroneous response' do
     it { subject.tap { expect(mutation_response).to be_blank } }
     it { expect { subject }.not_to change { ::Packages::Protection::Rule.count } }
   end
@@ -44,7 +44,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
       create(:package_protection_rule, package_name_pattern: 'protection_rule_other_project')
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
   end
@@ -54,7 +54,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
       create(:package_protection_rule, project: project, package_name_pattern: 'protection_rule_deleted').destroy!
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
   end
@@ -70,7 +70,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
     end
 
     with_them do
-      it_behaves_like 'an erroneous reponse'
+      it_behaves_like 'an erroneous response'
 
       it { subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
@@ -81,7 +81,7 @@ RSpec.describe 'Deleting a package protection rule', :aggregate_failures, featur
       stub_feature_flags(packages_protected_packages: false)
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { subject.tap { expect_graphql_errors_to_include(/'packages_protected_packages' feature flag is disabled/) } }
   end

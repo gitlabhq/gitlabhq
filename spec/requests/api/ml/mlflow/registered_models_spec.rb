@@ -207,7 +207,7 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
     let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/delete" }
     let(:request) { delete api(route), params: params, headers: headers }
 
-    it 'returns a success reponse', :aggregate_failures do
+    it 'returns a success response', :aggregate_failures do
       is_expected.to have_gitlab_http_status(:ok)
       expect(json_response).to eq({})
     end

@@ -67,6 +67,8 @@ is used.
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
 The option is not available when an artifact has no expiry set.
 
+By default, the [latest artifacts are always kept](#keep-artifacts-from-most-recent-successful-jobs).
+
 ### With a dynamically defined name
 
 You can use [CI/CD variables](../variables/index.md) to dynamically define the
@@ -331,15 +333,21 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16267) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
 > - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
+> - Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines no longer kept indefinitely in GitLab 16.7.
 
-By default artifacts are always kept for successful pipelines for the most recent commit on
-each ref. This means that the latest artifacts do not immediately expire according
-to the `expire_in` configuration.
+By default artifacts are always kept for successful pipelines for the most recent commit on each ref.
+Any [`expire_in`](#with-an-expiry) configuration does not apply to the most recent artifacts.
 
-If a pipeline for a new commit on the same ref completes successfully, the previous pipeline's
-artifacts are deleted according to the `expire_in` configuration. The artifacts
-of the new pipeline are kept automatically. If multiple pipelines run for the most
-recent commit on the ref, all artifacts are kept.
+A pipeline's artifacts are only deleted according to the `expire_in` configuration
+if a new pipeline runs for the same ref and:
+
+- Succeeds.
+- Fails.
+- Stops running due to being blocked by a manual job.
+
+Additionally, artifacts are kept for the ref's last successful pipeline even if it
+is not the latest pipeline. As a result, if a new pipeline run fails, the last successful pipeline's
+artifacts are still kept.
 
 Keeping the latest artifacts can use a large amount of storage space in projects
 with a lot of jobs or large artifacts. If the latest artifacts are not needed in
@@ -356,7 +364,3 @@ Then the artifacts in the earlier pipeline for that ref are allowed to expire to
 
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
-
-When **Keep artifacts from most recent successful jobs** is enabled, artifacts are always kept for [blocked](job_control.md#types-of-manual-jobs)
-pipelines. These artifacts expire only after the blocking job is triggered and the pipeline completes.
-[Issue 387087](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) proposes to change this behavior.

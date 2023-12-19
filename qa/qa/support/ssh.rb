@@ -25,7 +25,7 @@ module QA
         File.binwrite(private_key_file, key.private_key)
         File.chmod(0700, private_key_file)
 
-        keyscan_params = ['-H']
+        keyscan_params = ['-T 60 -H']
         keyscan_params << "-p #{uri_port}" if uri_port
         keyscan_params << uri.host
 

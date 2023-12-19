@@ -20,7 +20,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     post_graphql_mutation(mutation, current_user: current_user)
   end
 
-  shared_examples 'an erroneous reponse' do
+  shared_examples 'an erroneous response' do
     it { post_graphql_mutation_delete_container_registry_protection_rule.tap { expect(mutation_response).to be_blank } }
 
     it do
@@ -53,7 +53,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       create(:container_registry_protection_rule, repository_path_pattern: 'protection_rule_other_project')
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
   end
@@ -64,7 +64,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
         repository_path_pattern: 'protection_rule_deleted').destroy!
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
   end
@@ -80,7 +80,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     end
 
     with_them do
-      it_behaves_like 'an erroneous reponse'
+      it_behaves_like 'an erroneous response'
 
       it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
@@ -91,7 +91,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       stub_feature_flags(container_registry_protected_containers: false)
     end
 
-    it_behaves_like 'an erroneous reponse'
+    it_behaves_like 'an erroneous response'
 
     it do
       post_graphql_mutation_delete_container_registry_protection_rule

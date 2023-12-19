@@ -231,6 +231,8 @@ Efforts to improve this are in:
 
 #### Acceptance checklist
 
+<!-- When editing, remember to announce the change to Engineering Division -->
+
 This checklist encourages the authors, reviewers, and maintainers of merge requests (MRs) to confirm changes were analyzed for high-impact risks to quality, performance, reliability, security, observability, and maintainability.
 
 Using checklists improves quality in software engineering. This checklist is a straightforward tool to support and bolster the skills of contributors to the GitLab codebase.

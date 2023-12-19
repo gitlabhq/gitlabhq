@@ -9,6 +9,8 @@ module Gitlab
 
       include GithubImport::Queue
 
+      sidekiq_options retry: 5
+
       # The interval to schedule new instances of this job at.
       INTERVAL = 5.minutes.to_i
 

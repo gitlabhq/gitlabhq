@@ -306,14 +306,14 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
             allow(extractor).to receive(:extract).with(context).and_raise(
               BulkImports::NetworkError.new(
                 'Net::ReadTimeout',
-                response: instance_double(HTTParty::Response, code: reponse_status_code, headers: {})
+                response: instance_double(HTTParty::Response, code: response_status_code, headers: {})
               )
             )
           end
         end
 
         context 'when exception is retriable' do
-          let(:reponse_status_code) { 429 }
+          let(:response_status_code) { 429 }
 
           it 'raises the exception BulkImports::RetryPipelineError' do
             expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
@@ -321,7 +321,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         context 'when exception is not retriable' do
-          let(:reponse_status_code) { 505 }
+          let(:response_status_code) { 505 }
 
           it_behaves_like 'failed pipeline', 'BulkImports::NetworkError', 'Net::ReadTimeout'
         end

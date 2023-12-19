@@ -1,6 +1,6 @@
 .gl-md-ml-3.dropdown.gl-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
   #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
-  = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm-secondary gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } do
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } do
     %span.gl-dropdown-button-text= _('Code')
     = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon gl-ml-2 gl-mr-0!"
   .dropdown-menu.dropdown-menu-right

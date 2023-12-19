@@ -15,6 +15,10 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
     end.new
   end
 
+  it 'has a Sidekiq retry of 6' do
+    expect(worker.class.sidekiq_options['retry']).to eq(6)
+  end
+
   describe '#perform' do
     it 'returns if no project could be found' do
       expect(worker).not_to receive(:try_import)

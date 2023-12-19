@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        include GithubImport::Queue
         include StageMethods
 
         # project - An instance of Project.

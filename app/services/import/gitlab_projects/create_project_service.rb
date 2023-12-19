@@ -25,7 +25,7 @@ module Import
 
       # Creates a project with the strategy parameters
       #
-      # @return [Services::ServiceReponse]
+      # @return [Services::ServiceResponse]
       def execute
         return error(errors.full_messages) unless valid?
         return error(project.errors.full_messages) unless project.saved?

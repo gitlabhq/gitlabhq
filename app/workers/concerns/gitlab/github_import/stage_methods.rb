@@ -9,6 +9,9 @@ module Gitlab
 
       included do
         include ApplicationWorker
+        include GithubImport::Queue
+
+        sidekiq_options retry: 6
 
         sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
 

@@ -50,7 +50,7 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 
     shared_examples 'creates a remote mirror' do
-      it 'creates a remote mirror and returns reponse' do
+      it 'creates a remote mirror and returns response' do
         project.add_maintainer(user)
 
         post api(route, user), params: params

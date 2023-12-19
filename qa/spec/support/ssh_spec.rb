@@ -59,8 +59,8 @@ RSpec.describe QA::Support::SSH do
   end
 
   describe '#setup' do
-    let(:expected_ssh_command_no_port) { "ssh-keyscan -H foo.com >> #{known_hosts_file.path}" }
-    let(:expected_ssh_command_port) { "ssh-keyscan -H -p #{port} foo.com >> #{known_hosts_file.path}" }
+    let(:expected_ssh_command_no_port) { "ssh-keyscan -T 60 -H foo.com >> #{known_hosts_file.path}" }
+    let(:expected_ssh_command_port) { "ssh-keyscan -T 60 -H -p #{port} foo.com >> #{known_hosts_file.path}" }
     let(:call_method) { ssh.setup }
 
     before do

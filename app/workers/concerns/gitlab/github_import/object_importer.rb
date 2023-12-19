@@ -16,6 +16,7 @@ module Gitlab
         feature_category :importers
         worker_has_external_dependencies!
 
+        sidekiq_options retry: 5
         sidekiq_retries_exhausted do |msg|
           args = msg['args']
           jid = msg['jid']

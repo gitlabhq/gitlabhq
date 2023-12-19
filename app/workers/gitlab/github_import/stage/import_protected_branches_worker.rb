@@ -8,7 +8,6 @@ module Gitlab
 
         data_consistency :always
 
-        include GithubImport::Queue
         include StageMethods
 
         # client - An instance of Gitlab::GithubImport::Client.
