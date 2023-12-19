@@ -53,7 +53,7 @@ disabled to authenticate from the CLI. Alternatively, you can [use an SSH key to
 
 The first step is to get a clone of the repository on your local machine:
 
-1. In GitLab, on your project's overview page, on the top right, select **Clone**.
+1. In GitLab, on your project's overview page, in the upper-right corner, select **Code**.
 1. In the dropdown list, copy the URL for your repository by selecting **{copy-to-clipboard}** next to:
    - **Clone with HTTPS** if your GitLab account uses basic username and password authentication.
    - **Clone with SSH** if you use SSH to authenticate with GitLab.

@@ -45,7 +45,7 @@ on GitLab.com:
       - In the **Project name** field, enter the name of your project, for example `My Pipeline Tutorial Project`.
       - Select **Initialize repository with a README**.
    1. Select **Create project**.
-1. On the right of the **Project Overview** page for your project, select **Clone**
+1. On the project's overview page, in the upper-right corner, select **Code**
    to find the clone paths for your project. Copy the SSH or HTTP path and use the path
    to clone the project locally.
 

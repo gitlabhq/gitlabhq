@@ -125,6 +125,7 @@ To start using Internal Events Tracking, follow these steps:
 1. Create an event definition that describes `git_write_action` ([guide](event_definition_guide.md)).
 1. Find metric definitions that list `git_write_action` in the events section (`20210216182041_action_monthly_active_users_git_write.yml` and `20210216184045_git_write_action_weekly.yml`).
 1. Change the `data_source` from `redis_hll` to `internal_events` in the metric definition files.
+1. Remove the `instrumentation_class` property. It's not used for Internal Events metrics.
 1. Add an `events` section to both metric definition files.
 
     ```yaml

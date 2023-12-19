@@ -85,7 +85,7 @@ Projects that contain a `.xcodeproj` or `.xcworkspace` directory can be cloned
 into Xcode on macOS.
 
 1. From the GitLab UI, go to the project's overview page.
-1. Select **Clone**.
+1. In the upper-right corner, select **Code**.
 1. Select **Xcode**.
 
 The project is cloned onto your computer and you are
@@ -101,7 +101,7 @@ Visual Studio Code:
 
 - From the GitLab interface:
   1. Go to the project's overview page.
-  1. Select **Clone**.
+  1. In the upper-right corner, select **Code**.
   1. Under **Open in your IDE**, select **Visual Studio Code (SSH)** or **Visual Studio Code (HTTPS)**.
   1. Select a folder to clone the project into.
 
@@ -121,7 +121,7 @@ Prerequisites:
 To do this:
 
 1. Go to the project's overview page.
-1. Select **Clone**.
+1. In the upper-right corner, select **Code**.
 1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
 
 ## Download the code in a repository

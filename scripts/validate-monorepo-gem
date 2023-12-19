@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <gem-name>"
+  exit 1
+fi
+
+if gem specification --remote --ruby "$1"; then
+  exit 0
+fi
+
+if gem specification --remote --ruby --pre "$1"; then
+  exit 0
+fi
+
+echo "The '$1' is missing. Push stub gem to RubyGems with version 0.0.1."
+exit 1

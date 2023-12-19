@@ -50,6 +50,7 @@ rubocop:
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
   script:
+    - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
     - bundle exec rubocop
 
 rspec:

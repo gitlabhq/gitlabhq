@@ -70,7 +70,16 @@ module Gitlab
       def create(change, branch_name)
         dry_run(change, branch_name)
 
-        Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
+        non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
+          source_project_id: housekeeper_fork_project_id,
+          source_branch: branch_name,
+          target_branch: 'master',
+          target_project_id: housekeeper_target_project_id
+        )
+
+        unless non_housekeeper_changes.include?(:code)
+          Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
+        end
 
         gitlab_client.create_or_update_merge_request(
           source_project_id: housekeeper_fork_project_id,
@@ -78,7 +87,9 @@ module Gitlab
           description: change.description,
           source_branch: branch_name,
           target_branch: 'master',
-          target_project_id: housekeeper_target_project_id
+          target_project_id: housekeeper_target_project_id,
+          update_title: !non_housekeeper_changes.include?(:title),
+          update_description: !non_housekeeper_changes.include?(:description)
         )
       end
 

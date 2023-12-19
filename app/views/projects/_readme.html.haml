@@ -1,5 +1,5 @@
 - if (readme = @repository.readme) && readme.rich_viewer
-  .tree-holder
+  .tree-holder.gl-mt-5
     .nav-block.mt-0
       = render 'projects/tree/tree_header', tree: @tree
   %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }

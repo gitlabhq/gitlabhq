@@ -2,9 +2,8 @@
 - access = user&.max_member_access_for_group(group.id)
 
 %li.group-row.py-3.gl-align-items-center{ class: "gl-display-flex!" }
-  .avatar-container.rect-avatar.s48.gl-flex-shrink-0
-    = link_to group do
-      = render Pajamas::AvatarComponent.new(group, alt: group.name, size: 48)
+  = link_to group do
+    = render Pajamas::AvatarComponent.new(group, alt: group.name, size: 48, class: 'gl-mr-5')
   .gl-min-w-0.gl-flex-grow-1
     .title
       = link_to group.full_name, group, class: 'group-name'
