@@ -14,8 +14,6 @@
           = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0' }
         - if @project.group
           = render_if_exists 'shared/tier_badge', source: @project, namespace_to_track: @project.namespace
-      .gl-text-secondary
-        = render_if_exists "projects/home_mirror"
 
     .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
       - if current_user
@@ -48,7 +46,7 @@
           = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do
             = _("Read more")
 
-    = render_if_exists "projects/home_mirror"
+  = render_if_exists "projects/home_mirror"
 
   - if ff_reorg_disabled && @project.badges.present?
     .project-badges.mb-2{ data: { testid: 'project-badges-content' } }

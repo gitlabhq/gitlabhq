@@ -21,13 +21,13 @@
     %div
       = _('No authentication methods configured.')
 
-  - if Feature.enabled?(:restyle_login_page, @project) && Gitlab::CurrentSettings.current_application_settings.terms
+  - if Gitlab::CurrentSettings.current_application_settings.terms
     %p.gl-px-5
       = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
       link_end: '</a>'.html_safe }
 
   - if allow_signup?
-    %p{ class: "gl-mt-3 #{'gl-text-center' if Feature.enabled?(:restyle_login_page, @project)}" }
+    %p.gl-mt-3.gl-text-center
       = _("Don't have an account yet?")
       = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { testid: 'register-link' }
   - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?

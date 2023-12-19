@@ -46,6 +46,9 @@ export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
+export const NAMESPACE_GROUP = 'group';
+export const NAMESPACE_PROJECT = 'project';
+
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
 export const i18n = {
@@ -91,10 +94,13 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
-export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__('WorkItem|Search existing items');
+export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
+  'WorkItem|Search existing items, paste URL, or enter reference ID',
+);
 export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
   'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
+export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
   'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
 );

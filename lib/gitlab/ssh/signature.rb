@@ -44,7 +44,13 @@ module Gitlab
       end
 
       def key_fingerprint
-        strong_memoize(:key_fingerprint) { signature&.public_key&.fingerprint }
+        strong_memoize(:key_fingerprint) do
+          public_key = signature&.public_key
+
+          next if public_key.is_a?(SSHData::Certificate)
+
+          public_key.fingerprint
+        end
       end
 
       private

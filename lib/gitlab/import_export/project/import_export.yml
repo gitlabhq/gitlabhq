@@ -1054,6 +1054,7 @@ excluded_attributes:
     - :state_id
     - :start_date_sourcing_epic_id
     - :due_date_sourcing_epic_id
+    - :issue_id
   epic_issue:
     - :epic_id
     - :issue_id

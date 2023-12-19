@@ -53,6 +53,21 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
   have been changed when a user pushes to a protected branch with `require_code_owner_approval` enabled.
   - Defined in `./ee/lib/gitlab/code_owners/validator.rb`.
 
+## Where Code Owners sits in the Git access check execution order
+
+`Gitlab::Checks::DiffCheck#file_paths_validations` returns either an empty array, or an array with a single member of the results of `#lfs_file_locks_validation` if LFS is enabled and file locks are present. The return result of `#validate_code_owners` in the EE version of this file is inserted at the end of this list in the `EE::Gitlab::Checks::DiffCheck#file_paths_validations`. LFS checks are performed before Code Owners checks.
+
+These checks are executed after those listed in `#validations_for_path`, which exists only in the EE version, and include `#path_locks_validation` and `#file_name_validation`. This means that checks for Path Locks precede checks for Code Owners in the flow.
+
+The check order is as follows in `EE` (only LFS exists as a non-EE feature):
+
+- Path Locks
+- File Names
+  - Blocks files containing secrets for example `id_rsa`
+  - Blocks files matching the `PushRule#file_name_regex`
+- LFS File Locks
+- Code Owners
+
 ## Related models
 
 ### `ProtectedBranch`
@@ -108,12 +123,27 @@ This service is defined in `services/merge_requests/sync_code_owner_approval_rul
 These flowcharts should help explain the flow from the controllers down to the
 models for different features.
 
-### Push changes to a protected branch with `require_code_owner_approval` enabled
+Note that many of the Code Owners implementations exist in the `EE` variants of the classes.
+
+### Push changes to a protected branch with `require_code_owner_approval` enabled, over SSH
 
 ```mermaid
 graph TD
   Api::Internal::Base --> Gitlab::GitAccess
   Gitlab::GitAccess --> Gitlab::Checks::DiffCheck
+  Gitlab::Checks::DiffCheck --> Gitlab::CodeOwners::Validator
+  Gitlab::CodeOwners::Validator --> ProtectedBranch
+  Gitlab::CodeOwners::Validator --> Gitlab::CodeOwners::Loader
+  Gitlab::CodeOwners::Loader --> Gitlab::CodeOwners::Entry
+```
+
+### Push changes to a protected branch with `require_code_owner_approval` enabled, over HTTPS
+
+```mermaid
+graph TD
+  Repositories::GitHttpController --> Gitlab::GlRepository
+  Gitlab::GlRepository --> Gitlab::GitAccessProject
+  Gitlab::GitAccessProject --> Gitlab::Checks::DiffCheck
   Gitlab::Checks::DiffCheck --> Gitlab::CodeOwners::Validator
   Gitlab::CodeOwners::Validator --> ProtectedBranch
   Gitlab::CodeOwners::Validator --> Gitlab::CodeOwners::Loader

@@ -151,4 +151,4 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 ## Feedback
 
-Report issues in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/405152).
+Let us know about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).

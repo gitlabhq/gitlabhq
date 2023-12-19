@@ -497,6 +497,7 @@ or assignees, on the right.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
+> - Adding related items by entering their URLs and IDs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427594) in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
@@ -524,7 +525,7 @@ To link an item to a task:
    - **relates to**
    - **blocks**
    - **is blocked by**
-1. Enter the search text of the item.
+1. Enter the search text of the item, URL, or its reference ID.
 1. When you have added all the items to be linked, select **Add** below the search box.
 
 When you have finished adding all linked items, you can see

@@ -6,63 +6,31 @@
   %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page, testid: 'login-page' } }
     = header_message
     = render "layouts/init_client_detection_flags"
-    - if Feature.enabled?(:restyle_login_page, @project)
-      = yield :sessions_broadcast
-      .gl-h-full.borderless.gl-display-flex.gl-flex-wrap
-        .container
-          .content
-            = render "layouts/flash"
-            - if custom_text.present?
-              .row
-                .col-md.order-12.sm-bg-gray
-                  .col-sm-12
-                    %h1.mb-3.gl-font-size-h2
-                      = brand_title
-                    = custom_text
-                .col-md.order-md-12
-                  .col-sm-12.bar
-                    .gl-text-center
-                      = brand_image
-                    = yield
-            - else
-              .mt-3
-                .col-sm-12.gl-text-center
-                  = brand_image
+    = yield :sessions_broadcast
+    .gl-h-full.borderless.gl-display-flex.gl-flex-wrap
+      .container
+        .content
+          = render "layouts/flash"
+          - if custom_text.present?
+            .row
+              .col-md.order-12.sm-bg-gray
+                .col-sm-12
                   %h1.mb-3.gl-font-size-h2
                     = brand_title
-              .mb-3
-                .gl-w-full.gl-sm-w-half.gl-ml-auto.gl-mr-auto.bar
+                  = custom_text
+              .col-md.order-md-12
+                .col-sm-12.bar
+                  .gl-text-center
+                    = brand_image
                   = yield
-
-        = render 'devise/shared/footer'
-    - else
-      = render "layouts/header/empty"
-      = yield :sessions_broadcast
-      .gl-h-full.gl-display-flex.gl-flex-wrap
-        .container
-          .content
-            = render "layouts/flash"
-            .row.mt-3
-              .col-sm-12
-                %h1.mb-3.font-weight-normal
-                  = current_appearance&.title.presence || _('GitLab')
-            .row.mb-3
-              .col-md-6.order-12.order-sm-1.brand-holder
-                - unless recently_confirmed_com?
-                  = brand_image
-                  - if custom_text.present?
-                    = custom_text
-                  - else
-                    %h3.gl-sm-mt-0
-                      = _('A complete DevOps platform')
-
-                    %p
-                      = _('GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security.')
-
-                    %p
-                      = _('This is a self-managed instance of GitLab.')
-
-              .col-md-6.order-1{ class: recently_confirmed_com? ? 'order-sm-first' : 'order-sm-12' }
+          - else
+            .mt-3
+              .col-sm-12.gl-text-center
+                = brand_image
+                %h1.mb-3.gl-font-size-h2
+                  = brand_title
+            .mb-3
+              .gl-w-full.gl-sm-w-half.gl-ml-auto.gl-mr-auto.bar
                 = yield
 
-        = render 'devise/shared/footer'
+      = render 'devise/shared/footer'

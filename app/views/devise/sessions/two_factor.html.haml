@@ -1,4 +1,3 @@
-= render 'devise/shared/tab_single', tab_title: _('Two-factor authentication') if Feature.disabled?(:restyle_login_page, @project)
 .login-box.gl-p-5
   .login-body
     - if @user.two_factor_enabled?

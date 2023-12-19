@@ -106,9 +106,11 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
 
 ### Debugging Jira Connect Proxy issues
 
-If you are using a self-managed GitLab instance and you have configured `https://gitlab.com` for the Jira Connect Proxy URL when
-[setting up the OAuth authentication](jira_cloud_app.md#set-up-oauth-authentication), you can inspect the network traffic in your browser's development
-tools while reproducing the `Failed to update the GitLab instance` error to see a more precise error.
+If you set **Jira Connect Proxy URL** to `https://gitlab.com` when you
+[set up your instance](jira_cloud_app.md#set-up-your-instance), you can:
+
+- Inspect the network traffic in your browser's development tools.
+- Reproduce the `Failed to update the GitLab instance` error for more information.
 
 You should see a `GET` request to `https://gitlab.com/-/jira_connect/installations`.
 
@@ -144,12 +146,12 @@ For the second log:
 
 - `json.message` is `Proxy lifecycle event received error response` or similar.
 - `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
-- If `json.jira_status_code` is `401` and `json.jira_body` is empty, this might indicate that the [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is not set to
+- If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
   `https://gitlab.com`.
 
-## `Failed to link group`
+## Error when connecting the app
 
-After you connect the GitLab for Jira Cloud app for self-managed instances, you might get one of these errors:
+When you connect the GitLab for Jira Cloud app, you might get one of these errors:
 
 ```plaintext
 Failed to load Jira Connect Application ID. Please try again.
@@ -167,4 +169,5 @@ Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remot
 
 A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
-To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
+To resolve this issue, ensure the Jira user that installs and configures the app meets certain
+[requirements](jira_cloud_app.md#jira-user-requirements).

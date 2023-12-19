@@ -11,6 +11,8 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
   let_it_be(:task) { create(:work_item, :task, project: project, title: 'Task 1') }
 
   context 'for signed in user' do
+    let(:token_input_selector) { '[data-testid="work-item-token-select-input"] .gl-token-selector-input' }
+
     before_all do
       project.add_developer(user)
     end
@@ -62,25 +64,24 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
       end
     end
 
-    it 'links a new item', :aggregate_failures do
-      page.within('.work-item-relationships') do
-        click_button 'Add'
+    it 'links a new item with work item text', :aggregate_failures do
+      verify_linked_item_added(task.title)
+    end
 
-        within_testid('link-work-item-form') do
-          expect(page).to have_button('Add', disabled: true)
-          find_by_testid('work-item-token-select-input').set(task.title)
-          wait_for_all_requests
-          click_button task.title
+    it 'links a new item with work item iid', :aggregate_failures do
+      verify_linked_item_added(task.iid)
+    end
 
-          expect(page).to have_button('Add', disabled: false)
+    it 'links a new item with work item wildcard iid', :aggregate_failures do
+      verify_linked_item_added("##{task.iid}")
+    end
 
-          click_button 'Add'
+    it 'links a new item with work item reference', :aggregate_failures do
+      verify_linked_item_added(task.to_reference(full: true))
+    end
 
-          wait_for_all_requests
-        end
-
-        expect(find('.work-items-list')).to have_content('Task 1')
-      end
+    it 'links a new item with work item url', :aggregate_failures do
+      verify_linked_item_added("#{task.project.web_url}/-/work_items/#{task.iid}")
     end
 
     it 'removes a linked item', :aggregate_failures do
@@ -109,6 +110,29 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
 
         expect(page).not_to have_content('Task 1')
       end
+    end
+  end
+
+  def verify_linked_item_added(input)
+    page.within('.work-item-relationships') do
+      click_button 'Add'
+
+      within_testid('link-work-item-form') do
+        expect(page).to have_button('Add', disabled: true)
+
+        find(token_input_selector).set(input)
+        wait_for_all_requests
+
+        click_button task.title
+
+        expect(page).to have_button('Add', disabled: false)
+
+        click_button 'Add'
+
+        wait_for_all_requests
+      end
+
+      expect(find('.work-items-list')).to have_content('Task 1')
     end
   end
 end

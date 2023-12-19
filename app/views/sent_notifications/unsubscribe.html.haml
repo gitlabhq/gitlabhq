@@ -14,6 +14,7 @@
   = _("Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?").html_safe % { type: noteable_type, link_to_noteable_text: link_to_noteable_text }
 
 %p
-  = link_to _('Unsubscribe'), unsubscribe_sent_notification_path(@sent_notification, force: true),
-            class: 'gl-button btn btn-confirm gl-mr-3'
-  = link_button_to _('Cancel'), new_user_session_path, class: 'gl-mr-3'
+  = render Pajamas::ButtonComponent.new(href: unsubscribe_sent_notification_path(@sent_notification, force: true), variant: 'confirm', button_options: { class: 'gl-mr-3'}) do
+    = _('Unsubscribe')
+  = render Pajamas::ButtonComponent.new(href: new_user_session_path, button_options: { class: 'gl-mr-3'}) do
+    = _('Cancel')

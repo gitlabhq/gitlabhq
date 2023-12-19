@@ -1,0 +1,20 @@
+---
+description: Kubernetes API proxy request using the CI/CD Tunnel
+category: InternalEventTracking
+action: agent_users_using_ci_tunnel
+identifiers:
+- project
+- namespace
+- user
+product_section: cd
+product_stage: deploy
+product_group: environments
+milestone: '16.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140038
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

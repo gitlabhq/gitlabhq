@@ -70,7 +70,7 @@ If GitLab cannot close a Jira issue:
 
 - Ensure the transition ID you set in the Jira settings matches the one
   your project must have to close an issue. For more information, see
-  [automatic issue transitions](issues.md#automatic-issue-transitions) and [custom issue transitions](issues.md#custom-issue-transitions).
+  [Automatic issue transitions](issues.md#automatic-issue-transitions) and [Custom issue transitions](issues.md#custom-issue-transitions).
 - Make sure the Jira issue is not already marked as resolved:
   - Check the Jira issue resolution field is not set.
   - Check the issue is not struck through in Jira lists.
@@ -212,7 +212,7 @@ When [viewing Jira issues](issues.md#view-jira-issues) in GitLab, you might enco
 ### `500 We're sorry` when accessing a Jira issue in GitLab
 
 When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
-Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains the following exception:
+Check [`production.log`](../../administration/logs/index.md#productionlog) to see if the file contains the following exception:
 
 ```plaintext
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)

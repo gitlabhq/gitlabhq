@@ -290,6 +290,8 @@ describe('WorkItemParent component', () => {
         in: undefined,
         iid: null,
         isNumber: false,
+        searchByIid: false,
+        searchByText: true,
       });
 
       await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
@@ -301,6 +303,8 @@ describe('WorkItemParent component', () => {
         in: 'TITLE',
         iid: null,
         isNumber: false,
+        searchByIid: false,
+        searchByText: true,
       });
 
       await nextTick();

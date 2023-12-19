@@ -38,7 +38,9 @@ RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
       let_it_be(:secondary_db) { 2 }
       let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
       let_it_be(:secondary_store) { create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil) }
-      let_it_be(:multistore) { Gitlab::Redis::MultiStore.new(primary_store, secondary_store, 'testing') }
+      let_it_be(:primary_pool) { ConnectionPool.new { primary_store } }
+      let_it_be(:secondary_pool) { ConnectionPool.new { secondary_store } }
+      let_it_be(:multistore) { Gitlab::Redis::MultiStore.new(primary_pool, secondary_pool, 'testing') }
 
       before do
         primary_store.set('a', 1)
@@ -52,9 +54,11 @@ RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
 
         expect(
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            described_class::Pipeline.new(multistore).pipelined do |p|
-              p.get('a')
-              p.set('b', 1)
+            multistore.with_borrowed_connection do
+              described_class::Pipeline.new(multistore).pipelined do |p|
+                p.get('a')
+                p.set('b', 1)
+              end
             end
           end
         ).to eq(%w[1 OK])

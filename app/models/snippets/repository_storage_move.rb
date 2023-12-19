@@ -16,11 +16,7 @@ module Snippets
 
     override :schedule_repository_storage_update_worker
     def schedule_repository_storage_update_worker
-      Snippets::UpdateRepositoryStorageWorker.perform_async(
-        snippet_id,
-        destination_storage_name,
-        id
-      )
+      Snippets::UpdateRepositoryStorageWorker.perform_async(id)
     end
 
     private

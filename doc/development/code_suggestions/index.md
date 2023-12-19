@@ -24,10 +24,10 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option
       1. Check a "GitLab: Debug" checkbox.
 1. Main Application
-   1. Enable Feature Flags ```code_suggestions_completion_api``` and ```code_suggestions_tokens_api```
+   1. Enable Feature Flag ```code_suggestions_tokens_api```
       1. In your terminal, navigate to a `gitlab` inside your `gitlab-development-kit` directory
       1. Run `bundle exec rails c` to start a Rails console
-      1. Call `Feature.enable(:code_suggestions_completion_api)` and `Feature.enable(:code_suggestions_tokens_api)` from the console
+      1. Call `Feature.enable(:code_suggestions_tokens_api)` from the console
    1. Run the GDK with ```export CODE_SUGGESTIONS_BASE_URL=http://localhost:5052```
 1. [Setup Model Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
     1. Build tree sitter libraries ```poetry run scripts/build-tree-sitter-lib.py```

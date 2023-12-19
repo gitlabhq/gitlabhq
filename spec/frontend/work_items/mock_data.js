@@ -1734,6 +1734,28 @@ export const searchWorkItemsIidResponse = {
   },
 };
 
+export const searchWorkItemsURLRefResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [],
+      },
+      workItemsByIid: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/460',
+            iid: '101',
+            title: 'Task 3',
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const searchWorkItemsTextIidResponse = {
   data: {
     workspace: {
@@ -1763,6 +1785,23 @@ export const searchWorkItemsTextIidResponse = {
       },
     },
   },
+};
+
+export const searchWorkItemsResponse = ({ workItems = [], workItemsByIid = [] } = {}) => {
+  return {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/2',
+        workItems: {
+          nodes: workItems,
+        },
+        workItemsByIid: {
+          nodes: workItemsByIid,
+        },
+      },
+    },
+  };
 };
 
 export const projectMembersResponseWithCurrentUser = {

@@ -172,7 +172,7 @@ export default {
     relatedToLabel: s__('WorkItem|relates to'),
     blockingLabel: s__('WorkItem|blocks'),
     blockedByLabel: s__('WorkItem|is blocked by'),
-    linkItemInputLabel: s__('WorkItem|the following item(s)'),
+    linkItemInputLabel: s__('WorkItem|the following items'),
     addLinkedItemErrorMessage: s__(
       'WorkItem|Something went wrong when trying to link a item. Please try again.',
     ),

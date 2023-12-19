@@ -40,7 +40,6 @@ module API
 
         def increment_unique_events
           events = params[:unique_counters]&.slice(
-            :agent_users_using_ci_tunnel,
             :k8s_api_proxy_requests_unique_agents_via_ci_access,
             :k8s_api_proxy_requests_unique_agents_via_user_access,
             :k8s_api_proxy_requests_unique_agents_via_pat_access,
@@ -59,6 +58,8 @@ module API
             :k8s_api_proxy_requests_unique_users_via_pat_access
           )
           return if event_lists.blank?
+
+          event_lists[:agent_users_using_ci_tunnel] = event_lists.values.flatten
 
           users, projects = load_users_and_projects(event_lists)
           event_lists.each do |event_name, events|

@@ -2,71 +2,36 @@
 
 require 'spec_helper'
 
-RSpec.describe 'devise/sessions/new' do
-  describe 'marketing text', :saas do
-    subject { render(template: 'devise/sessions/new', layout: 'layouts/devise') }
+RSpec.describe 'devise/sessions/new', feature_category: :system_access do
+  describe 'ldap' do
+    include LdapHelpers
+
+    let(:server) { { provider_name: 'ldapmain', label: 'LDAP' }.with_indifferent_access }
 
     before do
+      enable_ldap
       stub_devise
       disable_captcha
-      stub_feature_flags(restyle_login_page: false)
+      disable_sign_up
+      disable_other_signin_methods
     end
 
-    it 'when flash is anything it renders marketing text' do
-      flash[:notice] = "You can't do that"
+    it 'is shown when enabled' do
+      render
 
-      subject
-
-      expect(rendered).to have_content('A complete DevOps platform')
+      expect(rendered).to have_selector('.new-session-tabs')
+      expect(rendered).to have_selector('[data-testid="ldap-tab"]')
+      expect(rendered).to have_field(_('Username'))
     end
 
-    it 'when flash notice is devise confirmed message it hides marketing text' do
-      flash[:notice] = t(:confirmed, scope: [:devise, :confirmations])
+    it 'is not shown when LDAP sign in is disabled' do
+      disable_ldap_sign_in
 
-      subject
+      render
 
-      expect(rendered).not_to have_content('A complete DevOps platform')
-    end
-  end
-
-  flag_values = [true, false]
-  flag_values.each do |val|
-    context "with #{val}" do
-      before do
-        stub_feature_flags(restyle_login_page: val)
-      end
-
-      describe 'ldap' do
-        include LdapHelpers
-
-        let(:server) { { provider_name: 'ldapmain', label: 'LDAP' }.with_indifferent_access }
-
-        before do
-          enable_ldap
-          stub_devise
-          disable_captcha
-          disable_sign_up
-          disable_other_signin_methods
-        end
-
-        it 'is shown when enabled' do
-          render
-
-          expect(rendered).to have_selector('.new-session-tabs')
-          expect(rendered).to have_selector('[data-testid="ldap-tab"]')
-          expect(rendered).to have_field(_('Username'))
-        end
-
-        it 'is not shown when LDAP sign in is disabled' do
-          disable_ldap_sign_in
-
-          render
-
-          expect(rendered).to have_content('No authentication methods configured')
-          expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
-          expect(rendered).not_to have_field(_('Username'))
-        end
-      end
+      expect(rendered).to have_content('No authentication methods configured')
+      expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
+      expect(rendered).not_to have_field(_('Username'))
     end
   end
 

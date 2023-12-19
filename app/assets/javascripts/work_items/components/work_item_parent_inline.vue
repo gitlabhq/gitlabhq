@@ -108,7 +108,7 @@ export default {
           types: this.parentType,
           in: this.search ? 'TITLE' : undefined,
           iid: null,
-          isNumber: false,
+          searchByIid: false,
         };
       },
       skip() {

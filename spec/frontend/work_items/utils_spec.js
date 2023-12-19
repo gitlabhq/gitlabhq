@@ -1,4 +1,4 @@
-import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
+import { autocompleteDataSources, markdownPreviewPath, isReference } from '~/work_items/utils';
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {
@@ -23,5 +23,27 @@ describe('markdownPreviewPath', () => {
     expect(markdownPreviewPath('project/group', '2')).toEqual(
       '/foobar/project/group/preview_markdown?target_type=WorkItem&target_id=2',
     );
+  });
+});
+
+describe('isReference', () => {
+  it.each`
+    referenceId                                | result
+    ${'#101'}                                  | ${true}
+    ${'&101'}                                  | ${true}
+    ${'101'}                                   | ${false}
+    ${'#'}                                     | ${false}
+    ${'&'}                                     | ${false}
+    ${' &101'}                                 | ${false}
+    ${'gitlab-org&101'}                        | ${true}
+    ${'gitlab-org/project-path#101'}           | ${true}
+    ${'gitlab-org/sub-group/project-path#101'} | ${true}
+    ${'gitlab-org'}                            | ${false}
+    ${'gitlab-org101#'}                        | ${false}
+    ${'gitlab-org101&'}                        | ${false}
+    ${'#gitlab-org101'}                        | ${false}
+    ${'&gitlab-org101'}                        | ${false}
+  `('returns $result for $referenceId', ({ referenceId, result }) => {
+    expect(isReference(referenceId)).toEqual(result);
   });
 });

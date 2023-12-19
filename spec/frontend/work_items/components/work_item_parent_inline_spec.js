@@ -157,7 +157,8 @@ describe('WorkItemParentInline component', () => {
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: undefined,
         iid: null,
-        isNumber: false,
+        searchByIid: false,
+        searchByText: true,
       });
 
       await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
@@ -168,7 +169,8 @@ describe('WorkItemParentInline component', () => {
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: 'TITLE',
         iid: null,
-        isNumber: false,
+        searchByIid: false,
+        searchByText: true,
       });
 
       await nextTick();

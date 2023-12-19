@@ -11,8 +11,5 @@
       = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
         = _('Resend unlock instructions')
 
-- if Feature.enabled?(:restyle_login_page, @project)
-  = render 'devise/shared/sign_in_link'
-- else
-  .gl-mt-3
-    = render 'devise/shared/sign_in_link'
+= render 'devise/shared/sign_in_link'
+

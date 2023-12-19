@@ -31,9 +31,10 @@ To resolve this issue, ensure:
 - If using a [project alias](gitlab_slack_application.md#create-a-project-alias-for-slash-commands), the alias is correct.
 - The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-project-integration-settings).
 
-## Slash commands return an error in Slack
+## Slash commands return `dispatch_failed` in Slack
 
 Slash commands might return `/gitlab failed with the error "dispatch_failed"` in Slack.
+
 To resolve this issue, ensure an administrator has properly configured the [GitLab for Slack app settings](../../../administration/settings/slack_app.md) on your self-managed instance.
 
 ## Notifications not received to a channel

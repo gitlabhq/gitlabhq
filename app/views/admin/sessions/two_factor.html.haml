@@ -4,8 +4,7 @@
 .row.justify-content-center
   .col-md-5
     .login-page
-      #signin-container{ class: ('borderless' if Feature.enabled?(:restyle_login_page, @project)) }
-        = render 'devise/shared/tab_single', tab_title: _('Enter admin mode') if Feature.disabled?(:restyle_login_page, @project)
+      #signin-container.borderless
         .login-box.gl-p-5
           .login-body
             - if current_user.two_factor_enabled?

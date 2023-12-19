@@ -34,7 +34,7 @@ module Gitlab
         end
       end
 
-      attr_reader :primary_store, :secondary_store, :instance_name
+      attr_reader :primary_pool, :secondary_pool, :instance_name, :primary_store, :secondary_store, :borrow_counter
 
       FAILED_TO_READ_ERROR_MESSAGE = 'Failed to read from the redis default_store.'
       FAILED_TO_WRITE_ERROR_MESSAGE = 'Failed to write to the redis non_default_store.'
@@ -127,20 +127,23 @@ module Gitlab
         multi
       ].freeze
 
-      # To transition between two Redis store, `primary_store` should be the target store,
-      # and `secondary_store` should be the current store. Transition is controlled with feature flags:
+      # To transition between two Redis store, `primary_pool` should be the connection pool for the target store,
+      # and `secondary_pool` should be the connection pool for the current store.
       #
+      # Transition is controlled with feature flags:
       # - At the default state, all read and write operations are executed in the secondary instance.
       # - Turning use_primary_and_secondary_stores_for_<instance_name> on: The store writes to both instances.
-      #   The read commands are executed in primary, but fallback to secondary.
+      #   The read commands are executed in the default store with no fallbacks.
       #   Other commands are executed in the the default instance (Secondary).
       # - Turning use_primary_store_as_default_for_<instance_name> on: The behavior is the same as above,
       #   but other commands are executed in the primary now.
       # - Turning use_primary_and_secondary_stores_for_<instance_name> off: commands are executed in the primary store.
-      def initialize(primary_store, secondary_store, instance_name)
-        @primary_store = primary_store
-        @secondary_store = secondary_store
+      def initialize(primary_pool, secondary_pool, instance_name)
         @instance_name = instance_name
+        @primary_pool = primary_pool
+        @secondary_pool = secondary_pool
+
+        @borrow_counter = "multi_store_borrowed_connection_#{instance_name}".to_sym
 
         validate_stores!
       end
@@ -206,6 +209,31 @@ module Gitlab
 
       def respond_to_missing?(command_name, include_private = false)
         true
+      end
+
+      def with_borrowed_connection
+        primary_pool.with do |ps|
+          secondary_pool.with do |ss|
+            # nested borrows are allowed as ConnectionPool returns the existing connection
+            # which the thread already checked out.
+            Thread.current[borrow_counter] ||= 0
+            Thread.current[borrow_counter] += 1
+
+            # borrow from both pool as feature-flag could change during the period where connections are borrowed
+            # this guarantees that we avoids a NilClass error
+            @primary_store = ps
+            @secondary_store = ss
+
+            yield
+          ensure
+            # only set to nil after all nested borrows are yielded
+            Thread.current[borrow_counter] -= 1
+            if Thread.current[borrow_counter] == 0
+              @primary_store = nil
+              @secondary_store = nil
+            end
+          end
+        end
       end
 
       # This is needed because of Redis::Rack::Connection is requiring Redis::Store
@@ -277,13 +305,15 @@ module Gitlab
       #
       # Let's define it explicitly instead of propagating it to method_missing
       def close
-        if same_redis_store?
-          # if same_redis_store?, `use_primary_store_as_default?` returns false
-          # but we should avoid a feature-flag check in `.close` to avoid checking out
-          # an ActiveRecord connection during clean up.
-          secondary_store.close
-        else
-          [primary_store, secondary_store].map(&:close).first
+        with_borrowed_connection do
+          if same_redis_store?
+            # if same_redis_store?, `use_primary_store_as_default?` returns false
+            # but we should avoid a feature-flag check in `.close` to avoid checking out
+            # an ActiveRecord connection during clean up.
+            secondary_store.close
+          else
+            [primary_store, secondary_store].map(&:close).first
+          end
         end
       end
 
@@ -383,7 +413,8 @@ module Gitlab
       def same_redis_store?
         strong_memoize(:same_redis_store) do
           # <Redis client v4.7.1 for unix:///path_to/redis/redis.socket/5>"
-          primary_store.inspect == secondary_store.inspect
+          # no borrowed connections due to endless recursion
+          primary_pool.with(&:inspect) == secondary_pool.with(&:inspect) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 
@@ -418,16 +449,16 @@ module Gitlab
         @instance = nil
       end
 
-      def redis_store?(store)
-        store.is_a?(::Redis)
+      def redis_store?(pool)
+        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) }
       end
 
       def validate_stores!
-        raise ArgumentError, 'primary_store is required' unless primary_store
-        raise ArgumentError, 'secondary_store is required' unless secondary_store
+        raise ArgumentError, 'primary_store is required' if primary_pool.nil?
+        raise ArgumentError, 'secondary_store is required' if secondary_pool.nil?
         raise ArgumentError, 'instance_name is required' unless instance_name
-        raise ArgumentError, 'invalid primary_store' unless redis_store?(primary_store)
-        raise ArgumentError, 'invalid secondary_store' unless redis_store?(secondary_store)
+        raise ArgumentError, 'invalid primary_store' unless redis_store?(primary_pool)
+        raise ArgumentError, 'invalid secondary_store' unless redis_store?(secondary_pool)
       end
     end
   end

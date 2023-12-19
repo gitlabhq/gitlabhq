@@ -20,9 +20,10 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
 
 ## Session token bug in Jira
 
-When using GitLab 15.0 and later (including GitLab.com) with Jira Server, you might experience
-a [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389). As a workaround,
-ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
+When you use GitLab 15.0 and later with Jira Server, you might encounter a
+[session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389).
+
+To resolve this issue, ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
 
 ## SSL and TLS problems
 
@@ -42,7 +43,7 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
   issued by a public certificate authority, add the appropriate certificate
   (such as your organization's root certificate) to the Java Truststore on Jira Server.
 
-For help with Jira setup, see the Atlassian documentation and Atlassian Support:
+For more information about setting up Jira, see the Atlassian documentation and Atlassian Support.
 
 - [Add a certificate](https://confluence.atlassian.com/kb/how-to-import-a-public-ssl-certificate-into-a-jvm-867025849.html)
   to the trust store.
@@ -103,7 +104,6 @@ To resolve this issue:
 ## `410 Gone` when connecting to Jira
 
 When you connect to Jira and synchronize repositories, you might get a `410 Gone` error.
-
 This issue occurs when you use the Jira DVCS connector and your integration is configured to use **GitHub Enterprise**.
 
 For more information, see [issue 340160](https://gitlab.com/gitlab-org/gitlab/-/issues/340160).

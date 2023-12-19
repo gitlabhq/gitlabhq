@@ -80,7 +80,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
       it 'returns no_content for valid events' do
         counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
-        unique_counters = { agent_users_using_ci_tunnel: [10] }
+        unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: [10] }
 
         send_request(params: { counters: counters, unique_counters: unique_counters })
 
@@ -89,7 +89,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
       it 'returns no_content for counts of zero' do
         counters = { gitops_sync: 0, k8s_api_proxy_request: 0 }
-        unique_counters = { agent_users_using_ci_tunnel: [] }
+        unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: [] }
 
         send_request(params: { counters: counters, unique_counters: unique_counters })
 
@@ -105,7 +105,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       end
 
       it 'returns 400 for non unique_counter set' do
-        unique_counters = { agent_users_using_ci_tunnel: 1 }
+        unique_counters = { k8s_api_proxy_requests_unique_users_via_ci_access: 1 }
 
         send_request(params: { unique_counters: unique_counters })
 
@@ -125,7 +125,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         users = create_list(:user, 3)
         user_ids = users.map(&:id) << users[0].id
         unique_counters = {
-          agent_users_using_ci_tunnel: user_ids,
           k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
           k8s_api_proxy_requests_unique_agents_via_ci_access: user_ids,
           k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
@@ -191,6 +190,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         end
 
         it 'tracks events and returns no_content', :aggregate_failures do
+          events[:agent_users_using_ci_tunnel] = events.values.flatten
           events.each do |event_name, event_list|
             event_list.each do |event|
               expect(Gitlab::InternalEvents).to receive(:track_event)

@@ -29,10 +29,15 @@ RSpec.describe Gitlab::Redis::ClusterUtil, feature_category: :scalability do
 
       with_them do
         it 'returns expected value' do
-          primary_store = pri_store == :cluster ? ::Redis.new(cluster: ['redis://localhost:6000']) : ::Redis.new
-          secondary_store = sec_store == :cluster ? ::Redis.new(cluster: ['redis://localhost:6000']) : ::Redis.new
-          multistore = Gitlab::Redis::MultiStore.new(primary_store, secondary_store, 'teststore')
-          expect(described_class.cluster?(multistore)).to eq(expected_val)
+          primary_redis = pri_store == :cluster ? ::Redis.new(cluster: ['redis://localhost:6000']) : ::Redis.new
+          secondary_redis = sec_store == :cluster ? ::Redis.new(cluster: ['redis://localhost:6000']) : ::Redis.new
+          primary_pool = ConnectionPool.new { primary_redis }
+          secondary_pool = ConnectionPool.new { secondary_redis }
+          multistore = Gitlab::Redis::MultiStore.new(primary_pool, secondary_pool, 'teststore')
+
+          multistore.with_borrowed_connection do
+            expect(described_class.cluster?(multistore)).to eq(expected_val)
+          end
         end
       end
     end

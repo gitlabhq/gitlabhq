@@ -1803,9 +1803,6 @@ msgstr ""
 msgid "A basic template for developing Linux programs using Kotlin Native"
 msgstr ""
 
-msgid "A complete DevOps platform"
-msgstr ""
-
 msgid "A confidential issue must have only confidential children. Make any child items confidential and try again."
 msgstr ""
 
@@ -14355,9 +14352,6 @@ msgstr ""
 msgid "Create a project"
 msgstr ""
 
-msgid "Create an account using:"
-msgstr ""
-
 msgid "Create an incident. Incidents are created for each alert triggered."
 msgstr ""
 
@@ -22184,9 +22178,6 @@ msgid "GitLab is a complete DevOps platform, delivered as a single application, 
 msgstr ""
 
 msgid "GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way%{br_tag}Development, Security, and Ops teams collaborate"
-msgstr ""
-
-msgid "GitLab is a single application for the entire software development lifecycle. From project planning and source code management to CI/CD, monitoring, and security."
 msgstr ""
 
 msgid "GitLab is free to use. Many features for larger teams are part of our %{link_start}paid products%{link_end}. You can try Ultimate for free without any obligation or payment details."
@@ -45679,9 +45670,6 @@ msgstr ""
 msgid "Sign in via 2FA code"
 msgstr ""
 
-msgid "Sign in with"
-msgstr ""
-
 msgid "Sign in with single sign-on"
 msgstr ""
 
@@ -45734,12 +45722,6 @@ msgid "SignUp|By clicking %{button_text} or registering through a third party yo
 msgstr ""
 
 msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}"
-msgstr ""
-
-msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the %{link_start}Terms of Use and Privacy Statement%{link_end}"
-msgstr ""
-
-msgid "SignUp|By clicking %{button_text}, I agree that I have read and accepted the GitLab %{link_start}Terms of Use and Privacy Statement%{link_end}"
 msgstr ""
 
 msgid "SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
@@ -49816,9 +49798,6 @@ msgid "This is a private email address %{helpIcon} generated just for you. Anyon
 msgstr ""
 
 msgid "This is a security log of authentication events involving your account."
-msgstr ""
-
-msgid "This is a self-managed instance of GitLab."
 msgstr ""
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
@@ -55201,6 +55180,9 @@ msgstr ""
 msgid "WorkItem|No iteration"
 msgstr ""
 
+msgid "WorkItem|No matches found"
+msgstr ""
+
 msgid "WorkItem|No matching results"
 msgstr ""
 
@@ -55252,7 +55234,7 @@ msgstr ""
 msgid "WorkItem|Save and overwrite"
 msgstr ""
 
-msgid "WorkItem|Search existing items"
+msgid "WorkItem|Search existing items, paste URL, or enter reference ID"
 msgstr ""
 
 msgid "WorkItem|Select type"
@@ -55417,7 +55399,7 @@ msgstr ""
 msgid "WorkItem|relates to"
 msgstr ""
 
-msgid "WorkItem|the following item(s)"
+msgid "WorkItem|the following items"
 msgstr ""
 
 msgid "Workspaces"

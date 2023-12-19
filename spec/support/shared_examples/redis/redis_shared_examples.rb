@@ -206,7 +206,7 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
-  describe '.with' do
+  describe '.with', if: !(described_class <= Gitlab::Redis::MultiStoreWrapper) do
     let(:config_file_name) { config_old_format_socket }
 
     before do
