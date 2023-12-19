@@ -79,6 +79,19 @@ RSpec.describe 'Uploads', 'routing' do
     end
   end
 
+  context 'for organizations' do
+    it 'allows fetching organization avatars' do
+      expect(get('/uploads/-/system/organizations/organization_detail/avatar/1/test.jpg')).to route_to(
+        controller: 'uploads',
+        action: 'show',
+        model: 'organizations/organization_detail',
+        id: '1',
+        filename: 'test.jpg',
+        mounted_as: 'avatar'
+      )
+    end
+  end
+
   it 'does not allow creating uploads for other models' do
     unroutable_models = UploadsController::MODEL_CLASSES.keys.compact - %w[personal_snippet user abuse_report]
 

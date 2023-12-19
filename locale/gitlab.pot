@@ -18066,6 +18066,9 @@ msgstr ""
 msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
+msgid "Drop or %{linkStart}upload%{linkEnd} an avatar."
+msgstr ""
+
 msgid "Drop or %{linkStart}upload%{linkEnd} file to attach"
 msgstr ""
 
@@ -33867,6 +33870,9 @@ msgid "Organization|Organization URL is too short (minimum is 2 characters)."
 msgstr ""
 
 msgid "Organization|Organization URL successfully changed."
+msgstr ""
+
+msgid "Organization|Organization avatar"
 msgstr ""
 
 msgid "Organization|Organization name"
@@ -50808,6 +50814,9 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
+msgid "Todos| What actions create to-do items?"
+msgstr ""
+
 msgid "Todos|Added"
 msgstr ""
 
@@ -50818,9 +50827,6 @@ msgid "Todos|Any Action"
 msgstr ""
 
 msgid "Todos|Any Type"
-msgstr ""
-
-msgid "Todos|Are you looking for things to do? Take a look at %{strongStart}%{openIssuesLinkStart}open issues%{openIssuesLinkEnd}%{strongEnd}, contribute to %{strongStart}%{mergeRequestLinkStart}a merge request%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}, or mention someone in a comment to automatically assign them a new to-do item."
 msgstr ""
 
 msgid "Todos|Assigned"
@@ -50878,6 +50884,9 @@ msgid "Todos|Mentioned"
 msgstr ""
 
 msgid "Todos|Merge request"
+msgstr ""
+
+msgid "Todos|Not sure where to go next? Take a look at your %{strongStart}%{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd}%{strongEnd} or %{strongStart}%{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}."
 msgstr ""
 
 msgid "Todos|Nothing is on your to-do list. Nice work!"

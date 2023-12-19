@@ -23,6 +23,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
     end
   end
 
+  describe '.visible?' do
+    it 'always returns true' do
+      expect(described_class.visible?).to be_truthy
+    end
+  end
+
   describe '.matching?' do
     subject { described_class.matching?(name, config) }
 

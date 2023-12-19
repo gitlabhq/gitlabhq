@@ -61,6 +61,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     it { is_expected.to delegate_method(:description).to(:organization_detail) }
     it { is_expected.to delegate_method(:avatar).to(:organization_detail) }
     it { is_expected.to delegate_method(:avatar_url).to(:organization_detail) }
+    it { is_expected.to delegate_method(:remove_avatar!).to(:organization_detail) }
   end
 
   describe 'nested attributes' do

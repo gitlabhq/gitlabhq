@@ -3,10 +3,12 @@ import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
+import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
   FORM_FIELD_PATH,
+  FORM_FIELD_AVATAR,
   FORM_FIELD_PATH_VALIDATORS,
 } from '../constants';
 import OrganizationUrlField from './organization_url_field.vue';
@@ -18,6 +20,7 @@ export default {
     GlFormFields,
     GlButton,
     OrganizationUrlField,
+    AvatarUploadDropzone,
   },
   i18n: {
     cancel: __('Cancel'),
@@ -36,6 +39,7 @@ export default {
         return {
           [FORM_FIELD_NAME]: '',
           [FORM_FIELD_PATH]: '',
+          [FORM_FIELD_AVATAR]: null,
         };
       },
     },
@@ -43,7 +47,7 @@ export default {
       type: Array,
       required: false,
       default() {
-        return [FORM_FIELD_NAME, FORM_FIELD_PATH];
+        return [FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_AVATAR];
       },
     },
     submitButtonText: {
@@ -98,6 +102,13 @@ export default {
             class: 'gl-w-full',
           },
         },
+        [FORM_FIELD_AVATAR]: {
+          label: s__('Organization|Organization avatar'),
+          groupAttrs: {
+            class: 'gl-w-full',
+            labelSrOnly: true,
+          },
+        },
       };
 
       return Object.entries(fields).reduce((accumulator, [fieldKey, fieldDefinition]) => {
@@ -146,6 +157,14 @@ export default {
           :validation="validation"
           @input="onPathInput($event, input)"
           @blur="blur"
+        />
+      </template>
+      <template #input(avatar)="{ input, value }">
+        <avatar-upload-dropzone
+          :value="value"
+          :entity="formValues"
+          :label="fields.avatar.label"
+          @input="input"
         />
       </template>
     </gl-form-fields>

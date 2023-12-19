@@ -6,28 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container registry API **(FREE ALL)**
 
-> The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
+> - The ability to authenticate with a CI/CD job token [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12 [with a flag](../administration/feature_flags.md) named `ci_job_token_scope`. Disabled by default.
+> - CI/CD job token authentication [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/300821) in GitLab 16.8. Feature flag `ci_job_token_scope` removed.
 
-This API documentation is about the [GitLab container registry](../user/packages/container_registry/index.md).
+Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/index.md).
 
-When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
-from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
-The job token only has access to its own project.
-
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md)
-can opt to enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_job_token_scope)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_job_token_scope)
-```
+You can authenticate with these endpoints from a CI/CD job by passing the [`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)
+variable as the `JOB-TOKEN` header. The job token only has access to the container registry
+of the project that created the pipeline.
 
 ## Change the visibility of the container registry
 

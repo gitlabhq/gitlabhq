@@ -9,119 +9,6 @@
   left: 0;
   right: 0;
   border-radius: 0;
-
-  .close-icon {
-    display: none;
-  }
-
-  .header-content {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    min-height: var(--header-height);
-    padding-left: 0;
-
-    .title {
-      padding-right: 0;
-      color: currentColor;
-      display: flex;
-      position: relative;
-      margin: 0;
-      font-size: 18px;
-      vertical-align: top;
-      white-space: nowrap;
-
-      img {
-        height: 24px;
-
-        + .logo-text {
-          margin-left: 8px;
-        }
-      }
-
-      &.wrap {
-        white-space: normal;
-      }
-
-      &.initializing {
-        opacity: 0;
-      }
-
-      a:not(.canary-badge) {
-        display: flex;
-        align-items: center;
-        padding: 2px 8px;
-        margin: 4px 2px 4px -8px;
-        border-radius: $border-radius-default;
-
-        &:active,
-        &:focus {
-          @include gl-focus($focus-ring: $focus-ring-dark);
-        }
-      }
-    }
-
-    .dropdown.open {
-      > a {
-        border-bottom-color: $white;
-      }
-    }
-  }
-
-  .container-fluid {
-    padding: 0;
-
-    .nav > li {
-      > a {
-        will-change: color;
-        margin: 4px 0;
-        padding: 6px 8px;
-        height: 32px;
-      }
-    }
-  }
-}
-
-.top-bar-container {
-  min-height: $top-bar-height;
-}
-
-.top-bar-fixed {
-  @include gl-inset-border-b-1-gray-100;
-  background-color: $body-bg;
-  left: var(--application-bar-left);
-  position: fixed;
-  right: var(--application-bar-right);
-  top: $calc-application-bars-height;
-  width: auto;
-  z-index: $top-bar-z-index;
-
-  @media (prefers-reduced-motion: no-preference) {
-    transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
-  }
-}
-
-.breadcrumbs {
-  flex: 1;
-  min-width: 0;
-  align-self: center;
-  color: $gl-text-color-secondary;
-
-  .avatar-tile {
-    margin-right: 4px;
-    border: 1px solid $border-color;
-    border-radius: 50%;
-    vertical-align: sub;
-  }
-}
-
-.breadcrumb-item-text {
-  text-decoration: inherit;
-
-  @include media-breakpoint-down(xs) {
-    @include str-truncated(128px);
-  }
 }
 
 .navbar-empty {
@@ -171,17 +58,6 @@
   }
 
   @include media-breakpoint-down(xs) { margin-right: 3px; }
-}
-
-.top-nav-menu-item {
-  &.active,
-  &:hover {
-    background-color: $nav-active-bg !important;
-  }
-
-  .gl-icon {
-    color: inherit !important;
-  }
 }
 
 .header-logged-out {

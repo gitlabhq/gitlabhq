@@ -3,7 +3,11 @@ import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
-import { FORM_FIELD_NAME, FORM_FIELD_ID } from '~/organizations/shared/constants';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_ID,
+  FORM_FIELD_AVATAR,
+} from '~/organizations/shared/constants';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
@@ -25,7 +29,7 @@ export default {
     ),
     successMessage: s__('Organization|Organization was successfully updated.'),
   },
-  fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID],
+  fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_AVATAR],
   data() {
     return {
       loading: false,
@@ -33,9 +37,24 @@ export default {
     };
   },
   methods: {
+    avatarInput(formValues) {
+      // Organization has an avatar and it is been explicitly removed.
+      if (this.organization.avatar && formValues.avatar === null) {
+        return { avatar: null };
+      }
+
+      // Avatar has been set or changed.
+      if (formValues.avatar instanceof File) {
+        return { avatar: formValues.avatar };
+      }
+
+      // Avatar has not been changed at all, do not include the `avatar` key in input.
+      return {};
+    },
     async onSubmit(formValues) {
       this.errors = [];
       this.loading = true;
+
       try {
         const {
           data: {
@@ -47,7 +66,11 @@ export default {
             input: {
               id: convertToGraphQLId(TYPE_ORGANIZATION, this.organization.id),
               name: formValues.name,
+              ...this.avatarInput(formValues),
             },
+          },
+          context: {
+            hasUpload: formValues.avatar instanceof File,
           },
         });
 

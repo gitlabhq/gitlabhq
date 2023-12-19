@@ -27,7 +27,7 @@ module Sidebars
         override :serialize_as_menu_item_args
         def serialize_as_menu_item_args
           super.merge({
-            avatar: nil,
+            avatar: context.container.avatar_url(size: 48),
             entity_id: context.container.id,
             super_sidebar_parent: ::Sidebars::StaticMenu,
             item_id: :organization_overview

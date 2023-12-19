@@ -58,7 +58,7 @@ namespace. Code Owners is an EE-only feature, so the files only exist in the `./
 ### `ProtectedBranch`
 
 The `ProtectedBranch` model is defined in `app/models/protected_branch.rb` and
-extended in `ee/app/ee/models/protected_branch.rb`. The EE version includes a column
+extended in `ee/app/models/concerns/ee/protected_branch.rb`. The EE version includes a column
 named `require_code_owner_approval` which prevents changes from being pushed directly
 to the branch being protected if the file is listed in `CODEOWNERS`.
 

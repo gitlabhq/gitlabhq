@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 export const FORM_FIELD_NAME = 'name';
 export const FORM_FIELD_ID = 'id';
 export const FORM_FIELD_PATH = 'path';
+export const FORM_FIELD_AVATAR = 'avatar';
 
 export const FORM_FIELD_PATH_VALIDATORS = [
   formValidators.required(s__('Organization|Organization URL is required.')),

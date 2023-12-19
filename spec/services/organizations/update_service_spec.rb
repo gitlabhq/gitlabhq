@@ -60,6 +60,14 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
         it_behaves_like 'updating an organization'
       end
 
+      context 'when avatar is set to nil' do
+        let_it_be(:organization_detail) { create(:organization_detail, organization: organization) }
+        let(:extra_params) { { avatar: nil } }
+        let(:description) { organization_detail.description }
+
+        it_behaves_like 'updating an organization'
+      end
+
       include_examples 'updating an organization'
 
       context 'when the organization is not updated' do

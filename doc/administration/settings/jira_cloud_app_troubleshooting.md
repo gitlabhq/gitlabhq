@@ -10,7 +10,7 @@ When administering the GitLab for Jira Cloud app for self-managed instances, you
 
 For GitLab.com, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
 
-## Browser displays a sign-in message when already signed in
+## Sign-in message displayed when already signed in
 
 You might get the following message prompting you to sign in to GitLab.com
 when you're already signed in:
@@ -26,7 +26,8 @@ To resolve this issue, set up [OAuth authentication](jira_cloud_app.md#set-up-oa
 
 ## Manual installation fails
 
-You might see one of the following errors if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with [manual installation](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
+You might get one of the following errors if you've installed the GitLab for Jira Cloud app
+from the official marketplace listing and replaced it with [manual installation](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
 
 ```plaintext
 The app "gitlab-jira-connect-gitlab.com" could not be installed as a local app as it has previously been installed from Atlassian Marketplace
@@ -51,7 +52,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
 
-## Data sync fails with `Invalid JWT` error
+## Data sync fails with `Invalid JWT`
 
 If the GitLab for Jira Cloud app continuously fails to sync data, it may be due to an outdated secret token. Atlassian can send new secret tokens that must be processed and stored by GitLab.
 If GitLab fails to store the token or misses the new token request, an `Invalid JWT` error occurs.
@@ -111,7 +112,8 @@ tools while reproducing the `Failed to update the GitLab instance` error to see 
 
 You should see a `GET` request to `https://gitlab.com/-/jira_connect/installations`.
 
-This request should return a `200` status code, but it can return a `422` status code if there was a problem. The response body can be checked for the error.
+This request should return a `200 OK`, but it might return a `422 Unprocessable Entity` if there was a problem.
+You can check the response body for the error.
 
 If you cannot resolve the problem and you are a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance. Provide
 GitLab Support with:
@@ -123,7 +125,7 @@ GitLab Support with:
 
 The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
 
-#### Process for GitLab Support
+#### GitLab Support
 
 NOTE:
 These steps can only be completed by GitLab Support.
@@ -163,6 +165,6 @@ When you check the browser console, you might see the following message:
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
 ```
 
-`403` status code is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
 To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain [requirements](jira_cloud_app.md#jira-user-requirements).

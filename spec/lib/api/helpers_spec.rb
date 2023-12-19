@@ -674,23 +674,15 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
     let(:send_authorized_project_scope) { helper.authorized_project_scope?(project) }
 
-    where(:job_token_authentication, :route_setting, :feature_flag, :same_job_project, :expected_result) do
-      false | false | false | false | true
-      false | false | false | true  | true
-      false | false | true  | false | true
-      false | false | true  | true  | true
-      false | true  | false | false | true
-      false | true  | false | true  | true
-      false | true  | true  | false | true
-      false | true  | true  | true  | true
-      true  | false | false | false | true
-      true  | false | false | true  | true
-      true  | false | true  | false | true
-      true  | false | true  | true  | true
-      true  | true  | false | false | false
-      true  | true  | false | true  | false
-      true  | true  | true  | false | false
-      true  | true  | true  | true  | true
+    where(:job_token_authentication, :route_setting, :same_job_project, :expected_result) do
+      false | false | false | true
+      false | false | true  | true
+      false | true  | false | true
+      false | true  | true  | true
+      true  | false | false | true
+      true  | false | true  | true
+      true  | true  | false | false
+      true  | true  | true  | true
     end
 
     with_them do
@@ -699,9 +691,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
         allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
         allow(helper).to receive(:current_authenticated_job).and_return(job)
         allow(job).to receive(:project).and_return(same_job_project ? project : other_project)
-
-        stub_feature_flags(ci_job_token_scope: false)
-        stub_feature_flags(ci_job_token_scope: project) if feature_flag
       end
 
       it 'returns the expected result' do

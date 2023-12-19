@@ -806,28 +806,6 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .navbar-gitlab {
-    li.dropdown {
-      position: static;
-    }
-  }
-
-  header.navbar-gitlab .dropdown {
-    .dropdown-menu {
-      width: 100%;
-      min-width: 100%;
-    }
-  }
-
-  header.navbar-gitlab-new .header-content .dropdown {
-    .dropdown-menu {
-      left: 0;
-      min-width: 100%;
-    }
-  }
-}
-
 .dropdown-content-faded-mask {
   position: relative;
 

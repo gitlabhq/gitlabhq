@@ -14,7 +14,4 @@ variables:
   QA_RUN_ALL_TESTS: "true"
   # Used by gitlab-qa to set up a volume for `${CI_PROJECT_DIR}/qa/rspec:/home/gitlab/qa/rspec/`
   QA_RSPEC_REPORT_PATH: "${CI_PROJECT_DIR}/qa/rspec"
-  RSPEC_FAST_QUARANTINE_FILE: "fast_quarantine-gitlab.txt"
-  # This path is relative to /home/gitlab/qa/ in the QA container
-  RSPEC_FAST_QUARANTINE_PATH: "rspec/${RSPEC_FAST_QUARANTINE_FILE}"
   QA_OMNIBUS_MR_TESTS: "only-smoke-reliable"

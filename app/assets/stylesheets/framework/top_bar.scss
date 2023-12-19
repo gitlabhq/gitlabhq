@@ -1,0 +1,18 @@
+.top-bar-container {
+  min-height: $top-bar-height;
+}
+
+.top-bar-fixed {
+  @include gl-inset-border-b-1-gray-100;
+  background-color: $body-bg;
+  left: var(--application-bar-left);
+  position: fixed;
+  right: var(--application-bar-right);
+  top: $calc-application-bars-height;
+  width: auto;
+  z-index: $top-bar-z-index;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
+  }
+}

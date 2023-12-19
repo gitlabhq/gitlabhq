@@ -6,7 +6,7 @@ module Integrations
       GLGO_BASE_URL = if Gitlab.staging?
                         'https://glgo.staging.runway.gitlab.net'
                       else
-                        'http://glgo.runway.gitlab.net/'
+                        'https://glgo.runway.gitlab.net'
                       end
 
       def initialize(project:, user:)

@@ -119,7 +119,11 @@ export default {
           },
         ) {
           if (mergeRequestMergeStatusUpdated) {
-            this.state = mergeRequestMergeStatusUpdated;
+            this.state = {
+              ...mergeRequestMergeStatusUpdated,
+              mergeRequestsFfOnlyEnabled: this.state.mergeRequestsFfOnlyEnabled,
+              onlyAllowMergeIfPipelineSucceeds: this.state.onlyAllowMergeIfPipelineSucceeds,
+            };
 
             if (!this.commitMessageIsTouched) {
               this.commitMessage = mergeRequestMergeStatusUpdated.defaultMergeCommitMessage;

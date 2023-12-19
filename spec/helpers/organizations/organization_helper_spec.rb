@@ -31,13 +31,18 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     end
 
     it 'returns expected json' do
+      expect(organization).to receive(:avatar_url).with(size: 128).and_return('avatar.jpg')
       expect(
         Gitlab::Json.parse(
           helper.organization_show_app_data(organization)
         )
       ).to eq(
         {
-          'organization' => { 'id' => organization.id, 'name' => organization.name },
+          'organization' => {
+            'id' => organization.id,
+            'name' => organization.name,
+            'avatar_url' => 'avatar.jpg'
+          },
           'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
@@ -107,12 +112,14 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
 
   describe '#organization_settings_general_app_data' do
     it 'returns expected json' do
+      expect(organization).to receive(:avatar_url).with(size: 192).and_return('avatar.jpg')
       expect(Gitlab::Json.parse(helper.organization_settings_general_app_data(organization))).to eq(
         {
           'organization' => {
             'id' => organization.id,
             'name' => organization.name,
-            'path' => organization.path
+            'path' => organization.path,
+            'avatar' => 'avatar.jpg'
           },
           'organizations_path' => organizations_path,
           'root_url' => root_url

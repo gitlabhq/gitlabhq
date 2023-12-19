@@ -19,6 +19,23 @@ module ContainerRegistry
       validates :repository_path_pattern, presence: true, uniqueness: { scope: :project_id }, length: { maximum: 255 }
       validates :delete_protected_up_to_access_level, presence: true
       validates :push_protected_up_to_access_level, presence: true
+
+      scope :for_repository_path, ->(repository_path) do
+        return none if repository_path.blank?
+
+        where(
+          ":repository_path ILIKE #{::Gitlab::SQL::Glob.to_like('repository_path_pattern')}",
+          repository_path: repository_path
+        )
+      end
+
+      def self.for_push_exists?(access_level:, repository_path:)
+        return false if access_level.blank? || repository_path.blank?
+
+        where(push_protected_up_to_access_level: access_level..)
+          .for_repository_path(repository_path)
+          .exists?
+      end
     end
   end
 end

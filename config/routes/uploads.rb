@@ -4,7 +4,10 @@ scope path: :uploads do
   # Note attachments and User/Group/Project/Topic avatars
   get "-/system/:model/:mounted_as/:id/:filename",
     to: "uploads#show",
-    constraints: { model: %r{note|user|group|project|projects\/topic|achievements\/achievement}, mounted_as: /avatar|attachment/, filename: %r{[^/]+} }
+    constraints: {
+      model: %r{note|user|group|project|projects\/topic|achievements\/achievement|organizations\/organization_detail},
+      mounted_as: /avatar|attachment/, filename: %r{[^/]+}
+    }
 
   # show uploads for models, snippets (notes) available for now
   get '-/system/:model/:id/:secret/:filename',

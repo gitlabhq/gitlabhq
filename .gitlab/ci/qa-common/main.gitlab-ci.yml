@@ -69,11 +69,6 @@ stages:
     QA_INTERCEPT_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-  before_script:
-    - !reference [.qa-base, before_script]
-    # Prepend the file paths with the absolute path from inside the container since the files will be read from there
-    - export RSPEC_FAST_QUARANTINE_PATH="/home/gitlab/qa/${RSPEC_FAST_QUARANTINE_PATH}"
-    - export RSPEC_SKIPPED_TESTS_REPORT_PATH="/home/gitlab/qa/rspec/skipped_tests-${CI_JOB_ID}.txt"
   # Allow QA jobs to fail as they are flaky. The top level `package-and-e2e:ee`
   # pipeline is not allowed to fail, so without allowing QA to fail, we will be
   # blocking merges due to flaky tests.
@@ -96,26 +91,6 @@ stages:
   artifacts:
     paths:
       - qa/knapsack/*.json
-    expire_in: 1 day
-
-.download-fast-quarantine-report:
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
-  stage: .pre
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    - apk add --no-cache --update curl bash
-  script:
-    - mkdir -p "${QA_RSPEC_REPORT_PATH}"
-    - |
-      if [[ ! -f "${QA_RSPEC_REPORT_PATH}/${RSPEC_FAST_QUARANTINE_FILE}" ]]; then
-        curl --location -o "${QA_RSPEC_REPORT_PATH}/${RSPEC_FAST_QUARANTINE_FILE}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
-          echo "" > "${QA_RSPEC_REPORT_PATH}/${RSPEC_FAST_QUARANTINE_FILE}"
-      fi
-  allow_failure: true
-  artifacts:
-    paths:
-      - "${QA_RSPEC_REPORT_PATH}/${RSPEC_FAST_QUARANTINE_FILE}"
     expire_in: 1 day
 
 .upload-knapsack-report:

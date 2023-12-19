@@ -4,7 +4,7 @@ module Organizations
   module OrganizationHelper
     def organization_show_app_data(organization)
       {
-        organization: organization.slice(:id, :name),
+        organization: organization.slice(:id, :name).merge({ avatar_url: organization.avatar_url(size: 128) }),
         groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
         # TODO: Update counts to use real data
         # https://gitlab.com/gitlab-org/gitlab/-/issues/424531
@@ -25,7 +25,7 @@ module Organizations
 
     def organization_settings_general_app_data(organization)
       {
-        organization: organization.slice(:id, :name, :path),
+        organization: organization.slice(:id, :name, :path).merge({ avatar: organization.avatar_url(size: 192) }),
         organizations_path: organizations_path,
         root_url: root_url
       }.to_json

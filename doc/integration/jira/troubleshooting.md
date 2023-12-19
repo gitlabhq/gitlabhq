@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting Jira issue integration **(FREE ALL)**
 
-This page contains a list of common issues you might encounter when working with the [Jira issue integration](configure.md).
+When working with the [Jira issue integration](configure.md), you might encounter the following issues.
 
 ## GitLab cannot link to a Jira issue
 
@@ -122,7 +122,7 @@ To resolve this issue, see
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-### Change all projects on the instance
+### Change all projects on an instance
 
 To change all Jira projects to use instance-level integration settings:
 
@@ -189,7 +189,7 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
   end
   ```
 
-## Update the Jira issue integration password for all projects
+## Update the integration password for all projects
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.

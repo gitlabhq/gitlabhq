@@ -858,6 +858,42 @@ describe('ReadyToMerge', () => {
     });
   });
 
+  describe('only allow merge if pipeline succeeds', () => {
+    beforeEach(() => {
+      const response = JSON.parse(JSON.stringify(readyToMergeResponse));
+      response.data.project.onlyAllowMergeIfPipelineSucceeds = true;
+      response.data.project.mergeRequest.headPipeline = {
+        id: 1,
+        active: true,
+        status: '',
+        path: '',
+      };
+
+      readyToMergeResponseSpy = jest.fn().mockResolvedValueOnce(response);
+    });
+
+    it('hides merge immediately dropdown when subscription returns', async () => {
+      createComponent({ mr: { id: 1 } });
+
+      await waitForPromises();
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+
+      mockedSubscription.next({
+        data: {
+          mergeRequestMergeStatusUpdated: {
+            ...readyToMergeResponse.data.project.mergeRequest,
+            headPipeline: { id: 1, active: true, status: '', path: '' },
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+    });
+  });
+
   describe('commit message', () => {
     it('updates commit message from subscription', async () => {
       createComponent({ mr: { id: 1 } });

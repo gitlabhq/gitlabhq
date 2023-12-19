@@ -184,8 +184,7 @@ module API
       return true unless job_token_authentication?
       return true unless route_authentication_setting[:job_token_scope] == :project
 
-      ::Feature.enabled?(:ci_job_token_scope, project) &&
-        current_authenticated_job.project == project
+      current_authenticated_job.project == project
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

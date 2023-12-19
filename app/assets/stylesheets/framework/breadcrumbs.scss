@@ -1,0 +1,21 @@
+.breadcrumbs {
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+  color: $gl-text-color-secondary;
+
+  .avatar-tile {
+    margin-right: 4px;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    vertical-align: sub;
+  }
+}
+
+.breadcrumb-item-text {
+  text-decoration: inherit;
+
+  @include media-breakpoint-down(xs) {
+    @include str-truncated(128px);
+  }
+}

@@ -101,6 +101,15 @@ NOTE:
 The Max role does not elevate the privileges of users.
 For example, if a group member has the role of Developer, and the group is invited to a project with a Max role of Maintainer, the member's role is not elevated to Maintainer.
 
+### Which roles you can assign
+
+In GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/233408) and later, the maximum role you can assign depends on whether you have the Owner or Maintainer role for the project. The maximum role you can set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role for the project.
+
+In GitLab 16.6 and earlier, the maximum role you can assign to an invited group is Maintainer (`40`).
+
 ### View the member's Max role
 
 To view the maximum role assigned to a member:

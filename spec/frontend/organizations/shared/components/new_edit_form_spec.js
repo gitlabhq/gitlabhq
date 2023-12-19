@@ -3,7 +3,13 @@ import { nextTick } from 'vue';
 
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
-import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '~/organizations/shared/constants';
+import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_ID,
+  FORM_FIELD_PATH,
+  FORM_FIELD_AVATAR,
+} from '~/organizations/shared/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('NewEditForm', () => {
@@ -32,6 +38,7 @@ describe('NewEditForm', () => {
   const findNameField = () => wrapper.findByLabelText('Organization name');
   const findIdField = () => wrapper.findByLabelText('Organization ID');
   const findUrlField = () => wrapper.findComponent(OrganizationUrlField);
+  const findAvatarField = () => wrapper.findComponent(AvatarUploadDropzone);
 
   const setUrlFieldValue = async (value) => {
     findUrlField().vm.$emit('input', value);
@@ -51,6 +58,32 @@ describe('NewEditForm', () => {
     createComponent();
 
     expect(findUrlField().exists()).toBe(true);
+  });
+
+  it('renders `Organization avatar` field', () => {
+    createComponent();
+
+    expect(findAvatarField().props()).toMatchObject({
+      value: null,
+      entity: { [FORM_FIELD_NAME]: '', [FORM_FIELD_PATH]: '', [FORM_FIELD_AVATAR]: null },
+      label: 'Organization avatar',
+    });
+  });
+
+  describe('when `Organization avatar` field is changed', () => {
+    const file = new File(['foo'], 'foo.jpg', {
+      type: 'text/plain',
+    });
+
+    beforeEach(() => {
+      window.URL.revokeObjectURL = jest.fn();
+      createComponent();
+      findAvatarField().vm.$emit('input', file);
+    });
+
+    it('updates `value` prop', () => {
+      expect(findAvatarField().props('value')).toEqual(file);
+    });
   });
 
   it('requires `Organization URL` field to be a minimum of two characters', async () => {
@@ -125,7 +158,9 @@ describe('NewEditForm', () => {
     });
 
     it('emits `submit` event with form values', () => {
-      expect(wrapper.emitted('submit')).toEqual([[{ name: 'Foo bar', path: 'foo-bar' }]]);
+      expect(wrapper.emitted('submit')).toEqual([
+        [{ name: 'Foo bar', path: 'foo-bar', avatar: null }],
+      ]);
     });
   });
 

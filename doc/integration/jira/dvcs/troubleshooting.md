@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting Jira DVCS connector **(FREE ALL)**
 
-Refer to the items in this section if you're having problems with your Jira DVCS connector.
+When working with the [Jira DVCS connector](index.md), you might encounter the following issues.
 
-## Jira cannot access GitLab server
+## Jira cannot access the GitLab server
 
 If you complete the **Add New Account** form, authorize access, and you receive
 this error, Jira and GitLab cannot connect. No other error messages
@@ -68,7 +68,7 @@ The message `Successfully connected` indicates a successful TLS handshake.
 If there are problems, the Java TLS library generates errors that you can
 look up for more detail.
 
-## Scope error when connecting to Jira using DVCS
+## Scope error when connecting to Jira with DVCS
 
 ```plaintext
 The requested scope is invalid, unknown, or malformed.
@@ -83,7 +83,7 @@ Potential resolutions:
    [GitLab account configuration](index.md#create-a-gitlab-application-for-dvcs). Review
    the **Scopes** field and ensure the `api` checkbox is selected.
 
-## Jira error adding account and no repositories listed
+## Error when adding an account in Jira
 
 After you complete the **Add New Account** form in Jira and authorize access, you might
 encounter these issues:
@@ -100,13 +100,13 @@ To resolve this issue:
 
 [Contact GitLab Support](https://about.gitlab.com/support/) if none of these reasons apply.
 
-## `410 : Gone` error when connecting to Jira
+## `410 Gone` when connecting to Jira
 
-When you connect to Jira and synchronize repositories, you may receive a `410 : Gone` error.
+When you connect to Jira and synchronize repositories, you might get a `410 Gone` error.
 
 This issue occurs when you use the Jira DVCS connector and your integration is configured to use **GitHub Enterprise**.
 
-For more information and possible fixes, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340160).
+For more information, see [issue 340160](https://gitlab.com/gitlab-org/gitlab/-/issues/340160).
 
 ## Synchronization issues
 
@@ -123,7 +123,7 @@ resynchronize the information:
 For more information, see the
 [Atlassian documentation](https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-development-tools/).
 
-## `Sync Failed` error when refreshing repository data
+## `Sync Failed` when refreshing repository data
 
 If you get a `Sync Failed` error in Jira when [refreshing repository data](index.md#refresh-data-imported-to-jira) for specific projects, check your Jira DVCS connector logs. Look for errors that occur when executing requests to API resources in GitLab. For example:
 
@@ -132,8 +132,8 @@ Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests
 {"message":"403 Forbidden"}
 ```
 
-If you find a `{"message":"403 Forbidden"}` error, it is possible that this specific project has some [GitLab features disabled](../../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
-In the example above, the merge requests feature is disabled.
+If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
+In the previous example, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:
 

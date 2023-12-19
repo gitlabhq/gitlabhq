@@ -776,6 +776,45 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when viewing an organization avatar' do
+      let(:organization_detail) { create(:organization_detail) }
+      let(:organization) { organization_detail.organization }
+
+      subject(:request) do
+        get(
+          :show,
+          params: {
+            model: 'organizations/organization_detail',
+            mounted_as: 'avatar',
+            id: organization.id,
+            filename: 'dk.png'
+          }
+        )
+      end
+
+      context 'when signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it 'responds with status 200' do
+          request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'content publicly cached'
+      end
+
+      context 'when not signed in' do
+        it 'responds with status 200' do
+          request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'content publicly cached'
+      end
+    end
   end
 
   def post_authorize(verified: true)

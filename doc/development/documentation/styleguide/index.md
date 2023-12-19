@@ -1237,8 +1237,7 @@ and annoying for users.
 If you're describing a complicated interaction in the user interface and want to
 include a visual representation to help readers understand it, you can:
 
-- Use a static image (screenshot) and if necessary, add callouts to emphasize an
-  an area of the screen.
+- Use a static image (screenshot) and if necessary, add callouts to emphasize an area of the screen.
 - Create a short video of the interaction and link to it.
 
 ### Automatic screenshot generator

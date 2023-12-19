@@ -33,11 +33,11 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
         sign_in(user)
       end
 
-      it 'shows "Are you looking for things to do?" message' do
+      it 'shows "Not sure where to go next?" message' do
         create(:todo, :assigned, :done, user: user, project: project, target: issue, author: user2)
         visit dashboard_todos_path
 
-        expect(page).to have_content 'Are you looking for things to do? Take a look at open issues, contribute to a merge request, or mention someone in a comment to automatically assign them a new to-do item.'
+        expect(page).to have_content 'Not sure where to go next? Take a look at your assigned issues or merge requests.'
       end
     end
   end
