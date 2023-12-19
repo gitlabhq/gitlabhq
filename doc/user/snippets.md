@@ -232,7 +232,7 @@ Prerequisites:
 To do this task:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Snippets**.
+1. Select **Code > Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.
 

@@ -60,7 +60,7 @@ To trigger a pipeline schedule manually, so that it runs immediately instead of
 the next scheduled time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipeline schedules**.
+1. Select **Build > Pipeline schedules**.
 1. On the right of the list, for
    the pipeline you want to run, select **Play** (**{play}**).
 
@@ -79,7 +79,7 @@ including [protected environments](../environments/protected_environments.md) an
 To take ownership of a pipeline created by a different user:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipeline schedules**.
+1. Select **Build > Pipeline schedules**.
 1. On the right of the list, for
    the pipeline you want to become owner of, select **Take ownership**.
 

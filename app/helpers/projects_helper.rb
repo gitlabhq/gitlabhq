@@ -88,7 +88,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: inject_classes, data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
+      link_to(author_html, user_path(author), class: inject_classes, title: title, data: { container: 'body' }).html_safe
     end
   end
 

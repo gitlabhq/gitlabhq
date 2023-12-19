@@ -3,10 +3,11 @@ import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab
 import { kebabCase, snakeCase } from 'lodash';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
 import {
   dropdowni18nText,
   LocalizedIssuableAttributeType,
@@ -79,6 +80,21 @@ export default {
       required: false,
       default: undefined,
     },
+    showWorkItemEpics: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isEpicAttribute: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    issuableParent: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     issuable: {
@@ -98,7 +114,7 @@ export default {
         return data.workspace?.issuable || {};
       },
       result({ data }) {
-        if (this.glFeatures?.epicWidgetEditConfirmation && this.isEpic) {
+        if (this.glFeatures?.epicWidgetEditConfirmation && this.isEpicAttribute) {
           this.hasCurrentAttribute = data?.workspace?.issuable.hasEpic;
         }
       },
@@ -140,6 +156,9 @@ export default {
   },
   computed: {
     currentAttribute() {
+      if (this.isEpicAttribute && this.issuableParent?.attribute) {
+        return this.issuableParent.attribute;
+      }
       return this.issuable.attribute;
     },
     issuableId() {
@@ -171,10 +190,6 @@ export default {
         LocalizedIssuableAttributeType[IssuableAttributeTypeKeyMap[this.issuableAttribute]];
       return dropdowni18nText(localizedAttribute, this.issuableType);
     },
-    isEpic() {
-      // MV to EE https://gitlab.com/gitlab-org/gitlab/-/issues/345311
-      return this.issuableAttribute === TYPE_EPIC;
-    },
     formatIssuableAttribute() {
       return {
         kebab: kebabCase(this.issuableAttribute),
@@ -186,7 +201,7 @@ export default {
         return false;
       }
 
-      return this.isEpic && this.currentAttribute === null && this.hasCurrentAttribute
+      return this.isEpicAttribute && this.currentAttribute === null && this.hasCurrentAttribute
         ? !this.editConfirmation
         : false;
     },
@@ -195,46 +210,50 @@ export default {
     },
   },
   methods: {
-    updateAttribute({ id }) {
+    updateAttribute({ id, workItemType }) {
       if (this.currentAttribute === null && id === null) return;
       if (id === this.currentAttribute?.id) return;
 
-      this.updating = true;
+      if (this.showWorkItemEpics && this.isEpicAttribute) {
+        this.$emit('updateAttribute', { id, workItemType });
+      } else {
+        this.updating = true;
 
-      const { current } = this.issuableAttributeQuery;
-      const { mutation } = current[this.issuableType];
+        const { current } = this.issuableAttributeQuery;
+        const { mutation } = current[this.issuableType];
 
-      this.$apollo
-        .mutate({
-          mutation,
-          variables: {
-            fullPath: this.workspacePath,
-            attributeId:
-              this.issuableAttribute === IssuableAttributeType.Milestone &&
-              this.issuableType === TYPE_ISSUE
-                ? getIdFromGraphQLId(id)
-                : id,
-            iid: this.iid,
-          },
-        })
-        .then(({ data }) => {
-          if (data.issuableSetAttribute?.errors?.length) {
-            createAlert({
-              message: data.issuableSetAttribute.errors[0],
-              captureError: true,
-              error: data.issuableSetAttribute.errors[0],
-            });
-          } else {
-            this.$emit('attribute-updated', data);
-          }
-        })
-        .catch((error) => {
-          createAlert({ message: this.i18n.updateError, captureError: true, error });
-        })
-        .finally(() => {
-          this.updating = false;
-          this.selectedTitle = null;
-        });
+        this.$apollo
+          .mutate({
+            mutation,
+            variables: {
+              fullPath: this.workspacePath,
+              attributeId:
+                this.issuableAttribute === IssuableAttributeType.Milestone &&
+                this.issuableType === TYPE_ISSUE
+                  ? getIdFromGraphQLId(id)
+                  : id,
+              iid: this.iid,
+            },
+          })
+          .then(({ data }) => {
+            if (data.issuableSetAttribute?.errors?.length) {
+              createAlert({
+                message: data.issuableSetAttribute.errors[0],
+                captureError: true,
+                error: data.issuableSetAttribute.errors[0],
+              });
+            } else {
+              this.$emit('attribute-updated', data);
+            }
+          })
+          .catch((error) => {
+            createAlert({ message: this.i18n.updateError, captureError: true, error });
+          })
+          .finally(() => {
+            this.updating = false;
+            this.selectedTitle = null;
+          });
+      }
     },
     isAttributeOverdue(attribute) {
       return this.issuableAttribute === IssuableAttributeType.Milestone
@@ -356,6 +375,7 @@ export default {
         :current-attribute="currentAttribute"
         :issuable-attribute="issuableAttribute"
         :issuable-type="issuableType"
+        :show-work-item-epics="showWorkItemEpics"
         @change="updateAttribute"
       >
         <template #list="{ attributesList, isAttributeChecked, updateAttribute: update }">

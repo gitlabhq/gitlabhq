@@ -1274,6 +1274,9 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
 
+NOTE:
+This API does not require the `Gitlab-Shell-Api-Request` header.
+
 ### Get a list of SCIM provisioned users
 
 This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
@@ -1518,6 +1521,9 @@ This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SC
 - Is not an internal API.
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
+
+NOTE:
+This API does not require the `Gitlab-Shell-Api-Request` header.
 
 ### Get a list of SCIM provisioned users
 

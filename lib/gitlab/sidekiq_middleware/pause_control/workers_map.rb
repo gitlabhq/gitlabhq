@@ -17,7 +17,8 @@ module Gitlab
           def strategy_for(worker:)
             return unless @workers
 
-            @workers.find { |_, v| v.include?(worker) }&.first
+            worker_class = worker.is_a?(Class) ? worker : worker.class
+            @workers.find { |_, v| v.include?(worker_class) }&.first
           end
         end
       end

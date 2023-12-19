@@ -20,7 +20,7 @@
           .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-vertical-align-top', no_flip: 'true' } }
         - if can_create_subgroups
           .gl-sm-w-auto.gl-w-full
-            = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { qa_selector: 'new_subgroup_button' }, class: 'gl-sm-w-auto gl-w-full'}) do
+            = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { testid: 'new-subgroup-button' }, class: 'gl-sm-w-auto gl-w-full'}) do
               = _("New subgroup")
 
         - if can_create_projects

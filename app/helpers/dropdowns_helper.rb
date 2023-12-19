@@ -22,7 +22,7 @@ module DropdownsHelper
       end
 
       content_tag_options = { class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}" }
-      content_tag_options[:data] = options[:dropdown_qa_selector] ? { qa_selector: (options[:dropdown_qa_selector]).to_s } : {}
+      content_tag_options[:data] ||= {}
       content_tag_options[:data][:testid] = (options[:dropdown_testid]).to_s if options[:dropdown_testid]
 
       dropdown_output << content_tag(:div, content_tag_options) do

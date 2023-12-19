@@ -9,4 +9,4 @@
   = f.gitlab_ui_checkbox_component :lfs_enabled,
       _('Projects in this group can use Git LFS'),
       help_text: _('Possible to override in each project.'),
-      checkbox_options: { checked: @group.lfs_enabled?, data: { qa_selector: 'lfs_checkbox' } }
+      checkbox_options: { checked: @group.lfs_enabled?, data: { testid: 'lfs-checkbox' } }

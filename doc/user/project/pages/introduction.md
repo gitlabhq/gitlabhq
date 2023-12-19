@@ -65,7 +65,7 @@ You can configure redirects for your site using a `_redirects` file. For more in
 To remove your pages:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Deploy > Pages**.
+1. Select **Deploy > Pages**.
 1. Select **Remove pages**.
 
 ## Subdomains of subdomains
@@ -100,7 +100,7 @@ By default, every project in a group shares the same domain, for example, `group
 To ensure your project uses a unique Pages domain, enable the unique domains feature for the project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Deploy > Pages**.
+1. Select **Deploy > Pages**.
 1. Select the **Use unique domain** checkbox.
 1. Select **Save changes**.
 

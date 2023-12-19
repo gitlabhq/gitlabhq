@@ -641,6 +641,11 @@ indicate that additional Sidekiq processes would be beneficial.
 Consider [adding additional Sidekiq processes](extra_sidekiq_processes.md)
 to compensate for removing the `sidekiq-cluster` service.
 
+## CPU saturation in Redis caused by Sidekiq BRPOP calls
+
+Sidekiq `BROP` calls can cause CPU usage to increase on Redis.
+Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
+
 ## Related topics
 
 - [Elasticsearch workers overload Sidekiq](../../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-workers-overload-sidekiq).

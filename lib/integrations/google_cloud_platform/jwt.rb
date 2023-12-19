@@ -70,12 +70,18 @@ module Integrations
 
       override :issuer
       def issuer
-        Settings.gitlab.host
+        Feature.enabled?(:oidc_issuer_url) ? Gitlab.config.gitlab.url : Settings.gitlab.base_url
       end
 
       override :audience
       def audience
         @claims[:audience]
+      end
+
+      override :kid
+      def kid
+        rsa_key = OpenSSL::PKey::RSA.new(key_data)
+        rsa_key.public_key.to_jwk[:kid]
       end
     end
   end

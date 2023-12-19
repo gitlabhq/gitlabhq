@@ -16,6 +16,7 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { setError } from '../graphql/cache_updates';
 
 export default {
@@ -39,6 +40,7 @@ export default {
     SidebarWeightWidget: () =>
       import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     multipleAssigneesFeatureAvailable: {
       default: false,
@@ -143,6 +145,17 @@ export default {
       const { referencePath = '' } = this.activeBoardIssuable;
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
+    showWorkItemEpics() {
+      return this.glFeatures.displayWorkItemEpicIssueSidebar;
+    },
+    showEpicSidebarDropdownWidget() {
+      return this.epicFeatureAvailable && !this.isIncidentSidebar && this.activeBoardIssuable.id;
+    },
+    showIterationSidebarDropdownWidget() {
+      return (
+        this.iterationFeatureAvailable && !this.isIncidentSidebar && this.activeBoardIssuable.id
+      );
+    },
   },
   methods: {
     handleClose() {
@@ -189,29 +202,34 @@ export default {
           :editable="canUpdate"
         />
         <sidebar-dropdown-widget
-          v-if="epicFeatureAvailable && !isIncidentSidebar"
+          v-if="showEpicSidebarDropdownWidget"
           :key="`epic-${activeBoardIssuable.iid}`"
           :iid="activeBoardIssuable.iid"
           issuable-attribute="epic"
           :workspace-path="projectPathForActiveIssue"
           :attr-workspace-path="groupPathForActiveIssue"
           :issuable-type="issuableType"
+          :issue-id="activeBoardIssuable.id"
+          :show-work-item-epics="showWorkItemEpics"
           data-testid="sidebar-epic"
         />
         <div>
           <sidebar-dropdown-widget
+            v-if="activeBoardIssuable.id"
             :key="`milestone-${activeBoardIssuable.iid}`"
             :iid="activeBoardIssuable.iid"
             issuable-attribute="milestone"
             :workspace-path="projectPathForActiveIssue"
             :attr-workspace-path="projectPathForActiveIssue"
             :issuable-type="issuableType"
+            :issue-id="activeBoardIssuable.id"
             data-testid="sidebar-milestones"
           />
           <sidebar-iteration-widget
-            v-if="iterationFeatureAvailable && !isIncidentSidebar"
+            v-if="showIterationSidebarDropdownWidget"
             :key="`iteration-${activeBoardIssuable.iid}`"
             :iid="activeBoardIssuable.iid"
+            :issue-id="activeBoardIssuable.id"
             :workspace-path="projectPathForActiveIssue"
             :attr-workspace-path="groupPathForActiveIssue"
             :issuable-type="issuableType"

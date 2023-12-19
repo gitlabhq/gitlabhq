@@ -8,6 +8,8 @@ value_description:
 extra_properties:
 identifiers:
 - user
+- project
+- namespace
 product_section: ops
 product_stage: deploy
 product_group: environments

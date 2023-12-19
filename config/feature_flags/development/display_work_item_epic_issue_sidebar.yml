@@ -1,0 +1,8 @@
+---
+name: display_work_item_epic_issue_sidebar
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135480
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430337
+milestone: '16.8'
+type: development
+group: group::product planning
+default_enabled: false

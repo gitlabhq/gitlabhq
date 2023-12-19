@@ -76,7 +76,7 @@ To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Analyze > Repository analytics**.
+1. Select **Analyze > Repository analytics**.
 
 The historic data for each job is listed in the dropdown list above the graph.
 

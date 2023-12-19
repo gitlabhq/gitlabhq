@@ -261,6 +261,22 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response['environment']['name']).to eq('production')
       end
 
+      it 'errors when creating a deployment with an invalid ref', :aggregate_failures do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'doesnotexist',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq({ "ref" => ["The branch or tag does not exist"] })
+      end
+
       it 'errors when creating a deployment with an invalid name' do
         post(
           api("/projects/#{project.id}/deployments", user),

@@ -45,7 +45,7 @@ To create the webhook in the downstream instance:
 
 1. Create a [personal access token](../../../profile/personal_access_tokens.md) with `API` scope.
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > Webhooks**.
+1. Select **Settings > Webhooks**.
 1. Add the webhook **URL**, which (in this case) uses the
    [Pull Mirror API](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project)
    request to trigger an immediate pull after a repository update:

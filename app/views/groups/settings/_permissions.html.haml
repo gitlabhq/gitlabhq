@@ -48,6 +48,7 @@
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
+    = render_if_exists 'groups/settings/security_policies_custom_ci', f: f, group: @group
 
     %h5= _('Customer relations')
     .form-group.gl-mb-3
@@ -56,4 +57,4 @@
           checkbox_options: { checked: @group.crm_enabled? },
           help_text: s_('GroupSettings|Organizations and contacts can be created and associated with issues.')
 
-  = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3 js-dirty-submit', data: { qa_selector: 'save_permissions_changes_button' }
+  = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3 js-dirty-submit', data: { testid: 'save-permissions-changes-button' }

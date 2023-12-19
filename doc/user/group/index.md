@@ -139,7 +139,7 @@ To leave a group:
 To remove a group and its contents:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Remove group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.

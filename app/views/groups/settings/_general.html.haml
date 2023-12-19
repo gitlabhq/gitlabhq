@@ -6,7 +6,7 @@
     .row
       .form-group.col-md-5
         = f.label :name, s_('Groups|Group name'), class: 'label-bold'
-        = f.text_field :name, class: 'form-control', data: { qa_selector: 'group_name_field' }
+        = f.text_field :name, class: 'form-control', data: { testid: 'group-name-field' }
         .text-muted
           = s_('Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.')
 
@@ -36,4 +36,4 @@
       = link_button_to s_('Groups|Remove avatar'), group_avatar_path(@group.to_param), aria: { label: s_('Groups|Remove avatar') }, data: { confirm: s_('Groups|Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
   .form-group.gl-form-group
     = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
-  = f.submit s_('Groups|Save changes'), pajamas_button: true, class: 'js-dirty-submit', data: { qa_selector: 'save_name_visibility_settings_button' }
+  = f.submit s_('Groups|Save changes'), pajamas_button: true, class: 'js-dirty-submit', data: { testid: 'save-name-visibility-settings-button' }

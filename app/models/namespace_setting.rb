@@ -6,6 +6,7 @@ class NamespaceSetting < ApplicationRecord
   include ChronicDurationAttribute
 
   cascading_attr :delayed_project_removal
+  cascading_attr :toggle_security_policy_custom_ci
 
   belongs_to :namespace, inverse_of: :namespace_settings
 

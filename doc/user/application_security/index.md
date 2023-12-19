@@ -95,6 +95,12 @@ against this, infrastructure analysis occurs on every merge request. Checks are 
 - Infrastructure as Code (IaC) configuration files that define your application's deployment
   environment - [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md).
 
+## Data privacy
+
+Concerning data privacy in the domain of security scanners, GitLab processes the source code and performs analysis locally on the GitLab Runner. No data is transmitted outside GitLab infrastructure (server and runners).
+
+Our scanners access the internet only to download the latest sets of signatures, rules, and patches. If you prefer the scanners do not access the internet, consider using an [offline environment](offline_deployments/index.md).
+
 ## Vulnerability scanner maintenance
 
 The following vulnerability scanners and their databases are regularly updated:

@@ -77,6 +77,11 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 ```
 
+## High CPU usage on Redis instance
+
+High CPU usage on Redis instance can be cause by Sidekiq `BRPOP` calls. The `BRPOP` command is expensive and increases CPU usage on Redis.
+Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
+
 ## Troubleshooting Sentinel
 
 If you get an error like: `Redis::CannotConnectError: No sentinels available.`,

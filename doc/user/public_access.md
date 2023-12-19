@@ -100,7 +100,7 @@ Prerequisites:
   to private if a subgroup or project in that group is public.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > General**.
+1. Select **Settings > General**.
 1. Expand **Naming, visibility**.
 1. For **Visibility level**, select an option.
    The visibility setting for a project must be at least as restrictive

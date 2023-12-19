@@ -146,7 +146,7 @@ provided your GitLab administrator [has configured the integration](configure.md
 To view Jira issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Plan > Jira issues**.
+1. Select **Plan > Jira issues**.
 
 The issues are sorted by **Created date** by default, with the most recently created issues listed at the top.
 

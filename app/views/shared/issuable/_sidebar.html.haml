@@ -51,7 +51,7 @@
 
       - if in_group_context_with_iterations
         .block.gl-collapse-empty{ data: { testid: 'iteration-container' } }<
-          = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
+          = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type, issue_id: issuable_sidebar[:id]
 
       - if issuable_sidebar[:show_crm_contacts]
         .block.contact

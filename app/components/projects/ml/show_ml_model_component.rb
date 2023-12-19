@@ -20,7 +20,8 @@ module Projects
             path: model.path,
             description: model.description,
             latest_version: latest_version_view_model,
-            version_count: model.version_count
+            version_count: model.version_count,
+            candidate_count: model.candidate_count
           }
         }
 

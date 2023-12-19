@@ -9,7 +9,7 @@ module QA
 
         view 'app/views/groups/_home_panel.html.haml' do
           element 'new-project-button'
-          element :new_subgroup_button
+          element 'new-subgroup-button'
         end
 
         def click_subgroup(name)
@@ -18,7 +18,7 @@ module QA
 
         def has_new_project_and_new_subgroup_buttons?
           has_element?('new_project_button')
-          has_element?(:new_subgroup_button)
+          has_element?('new-subgroup-button')
         end
 
         def has_subgroup?(name)
@@ -26,7 +26,7 @@ module QA
         end
 
         def go_to_new_subgroup
-          click_element :new_subgroup_button
+          click_element('new-subgroup-button')
         end
 
         def go_to_new_project

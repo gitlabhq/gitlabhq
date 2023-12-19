@@ -44,7 +44,7 @@ describe('PackagesListApp', () => {
 
   const searchPayload = {
     sort: 'VERSION_DESC',
-    filters: { packageName: 'foo', packageType: 'CONAN' },
+    filters: { packageName: 'foo', packageType: 'CONAN', packageVersion: '1.0.1' },
   };
 
   const findPackageTitle = () => wrapper.findComponent(PackageTitle);
@@ -304,7 +304,12 @@ describe('PackagesListApp', () => {
 
       await waitForFirstRequest();
 
-      findSearch().vm.$emit('update', searchPayload);
+      findSearch().vm.$emit('update', {
+        sort: 'VERSION_DESC',
+        filters: {
+          packageName: 'test',
+        },
+      });
 
       return nextTick();
     });

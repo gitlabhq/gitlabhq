@@ -67,7 +67,7 @@ Prerequisite:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Settings > Usage Quotas**.
 1. To view all members, select the **Seats** tab.
 1. To remove a member, select **Remove user**.
 

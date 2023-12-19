@@ -39,6 +39,7 @@ You can use the following environment variables to override certain values:
 | `GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS` | integer | The default TTL used for entries stored in the Rails-cache. Default is `28800`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95042) in 15.3. |
 | `GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS` | integer | Timeout for resolving remote includes in CI config in seconds. Must be between `0` and `60`. Default is `30`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116383) in 15.11. |
 | `GITLAB_LFS_MAX_OID_TO_FETCH`              | integer  | Sets the maximum number of LFS objects to link. Default is `100,000`.                                        |
+| `SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT`      | integer  | Sets the timeout for Sidekiq semi-reliable fetch. Default is `5`. [Before GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139583), default was `3`. If you experience high Redis CPU consumption on GitLab 16.6 and earlier, or if you have customized this variable, you should update this variable to `5`. |
 
 ## Adding more variables
 

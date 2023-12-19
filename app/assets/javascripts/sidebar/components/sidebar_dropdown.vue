@@ -87,6 +87,11 @@ export default {
         return [WORKSPACE_GROUP, WORKSPACE_PROJECT].includes(value);
       },
     },
+    showWorkItemEpics: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -115,6 +120,7 @@ export default {
           fullPath: this.attrWorkspacePath,
           state: this.issuableAttributesState[this.issuableAttribute],
           sort: defaultEpicSort,
+          includeWorkItems: this.showWorkItemEpics,
         };
 
         if (epicIidPattern.test(this.searchTerm)) {
@@ -127,7 +133,12 @@ export default {
 
         return variables;
       },
-      update: (data) => data?.workspace?.attributes?.nodes ?? [],
+      update(data) {
+        return [
+          ...(data?.workspace?.attributes?.nodes ?? []),
+          ...(data?.workspace?.workItems?.nodes ?? []),
+        ];
+      },
       error(error) {
         createAlert({ message: this.i18n.listFetchError, captureError: true, error });
       },
@@ -188,7 +199,7 @@ export default {
       this.skipQuery = false;
     },
     setFocus() {
-      this.$refs.search.focusInput();
+      this.$refs?.search?.focusInput();
     },
     show() {
       this.$refs.dropdown.show();
@@ -211,7 +222,12 @@ export default {
     @show="handleShow"
     @shown="setFocus"
   >
-    <gl-search-box-by-type ref="search" v-model="searchTerm" :placeholder="__('Search')" />
+    <gl-search-box-by-type
+      v-if="!showWorkItemEpics"
+      ref="search"
+      v-model="searchTerm"
+      :placeholder="__('Search')"
+    />
     <gl-dropdown-item
       :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
       is-check-item

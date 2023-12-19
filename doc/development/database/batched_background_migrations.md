@@ -257,6 +257,41 @@ Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
 turn can be handled by defining foreign keys with cascading deletes.
 
+### Finalize a batched background migration
+
+Finalizing a batched background migration is done by calling
+`ensure_batched_background_migration_is_finished`.
+
+It is important to finalize all batched background migrations when it is safe
+to do so. Leaving around old batched background migration is a form of
+technical debt that needs to be maintained in tests and in application
+behavior. It is important to note that you cannot depend on any batched
+background migration being completed until after it is finalized.
+
+We recommend that batched background migrations are finalized after all of the
+following conditions are met:
+
+- The batched background migration is completed on GitLab.com
+- The batched background migration was added in or before the last [required stop](required_stops.md)
+
+The `ensure_batched_background_migration_is_finished` call must exactly match
+the migration that was used to enqueue it. Pay careful attention to:
+
+- The job arguments: Needs to exactly match or it will not find the queued migration
+- The `gitlab_schema`: Needs to exactly match or it will not find the queued
+   migration. Even if the `gitlab_schema` of the table has changed from
+   `gitlab_main` to `gitlab_main_cell` in the meantime you must finalize it
+   with `gitlab_main` if that's what was used when queueing the batched
+   background migration.
+
+When finalizing a batched background migration you also need to update the
+`finalized_by` in the corresponding `db/docs/batched_background_migrations`
+file. The value should be the timestamp/version of the migration you added to
+finalize it.
+
+See the below [Examples](#examples) for specific details on what the actual
+migration code should be.
+
 ### Use job arguments
 
 `BatchedMigrationJob` provides the `job_arguments` helper method for job classes to define the job arguments they need.

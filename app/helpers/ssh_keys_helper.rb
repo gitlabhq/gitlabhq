@@ -29,7 +29,6 @@ module SshKeysHelper
     {
         path: path,
         method: 'delete',
-        qa_selector: 'revoke_ssh_key_button',
         title: title,
         aria_label: title,
         modal_attributes: {

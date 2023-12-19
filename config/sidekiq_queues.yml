@@ -27,6 +27,8 @@
   - 1
 - - abuse_spam_abuse_events
   - 1
+- - abuse_trust_score
+  - 1
 - - activity_pub
   - 1
 - - adjourned_project_deletion

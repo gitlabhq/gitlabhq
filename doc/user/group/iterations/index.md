@@ -178,7 +178,7 @@ Prerequisites:
 To create an iteration:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Plan > Iterations** and select an iteration cadence.
+1. Select **Plan > Iterations** and select an iteration cadence.
 1. Select **New iteration**.
 1. Enter the title, a description (optional), a start date, and a due date.
 1. Select **Create iteration**. The iteration details page opens.

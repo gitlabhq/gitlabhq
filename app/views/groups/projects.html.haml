@@ -28,7 +28,7 @@
                     - if project.namespace
                       = project.namespace.human_name
                       \/
-                  %span.project-name{ data: { qa_selector: 'project_name_content', qa_project_name: project.name } }
+                  %span.project-name
                     = project.name
               = visibility_level_content(project, css_class: 'visibility-icon gl-text-secondary gl-ml-2', icon_css_class: 'icon')
 

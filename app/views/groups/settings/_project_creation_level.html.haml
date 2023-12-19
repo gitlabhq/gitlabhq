@@ -1,3 +1,3 @@
 .form-group
   = f.label s_('ProjectCreationLevel|Roles allowed to create projects'), class: 'label-bold'
-  = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, group.project_creation_level), {}, class: 'form-control', data: { qa_selector: 'project_creation_level_dropdown' }
+  = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, group.project_creation_level), {}, class: 'form-control', data: { testid: 'project-creation-level-dropdown' }

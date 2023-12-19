@@ -6,12 +6,21 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
   let(:model) { create(:ml_models) }
   let(:params) { {} }
 
+  before do
+    allow(Gitlab::InternalEvents).to receive(:track_event)
+  end
+
   subject(:service) { described_class.new(model, params).execute }
 
   context 'when no versions exist' do
     it 'creates a model version', :aggregate_failures do
       expect { service }.to change { Ml::ModelVersion.count }.by(1).and change { Ml::Candidate.count }.by(1)
       expect(model.reload.latest_version.version).to eq('1.0.0')
+
+      expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+        'model_registry_ml_model_version_created',
+        { project: model.project, user: nil }
+      )
     end
   end
 
@@ -23,6 +32,11 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
     it 'creates another model version and increments the version number', :aggregate_failures do
       expect { service }.to change { Ml::ModelVersion.count }.by(1).and change { Ml::Candidate.count }.by(1)
       expect(model.reload.latest_version.version).to eq('4.0.0')
+
+      expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+        'model_registry_ml_model_version_created',
+        { project: model.project, user: nil }
+      )
     end
   end
 

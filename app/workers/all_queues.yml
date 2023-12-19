@@ -2316,6 +2316,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: abuse_trust_score
+  :worker_name: Abuse::TrustScoreWorker
+  :feature_category: :instance_resiliency
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports

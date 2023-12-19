@@ -43,7 +43,7 @@ To report abuse from a user's profile page:
 To report abuse from a user's comment:
 
 1. In the comment, in the upper-right corner, select **More actions** (**{ellipsis_v}**).
-1. Select **Report abuse to administrator**.
+1. Select **Report abuse**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.
 1. Select **Send report**.
@@ -63,7 +63,7 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 ## Report abuse from a merge request
 
 1. On the merge request, in the upper-right corner, select **Merge request actions** (**{ellipsis_v}**).
-1. Select **Report abuse to administrator**.
+1. Select **Report abuse**.
 1. Select a reason for reporting this user.
 1. Complete an abuse report.
 1. Select **Send report**.

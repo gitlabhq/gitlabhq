@@ -9,6 +9,10 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
   let_it_be(:description) { 'description' }
   let_it_be(:metadata) { [] }
 
+  before do
+    allow(Gitlab::InternalEvents).to receive(:track_event)
+  end
+
   subject(:create_model) { described_class.new(project, name, user, description, metadata).execute }
 
   describe '#execute' do
@@ -18,6 +22,10 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
 
       it 'creates a model', :aggregate_failures do
         expect { create_model }.to change { Ml::Model.count }.by(1)
+        expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+          'model_registry_ml_model_created',
+          { project: project, user: user }
+        )
 
         expect(create_model.name).to eq(name)
       end
@@ -29,6 +37,10 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
 
       it 'creates a model', :aggregate_failures do
         expect { create_model }.to change { Ml::Model.count }.by(1)
+        expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+          'model_registry_ml_model_created',
+          { project: project, user: user }
+        )
 
         expect(create_model.name).to eq(name)
       end
@@ -40,6 +52,7 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
 
       it 'raises an error', :aggregate_failures do
         expect { create_model }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(Gitlab::InternalEvents).not_to have_received(:track_event)
       end
     end
 

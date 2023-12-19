@@ -24,6 +24,12 @@ module Ml
           { model_version: model_version }
         ).execute
 
+        Gitlab::InternalEvents.track_event(
+          'model_registry_ml_model_version_created',
+          project: @model.project,
+          user: @user
+        )
+
         model_version
       end
     end

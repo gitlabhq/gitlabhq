@@ -3,15 +3,14 @@
 require "spec_helper"
 
 RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_category: :mlops do
-  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- build_stubbed breaks because it doesn't create iids properly.
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:model1) do
-    create(:ml_models, :with_latest_version_and_package, project: project, description: "A description")
+    build_stubbed(:ml_models, :with_latest_version_and_package, project: project, description: "A description")
   end
-  # rubocop:enable RSpec/FactoryBot/AvoidCreate
 
-  let_it_be(:experiment) { model1.default_experiment }
-  let_it_be(:candidate) { model1.latest_version.candidate }
+  let_it_be(:experiment) { model1.default_experiment.tap { |e| e.iid = 100 } }
+  let_it_be(:candidate) { model1.latest_version.candidate.tap { |c| c.iid = 101 } }
+  let_it_be(:candidates) { Array.new(2) { build_stubbed(:ml_candidates, experiment: experiment) } }
 
   subject(:component) do
     described_class.new(model: model1, current_user: model1.user)
@@ -19,6 +18,8 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
 
   describe 'rendered' do
     before do
+      allow(model1).to receive(:candidates).and_return(candidates)
+
       render_inline component
     end
 
@@ -52,7 +53,8 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
               'metadata' => []
             }
           },
-          'versionCount' => 1
+          'versionCount' => 1,
+          'candidateCount' => 2
         }
       })
     end

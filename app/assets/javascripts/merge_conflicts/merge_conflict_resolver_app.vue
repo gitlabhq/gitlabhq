@@ -2,6 +2,7 @@
 import { GlSprintf, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import DiffFileEditor from './components/diff_file_editor.vue';
@@ -23,6 +24,7 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
+    ClipboardButton,
     GlSprintf,
     GlLoadingIcon,
     FileIcon,
@@ -122,6 +124,12 @@ export default {
               <div class="file-header-content" data-testid="file-name">
                 <file-icon :file-name="file.filePath" :size="16" css-classes="gl-mr-2" />
                 <strong class="file-title-name">{{ file.filePath }}</strong>
+                <clipboard-button
+                  :title="__('Copy file path')"
+                  :text="file.filePath"
+                  size="small"
+                  category="tertiary"
+                />
               </div>
               <div class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start">
                 <gl-button-group v-if="file.type === 'text'" class="gl-mr-3">
