@@ -58,6 +58,7 @@ RSpec.describe Projects::Gcp::ArtifactRegistry::DockerImagesController, feature_
         expect(response.body).to include('tag2')
         expect(response.body).to include('Prev')
         expect(response.body).to include('Next')
+        expect(response.body).to include('https://location.pkg.dev/project/repo/image@sha256:6a')
       end
 
       context 'when the service returns an error response' do

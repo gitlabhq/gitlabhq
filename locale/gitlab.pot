@@ -8012,6 +8012,9 @@ msgstr ""
 msgid "Billings|Your account has been validated"
 msgstr ""
 
+msgid "Billing|%{plan} Plan"
+msgstr ""
+
 msgid "Billing|%{plan} SaaS Plan seats used"
 msgstr ""
 
@@ -8110,12 +8113,6 @@ msgstr ""
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
-msgid "Billing|Subscription end"
-msgstr ""
-
-msgid "Billing|Subscription start"
-msgstr ""
-
 msgid "Billing|To ensure all members can access the group when your trial ends, you can upgrade to a paid tier."
 msgstr ""
 
@@ -8135,6 +8132,9 @@ msgid "Billing|View pending approvals"
 msgstr ""
 
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
+msgstr ""
+
+msgid "Billing|You can upgrade to a paid tier to get access to more features."
 msgstr ""
 
 msgid "Billing|You have assigned all available Code Suggestions add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."

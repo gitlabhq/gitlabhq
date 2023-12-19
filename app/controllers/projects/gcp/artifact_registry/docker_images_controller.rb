@@ -124,6 +124,10 @@ module Projects
 
             Time.zone.parse(upload_time)
           end
+
+          def details_url
+            "https://#{uri}"
+          end
         end
       end
     end

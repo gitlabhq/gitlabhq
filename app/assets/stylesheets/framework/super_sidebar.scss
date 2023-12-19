@@ -461,3 +461,17 @@ $scroll-scrim-height: 2.25rem;
     opacity: 1;
   }
 }
+
+// Tweaks to the styles for the ScrollScrim component above (line 418)
+// are leaking into the collapsible list box dropdowns
+// https://gitlab.com/gitlab-org/gitlab/-/issues/435538
+
+.gl-new-dropdown {
+  .top-scrim-wrapper {
+    margin-bottom: 0;
+  }
+
+  .bottom-scrim-wrapper {
+    margin-top: 0;
+  }
+}

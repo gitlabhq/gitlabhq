@@ -282,7 +282,7 @@ To migrate back to local storage, you must
 
 If [`artifacts:expire_in`](../ci/yaml/index.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
-Otherwise, they expire per the [default artifacts expiration setting](../administration/settings/continuous_integration.md).
+Otherwise, they expire per the [default artifacts expiration setting](../administration/settings/continuous_integration.md#default-artifacts-expiration).
 
 Artifacts are deleted by the `expire_build_artifacts_worker` cron job which Sidekiq
 runs every 7 minutes (`*/7 * * * *` in [Cron](../topics/cron/index.md) syntax).

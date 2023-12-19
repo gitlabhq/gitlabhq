@@ -1348,12 +1348,14 @@ Do not upload videos to the product repositories. [Link](#link-to-video) or
 
 ### Link to video
 
-To link out to a video, include a YouTube icon so that readers can scan the page
-for videos before reading:
+To link to a video, include a YouTube icon so that readers can scan the page
+for videos before reading. Include the video's publication date after the link, to help identify
+videos that might be out-of-date.
 
 ```markdown
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Video Title](link-to-video).
+<!-- Video published on YYYY-MM-DD -->
 ```
 
 You can link any up-to-date video that's useful to the GitLab user.
@@ -1383,6 +1385,8 @@ To embed a video:
    (`https://www.youtube-nocookie.com/embed/VIDEO-ID`),
    and paste it, replacing the content of the `src` field in the
    `iframe` tag.
+1. Include the video's publication date below the link, to help identify
+   videos that might be out-of-date.
 
 ```html
 leave a blank line here
@@ -1392,6 +1396,7 @@ leave a blank line here
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
+<!-- Video published on YYYY-MM-DD -->
 leave a blank line here
 ```
 

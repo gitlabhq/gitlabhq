@@ -12,6 +12,7 @@ fragment WorkItem on WorkItem {
   createdAt
   updatedAt
   closedAt
+  webUrl
   reference(full: true)
   createNoteEmail
   namespace {

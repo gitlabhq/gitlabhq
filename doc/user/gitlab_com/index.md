@@ -232,9 +232,8 @@ this limit. Repository limits apply to both public and private projects.
 
 ## Default import sources
 
-> Disabling all importers by default for new GitLab self-managed installations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
-
-The import sources that are available by default depend on which GitLab you use:
+The [import sources](../project/import/index.md#supported-import-sources) that are available to you by default depend on
+which GitLab you use:
 
 - GitLab.com: all available import sources are enabled by default.
 - GitLab self-managed: no import sources are enabled by default and must be
@@ -251,8 +250,6 @@ The import sources that are available by default depend on which GitLab you use:
 | [GitHub](../project/import/github.md)                                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [Manifest file](../project/import/manifest.md)                                                      | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [Repository by URL](../project/import/repo_by_url.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-
-[Other importers](../project/import/index.md#available-project-importers) are available.
 
 ## IP range
 

@@ -6,7 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import project from repository by URL **(FREE ALL)**
 
-You can import your existing repositories by providing the Git URL.
+You can import your existing repositories by providing the Git URL. You can't import GitLab issues and merge requests
+this way. Other methods provide more complete import methods.
+
+If the repository is too large, the import can timeout.
 
 ## Prerequisites
 

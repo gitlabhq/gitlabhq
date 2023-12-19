@@ -19,7 +19,7 @@ Write code more efficiently by using generative AI to suggest code while you're 
 With Code Suggestions, you get:
 
 - Code Completion, which suggests completions the current line you are typing. These suggestions are usually low latency.
-- Code Generation, which generates code based on a natural language code comment block. Generating code can exceed multiple seconds.
+- Code Generation, which generates code based on a natural language code comment block. Responses for code generation are streamed in VS Code to begin giving results quickly. In other IDEs, response time can exceed multiple seconds.
 
 ## Start using Code Suggestions
 
@@ -81,18 +81,13 @@ plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 Code Suggestions supports a variety of popular editors including:
 
-- VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow). Supports streaming responses for code generation.
 - [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md), with no additional configuration.
 - Microsoft Visual Studio, using the [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - JetBrains IDEs, using the [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
 - Neovim, using the [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim).
 
-A [GitLab Language Server for Code Suggestions](https://gitlab.com/gitlab-org/editor-extensions/gitlab-language-server-for-code-suggestions)
-is also in process.
-This improvement should result in:
-
-- Faster iteration and standardization of the IDE extensions.
-- The ability to use Code Suggestions even when an official editor extension isn't available.
+A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, and Neovim. The Language Server supports faster iteration across more platforms. Users can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
 
 ## Code Suggestions data usage
 
@@ -120,7 +115,7 @@ For self-managed instances that have enabled Code Suggestions and SaaS accounts,
 
 ### Inference window context
 
-Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+Code Suggestions inferences against the currently opened file, the content before and after the cursor, the file name, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ### Training data
 

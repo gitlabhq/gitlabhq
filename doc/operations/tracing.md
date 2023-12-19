@@ -70,6 +70,14 @@ To view the list of traces:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Traces**.
 
-To see the details of a trace, select it from the list.
+To see the details of a trace, select it from the list. You can also select a trace directly from the scatterplot.
 
-![list of traces](img/tracing_list_v16_3.png)
+![list of traces](img/tracing_list_v16_7.png)
+
+The trace details page and a list of spans are displayed.
+
+![tracing details](img/tracing_details_v16_7.png)
+
+To view the attributes for a single span, select it from the list.
+
+![tracing drawer](img/tracing_drawer_v16_7.png)

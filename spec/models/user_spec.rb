@@ -1434,6 +1434,20 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.ordered_by_id_desc' do
+      let_it_be(:first_user) { create(:user) }
+      let_it_be(:second_user) { create(:user) }
+
+      it 'generates the order SQL in descending order' do
+        expect(described_class.ordered_by_id_desc.to_sql).to include(
+          'ORDER BY "users"."id" DESC')
+      end
+
+      it 'sorts users correctly' do
+        expect(described_class.ordered_by_id_desc).to eq([second_user, first_user])
+      end
+    end
+
     describe '.trusted' do
       let_it_be(:trusted_user1) { create(:user, :trusted) }
       let_it_be(:trusted_user2) { create(:user, :trusted) }

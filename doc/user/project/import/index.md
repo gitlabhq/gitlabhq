@@ -4,34 +4,61 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import and migrate projects **(FREE ALL)**
+# Import and migrate groups and projects **(FREE ALL)**
 
-If you want to bring existing projects to GitLab or copy GitLab projects to a different location, you can:
+To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
 
-- Import projects from external systems using one of the [available importers](#available-project-importers).
-- Migrate GitLab projects:
-  - Between two GitLab self-managed instances.
-  - Between a self-managed instance and GitLab.com in both directions.
-  - In the same GitLab instance.
+- Migrate GitLab groups and projects by using direct transfer.
+- Import from supported import sources.
+- Import from other import sources.
 
-For any type of source and target, you can migrate GitLab projects:
+## Migrate from GitLab to GitLab by using direct transfer
 
-- When [migrating groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended),
-  which allows you to migrate all projects in a group simultaneously. Migrating projects by direct transfer is in
-  [Beta](../../../policy/experiment-beta-support.md#beta). The feature is not ready for production use.
-- Using [file exports](../settings/import_export.md). With this method you can migrate projects one by one. No network
-  connection between instances is required.
+The best way to migrate GitLab groups and projects between GitLab instances, or in the same GitLab instance, is
+[by using direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
 
-If you only need to migrate Git repositories, you can [import each project by URL](repo_by_url.md). However, you can't
-import issues and merge requests this way. To retain metadata like issues and merge requests, either:
+You can also migrate GitLab projects by using a GitLab file export, which is a supported import source.
 
-- [Migrate projects with groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
-  This feature is in [Beta](../../../policy/experiment-beta-support.md#beta). It is not ready for production use.
-- Use [file exports](../settings/import_export.md) to import projects.
+## Supported import sources
 
-Keep in mind the limitations of [migrating using file exports](../settings/import_export.md#items-that-are-exported).
-When migrating from self-managed to GitLab.com, user associations (such as comment author)
-are changed to the user who is importing the projects.
+> All importers default to disabled for GitLab self-managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+
+The import sources that are available to you by default depend on which GitLab you use:
+
+- GitLab.com: all available import sources are [enabled by default](../../gitlab_com/index.md#default-import-sources).
+- GitLab self-managed: no import sources are enabled by default and must be
+  [enabled](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+
+GitLab can import projects from these supported import sources.
+
+| Import source                                 | Description |
+|:----------------------------------------------|:------------|
+| [Bitbucket Cloud](bitbucket.md)               | Using [Bitbucket.org as an OmniAuth provider](../../../integration/bitbucket.md), import Bitbucket repositories. |
+| [Bitbucket Server](bitbucket_server.md)       | Import repositories from Bitbucket Server (also known as Stash). |
+| [FogBugz](fogbugz.md)                         | Import FogBuz projects. |
+| [Gitea](gitea.md)                             | Import Gitea projects. |
+| [GitHub](github.md)                           | Import from either GitHub.com or GitHub Enterprise. |
+| [GitLab export](../settings/import_export.md) | Migrate projects one by one by using a GitLab export file. |
+| [Manifest file](manifest.md)                 | Upload a manifest file. |
+| [Repository by URL](repo_by_url.md)           | Provide a Git repository URL to create a new project from. |
+
+## Other import sources
+
+You can also read information on importing from these other import sources:
+
+- [ClearCase](clearcase.md)
+- [Concurrent Versions System (CVS)](cvs.md)
+- [Jira (issues only)](jira.md)
+- [Perforce Helix](perforce.md)
+- [Team Foundation Version Control (TFVC)](tfvc.md)
+
+### Import repositories from Subversion
+
+GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be
+difficult, but several tools exist including:
+
+- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and basic repositories.
+- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## Security
 
@@ -48,35 +75,6 @@ GitLab self-managed administrators can reduce their attack surface by disabling 
 1. Clear checkboxes for importers that are not required.
 
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
-
-## Available project importers
-
-You can import projects from:
-
-- [Bitbucket Cloud](bitbucket.md)
-- [Bitbucket Server (also known as Stash)](bitbucket_server.md)
-- [ClearCase](clearcase.md)
-- [CVS](cvs.md)
-- [FogBugz](fogbugz.md)
-- [GitHub.com or GitHub Enterprise](github.md)
-- [Gitea](gitea.md)
-- [Perforce](perforce.md)
-- [TFVC](tfvc.md)
-- [Repository by URL](repo_by_url.md)
-- [Uploading a manifest file (AOSP)](manifest.md)
-- [Jira (issues only)](jira.md)
-
-You can also import any Git repository through HTTP from the **New Project** page. If the repository
-is too large, the import can timeout.
-
-You can then [connect your external repository to get CI/CD benefits](../../../ci/ci_cd_for_external_repos/index.md).
-
-## Import from Subversion
-
-GitLab can not automatically migrate Subversion repositories to Git. Converting Subversion repositories to Git can be difficult, but several tools exist including:
-
-- [`git svn`](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git), for very small and basic repositories.
-- [`reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html), for larger and more complex repositories.
 
 ## Migrate using the API
 
