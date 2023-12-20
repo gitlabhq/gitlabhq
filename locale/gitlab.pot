@@ -5354,11 +5354,6 @@ msgstr ""
 msgid "An error occurred while saving changes: %{error}"
 msgstr ""
 
-msgid "An error occurred while saving the setting"
-msgid_plural "An error occurred while saving the settings"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "An error occurred while saving the settings."
 msgstr ""
 
@@ -32390,6 +32385,9 @@ msgstr ""
 msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr ""
 
+msgid "Not applicable"
+msgstr ""
+
 msgid "Not applicable."
 msgstr ""
 
@@ -45329,11 +45327,6 @@ msgstr ""
 
 msgid "Setting enforced"
 msgstr ""
-
-msgid "Setting saved successfully"
-msgid_plural "Settings saved successfully"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Settings"
 msgstr ""

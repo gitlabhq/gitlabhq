@@ -3,8 +3,12 @@ import { debounce, uniq } from 'lodash';
 import { GlDropdownDivider, GlDropdownItem, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__, sprintf } from '~/locale';
-import { convertEnvironmentScope } from '../utils';
-import { ENVIRONMENT_QUERY_LIMIT } from '../constants';
+import { convertEnvironmentScope } from './utils';
+import {
+  ALL_ENVIRONMENTS_OPTION,
+  ENVIRONMENT_QUERY_LIMIT,
+  NO_ENVIRONMENT_OPTION,
+} from './constants';
 
 export default {
   name: 'CiEnvironmentsDropdown',
@@ -16,9 +20,19 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    isEnvironmentRequired: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     areEnvironmentsLoading: {
       type: Boolean,
       required: true,
+    },
+    canCreateWildcard: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     environments: {
       type: Array,
@@ -51,14 +65,19 @@ export default {
     searchedEnvironments() {
       let filtered = this.environments;
 
-      // If there is no search term, make sure to include *
-      if (!this.searchTerm) {
-        filtered = uniq([...filtered, '*']);
-      }
-
       // add custom env scope if it matches the search term
       if (this.customEnvScope && this.customEnvScope.startsWith(this.searchTerm)) {
         filtered = uniq([...filtered, this.customEnvScope]);
+      }
+
+      // If there is no search term, make sure to include *
+      if (!this.searchTerm) {
+        filtered = uniq([...filtered, ALL_ENVIRONMENTS_OPTION.type]);
+
+        // lastly, add Not Applicable (None) as the first option if isEnvironmentRequired is true
+        if (!this.isEnvironmentRequired) {
+          filtered = [NO_ENVIRONMENT_OPTION.type, ...filtered];
+        }
       }
 
       return filtered.sort().map((environment) => ({
@@ -67,6 +86,10 @@ export default {
       }));
     },
     shouldRenderCreateButton() {
+      if (!this.canCreateWildcard) {
+        return false;
+      }
+
       return (
         this.searchTerm && ![...this.environments, this.customEnvScope].includes(this.searchTerm)
       );

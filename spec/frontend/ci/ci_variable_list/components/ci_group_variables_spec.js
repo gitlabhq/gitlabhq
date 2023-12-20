@@ -9,7 +9,7 @@ import {
   DELETE_MUTATION_ACTION,
   UPDATE_MUTATION_ACTION,
 } from '~/ci/ci_variable_list/constants';
-import getGroupEnvironments from '~/ci/ci_variable_list/graphql/queries/group_environments.query.graphql';
+import { getGroupEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
 import addGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_add_variable.mutation.graphql';
 import deleteGroupVariable from '~/ci/ci_variable_list/graphql/mutations/group_delete_variable.mutation.graphql';

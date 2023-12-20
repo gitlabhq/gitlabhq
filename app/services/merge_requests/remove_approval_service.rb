@@ -5,6 +5,7 @@ module MergeRequests
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(merge_request)
       return unless merge_request.approved_by?(current_user)
+      return if merge_request.merged?
 
       # paranoid protection against running wrong deletes
       return unless merge_request.id && current_user.id

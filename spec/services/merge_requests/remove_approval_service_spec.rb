@@ -19,12 +19,46 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
       project.add_developer(user)
     end
 
+    shared_examples 'no-op call' do
+      it 'does not create an unapproval note and triggers web hook' do
+        expect(service).not_to receive(:execute_hooks)
+        expect(SystemNoteService).not_to receive(:unapprove_mr)
+
+        execute!
+      end
+
+      it 'does not track merge request unapprove action' do
+        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
+          .not_to receive(:track_unapprove_mr_action).with(user: user)
+
+        execute!
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
+        let(:action) { execute! }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { execute! }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestApprovalStateUpdated' do
+        let(:action) { execute! }
+      end
+    end
+
     context 'with a user who has approved' do
       let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
       let(:notification_service) { NotificationService.new }
 
       before do
         allow(service).to receive(:notification_service).and_return(notification_service)
+      end
+
+      context 'when the merge request is merged' do
+        let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+
+        it_behaves_like 'no-op call'
       end
 
       it 'removes the approval' do
@@ -60,31 +94,7 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
     end
 
     context 'with a user who has not approved' do
-      it 'does not create an unapproval note and triggers web hook' do
-        expect(service).not_to receive(:execute_hooks)
-        expect(SystemNoteService).not_to receive(:unapprove_mr)
-
-        execute!
-      end
-
-      it 'does not track merge request unapprove action' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
-          .not_to receive(:track_unapprove_mr_action).with(user: user)
-
-        execute!
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
-        let(:action) { execute! }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
-        let(:action) { execute! }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestApprovalStateUpdated' do
-        let(:action) { execute! }
-      end
+      it_behaves_like 'no-op call'
     end
   end
 end

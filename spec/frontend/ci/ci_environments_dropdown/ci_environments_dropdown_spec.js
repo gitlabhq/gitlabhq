@@ -1,14 +1,15 @@
 import { GlListboxItem, GlCollapsibleListbox, GlDropdownDivider, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { allEnvironments, ENVIRONMENT_QUERY_LIMIT } from '~/ci/ci_variable_list/constants';
-import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
+import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
 
 describe('Ci environments dropdown', () => {
   let wrapper;
 
   const envs = ['dev', 'prod', 'staging'];
   const defaultProps = {
+    isEnvironmentRequired: true,
     areEnvironmentsLoading: false,
+    canCreateWildcard: true,
     environments: envs,
     selectedEnvironmentScope: '',
   };
@@ -33,19 +34,43 @@ describe('Ci environments dropdown', () => {
     findListbox().vm.$emit('search', searchTerm);
   };
 
+  describe('create wildcard button', () => {
+    describe('when canCreateWildcard is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { canCreateWildcard: true }, searchTerm: 'stable' });
+      });
+
+      it('renders create button during search', () => {
+        expect(findCreateWildcardButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when canCreateWildcard is false', () => {
+      beforeEach(() => {
+        createComponent({ props: { canCreateWildcard: false }, searchTerm: 'stable' });
+      });
+
+      it('does not render create button during search', () => {
+        expect(findCreateWildcardButton().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('No environments found', () => {
-    beforeEach(() => {
-      createComponent({ searchTerm: 'stable' });
-    });
+    describe('default behavior', () => {
+      beforeEach(() => {
+        createComponent({ searchTerm: 'stable' });
+      });
 
-    it('renders dropdown divider', () => {
-      expect(findDropdownDivider().exists()).toBe(true);
-    });
+      it('renders dropdown divider', () => {
+        expect(findDropdownDivider().exists()).toBe(true);
+      });
 
-    it('renders create button with search term if environments do not contain search term', () => {
-      const button = findCreateWildcardButton();
-      expect(button.exists()).toBe(true);
-      expect(button.text()).toBe('Create wildcard: stable');
+      it('renders create button with search term if environments do not contain search term', () => {
+        const button = findCreateWildcardButton();
+        expect(button.exists()).toBe(true);
+        expect(button.text()).toBe('Create wildcard: stable');
+      });
     });
   });
 
@@ -54,7 +79,7 @@ describe('Ci environments dropdown', () => {
       createComponent({ props: { environments: envs } });
     });
 
-    it(`prepends * in listbox`, () => {
+    it('prepends * in listbox', () => {
       expect(findListboxItemByIndex(0).text()).toBe('*');
     });
 
@@ -67,6 +92,16 @@ describe('Ci environments dropdown', () => {
     it('does not display active checkmark', () => {
       expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(true);
     });
+
+    describe('when isEnvironmentRequired is false', () => {
+      beforeEach(() => {
+        createComponent({ props: { isEnvironmentRequired: false, environments: envs } });
+      });
+
+      it('adds Not applicable as an option', () => {
+        expect(findListboxItemByIndex(1).text()).toBe('Not applicable');
+      });
+    });
   });
 
   describe('when `*` is the value of selectedEnvironmentScope props', () => {
@@ -77,7 +112,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('shows the `All environments` text and not the wildcard', () => {
-      expect(findListboxText()).toContain(allEnvironments.text);
+      expect(findListboxText()).toContain('All (default)');
       expect(findListboxText()).not.toContain(wildcardScope);
     });
   });
@@ -124,9 +159,9 @@ describe('Ci environments dropdown', () => {
       expect(wrapper.emitted('search-environment-scope')[1]).toEqual([currentEnv]);
     });
 
-    it('displays note about max environments shown', () => {
+    it('displays note about max environments', () => {
       expect(findMaxEnvNote().exists()).toBe(true);
-      expect(findMaxEnvNote().text()).toContain(String(ENVIRONMENT_QUERY_LIMIT));
+      expect(findMaxEnvNote().text()).toContain('30');
     });
   });
 

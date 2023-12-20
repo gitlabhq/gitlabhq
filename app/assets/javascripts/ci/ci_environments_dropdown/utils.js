@@ -1,4 +1,4 @@
-import { allEnvironments } from './constants';
+import { ALL_ENVIRONMENTS_OPTION, NO_ENVIRONMENT_OPTION } from './constants';
 
 /**
  * This function job is to convert the * wildcard to text when applicable
@@ -10,11 +10,14 @@ import { allEnvironments } from './constants';
  */
 
 export const convertEnvironmentScope = (environmentScope = '') => {
-  if (environmentScope === allEnvironments.type || !environmentScope) {
-    return allEnvironments.text;
+  switch (environmentScope) {
+    case ALL_ENVIRONMENTS_OPTION.type || '':
+      return ALL_ENVIRONMENTS_OPTION.text;
+    case NO_ENVIRONMENT_OPTION.type:
+      return NO_ENVIRONMENT_OPTION.text;
+    default:
+      return environmentScope;
   }
-
-  return environmentScope;
 };
 
 /**

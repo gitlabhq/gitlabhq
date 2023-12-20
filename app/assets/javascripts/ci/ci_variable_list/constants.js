@@ -1,7 +1,5 @@
 import { __, s__, sprintf } from '~/locale';
 
-export const ENVIRONMENT_QUERY_LIMIT = 30;
-
 export const MASKED_VALUE_MIN_LENGTH = 8;
 
 export const WHITESPACE_REG_EX = /\s/;
@@ -15,18 +13,13 @@ export const variableTypes = {
   fileType: 'FILE',
 };
 
-export const allEnvironments = {
-  type: '*',
-  text: __('All (default)'),
-};
-
 export const variableOptions = [
   { value: variableTypes.envType, text: __('Variable (default)') },
   { value: variableTypes.fileType, text: __('File') },
 ];
 
 export const defaultVariableState = {
-  environmentScope: allEnvironments.type,
+  environmentScope: '*',
   key: '',
   masked: false,
   protected: false,

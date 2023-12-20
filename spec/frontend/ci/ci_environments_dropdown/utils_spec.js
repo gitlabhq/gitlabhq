@@ -1,13 +1,19 @@
-import { convertEnvironmentScope, mapEnvironmentNames } from '~/ci/ci_variable_list/utils';
-import { allEnvironments } from '~/ci/ci_variable_list/constants';
+import {
+  convertEnvironmentScope,
+  mapEnvironmentNames,
+} from '~/ci/common/private/ci_environments_dropdown';
 
 describe('utils', () => {
   describe('convertEnvironmentScope', () => {
     it('converts the * to the `All environments` text', () => {
-      expect(convertEnvironmentScope('*')).toBe(allEnvironments.text);
+      expect(convertEnvironmentScope('*')).toBe('All (default)');
     });
 
-    it('returns the environment as is if not the *', () => {
+    it('converts the `Not applicable` to the `Not applicable`', () => {
+      expect(convertEnvironmentScope('Not applicable')).toBe('Not applicable');
+    });
+
+    it('returns other environments as-is', () => {
       expect(convertEnvironmentScope('prod')).toBe('prod');
     });
   });

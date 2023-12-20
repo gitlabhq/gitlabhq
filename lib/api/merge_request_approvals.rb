@@ -104,7 +104,8 @@ module API
         put 'reset_approvals', urgency: :low do
           merge_request = find_project_merge_request(params[:merge_request_iid])
 
-          unauthorized! unless current_user.can?(:reset_merge_request_approvals, merge_request)
+          unauthorized! unless current_user.can?(:reset_merge_request_approvals, merge_request) &&
+            !merge_request.merged?
 
           merge_request.approvals.delete_all
 

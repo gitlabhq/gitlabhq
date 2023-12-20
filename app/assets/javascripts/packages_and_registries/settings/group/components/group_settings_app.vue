@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { __ } from '~/locale';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
 import PackagesForwardingSettings from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
 import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
@@ -50,21 +50,13 @@ export default {
     dismissAlert() {
       this.alertMessage = null;
     },
-    handleSuccess(amount = 1) {
-      const successMessage = n__(
-        'Setting saved successfully',
-        'Settings saved successfully',
-        amount,
-      );
+    handleSuccess() {
+      const successMessage = __('Settings saved successfully.');
       this.$toast.show(successMessage);
       this.dismissAlert();
     },
-    handleError(amount = 1) {
-      const errorMessage = n__(
-        'An error occurred while saving the setting',
-        'An error occurred while saving the settings',
-        amount,
-      );
+    handleError() {
+      const errorMessage = __('An error occurred while saving the settings.');
       this.alertMessage = errorMessage;
     },
   },
@@ -81,14 +73,14 @@ export default {
       class="settings-section-no-bottom"
       :package-settings="packageSettings"
       :is-loading="isLoading"
-      @success="handleSuccess(2)"
-      @error="handleError(2)"
+      @success="handleSuccess"
+      @error="handleError"
     />
 
     <packages-forwarding-settings
       :forward-settings="packageSettings"
-      @success="handleSuccess(2)"
-      @error="handleError(2)"
+      @success="handleSuccess"
+      @error="handleError"
     />
 
     <dependency-proxy-settings

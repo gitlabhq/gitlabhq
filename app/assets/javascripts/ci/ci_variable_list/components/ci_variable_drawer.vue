@@ -20,8 +20,8 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
+import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
 import {
-  allEnvironments,
   defaultVariableState,
   DRAWER_EVENT_LABEL,
   EDIT_VARIABLE_ACTION,
@@ -34,7 +34,6 @@ import {
   variableOptions,
   WHITESPACE_REG_EX,
 } from '../constants';
-import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
 
 const trackingMixin = Tracking.mixin({ label: DRAWER_EVENT_LABEL });
@@ -43,7 +42,7 @@ const KEY_REGEX = /^\w+$/;
 export const i18n = {
   addVariable: s__('CiVariables|Add variable'),
   cancel: __('Cancel'),
-  defaultScope: allEnvironments.text,
+  defaultScope: __('All (default)'),
   deleteVariable: s__('CiVariables|Delete variable'),
   editVariable: s__('CiVariables|Edit variable'),
   environments: __('Environments'),

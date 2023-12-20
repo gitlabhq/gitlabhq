@@ -2,8 +2,8 @@
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getProjectEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import { ADD_MUTATION_ACTION, DELETE_MUTATION_ACTION, UPDATE_MUTATION_ACTION } from '../constants';
-import getProjectEnvironments from '../graphql/queries/project_environments.query.graphql';
 import getProjectVariables from '../graphql/queries/project_variables.query.graphql';
 import addProjectVariable from '../graphql/mutations/project_add_variable.mutation.graphql';
 import deleteProjectVariable from '../graphql/mutations/project_delete_variable.mutation.graphql';

@@ -20,7 +20,7 @@ import updateProjectVariable from '~/ci/ci_variable_list/graphql/mutations/proje
 
 import getAdminVariables from '~/ci/ci_variable_list/graphql/queries/variables.query.graphql';
 import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
-import getProjectEnvironments from '~/ci/ci_variable_list/graphql/queries/project_environments.query.graphql';
+import { getProjectEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import getProjectVariables from '~/ci/ci_variable_list/graphql/queries/project_variables.query.graphql';
 
 export const devName = 'dev';

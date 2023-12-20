@@ -4,6 +4,7 @@ module MergeRequests
   class ApprovalService < MergeRequests::BaseService
     def execute(merge_request)
       return unless eligible_for_approval?(merge_request)
+      return if merge_request.merged?
 
       approval = merge_request.approvals.new(
         user: current_user,

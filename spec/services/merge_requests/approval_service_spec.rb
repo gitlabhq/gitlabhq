@@ -16,11 +16,7 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       stub_feature_flags ff_require_saml_auth_to_approve: false
     end
 
-    context 'with invalid approval' do
-      before do
-        allow(merge_request.approvals).to receive(:new).and_return(double(save: false))
-      end
-
+    shared_examples 'no-op call' do
       it 'does not reset approvals' do
         expect(merge_request.approvals).not_to receive(:reset)
 
@@ -47,22 +43,34 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       end
     end
 
+    context 'with invalid approval' do
+      before do
+        allow(merge_request.approvals).to receive(:new).and_return(double(save: false))
+      end
+
+      it_behaves_like 'no-op call'
+    end
+
     context 'with an already approved MR' do
       before do
         merge_request.approvals.create!(user: user)
       end
 
-      it 'does not create an approval' do
-        expect { service.execute(merge_request) }.not_to change { merge_request.approvals.size }
+      it_behaves_like 'no-op call'
+    end
+
+    context 'with a merged MR' do
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      it_behaves_like 'no-op call'
+    end
+
+    context 'user cannot update the merge request' do
+      before do
+        project.add_guest(user)
       end
 
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
-        let(:action) { service.execute(merge_request) }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
-        let(:action) { service.execute(merge_request) }
-      end
+      it_behaves_like 'no-op call'
     end
 
     context 'with valid approval' do
@@ -112,28 +120,6 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       end
 
       it_behaves_like 'triggers GraphQL subscription mergeRequestApprovalStateUpdated' do
-        let(:action) { service.execute(merge_request) }
-      end
-    end
-
-    context 'user cannot update the merge request' do
-      before do
-        project.add_guest(user)
-      end
-
-      it 'does not update approvals' do
-        expect { service.execute(merge_request) }.not_to change { merge_request.approvals.size }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestMergeStatusUpdated' do
-        let(:action) { service.execute(merge_request) }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
-        let(:action) { service.execute(merge_request) }
-      end
-
-      it_behaves_like 'does not trigger GraphQL subscription mergeRequestApprovalStateUpdated' do
         let(:action) { service.execute(merge_request) }
       end
     end

@@ -71,8 +71,8 @@ module Gitlab
             title: title,
             description: description,
             target_project_id: target_project_id,
-            update_title:,
-            update_description:
+            update_title: update_title,
+            update_description: update_description
           )
         else
           create_merge_request(
