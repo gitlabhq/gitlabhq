@@ -61,6 +61,9 @@ To setup ClickHouse as the GitLab data storage:
 1. [Run ClickHouse migrations](#run-clickhouse-migrations).
 1. [Enable the feature flags](#enable-feature-flags).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video walkthrough, see [Setting up Runner Fleet Dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
+
 ### Run and configure ClickHouse
 
 The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://clickhouse.cloud/).

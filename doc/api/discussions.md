@@ -712,7 +712,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "updated_at": "2018-03-03T21:54:39.668Z",
         "system": false,
         "noteable_id": 3,
-        "noteable_type": "Merge request",
+        "noteable_type": "MergeRequest",
         "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
@@ -737,7 +737,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "updated_at": "2018-03-04T13:38:02.127Z",
         "system": false,
         "noteable_id": 3,
-        "noteable_type": "Merge request",
+        "noteable_type": "MergeRequest",
         "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
@@ -767,7 +767,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/discussions
         "updated_at": "2018-03-04T09:17:22.520Z",
         "system": false,
         "noteable_id": 3,
-        "noteable_type": "Merge request",
+        "noteable_type": "MergeRequest",
         "project_id": 5,
         "noteable_iid": null,
         "resolved": false,
@@ -804,7 +804,7 @@ Diff comments also contain position:
         "updated_at": "2018-03-04T09:17:22.520Z",
         "system": false,
         "noteable_id": 3,
-        "noteable_type": "Merge request",
+        "noteable_type": "MergeRequest",
         "project_id": 5,
         "noteable_iid": null,
         "commit_id": "4803c71e6b1833ca72b8b26ef2ecd5adc8a38031",
@@ -864,8 +864,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 ### Create new merge request thread
-
-> The `commit id` entry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47130) in GitLab 13.7.
 
 Creates a new thread to a single project merge request. Similar to creating
 a note but other comments (replies) can be added to it later. For other approaches,

@@ -129,38 +129,7 @@ module API
           'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
           'asana' => ::Integrations::Asana.api_fields,
           'assembla' => ::Integrations::Assembla.api_fields,
-          'bamboo' => [
-            {
-              required: true,
-              name: :bamboo_url,
-              type: String,
-              desc: 'Bamboo root URL like https://bamboo.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :build_key,
-              type: String,
-              desc: 'Bamboo build plan key like'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'A user with API access, if applicable'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'Password of the user'
-            }
-          ],
+          'bamboo' => ::Integrations::Bamboo.api_fields,
           'bugzilla' => [
             {
               required: true,

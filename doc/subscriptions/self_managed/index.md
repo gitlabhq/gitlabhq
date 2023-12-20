@@ -284,10 +284,10 @@ You can renew your subscription starting from 15 days before your subscription e
 
 The [Customers Portal](https://customers.gitlab.com/customers/sign_in) is your
 tool for renewing and modifying your subscription. Before going ahead with renewal,
-sign in and verify or update:
+sign in and go to **Billing account settings**. Verify or update:
 
-- The invoice contact details on the **Account details** page.
-- The credit card on file on the **Payment Methods** page.
+- The credit card on file under the **Payment methods** section.
+- The invoice contact details in the **Company information** section.
 
 NOTE:
 Contact our [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)

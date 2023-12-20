@@ -310,8 +310,9 @@ To renew your subscription:
 Before you renew your subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the **Account details** page, verify or update the invoice contact details.
-1. On the **Payment Methods** page, verify or update the credit card on file.
+1. On the left sidebar, select **Billing account settings**.
+1. Under **Payment methods**, verify or update the credit card on file.
+1. Scroll down to the **Company information** section to verify or update the invoice contact details.
 1. In GitLab, review your list of user accounts and [remove inactive or unwanted users](#remove-users-from-your-subscription).
 
 ### Renew or change a GitLab SaaS subscription

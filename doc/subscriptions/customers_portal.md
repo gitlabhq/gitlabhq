@@ -50,7 +50,7 @@ if required.
 
 The profile owner's personal details are used on invoices. The profile owner's email address is used for the [Customers Portal legacy sign-in](#sign-in-to-customers-portal) and license-related email.
 
-To change profile details, including name, billing address, and email address:
+To change profile details, including name and email address:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **My profile > Profile settings**.
@@ -64,12 +64,69 @@ to another person, after you enter that person's personal details, you must also
 
 ## Change your company details
 
-To change your company details, including company name and VAT number:
+To change your company details, including company name and tax ID:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **My profile > Profile settings**.
-1. Edit **Your company details**.
+1. Select **Billing account settings**.
+1. Scroll down to the **Company information** section.
+1. Edit the company details.
 1. Select **Save changes**.
+
+## Subscription and billing contacts
+
+### Change your subscription contact
+
+The subscription contact is the primary contact for your billing account. They receive subscription event notifications and information about applying subscription.
+
+To change the subscription contact:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Company information** section, then to **Subscription contact**.
+1. To select a different subscription contact, select from the **Billing account manager** dropdown list.
+1. Edit the contact details.
+1. Select **Save changes**.
+
+### Change your billing contact
+
+The billing contact receives all invoices and subscription event notifications.
+
+To change the billing contact:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Company information** section, then to **Billing contact**.
+
+   - To change your billing contact to your subscription contact:
+
+     1. Select **Billing contact is the same as subscription contact**.
+     1. Select **Save changes**.
+
+   - To change your billing contact to a different billing account manager:
+
+     1. Clear the **Billing contact is the same as subscription contact** checkbox.
+     1. Select a different billing account manager from the **User** dropdown list.
+     1. Edit the contact details.
+     1. Select **Save changes**.
+
+   - To change your billing contact to a custom contact:
+
+     1. Clear the **Billing contact is the same as subscription contact** checkbox.
+     1. Select **Enter a custom contact** from the **User** dropdown list.
+     1. Enter the contact details.
+     1. Select **Save changes**.
+
+### Troubleshooting your billing or subscription contact's name
+
+If the billing account manager's email is linked to contacts with different first or last names, you will be prompted to update the name.
+
+If you are the billing account manager, follow the instructions to [update your personal profile](#change-profile-owner-information).
+
+If you are not the billing account manager, notify them to update their personal profile.
+
+### Troubleshooting your subscription contact
+
+If the subscription contact is no longer a billing account manager, you will be prompted to select a new contact. Follow the instructions to [change your subscription contact](#change-your-subscription-contact).
 
 ## Change your payment method
 
@@ -83,7 +140,7 @@ If you would like to use an alternative method to pay,
 To change your payment method:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **My profile > Payment methods**.
+1. On the left sidebar, select **Billing account settings**.
 1. **Edit** an existing payment method's information or **Add new payment method**.
 1. Select **Save Changes**.
 
@@ -93,7 +150,7 @@ Automatic renewal of a subscription is charged to your default payment method. T
 method as the default:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **My profile > Payment methods**.
+1. On the left sidebar, select **Billing account settings**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
 
@@ -104,7 +161,7 @@ Follow this guideline if you have a legacy Customers Portal profile and use an e
 To link a GitLab.com account to your Customers Portal profile:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in?legacy=true) using email and password.
-1. On the Customers Portal page, select **My profile > Profile settings**.
+1. Select **My profile > Profile settings**.
 1. Under **Your GitLab.com account**, select **Link account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
 

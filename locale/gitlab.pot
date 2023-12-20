@@ -7521,6 +7521,12 @@ msgstr ""
 msgid "Badges|Your badges"
 msgstr ""
 
+msgid "Bamboo build plan key (for example, `KEY`)."
+msgstr ""
+
+msgid "Bamboo root URL (for example, `https://bamboo.example.com`)."
+msgstr ""
+
 msgid "BambooService|Atlassian Bamboo"
 msgstr ""
 
@@ -7530,7 +7536,7 @@ msgstr ""
 msgid "BambooService|Bamboo build plan key."
 msgstr ""
 
-msgid "BambooService|Bamboo service root URL."
+msgid "BambooService|Bamboo root URL."
 msgstr ""
 
 msgid "BambooService|Enter new build key"
@@ -7545,7 +7551,7 @@ msgstr ""
 msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}"
 msgstr ""
 
-msgid "BambooService|The user with API access to the Bamboo server."
+msgid "BambooService|User with API access to the Bamboo server."
 msgstr ""
 
 msgid "Banned"
@@ -18554,6 +18560,9 @@ msgid "Enable PlantUML"
 msgstr ""
 
 msgid "Enable SSL verification"
+msgstr ""
+
+msgid "Enable SSL verification. Defaults to `true` (enabled)."
 msgstr ""
 
 msgid "Enable Snowplow tracking"
@@ -29704,7 +29713,7 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
-msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
+msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}"
 msgstr ""
 
 msgid "MemberRole|Actions"
@@ -34713,6 +34722,9 @@ msgid "Password authentication is unavailable."
 msgstr ""
 
 msgid "Password confirmation"
+msgstr ""
+
+msgid "Password of the user."
 msgstr ""
 
 msgid "Password successfully changed"
@@ -52795,6 +52807,9 @@ msgid "User will be blocked! Are you sure?"
 msgstr ""
 
 msgid "User will not be allowed to create possible spam! Are you sure?"
+msgstr ""
+
+msgid "User with API access to the Bamboo server."
 msgstr ""
 
 msgid "User-based escalation rules must have a user with access to the project"

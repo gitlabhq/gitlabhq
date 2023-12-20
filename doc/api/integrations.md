@@ -198,8 +198,8 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `bamboo_url` | string | true | Bamboo root URL (for example, `https://bamboo.example.com`). |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_key` | string | true | Bamboo build plan key like `KEY`. |
-| `username` | string | true | A user with API access, if applicable. |
+| `build_key` | string | true | Bamboo build plan key (for example, `KEY`). |
+| `username` | string | true | User with API access to the Bamboo server. |
 | `password` | string | true | Password of the user. |
 
 ### Disable Atlassian Bamboo

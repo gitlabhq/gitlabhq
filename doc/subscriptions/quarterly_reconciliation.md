@@ -84,9 +84,9 @@ sent and subject to your payment terms.
 If your credit card is declined during the reconciliation process, an email will be sent with the subject `Your GitLab subscription failed to reconcile`. Follow these instructions to update your payment information, and the reconciliation will be automatically retried:
 
 1. Log in to your account at `https://customers.gitlab.com`.
-1. Go to **Payment Methods**.
-1. Select **Add New Payment Method**.
-1. Make sure that the payment method is set as **Default**.
+1. On the left sidebar, select **Billing account settings**.
+1. Under **Payment methods**, select **Add new payment method**.
+1. After the new payment method has been added, select **Edit**, then select **Default** to mark it as the default payment method.
 
 Reconciliation is retried automatically as soon as the payment method is updated.
 
