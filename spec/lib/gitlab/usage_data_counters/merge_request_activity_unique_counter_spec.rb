@@ -55,14 +55,6 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     let(:merge_request) { create(:merge_request) }
     let(:target_project) { merge_request.target_project }
 
-    it_behaves_like 'a tracked merge request unique event' do
-      let(:action) { described_class::MR_USER_CREATE_ACTION }
-    end
-
-    it_behaves_like 'a tracked merge request unique event' do
-      let(:action) { described_class::MR_CREATE_ACTION }
-    end
-
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::MR_USER_CREATE_ACTION }
       let(:project) { target_project }

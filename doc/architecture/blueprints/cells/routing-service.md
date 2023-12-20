@@ -59,20 +59,22 @@ For example:
 
 ## Requirements
 
-| Requirement   | Description                                                       | Priority |
-|---------------|-------------------------------------------------------------------|----------|
-| Discovery     | needs to be able to discover and monitor the health of all Cells. | high     |
-| Security      | only authorized cells can be routed to                            | high     |
-| Single domain | e.g. GitLab.com                                                   | high     |
-| Caching       | can cache routing information for performance                     | high     |
-| [50 ms of increased latency](#low-latency) |                                       | high     |
-| Path-based    | can make routing decision based on path                           | high     |
-| Complexity    | the routing service should be configuration-driven and small      | high     |
-| Stateless     | does not need database, Cells provide all routing information     | medium   |
-| Secrets-based | can make routing decision based on secret (e.g. JWT)              | medium   |
-| Observability | can use existing observability tooling                            | low      |
-| Self-managed  | can be eventually used by [self-managed](goals.md#self-managed)   | low      |
-| Regional      | can route requests to different [regions](goals.md#regions)       | low       |
+| Requirement                                | Description                                                       | Priority |
+|--------------------------------------------|-------------------------------------------------------------------|----------|
+| Discovery                                  | needs to be able to discover and monitor the health of all Cells. | high     |
+| Security                                   | only authorized cells can be routed to                            | high     |
+| Single domain                              | for example GitLab.com                                            | high     |
+| Caching                                    | can cache routing information for performance                     | high     |
+| [50 ms of increased latency](#low-latency) |                                                                   | high     |
+| Path-based                                 | can make routing decision based on path                           | high     |
+| Complexity                                 | the routing service should be configuration-driven and small      | high     |
+| Feature Flags                              | features can be turned on, off, and % rollout                     | high     |
+| Progressive Rollout                        | We can slowly rollout a change                                    | medium   |
+| Stateless                                  | does not need database, Cells provide all routing information     | medium   |
+| Secrets-based                              | can make routing decision based on secret (for example JWT)       | medium   |
+| Observability                              | can use existing observability tooling                            | low      |
+| Self-managed                               | can be eventually used by [self-managed](goals.md#self-managed)   | low      |
+| Regional                                   | can route requests to different [regions](goals.md#regions)       | low      |
 
 ### Low Latency
 

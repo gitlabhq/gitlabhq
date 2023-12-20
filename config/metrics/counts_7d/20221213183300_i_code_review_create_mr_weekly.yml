@@ -9,13 +9,14 @@ status: active
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106869
 time_frame: 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: operational
-instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
 options:
   events:
-  - i_code_review_create_mr
+  - i_code_review_user_create_mr
+events:
+  - name: i_code_review_user_create_mr
 distribution:
 - ce
 - ee
