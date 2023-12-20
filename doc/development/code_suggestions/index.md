@@ -52,5 +52,5 @@ with the deployed staging Model Gateway. To do this:
    ```
 
 1. Restart the GDK.
-1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/self_managed.md#gitlab-163-and-later).
+1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/self_managed.md).
 1. Test out the Code Suggestions feature by opening the Web IDE for a project.

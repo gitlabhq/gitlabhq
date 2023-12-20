@@ -12,7 +12,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   let_it_be(:container_repositories) { [container_repository, container_repositories_delete_scheduled, container_repositories_delete_failed].flatten }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
-  let(:excluded_fields) { %w[pipeline jobs productAnalyticsState] }
+  let(:excluded_fields) { %w[pipeline jobs productAnalyticsState mlModels] }
   let(:container_repositories_fields) do
     <<~GQL
       edges {
@@ -155,7 +155,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   it_behaves_like 'handling graphql network errors with the container registry'
 
   it_behaves_like 'not hitting graphql network errors with the container registry' do
-    let(:excluded_fields) { %w[pipeline jobs tags tagsCount productAnalyticsState] }
+    let(:excluded_fields) { %w[pipeline jobs tags tagsCount productAnalyticsState mlModels] }
   end
 
   it 'returns the total count of container repositories' do

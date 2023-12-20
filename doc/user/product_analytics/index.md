@@ -150,6 +150,8 @@ The `cube_analytics` data type connects to the Cube instance defined when [produ
 All filters and queries are sent to the Cube instance and the returned data is processed by the
 product analytics data source to be rendered by the appropriate visualizations.
 
+Data table visualizations from `cube_analytics` have an additional configuration option for rendering `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links. If `href` contains multiple dimensions, values are joined into a single URL). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
+
 ### Filling missing data
 
 - Introduced in GitLab 16.3 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.

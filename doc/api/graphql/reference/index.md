@@ -11801,6 +11801,43 @@ The edge type for [`MlCandidate`](#mlcandidate).
 | <a id="mlcandidateedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mlcandidateedgenode"></a>`node` | [`MlCandidate`](#mlcandidate) | The item at the end of the edge. |
 
+#### `MlModelConnection`
+
+The connection type for [`MlModel`](#mlmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelconnectionedges"></a>`edges` | [`[MlModelEdge]`](#mlmodeledge) | A list of edges. |
+| <a id="mlmodelconnectionnodes"></a>`nodes` | [`[MlModel]`](#mlmodel) | A list of nodes. |
+| <a id="mlmodelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlModelConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlModelEdge`
+
+The edge type for [`MlModel`](#mlmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlmodeledgenode"></a>`node` | [`MlModel`](#mlmodel) | The item at the end of the edge. |
+
 #### `MlModelVersionConnection`
 
 The connection type for [`MlModelVersion`](#mlmodelversion).
@@ -21288,6 +21325,16 @@ Represents links to perform actions on the candidate.
 | <a id="mlcandidatelinksartifactpath"></a>`artifactPath` | [`String`](#string) | Path to the artifact. |
 | <a id="mlcandidatelinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the candidate. |
 
+### `MLModelLinks`
+
+Represents links to perform actions on the model.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodellinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the model. |
+
 ### `MLModelVersionLinks`
 
 Represents links to perform actions on the model version.
@@ -21296,6 +21343,7 @@ Represents links to perform actions on the model version.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mlmodelversionlinkspackagepath"></a>`packagePath` | [`String`](#string) | Path to the package of the model version. |
 | <a id="mlmodelversionlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the model version. |
 
 ### `MavenMetadata`
@@ -22923,9 +22971,13 @@ Machine learning model in the model registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mlmodel_links"></a>`_links` | [`MLModelLinks!`](#mlmodellinks) | Map of links to perform actions on the model. |
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
+| <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
+| <a id="mlmodellatestversion"></a>`latestVersion` | [`MlModelVersion`](#mlmodelversion) | Latest version of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
+| <a id="mlmodelversioncount"></a>`versionCount` | [`Int`](#int) | Count of versions in the model. |
 | <a id="mlmodelversions"></a>`versions` | [`MlModelVersionConnection`](#mlmodelversionconnection) | Versions of the model. (see [Connections](#connections)) |
 
 ### `MlModelVersion`
@@ -25102,6 +25154,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
+
+##### `Project.mlModels`
+
+Finds machine learning models.
+
+WARNING:
+**Introduced** in 16.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MlModelConnection`](#mlmodelconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmlmodelsname"></a>`name` | [`String`](#string) | Search for names that include the string. |
+| <a id="projectmlmodelsorderby"></a>`orderBy` | [`MlModelsOrderBy`](#mlmodelsorderby) | Ordering column. Default is created_at. |
+| <a id="projectmlmodelssort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is desc. |
 
 ##### `Project.nestedEnvironments`
 
@@ -30819,6 +30893,17 @@ Milestone ID wildcard values.
 | <a id="milestonewildcardidnone"></a>`NONE` | No milestone is assigned. |
 | <a id="milestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and started (start date <= today). |
 | <a id="milestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is due in the future (due date > today). |
+
+### `MlModelsOrderBy`
+
+Values for ordering machine learning models by a specific field.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mlmodelsorderbycreated_at"></a>`CREATED_AT` | Ordered by creation time. |
+| <a id="mlmodelsorderbyid"></a>`ID` | Ordered by id. |
+| <a id="mlmodelsorderbyname"></a>`NAME` | Ordered by name. |
+| <a id="mlmodelsorderbyupdated_at"></a>`UPDATED_AT` | Ordered by update time. |
 
 ### `MoveType`
 

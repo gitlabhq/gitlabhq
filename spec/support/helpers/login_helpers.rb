@@ -157,7 +157,7 @@ module LoginHelpers
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
-  def configure_mock_auth(provider, uid, email, response_object: nil, additional_info: {}, name: 'mockuser')
+  def configure_mock_auth(provider, uid, email, response_object: nil, additional_info: {}, name: 'mockuser', groups: [])
     # The mock_auth configuration allows you to set per-provider (or default)
     # authentication hashes to return during integration testing.
 
@@ -180,7 +180,8 @@ module LoginHelpers
               name: 'mockuser',
               email: email,
               image: 'mock_user_thumbnail_url'
-            }
+            },
+            'groups' => groups
           }
         ),
         response_object: response_object
@@ -188,9 +189,9 @@ module LoginHelpers
     }).merge(additional_info) { |_, old_hash, new_hash| old_hash.merge(new_hash) }
   end
 
-  def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil, name: 'mockuser')
+  def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil, name: 'mockuser', groups: [])
     configure_mock_auth(
-      provider, uid, email, additional_info: additional_info, response_object: response_object, name: name
+      provider, uid, email, additional_info: additional_info, response_object: response_object, name: name, groups: groups
     )
 
     original_env_config_omniauth_auth = Rails.application.env_config['omniauth.auth']

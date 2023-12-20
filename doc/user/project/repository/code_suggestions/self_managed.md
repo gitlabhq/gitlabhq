@@ -28,16 +28,19 @@ Learn about [data usage when using Code Suggestions](index.md#code-suggestions-d
 ## Enable Code Suggestions on self-managed GitLab
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. Available to a percentage of users.
+> - [Enabled self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8.
 
 When you enable Code Suggestions for your self-managed instance, you:
 
 - Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 - Acknowledge that GitLab sends data from the instance, including personal data, to GitLab.com infrastructure.
 
-How you enable Code Suggestions for your instance differs depending on your version of GitLab.
+How you enable Code Suggestions for your instance differs depending on your
+version of GitLab. This setting is visible only in self-managed GitLab instances.
 
-### GitLab 16.3 and later **(PREMIUM)**
+::Tabs
+
+:::TabTitle GitLab 16.3 and later **(PREMIUM)**
 
 Prerequisites:
 
@@ -53,17 +56,12 @@ To enable Code Suggestions for your self-managed GitLab instance:
    In GitLab 16.3, you do not need to enter anything into the **Personal access token** field.
    In GitLab 16.4 and later, there is no **Personal access token** field.
 1. Select **Save changes**.
-
-This setting is visible only in self-managed GitLab instances.
-
-WARNING:
-In GitLab 16.2 and earlier, if you clear the **Turn on Code Suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
-
-To make sure Code Suggestions works immediately, you must [manually synchronize your subscription](#manually-synchronize-your-subscription).
+1. To make sure Code Suggestions works immediately, you must
+   [manually synchronize your subscription](#manually-synchronize-your-subscription).
 
 The users in your instance can now use Code Suggestions.
 
-### GitLab 16.2 and earlier
+:::TabTitle GitLab 16.2 and earlier
 
 FLAG:
 On self-managed GitLab 16.0 and earlier, GitLab Duo Code Suggestions is not available. To use this feature, you must have GitLab 16.1 or later. For optimal performance and full feature access, you should upgrade to GitLab 16.3 or later, which supports cloud licensing.
@@ -75,7 +73,7 @@ Prerequisites:
 - You have a [GitLab SaaS account](https://gitlab.com/users/sign_up). You do not need to have a GitLab SaaS subscription.
 
 NOTE:
-If you do not have a customer success manager, you cannot participate in the free trial of Code Suggestions on self-managed GitLab. Upgrade to GitLab 16.3 to [perform self-service onboarding](#gitlab-163-and-later).
+If you do not have a customer success manager, you cannot participate in the free trial of Code Suggestions on self-managed GitLab. Upgrade to GitLab 16.3 or later to perform self-service onboarding.
 
 Then, you will:
 
@@ -83,7 +81,7 @@ Then, you will:
 1. Enable Code Suggestions for the instance.
 1. [Request early access](#request-access-to-code-suggestions) to the Code Suggestions Beta.
 
-#### Enable Code Suggestions for your SaaS account
+### Enable Code Suggestions for your SaaS account
 
 To enable Code Suggestions for your GitLab SaaS account:
 
@@ -94,7 +92,7 @@ To enable Code Suggestions for your GitLab SaaS account:
 1. In the **Code Suggestions** section, select **Enable Code Suggestions**.
 1. Select **Save changes**.
 
-#### Enable Code Suggestions for the instance
+### Enable Code Suggestions for the instance
 
 To enable Code Suggestions for your self-managed GitLab instance:
 
@@ -110,7 +108,7 @@ This setting is visible only in self-managed GitLab instances.
 WARNING:
 If you clear the **Turn on Code Suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
-#### Request access to Code Suggestions
+### Request access to Code Suggestions
 
 GitLab provisions access on a customer-by-customer basis for Code Suggestions
 on self-managed instances. To request access, contact your customer success manager.
@@ -120,7 +118,7 @@ Your customer success manager then provisions access by commenting on [issue 415
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions.
 
-### Configure network and proxy settings
+## Configure network and proxy settings
 
 Configure any firewalls to allow outbound connections to `https://codesuggestions.gitlab.com/`.
 
@@ -128,7 +126,7 @@ If your GitLab instance uses an HTTP proxy server to access the internet, ensure
 the server is configured to allow outbound connections, including the
 [`gitlab_workhorse` environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
-### Upgrade GitLab
+## Upgrade GitLab
 
 In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement for Code Suggestions:
 
@@ -142,7 +140,7 @@ to continue having early access to Code Suggestions, you must:
 1. Make sure you have the latest version of your [IDE extension](index.md#supported-editor-extensions).
 1. [Manually synchronize your subscription](#manually-synchronize-your-subscription).
 
-#### Manually synchronize your subscription
+### Manually synchronize your subscription
 
 You must [manually synchronize your subscription](../../../../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
@@ -150,6 +148,8 @@ You must [manually synchronize your subscription](../../../../subscriptions/self
 - You already have a Premium or Ultimate tier subscription and have just upgraded to GitLab 16.3.
 
 Without the manual synchronization, it might take up to 24 hours to active Code Suggestions on your instance.
+
+::EndTabs
 
 ## Use Code Suggestions
 

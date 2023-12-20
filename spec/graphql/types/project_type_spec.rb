@@ -41,7 +41,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
-      ci_cd_settings detailed_import_status value_streams
+      ci_cd_settings detailed_import_status value_streams ml_models
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -530,6 +530,13 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { described_class.fields['incidentManagementTimelineEventTags'] }
 
     it { is_expected.to have_graphql_type(Types::IncidentManagement::TimelineEventTagType) }
+  end
+
+  describe 'mlModels field' do
+    subject { described_class.fields['mlModels'] }
+
+    it { is_expected.to have_graphql_type(Types::Ml::ModelType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ml::FindModelsResolver) }
   end
 
   describe 'agent_configurations' do

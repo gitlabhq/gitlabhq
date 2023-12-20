@@ -147,3 +147,10 @@ Code Suggestions do not prevent you from writing code in your IDE.
 ## Feedback
 
 Let us know about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).
+
+## Troubleshooting
+
+### Disable Code Suggestions
+
+Individual users can disable Code Suggestions by disabling the feature in their
+[installed IDE editor extension](index.md#supported-editor-extensions).

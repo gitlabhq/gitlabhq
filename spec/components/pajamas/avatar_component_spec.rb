@@ -5,16 +5,25 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:email) { Pajamas::AvatarEmail.new('kitty@cat.com') }
 
   let(:options) { {} }
 
   before do
-    render_inline(described_class.new(record, **options))
+    render_inline(described_class.new(item, **options))
   end
 
   describe "avatar shape" do
     context "for a User" do
-      let(:record) { user }
+      let(:item) { user }
+
+      it "has a circle shape" do
+        expect(page).to have_css ".gl-avatar.gl-avatar-circle"
+      end
+    end
+
+    context "for an Email" do
+      let(:item) { email }
 
       it "has a circle shape" do
         expect(page).to have_css ".gl-avatar.gl-avatar-circle"
@@ -22,7 +31,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
     end
 
     context "for a Project" do
-      let(:record) { project }
+      let(:item) { project }
 
       it "has default shape (rect)" do
         expect(page).to have_css ".gl-avatar"
@@ -31,7 +40,7 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
     end
 
     context "for a Group" do
-      let(:record) { group }
+      let(:item) { group }
 
       it "has default shape (rect)" do
         expect(page).to have_css ".gl-avatar"
@@ -42,11 +51,11 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
 
   describe "avatar image" do
     context "when it has an uploaded image" do
-      let(:record) { project }
+      let(:item) { project }
 
       before do
-        allow(record).to receive(:avatar_url).and_return "/example.png"
-        render_inline(described_class.new(record, **options))
+        allow(item).to receive(:avatar_url).and_return "/example.png"
+        render_inline(described_class.new(item, **options))
       end
 
       it "uses the avatar_url as image src" do
@@ -73,14 +82,14 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
     end
 
     context "when a project or group has no uploaded image" do
-      let(:record) { project }
+      let(:item) { project }
 
-      it "uses an identicon with the record's initial" do
-        expect(page).to have_css "div.gl-avatar.gl-avatar-identicon", text: record.name[0].upcase
+      it "uses an identicon with the item's initial" do
+        expect(page).to have_css "div.gl-avatar.gl-avatar-identicon", text: item.name[0].upcase
       end
 
-      context "when the record has no id" do
-        let(:record) { build :group }
+      context "when the item has no id" do
+        let(:item) { build :group }
 
         it "uses an identicon with default background color" do
           expect(page).to have_css "div.gl-avatar.gl-avatar-identicon-bg1"
@@ -89,16 +98,34 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
     end
 
     context "when a user has no uploaded image" do
-      let(:record) { user }
+      let(:item) { user }
 
       it "uses a gravatar" do
         expect(rendered_content).to match /gravatar\.com/
       end
     end
+
+    context "when an email has no linked user" do
+      context "when the email is blank" do
+        let(:item) { Pajamas::AvatarEmail.new('') }
+
+        it "uses the default avatar" do
+          expect(rendered_content).to match /no_avatar/
+        end
+      end
+
+      context "when the email is not blank" do
+        let(:item) { email }
+
+        it "uses a agravatar" do
+          expect(rendered_content).to match /gravatar\.com/
+        end
+      end
+    end
   end
 
   describe "options" do
-    let(:record) { user }
+    let(:item) { user }
 
     describe "alt" do
       context "with a value" do
@@ -110,8 +137,8 @@ RSpec.describe Pajamas::AvatarComponent, type: :component do
       end
 
       context "without a value" do
-        it "uses the record's name as alt text" do
-          expect(page).to have_css ".gl-avatar[alt='#{record.name}']"
+        it "uses the item's name as alt text" do
+          expect(page).to have_css ".gl-avatar[alt='#{item.name}']"
         end
       end
     end

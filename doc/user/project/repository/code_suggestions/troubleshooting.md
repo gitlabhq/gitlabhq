@@ -14,7 +14,6 @@ If Code Suggestions are not displayed, and you have [installed a supported IDE e
 
 In GitLab, ensure Code Suggestions is enabled:
 
-- [For your user account](../../../profile/preferences.md#enable-code-suggestions).
 - [For **all** top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
 ### Code Suggestions not displayed in VS Code or GitLab WebIDE

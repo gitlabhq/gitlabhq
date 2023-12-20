@@ -2194,6 +2194,8 @@ class MergeRequest < ApplicationRecord
   attr_accessor :skip_fetch_ref
 
   def merge_base_pipelines
+    return ::Ci::Pipeline.none unless actual_head_pipeline
+
     target_branch_pipelines_for(sha: actual_head_pipeline.target_sha)
   end
 

@@ -51119,6 +51119,16 @@ msgstr ""
 msgid "Tracing"
 msgstr ""
 
+msgid "Tracing|%{count} match"
+msgid_plural "Tracing|%{count} matches"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Tracing|%{count} span"
+msgid_plural "Tracing|%{count} spans"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Tracing|%{ms} ms"
 msgstr ""
 

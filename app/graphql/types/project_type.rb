@@ -663,6 +663,12 @@ module Types
       null: true,
       resolver: Resolvers::Analytics::CycleAnalytics::ValueStreamsResolver
 
+    field :ml_models, ::Types::Ml::ModelType.connection_type,
+      null: true,
+      alpha: { milestone: '16.8' },
+      description: 'Finds machine learning models',
+      resolver: Resolvers::Ml::FindModelsResolver
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
