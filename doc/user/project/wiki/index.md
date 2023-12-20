@@ -94,8 +94,12 @@ Users with at least the Developer role can create new wiki pages:
 
 Wikis are based on Git repositories, so you can clone them locally and edit
 them like you would do with every other Git repository. To clone a wiki repository
-locally, select **Clone repository** from the right-hand sidebar of any wiki page,
-and follow the on-screen instructions.
+locally:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Wiki**.
+1. On the right sidebar, select **Clone repository**.
+1. Follow the on-screen instructions.
 
 Files you add to your wiki locally must use one of the following
 supported extensions, depending on the markup language you wish to use.
@@ -155,7 +159,9 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 ## Delete a wiki page
 
-You need at least the Developer role to delete a wiki page:
+Prerequisites:
+
+- You must have at least the Developer role.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
@@ -166,7 +172,9 @@ You need at least the Developer role to delete a wiki page:
 
 ## Move a wiki page
 
-You need at least the Developer role to move a wiki page:
+Prerequisites:
+
+- You must have at least the Developer role.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
@@ -245,8 +253,11 @@ Commits to wikis are not counted in [repository analytics](../../analytics/repos
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
 
-You need at least the Developer role to customize the wiki
-navigation sidebar. This process creates a wiki page named `_sidebar` which fully
+Prerequisites:
+
+- You must have at least the Developer role.
+
+This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
@@ -312,7 +323,7 @@ To disable a project's internal wiki:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Scroll down to find **Wiki** and toggle it off (in gray).
+1. Scroll down to find and turn off the **Wiki** toggle (in gray).
 1. Select **Save changes**.
 
 The internal wiki is now disabled, and users and project members:

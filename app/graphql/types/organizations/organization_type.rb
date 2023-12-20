@@ -43,6 +43,10 @@ module Types
         null: false,
         description: 'Path of the organization.',
         alpha: { milestone: '16.4' }
+      field :projects, Types::ProjectType.connection_type, null: false,
+        description: 'Projects within this organization that the user has access to.',
+        alpha: { milestone: '16.8' },
+        resolver: ::Resolvers::Organizations::ProjectsResolver
       field :web_url,
         GraphQL::Types::String,
         null: false,

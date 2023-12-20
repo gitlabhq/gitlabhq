@@ -111,6 +111,7 @@ module Types
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, alpha: { milestone: '15.9' }
     mount_mutation Mutations::Projects::Star, alpha: { milestone: '16.7' }
     mount_mutation Mutations::BranchRules::Update, alpha: { milestone: '16.7' }
+    mount_mutation Mutations::BranchRules::Create, alpha: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create
     mount_mutation Mutations::Releases::Update
     mount_mutation Mutations::Releases::Delete

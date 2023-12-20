@@ -424,6 +424,7 @@ RSpec.configure do |config|
   config.after do
     Fog.unmock! if Fog.mock?
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
+    Gitlab::ApplicationSettingFetcher.clear_in_memory_application_settings!
 
     # Reset all feature flag stubs to default for testing
     stub_all_feature_flags

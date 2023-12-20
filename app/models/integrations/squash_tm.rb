@@ -7,12 +7,14 @@ module Integrations
     field :url,
       placeholder: 'https://your-instance.squashcloud.io/squash/plugin/xsquash4gitlab/webhook/issue',
       title: -> { s_('SquashTmIntegration|Squash TM webhook URL') },
+      description: -> { s_('URL of the Squash TM webhook.') },
       exposes_secrets: true,
       required: true
 
     field :token,
       type: :password,
       title: -> { s_('SquashTmIntegration|Secret token (optional)') },
+      description: -> { s_('Secret token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       required: false

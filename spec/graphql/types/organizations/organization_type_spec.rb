@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Organization'], feature_category: :cell do
-  let(:expected_fields) { %w[avatar_url description description_html groups id name organization_users path web_url] }
+  let(:expected_fields) do
+    %w[avatar_url description description_html groups id name organization_users path projects web_url]
+  end
 
   specify { expect(described_class.graphql_name).to eq('Organization') }
   specify { expect(described_class).to require_graphql_authorizations(:read_organization) }

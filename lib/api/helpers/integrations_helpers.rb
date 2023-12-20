@@ -879,20 +879,7 @@ module API
               desc: 'The product ID of ZenTao project'
             }
           ],
-          'squash-tm' => [
-            {
-              required: true,
-              name: :url,
-              type: String,
-              desc: 'The Squash TM webhook URL'
-            },
-            {
-              required: false,
-              name: :token,
-              type: String,
-              desc: 'The secret token'
-            }
-          ]
+          'squash-tm' => ::Integrations::SquashTm.api_fields
         }
       end
 

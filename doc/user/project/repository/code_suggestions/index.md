@@ -18,8 +18,10 @@ Write code more efficiently by using generative AI to suggest code while you're 
 
 With Code Suggestions, you get:
 
-- Code Completion, which suggests completions the current line you are typing. These suggestions are usually low latency.
-- Code Generation, which generates code based on a natural language code comment block. Responses for code generation are streamed in VS Code to begin giving results quickly. In other IDEs, response time can exceed multiple seconds.
+- Code Completion, which suggests completions to the current line you are typing. These suggestions are usually low latency.
+- Code Generation, which generates code based on a natural language code comment block. 
+  - Algorithms or large code blocks may take more than 10 seconds to generate.
+  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block. 
 
 ## Start using Code Suggestions
 
@@ -30,10 +32,10 @@ GitLab Duo Code Suggestions are available:
 - In the GitLab Web IDE.
 
 <div class="video-fallback">
-  <a href="https://youtu.be/wAYiy05fjF0">View how to setup and use GitLab Duo Code Suggestions</a>.
+  <a href="https://youtu.be/xQUlrbIWo8o">View how to setup and use GitLab Duo Code Suggestions</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/wAYiy05fjF0" frameborder="0" allowfullscreen> </iframe>
+  <iframe src="https://www.youtube-nocookie.com/embed/xQUlrbIWo8o" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).

@@ -97,32 +97,23 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
       expect(described_class.metrics_sample_interval).to be(15)
     end
 
-    context 'when ENV["IN_MEMORY_APPLICATION_SETTINGS"] is true' do
-      before do
-        stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'true')
-      end
+    it 'retrieves settings using ApplicationSettingFetcher' do
+      expect(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_call_original
 
-      it 'returns an in-memory ApplicationSetting object' do
-        expect(ApplicationSetting).not_to receive(:current)
-
-        expect(described_class.current_application_settings).to be_a(ApplicationSetting)
-        expect(described_class.current_application_settings).not_to be_persisted
-      end
+      described_class.home_page_url
     end
 
     context 'in a Rake task with DB unavailable' do
       before do
         allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+        allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_return(nil)
+
         # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
         # during the initialization phase of the test suite, so instead let's mock the internals of it
         allow(ApplicationSetting.connection).to receive(:active?).and_return(false)
       end
 
       context 'and no settings in cache' do
-        before do
-          expect(ApplicationSetting).not_to receive(:current)
-        end
-
         it 'returns a FakeApplicationSettings object' do
           expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
         end

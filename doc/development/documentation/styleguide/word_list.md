@@ -239,6 +239,22 @@ Use **text box** to refer to the UI field. Do not use **field** or **box**. For 
 
 - In the **Variable name** text box, enter a value.
 
+## branch
+
+Use **branch** by itself to describe a branch. For specific branches, use these terms only:
+
+- **default branch**: The primary branch in the repository. Users can use the UI to set the default
+  branch. For examples that use the default branch, use `main` instead of [`master`](#master).
+- **source branch**: The branch you're merging from.
+- **target branch**: The branch you're merging to.
+- **current branch**: The branch you have checked out.
+  This branch might be the default branch, a branch you've created, a source branch, or some other branch.
+
+Do not use the terms **feature branch** or **merge request branch**. Be as specific as possible. For example:
+
+- The branch you have checked out...
+- The branch you added commits to...
+
 ## bullet
 
 Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. If you need to be less ambiguous, you can use:
@@ -427,13 +443,6 @@ Instead of:
 
 - Data are collected.
 - The data show a performance increase.
-
-## default branch
-
-Use **default branch** to refer generically to the primary branch in the repository.
-Users can set the default branch by using a UI setting.
-
-For examples that use the default branch, use `main` instead of [`master`](#master).
 
 ## delete
 
@@ -660,6 +669,10 @@ For example, use:
 Instead of:
 
 - Use the merge request feature to incorporate changes into the target branch.
+
+## feature branch
+
+Do not use **feature branch**. See [branch](#branch).
 
 ## field
 
@@ -1083,7 +1096,7 @@ Do not use **manpower**. Use words like **workforce** or **GitLab team members**
 
 ## master
 
-Do not use `master`. Use `main` when you need a sample [default branch name](#default-branch).
+Do not use **master**. Use **main** when you need a sample [default branch name](#branch).
 ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## may, might
@@ -1114,6 +1127,10 @@ For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.c
 
 When you add a [user account](#user-account) to a group or project,
 the user account becomes a **member**.
+
+## merge request branch
+
+Do not use **merge request branch**. See [branch](#branch).
 
 ## merge requests
 

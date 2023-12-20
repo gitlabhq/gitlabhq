@@ -482,11 +482,11 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         it { is_expected.to match_array([internal_project]) }
       end
 
-      describe 'filter by organization_id' do
+      describe 'filter by organization' do
         let_it_be(:organization) { create(:organization) }
         let_it_be(:organization_project) { create(:project, organization: organization) }
 
-        let(:params) { { organization_id: organization.id } }
+        let(:params) { { organization: organization } }
 
         before do
           organization_project.add_maintainer(current_user)

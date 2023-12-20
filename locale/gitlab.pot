@@ -43091,6 +43091,9 @@ msgstr ""
 msgid "Secret token"
 msgstr ""
 
+msgid "Secret token."
+msgstr ""
+
 msgid "SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?"
 msgstr ""
 
@@ -51609,6 +51612,9 @@ msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{
 msgstr ""
 
 msgid "URL of the Grafana instance to link to from the Metrics Dashboard menu item."
+msgstr ""
+
+msgid "URL of the Squash TM webhook."
 msgstr ""
 
 msgid "URL of the external Spam Check endpoint"

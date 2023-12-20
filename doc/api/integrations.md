@@ -1423,7 +1423,7 @@ Parameters:
 | Parameter               | Type   | Required | Description                   |
 |-------------------------|--------|----------|-------------------------------|
 | `url`                   | string | yes      | URL of the Squash TM webhook. |
-| `token`                 | string | no       | Optional token.               |
+| `token`                 | string | no       | Secret token.                 |
 
 ### Disable Squash TM
 

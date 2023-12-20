@@ -1945,6 +1945,30 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.branchRuleCreate`
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `BranchRuleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchrulecreatename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
+| <a id="mutationbranchrulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path to the project that the branch is associated with. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulecreatebranchrule"></a>`branchRule` | [`BranchRule`](#branchrule) | Branch rule after mutation. |
+| <a id="mutationbranchrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchrulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.branchRuleUpdate`
 
 WARNING:
@@ -23335,6 +23359,7 @@ Active period time range for on-call rotation.
 | <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name of the organization. |
 | <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Users with access to the organization. |
 | <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path of the organization. |
+| <a id="organizationprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. Projects within this organization that the user has access to. |
 | <a id="organizationweburl"></a>`webUrl` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.6. This feature is an Experiment. It can be changed or removed at any time. Web URL of the organization. |
 
 #### Fields with arguments

@@ -441,6 +441,23 @@ To resolve this, remove the `noexec` option from the file system mount. An alter
 
 Because Gitaly commit signing is headless and not associated with a specific user, the GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
 
+### Gitaly logs show errors in `info` messages
+
+Because of a bug [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6201) in GitLab 16.3, additional entries were written to the
+[Gitaly logs](../logs/index.md#gitaly-logs). These log entries contained `"level":"info"` but the `msg` string appeared to contain an error.
+
+For example:
+
+```json
+{"level":"info","msg":"[core] [Server #3] grpc: Server.Serve failed to create ServerTransport: connection error: desc = \"ServerHandshake(\\\"x.x.x.x:x\\\") failed: wrapped server handshake: EOF\"","pid":6145,"system":"system","time":"2023-12-14T21:20:39.999Z"}
+```
+
+The reason for this log entry is that the underlying gRPC library sometimes output verbose transportation logs. These log entries appear to be errors but are, in general,
+safe to ignore.
+
+This bug was [fixed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6513/) in GitLab 16.4.5, 16.5.5, and 16.6.0, which prevents these types of messages from
+being written to the Gitaly logs.
+
 ## Troubleshoot Praefect (Gitaly Cluster)
 
 The following sections provide possible solutions to Gitaly Cluster errors.
