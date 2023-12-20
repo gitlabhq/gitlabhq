@@ -22,6 +22,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    disableInlineEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      checkboxes: [],
+    };
   },
   computed: {
     descriptionText() {
@@ -32,6 +42,12 @@ export default {
     },
     descriptionEmpty() {
       return this.descriptionHtml?.trim() === '';
+    },
+    showEmptyDescription() {
+      return this.descriptionEmpty && !this.disableInlineEditing;
+    },
+    showEditButton() {
+      return this.canEdit && !this.disableInlineEditing;
     },
   },
   watch: {
@@ -96,9 +112,11 @@ export default {
 <template>
   <div class="gl-mb-5">
     <div class="gl-display-inline-flex gl-align-items-center gl-mb-3">
-      <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
+      <label v-if="!disableInlineEditing" class="d-block col-form-label gl-mr-5">{{
+        __('Description')
+      }}</label>
       <gl-button
-        v-if="canEdit"
+        v-if="showEditButton"
         v-gl-tooltip
         class="gl-ml-auto"
         icon="pencil"
@@ -109,9 +127,9 @@ export default {
       />
     </div>
 
-    <div v-if="descriptionEmpty" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
+    <div v-if="showEmptyDescription" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
     <div
-      v-else
+      v-else-if="!descriptionEmpty"
       ref="gfm-content"
       v-safe-html="descriptionHtml"
       class="md gl-mb-5 gl-min-h-8 gl-clearfix"

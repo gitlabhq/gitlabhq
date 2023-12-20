@@ -25,13 +25,20 @@ describe('GroupsView', () => {
     newGroupPath: '/groups/new',
   };
 
+  const defaultPropsData = {
+    listItemClass: 'gl-px-5',
+  };
+
   const createComponent = ({ mockResolvers = resolvers, propsData = {} } = {}) => {
     mockApollo = createMockApollo([], mockResolvers);
 
     wrapper = shallowMountExtended(GroupsView, {
       apolloProvider: mockApollo,
       provide: defaultProvide,
-      propsData,
+      propsData: {
+        ...defaultPropsData,
+        ...propsData,
+      },
     });
   };
 
@@ -115,6 +122,7 @@ describe('GroupsView', () => {
         expect(wrapper.findComponent(GroupsList).props()).toEqual({
           groups: formatGroups(organizationGroups.nodes),
           showGroupIcon: true,
+          listItemClass: defaultPropsData.listItemClass,
         });
       });
     });

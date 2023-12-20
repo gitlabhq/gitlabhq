@@ -19,6 +19,7 @@ import WorkItemRelationships from '~/work_items/components/work_item_relationshi
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
+import WorkItemTitleWithEdit from '~/work_items/components/work_item_title_with_edit.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
@@ -81,6 +82,8 @@ describe('WorkItemDetail component', () => {
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
+  const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
+  const findWorkItemTitleWithEdit = () => wrapper.findComponent(WorkItemTitleWithEdit);
 
   const createComponent = ({
     isGroup = false,
@@ -683,6 +686,67 @@ describe('WorkItemDetail component', () => {
 
       it('has the right sidebar', () => {
         expect(findRightSidebar().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('edit button for work item title and description', () => {
+    describe('when `workItemsMvc2Enabled` is false', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: false });
+        await waitForPromises();
+      });
+
+      it('does not show the edit button', () => {
+        expect(findEditButton().exists()).toBe(false);
+      });
+
+      it('renders the work item title inline editable component', () => {
+        expect(findWorkItemTitle().exists()).toBe(true);
+      });
+
+      it('does not render the work item title with edit component', () => {
+        expect(findWorkItemTitleWithEdit().exists()).toBe(false);
+      });
+    });
+
+    describe('when `workItemsMvc2Enabled` is true', () => {
+      beforeEach(async () => {
+        createComponent({ workItemsMvc2Enabled: true });
+        await waitForPromises();
+      });
+
+      it('shows the edit button', () => {
+        expect(findEditButton().exists()).toBe(true);
+      });
+
+      it('does not render the work item title inline editable component', () => {
+        expect(findWorkItemTitle().exists()).toBe(false);
+      });
+
+      it('renders the work item title with edit component', () => {
+        expect(findWorkItemTitleWithEdit().exists()).toBe(true);
+        expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(false);
+      });
+
+      it('work item description is not shown in edit mode by default', () => {
+        expect(findWorkItemDescription().props('editMode')).toBe(false);
+      });
+
+      describe('when edit is clicked', () => {
+        beforeEach(async () => {
+          findEditButton().vm.$emit('click');
+          await nextTick();
+        });
+
+        it('work item title component shows in edit mode', () => {
+          expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(true);
+        });
+
+        it('work item description component shows in edit mode', () => {
+          expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
+          expect(findWorkItemDescription().props('editMode')).toBe(true);
+        });
       });
     });
   });

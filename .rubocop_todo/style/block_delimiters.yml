@@ -59,7 +59,6 @@ Style/BlockDelimiters:
     - 'spec/models/packages/npm/metadatum_spec.rb'
     - 'spec/models/packages/protection/rule_spec.rb'
     - 'spec/models/packages/pypi/metadatum_spec.rb'
-    - 'spec/models/users/in_product_marketing_email_spec.rb'
     - 'spec/models/users/phone_number_validation_spec.rb'
     - 'spec/models/users/project_callout_spec.rb'
     - 'spec/presenters/tree_entry_presenter_spec.rb'

@@ -284,8 +284,6 @@ class User < MainClusterwide::ApplicationRecord
 
   has_many :reviews, foreign_key: :author_id, inverse_of: :author
 
-  has_many :in_product_marketing_emails, class_name: '::Users::InProductMarketingEmail'
-
   has_many :timelogs
 
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent

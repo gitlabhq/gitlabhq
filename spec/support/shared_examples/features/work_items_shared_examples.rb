@@ -3,6 +3,13 @@
 RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
 
+  before do
+    stub_feature_flags(work_items_mvc_2: false)
+
+    page.refresh
+    wait_for_all_requests
+  end
+
   it 'successfully shows and changes the title of the work item' do
     expect(work_item.reload.title).to eq work_item.title
 
@@ -299,54 +306,67 @@ RSpec.shared_examples 'work items labels' do
 end
 
 RSpec.shared_examples 'work items description' do
-  it 'shows GFM autocomplete', :aggregate_failures do
-    click_button "Edit description"
-    fill_in _('Description'), with: "@#{user.username}"
+  context 'for work_items_mvc_2 FF' do
+    [true, false].each do |work_items_mvc_2_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
+      let(:edit_button) { work_items_mvc_2_flag ? 'Edit' : 'Edit description' }
 
-    page.within('.atwho-container') do
-      expect(page).to have_text(user.name)
-    end
-  end
+      before do
+        stub_feature_flags(work_items_mvc_2: work_items_mvc_2_flag)
 
-  it 'autocompletes available quick actions', :aggregate_failures do
-    click_button "Edit description"
-    fill_in _('Description'), with: '/'
+        page.refresh
+        wait_for_all_requests
+      end
 
-    page.within('#at-view-commands') do
-      expect(page).to have_text("title")
-      expect(page).to have_text("shrug")
-      expect(page).to have_text("tableflip")
-      expect(page).to have_text("close")
-      expect(page).to have_text("cc")
-    end
-  end
+      it 'shows GFM autocomplete', :aggregate_failures do
+        click_button edit_button
+        fill_in _('Description'), with: "@#{user.username}"
 
-  context 'on conflict' do
-    let_it_be(:other_user) { create(:user) }
-    let(:expected_warning) { 'Someone edited the description at the same time you did.' }
+        page.within('.atwho-container') do
+          expect(page).to have_text(user.name)
+        end
+      end
 
-    before do
-      project.add_developer(other_user)
-    end
+      it 'autocompletes available quick actions', :aggregate_failures do
+        click_button edit_button
+        fill_in _('Description'), with: '/'
 
-    it 'shows conflict message when description changes', :aggregate_failures do
-      click_button "Edit description"
+        page.within('#at-view-commands') do
+          expect(page).to have_text("title")
+          expect(page).to have_text("shrug")
+          expect(page).to have_text("tableflip")
+          expect(page).to have_text("close")
+          expect(page).to have_text("cc")
+        end
+      end
 
-      ::WorkItems::UpdateService.new(
-        container: work_item.project,
-        current_user: other_user,
-        params: { description: "oh no!" }
-      ).execute(work_item)
+      context 'on conflict' do
+        let_it_be(:other_user) { create(:user) }
+        let(:expected_warning) { 'Someone edited the description at the same time you did.' }
 
-      wait_for_requests
+        before do
+          project.add_developer(other_user)
+        end
 
-      fill_in _('Description'), with: 'oh yeah!'
+        it 'shows conflict message when description changes', :aggregate_failures do
+          click_button edit_button
 
-      expect(page).to have_text(expected_warning)
+          ::WorkItems::UpdateService.new(
+            container: work_item.project,
+            current_user: other_user,
+            params: { description: "oh no!" }
+          ).execute(work_item)
 
-      click_button s_('WorkItem|Save and overwrite')
+          wait_for_requests
 
-      expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+          fill_in _('Description'), with: 'oh yeah!'
+
+          expect(page).to have_text(expected_warning)
+
+          click_button s_('WorkItem|Save and overwrite')
+
+          expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+        end
+      end
     end
   end
 end

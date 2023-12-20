@@ -189,10 +189,6 @@
 
       .project-page-sidebar-block {
         width: $right-sidebar-width - 1px;
-
-        &:first-of-type {
-          padding-top: $gl-spacing-scale-1;
-        }
       }
 
       .nav {

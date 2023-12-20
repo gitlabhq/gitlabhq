@@ -35,6 +35,11 @@ export default {
       required: false,
       default: false,
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
@@ -46,6 +51,7 @@ export default {
       :key="project.id"
       :project="project"
       :show-project-icon="showProjectIcon"
+      :class="listItemClass"
       @delete="$emit('delete', $event)"
     />
   </ul>

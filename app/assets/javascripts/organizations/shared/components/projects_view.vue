@@ -36,6 +36,11 @@ export default {
       required: false,
       default: false,
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -81,6 +86,11 @@ export default {
 
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
-  <projects-list v-else-if="projects.length" :projects="projects" show-project-icon />
+  <projects-list
+    v-else-if="projects.length"
+    :projects="projects"
+    show-project-icon
+    :list-item-class="listItemClass"
+  />
   <gl-empty-state v-else v-bind="emptyStateProps" />
 </template>

@@ -54,7 +54,7 @@ module Gitlab
         # Can be consolidate again once https://gitlab.com/gitlab-org/gitlab/-/issues/432606 is addressed
         if project.group
           project.group.all_owner_members.select(:id, :user_id)
-            .preload_user.find_each.map { |member| owner_data(member.user) }
+            .preload_user.find_each.map { |member| owner_data(member.user) if member.user }
         else
           data = []
           project.project_authorizations.owners.preload_user.each_batch(column: :user_id) do |relation|

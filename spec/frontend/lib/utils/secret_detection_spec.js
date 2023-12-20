@@ -32,6 +32,7 @@ describe('containsSensitiveToken', () => {
       'https://example.com/feed?feed_token=123456789_abcdefghij',
       'glpat-1234567890 and feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       'token: gldt-cgyKc1k_AsnEpmP-5fRL',
+      'curl "https://gitlab.example.com/api/v4/groups/33/scim/identities" --header "PRIVATE-TOKEN: glsoat-cgyKc1k_AsnEpmP-5fRL',
     ];
 
     it.each(sensitiveMessages)('returns true for message: %s', (message) => {

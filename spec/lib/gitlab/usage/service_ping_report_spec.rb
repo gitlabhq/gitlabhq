@@ -168,11 +168,6 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
       memoized_constatns += Gitlab::UsageData::EE_MEMOIZED_VALUES if defined? Gitlab::UsageData::EE_MEMOIZED_VALUES
       memoized_constatns.each { |v| Gitlab::UsageData.clear_memoization(v) }
       stub_database_flavor_check('Cloud SQL for PostgreSQL')
-
-      # in_product_marketing_email metrics values are extracted from a single group by query
-      # to check if the queries for individual metrics return the same value as group by when the value is non-zero
-      create(:in_product_marketing_email, track: :create, series: 0, cta_clicked_at: Time.current)
-      create(:in_product_marketing_email, track: :verify, series: 0)
     end
 
     let(:service_ping_payload) { described_class.for(output: :all_metrics_values) }

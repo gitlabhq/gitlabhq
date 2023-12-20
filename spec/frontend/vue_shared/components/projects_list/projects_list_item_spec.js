@@ -12,7 +12,6 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -92,7 +91,7 @@ describe('ProjectsListItem', () => {
   it('renders access role badge', () => {
     createComponent();
 
-    expect(findAvatarLabeled().findComponent(UserAccessRoleBadge).text()).toBe(
+    expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
       ACCESS_LEVEL_LABELS[project.permissions.projectAccess.accessLevel],
     );
   });

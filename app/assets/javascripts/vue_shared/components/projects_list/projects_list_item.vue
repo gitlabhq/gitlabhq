@@ -7,13 +7,13 @@ import {
   GlTooltipDirective,
   GlPopover,
   GlSprintf,
+  GlTruncateText,
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
-import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
@@ -37,19 +37,18 @@ export default {
     moreTopics: __('More topics'),
     updated: __('Updated'),
     actions: __('Actions'),
+    showMore: __('Show more'),
+    showLess: __('Show less'),
   },
-  avatarSize: { default: 32, md: 48 },
-  safeHtmlConfig: {
-    ADD_TAGS: ['gl-emoji'],
-  },
+  truncateTextToggleButtonProps: { class: 'gl-font-sm!' },
   components: {
     GlAvatarLabeled,
     GlIcon,
-    UserAccessRoleBadge,
     GlLink,
     GlBadge,
     GlPopover,
     GlSprintf,
+    GlTruncateText,
     TimeAgoTooltip,
     DeleteModal,
     ListActions,
@@ -203,21 +202,22 @@ export default {
 </script>
 
 <template>
-  <li class="projects-list-item gl-py-5 gl-border-b gl-display-flex gl-align-items-flex-start">
-    <div class="gl-md-display-flex gl-align-items-center gl-flex-grow-1">
+  <li class="projects-list-item gl-py-5 gl-border-b gl-display-flex">
+    <div class="gl-md-display-flex gl-flex-grow-1">
       <div class="gl-display-flex gl-flex-grow-1">
-        <gl-icon
+        <div
           v-if="showProjectIcon"
-          class="gl-mr-3 gl-mt-3 gl-md-mt-5 gl-flex-shrink-0 gl-text-secondary"
-          name="project"
-        />
+          class="gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-h-9 gl-mr-3"
+        >
+          <gl-icon class="gl-text-secondary" name="project" />
+        </div>
         <gl-avatar-labeled
           :entity-id="project.id"
           :entity-name="project.name"
           :label="project.name"
           :label-link="project.webUrl"
           shape="rect"
-          :size="$options.avatarSize"
+          :size="48"
         >
           <template #meta>
             <div class="gl-px-2">
@@ -231,33 +231,46 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <user-access-role-badge v-if="shouldShowAccessLevel">{{
+                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
                     accessLevelLabel
-                  }}</user-access-role-badge>
+                  }}</gl-badge>
                 </div>
               </div>
             </div>
           </template>
-          <div
+          <gl-truncate-text
             v-if="project.descriptionHtml"
-            v-safe-html:[$options.safeHtmlConfig]="project.descriptionHtml"
-            class="gl-font-sm gl-overflow-hidden gl-line-height-20 description md"
-            data-testid="project-description"
-          ></div>
+            :lines="2"
+            :mobile-lines="2"
+            :show-more-text="$options.i18n.showMore"
+            :show-less-text="$options.i18n.showLess"
+            :toggle-button-props="$options.truncateTextToggleButtonProps"
+            class="gl-mt-2 gl-max-w-88"
+          >
+            <div
+              v-safe-html="project.descriptionHtml"
+              class="gl-font-sm gl-text-secondary md"
+              data-testid="project-description"
+            ></div>
+          </gl-truncate-text>
           <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
             <div
               class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 gl-my-n2"
             >
-              <span class="gl-p-2 gl-text-secondary">{{ $options.i18n.topics }}:</span>
+              <span class="gl-p-2 gl-font-sm gl-text-secondary">{{ $options.i18n.topics }}:</span>
               <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
-                <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+                <gl-badge
+                  v-gl-tooltip="topicTooltipTitle(topic)"
+                  size="sm"
+                  :href="topicPath(topic)"
+                >
                   {{ topicTitle(topic) }}
                 </gl-badge>
               </div>
               <template v-if="popoverTopics.length">
                 <div
                   :id="topicsPopoverTarget"
-                  class="gl-p-2 gl-text-secondary"
+                  class="gl-p-2 gl-font-sm gl-text-secondary"
                   role="button"
                   tabindex="0"
                 >
@@ -272,7 +285,11 @@ export default {
                       :key="topic"
                       class="gl-p-2 gl-display-inline-block"
                     >
-                      <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+                      <gl-badge
+                        v-gl-tooltip="topicTooltipTitle(topic)"
+                        size="sm"
+                        :href="topicPath(topic)"
+                      >
                         {{ topicTitle(topic) }}
                       </gl-badge>
                     </div>
@@ -285,9 +302,9 @@ export default {
       </div>
       <div
         class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0"
-        :class="showProjectIcon ? 'gl-pl-11' : 'gl-pl-8'"
+        :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-3">
+        <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
           <gl-badge v-if="project.archived" variant="warning">{{
             $options.i18n.archived
           }}</gl-badge>
@@ -323,19 +340,20 @@ export default {
         </div>
         <div
           v-if="project.updatedAt"
-          class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3"
+          class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3 gl-md-mt-0"
         >
           <span>{{ $options.i18n.updated }}</span>
           <time-ago-tooltip :time="project.updatedAt" />
         </div>
       </div>
     </div>
-    <list-actions
-      v-if="hasActions"
-      class="gl-ml-3 gl-md-align-self-center"
-      :actions="actions"
-      :available-actions="project.availableActions"
-    />
+    <div class="gl-display-flex gl-align-items-center gl-h-9 gl-ml-3">
+      <list-actions
+        v-if="hasActions"
+        :actions="actions"
+        :available-actions="project.availableActions"
+      />
+    </div>
 
     <delete-modal
       v-if="hasActionDelete"

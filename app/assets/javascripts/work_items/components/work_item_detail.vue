@@ -2,6 +2,7 @@
 import { isEmpty } from 'lodash';
 import { GlAlert, GlSkeletonLoader, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -41,6 +42,7 @@ import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
+import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
 
 export default {
   i18n,
@@ -67,6 +69,7 @@ export default {
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
+    WorkItemTitleWithEdit,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -94,6 +97,8 @@ export default {
       reportedUrl: '',
       reportedUserId: 0,
       isStickyHeaderShowing: false,
+      editMode: false,
+      draftData: {},
     };
   },
   apollo: {
@@ -219,7 +224,7 @@ export default {
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && this.workItemsMvc2Enabled;
+      return !this.isModal && this.workItemsMvc2Enabled && !this.editMode;
     },
     hasLinkedWorkItems() {
       return this.glFeatures.linkedWorkItems;
@@ -233,13 +238,15 @@ export default {
     titleClassHeader() {
       return {
         'gl-sm-display-none!': this.parentWorkItem,
-        'gl-w-full': !this.parentWorkItem,
+        'gl-w-full': !this.parentWorkItem && !this.editMode,
+        'editable-wi-title': this.editMode && !this.parentWorkItem,
       };
     },
     titleClassComponent() {
       return {
         'gl-sm-display-block!': !this.parentWorkItem,
         'gl-display-none gl-sm-display-block!': this.parentWorkItem,
+        'gl-mt-3 editable-wi-title': this.workItemsMvc2Enabled,
       };
     },
     headerWrapperClass() {
@@ -258,6 +265,9 @@ export default {
     }
   },
   methods: {
+    enableEditMode() {
+      this.editMode = true;
+    },
     isWidgetPresent(type) {
       return this.workItem.widgets?.find((widget) => widget.type === type);
     },
@@ -349,6 +359,45 @@ export default {
         this.isStickyHeaderShowing = true;
       }
     },
+    updateDraft(type, value) {
+      this.draftData[type] = value;
+    },
+    async updateWorkItem() {
+      this.updateInProgress = true;
+      try {
+        const {
+          data: { workItemUpdate },
+        } = await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItem.id,
+              title: this.draftData.title,
+              descriptionWidget: {
+                description: this.draftData.description,
+              },
+            },
+          },
+        });
+
+        const { errors } = workItemUpdate;
+
+        if (errors?.length) {
+          this.updateError = errors.join('\n');
+          throw new Error(this.updateError);
+        }
+
+        this.editMode = false;
+      } catch (error) {
+        Sentry.captureException(error);
+      } finally {
+        this.updateInProgress = false;
+      }
+    },
+    cancelEditing() {
+      this.draftData = {};
+      this.editMode = false;
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -388,8 +437,16 @@ export default {
             :class="titleClassHeader"
             data-testid="work-item-type"
           >
+            <work-item-title-with-edit
+              v-if="workItem.title && workItemsMvc2Enabled"
+              ref="title"
+              class="gl-mt-3 gl-sm-display-block!"
+              :is-editing="editMode"
+              :title="workItem.title"
+              @updateDraft="updateDraft('title', $event)"
+            />
             <work-item-title
-              v-if="workItem.title"
+              v-else-if="workItem.title"
               ref="title"
               class="gl-sm-display-block!"
               :work-item-id="workItem.id"
@@ -402,6 +459,14 @@ export default {
           <div
             class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
           >
+            <gl-button
+              v-if="workItemsMvc2Enabled && !editMode"
+              category="secondary"
+              data-testid="work-item-edit-form-button"
+              @click="enableEditMode"
+            >
+              {{ __('Edit') }}
+            </gl-button>
             <work-item-todos
               v-if="showWorkItemCurrentUserTodos"
               :work-item-id="workItem.id"
@@ -441,8 +506,16 @@ export default {
           />
         </div>
         <div>
+          <work-item-title-with-edit
+            v-if="workItem.title && workItemsMvc2Enabled && parentWorkItem"
+            ref="title"
+            :is-editing="editMode"
+            :class="titleClassComponent"
+            :title="workItem.title"
+            @updateDraft="updateDraft('title', $event)"
+          />
           <work-item-title
-            v-if="workItem.title && parentWorkItem"
+            v-else-if="workItem.title && parentWorkItem"
             ref="title"
             :class="titleClassComponent"
             :work-item-id="workItem.id"
@@ -453,6 +526,7 @@ export default {
             @error="updateError = $event"
           />
           <work-item-created-updated
+            v-if="!editMode"
             :full-path="fullPath"
             :work-item-iid="workItemIid"
             :update-in-progress="updateInProgress"
@@ -490,10 +564,16 @@ export default {
             />
             <work-item-description
               v-if="hasDescriptionWidget"
+              :class="workItemsMvc2Enabled ? '' : 'gl-pt-5'"
+              :disable-inline-editing="workItemsMvc2Enabled"
+              :edit-mode="editMode"
               :full-path="fullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
-              class="gl-pt-5"
+              :update-in-progress="updateInProgress"
+              @updateWorkItem="updateWorkItem"
+              @updateDraft="updateDraft('description', $event)"
+              @cancelEditing="cancelEditing"
               @error="updateError = $event"
             />
             <work-item-award-emoji

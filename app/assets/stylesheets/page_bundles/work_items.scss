@@ -4,6 +4,7 @@
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
 $work-item-overview-right-sidebar-width: 23rem;
 $work-item-sticky-header-height: 52px;
+$work-item-overview-gap-width: 2rem;
 
 .gl-token-selector-token-container {
   display: flex;
@@ -146,7 +147,7 @@ $work-item-sticky-header-height: 52px;
   @include media-breakpoint-up(md) {
     display: grid;
     grid-template-columns: 1fr $work-item-overview-right-sidebar-width;
-    gap: 2rem;
+    gap: $work-item-overview-gap-width;
   }
 }
 
@@ -216,6 +217,12 @@ $work-item-sticky-header-height: 52px;
   }
 }
 
+.editable-wi-title {
+  width: 100%;
+  @include media-breakpoint-up(md) {
+    width: calc(100% - #{$work-item-overview-right-sidebar-width} - #{$work-item-overview-gap-width});
+  }
+}
 // Disclosure hierarchy component, used for Ancestors widget
 
 $disclosure-hierarchy-chevron-dimension: 1.2rem;

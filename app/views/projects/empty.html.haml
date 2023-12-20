@@ -20,7 +20,7 @@
         .project-clone-holder.d-block.d-sm-none
           = render "shared/mobile_clone_panel"
 
-        .project-clone-holder.gl-display-none.gl-sm-display-flex.gl-justify-content-end.gl-w-full.gl-mt-2
+        .project-clone-holder.gl-display-none.gl-sm-display-flex.gl-justify-content-end.gl-w-full
           = render "projects/buttons/code", ref: @ref
 
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-new-card-body gl-bg-gray-10 gl-p-5' }) do |c|

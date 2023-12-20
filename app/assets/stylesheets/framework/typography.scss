@@ -602,6 +602,20 @@
   }
 
   @include email-code-block;
+
+  &.gl-text-secondary {
+    color: $gl-text-color-secondary;
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    table:not(.code) {
+      color: $gl-text-color-secondary;
+    }
+  }
 }
 
 /**

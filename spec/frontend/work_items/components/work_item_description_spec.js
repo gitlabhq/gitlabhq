@@ -56,6 +56,8 @@ describe('WorkItemDescription', () => {
     isEditing = false,
     isGroup = false,
     workItemIid = '1',
+    disableInlineEditing = false,
+    editMode = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
     groupWorkItemResponseHandler = jest
@@ -73,6 +75,8 @@ describe('WorkItemDescription', () => {
         fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
+        disableInlineEditing,
+        editMode,
       },
       provide: {
         isGroup,
@@ -281,6 +285,38 @@ describe('WorkItemDescription', () => {
       createComponent({ isGroup: true });
 
       expect(groupWorkItemResponseHandler).toHaveBeenCalled();
+    });
+  });
+
+  describe('when inline editing is disabled', () => {
+    describe('when edit mode is inactive', () => {
+      beforeEach(() => {
+        createComponent({ disableInlineEditing: true });
+      });
+
+      it('passes the correct props for work item rendered description', () => {
+        expect(findRenderedDescription().props('disableInlineEditing')).toBe(true);
+      });
+
+      it('does not show edit mode of markdown editor in default mode', () => {
+        expect(findMarkdownEditor().exists()).toBe(false);
+      });
+    });
+
+    describe('when edit mode is active', () => {
+      beforeEach(() => {
+        createComponent({ disableInlineEditing: true, editMode: true });
+      });
+
+      it('shows markdown editor in edit mode only when the correct props are passed', () => {
+        expect(findMarkdownEditor().exists()).toBe(true);
+      });
+
+      it('emits the `updateDraft` event when clicked on submit button in edit mode', () => {
+        const updatedDesc = 'updated desc with inline editing disabled';
+        findMarkdownEditor().vm.$emit('input', updatedDesc);
+        expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
+      });
     });
   });
 });

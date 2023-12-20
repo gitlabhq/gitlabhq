@@ -17590,27 +17590,6 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
-CREATE TABLE in_product_marketing_emails (
-    id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    cta_clicked_at timestamp with time zone,
-    track smallint,
-    series smallint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    CONSTRAINT check_c9bb978e4b CHECK ((track IS NOT NULL)),
-    CONSTRAINT check_ee6c42a107 CHECK ((series IS NOT NULL))
-);
-
-CREATE SEQUENCE in_product_marketing_emails_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE in_product_marketing_emails_id_seq OWNED BY in_product_marketing_emails.id;
-
 CREATE TABLE incident_management_escalation_policies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -26814,8 +26793,6 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
-ALTER TABLE ONLY in_product_marketing_emails ALTER COLUMN id SET DEFAULT nextval('in_product_marketing_emails_id_seq'::regclass);
-
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_rules ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_rules_id_seq'::regclass);
@@ -29013,9 +28990,6 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY in_product_marketing_emails
-    ADD CONSTRAINT in_product_marketing_emails_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT inc_mgmnt_no_overlapping_oncall_shifts EXCLUDE USING gist (rotation_id WITH =, tstzrange(starts_at, ends_at, '[)'::text) WITH &&);
@@ -33199,12 +33173,6 @@ CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING 
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_id ON projects USING btree (import_type, id) WHERE (import_type IS NOT NULL);
-
-CREATE INDEX index_in_product_marketing_emails_on_track_series_id_clicked ON in_product_marketing_emails USING btree (track, series, id, cta_clicked_at);
-
-CREATE INDEX index_in_product_marketing_emails_on_user_id ON in_product_marketing_emails USING btree (user_id);
-
-CREATE UNIQUE INDEX index_in_product_marketing_emails_on_user_track_series ON in_product_marketing_emails USING btree (user_id, track, series);
 
 CREATE INDEX index_inc_mgmnt_oncall_participants_on_oncall_user_id ON incident_management_oncall_participants USING btree (user_id);
 
@@ -37500,9 +37468,6 @@ ALTER TABLE ONLY project_topics
 
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY in_product_marketing_emails
-    ADD CONSTRAINT fk_35c9101b63 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_3654b61b03 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

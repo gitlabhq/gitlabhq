@@ -2,43 +2,44 @@
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 
 %aside.project-page-sidebar
-  - if @project.description.present? || @project.badges.present?
-    .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50
-      -# Project description
-      - if @project.description.present?
-        .gl-display-flex.gl-justify-content-space-between.gl-mt-1.gl-pr-2
-          %p.gl-font-weight-bold.gl-text-gray-900.gl-m-0= s_('ProjectPage|Project information')
-          = render Pajamas::ButtonComponent.new(href: edit_project_path(@project),
-            category: :tertiary,
-            icon: 'settings',
-            size: :small,
-            button_options: { class: 'has-tooltip', title: s_('ProjectPage|Project settings'), 'aria-label' => s_('ProjectPage|Project settings') })
-        .home-panel-description.text-break
-          .home-panel-description-markdown{ itemprop: 'description' }
-            = markdown_field(@project, :description)
+  .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50{ class: 'gl-pt-2!' }
+    .gl-display-flex.gl-justify-content-space-between
+      %p.gl-font-weight-bold.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
+      -# Project settings
+      - if can?(current_user, :admin_project, @project)
+        = render Pajamas::ButtonComponent.new(href: edit_project_path(@project),
+          category: :tertiary,
+          icon: 'settings',
+          size: :small,
+          button_options: { class: 'has-tooltip gl-ml-2 gl-sm-mr-3', title: s_('ProjectPage|Project settings'), 'aria-label' => s_('ProjectPage|Project settings'), 'data-testid': 'project-settings-button' })
+    -# Project description
+    - if @project.description.present?
+      .home-panel-description.text-break
+        .home-panel-description-markdown{ itemprop: 'description' }
+          = markdown_field(@project, :description)
 
-      -# Topics
-      - if @project.topics.present?
-        .gl-mb-5
-          = render "shared/projects/topics", project: @project
+    -# Topics
+    - if @project.topics.present?
+      .gl-mb-5
+        = render "shared/projects/topics", project: @project
 
-      -# Programming languages
-      - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
-        .gl-mb-2{ class: ('gl-mb-4!' if @project.badges.present?) }
-          = repository_languages_bar(@project.repository_languages)
+    -# Programming languages
+    - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
+      .gl-mb-2{ class: [('gl-mb-4!' if @project.badges.present?), ('gl-mt-3' if !@project.description.present?)] }
+        = repository_languages_bar(@project.repository_languages)
 
-      -# Badges
-      - if @project.badges.present?
-        .project-badges.gl-mb-2{ data: { testid: 'project-badges-content' } }
-          - @project.badges.each do |badge|
-            - badge_link_url = badge.rendered_link_url(@project)
-            %a.gl-mr-3{ href: badge_link_url,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-              data: { testid: 'badge-image-link', qa_link_url: badge_link_url } }>
-              %img.project-badge{ src: badge.rendered_image_url(@project),
-                'aria-hidden': true,
-                alt: 'Project badge' }>
+    -# Badges
+    - if @project.badges.present?
+      .project-badges.gl-mb-2{ data: { testid: 'project-badges-content' } }
+        - @project.badges.each do |badge|
+          - badge_link_url = badge.rendered_link_url(@project)
+          %a.gl-mr-3{ href: badge_link_url,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            data: { testid: 'badge-image-link', qa_link_url: badge_link_url } }>
+            %img.project-badge{ src: badge.rendered_image_url(@project),
+              'aria-hidden': true,
+              alt: 'Project badge' }>
 
   -# Invite members
   - if @project.empty_repo?
