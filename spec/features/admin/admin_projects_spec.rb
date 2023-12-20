@@ -14,7 +14,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
 
   before do
     sign_in(current_user)
-    enable_admin_mode!(current_user)
+    gitlab_enable_admin_mode_sign_in(current_user)
   end
 
   describe 'when membership is set to expire', :js do

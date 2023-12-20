@@ -7,7 +7,7 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
     it 'previews, creates and edits a broadcast message' do
       admin = create(:admin)
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
 
       # create
       visit admin_broadcast_messages_path

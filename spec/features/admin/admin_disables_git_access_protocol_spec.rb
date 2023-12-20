@@ -12,7 +12,7 @@ RSpec.describe 'Admin disables Git access protocol', :js, feature_category: :sou
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   context 'with HTTP disabled' do

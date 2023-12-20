@@ -69,7 +69,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
 
     context 'when in admin_mode' do
       before do
-        enable_admin_mode!(admin, use_ui: true)
+        gitlab_enable_admin_mode_sign_in(admin, use_mock_admin_mode: false)
       end
 
       it 'contains link to leave admin mode' do

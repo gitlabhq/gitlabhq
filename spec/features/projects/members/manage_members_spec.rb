@@ -265,7 +265,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
 
     it 'shows 2FA badge to admins' do
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
 
       visit_members_page
 

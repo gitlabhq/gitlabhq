@@ -10,7 +10,7 @@ RSpec.describe "Admin > Admin sees projects statistics", feature_category: :grou
     create(:project, :repository) { |project| project.statistics.destroy! }
 
     sign_in(current_user)
-    enable_admin_mode!(current_user)
+    gitlab_enable_admin_mode_sign_in(current_user)
 
     visit admin_projects_path
   end

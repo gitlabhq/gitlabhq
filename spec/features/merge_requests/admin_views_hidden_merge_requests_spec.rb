@@ -11,7 +11,7 @@ RSpec.describe 'Admin views hidden merge requests', feature_category: :insider_t
 
     before do
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
       visit(project_merge_requests_path(project))
     end
 

@@ -2066,6 +2066,9 @@ msgstr ""
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 
+msgid "AI|This is an experiment feature that uses AI to provide recommendations for resolving this vulnerability. Use this feature with caution."
+msgstr ""
+
 msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
 msgstr ""
 
@@ -52258,6 +52261,9 @@ msgstr ""
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} of %{limit} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
+msgid "UsageQuota|An error occured while loading the storage usage details. Please refresh the page to try again."
+msgstr ""
+
 msgid "UsageQuota|Any additional purchased storage will be displayed here."
 msgstr ""
 
@@ -52394,9 +52400,6 @@ msgid "UsageQuota|Something went wrong while fetching pipeline statistics"
 msgstr ""
 
 msgid "UsageQuota|Something went wrong while fetching project storage statistics"
-msgstr ""
-
-msgid "UsageQuota|Something went wrong while loading usage details"
 msgstr ""
 
 msgid "UsageQuota|Storage"

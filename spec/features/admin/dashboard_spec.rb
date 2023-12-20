@@ -8,7 +8,7 @@ RSpec.describe 'admin visits dashboard' do
   before do
     admin = create(:admin)
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   context 'counting forks', :js, feature_category: :source_code_management do

@@ -11,7 +11,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
 
   before do
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe "token creation" do

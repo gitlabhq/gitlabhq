@@ -11,7 +11,7 @@ RSpec.describe 'Instance variables', :js, feature_category: :secrets_management 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
 
     visit page_path
     wait_for_requests

@@ -34,7 +34,7 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
 
     context 'when admin mode enabled', :delete do
       before do
-        enable_admin_mode!(user)
+        gitlab_enable_admin_mode_sign_in(user)
       end
 
       it 'can delete user', :js do
@@ -67,6 +67,6 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
     Sidekiq::Worker.drain_all
 
     sign_in(user)
-    enable_admin_mode!(user)
+    gitlab_enable_admin_mode_sign_in(user)
   end
 end

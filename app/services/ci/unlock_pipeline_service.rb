@@ -84,7 +84,7 @@ module Ci
     def unlock_job_artifacts
       start = Time.current
 
-      pipeline.builds.each_batch(of: BATCH_SIZE) do |builds|
+      builds_relation.each_batch(of: BATCH_SIZE) do |builds|
         # rubocop: disable CodeReuse/ActiveRecord
         Ci::JobArtifact.where(job_id: builds.pluck(:id)).each_batch(of: BATCH_SIZE) do |job_artifacts|
           unlocked_count = Ci::JobArtifact
@@ -97,6 +97,16 @@ module Ci
           raise ExecutionTimeoutError if (Time.current - start) > MAX_EXEC_DURATION
         end
         # rubocop: enable CodeReuse/ActiveRecord
+      end
+    end
+
+    # Removes the partition_id filter from the query until we get more data in the
+    # second partition.
+    def builds_relation
+      if Feature.enabled?(:disable_ci_partition_pruning, pipeline.project, type: :wip)
+        Ci::Build.in_pipelines(pipeline)
+      else
+        pipeline.builds
       end
     end
 

@@ -88,18 +88,18 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         margin-top: 5px;
       }
 
-      .timeline-content:not(.flash-container) {
+      .timeline-content {
         margin-left: 2.5rem;
         border: 1px solid $border-color;
         border-radius: $gl-border-radius-base;
         padding: $gl-padding-4 $gl-padding-8;
       }
 
-      &:not(.target) .timeline-content:not(.flash-container) {
+      &:not(.target) .timeline-content {
         background-color: $white;
       }
 
-      &.draft-note .timeline-content:not(.flash-container) {
+      &.draft-note .timeline-content {
         border: 0;
       }
 
@@ -127,7 +127,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
               margin-top: 5px;
             }
 
-            .timeline-content:not(.flash-container) {
+            .timeline-content {
               margin-left: 2.5rem;
               border-left: 1px solid $border-color;
               border-right: 1px solid $border-color;
@@ -138,11 +138,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
             }
           }
 
-          &:not(.target) .timeline-content:not(.flash-container) {
+          &:not(.target) .timeline-content {
             background-color: $white;
           }
 
-          &.draft-note .timeline-content:not(.flash-container) {
+          &.draft-note .timeline-content {
             margin-left: 0;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
@@ -154,7 +154,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
             border-right: 1px solid $border-color;
             background-color: $white;
 
-            .timeline-content:not(.flash-container) {
+            .timeline-content {
               padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 18px;
             }
 
@@ -1057,7 +1057,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       padding-left: 0;
 
       ul.notes li.note-wrapper {
-        .timeline-content:not(.flash-container) {
+        .timeline-content {
           padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
         }
 
@@ -1106,7 +1106,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 
   .draft-note-component.draft-note.timeline-entry {
-    .timeline-content:not(.flash-container) {
+    .timeline-content {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
     }
 

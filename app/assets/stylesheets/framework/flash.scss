@@ -96,14 +96,6 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   }
 }
 
-@include media-breakpoint-down(sm) {
-  ul.notes {
-    .flash-container.timeline-content {
-      margin-left: 0;
-    }
-  }
-}
-
 .gl-browser-ie .flash-container {
   position: fixed;
   max-width: $limited-layout-width;

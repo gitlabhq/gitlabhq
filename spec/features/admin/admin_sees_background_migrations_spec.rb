@@ -18,7 +18,7 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
 
   before do
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   it 'can navigate to background migrations', :js do

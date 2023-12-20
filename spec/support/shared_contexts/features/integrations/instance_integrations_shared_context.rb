@@ -7,7 +7,7 @@ RSpec.shared_context 'instance integration activation' do
 
   before do
     sign_in(user)
-    enable_admin_mode!(user)
+    gitlab_enable_admin_mode_sign_in(user)
   end
 
   def visit_instance_integrations

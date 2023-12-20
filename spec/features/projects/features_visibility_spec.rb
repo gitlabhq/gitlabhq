@@ -153,7 +153,7 @@ RSpec.describe 'Edit Project Settings', feature_category: :groups_and_projects d
       before do
         non_member.update_attribute(:admin, true)
         sign_in(non_member)
-        enable_admin_mode!(non_member)
+        gitlab_enable_admin_mode_sign_in(non_member)
       end
 
       it 'renders 404 if feature is disabled' do

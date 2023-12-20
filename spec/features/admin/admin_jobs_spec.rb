@@ -8,7 +8,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
   before do
     admin = create(:admin)
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   describe 'GET /admin/jobs' do

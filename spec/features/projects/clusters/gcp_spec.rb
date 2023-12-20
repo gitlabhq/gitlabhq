@@ -110,7 +110,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
 
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-      enable_admin_mode!(user)
+      gitlab_enable_admin_mode_sign_in(user)
       visit general_admin_application_settings_path
     end
 

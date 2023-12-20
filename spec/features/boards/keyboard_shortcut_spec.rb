@@ -11,7 +11,7 @@ RSpec.describe 'Issue Boards shortcut', :js, feature_category: :team_planning do
 
       admin = create(:admin)
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
 
       visit project_path(project)
     end
@@ -30,7 +30,7 @@ RSpec.describe 'Issue Boards shortcut', :js, feature_category: :team_planning do
     before do
       admin = create(:admin)
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
 
       visit project_path(project)
     end

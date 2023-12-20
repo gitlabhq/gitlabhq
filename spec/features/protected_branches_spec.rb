@@ -82,7 +82,7 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
   context 'logged in as admin' do
     before do
       sign_in(admin)
-      enable_admin_mode!(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
     end
 
     describe "explicit protected branches" do

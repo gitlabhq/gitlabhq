@@ -10,7 +10,7 @@ RSpec.describe 'admin manage applications', feature_category: :system_access do
   before do
     admin = create(:admin)
     sign_in(admin)
-    enable_admin_mode!(admin)
+    gitlab_enable_admin_mode_sign_in(admin)
   end
 
   include_examples 'manage applications'
