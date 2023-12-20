@@ -121,7 +121,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
       stub_const('Gitlab::Cache::JsonCaches::JsonKeyed::STRATEGY_KEY_COMPONENTS', original_strategy_value)
       admin = create(:admin)
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
 
       visit admin_broadcast_messages_path
 

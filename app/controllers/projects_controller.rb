@@ -29,7 +29,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :authorize_read_code!, only: [:refs]
 
   # Authorize
-  before_action :authorize_admin_project_or_custom_permissions!, only: :edit
+  before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_admin_project!, only: [:update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
@@ -611,11 +611,6 @@ class ProjectsController < Projects::ApplicationController
 
   def render_edit
     render 'edit'
-  end
-
-  # Overridden in EE
-  def authorize_admin_project_or_custom_permissions!
-    authorize_admin_project!
   end
 end
 

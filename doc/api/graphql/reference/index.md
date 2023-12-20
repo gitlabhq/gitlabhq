@@ -5362,6 +5362,7 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreatereadcode"></a>`readCode` | [`Boolean`](#boolean) | Permission to read code. |
 | <a id="mutationmemberrolecreatereaddependency"></a>`readDependency` | [`Boolean`](#boolean) | Permission to read dependency. |
 | <a id="mutationmemberrolecreatereadvulnerability"></a>`readVulnerability` | [`Boolean`](#boolean) | Permission to read vulnerability. |
+| <a id="mutationmemberrolecreateremoveproject"></a>`removeProject` | [`Boolean`](#boolean) | Permission to delete projects. |
 
 #### Fields
 
@@ -21408,6 +21409,7 @@ Represents a member role.
 | <a id="memberrolereadcode"></a>`readCode` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read code. |
 | <a id="memberrolereaddependency"></a>`readDependency` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read dependency. |
 | <a id="memberrolereadvulnerability"></a>`readVulnerability` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to read vulnerability. |
+| <a id="memberroleremoveproject"></a>`removeProject` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. Permission to delete projects. |
 
 ### `MergeAccessLevel`
 
@@ -30753,6 +30755,7 @@ Member role permission.
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Allows read-only access to the vulnerability reports. |
+| <a id="memberrolepermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
 
 ### `MemberSort`
 

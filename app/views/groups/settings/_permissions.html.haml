@@ -49,6 +49,7 @@
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/security_policies_custom_ci', f: f, group: @group
+    = render_if_exists 'groups/settings/security_policies_policy_scope', f: f, group: @group
 
     %h5= _('Customer relations')
     .form-group.gl-mb-3

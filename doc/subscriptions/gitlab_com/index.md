@@ -272,10 +272,10 @@ Changing the linked namespace is not supported for all subscription types.
 
 You cannot transfer:
 
-- A subscription with compute minutes.
 - An expired or trial subscription.
-- A subscription to a namespace which already has a Premium or Ultimate plan.
-- A subscription from a namespace with multiple subscriptions.
+- A subscription with compute minutes which is already linked to a namespace.
+- A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
+- A subscription with code suggestions to a namespace which already has a subscriptions with code suggestions.
 
 ## Upgrade your GitLab SaaS subscription tier
 

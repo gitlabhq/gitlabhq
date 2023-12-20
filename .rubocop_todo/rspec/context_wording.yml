@@ -1040,6 +1040,7 @@ RSpec/ContextWording:
     - 'spec/features/admin/admin_mode_spec.rb'
     - 'spec/features/admin/admin_settings_spec.rb'
     - 'spec/features/admin/dashboard_spec.rb'
+    - 'spec/features/admin/users/user_impersonation_spec.rb'
     - 'spec/features/admin/users/user_spec.rb'
     - 'spec/features/admin/users/users_spec.rb'
     - 'spec/features/atom/dashboard_issues_spec.rb'

@@ -17,7 +17,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
 
     before do
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
 
       visit admin_abuse_reports_path
     end

@@ -17,6 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`.
 > - Ability to archive projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) in GitLab 16.7.
 > - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
+> - Ability to delete projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) in GitLab 16.8.
 
 Custom roles allow group Owners or instance administrators to create roles
 specific to the needs of their organization.
@@ -114,7 +115,8 @@ These requirements are documented in the `Required permission` column in the fol
 | `admin_merge_request`           | GitLab 16.4 and later  | Not applicable       | View and approve [merge requests](project/merge_requests/index.md), revoke merge request approval, and view the associated merge request code. <br> Does not allow users to view or change merge request approval rules.  |
 | `manage_project_access_tokens`  | GitLab 16.5 and later  | Not applicable       | Create, delete, and list [project access tokens](project/settings/project_access_tokens.md).  |
 | `admin_group_member`            | GitLab 16.5 and later  | Not applicable       | Add or remove [group members](group/manage.md).  |
-| `archive_project`               | GitLab 16.6 and later  | Not applicable       | Archive and unarchive [projects](project/settings/migrate_projects.md#archive-a-project).  |
+| `archive_project`               | GitLab 16.7 and later  | Not applicable       | [Archive and unarchive projects](project/settings/migrate_projects.md#archive-a-project).  |
+| `remove_project`                | GitLab 16.8 and later  | Not applicable       | [Delete projects](project/working_with_projects.md#delete-a-project).  |
 
 ## Billing and seat usage
 

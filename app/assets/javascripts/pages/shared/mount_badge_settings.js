@@ -5,6 +5,8 @@ import store from '~/badges/store';
 export default (kind) => {
   const badgeSettingsElement = document.getElementById('badge-settings');
 
+  if (!badgeSettingsElement) return null;
+
   store.dispatch('loadBadges', {
     kind,
     apiEndpointUrl: badgeSettingsElement.dataset.apiEndpointUrl,

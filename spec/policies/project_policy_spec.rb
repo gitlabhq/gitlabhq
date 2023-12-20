@@ -472,12 +472,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  context 'reading usage quotas' do
+  context 'reading usage quotas and viewing the edit page' do
     %w[maintainer owner].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
-        it { is_expected.to be_allowed(:read_usage_quotas) }
+        it { is_expected.to be_allowed(:read_usage_quotas, :view_edit_page) }
       end
     end
 
@@ -485,7 +485,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       context "with #{role}" do
         let(:current_user) { send(role) }
 
-        it { is_expected.to be_disallowed(:read_usage_quotas) }
+        it { is_expected.to be_disallowed(:read_usage_quotas, :view_edit_page) }
       end
     end
 
@@ -493,11 +493,11 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { expect_allowed(:read_usage_quotas) }
+        it { expect_allowed(:read_usage_quotas, :view_edit_page) }
       end
 
       context 'when admin mode is disabled' do
-        it { expect_disallowed(:read_usage_quotas) }
+        it { expect_disallowed(:read_usage_quotas, :view_edit_page) }
       end
     end
   end

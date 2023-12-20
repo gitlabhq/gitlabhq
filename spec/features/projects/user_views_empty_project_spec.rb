@@ -43,7 +43,7 @@ RSpec.describe 'User views an empty project', feature_category: :groups_and_proj
     context 'when admin mode is enabled' do
       before do
         sign_in(user)
-        gitlab_enable_admin_mode_sign_in(user)
+        enable_admin_mode!(user)
       end
 
       it_behaves_like 'allowing push to default branch'

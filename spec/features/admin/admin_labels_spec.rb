@@ -11,7 +11,7 @@ RSpec.describe 'admin issues labels', feature_category: :team_planning do
   before do
     admin = create(:admin)
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   describe 'list' do

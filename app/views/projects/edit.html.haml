@@ -118,8 +118,11 @@
       = render 'remove_fork', project: @project
 
       = render 'remove', project: @project
-- elsif can?(current_user, :archive_project, @project)
-  = render_if_exists 'projects/settings/archive'
+- else
+  - if can?(current_user, :archive_project, @project)
+    = render_if_exists 'projects/settings/archive'
+  - if can?(current_user, :remove_project, @project)
+    = render 'remove', project: @project
 
 .save-project-loader.hide
   .center

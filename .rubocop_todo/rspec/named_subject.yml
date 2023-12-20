@@ -1414,6 +1414,7 @@ RSpec/NamedSubject:
     - 'spec/controllers/users/callouts_controller_spec.rb'
     - 'spec/experiments/application_experiment_spec.rb'
     - 'spec/experiments/in_product_guidance_environments_webide_experiment_spec.rb'
+    - 'spec/features/admin/users/user_impersonation_spec.rb'
     - 'spec/features/admin/users/user_spec.rb'
     - 'spec/features/groups/clusters/user_spec.rb'
     - 'spec/features/merge_request/user_sees_merge_widget_spec.rb'

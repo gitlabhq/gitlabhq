@@ -17,6 +17,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Admin group members introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `admin_group_member`. Disabled by default. The feature flag has been removed in GitLab 16.6.
 > - [Manage project access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) in GitLab 16.5 in [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`. Disabled by default.
 > - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.7.
+> - [Delete project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member` and `manage_project_access_tokens`.
@@ -51,6 +52,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].admin_group_member`            | boolean | Permission to admin members of a group. |
 | `[].manage_project_access_tokens`  | boolean | Permission to manage project access tokens. |
 | `[].archive_project`               | boolean | Permission to archive projects. |
+| `[].remove_project`                | boolean | Permission to delete projects. |
 
 Example request:
 
@@ -74,7 +76,8 @@ Example response:
     "read_dependency": false,
     "read_vulnerability": false,
     "manage_project_access_tokens": false,
-    "archive_project": false
+    "archive_project": false,
+    "remove_project": false
   },
   {
     "id": 3,
@@ -88,7 +91,8 @@ Example response:
     "read_dependency": true,
     "read_vulnerability": true,
     "manage_project_access_tokens": false,
-    "archive_project": false
+    "archive_project": false,
+    "remove_project": false
   }
 ]
 ```

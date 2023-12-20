@@ -12,7 +12,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.kilobytes)
 
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
 
     wait_for_requests
 

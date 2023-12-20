@@ -12,7 +12,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
 
   before do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   it 'show all public deploy keys' do

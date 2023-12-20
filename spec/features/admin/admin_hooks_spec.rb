@@ -9,7 +9,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
 
   before do
     sign_in(user)
-    gitlab_enable_admin_mode_sign_in(user)
+    enable_admin_mode!(user)
   end
 
   describe 'GET /admin/hooks' do
