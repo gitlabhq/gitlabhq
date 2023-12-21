@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Git::RepositoryCleaner do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:head_sha) { repository.head_commit.id }
-  let(:object_map_data) { "#{head_sha} #{Gitlab::Git::BLANK_SHA}" }
+  let(:object_map_data) { "#{head_sha} #{Gitlab::Git::SHA1_BLANK_SHA}" }
 
   let(:clean_refs) { %W[refs/environments/1 refs/merge-requests/1 refs/keep-around/#{head_sha}] }
   let(:keep_refs) { %w[refs/heads/_keep refs/tags/_keep] }
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Git::RepositoryCleaner do
           Gitaly::ApplyBfgObjectMapStreamResponse::Entry.new(
             type: :COMMIT,
             old_oid: head_sha,
-            new_oid: Gitlab::Git::BLANK_SHA
+            new_oid: Gitlab::Git::SHA1_BLANK_SHA
           )
         )
       end

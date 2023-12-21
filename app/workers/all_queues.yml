@@ -2602,7 +2602,7 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
-  :idempotent: false
+  :idempotent: true
   :tags: []
 - :name: bulk_import
   :worker_name: BulkImportWorker

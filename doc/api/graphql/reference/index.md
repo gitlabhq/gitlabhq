@@ -394,7 +394,7 @@ Returns [`Group`](#group).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
+| <a id="querygroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.groups`
 
@@ -633,7 +633,7 @@ Returns [`Namespace`](#namespace).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
+| <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.note`
 
@@ -689,7 +689,7 @@ Returns [`Project`](#project).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project, group, or namespace. For example, `gitlab-org/gitlab-foss`. |
+| <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. For example, `gitlab-org/gitlab-foss`. |
 
 ### `Query.projects`
 

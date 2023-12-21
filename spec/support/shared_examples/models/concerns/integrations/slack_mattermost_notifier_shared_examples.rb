@@ -143,7 +143,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'tag_push events' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
       let(:newrev) { '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b' } # gitlab-test: git rev-parse refs/tags/v1.1.0
       let(:ref) { 'refs/tags/v1.1.0' }
       let(:data) { Git::TagHooksService.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }).send(:push_data) }

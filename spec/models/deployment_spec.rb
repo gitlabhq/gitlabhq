@@ -878,7 +878,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
     context 'when the SHA for the deployment does not exist in the repo' do
       it 'returns false' do
-        deployment.update!(sha: Gitlab::Git::BLANK_SHA)
+        deployment.update!(sha: Gitlab::Git::SHA1_BLANK_SHA)
         commit = project.commit
 
         expect(deployment.includes_commit?(commit.id)).to be false

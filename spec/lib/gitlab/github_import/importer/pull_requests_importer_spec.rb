@@ -106,7 +106,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsImporter, feature_cat
 
       expect(Gitlab::GithubImport::ImportPullRequestWorker)
         .to receive(:perform_in)
-        .with(1, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(an_instance_of(Float), project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

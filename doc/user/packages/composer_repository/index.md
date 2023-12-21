@@ -128,6 +128,7 @@ Install a package from the package registry so you can use it as a dependency.
 Prerequisites:
 
 - A package in the package registry.
+- The package registry is enabled in the project responsible for publishing the package.
 - The group ID, which is on the group's home page.
 - One of the following token types:
   - A [personal access token](../../../user/profile/personal_access_tokens.md)

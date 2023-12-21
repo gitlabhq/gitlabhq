@@ -661,7 +661,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#blob_at' do
     context 'blank sha' do
-      subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
+      subject { repository.blob_at(Gitlab::Git::SHA1_BLANK_SHA, '.gitignore') }
 
       it { is_expected.to be_nil }
     end
@@ -3226,8 +3226,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'returns false for invalid commit IDs' do
-      expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
-      expect(repository.ancestor?(Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
+      expect(repository.ancestor?(commit.id, Gitlab::Git::SHA1_BLANK_SHA)).to eq(false)
+      expect(repository.ancestor?(Gitlab::Git::SHA1_BLANK_SHA, commit.id)).to eq(false)
     end
   end
 

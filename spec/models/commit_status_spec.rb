@@ -583,7 +583,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       end
 
       it 'returns blank sha' do
-        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+        is_expected.to eq(Gitlab::Git::SHA1_BLANK_SHA)
       end
     end
 

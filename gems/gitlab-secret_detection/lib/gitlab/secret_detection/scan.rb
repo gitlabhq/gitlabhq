@@ -152,7 +152,7 @@ module Gitlab
           # ignore the line scan if it is suffixed with '#gitleaks:allow'
           next if line.end_with?(GITLEAKS_KEYWORD_IGNORE)
 
-          patterns = pattern_matcher.match(line, :exception => false)
+          patterns = pattern_matcher.match(line, exception: false)
           next unless patterns.any?
 
           line_number = index + 1

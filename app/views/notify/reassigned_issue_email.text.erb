@@ -1,6 +1,15 @@
+<% added_names = sanitize_name(@added_assignees.to_sentence(locale: I18n.locale)) -%>
+<% removed_names = sanitize_name(@removed_assignees.to_sentence(locale: I18n.locale)) -%>
 Reassigned Issue <%= @issue.iid %>
 
 <%= url_for([@issue.project, @issue, { only_path: false }]) %>
 
-Assignee changed<%= " from #{sanitize_name(@previous_assignees.map(&:name).to_sentence)}" if @previous_assignees.any? -%>
- to <%= "#{@issue.assignees.any? ? @issue.assignee_list : 'Unassigned'}" %>
+<%- if @added_assignees.any? %>
+<%= html_escape(n_(s_('Notify|%{added} was added as an assignee.'), s_('Notify|%{added} were added as assignees.'), @added_assignees.length).html_safe % { added: added_names }) %>
+<% end -%>
+<%- if @removed_assignees.any? && @issue.assignees.any? %>
+<%= html_escape(n_(s_('Notify|%{removed} was removed as an assignee.'), s_('Notify|%{removed} were removed as assignees.'), @removed_assignees.length).html_safe % { removed: removed_names }) %>
+<% end -%>
+<%- if @removed_assignees.any? && @issue.assignees.empty? %>
+<%= html_escape(s_('Notify|All assignees were removed.')) %>
+<% end -%>

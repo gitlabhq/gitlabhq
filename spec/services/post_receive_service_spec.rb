@@ -19,7 +19,7 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
   let(:repository) { project.repository }
 
   let(:changes) do
-    "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
+    "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
   end
 
   let(:params) do

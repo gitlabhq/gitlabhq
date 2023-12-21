@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Git do
       'zzz25dc642cb6eb9a060e54bf8d69288fbee4904' | false
 
       '4b825dc642cb6eb9a060e54bf8d69288fbee4904' | true
-      Gitlab::Git::BLANK_SHA                     | true
+      Gitlab::Git::SHA1_BLANK_SHA                | true
     end
 
     with_them do

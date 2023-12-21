@@ -621,7 +621,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if self.sha == Gitlab::Git::BLANK_SHA
+      if self.sha == Gitlab::Git::SHA1_BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
       end
     end
@@ -675,7 +675,7 @@ module Ci
     end
 
     def before_sha
-      super || Gitlab::Git::BLANK_SHA
+      super || Gitlab::Git::SHA1_BLANK_SHA
     end
 
     def short_sha

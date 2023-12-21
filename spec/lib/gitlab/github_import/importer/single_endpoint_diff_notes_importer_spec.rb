@@ -53,7 +53,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter d
     end
 
     it 'skips cached pages' do
-      Gitlab::GithubImport::PageCounter
+      Gitlab::Import::PageCounter
         .new(project, "merge_request/#{merge_request.id}/pull_request_comments")
         .set(2)
 

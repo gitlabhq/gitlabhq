@@ -136,7 +136,7 @@ namespace :gitlab do
             next unless latest_diff_sha
 
             branches_to_delete << { reference: mr.source_branch_ref, old_sha: latest_diff_sha,
-new_sha: Gitlab::Git::BLANK_SHA }
+new_sha: Gitlab::Git::SHA1_BLANK_SHA }
 
             break if number_deleted + branches_to_delete.size >= limit
           end

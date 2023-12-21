@@ -55,13 +55,13 @@ RSpec.describe Gitlab::Git::Push do
     end
 
     context 'when old revision is blank' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it { is_expected.not_to be_branch_updated }
     end
 
     context 'when it is not a branch push' do
-      let(:newrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it { is_expected.not_to be_branch_updated }
     end
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Git::Push do
     end
 
     context 'when old revision is not defined' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it { is_expected.to be_branch_added }
     end
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Git::Push do
     end
 
     context 'when new revision is not defined' do
-      let(:newrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it { is_expected.to be_branch_removed }
     end
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Git::Push do
     end
 
     context 'when a push is not a branch update' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'raises an error' do
         expect { subject.modified_paths }.to raise_error(ArgumentError)
@@ -155,7 +155,7 @@ RSpec.describe Gitlab::Git::Push do
       let(:oldrev) { nil }
 
       it 'returns blank SHA' do
-        expect(subject.oldrev).to eq Gitlab::Git::BLANK_SHA
+        expect(subject.oldrev).to eq Gitlab::Git::SHA1_BLANK_SHA
       end
     end
   end
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::Git::Push do
       let(:newrev) { nil }
 
       it 'returns blank SHA' do
-        expect(subject.newrev).to eq Gitlab::Git::BLANK_SHA
+        expect(subject.newrev).to eq Gitlab::Git::SHA1_BLANK_SHA
       end
     end
   end

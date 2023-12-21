@@ -69,7 +69,7 @@ module QA
           end
         end
 
-        it 'push and pull a npm package via CI', testcase: params[:testcase] do
+        it 'push and pull a npm package via CI', :reliable, testcase: params[:testcase] do
           npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
@@ -96,7 +96,7 @@ module QA
           end
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 800)
+            expect(job).to be_successful(timeout: 180)
           end
 
           npm_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_install_package_instance.yaml.erb')).result(binding)
@@ -115,7 +115,7 @@ module QA
           end
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 800)
+            expect(job).to be_successful(timeout: 180)
             job.click_browse_button
           end
 

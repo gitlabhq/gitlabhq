@@ -820,7 +820,7 @@ RSpec.describe Gitlab::Diff::File do
   end
 
   context 'when neither blob exists' do
-    let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::BLANK_SHA, head_sha: Gitlab::Git::BLANK_SHA) }
+    let(:blank_diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: Gitlab::Git::SHA1_BLANK_SHA, head_sha: Gitlab::Git::SHA1_BLANK_SHA) }
     let(:diff_file) { described_class.new(diff, diff_refs: blank_diff_refs, repository: project.repository) }
 
     describe '#blob' do

@@ -476,6 +476,20 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             end
           end
         end
+
+        describe 'handling the unicode null characters' do
+          let(:artifact) { build(:ci_job_artifact, :common_security_report_with_unicode_null_character) }
+
+          it 'escapes the unicode null characters while parsing the report' do
+            finding = report.findings.first
+
+            expect(finding.solution).to eq('Upgrade to latest version.\u0000')
+          end
+
+          it 'adds warning to report' do
+            expect(report.warnings).to include({ type: 'Parsing', message: 'Report artifact contained unicode null characters which are escaped during the ingestion.' })
+          end
+        end
       end
     end
   end

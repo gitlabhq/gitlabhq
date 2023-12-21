@@ -392,7 +392,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         .and_return(true)
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:replicate)
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:checksum)
-        .and_return(::Gitlab::Git::BLANK_SHA)
+        .and_return(::Gitlab::Git::SHA1_BLANK_SHA)
       allow_next_instance_of(Gitlab::Git::ObjectPool) do |object_pool|
         allow(object_pool).to receive(:link)
       end

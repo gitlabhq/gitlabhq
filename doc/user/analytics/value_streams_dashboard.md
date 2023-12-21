@@ -16,7 +16,7 @@ For more information, see also the [Value Stream Management category direction p
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
 The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
 
-The Value Streams Dashboard includes the following metrics:
+The Value Streams Dashboard includes two panels (DevSecOps metrics comparison and DORA Performers score) that visualize the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
@@ -29,9 +29,11 @@ With the Value Streams Dashboard, you can:
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
 
-The Value Streams Dashboard has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
+## Value Streams Dashboard panels
 
-## DevSecOps metrics comparison panel
+The Value Streams Dashboard panels has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
+
+### DevSecOps metrics comparison panel
 
 The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.
@@ -46,7 +48,7 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
-## DORA Performers score panel
+### DORA Performers score panel
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
 
@@ -73,7 +75,7 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
-### Filter by project topics
+#### Filter the DORA Performers score by project topics
 
 When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/settings/project_features_permissions.md#project-topics).
 
@@ -221,8 +223,18 @@ panels:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
 
+### Filter the DevSecOps metrics comparison panel by labels
+
 Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
 If the comparison panel from the configuration file is enabled with `filter_labels`, the drill-down links inherit the labels from the panel filter.
+
+```yaml
+  - data:
+      namespace: group/another-project
+      filter_labels:
+        - in_development
+        - in_review
+```
 
 ## Dashboard metrics and drill-down reports
 

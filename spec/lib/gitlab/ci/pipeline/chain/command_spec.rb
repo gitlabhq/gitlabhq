@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       let(:command) { described_class.new(project: project) }
 
       it 'uses BLANK_SHA' do
-        is_expected.to eq(Gitlab::Git::BLANK_SHA)
+        is_expected.to eq(Gitlab::Git::SHA1_BLANK_SHA)
       end
     end
   end

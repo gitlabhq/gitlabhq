@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe Notify do
+RSpec.describe Notify, feature_category: :code_review_workflow do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include EmailHelpers
@@ -20,7 +20,10 @@ RSpec.describe Notify do
   let_it_be(:assignee, reload: true) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
   let_it_be(:reviewer, reload: true) { create(:user, email: 'reviewer@example.com', name: 'Jane Doe') }
 
-  let_it_be(:merge_request) do
+  let(:previous_assignee1) { create(:user, name: 'Previous Assignee 1') }
+  let(:previous_assignee_ids) { [previous_assignee1.id] }
+
+  let_it_be(:merge_request, reload: true) do
     create(
       :merge_request,
       source_project: project,
@@ -84,11 +87,43 @@ RSpec.describe Notify do
       end
     end
 
+    shared_examples 'an assignee email with previous assignees' do
+      context 'when all assignees are removed' do
+        before do
+          resource.update!(assignees: [])
+        end
+
+        it_behaves_like 'email with default notification reason'
+
+        it 'uses fixed copy "All assignees were removed"' do
+          is_expected.to have_body_text("<p> All assignees were removed. </p>")
+          is_expected.to have_plain_text_content("All assignees were removed.")
+        end
+      end
+
+      context 'with multiple previous assignees' do
+        let(:previous_assignee2) { create(:user, name: 'Previous Assignee 2') }
+        let(:previous_assignee_ids) { [previous_assignee1.id, previous_assignee2.id] }
+
+        it_behaves_like 'email with default notification reason'
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(resource, reply: true)
+            is_expected.to have_body_text("<p> <strong>#{assignee.name}</strong> was added as an assignee. </p> <p> <strong>#{previous_assignee1.name} and #{previous_assignee2.name}</strong> were removed as assignees. </p>")
+            is_expected.to have_plain_text_content("#{assignee.name} was added as an assignee.")
+            is_expected.to have_plain_text_content("#{previous_assignee1.name} and #{previous_assignee2.name} were removed as assignees.")
+          end
+        end
+      end
+    end
+
     context 'for issues', feature_category: :team_planning do
       describe 'that are new' do
         subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
         it_behaves_like 'an assignee email'
+
         it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
           let(:model) { issue }
         end
@@ -142,9 +177,7 @@ RSpec.describe Notify do
       end
 
       describe 'that are reassigned' do
-        let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
-
-        subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
+        subject { described_class.reassigned_issue_email(recipient.id, issue.id, previous_assignee_ids, current_user.id) }
 
         it_behaves_like 'a multiple recipients email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -165,23 +198,14 @@ RSpec.describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
-            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>#{assignee.name}</strong>")
-            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to #{assignee.name}")
+            is_expected.to have_body_text("<p> <strong>#{assignee.name}</strong> was added as an assignee. </p> <p> <strong>#{previous_assignee1.name}</strong> was removed as an assignee. </p>")
+            is_expected.to have_plain_text_content("#{assignee.name} was added as an assignee.")
+            is_expected.to have_plain_text_content("#{previous_assignee1.name} was removed as an assignee.")
           end
         end
 
-        context 'without new assignee' do
-          before do
-            issue.update!(assignees: [])
-          end
-
-          it_behaves_like 'email with default notification reason'
-          it_behaves_like 'email with link to issue'
-
-          it 'uses "Unassigned" placeholder' do
-            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>Unassigned</strong>")
-            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to Unassigned")
-          end
+        it_behaves_like 'an assignee email with previous assignees' do
+          let(:resource) { issue }
         end
 
         context 'without previous assignees' do
@@ -190,14 +214,14 @@ RSpec.describe Notify do
           it_behaves_like 'email with default notification reason'
           it_behaves_like 'email with link to issue'
 
-          it 'uses short text' do
-            is_expected.to have_body_text("Assignee changed to <strong>#{assignee.name}</strong>")
-            is_expected.to have_plain_text_content("Assignee changed to #{assignee.name}")
+          it 'does not mention any previous assignees' do
+            is_expected.to have_body_text("<p> <strong>#{assignee.name}</strong> was added as an assignee. </p>")
+            is_expected.to have_plain_text_content("#{assignee.name} was added as an assignee.")
           end
         end
 
         context 'when sent with a reason' do
-          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [previous_assignee1.id], current_user.id, NotificationReason::ASSIGNED) }
 
           it_behaves_like 'appearance header and footer enabled'
           it_behaves_like 'appearance header and footer not enabled'
@@ -211,10 +235,10 @@ RSpec.describe Notify do
           let(:email_obj) { create(:email, :confirmed, user_id: recipient.id, email: '123@abc') }
           let(:recipient) { create(:user, preferred_language: :zh_CN) }
 
-          it 'is translated into zh_CN' do
+          it 'is sent with html lang attribute set to the user\'s preferred language' do
             recipient.notification_email = email_obj.email
             recipient.save!
-            is_expected.to have_body_text '指派人从 <strong>Previous Assignee</strong> 更改为 <strong>John Doe</strong>'
+            is_expected.to have_body_text '<html lang="zh-CN">'
           end
         end
       end
@@ -450,6 +474,7 @@ RSpec.describe Notify do
         subject { described_class.new_merge_request_email(merge_request.assignee_ids.first, merge_request.id) }
 
         it_behaves_like 'an assignee email'
+
         it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
           let(:model) { merge_request }
         end
@@ -495,9 +520,7 @@ RSpec.describe Notify do
       end
 
       describe 'that are reassigned' do
-        let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
-
-        subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id) }
+        subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee_ids, current_user.id) }
 
         it_behaves_like 'a multiple recipients email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -509,6 +532,10 @@ RSpec.describe Notify do
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
+        it_behaves_like 'an assignee email with previous assignees' do
+          let(:resource) { merge_request }
+        end
+
         it 'is sent as the author' do
           expect_sender(current_user)
         end
@@ -516,14 +543,14 @@ RSpec.describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
-            is_expected.to have_body_text(previous_assignee.name)
+            is_expected.to have_body_text(previous_assignee1.name)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
             is_expected.to have_body_text(assignee.name)
           end
         end
 
         context 'when sent with a reason', type: :helper do
-          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
+          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee1.id], current_user.id, NotificationReason::ASSIGNED) }
 
           it_behaves_like 'appearance header and footer enabled'
           it_behaves_like 'appearance header and footer not enabled'
@@ -536,11 +563,11 @@ RSpec.describe Notify do
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::ASSIGNED, format: :html)
             is_expected.to have_body_text(text)
 
-            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::MENTIONED)
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee1.id], current_user.id, NotificationReason::MENTIONED)
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::MENTIONED, format: :html)
             expect(new_subject).to have_body_text(text)
 
-            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, nil)
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee1.id], current_user.id, nil)
             text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, format: :html)
             expect(new_subject).to have_body_text(text)
           end

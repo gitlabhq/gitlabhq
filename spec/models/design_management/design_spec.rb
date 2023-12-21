@@ -447,7 +447,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
       let(:versions_count) { 1 }
 
       it 'builds diff refs based on the empty tree if there was only one version' do
-        expect(design.diff_refs.base_sha).to eq(Gitlab::Git::BLANK_SHA)
+        expect(design.diff_refs.base_sha).to eq(Gitlab::Git::SHA1_BLANK_SHA)
         expect(design.diff_refs.head_sha).to eq(design.diff_refs.head_sha)
       end
     end

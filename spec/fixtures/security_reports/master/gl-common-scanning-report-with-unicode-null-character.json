@@ -1,0 +1,79 @@
+{
+  "vulnerabilities": [
+    {
+      "id": "vulnerability-1",
+      "category": "dependency_scanning",
+      "name": "Vulnerability for remediation testing 1",
+      "message": "This vulnerability should have ONE remediation",
+      "description": "",
+      "severity": "High",
+      "solution": "Upgrade to latest version.\u0000",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "cvss_vectors": [
+        {
+          "vendor": "GitLab",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        }
+      ],
+      "location": {
+        "file": "some/kind/of/file.c",
+        "dependency": {
+          "package": {
+            "name": "io.netty/netty"
+          },
+          "version": "3.9.1.Final"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "GitLab",
+          "name": "Foo vulnerability",
+          "value": "foo"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-2137"
+        }
+      ],
+      "details": {
+        "commit": {
+          "name": "the commit",
+          "description": "description",
+          "type": "commit",
+          "value": "41df7b7eb3be2b5be2c406c2f6d28cd6631eeb19"
+        }
+      }
+    }
+  ],
+  "remediations": [],
+  "dependency_files": [],
+  "scan": {
+    "analyzer": {
+      "id": "common-analyzer",
+      "name": "Common Analyzer",
+      "url": "https://site.com/analyzer/common",
+      "version": "2.0.1",
+      "vendor": {
+        "name": "Common"
+      }
+    },
+    "scanner": {
+      "id": "gemnasium",
+      "name": "Gemnasium top-level",
+      "url": "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "2.18.0"
+    },
+    "type": "dependency_scanning",
+    "start_time": "2022-08-10T21:37:00",
+    "end_time": "2022-08-10T21:38:00",
+    "status": "success"
+  },
+  "version": "14.0.2"
+}

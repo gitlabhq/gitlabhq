@@ -2,7 +2,11 @@
 
 module Resolvers
   class GroupResolver < BaseResolver
-    prepend FullPathResolver
+    def self.target_type
+      'group'
+    end
+
+    include FullPathResolver
 
     type Types::GroupType, null: true
 

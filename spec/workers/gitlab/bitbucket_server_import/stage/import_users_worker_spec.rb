@@ -3,7 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportUsersWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_started) }
+  let_it_be(:project) do
+    create(:project, :import_started,
+      import_data_attributes: {
+        data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
+        credentials: { 'base_uri' => 'http://bitbucket.org/', 'user' => 'bitbucket', 'password' => 'password' }
+      }
+    )
+  end
 
   let(:worker) { described_class.new }
 
@@ -15,6 +22,12 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportUsersWorker, feature_
         allow_next_instance_of(Gitlab::BitbucketServerImport::Importers::UsersImporter) do |importer|
           allow(importer).to receive(:execute)
         end
+
+        allow(Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [project.id] }
       end
 
       it 'schedules the next stage' do

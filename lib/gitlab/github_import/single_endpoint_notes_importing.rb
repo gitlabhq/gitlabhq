@@ -75,7 +75,7 @@ module Gitlab
         batch.each do |parent_record|
           # The page counter needs to be scoped by parent_record to avoid skipping
           # pages of notes from already imported parent_record.
-          page_counter = PageCounter.new(project, page_counter_id(parent_record))
+          page_counter = Gitlab::Import::PageCounter.new(project, page_counter_id(parent_record))
           repo = project.import_source
           options = collection_options.merge(page: page_counter.current)
 

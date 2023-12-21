@@ -39,7 +39,7 @@ module Gitlab
         end
 
         def fetch_gists_to_import
-          page_counter = Gitlab::GithubImport::PageCounter.new(user, :gists, 'github-gists-importer')
+          page_counter = Gitlab::Import::PageCounter.new(user, :gists, 'github-gists-importer')
           collection = []
 
           client.each_page(:gists, nil, page: page_counter.current) do |page|

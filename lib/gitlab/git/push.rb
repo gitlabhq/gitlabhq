@@ -9,8 +9,8 @@ module Gitlab
 
       def initialize(project, oldrev, newrev, ref)
         @project = project
-        @oldrev = oldrev.presence || Gitlab::Git::BLANK_SHA
-        @newrev = newrev.presence || Gitlab::Git::BLANK_SHA
+        @oldrev = oldrev.presence || Gitlab::Git::SHA1_BLANK_SHA
+        @newrev = newrev.presence || Gitlab::Git::SHA1_BLANK_SHA
         @ref = ref
       end
 

@@ -20,6 +20,7 @@ module Gitlab
           end
 
           def parse!
+            sanitize_json_data
             set_report_version
 
             return report_data unless valid?
@@ -42,6 +43,14 @@ module Gitlab
           private
 
           attr_reader :json_data, :report, :validate, :project
+
+          # PostgreSQL can not save texts with unicode null character
+          # that's why we are escaping that character.
+          def sanitize_json_data
+            return unless json_data.gsub!('\u0000', '\\\\\u0000')
+
+            report.add_warning('Parsing', 'Report artifact contained unicode null characters which are escaped during the ingestion.')
+          end
 
           def valid?
             return true unless validate

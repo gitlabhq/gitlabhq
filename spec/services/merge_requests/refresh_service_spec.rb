@@ -712,10 +712,10 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
       it 'refreshes the merge request' do
         expect(refresh_service).to receive(:execute_hooks)
-                                       .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::BLANK_SHA)
+                                       .with(@fork_merge_request, 'update', old_rev: Gitlab::Git::SHA1_BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
 
-        refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')
+        refresh_service.execute(Gitlab::Git::SHA1_BLANK_SHA, @newrev, 'refs/heads/master')
         reload_mrs
 
         expect(@merge_request.notes).to be_empty

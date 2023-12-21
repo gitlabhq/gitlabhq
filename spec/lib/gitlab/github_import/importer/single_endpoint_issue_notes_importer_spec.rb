@@ -52,7 +52,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
     end
 
     it 'skips cached pages' do
-      Gitlab::GithubImport::PageCounter
+      Gitlab::Import::PageCounter
         .new(project, "issue/#{issue.id}/issue_comments")
         .set(2)
 

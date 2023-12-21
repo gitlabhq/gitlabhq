@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module GithubImport
+  module Import
     # PageCounter can be used to keep track of the last imported page of a
     # collection, allowing workers to resume where they left off in the event of
     # an error.
@@ -12,7 +12,7 @@ module Gitlab
       CACHE_KEY = '%{import_type}/page-counter/%{object}/%{collection}'
 
       def initialize(object, collection, import_type = 'github-importer')
-        @cache_key = CACHE_KEY % { import_type: import_type, object: object.id, collection: collection }
+        @cache_key = format(CACHE_KEY, import_type: import_type, object: object.id, collection: collection)
       end
 
       # Sets the page number to the given value.

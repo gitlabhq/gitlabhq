@@ -1206,7 +1206,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     it 'returns false if passed commits do not exist' do
       expect(subject.includes_any_commits?([])).to eq(false)
-      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to eq(false)
+      expect(subject.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
     end
 
     it 'returns true if passed commits exists' do

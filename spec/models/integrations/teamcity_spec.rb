@@ -246,7 +246,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns nil when ref is blank' do
-        data[:after] = Gitlab::Git::BLANK_SHA
+        data[:after] = Gitlab::Git::SHA1_BLANK_SHA
 
         expect(integration.execute(data)).to be_nil
       end

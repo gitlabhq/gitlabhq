@@ -403,6 +403,15 @@ FactoryBot.define do
       end
     end
 
+    trait :common_security_report_with_unicode_null_character do
+      common_security_report
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/security_reports/master/gl-common-scanning-report-with-unicode-null-character.json'), 'application/json')
+      end
+    end
+
     trait :sast_with_corrupted_data do
       file_type { :sast }
       file_format { :raw }

@@ -915,7 +915,7 @@ export default {
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
       header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-      class="gl-w-full gl-sm-w-40p"
+      class="gl-w-full gl-sm-w-40p gl-reset-line-height"
       @close="activeIssuable = null"
     >
       <template #title>
@@ -927,6 +927,7 @@ export default {
         <work-item-detail
           :key="activeIssuable.iid"
           :work-item-iid="activeIssuable.iid"
+          class="gl-pt-0!"
           @work-item-updated="updateIssuablesCache"
           @work-item-emoji-updated="updateIssuableEmojis"
           @addChild="refetchIssuables"

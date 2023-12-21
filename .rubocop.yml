@@ -13,12 +13,6 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
-  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
-  - ./rubocop/rubocop-ruby31.yml
-  <% end %>
-  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.2' %>
-  - ./rubocop/rubocop-ruby32.yml
-  <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml
   - ./rubocop/rubocop-code_reuse.yml
@@ -1119,3 +1113,8 @@ Style/SymbolProc:
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/434151
     - each_batch
     - each_sub_batch
+
+# Short-hand Hash syntax does not work prior 3.1.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

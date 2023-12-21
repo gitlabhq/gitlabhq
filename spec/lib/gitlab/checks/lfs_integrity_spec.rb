@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Checks::LfsIntegrity, feature_category: :source_code_mana
       end
 
       context 'deletion' do
-        let(:newrevs) { [Gitlab::Git::BLANK_SHA] }
+        let(:newrevs) { [Gitlab::Git::SHA1_BLANK_SHA] }
 
         it 'skips integrity check' do
           expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)

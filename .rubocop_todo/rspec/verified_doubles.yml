@@ -536,7 +536,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/github_import/markdown_text_spec.rb'
     - 'spec/lib/gitlab/github_import/milestone_finder_spec.rb'
     - 'spec/lib/gitlab/github_import/object_counter_spec.rb'
-    - 'spec/lib/gitlab/github_import/page_counter_spec.rb'
     - 'spec/lib/gitlab/github_import/parallel_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/diff_note_spec.rb'

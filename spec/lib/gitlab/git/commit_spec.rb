@@ -522,7 +522,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       end
 
       context 'when the commit cannot be found' do
-        let(:commit_id) { Gitlab::Git::BLANK_SHA }
+        let(:commit_id) { Gitlab::Git::SHA1_BLANK_SHA }
 
         it 'returns nil' do
           expect(subject).to be_nil

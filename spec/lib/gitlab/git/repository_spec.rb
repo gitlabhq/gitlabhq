@@ -566,7 +566,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           [
             {
               old_sha: sha,
-              new_sha: Gitlab::Git::BLANK_SHA,
+              new_sha: Gitlab::Git::SHA1_BLANK_SHA,
               reference: tmp_ref
             }
           ]
@@ -1155,7 +1155,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'blank revisions' do
-      let(:revisions) { [::Gitlab::Git::BLANK_SHA] }
+      let(:revisions) { [::Gitlab::Git::SHA1_BLANK_SHA] }
       let(:expected_blobs) { 0 }
 
       before do
@@ -1278,7 +1278,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with partially blank revisions' do
-      let(:newrevs) { [nil, commit, Gitlab::Git::BLANK_SHA] }
+      let(:newrevs) { [nil, commit, Gitlab::Git::SHA1_BLANK_SHA] }
       let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
       let(:expected_blobs) do
         [
@@ -1326,7 +1326,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with a single zero newrev' do
-      let(:newrevs) { Gitlab::Git::BLANK_SHA }
+      let(:newrevs) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it_behaves_like '#new_blobs without revisions'
     end
@@ -1338,7 +1338,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with array containing only empty refs' do
-      let(:newrevs) { [nil, Gitlab::Git::BLANK_SHA] }
+      let(:newrevs) { [nil, Gitlab::Git::SHA1_BLANK_SHA] }
 
       it_behaves_like '#new_blobs without revisions'
     end
@@ -1400,7 +1400,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
     context 'initial commit' do
-      let(:old_rev) { Gitlab::Git::BLANK_SHA }
+      let(:old_rev) { Gitlab::Git::SHA1_BLANK_SHA }
       let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
 
       it 'returns the changes' do
@@ -1681,11 +1681,11 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(collection.to_a).to be_empty
     end
 
-    it 'returns no Gitaly::DiffStats when there is a BLANK_SHA' do
+    it 'returns no Gitaly::DiffStats when there is a SHA1_BLANK_SHA' do
       expect_any_instance_of(Gitlab::GitalyClient::CommitService)
         .not_to receive(:diff_stats)
 
-      collection = repository.diff_stats(Gitlab::Git::BLANK_SHA, 'master')
+      collection = repository.diff_stats(Gitlab::Git::SHA1_BLANK_SHA, 'master')
 
       expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
       expect(collection).to be_a(Enumerable)
@@ -2222,7 +2222,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'returns empty for unknown ID' do
-      expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
+      expect(repository.refs_by_oid(oid: Gitlab::Git::SHA1_BLANK_SHA, limit: 0)).to eq([])
     end
 
     it 'returns empty for an empty repo' do

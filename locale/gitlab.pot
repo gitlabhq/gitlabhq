@@ -12006,16 +12006,10 @@ msgstr ""
 msgid "CodeSuggestionsGAAlert|Try GitLab Duo Code Suggestions today"
 msgstr ""
 
-msgid "CodeSuggestionsSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end} and acknowledge that GitLab will send data from the instance, including personal data, to our %{ai_docs_link_start}AI providers%{link_end} to provide this feature."
-msgstr ""
-
 msgid "CodeSuggestionsSM|Code Suggestions"
 msgstr ""
 
 msgid "CodeSuggestionsSM|Enable Code Suggestions for this instance"
-msgstr ""
-
-msgid "CodeSuggestionsSM|Enable Code Suggestions for users of this instance. %{link_start}What are Code Suggestions?%{link_end}"
 msgstr ""
 
 msgid "CodeSuggestions|%{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
@@ -16496,11 +16490,6 @@ msgstr ""
 
 msgid "DeletionSettings|Deletion protection"
 msgstr ""
-
-msgid "DeletionSettings|Keep deleted projects for %{number} day"
-msgid_plural "DeletionSettings|Keep deleted projects for %{number} days"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "DeletionSettings|Only administrators can delete projects."
 msgstr ""
@@ -32675,6 +32664,12 @@ msgstr ""
 msgid "Notify users by email when sign-in location is not recognized."
 msgstr ""
 
+msgid "Notify|%{added} was added as an assignee."
+msgstr ""
+
+msgid "Notify|%{added} were added as assignees."
+msgstr ""
+
 msgid "Notify|%{author_link}'s issue %{issue_reference_link} is due soon."
 msgstr ""
 
@@ -32723,6 +32718,12 @@ msgstr ""
 msgid "Notify|%{project_link_start}Download%{project_link_end} the project export."
 msgstr ""
 
+msgid "Notify|%{removed} was removed as an assignee."
+msgstr ""
+
+msgid "Notify|%{removed} were removed as assignees."
+msgstr ""
+
 msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type cannot be found or is not supported."
 msgstr ""
 
@@ -32753,16 +32754,13 @@ msgstr ""
 msgid "Notify|After it expires, you can %{a_start} request a new one %{a_end}."
 msgstr ""
 
+msgid "Notify|All assignees were removed."
+msgstr ""
+
 msgid "Notify|All discussions on merge request %{mr_link} were resolved by %{name}"
 msgstr ""
 
 msgid "Notify|And %{total_stripped_new_commits_count} more"
-msgstr ""
-
-msgid "Notify|Assignee changed from %{fromNames} to %{toNames}"
-msgstr ""
-
-msgid "Notify|Assignee changed to %{toNames}"
 msgstr ""
 
 msgid "Notify|Author: %{author_name}"

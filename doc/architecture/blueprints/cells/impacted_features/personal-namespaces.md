@@ -138,6 +138,6 @@ Cons:
 
 ## 4. Evaluation
 
-The most straightforward solution requiring the least engineering effort is to create [one personal Namespace in each Organization](#33-one-personal-namespace-in-each-organization).
-We recognize that this solution is not ideal for users working across multiple Organizations, but find this acceptable due to our expectation that most users will mainly work in one Organization.
-At a later point, this concept will be reviewed and possibly replaced with a better solution.
+We will begin by [making the personal namespace optional for Organizations](https://gitlab.com/groups/gitlab-org/-/epics/12179). The goal of this iteration is to disable personal namespaces for any Organization other than the default Organization, so that customers who do not want to use personal namespaces can already move to Organizations. The first phase will only change the Ruby on Rails model relationships in preparation for further changes at the user-facing level.
+
+We need to [split the concept of a User Profile and a personal namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/432654) now that a User is cluster-wide and a User's personal namespace must be Cell-local. It is likely we will [discontinue personal namespaces](#34-discontinue-personal-namespaces) in favor of Groups.

@@ -123,7 +123,7 @@ module CycleAnalyticsHelpers
 
   def create_commit(message, project, user, branch_name, count: 1, commit_time: nil, skip_push_handler: false)
     repository = project.repository
-    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
+    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::SHA1_BLANK_SHA
 
     commit_shas = Array.new(count) do |index|
       commit_sha = repository.create_file(user, generate(:branch), "content", message: message, branch_name: branch_name)

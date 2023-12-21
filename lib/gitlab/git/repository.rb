@@ -398,7 +398,7 @@ module Gitlab
       end
 
       def new_blobs(newrevs, dynamic_timeout: nil)
-        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::SHA1_BLANK_SHA }
         return [] if newrevs.empty?
 
         newrevs = newrevs.uniq.sort
@@ -416,7 +416,7 @@ module Gitlab
       # GitalyClient.medium_timeout and dynamic timeout if the dynamic
       # timeout is set, otherwise it'll always use the medium timeout.
       def blobs(revisions, with_paths: false, dynamic_timeout: nil)
-        revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
+        revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::SHA1_BLANK_SHA }
 
         return [] if revisions.blank?
 
@@ -458,7 +458,7 @@ module Gitlab
 
         @raw_changes_between[[old_rev, new_rev]] ||=
           begin
-            return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
+            return [] if new_rev.blank? || new_rev == Gitlab::Git::SHA1_BLANK_SHA
 
             wrapped_gitaly_errors do
               gitaly_repository_client.raw_changes_between(old_rev, new_rev)
@@ -752,7 +752,7 @@ module Gitlab
       # new_sha
       # reference:
       #
-      # When new_sha is Gitlab::Git::BLANK_SHA, then this will be deleted
+      # When new_sha is Gitlab::Git::SHA1_BLANK_SHA, then this will be deleted
       def update_refs(ref_list)
         wrapped_gitaly_errors do
           gitaly_ref_client.update_refs(ref_list: ref_list) if ref_list.any?

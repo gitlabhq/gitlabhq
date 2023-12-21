@@ -41,7 +41,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
       # stub the `head_commit_sha` as it will trigger a
       # backward compatibility query that is out-of-scope
       # for this test whenever it is `nil`
-      allow_any_instance_of(MergeRequestDiff).to receive(:head_commit_sha).and_return(Gitlab::Git::BLANK_SHA)
+      allow_any_instance_of(MergeRequestDiff).to receive(:head_commit_sha).and_return(Gitlab::Git::SHA1_BLANK_SHA)
 
       query = scope.all
       batch = ActiveRecord::QueryRecorder.new do

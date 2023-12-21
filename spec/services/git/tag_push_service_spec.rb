@@ -9,7 +9,7 @@ RSpec.describe Git::TagPushService, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:service) { described_class.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }) }
 
-  let(:blankrev) { Gitlab::Git::BLANK_SHA }
+  let(:blankrev) { Gitlab::Git::SHA1_BLANK_SHA }
   let(:oldrev) { blankrev }
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
   let(:tag)   { 'v1.1.0' }

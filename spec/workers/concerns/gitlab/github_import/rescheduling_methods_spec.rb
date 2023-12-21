@@ -76,7 +76,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
 
         expect(worker.class)
           .to receive(:perform_in)
-          .with(15, project.id, { 'number' => 2 }, '123')
+          .with(15.012, project.id, { 'number' => 2 }, '123')
 
         worker.perform(project.id, { 'number' => 2 }, '123')
       end

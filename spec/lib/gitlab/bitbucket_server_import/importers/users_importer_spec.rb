@@ -52,6 +52,13 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::UsersImporter, feature_
       expect(logger).to receive(:info).with(hash_including(message: 'importing page 3 using batch size 2'))
       expect(logger).to receive(:info).with(hash_including(message: 'finished'))
 
+      expect_next_instance_of(Gitlab::Import::PageCounter) do |page_counter|
+        expect(page_counter).to receive(:current).and_call_original.once
+        expect(page_counter).to receive(:set).with(2).and_call_original.once
+        expect(page_counter).to receive(:set).with(3).and_call_original.once
+        expect(page_counter).to receive(:expire!).and_call_original.once
+      end
+
       expect(Gitlab::Cache::Import::Caching).to receive(:write_multiple).and_call_original.twice
 
       importer.execute

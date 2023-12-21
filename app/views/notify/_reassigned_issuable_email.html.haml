@@ -1,7 +1,12 @@
-- to_names = content_tag(:strong, issuable.assignees.any? ? sanitize_name(issuable.assignee_list) : _('Unassigned'))
+- added_names = content_tag(:strong, sanitize_name(added_assignees.to_sentence(locale: I18n.locale)))
+- removed_names = content_tag(:strong, sanitize_name(removed_assignees.to_sentence(locale: I18n.locale)))
 
-%p
-  - if previous_assignees.any?
-    = html_escape(s_('Notify|Assignee changed from %{fromNames} to %{toNames}').html_safe % { fromNames: content_tag(:strong, sanitize_name(previous_assignees.map(&:name).to_sentence)), toNames: to_names })
-  - else
-    = html_escape(s_('Notify|Assignee changed to %{toNames}').html_safe % { toNames: to_names})
+- if added_assignees.any?
+  %p
+    = html_escape(n_(s_('Notify|%{added} was added as an assignee.'), s_('Notify|%{added} were added as assignees.'), added_assignees.length).html_safe % { added: added_names })
+- if removed_assignees.any? && issuable.assignees.any?
+  %p
+    = html_escape(n_(s_('Notify|%{removed} was removed as an assignee.'), s_('Notify|%{removed} were removed as assignees.'), removed_assignees.length).html_safe % { removed: removed_names })
+- if removed_assignees.any? && issuable.assignees.empty?
+  %p
+    = html_escape(s_('Notify|All assignees were removed.'))

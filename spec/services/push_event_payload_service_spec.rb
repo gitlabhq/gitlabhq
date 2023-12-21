@@ -70,7 +70,7 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
 
   describe '#commit_from_id' do
     it 'returns nil when creating a new ref' do
-      service = described_class.new(event, before: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, before: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.commit_from_id).to be_nil
     end
@@ -84,7 +84,7 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
 
   describe '#commit_to_id' do
     it 'returns nil when removing an existing ref' do
-      service = described_class.new(event, after: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, after: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.commit_to_id).to be_nil
     end
@@ -156,7 +156,7 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
 
   describe '#create?' do
     it 'returns true when creating a new ref' do
-      service = described_class.new(event, before: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, before: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.create?).to eq(true)
     end
@@ -170,7 +170,7 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
 
   describe '#remove?' do
     it 'returns true when removing an existing ref' do
-      service = described_class.new(event, after: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, after: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.remove?).to eq(true)
     end
@@ -184,13 +184,13 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
 
   describe '#action' do
     it 'returns :created when creating a ref' do
-      service = described_class.new(event, before: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, before: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.action).to eq(:created)
     end
 
     it 'returns :removed when removing an existing ref' do
-      service = described_class.new(event, before: '123', after: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, before: '123', after: Gitlab::Git::SHA1_BLANK_SHA)
 
       expect(service.action).to eq(:removed)
     end

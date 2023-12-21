@@ -52,7 +52,7 @@ module Ci
         ref: ref,
         sha: sha,
         tag: false,
-        before_sha: Gitlab::Git::BLANK_SHA
+        before_sha: Gitlab::Git::SHA1_BLANK_SHA
       )
     end
 

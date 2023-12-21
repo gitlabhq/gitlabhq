@@ -123,7 +123,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectsImporter, feature_categ
       end
 
       expect(Gitlab::GithubImport::ImportLfsObjectWorker).to receive(:perform_in)
-        .with(1, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(an_instance_of(Float), project.id, an_instance_of(Hash), an_instance_of(String))
 
       waiter = importer.parallel_import
 

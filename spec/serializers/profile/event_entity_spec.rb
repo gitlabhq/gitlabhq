@@ -29,7 +29,7 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
   end
 
   context 'for push events' do
-    let_it_be(:commit_from) { Gitlab::Git::BLANK_SHA }
+    let_it_be(:commit_from) { Gitlab::Git::SHA1_BLANK_SHA }
     let_it_be(:commit_title) { 'My commit' }
     let(:event) { build(:push_event, project: project, author: target_user) }
 

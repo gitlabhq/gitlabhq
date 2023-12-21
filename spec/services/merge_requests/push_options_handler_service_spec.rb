@@ -34,9 +34,9 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
   let(:label1) { 'mylabel1' }
   let(:label2) { 'mylabel2' }
   let(:label3) { 'mylabel3' }
-  let(:new_branch_changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
+  let(:new_branch_changes) { "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
-  let(:deleted_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 #{Gitlab::Git::BLANK_SHA} refs/heads/#{source_branch}" }
+  let(:deleted_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 #{Gitlab::Git::SHA1_BLANK_SHA} refs/heads/#{source_branch}" }
   let(:default_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{project.default_branch}" }
   let(:error_mr_required) { "A merge_request.create push option is required to create a merge request for branch #{source_branch}" }
 
@@ -802,7 +802,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     let(:changes) do
       [
         new_branch_changes,
-        "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/feature_conflict"
+        "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/feature_conflict"
       ]
     end
 
@@ -814,7 +814,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
       let(:limit) { MergeRequests::PushOptionsHandlerService::LIMIT }
       let(:changes) do
         TestEnv::BRANCH_SHA.to_a[0..limit].map do |x|
-          "#{Gitlab::Git::BLANK_SHA} #{x.first} refs/heads/#{x.last}"
+          "#{Gitlab::Git::SHA1_BLANK_SHA} #{x.first} refs/heads/#{x.last}"
         end
       end
 
