@@ -6127,4 +6127,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#allows_multiple_assignees?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:allows_multiple_assignees?) { merge_request.allows_multiple_assignees? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:allows_multiple_merge_request_assignees?)
+        .and_return(false)
+    end
+
+    it { is_expected.to eq(false) }
+  end
+
+  describe '#allows_multiple_reviewers?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:allows_multiple_reviewers?) { merge_request.allows_multiple_reviewers? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:allows_multiple_merge_request_reviewers?)
+        .and_return(false)
+    end
+
+    it { is_expected.to eq(false) }
+  end
 end

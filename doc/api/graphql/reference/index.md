@@ -21431,6 +21431,8 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestallowcollaboration"></a>`allowCollaboration` | [`Boolean`](#boolean) | Indicates if members of the target project can push to the fork. |
+| <a id="mergerequestallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Allows assigning multiple users to a merge request. |
+| <a id="mergerequestallowsmultiplereviewers"></a>`allowsMultipleReviewers` | [`Boolean!`](#boolean) | Allows assigning multiple reviewers to a merge request. |
 | <a id="mergerequestapprovalstate"></a>`approvalState` | [`MergeRequestApprovalState!`](#mergerequestapprovalstate) | Information relating to rules that must be satisfied to merge this merge request. |
 | <a id="mergerequestapprovalsleft"></a>`approvalsLeft` | [`Int`](#int) | Number of approvals left. |
 | <a id="mergerequestapprovalsrequired"></a>`approvalsRequired` | [`Int`](#int) | Number of approvals required. |
@@ -24164,6 +24166,8 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
+| <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
+| <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
 | <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |

@@ -4,7 +4,9 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# ClickHouse integration guidelines
+# ClickHouse integration guidelines **(EXPERIMENT)**
+
+This feature is an [Experiment](../policy/experiment-beta-support.md).
 
 Instructions about how to setup integration between GitLab and ClickHouse database.
 
@@ -15,7 +17,6 @@ To setup ClickHouse as the GitLab data storage:
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
 1. [Configure GitLab connection to Clickhouse](#configure-the-gitlab-connection-to-clickhouse).
 1. [Run ClickHouse migrations](#run-clickhouse-migrations).
-1. [Enable the feature flags](#enable-feature-flags).
 
 ### Run and configure ClickHouse
 
@@ -123,15 +124,3 @@ To create the required database objects execute:
 ```shell
 sudo gitlab-rake gitlab:clickhouse:migrate
 ```
-
-### Enable feature flags
-
-Features that use ClickHouse are currently under development and are disabled by feature flags.
-
-To enable these features, [enable](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags)
-the following feature flags:
-
-| Feature flag name                  | Purpose                                                                   |
-|------------------------------------|---------------------------------------------------------------------------|
-| `ci_data_ingestion_to_click_house` | Enables synchronization of new finished CI builds to Clickhouse database. |
-| `clickhouse_ci_analytics`          | Enables the **Wait time to pick a job** chart.                            |

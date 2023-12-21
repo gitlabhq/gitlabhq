@@ -669,6 +669,18 @@ module Types
       description: 'Finds machine learning models',
       resolver: Resolvers::Ml::FindModelsResolver
 
+    field :allows_multiple_merge_request_assignees,
+      GraphQL::Types::Boolean,
+      method: :allows_multiple_merge_request_assignees?,
+      description: 'Project allows assigning multiple users to a merge request.',
+      null: false
+
+    field :allows_multiple_merge_request_reviewers,
+      GraphQL::Types::Boolean,
+      method: :allows_multiple_merge_request_reviewers?,
+      description: 'Project allows assigning multiple reviewers to a merge request.',
+      null: false
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Dedicated
 
-GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
+GitLab Dedicated is a fully isolated, single-tenant SaaS solution that is:
 
 - Hosted and managed by GitLab, Inc.
 - Deployed on AWS in a cloud region of your choice. See [available AWS regions](#available-aws-regions).
@@ -69,7 +69,7 @@ GitLab Dedicated offers the following [compliance certifications](https://about.
 
 #### Isolation
 
-As a single-tenant SaaS service, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
+As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
 
 #### Access controls
 

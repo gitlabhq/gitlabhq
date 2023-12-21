@@ -19,7 +19,9 @@ Write code more efficiently by using generative AI to suggest code while you're 
 With Code Suggestions, you get:
 
 - Code Completion, which suggests completions to the current line you are typing. These suggestions are usually low latency.
-- Code Generation, which generates code based on a natural language code comment block. 
+- Code Generation, which generates code based on a natural language code
+  comment block. Write a comment like `# Type more here` to generate the
+  appropriate code, based on the context of your comment and the rest of your code.
   - Algorithms or large code blocks may take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block. 
 
@@ -53,7 +55,11 @@ For languages not listed in the following table, Code Suggestions might not func
 
 ### Supported languages in IDEs
 
-Editor support for languages is documented in the following table.
+Code Suggestions is aware of common popular programming concepts and
+infrastructure-as-code interfaces, like Kubernetes Resource Model (KRM),
+Google Cloud CLI, and Terraform.
+
+The editor supports these languages: 
 
 | Language         | VS Code                | JetBrains IDEs         | Visual Studio          | Neovim |
 |------------------|------------------------|------------------------|------------------------|--------|
@@ -71,8 +77,6 @@ Editor support for languages is documented in the following table.
 | Scala            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Swift            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | TypeScript       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Google Cloud     | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
-| Kubernetes Resource Model (KRM) | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
 | Terraform        | **{check-circle}** Yes (Requires third-party extension providing Terraform support) | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes (Requires third-party extension providing the `terraform` file type) |
 
 NOTE:

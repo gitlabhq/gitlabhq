@@ -16,6 +16,7 @@ through email.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video overview, see [Introducing GitLab Service Desk (GitLab 16.7)](https://www.youtube.com/watch?v=LDVQXv3I5rI).
+<!-- Video published on 2023-12-19 -->
 
 ## Service Desk workflow
 

@@ -7413,6 +7413,9 @@ msgstr ""
 msgid "AwardEmoji|No emoji found."
 msgstr ""
 
+msgid "B"
+msgstr ""
+
 msgid "Back"
 msgstr ""
 
@@ -21999,6 +22002,9 @@ msgstr ""
 msgid "Get started!"
 msgstr ""
 
+msgid "GiB"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 
@@ -27915,6 +27921,9 @@ msgstr ""
 msgid "Ki"
 msgstr ""
 
+msgid "KiB"
+msgstr ""
+
 msgid "Kroki"
 msgstr ""
 
@@ -30597,6 +30606,9 @@ msgid "Metrics|e.g. req/sec"
 msgstr ""
 
 msgid "Mi"
+msgstr ""
+
+msgid "MiB"
 msgstr ""
 
 msgid "Microsoft|Client ID"
@@ -43995,6 +44007,18 @@ msgstr ""
 msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr ""
 
+msgid "SecurityOrchestration|a license scanner found license violations"
+msgstr ""
+
+msgid "SecurityOrchestration|a merge request has been opened against a protected branch"
+msgstr ""
+
+msgid "SecurityOrchestration|a security policy has been violated"
+msgstr ""
+
+msgid "SecurityOrchestration|a security scanner found vulnerabilities matching the criteria"
+msgstr ""
+
 msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
@@ -46558,9 +46582,6 @@ msgstr ""
 msgid "SortOptions|Priority"
 msgstr ""
 
-msgid "SortOptions|Project"
-msgstr ""
-
 msgid "SortOptions|Recent last activity"
 msgstr ""
 
@@ -46592,9 +46613,6 @@ msgid "SortOptions|Start soon"
 msgstr ""
 
 msgid "SortOptions|Title"
-msgstr ""
-
-msgid "SortOptions|Type"
 msgstr ""
 
 msgid "SortOptions|Version"
@@ -50066,6 +50084,11 @@ msgstr ""
 
 msgid "This pipeline was triggered using the api"
 msgstr ""
+
+msgid "This policy needs %{approvals} approval because %{rules}"
+msgid_plural "This policy needs %{approvals} approvals because %{rules}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "This process deletes the project repository and all related resources."
 msgstr ""

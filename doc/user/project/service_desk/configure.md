@@ -165,6 +165,7 @@ the assignees of the issue and creates to-do items for them.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
+<!-- Video published on 2023-12-12 -->
 
 Prerequisites:
 
@@ -191,6 +192,7 @@ Maintain brand identity and instill confidence among support requesters with a d
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
+<!-- Video published on 2023-09-12 -->
 
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 A Beta feature is not production-ready, but is unlikely to change drastically

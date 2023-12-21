@@ -2098,8 +2098,12 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def allows_multiple_assignees?
+    project.allows_multiple_merge_request_assignees?
+  end
+
   def allows_multiple_reviewers?
-    false
+    project.allows_multiple_merge_request_reviewers?
   end
 
   def supports_assignee?

@@ -1,6 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 import eventHub from '~/super_sidebar/event_hub';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
@@ -15,15 +15,11 @@ export default {
     NavItem,
   },
   computed: {
-    ...mapState(['navigation', 'urlQuery']),
     ...mapGetters(['navigationItems']),
   },
   created() {
     eventHub.$emit('toggle-menu-header', false);
-
-    if (this.urlQuery?.search) {
-      this.fetchSidebarCount();
-    }
+    this.fetchSidebarCount();
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),

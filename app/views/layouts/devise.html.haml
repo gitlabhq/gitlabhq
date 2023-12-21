@@ -8,7 +8,7 @@
     = render "layouts/init_client_detection_flags"
     = yield :sessions_broadcast
     .gl-h-full.borderless.gl-display-flex.gl-flex-wrap
-      .container
+      .container.gl-align-self-center
         .content
           = render "layouts/flash"
           - if custom_text.present?

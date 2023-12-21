@@ -8972,6 +8972,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#allows_multiple_merge_request_assignees?' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:allows_multiple_merge_request_assignees?) { project.allows_multiple_merge_request_assignees? }
+
+    it { is_expected.to eq(false) }
+  end
+
+  describe '#allows_multiple_merge_request_reviewers?' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:allows_multiple_merge_request_reviewers?) { project.allows_multiple_merge_request_reviewers? }
+
+    it { is_expected.to eq(false) }
+  end
+
   private
 
   def finish_job(export_job)

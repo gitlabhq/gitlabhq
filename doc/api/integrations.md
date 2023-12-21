@@ -98,17 +98,17 @@ Parameters:
 | `app_store_private_key` | string | true | Apple App Store Connect private key. |
 | `app_store_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
 
-### Disable Apple App Store
+### Disable Apple App Store Connect
 
-Disable the Apple App Store integration for a project. Integration settings are reset.
+Disable the Apple App Store Connect integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/apple_app_store
 ```
 
-### Get Apple App Store settings
+### Get Apple App Store Connect settings
 
-Get the Apple App Store integration settings for a project.
+Get the Apple App Store Connect integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/apple_app_store

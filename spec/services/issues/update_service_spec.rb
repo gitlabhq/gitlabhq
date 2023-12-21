@@ -592,11 +592,19 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         update_issue(confidential: true)
       end
 
-      it 'does not update assignee_id with unauthorized users' do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      it 'allows assignment of guest users' do
         update_issue(confidential: true)
+
+        update_issue(assignee_ids: [guest.id])
+
+        expect(issue.reload.assignees).to contain_exactly(guest)
+      end
+
+      it 'does not update assignee_id with unauthorized users' do
+        update_issue(confidential: true)
+
         non_member = create(:user)
-        original_assignees = issue.assignees
+        original_assignees = issue.assignees.to_a
 
         update_issue(assignee_ids: [non_member.id])
 

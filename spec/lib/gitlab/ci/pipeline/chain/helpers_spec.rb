@@ -93,6 +93,37 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
         end
       end
 
+      context 'when drop_reason is nil' do
+        let(:command) { double(project: nil) }
+
+        shared_examples "error function with no drop reason" do
+          it 'drops with out failure reason' do
+            expect(command).to receive(:increment_pipeline_failure_reason_counter)
+
+            call_error
+
+            expect(pipeline.failure_reason).to be_nil
+            expect(pipeline.yaml_errors).to be_nil
+            expect(pipeline.errors[:base]).to include(message)
+            expect(pipeline).to be_failed
+            expect(pipeline).not_to be_persisted
+          end
+        end
+
+        context 'when no drop_reason argument is passed' do
+          let(:call_error) { subject.error(message) }
+
+          it_behaves_like "error function with no drop reason"
+        end
+
+        context 'when drop_reason argument is passed as nil' do
+          let(:drop_reason) { nil }
+          let(:call_error) { subject.error(message, drop_reason: drop_reason) }
+
+          it_behaves_like "error function with no drop reason"
+        end
+      end
+
       context 'when config error is false' do
         context 'does not set the yaml error or override the drop reason' do
           let(:drop_reason) { :size_limit_exceeded }
@@ -107,7 +138,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
             expect(pipeline).to be_persisted
           end
 
-          context ' when the drop reason is not persistable' do
+          context 'when the drop reason is not persistable' do
             let(:drop_reason) { :filtered_by_rules }
             let(:command) { double(project: nil) }
 

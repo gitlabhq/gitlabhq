@@ -14,12 +14,6 @@ import {
   isNumeric,
   isPositiveInteger,
 } from '~/lib/utils/number_utils';
-import {
-  BYTES_FORMAT_BYTES,
-  BYTES_FORMAT_KIB,
-  BYTES_FORMAT_MIB,
-  BYTES_FORMAT_GIB,
-} from '~/lib/utils/constants';
 
 describe('Number Utils', () => {
   describe('formatRelevantDigits', () => {
@@ -87,23 +81,23 @@ describe('Number Utils', () => {
 
   describe('numberToHumanSizeSplit', () => {
     it('should return bytes', () => {
-      expect(numberToHumanSizeSplit(654)).toEqual(['654', BYTES_FORMAT_BYTES]);
-      expect(numberToHumanSizeSplit(-654)).toEqual(['-654', BYTES_FORMAT_BYTES]);
+      expect(numberToHumanSizeSplit(654)).toEqual(['654', 'B']);
+      expect(numberToHumanSizeSplit(-654)).toEqual(['-654', 'B']);
     });
 
     it('should return KiB', () => {
-      expect(numberToHumanSizeSplit(1079)).toEqual(['1.05', BYTES_FORMAT_KIB]);
-      expect(numberToHumanSizeSplit(-1079)).toEqual(['-1.05', BYTES_FORMAT_KIB]);
+      expect(numberToHumanSizeSplit(1079)).toEqual(['1.05', 'KiB']);
+      expect(numberToHumanSizeSplit(-1079)).toEqual(['-1.05', 'KiB']);
     });
 
     it('should return MiB', () => {
-      expect(numberToHumanSizeSplit(10485764)).toEqual(['10.00', BYTES_FORMAT_MIB]);
-      expect(numberToHumanSizeSplit(-10485764)).toEqual(['-10.00', BYTES_FORMAT_MIB]);
+      expect(numberToHumanSizeSplit(10485764)).toEqual(['10.00', 'MiB']);
+      expect(numberToHumanSizeSplit(-10485764)).toEqual(['-10.00', 'MiB']);
     });
 
     it('should return GiB', () => {
-      expect(numberToHumanSizeSplit(10737418240)).toEqual(['10.00', BYTES_FORMAT_GIB]);
-      expect(numberToHumanSizeSplit(-10737418240)).toEqual(['-10.00', BYTES_FORMAT_GIB]);
+      expect(numberToHumanSizeSplit(10737418240)).toEqual(['10.00', 'GiB']);
+      expect(numberToHumanSizeSplit(-10737418240)).toEqual(['-10.00', 'GiB']);
     });
   });
 

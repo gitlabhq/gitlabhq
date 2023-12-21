@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import Translate from '~/vue_shared/translate';
+import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import { apolloProvider } from '../graphql/client';
 import EnvironmentsFolderView from './environments_folder_view.vue';
 import EnvironmentsFolderApp from './environments_folder_app.vue';
@@ -20,10 +21,9 @@ export default () => {
   if (gon.features.environmentsFolderNewLook) {
     Vue.use(VueRouter);
 
-    const folderName = environmentsData.environmentsDataFolderName;
-    const folderPath = environmentsData.environmentsDataEndpoint.replace('.json', '');
-    const projectPath = environmentsData.environmentsDataProjectPath;
-    const helpPagePath = environmentsData.environmentsDataHelpPagePath;
+    const folderPath = environmentsData.endpoint.replace('.json', '');
+    const kasTunnelUrl = removeLastSlashInUrlPath(environmentsData.kasTunnelUrl);
+    const { projectPath, folderName, helpPagePath } = environmentsData;
 
     const router = new VueRouter({
       mode: 'history',
@@ -54,6 +54,7 @@ export default () => {
       provide: {
         projectPath,
         helpPagePath,
+        kasTunnelUrl,
       },
       apolloProvider,
       router,
@@ -74,8 +75,8 @@ export default () => {
     },
     data() {
       return {
-        endpoint: environmentsData.environmentsDataEndpoint,
-        folderName: environmentsData.environmentsDataFolderName,
+        endpoint: environmentsData.endpoint,
+        folderName: environmentsData.folderName,
         cssContainerClass: environmentsData.cssClass,
       };
     },

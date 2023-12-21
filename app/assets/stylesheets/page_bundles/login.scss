@@ -230,11 +230,8 @@
   height: 100%;
 
   body {
-    padding-top: 48px; // Remove this line when the restyle_login_page feature flag is deleted. Instead, add self-align `center` to container, and maybe a top margin.
-
     &.with-system-header {
       padding-top: $system-header-height;
-      padding-top: calc(#{$system-header-height} + 48px); // Remove this line when the restyle_login_page feature flag is deleted
     }
 
     &.with-system-footer {

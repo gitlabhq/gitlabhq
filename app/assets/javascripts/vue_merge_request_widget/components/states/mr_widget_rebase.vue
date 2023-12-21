@@ -48,7 +48,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project.mergeRequest,
+      update: (data) => data.project?.mergeRequest || {},
     },
   },
   components: {
@@ -90,7 +90,7 @@ export default {
       return this.state.rebaseInProgress;
     },
     canPushToSourceBranch() {
-      return this.state.userPermissions.pushToSourceBranch;
+      return this.state.userPermissions?.pushToSourceBranch || false;
     },
     targetBranch() {
       return this.state.targetBranch;

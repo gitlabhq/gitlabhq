@@ -9,13 +9,14 @@ module EnvironmentsHelper
     }
   end
 
-  def environments_folder_list_view_data
+  def environments_folder_list_view_data(project, folder)
     {
-      "endpoint" => folder_project_environments_path(@project, @folder, format: :json),
-      "folder_name" => @folder,
-      "project_path" => project_path(@project),
+      "endpoint" => folder_project_environments_path(project, folder, format: :json),
+      "folder_name" => folder,
+      "project_path" => project.full_path,
       "help_page_path" => help_page_path("ci/environments/index"),
-      "can_read_environment" => can?(current_user, :read_environment, @project).to_s
+      "can_read_environment" => can?(current_user, :read_environment, @project).to_s,
+      "kas_tunnel_url" => ::Gitlab::Kas.tunnel_url
     }
   end
 

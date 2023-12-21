@@ -1,20 +1,20 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import produce from 'immer';
 import { __ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { PROJECTS_PER_PAGE } from '../constants';
 import getProjectsQuery from '../graphql/queries/get_projects.query.graphql';
 
 export default {
-  PROJECTS_PER_PAGE,
-  projectQueryPageInfo: {
-    endCursor: '',
-  },
+  name: 'ProjectDropdown',
+
   components: {
     GlAvatarLabeled,
     GlCollapsibleListbox,
   },
+
   props: {
     selectedProject: {
       type: Object,
@@ -22,27 +22,29 @@ export default {
       default: null,
     },
   },
+
   data() {
     return {
       initialProjectsLoading: true,
+      isLoadingMore: false,
       projectSearchQuery: '',
       selectedProjectId: this.selectedProject?.id,
     };
   },
+
   apollo: {
     projects: {
       query: getProjectsQuery,
       variables() {
         return {
-          search: this.projectSearchQuery,
-          first: this.$options.PROJECTS_PER_PAGE,
-          after: this.$options.projectQueryPageInfo.endCursor,
-          searchNamespaces: true,
-          sort: 'similarity',
+          ...this.queryVariables,
         };
       },
       update(data) {
-        return data?.projects?.nodes.filter((project) => !project.repository?.empty) ?? [];
+        return {
+          nodes: data?.projects?.nodes.filter((project) => !project.repository?.empty) ?? [],
+          pageInfo: data?.projects?.pageInfo,
+        };
       },
       result() {
         this.initialProjectsLoading = false;
@@ -52,24 +54,37 @@ export default {
       },
     },
   },
+
   computed: {
-    projectsLoading() {
-      return Boolean(this.$apollo.queries.projects.loading);
+    queryVariables() {
+      return {
+        search: this.projectSearchQuery,
+        first: PROJECTS_PER_PAGE,
+        searchNamespaces: true,
+        sort: 'similarity',
+      };
+    },
+    isLoading() {
+      return this.$apollo.queries.projects.loading && !this.isLoadingMore;
     },
     projectDropdownText() {
       return this.selectedProject?.nameWithNamespace || this.$options.i18n.selectProjectText;
     },
     projectList() {
-      return (this.projects || []).map((project) => ({
+      return (this.projects?.nodes || []).map((project) => ({
         ...project,
         text: project.nameWithNamespace,
         value: String(project.id),
       }));
     },
+    hasNextPage() {
+      return this.projects?.pageInfo?.hasNextPage;
+    },
   },
+
   methods: {
     findProjectById(id) {
-      return this.projects.find((project) => id === project.id);
+      return this.projects?.nodes?.find((project) => id === project.id);
     },
     onProjectSelect(projectId) {
       this.$emit('change', this.findProjectById(projectId));
@@ -77,13 +92,41 @@ export default {
     onError({ message } = {}) {
       this.$emit('error', { message });
     },
+    async onBottomReached() {
+      if (!this.hasNextPage) return;
+
+      this.isLoadingMore = true;
+
+      try {
+        await this.$apollo.queries.projects.fetchMore({
+          variables: {
+            ...this.queryVariables,
+            after: this.projects.pageInfo?.endCursor,
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            return produce(fetchMoreResult, (draftData) => {
+              draftData.projects.nodes = [
+                ...previousResult.projects.nodes,
+                ...draftData.projects.nodes,
+              ];
+            });
+          },
+        });
+      } catch (error) {
+        this.onError({ message: __('Failed to load projects') });
+      } finally {
+        this.isLoadingMore = false;
+      }
+    },
     onSearch: debounce(function debouncedSearch(query) {
       this.projectSearchQuery = query;
     }, 250),
   },
+
   i18n: {
     selectProjectText: __('Select a project'),
   },
+
   AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
@@ -97,8 +140,11 @@ export default {
     :header-text="$options.i18n.selectProjectText"
     :loading="initialProjectsLoading"
     :searchable="true"
-    :searching="projectsLoading"
+    :searching="isLoading"
     fluid-width
+    infinite-scroll
+    :infinite-scroll-loading="isLoadingMore"
+    @bottom-reached="onBottomReached"
     @search="onSearch"
     @select="onProjectSelect"
   >

@@ -248,6 +248,18 @@ module Types
                    'if `sast_reports_in_inline_diff` feature flag is disabled.',
       resolver: ::Resolvers::CodequalityReportsComparerResolver
 
+    field :allows_multiple_assignees,
+      GraphQL::Types::Boolean,
+      method: :allows_multiple_assignees?,
+      description: 'Allows assigning multiple users to a merge request.',
+      null: false
+
+    field :allows_multiple_reviewers,
+      GraphQL::Types::Boolean,
+      method: :allows_multiple_reviewers?,
+      description: 'Allows assigning multiple reviewers to a merge request.',
+      null: false
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

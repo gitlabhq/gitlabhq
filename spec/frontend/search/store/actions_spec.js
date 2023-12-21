@@ -40,7 +40,15 @@ jest.mock('~/lib/utils/url_utility', () => ({
   setUrlParams: jest.fn(),
   joinPaths: jest.fn().mockReturnValue(''),
   visitUrl: jest.fn(),
+  queryToObject: jest.fn().mockReturnValue({ scope: 'projects', search: '' }),
+  objectToQuery: jest.fn((params) =>
+    Object.keys(params)
+      .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+      .join('&'),
+  ),
+  getBaseURL: jest.fn().mockReturnValue('http://gdk.test:3000'),
 }));
+
 jest.mock('~/lib/logger', () => ({
   logError: jest.fn(),
 }));
@@ -325,6 +333,23 @@ describe('Global Search Store Actions', () => {
       await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
 
       expect(mock.history.get.length).toBe(0);
+    });
+  });
+
+  describe('fetchSidebarCount uses wild card seach', () => {
+    beforeEach(() => {
+      state.navigation = mapValues(MOCK_NAVIGATION_DATA, (navItem) => ({
+        ...navItem,
+        count_link: '/search/count?scope=projects&search=',
+      }));
+      state.urlQuery.search = '';
+    });
+
+    it('should use wild card', async () => {
+      await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
+      expect(mock.history.get[0].url).toBe(
+        'http://gdk.test:3000/search/count?scope=projects&search=*',
+      );
     });
   });
 

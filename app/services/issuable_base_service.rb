@@ -118,9 +118,8 @@ class IssuableBaseService < ::BaseContainerService
     return false unless user
 
     ability_name = :"read_#{issuable.to_ability_name}"
-    resource     = issuable.persisted? ? issuable : project
 
-    can?(user, ability_name, resource)
+    can?(user, ability_name, issuable.resource_parent)
   end
 
   def filter_labels

@@ -1,7 +1,13 @@
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
+import {
+  visitUrl,
+  setUrlParams,
+  getBaseURL,
+  queryToObject,
+  objectToQuery,
+} from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
@@ -135,19 +141,38 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
   commit(types.SET_LABEL_SEARCH_STRING, value);
 };
 
+const injectWildCardSearch = (state, link) => {
+  const urlObject = new URL(`${getBaseURL()}${link}`);
+  if (!state.urlQuery.search) {
+    const queryObject = queryToObject(urlObject.search);
+    urlObject.search = objectToQuery({ ...queryObject, search: '*' });
+  }
+
+  return urlObject.href;
+};
+
 export const fetchSidebarCount = ({ commit, state }) => {
-  const promises = Object.values(state.navigation).map((navItem) => {
-    // active nav item has count already so we skip it
-    if (!navItem.active && navItem.count_link) {
-      return axios
-        .get(navItem.count_link)
-        .then(({ data: { count } }) => {
-          commit(types.RECEIVE_NAVIGATION_COUNT, { key: navItem.scope, count });
-        })
-        .catch((e) => logError(e));
-    }
-    return Promise.resolve();
-  });
+  const items = Object.values(state.navigation)
+    .filter((navigationItem) => !navigationItem.active && navigationItem.count_link)
+    .map((navItem) => {
+      const navigationItem = { ...navItem };
+
+      if (navigationItem.count_link) {
+        navigationItem.count_link = injectWildCardSearch(state, navigationItem.count_link);
+      }
+
+      return navigationItem;
+    });
+
+  const promises = items.map((navigationItem) =>
+    axios
+      .get(navigationItem.count_link)
+      .then(({ data: { count } }) => {
+        commit(types.RECEIVE_NAVIGATION_COUNT, { key: navigationItem.scope, count });
+      })
+      .catch((e) => logError(e)),
+  );
+
   return Promise.all(promises);
 };
 

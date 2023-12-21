@@ -16,19 +16,20 @@ The feature is still in development, but you can:
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
 - [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
 
-With the Apple App Store Connect integration, you can configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
+Use the Apple App Store Connect integration to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com).
+With this integration, you can build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
 
 The Apple App Store Connect integration works out of the box with [fastlane](https://fastlane.tools/). You can also use this integration with other build tools.
 
-## Prerequisites
+## Enable the integration in GitLab
 
-An Apple ID enrolled in the [Apple Developer Program](https://developer.apple.com/programs/enroll/) is required to enable this integration.
+Prerequisites:
 
-## Configure GitLab
+- You must have an Apple ID enrolled in the [Apple Developer Program](https://developer.apple.com/programs/enroll/).
+- You must [generate a new private key](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api) for your project in the Apple App Store Connect portal.
 
-GitLab supports enabling the Apple App Store Connect integration at the project level. Complete these steps in GitLab:
+To enable the Apple App Store Connect integration in GitLab:
 
-1. In the Apple App Store Connect portal, generate a new private key for your project by following [these instructions](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store Connect**.
@@ -38,7 +39,6 @@ GitLab supports enabling the Apple App Store Connect integration at the project 
    - **Key ID**: The key ID of the generated private key.
    - **Private key**: The generated private key. You can download this key only once.
    - **Protected branches and tags only**: Enable to set variables on protected branches and tags only.
-
 1. Select **Save changes**.
 
 After you enable the integration:

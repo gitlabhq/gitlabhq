@@ -3206,6 +3206,16 @@ class Project < ApplicationRecord
   end
   strong_memoize_attr :code_suggestions_enabled?
 
+  # Overridden in EE
+  def allows_multiple_merge_request_assignees?
+    false
+  end
+
+  # Overridden in EE
+  def allows_multiple_merge_request_reviewers?
+    false
+  end
+
   private
 
   # overridden in EE
@@ -3439,7 +3449,7 @@ class Project < ApplicationRecord
   def check_project_export_limit!
     return if Gitlab::CurrentSettings.current_application_settings.max_export_size == 0
 
-    if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
+    if self.statistics.export_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
   end
