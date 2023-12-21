@@ -211,25 +211,18 @@ module API
       not_found!('Pipeline')
     end
 
-    def find_organization!(id)
-      organization = Organizations::Organization.find_by_id(id)
-      check_organization_access(organization)
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_group(id, organization: nil)
-      collection = organization.present? ? Group.in_organization(organization) : Group.all
-
+    def find_group(id)
       if id.to_s =~ INTEGER_ID_REGEX
-        collection.find_by(id: id)
+        Group.find_by(id: id)
       else
-        collection.find_by_full_path(id)
+        Group.find_by_full_path(id)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def find_group!(id, organization: nil)
-      group = find_group(id, organization: organization)
+    def find_group!(id)
+      group = find_group(id)
       check_group_access(group)
     end
 
@@ -840,12 +833,6 @@ module API
 
     def sudo_identifier
       @sudo_identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
-    end
-
-    def check_organization_access(organization)
-      return organization if can?(current_user, :read_organization, organization)
-
-      not_found!('Organization')
     end
 
     def secret_token

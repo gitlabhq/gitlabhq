@@ -1121,6 +1121,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
+    it { is_expected.to delegate_method(:has_user?).to(:team) }
+    it { is_expected.to delegate_method(:member?).to(:team) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).allow_nil }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).allow_nil }
     it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).allow_nil }

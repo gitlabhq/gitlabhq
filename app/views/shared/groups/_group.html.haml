@@ -22,7 +22,7 @@
 
     %span.gl-ml-5.has-tooltip{ title: _('Users') }
       = sprite_icon('users', css_class: 'gl-vertical-align-text-bottom')
-      = number_with_delimiter(group.users.count)
+      = number_with_delimiter(group.group_members.non_invite.count)
 
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level)

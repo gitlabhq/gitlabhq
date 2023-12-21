@@ -37,8 +37,8 @@ class Group < Namespace
 
   has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
-  has_many :group_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
-  has_many :namespace_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
+  has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
@@ -434,7 +434,7 @@ class Group < Namespace
   end
 
   def owned_by?(user)
-    owners.include?(user)
+    all_owner_members.exists?(user: user)
   end
 
   def add_members(users, access_level, current_user: nil, expires_at: nil)
@@ -591,6 +591,12 @@ class Group < Namespace
     strong_memoize(:self_and_descendants_ids) do
       self_and_descendants.pluck(:id)
     end
+  end
+
+  # Only for direct and not requested members with higher access level than MIMIMAL_ACCESS
+  # It returns true for non-active users
+  def has_user?(user)
+    group_members.exists?(user: user)
   end
 
   def direct_members

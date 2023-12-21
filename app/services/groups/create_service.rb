@@ -92,16 +92,6 @@ module Groups
         end
       end
 
-      if @group.organization && !can?(current_user, :create_group, @group.organization)
-        # We are unsetting this here to match behavior of invalid parent_id above and protect against possible
-        # committing to the database of a value that isn't allowed.
-        @group.organization = nil
-        message = s_("CreateGroup|You don't have permission to create a group in the provided organization.")
-        @group.errors.add(:organization_id, message)
-
-        return false
-      end
-
       true
     end
 

@@ -108,7 +108,7 @@ RSpec.shared_examples_for "member creation" do
       it 'does not update the member' do
         member = described_class.add_member(source, project_bot, :maintainer, current_user: user)
 
-        expect(source.users.reload).to include(project_bot)
+        expect(source.reload).to have_user(project_bot)
         expect(member).to be_persisted
         expect(member.access_level).to eq(Gitlab::Access::DEVELOPER)
         expect(member.errors.full_messages).to include(/not authorized to update member/)
@@ -119,7 +119,7 @@ RSpec.shared_examples_for "member creation" do
       it 'adds the member' do
         member = described_class.add_member(source, project_bot, :maintainer, current_user: user)
 
-        expect(source.users.reload).to include(project_bot)
+        expect(source.reload).to have_user(project_bot)
         expect(member).to be_persisted
       end
     end
@@ -130,7 +130,7 @@ RSpec.shared_examples_for "member creation" do
       member = described_class.add_member(source, user, :maintainer, current_user: admin)
 
       expect(member).to be_persisted
-      expect(source.users.reload).to include(user)
+      expect(source.reload).to have_user(user)
       expect(member.created_by).to eq(admin)
     end
   end
@@ -140,7 +140,7 @@ RSpec.shared_examples_for "member creation" do
       member = described_class.add_member(source, user, :maintainer, current_user: admin)
 
       expect(member).not_to be_persisted
-      expect(source.users.reload).not_to include(user)
+      expect(source).not_to have_user(user)
       expect(member.errors.full_messages).to include(/not authorized to create member/)
     end
   end
@@ -153,52 +153,52 @@ RSpec.shared_examples_for "member creation" do
 
   described_class.access_levels.each do |sym_key, int_access_level|
     it "accepts the :#{sym_key} symbol as access level", :aggregate_failures do
-      expect(source.users).not_to include(user)
+      expect(source).not_to have_user(user)
 
       member = described_class.add_member(source, user.id, sym_key)
 
       expect(member.access_level).to eq(int_access_level)
-      expect(source.users.reload).to include(user)
+      expect(source.reload).to have_user(user)
     end
 
     it "accepts the #{int_access_level} integer as access level", :aggregate_failures do
-      expect(source.users).not_to include(user)
+      expect(source).not_to have_user(user)
 
       member = described_class.add_member(source, user.id, int_access_level)
 
       expect(member.access_level).to eq(int_access_level)
-      expect(source.users.reload).to include(user)
+      expect(source.reload).to have_user(user)
     end
   end
 
   context 'with no current_user' do
     context 'when called with a known user id' do
       it 'adds the user as a member' do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
 
         described_class.add_member(source, user.id, :maintainer)
 
-        expect(source.users.reload).to include(user)
+        expect(source.reload).to have_user(user)
       end
     end
 
     context 'when called with an unknown user id' do
       it 'does not add the user as a member' do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
 
         described_class.add_member(source, non_existing_record_id, :maintainer)
 
-        expect(source.users.reload).not_to include(user)
+        expect(source.reload).not_to have_user(user)
       end
     end
 
     context 'when called with a user object' do
       it 'adds the user as a member' do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
 
         described_class.add_member(source, user, :maintainer)
 
-        expect(source.users.reload).to include(user)
+        expect(source.reload).to have_user(user)
       end
     end
 
@@ -208,29 +208,29 @@ RSpec.shared_examples_for "member creation" do
       end
 
       it 'adds the requester as a member', :aggregate_failures do
-        expect(source.users).not_to include(user)
+        expect(source.reload).not_to have_user(user)
         expect(source.requesters.exists?(user_id: user)).to eq(true)
 
         described_class.add_member(source, user, :maintainer)
 
-        expect(source.users.reload).to include(user)
-        expect(source.requesters.reload.exists?(user_id: user)).to eq(false)
+        expect(source.reload).to have_user(user)
+        expect(source.requesters.exists?(user_id: user)).to eq(false)
       end
     end
 
     context 'when called with a known user email' do
       it 'adds the user as a member' do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
 
         described_class.add_member(source, user.email, :maintainer)
 
-        expect(source.users.reload).to include(user)
+        expect(source.reload).to have_user(user)
       end
     end
 
     context 'when called with an unknown user email' do
       it 'creates an invited member' do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
 
         described_class.add_member(source, 'user@example.com', :maintainer)
 
@@ -245,18 +245,18 @@ RSpec.shared_examples_for "member creation" do
         described_class.add_member(source, email_starting_with_number, :maintainer)
 
         expect(source.members.invite.pluck(:invite_email)).to include(email_starting_with_number)
-        expect(source.users.reload).not_to include(user)
+        expect(source.reload).not_to have_user(user)
       end
     end
   end
 
   context 'when current_user can update member', :enable_admin_mode do
     it 'creates the member' do
-      expect(source.users).not_to include(user)
+      expect(source).not_to have_user(user)
 
       described_class.add_member(source, user, :maintainer, current_user: admin)
 
-      expect(source.users.reload).to include(user)
+      expect(source.reload).to have_user(user)
     end
 
     context 'when called with a requester user object' do
@@ -265,12 +265,12 @@ RSpec.shared_examples_for "member creation" do
       end
 
       it 'adds the requester as a member', :aggregate_failures do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
         expect(source.requesters.exists?(user_id: user)).to be_truthy
 
         described_class.add_member(source, user, :maintainer, current_user: admin)
 
-        expect(source.users.reload).to include(user)
+        expect(source.reload).to have_user(user)
         expect(source.requesters.reload.exists?(user_id: user)).to be_falsy
       end
     end
@@ -278,11 +278,11 @@ RSpec.shared_examples_for "member creation" do
 
   context 'when current_user cannot update member' do
     it 'does not create the member', :aggregate_failures do
-      expect(source.users).not_to include(user)
+      expect(source).not_to have_user(user)
 
       member = described_class.add_member(source, user, :maintainer, current_user: user)
 
-      expect(source.users.reload).not_to include(user)
+      expect(source.reload).not_to have_user(user)
       expect(member).not_to be_persisted
     end
 
@@ -292,12 +292,12 @@ RSpec.shared_examples_for "member creation" do
       end
 
       it 'does not destroy the requester', :aggregate_failures do
-        expect(source.users).not_to include(user)
+        expect(source).not_to have_user(user)
         expect(source.requesters.exists?(user_id: user)).to be_truthy
 
         described_class.add_member(source, user, :maintainer, current_user: user)
 
-        expect(source.users.reload).not_to include(user)
+        expect(source.reload).not_to have_user(user)
         expect(source.requesters.exists?(user_id: user)).to be_truthy
       end
     end
@@ -311,7 +311,7 @@ RSpec.shared_examples_for "member creation" do
 
       context 'with no current_user' do
         it 'updates the member' do
-          expect(source.users).to include(user)
+          expect(source).to have_user(user)
 
           described_class.add_member(source, user, :maintainer)
 
@@ -321,7 +321,7 @@ RSpec.shared_examples_for "member creation" do
 
       context 'when current_user can update member', :enable_admin_mode do
         it 'updates the member' do
-          expect(source.users).to include(user)
+          expect(source).to have_user(user)
 
           described_class.add_member(source, user, :maintainer, current_user: admin)
 
@@ -331,7 +331,7 @@ RSpec.shared_examples_for "member creation" do
 
       context 'when current_user cannot update member' do
         it 'does not update the member' do
-          expect(source.users).to include(user)
+          expect(source).to have_user(user)
 
           described_class.add_member(source, user, :maintainer, current_user: user)
 

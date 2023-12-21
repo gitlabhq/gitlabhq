@@ -98,7 +98,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       it 'adds a user to members' do
         expect(execute_service[:status]).to eq(:success)
-        expect(source.users).to include member
+        expect(source).to have_user(member)
         expect(Onboarding::Progress.completed?(source, :user_added)).to be(true)
       end
 

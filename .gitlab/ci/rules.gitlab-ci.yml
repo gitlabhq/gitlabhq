@@ -2675,7 +2675,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
-        KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 

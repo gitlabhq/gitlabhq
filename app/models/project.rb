@@ -334,7 +334,7 @@ class Project < ApplicationRecord
   has_many :authorized_users, -> { allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') },
     through: :project_authorizations, source: :user, class_name: 'User'
 
-  has_many :project_members, -> { where(requested_at: nil) },
+  has_many :project_members, -> { non_request },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :project_members
   has_many :namespace_members, ->(project) { where(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -508,6 +508,7 @@ class Project < ApplicationRecord
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?
     delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+    delegate :has_user?
   end
 
   with_options to: :namespace do

@@ -1642,6 +1642,46 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
+  describe '#has_user?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    subject { group.has_user?(user) }
+
+    context 'when the user is a member' do
+      before_all do
+        group.add_developer(user)
+      end
+
+      it { is_expected.to be_truthy }
+      it { expect(group.has_user?(user2)).to be_falsey }
+
+      it 'returns false for subgroup' do
+        expect(subgroup.has_user?(user)).to be_falsey
+      end
+    end
+
+    context 'when the user is a member with minimal access' do
+      before_all do
+        group.add_member(user, GroupMember::MINIMAL_ACCESS)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the user has requested membership' do
+      before_all do
+        create(:group_member, :developer, :access_request, user: user, source: group)
+      end
+
+      it 'returns false' do
+        expect(subject).to be_falsey
+      end
+    end
+  end
+
   describe '#member?' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
