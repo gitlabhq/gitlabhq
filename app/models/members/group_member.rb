@@ -18,7 +18,7 @@ class GroupMember < Member
 
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
-  scope :of_groups, ->(groups) { where(source_id: groups&.select(:id)) }
+  scope :of_groups, ->(groups) { where(source_id: groups) }
   scope :of_ldap_type, -> { where(ldap: true) }
   scope :count_users_by_group_id, -> { group(:source_id).count }
 

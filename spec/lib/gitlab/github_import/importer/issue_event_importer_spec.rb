@@ -115,6 +115,18 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventImporter, :clean_gitlab
       it_behaves_like 'triggers specific event importer', Gitlab::GithubImport::Importer::Events::Merged
     end
 
+    context "when it's commented issue event" do
+      let(:event_name) { 'commented' }
+
+      it_behaves_like 'triggers specific event importer', Gitlab::GithubImport::Importer::Events::Commented
+    end
+
+    context "when it's reviewed issue event" do
+      let(:event_name) { 'reviewed' }
+
+      it_behaves_like 'triggers specific event importer', Gitlab::GithubImport::Importer::Events::Reviewed
+    end
+
     context "when it's unknown issue event" do
       let(:event_name) { 'fake' }
 

@@ -42722,7 +42722,7 @@ msgstr ""
 msgid "ScanResultPolicy|Protected branch settings"
 msgstr ""
 
-msgid "ScanResultPolicy|Recommended setting"
+msgid "ScanResultPolicy|Recommended settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Remove all approvals with new commit"
@@ -42782,7 +42782,7 @@ msgstr ""
 msgid "ScanResultPolicy|When enabled, users who have contributed code to the MR are ineligible for approval."
 msgstr ""
 
-msgid "ScanResultPolicy|You have selected any protected branch option as a condition. To better protect your project, it is recommended to enable the protect branch settings. %{linkStart}Learn more.%{linkEnd}"
+msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"
 msgstr ""
 
 msgid "ScanResultPolicy|any commits"

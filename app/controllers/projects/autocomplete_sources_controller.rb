@@ -15,7 +15,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :contacts]
 
   def members
-    render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
+    render json: ::Projects::ParticipantsService.new(@project, current_user, params).execute(target)
   end
 
   def issues

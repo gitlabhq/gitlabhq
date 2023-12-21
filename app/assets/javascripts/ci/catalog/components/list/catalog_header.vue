@@ -1,5 +1,6 @@
 <script>
 import { GlBanner, GlLink } from '@gitlab/ui';
+import ChatBubbleSvg from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
@@ -44,6 +45,7 @@ export default {
     learnMore: __('Learn more'),
   },
   learnMorePath: helpPagePath('ci/components/index'),
+  ChatBubbleSvg,
 };
 </script>
 <template>
@@ -54,6 +56,7 @@ export default {
       :title="$options.i18n.banner.title"
       :button-text="$options.i18n.banner.btnText"
       button-link="https://gitlab.com/gitlab-org/gitlab/-/issues/407556"
+      :svg-path="$options.ChatBubbleSvg"
       @close="handleDismissBanner"
     >
       <p>

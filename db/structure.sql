@@ -35341,8 +35341,6 @@ CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_and_note_id_index ON me
 
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_index ON merge_request_user_mentions USING btree (merge_request_id) WHERE (note_id IS NULL);
 
-CREATE INDEX note_mentions_temp_index ON notes USING btree (id, noteable_type) WHERE (note ~~ '%@%'::text);
-
 CREATE UNIQUE INDEX one_canonical_wiki_page_slug_per_metadata ON wiki_page_slugs USING btree (wiki_page_meta_id) WHERE (canonical = true);
 
 CREATE INDEX p_ci_builds_scheduled_at_idx ON ONLY p_ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));

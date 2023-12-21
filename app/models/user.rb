@@ -847,6 +847,25 @@ class User < MainClusterwide::ApplicationRecord
       scope.reorder(order)
     end
 
+    # This should be kept in sync with the frontend filtering in
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L68 and
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L1053
+    def gfm_autocomplete_search(query)
+      where(
+        "REPLACE(users.name, ' ', '') ILIKE :pattern OR users.username ILIKE :pattern",
+        pattern: "%#{sanitize_sql_like(query)}%"
+      ).order(
+        Arel.sql(sanitize_sql(
+          [
+            "CASE WHEN starts_with(REPLACE(users.name, ' ', ''), :pattern) OR starts_with(users.username, :pattern) THEN 1 ELSE 2 END",
+            { pattern: query }
+          ]
+        )),
+        :username,
+        :id
+      )
+    end
+
     # Limits the result set to users _not_ in the given query/list of IDs.
     #
     # users - The list of users to ignore. This can be an

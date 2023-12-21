@@ -29,7 +29,9 @@ module Groups
     def group_hierarchy_users
       return [] unless group
 
-      sorted(Autocomplete::GroupUsersFinder.new(group: group).execute)
+      relation = Autocomplete::GroupUsersFinder.new(group: group).execute
+
+      filter_and_sort_users(relation)
     end
   end
 end

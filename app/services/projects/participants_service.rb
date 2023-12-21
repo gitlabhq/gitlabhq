@@ -18,13 +18,17 @@ module Projects
     end
 
     def project_members
-      @project_members ||= sorted(project.authorized_users)
+      filter_and_sort_users(project_members_relation)
     end
 
     def all_members
       return [] if Feature.enabled?(:disable_all_mention)
 
-      [{ username: "all", name: "All Project and Group Members", count: project_members.count }]
+      [{ username: "all", name: "All Project and Group Members", count: project_members_relation.count }]
+    end
+
+    def project_members_relation
+      project.authorized_users
     end
   end
 end

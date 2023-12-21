@@ -10,7 +10,7 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   urgency :low, [:issues, :labels, :milestones, :commands, :merge_requests, :members]
 
   def members
-    render json: ::Groups::ParticipantsService.new(@group, current_user).execute(target)
+    render json: ::Groups::ParticipantsService.new(@group, current_user, params).execute(target)
   end
 
   def issues

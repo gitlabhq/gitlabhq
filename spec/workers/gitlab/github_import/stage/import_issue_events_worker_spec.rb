@@ -9,9 +9,12 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
   let!(:group) { create(:group, projects: [project]) }
   let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
   let(:stage_enabled) { true }
+  let(:extended_events) { false }
 
   before do
-    settings.write({ optional_stages: { single_endpoint_issue_events_import: stage_enabled } })
+    settings.write({
+      optional_stages: { single_endpoint_issue_events_import: stage_enabled }, extended_events: extended_events
+    })
   end
 
   it_behaves_like Gitlab::GithubImport::StageMethods
@@ -47,6 +50,18 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_cat
         expect(Gitlab::GithubImport::AdvanceStageWorker).to receive(:perform_async).with(project.id, {}, 'notes')
 
         worker.import(client, project)
+      end
+
+      context 'when extended_events is enabled' do
+        let(:extended_events) { true }
+
+        it 'does not skip the stage' do
+          expect_next_instance_of(Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter) do |importer|
+            expect(importer).to receive(:execute).and_return(Gitlab::JobWaiter.new)
+          end
+
+          worker.import(client, project)
+        end
       end
     end
   end

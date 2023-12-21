@@ -3381,6 +3381,27 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '.gfm_autocomplete_search' do
+    let_it_be(:user_1) { create(:user, username: 'someuser', name: 'John Doe') }
+    let_it_be(:user_2) { create(:user, username: 'userthomas', name: 'Thomas Person') }
+
+    it 'returns partial matches on username' do
+      expect(described_class.gfm_autocomplete_search('some')).to eq([user_1])
+    end
+
+    it 'returns matches on name across multiple words' do
+      expect(described_class.gfm_autocomplete_search('johnd')).to eq([user_1])
+    end
+
+    it 'prioritizes sorting of matches that start with the query' do
+      expect(described_class.gfm_autocomplete_search('user')).to eq([user_2, user_1])
+    end
+
+    it 'falls back to sorting by username' do
+      expect(described_class.gfm_autocomplete_search('ser')).to eq([user_1, user_2])
+    end
+  end
+
   describe '.user_search_minimum_char_limit' do
     it 'returns true' do
       expect(described_class.user_search_minimum_char_limit).to be(true)

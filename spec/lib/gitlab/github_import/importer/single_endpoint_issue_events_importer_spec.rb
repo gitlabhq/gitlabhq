@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter, feature_category: :importers do
-  let(:client) { double }
+  let(:client) { Gitlab::GithubImport::Client.new('token') }
 
-  let_it_be(:project) { create(:project, :import_started, import_source: 'http://somegithub.com') }
+  let_it_be(:project) { create(:project, :import_started, import_source: 'foo/bar') }
 
   let!(:issuable) { create(:issue, project: project) }
 
@@ -88,23 +88,32 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
     let(:issue_event) do
       struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
-      struct.new(id: 1, event: 'closed', created_at: '2022-04-26 18:30:53 UTC')
+      struct.new(id: 1, event: event_name, created_at: '2022-04-26 18:30:53 UTC')
     end
+
+    let(:event_name) { 'closed' }
+
+    let(:page_events) { [issue_event] }
 
     let(:page) do
       instance_double(
         Gitlab::GithubImport::Client::Page,
-        number: 1, objects: [issue_event]
+        number: 1, objects: page_events
       )
     end
 
     let(:page_counter) { instance_double(Gitlab::GithubImport::PageCounter) }
+
+    let(:extended_events) { true }
 
     before do
       allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:each_page).once.with(:issue_timeline,
         project.import_source, issuable.iid, { state: 'all', sort: 'created', direction: 'asc', page: 1 }
       ).and_yield(page)
+      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
+        allow(setting).to receive(:extended_events?).and_return(extended_events)
+      end
     end
 
     context 'with issues' do
@@ -190,15 +199,163 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     end
 
     context 'when event is not supported' do
-      let(:issue_event) do
-        struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
-        struct.new(id: 1, event: 'not_supported_event', created_at: '2022-04-26 18:30:53 UTC')
-      end
+      let(:event_name) { 'not_supported_event' }
 
       it "doesn't process this event" do
         counter = 0
         subject.each_object_to_import { counter += 1 }
         expect(counter).to eq 0
+      end
+    end
+
+    describe 'save events' do
+      shared_examples 'saves event' do
+        it 'saves event' do
+          expect(Gitlab::GithubImport::Representation::IssueEvent).to receive(:from_api_response).with(issue_event.to_h)
+            .and_call_original
+
+          expect_next_instance_of(Gitlab::GithubImport::EventsCache) do |events_cache|
+            expect(events_cache).to receive(:add).with(
+              issuable,
+              an_instance_of(Gitlab::GithubImport::Representation::IssueEvent)
+            )
+          end
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+
+      context 'when event is review_requested' do
+        let(:event_name) { 'review_requested' }
+
+        it_behaves_like 'saves event'
+      end
+
+      context 'when event is review_request_removed' do
+        let(:event_name) { 'review_request_removed' }
+
+        it_behaves_like 'saves event'
+      end
+
+      context 'when event is closed' do
+        let(:event_name) { 'closed' }
+
+        it 'does not save event' do
+          expect_next_instance_of(Gitlab::GithubImport::EventsCache) do |events_cache|
+            expect(events_cache).not_to receive(:add)
+          end
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+
+      context 'when extended_events is disabled' do
+        let(:event_name) { 'review_requested' }
+        let(:extended_events) { false }
+
+        it 'does not save event' do
+          expect(Gitlab::GithubImport::EventsCache).not_to receive(:new)
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+    end
+
+    describe 'after batch processed' do
+      context 'when events should be replayed' do
+        let(:event_name) { 'review_requested' }
+
+        it 'enqueues worker to replay events' do
+          allow(Gitlab::JobWaiter).to receive(:generate_key).and_return('job_waiter_key')
+
+          expect(Gitlab::GithubImport::ReplayEventsWorker).to receive(:perform_async)
+            .with(
+              project.id,
+              { 'issuable_type' => issuable.class.name.to_s, 'issuable_iid' => issuable.iid },
+              'job_waiter_key'
+            )
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+
+      context 'when events are not relevant' do
+        let(:event_name) { 'closed' }
+
+        it 'does not replay events' do
+          expect(Gitlab::GithubImport::ReplayEventsWorker).not_to receive(:perform_async)
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+
+      context 'when extended_events is disabled' do
+        let(:extended_events) { false }
+
+        it 'does not replay events' do
+          expect(Gitlab::GithubImport::ReplayEventsWorker).not_to receive(:perform_async)
+
+          subject.each_object_to_import { |event| event }
+        end
+      end
+    end
+  end
+
+  describe '#execute', :clean_gitlab_redis_cache do
+    let(:extended_events) { false }
+
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
+        allow(setting).to receive(:extended_events?).and_return(extended_events)
+      end
+
+      stub_request(:get, 'https://api.github.com/rate_limit')
+        .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
+
+      events = [
+        {
+          id: 1,
+          event: 'review_requested',
+          created_at: '2022-04-26 18:30:53 UTC',
+          issue: {
+            number: issuable.iid,
+            pull_request: true
+          }
+        }
+      ]
+
+      endpoint = 'https://api.github.com/repos/foo/bar/issues/1/timeline' \
+                 '?direction=asc&page=1&per_page=100&sort=created&state=all'
+
+      stub_request(:get, endpoint)
+        .to_return(status: 200, body: events.to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
+    context 'when extended_events is disabled' do
+      it 'enqueues importer worker' do
+        expect { subject.execute }.to change { Gitlab::GithubImport::ReplayEventsWorker.jobs.size }.by(0)
+        .and change { Gitlab::GithubImport::ImportIssueEventWorker.jobs.size }.by(1)
+      end
+
+      it 'returns job waiter with the correct remaining jobs count' do
+        job_waiter = subject.execute
+
+        expect(job_waiter.jobs_remaining).to eq(1)
+      end
+    end
+
+    context 'when extended_events is enabled' do
+      let(:extended_events) { true }
+
+      it 'enqueues importer worker and replay worker' do
+        expect { subject.execute }.to change { Gitlab::GithubImport::ReplayEventsWorker.jobs.size }.by(1)
+        .and change { Gitlab::GithubImport::ImportIssueEventWorker.jobs.size }.by(1)
+      end
+
+      it 'returns job waiter with the correct remaining jobs count' do
+        job_waiter = subject.execute
+
+        expect(job_waiter.jobs_remaining).to eq(2)
       end
     end
   end

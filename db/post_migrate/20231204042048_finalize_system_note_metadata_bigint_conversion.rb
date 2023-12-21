@@ -6,7 +6,7 @@ class FinalizeSystemNoteMetadataBigintConversion < Gitlab::Database::Migration[2
   disable_ddl_transaction!
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  milestone '16.7'
+  milestone '16.8'
 
   TABLE_NAME = :system_note_metadata
 

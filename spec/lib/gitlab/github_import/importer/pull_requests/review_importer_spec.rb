@@ -30,6 +30,12 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter,
       expect(merge_request.reviewers).to contain_exactly(author)
     end
 
+    context 'when add_reviewer option is false' do
+      it 'does not change Merge Request reviewers' do
+        expect { subject.execute(add_reviewer: false) }.not_to change { MergeRequestReviewer.count }
+      end
+    end
+
     context 'when reviewer already exists' do
       before do
         create(
@@ -309,6 +315,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter,
       extra.reverse_merge(
         author: { id: 999, login: 'author' },
         merge_request_id: merge_request.id,
+        merge_request_iid: merge_request.iid,
         review_type: type,
         note: 'note',
         submitted_at: submitted_at.to_s

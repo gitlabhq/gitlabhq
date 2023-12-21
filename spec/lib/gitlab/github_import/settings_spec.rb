@@ -21,12 +21,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       stages = described_class::OPTIONAL_STAGES
       [
         {
-          name: 'single_endpoint_issue_events_import',
-          label: stages[:single_endpoint_issue_events_import][:label],
-          selected: false,
-          details: stages[:single_endpoint_issue_events_import][:details]
-        },
-        {
           name: 'single_endpoint_notes_import',
           label: stages[:single_endpoint_notes_import][:label],
           selected: false,
@@ -48,7 +42,31 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     end
 
     it 'returns stages list as array' do
-      expect(described_class.stages_array).to match_array(expected_list)
+      expect(described_class.stages_array(project.owner)).to match_array(expected_list)
+    end
+
+    context 'when `github_import_extended_events` feature flag is disabled' do
+      let(:expected_list_with_deprecated_options) do
+        stages = described_class::OPTIONAL_STAGES
+
+        expected_list.concat(
+          [
+            {
+              name: 'single_endpoint_issue_events_import',
+              label: stages[:single_endpoint_issue_events_import][:label],
+              selected: false,
+              details: stages[:single_endpoint_issue_events_import][:details]
+            }
+          ])
+      end
+
+      before do
+        stub_feature_flags(github_import_extended_events: false)
+      end
+
+      it 'returns stages list as array' do
+        expect(described_class.stages_array(project.owner)).to match_array(expected_list_with_deprecated_options)
+      end
     end
   end
 
@@ -97,6 +115,26 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       expect(settings.disabled?(:single_endpoint_notes_import)).to eq true
       expect(settings.disabled?(:attachments_import)).to eq true
       expect(settings.disabled?(:collaborators_import)).to eq true
+    end
+  end
+
+  describe '#extended_events?' do
+    it 'when extended_events is set to true' do
+      project.build_or_assign_import_data(data: { extended_events: true })
+
+      expect(settings.extended_events?).to eq(true)
+    end
+
+    it 'when extended_events is set to false' do
+      project.build_or_assign_import_data(data: { extended_events: false })
+
+      expect(settings.extended_events?).to eq(false)
+    end
+
+    it 'when extended_events is not present' do
+      project.build_or_assign_import_data(data: {})
+
+      expect(settings.extended_events?).to eq(false)
     end
   end
 end

@@ -1130,6 +1130,28 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.gfm_autocomplete_search' do
+    let_it_be(:parent_group) { create(:group, path: 'parent', name: 'Parent') }
+    let_it_be(:group_1) { create(:group, parent: parent_group, path: 'somepath', name: 'Your Group') }
+    let_it_be(:group_2) { create(:group, path: 'noparent', name: 'My Group') }
+
+    it 'returns partial matches on full path' do
+      expect(described_class.gfm_autocomplete_search('parent/som')).to eq([group_1])
+    end
+
+    it 'returns matches on full name across multiple words' do
+      expect(described_class.gfm_autocomplete_search('yourgr')).to eq([group_1])
+    end
+
+    it 'prioritizes sorting of matches that start with the query' do
+      expect(described_class.gfm_autocomplete_search('pare')).to eq([parent_group, group_1, group_2])
+    end
+
+    it 'falls back to sorting by full path' do
+      expect(described_class.gfm_autocomplete_search('group')).to eq([group_2, group_1])
+    end
+  end
+
   describe '.with_statistics' do
     let_it_be(:namespace) { create(:namespace) }
 

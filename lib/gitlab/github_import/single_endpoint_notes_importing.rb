@@ -85,6 +85,7 @@ module Gitlab
             yield parent_record, page
           end
 
+          after_batch_processed(parent_record)
           mark_parent_imported(parent_record)
         end
       end
@@ -95,6 +96,8 @@ module Gitlab
           parent.iid
         )
       end
+
+      def after_batch_processed(_parent); end
 
       def already_imported_parents
         Gitlab::Cache::Import::Caching.values_from_set(parent_imported_cache_key)

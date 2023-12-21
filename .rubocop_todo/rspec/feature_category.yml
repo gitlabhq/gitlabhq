@@ -2837,7 +2837,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/build_access_spec.rb'
     - 'spec/lib/gitlab/bullet_spec.rb'
     - 'spec/lib/gitlab/cache/helpers_spec.rb'
-    - 'spec/lib/gitlab/cache/import/caching_spec.rb'
     - 'spec/lib/gitlab/cache/metrics_spec.rb'
     - 'spec/lib/gitlab/cache/request_cache_spec.rb'
     - 'spec/lib/gitlab/cache_spec.rb'

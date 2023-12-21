@@ -8,14 +8,18 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:noteable) { create(:issue, project: project) }
 
+    let(:params) { {} }
+
     before_all do
       project.add_developer(user)
+    end
 
+    before do
       stub_feature_flags(disable_all_mention: false)
     end
 
     def run_service
-      described_class.new(project, user).execute(noteable)
+      described_class.new(project, user, params).execute(noteable)
     end
 
     it 'returns results in correct order' do
@@ -129,6 +133,16 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
             group_1.full_path, subgroup.full_path, group_2.full_path
           ])
         end
+
+        context 'when search param is given' do
+          let(:params) { { search: 'bb' } }
+
+          it 'only returns matching groups' do
+            expect(group_items.pluck(:username)).to eq([
+              group_1.full_path, subgroup.full_path
+            ])
+          end
+        end
       end
     end
 
@@ -227,6 +241,18 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
           expect(usernames).to include(other_user.username)
         end
+      end
+    end
+
+    context 'when search param is given' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:member_1) { create(:user, name: 'John Doe').tap { |u| project.add_guest(u) } }
+      let_it_be(:member_2) { create(:user, name: 'Jane Doe ').tap { |u| project.add_guest(u) } }
+
+      let(:service) { described_class.new(project, create(:user), search: 'johnd') }
+
+      it 'only returns matching members' do
+        expect(usernames).to eq([member_1.username])
       end
     end
   end

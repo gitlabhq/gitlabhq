@@ -1,0 +1,8 @@
+---
+name: github_import_extended_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139410
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435089
+milestone: '16.8'
+type: development
+group: group::import and integrate
+default_enabled: false

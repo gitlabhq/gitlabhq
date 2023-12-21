@@ -21,6 +21,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     ]
   end
 
+  # Some reasons to exempt a table:
+  #   1. It has no foreign key for performance reasons
+  #   2. It does not yet have a foreign key as the index is still being backfilled
+  let(:allowed_to_be_missing_foreign_key) do
+    [
+      'p_catalog_resource_sync_events.project_id'
+    ]
+  end
+
   let(:starting_from_milestone) { 16.6 }
 
   let(:allowed_sharding_key_referenced_tables) { %w[projects namespaces organizations] }
@@ -38,6 +47,19 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         expect(column_exists?(table_name, column_name)).to eq(true),
           "Could not find sharding key column #{table_name}.#{column_name}"
         expect(referenced_table_name).to be_in(allowed_sharding_key_referenced_tables)
+
+        if allowed_to_be_missing_foreign_key.include?("#{table_name}.#{column_name}")
+          expect(has_foreign_key?(table_name, column_name)).to eq(false),
+            "The column `#{table_name}.#{column_name}` has a foreign key so cannot be " \
+            "allowed_to_be_missing_foreign_key. " \
+            "If this is a foreign key referencing the specified table #{referenced_table_name} " \
+            "then you must remove it from allowed_to_be_missing_foreign_key"
+        else
+          expect(has_foreign_key?(table_name, column_name, to_table_name: referenced_table_name)).to eq(true),
+            "Missing a foreign key constraint for `#{table_name}.#{column_name}` " \
+            "referencing #{referenced_table_name}. " \
+            "All sharding keys must have a foreign key constraint"
+        end
       end
     end
   end
@@ -135,6 +157,25 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     result = ApplicationRecord.connection.execute(sql)
 
     result.count > 0
+  end
+
+  def has_foreign_key?(from_table_name, column_name, to_table_name: nil)
+    where_clause = {
+      constrained_table_name: from_table_name,
+      constrained_columns: [column_name]
+    }
+
+    where_clause[:referenced_table_name] = to_table_name if to_table_name
+
+    fk = ::Gitlab::Database::PostgresForeignKey.where(where_clause).first
+
+    lfk = ::Gitlab::Database::LooseForeignKeys.definitions.find do |d|
+      d.from_table == from_table_name &&
+        (to_table_name.nil? || d.to_table == to_table_name) &&
+        d.options[:column] == column_name
+    end
+
+    fk.present? || lfk.present?
   end
 
   def column_exists?(table_name, column_name)

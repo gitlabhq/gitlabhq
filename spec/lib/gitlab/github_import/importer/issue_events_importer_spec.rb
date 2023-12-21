@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
     struct = Struct.new(
       :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone, :source,
       :assignee, :assigner, :review_requester, :requested_reviewer, :issue, :created_at, :performed_via_github_app,
-      keyword_init: true
+      :body, :updated_at, :submitted_at, :state, keyword_init: true
     )
     struct.new(id: rand(10), event: 'closed', created_at: '2022-04-26 18:30:53 UTC')
   end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ResourceMilestoneEvent < ResourceTimeboxEvent
+  include EachBatch
+
   belongs_to :milestone
 
   scope :include_relations, -> { includes(:user, milestone: [:project, :group]) }

@@ -8,7 +8,8 @@ module Gitlab
 
         expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title,
                          :milestone_title, :issue, :source, :assignee, :review_requester,
-                         :requested_reviewer, :created_at
+                         :requested_reviewer, :created_at, :updated_at, :submitted_at,
+                         :state, :body
 
         # attributes - A Hash containing the event details. The keys of this
         #              Hash (and any nested hashes) must be symbols.
@@ -51,7 +52,11 @@ module Gitlab
               assignee: user_representation(event[:assignee]),
               requested_reviewer: user_representation(event[:requested_reviewer]),
               review_requester: user_representation(event[:review_requester]),
-              created_at: event[:created_at]
+              created_at: event[:created_at],
+              updated_at: event[:updated_at],
+              submitted_at: event[:submitted_at],
+              state: event[:state],
+              body: event[:body]
             )
           end
 

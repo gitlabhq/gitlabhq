@@ -17,7 +17,7 @@ The Web IDE is an advanced editor with commit staging.
 You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
 For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
-To pair the Web IDE with a remote development environment, see [remote development](../remote_development/index.md).
+To pair the Web IDE with a remote development environment, see [Remote development](../remote_development/index.md).
 
 ## Open the Web IDE
 
@@ -45,7 +45,7 @@ To open the Web IDE from a merge request:
 The Web IDE opens new and modified files in separate tabs and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed are opened automatically.
 
-In the **Explorer** panel, any new or modified file is indicated
+On the left **Explorer** sidebar, any new or modified file is indicated
 by the merge request icon (**{merge-request}**) next to the file name.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
@@ -63,12 +63,12 @@ To search across open files in the Web IDE:
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>F</kbd>.
 1. In the search box, enter your search term.
 
-## View a list of changed files
+## View a list of modified files
 
-To view a list of files you changed in the Web IDE:
+To view a list of files you modified in the Web IDE:
 
-- On the activity bar on the left, select **Source Control**,
-  or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+- On the left activity bar, select **Source Control**, or
+  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
@@ -91,10 +91,11 @@ To restore uncommitted changes in the Web IDE:
 
 To upload a file in the Web IDE:
 
-1. On the activity bar on the left, select **Explorer** and
-   go to the directory where you want to upload the file.
-1. Optional. To create a new directory, in the upper right of the
-   **Explorer** panel, select **New Folder** (**{folder-new}**).
+1. On the left activity bar, select **Explorer**, or
+   press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
+1. Go to the directory where you want to upload the file.
+   - To create a new directory, on the left **Explorer** sidebar,
+   in the upper right, select **New Folder** (**{folder-new}**).
 1. Right-click the directory and select **Upload**.
 1. Select the file you want to upload.
 
@@ -106,14 +107,14 @@ The new files are uploaded and automatically added to the repository.
 The Web IDE uses the current branch by default.
 To switch branches in the Web IDE:
 
-1. On the status bar, in the lower-left corner, select the current branch name.
+1. On the bottom status bar, on the left, select the current branch name.
 1. Enter or select an existing branch.
 
 ## Create a branch
 
 To create a branch from the current branch in the Web IDE:
 
-1. On the status bar, in the lower-left corner, select the current branch name.
+1. On the bottom status bar, on the left, select the current branch name.
 1. From the dropdown list, select **Create new branch**.
 1. Enter the new branch name.
 
@@ -123,8 +124,8 @@ If you do not have write access to the repository, **Create new branch** is not 
 
 To commit changes in the Web IDE:
 
-1. On the activity bar on the left, select **Source Control**,
-   or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. On the left activity bar, select **Source Control**, or
+   press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
 1. Commit to the current branch or [create a new branch](#create-a-branch).
 
@@ -133,7 +134,7 @@ To commit changes in the Web IDE:
 To create a [merge request](../merge_requests/index.md) in the Web IDE:
 
 1. [Commit the changes](#commit-changes).
-1. In the notification in the lower-right corner, select **Create MR**.
+1. In the notification that appears in the lower right, select **Create MR**.
 
 For more information, see [View missed notifications](#view-missed-notifications).
 
@@ -172,12 +173,12 @@ In the keyboard shortcuts editor, you can search for:
 Keybindings are based on your keyboard layout.
 If you change your keyboard layout, existing keybindings are updated automatically.
 
-## Change themes
+## Change the color theme
 
-You can choose between different themes for the Web IDE.
-The default theme for the Web IDE is **GitLab Dark**.
+You can choose between different color themes for the Web IDE.
+The default theme is **GitLab Dark**.
 
-To change the Web IDE theme:
+To change the color theme in the Web IDE:
 
 1. On the top menu bar, select **File > Preferences > Theme > Color Theme**,
    or press <kbd>Command</kbd>+<kbd>K</kbd> then <kbd>Command</kbd>+<kbd>T</kbd>.
@@ -188,10 +189,10 @@ The active color theme is stored in the [user settings](#edit-settings).
 
 ## View missed notifications
 
-When you perform actions in the Web IDE, notifications appear in the lower-right corner.
+When you perform actions in the Web IDE, notifications appear in the lower right.
 To view any notification you might have missed:
 
-1. On the status bar, in the lower-right corner, select the bell icon (**{notifications}**) for a list of notifications.
+1. On the bottom status bar, on the right, select the bell icon (**{notifications}**) for a list of notifications.
 1. Select the notification you want to view.
 
 <!-- ## Privacy and data collection for extensions
@@ -221,7 +222,7 @@ When you set up a remote development server in the Web IDE, you can use interact
 You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
-For more information, see [Workspaces](../../workspace/index.md).
+For more information, see [Remote development](../remote_development/index.md).
 
 ## Related topics
 
