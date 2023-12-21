@@ -10,6 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 > - Code Suggestions in the GitLab WebIDE enabled for all GitLab-hosted customers.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 

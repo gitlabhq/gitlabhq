@@ -1,0 +1,9 @@
+---
+name: ci_unlock_pipelines_extra_low
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435051
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140318
+rollout_issue_url:
+milestone: '16.7'
+group: group::pipeline security
+type: ops
+default_enabled: false

@@ -40,8 +40,6 @@ RSpec.describe ResolvesGroups do
     group_ids = groups.map(&:id)
 
     allow_next(resolver).to receive(:resolve_groups).and_return(Group.id_in(group_ids))
-    # Prevent authorization queries from affecting the test.
-    allow(Ability).to receive(:allowed?).and_return(true)
 
     single_group_query = ActiveRecord::QueryRecorder.new do
       data = query_groups(limit: 1)

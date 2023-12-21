@@ -122,6 +122,10 @@ module Ci
           project.commit_by(oid: sha)
         end
 
+        def path
+          Gitlab::Routing.url_helpers.project_tag_path(project, name)
+        end
+
         private
 
         def update_catalog_resource

@@ -21,12 +21,20 @@ module Types
             alpha: { milestone: '16.7' }
 
           field :tag_name, GraphQL::Types::String, null: true, method: :name,
-            description: 'Name of the tag associated with the version.',
+            description: 'Deprecated in 16.8. Use name.',
             alpha: { milestone: '16.7' }
 
-          field :tag_path, GraphQL::Types::String, null: true,
-            description: 'Relative web path to the tag associated with the version.',
+          field :name, GraphQL::Types::String, null: true,
+            description: 'Name that uniquely identifies the version within the catalog resource.',
+            alpha: { milestone: '16.8' }
+
+          field :tag_path, GraphQL::Types::String, null: true, method: :path,
+            description: 'Deprecated in 16.8. Use path.',
             alpha: { milestone: '16.7' }
+
+          field :path, GraphQL::Types::String, null: true,
+            description: 'Relative web path to the version.',
+            alpha: { milestone: '16.8' }
 
           field :author, Types::UserType, null: true, description: 'User that created the version.',
             alpha: { milestone: '16.7' }
@@ -41,10 +49,6 @@ module Types
 
           def author
             Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
-          end
-
-          def tag_path
-            Gitlab::Routing.url_helpers.project_tag_path(object.project, object.name)
           end
         end
         # rubocop: enable Graphql/AuthorizeTypes

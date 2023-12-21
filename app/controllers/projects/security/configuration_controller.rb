@@ -24,11 +24,7 @@ module Projects
       private
 
       def configuration
-        if unify_configuration_enabled?
-          configuration_presenter
-        else
-          {}
-        end
+        configuration_presenter
       end
 
       def configuration_presenter
@@ -37,10 +33,6 @@ module Projects
 
       def presenter_attributes
         {}
-      end
-
-      def unify_configuration_enabled?
-        Feature.enabled?(:unify_security_configuration, project)
       end
     end
   end

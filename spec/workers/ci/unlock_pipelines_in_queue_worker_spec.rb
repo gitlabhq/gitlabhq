@@ -101,6 +101,7 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
 
     before do
       stub_feature_flags(
+        ci_unlock_pipelines_extra_low: false,
         ci_unlock_pipelines: false,
         ci_unlock_pipelines_medium: false,
         ci_unlock_pipelines_high: false
@@ -108,6 +109,14 @@ RSpec.describe Ci::UnlockPipelinesInQueueWorker, :unlock_pipelines, :clean_gitla
     end
 
     it { is_expected.to eq(0) }
+
+    context 'when ci_unlock_pipelines_extra_low flag is enabled' do
+      before do
+        stub_feature_flags(ci_unlock_pipelines_extra_low: true)
+      end
+
+      it { is_expected.to eq(described_class::MAX_RUNNING_EXTRA_LOW) }
+    end
 
     context 'when ci_unlock_pipelines flag is enabled' do
       before do

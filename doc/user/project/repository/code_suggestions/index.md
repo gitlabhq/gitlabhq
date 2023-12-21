@@ -9,10 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 > - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
-
-WARNING:
-This feature is in [Beta](../../../../policy/experiment-beta-support.md#beta).
-Beta users should read about the [known limitations](#known-limitations). We look forward to hearing your [feedback](#feedback).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -23,7 +20,7 @@ With Code Suggestions, you get:
   comment block. Write a comment like `# Type more here` to generate the
   appropriate code, based on the context of your comment and the rest of your code.
   - Algorithms or large code blocks may take more than 10 seconds to generate.
-  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block. 
+  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
 
 ## Start using Code Suggestions
 
@@ -40,8 +37,12 @@ GitLab Duo Code Suggestions are available:
   <iframe src="https://www.youtube-nocookie.com/embed/xQUlrbIWo8o" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-During Beta, usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage). As Code Suggestions matures to General Availability it will be governed by our [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
+Code Suggestions is available and free to use until February 15, 2024:
+
+- Before February 15, 2024, usage of Code Suggestions is governed by the
+  [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- On February 15, 2024, Code Suggestions becomes a paid add-on and will be governed by our
+  [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
 
 ## Supported languages
 
@@ -134,14 +135,18 @@ For more information on GitLab Code Suggestions data [sub-processors](https://ab
 
 ## Known limitations
 
-While in Beta, we are working on improving the accuracy of overall generated content.
-However, Code Suggestions may generate suggestions that are:
+We are continuing to work on the accuracy of overall generated content.
+Code Suggestions may generate suggestions that are:
 
-- Low-quality
-- Incomplete
-- Produce failed pipelines
-- Insecure code
-- Offensive or insensitive
+- Irrelevant.
+- Incomplete.
+- Results in failed pipelines.
+- Potentially insecure.
+- Offensive or insensitive.
+
+When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
+
+Let us know if you have [feedback](#feedback).
 
 ## Progressive enhancement
 

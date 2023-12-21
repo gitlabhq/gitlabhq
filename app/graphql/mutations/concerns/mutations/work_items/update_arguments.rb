@@ -48,6 +48,10 @@ module Mutations
                  ::Types::WorkItems::Widgets::AwardEmojiUpdateInputType,
                  required: false,
                  description: 'Input for emoji reactions widget.'
+        argument :notes_widget,
+                 ::Types::WorkItems::Widgets::NotesInputType,
+                 required: false,
+                 description: 'Input for notes widget.'
       end
     end
   end

@@ -11,6 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -27,7 +28,7 @@ A group owner must
 
 NOTE:
 If you are having issues enabling Code Suggestions, view the
-[troubleshooting guide](troubleshooting.md#code-suggestions-arent-displayed).
+[troubleshooting guide](troubleshooting.md#code-suggestions-are-not-displayed).
 
 ## Use Code Suggestions
 

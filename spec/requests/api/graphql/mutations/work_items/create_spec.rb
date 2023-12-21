@@ -281,6 +281,18 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
       it_behaves_like 'creates work item'
 
+      # This is a temporary measure just to ensure the internal id migration doesn't get conflicts
+      # More info in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139367
+      context 'when making the request in a production environment' do
+        before do
+          stub_rails_env('production')
+        end
+
+        it_behaves_like 'a mutation that returns top-level errors', errors: [
+          'Group level work items are disabled. Only project paths allowed in `namespacePath`.'
+        ]
+      end
+
       context 'when the namespace_level_work_items feature flag is disabled' do
         before do
           stub_feature_flags(namespace_level_work_items: false)

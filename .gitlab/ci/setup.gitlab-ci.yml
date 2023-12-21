@@ -46,7 +46,7 @@ dont-interrupt-me:
 clone-gitlab-repo:
   extends:
     - .absolutely-predictive-job
-  rules: [when: never]  # Uncomment this to clone instead of using artifacts
+    - .setup:rules:clone-gitlab-repo
   stage: sync
   script:
     - echo OK
@@ -56,14 +56,6 @@ clone-gitlab-repo:
     paths:
       - '*'
     expire_in: '12 hours'
-
-.repo-from-artifacts:
-  variables:
-    GIT_STRATEGY: none
-  needs:
-    # If the job extending this also defines `needs`, make sure to update
-    # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
-    - clone-gitlab-repo
 
 gitlab_git_test:
   extends:

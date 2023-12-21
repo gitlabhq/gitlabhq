@@ -2784,6 +2784,10 @@
     - when: manual
       allow_failure: true
 
+.setup:rules:clone-gitlab-repo:
+  rules:
+    - if: '$CI_FETCH_REPO_GIT_STRATEGY == "none"'
+
 .setup:rules:gitlab_git_test:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite

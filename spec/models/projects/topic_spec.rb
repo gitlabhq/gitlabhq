@@ -32,6 +32,21 @@ RSpec.describe Projects::Topic do
     it { is_expected.not_to allow_value("new\nline").for(:name).with_message(name_format_message) }
     it { is_expected.not_to allow_value("new\rline").for(:name).with_message(name_format_message) }
     it { is_expected.not_to allow_value("new\vline").for(:name).with_message(name_format_message) }
+
+    context 'for slug' do
+      let(:slug_format_message) { "can contain only letters, digits, '_', '-', '.'" }
+
+      it { is_expected.to validate_length_of(:slug).is_at_most(255) }
+      it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
+
+      it { is_expected.not_to allow_value("new\nline").for(:slug).with_message(slug_format_message) }
+      it { is_expected.not_to allow_value("space value").for(:slug).with_message(slug_format_message) }
+      it { is_expected.not_to allow_value("$special_symbol_value").for(:slug).with_message(slug_format_message) }
+
+      it { is_expected.to allow_value("underscored_value").for(:slug) }
+      it { is_expected.to allow_value("hypened-value").for(:slug) }
+      it { is_expected.to allow_value("dotted.value").for(:slug) }
+    end
   end
 
   describe 'scopes' do

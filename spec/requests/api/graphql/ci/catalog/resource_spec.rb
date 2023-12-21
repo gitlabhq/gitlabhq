@@ -164,8 +164,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             versions {
               nodes {
                 id
-                tagName
-                tagPath
+                name
+                path
                 releasedAt
                 author {
                   id
@@ -202,15 +202,15 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to contain_exactly(
           a_graphql_entity_for(
             version1,
-            tagName: version1.name,
-            tagPath: project_tag_path(project, version1.name),
+            name: version1.name,
+            path: project_tag_path(project, version1.name),
             releasedAt: version1.released_at,
             author: a_graphql_entity_for(author, :name)
           ),
           a_graphql_entity_for(
             version2,
-            tagName: version2.name,
-            tagPath: project_tag_path(project, version2.name),
+            name: version2.name,
+            path: project_tag_path(project, version2.name),
             releasedAt: version2.released_at,
             author: a_graphql_entity_for(author, :name)
           )
@@ -237,8 +237,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             id
             latestVersion {
               id
-              tagName
-              tagPath
+              name
+              path
               releasedAt
               author {
                 id
@@ -273,8 +273,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             resource,
             latestVersion: a_graphql_entity_for(
               latest_version,
-              tagName: latest_version.name,
-              tagPath: project_tag_path(project, latest_version.name),
+              name: latest_version.name,
+              path: project_tag_path(project, latest_version.name),
               releasedAt: latest_version.released_at,
               author: a_graphql_entity_for(author, :name)
             )

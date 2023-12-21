@@ -22,6 +22,14 @@
     - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
+.repo-from-artifacts:
+  variables:
+    GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
+  needs:
+    # If the job extending this also defines `needs`, make sure to update
+    # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
+    - clone-gitlab-repo
+
 .production:
   variables:
     RAILS_ENV: "production"

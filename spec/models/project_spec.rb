@@ -7980,6 +7980,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
+
+      it 'assigns slug value for new topics' do
+        topic = create(:topic, name: 'old topic', title: 'old topic', slug: nil)
+        project.topic_list = topic.name
+        project.save!
+
+        project.topic_list = 'old topic, new topic'
+        expect { expect(project.save).to be true }.to change { Projects::Topic.count }.by(1)
+
+        topics = project.reset.topics
+        expect(topics.map(&:name)).to match_array(['old topic', 'new topic'])
+
+        old_topic = topics.first
+        new_topic = topics.last
+
+        expect(old_topic.slug).to be_nil
+        expect(new_topic.slug).to eq('newtopic')
+      end
     end
 
     context 'public topics counter' do

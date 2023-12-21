@@ -9,3 +9,5 @@ description: Represents an ai message for a user and project for the pipeline ed
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119840
 milestone: '16.0'
 gitlab_schema: gitlab_ci
+removed_in_milestone: '16.8'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139626

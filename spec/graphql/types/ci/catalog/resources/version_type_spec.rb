@@ -11,7 +11,9 @@ RSpec.describe Types::Ci::Catalog::Resources::VersionType, feature_category: :pi
       created_at
       released_at
       tag_name
+      name
       tag_path
+      path
       author
       commit
       components

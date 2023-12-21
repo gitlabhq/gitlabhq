@@ -106,7 +106,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
               versions {
                 nodes {
                   id
-                  tagName
+                  name
                   releasedAt
                   author {
                     id
@@ -153,7 +153,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
               id
               latestVersion {
                 id
-                tagName
+                name
                 releasedAt
                 author {
                   id
@@ -185,7 +185,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
           resource1,
           latestVersion: a_graphql_entity_for(
             latest_version1,
-            tagName: latest_version1.name,
+            name: latest_version1.name,
             releasedAt: latest_version1.released_at,
             author: a_graphql_entity_for(author1, :name)
           )
@@ -194,7 +194,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
           public_resource,
           latestVersion: a_graphql_entity_for(
             latest_version2,
-            tagName: latest_version2.name,
+            name: latest_version2.name,
             releasedAt: latest_version2.released_at,
             author: a_graphql_entity_for(author2, :name)
           )

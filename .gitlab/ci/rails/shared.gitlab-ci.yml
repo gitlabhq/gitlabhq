@@ -67,7 +67,7 @@ include:
   extends:
     - .rails-job-base
     - .base-artifacts
-    # - .repo-from-artifacts  # Comment this to clone instead of using artifacts
+    - .repo-from-artifacts  # Comment this to clone instead of using artifacts
   stage: test
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864

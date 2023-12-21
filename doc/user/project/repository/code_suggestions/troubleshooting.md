@@ -8,17 +8,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
-## Code Suggestions aren't displayed
+## Code Suggestions are not displayed
 
 If Code Suggestions are not displayed, and you have [installed a supported IDE extension](index.md#supported-editor-extensions), try the following troubleshooting steps.
 
 In GitLab, ensure Code Suggestions is enabled:
 
-- [For **all** top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+- [For **all** top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group). If you do not have a role that lets you view the top-level group's settings, contact a group Owner.
 
 ### Code Suggestions not displayed in VS Code or GitLab WebIDE
 
-Check all the steps in [Code Suggestions aren't displayed](#code-suggestions-arent-displayed) first.
+Check all the steps in [Code Suggestions are not displayed](#code-suggestions-are-not-displayed) first.
 
 If you are a self-managed user, ensure that Code Suggestions for the [GitLab WebIDE](../../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
 
@@ -42,7 +42,7 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 
 ### Code Suggestions not displayed in Microsoft Visual Studio
 
-Check all the steps in [Code Suggestions aren't displayed](#code-suggestions-arent-displayed) first.
+Check all the steps in [Code Suggestions are not displayed](#code-suggestions-are-not-displayed) first.
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
 1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.

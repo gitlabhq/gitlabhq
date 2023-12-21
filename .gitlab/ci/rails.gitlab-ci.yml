@@ -616,6 +616,7 @@ rspec:predictive:trigger:
       artifacts: true
   variables:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    GIT_STRATEGY: $GIT_STRATEGY
   trigger:
     strategy: depend
     forward:
@@ -1269,6 +1270,7 @@ rspec-foss-impact:trigger:
       artifacts: true
   variables:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    GIT_STRATEGY: $GIT_STRATEGY
   trigger:
     strategy: depend
     forward:

@@ -46,9 +46,7 @@ module Projects
       end
       # rubocop: enable Cop/InBatches
 
-      if Feature.enabled?(:refresh_statistics_on_unlink_fork, @project.namespace) && refresh_statistics
-        ProjectCacheWorker.perform_async(project.id, [], [:repository_size])
-      end
+      ProjectCacheWorker.perform_async(project.id, [], [:repository_size]) if refresh_statistics
 
       # When the project getting out of the network is a node with parent
       # and children, both the parent and the node needs a cache refresh.
