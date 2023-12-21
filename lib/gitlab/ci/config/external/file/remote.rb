@@ -56,8 +56,10 @@ module Gitlab
             def fetch_async_content
               return if ::Feature.disabled?(:ci_parallel_remote_includes, context.project)
 
-              # It starts fetching the remote content in a separate thread and returns a promise immediately.
-              Gitlab::HTTP.get(location, async: true).execute
+              # It starts fetching the remote content in a separate thread and returns a lazy_response immediately.
+              Gitlab::HTTP.get(location, async: true).tap do |lazy_response|
+                context.execute_remote_parallel_request(lazy_response)
+              end
             end
             strong_memoize_attr :fetch_async_content
 

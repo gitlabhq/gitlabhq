@@ -887,7 +887,8 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-Use `after_script` to define an array of commands that run after each job, including failed jobs.
+Use `after_script` to define an array of commands that run after a job's `script` section, including failed jobs with failure type of `script_failure`.
+`after_script` commands do not run after [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

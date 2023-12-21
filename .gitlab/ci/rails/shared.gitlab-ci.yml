@@ -56,10 +56,18 @@ include:
   variables:
     GITALY_PRAEFECT_WITH_DB: '1'
 
+.rspec-base-needs:
+  needs:
+    - job: "clone-gitlab-repo"
+      optional: true  # Optional so easier to switch in between
+    - job: "setup-test-env"
+    - job: "retrieve-tests-metadata"
+
 .rspec-base:
   extends:
     - .rails-job-base
     - .base-artifacts
+    # - .repo-from-artifacts  # Comment this to clone instead of using artifacts
   stage: test
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864
@@ -69,8 +77,7 @@ include:
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
     EVENT_PROF: "sql.active_record"
   needs:
-    - job: "setup-test-env"
-    - job: "retrieve-tests-metadata"
+    - !reference [.rspec-base-needs, needs]
     - job: "compile-test-assets"
     - job: "detect-tests"
       optional: true
@@ -163,8 +170,7 @@ include:
     - .as-if-foss
     - .use-pg14
   needs:
-    - job: "setup-test-env"
-    - job: "retrieve-tests-metadata"
+    - !reference [.rspec-base-needs, needs]
     - job: "compile-test-assets as-if-foss"
     - job: "detect-tests"
       optional: true

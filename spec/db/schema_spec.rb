@@ -48,6 +48,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
+    ci_pipeline_chat_data: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
     ci_runner_projects: %w[runner_id],

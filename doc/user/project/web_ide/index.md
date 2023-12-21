@@ -94,13 +94,16 @@ To upload a file in the Web IDE:
 1. On the left activity bar, select **Explorer**, or
    press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
 1. Go to the directory where you want to upload the file.
-   - To create a new directory, on the left **Explorer** sidebar,
-   in the upper right, select **New Folder** (**{folder-new}**).
+   To create a new directory:
+
+   - On the left **Explorer** sidebar, in the upper right,
+   select **New Folder** (**{folder-new}**).
+
 1. Right-click the directory and select **Upload**.
 1. Select the file you want to upload.
 
 You can upload multiple files at once.
-The new files are uploaded and automatically added to the repository.
+The files are uploaded and automatically added to the repository.
 
 ## Switch branches
 

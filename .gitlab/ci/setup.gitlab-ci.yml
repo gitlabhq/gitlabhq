@@ -43,6 +43,28 @@ dont-interrupt-me:
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
 
+clone-gitlab-repo:
+  extends:
+    - .absolutely-predictive-job
+  rules: [when: never]  # Uncomment this to clone instead of using artifacts
+  stage: sync
+  script:
+    - echo OK
+  variables:
+    GIT_STRATEGY: clone
+  artifacts:
+    paths:
+      - '*'
+    expire_in: '12 hours'
+
+.repo-from-artifacts:
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # If the job extending this also defines `needs`, make sure to update
+    # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
+    - clone-gitlab-repo
+
 gitlab_git_test:
   extends:
     - .predictive-job

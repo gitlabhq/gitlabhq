@@ -13,7 +13,7 @@ contrast this with alternatives before deciding which approach to implement.
 This documentation will be kept even if we decide not to implement this so that
 we can document the reasons for not choosing this approach.
 
-# Proposal: Stateless Router
+# Proposal: Stateless Router using Requests Buffering
 
 We will decompose `gitlab_users`, `gitlab_routes` and `gitlab_admin` related
 tables so that they can be shared between all cells and allow any cell to

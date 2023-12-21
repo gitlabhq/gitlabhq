@@ -20,7 +20,7 @@ To create a text file in the Web Editor:
 1. Go to the directory where you want to create the new file.
 1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Commit changes**.
 
@@ -31,14 +31,14 @@ To create a text file from a template in the Web Editor:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new file.
 1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
-1. In **Filename**, enter a filename that GitLab provides a template for:
+1. In **Filename**, enter a name that GitLab provides a template for:
    - `.gitignore`
    - `.gitlab-ci.yml`
    - `LICENSE`
    - `Dockerfile`
 1. From the **Apply a template** dropdown list, select a template.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Commit changes**.
 
@@ -50,7 +50,7 @@ To edit a text file in the Web Editor:
 1. Go to the file you want to edit.
 1. Select **Edit > Edit single file**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Commit changes**.
 
@@ -72,7 +72,7 @@ To close the preview panel, select the **Write** tab.
 ### Link to specific lines
 
 To link to single or multiple lines in the Web Editor, add hash
-information to the filename segment of the URL. For example:
+information to the file name segment of the URL. For example:
 
 - `MY_FILE.js#L3` highlights line 3 in `MY_FILE.js`.
 - `MY_FILE.js#L3-10` highlights lines 3 to 10 in `MY_FILE.js`.
@@ -90,7 +90,7 @@ To upload a file in the Web Editor:
 1. Go to the directory where you want to upload the file.
 1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
@@ -102,7 +102,7 @@ To create a directory in the Web Editor:
 1. Go to the directory where you want to create the new directory.
 1. Next to the directory name, select the plus icon (**{plus}**) > **New directory**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Create directory**.
 

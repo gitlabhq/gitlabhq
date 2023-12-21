@@ -39,7 +39,7 @@ You can upload a file from the GitLab UI.
 1. Go to the directory where you want to upload the file.
 1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 

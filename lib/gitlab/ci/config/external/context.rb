@@ -11,12 +11,15 @@ module Gitlab
 
           include ::Gitlab::Utils::StrongMemoize
 
-          attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config
-          attr_reader :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
+          attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config, :parallel_requests,
+            :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
 
           attr_accessor :total_file_size_in_bytes
 
           delegate :instrument, to: :logger
+
+          # We try to keep the number of parallel HTTP requests to a minimum to avoid overloading IO.
+          MAX_PARALLEL_REMOTE_REQUESTS = 2
 
           def initialize(
             project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
@@ -30,6 +33,7 @@ module Gitlab
             @variables = variables || Ci::Variables::Collection.new
             @pipeline_config = pipeline_config
             @expandset = []
+            @parallel_requests = []
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
             @max_includes = Gitlab::CurrentSettings.current_application_settings.ci_max_includes
@@ -65,6 +69,7 @@ module Gitlab
               ctx.logger = logger
               ctx.max_includes = max_includes
               ctx.max_total_yaml_size_bytes = max_total_yaml_size_bytes
+              ctx.parallel_requests = parallel_requests
             end
           end
 
@@ -74,6 +79,16 @@ module Gitlab
 
           def check_execution_time!
             raise TimeoutError if execution_expired?
+          end
+
+          def execute_remote_parallel_request(lazy_response)
+            parallel_requests.delete_if(&:complete?)
+
+            # We are "assuming" that the first request in the queue is the first one to complete.
+            # This is good enough approximation.
+            parallel_requests.first&.wait unless parallel_requests.size < MAX_PARALLEL_REMOTE_REQUESTS
+
+            parallel_requests << lazy_response.execute
           end
 
           def sentry_payload
@@ -106,7 +121,8 @@ module Gitlab
 
           protected
 
-          attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
+          attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes,
+            :parallel_requests
 
           private
 

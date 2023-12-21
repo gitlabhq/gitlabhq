@@ -22,7 +22,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.8.4
-	gitlab.com/gitlab-org/gitaly/v16 v16.6.1
+	gitlab.com/gitlab-org/gitaly/v16 v16.6.2
 	gitlab.com/gitlab-org/labkit v1.21.0
 	gocloud.dev v0.35.0
 	golang.org/x/image v0.14.0

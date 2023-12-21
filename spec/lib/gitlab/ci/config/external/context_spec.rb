@@ -159,10 +159,14 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
     shared_examples 'a mutated context' do
       let(:mutated) { subject.mutate(new_attributes) }
+      let(:lazy_response) { double('lazy_response') }
 
       before do
+        allow(lazy_response).to receive(:execute).and_return(lazy_response)
+
         subject.expandset << :a_file
         subject.set_deadline(15.seconds)
+        subject.execute_remote_parallel_request(lazy_response)
       end
 
       it { expect(mutated).not_to eq(subject) }
@@ -170,8 +174,9 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(mutated).to have_attributes(new_attributes) }
       it { expect(mutated.pipeline).to eq(subject.pipeline) }
       it { expect(mutated.expandset).to eq(subject.expandset) }
-      it { expect(mutated.execution_deadline).to eq(mutated.execution_deadline) }
-      it { expect(mutated.logger).to eq(mutated.logger) }
+      it { expect(mutated.execution_deadline).to eq(subject.execution_deadline) }
+      it { expect(mutated.logger).to eq(subject.logger) }
+      it { expect(mutated.parallel_requests).to eq(subject.parallel_requests) }
     end
 
     context 'with attributes' do
@@ -209,6 +214,82 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
       it 'returns false' do
         expect(subject.internal_include?).to eq(false)
+      end
+    end
+  end
+
+  describe '#execute_remote_parallel_request' do
+    let(:lazy_response1) { double('lazy_response', wait: true, complete?: complete1) }
+    let(:lazy_response2) { double('lazy_response') }
+
+    let(:complete1) { false }
+
+    before do
+      allow(lazy_response1).to receive(:execute).and_return(lazy_response1)
+      allow(lazy_response2).to receive(:execute).and_return(lazy_response2)
+    end
+
+    context 'when the queue is empty' do
+      before do
+        stub_const("Gitlab::Ci::Config::External::Context::MAX_PARALLEL_REMOTE_REQUESTS", 2)
+      end
+
+      it 'adds the new lazy response to the queue' do
+        expect { subject.execute_remote_parallel_request(lazy_response1) }
+          .to change { subject.parallel_requests }
+          .from([])
+          .to([lazy_response1])
+      end
+    end
+
+    context 'when there is a lazy response in the queue' do
+      before do
+        subject.execute_remote_parallel_request(lazy_response1)
+      end
+
+      context 'when there is a free slot in the queue' do
+        before do
+          stub_const("Gitlab::Ci::Config::External::Context::MAX_PARALLEL_REMOTE_REQUESTS", 2)
+        end
+
+        it 'adds the new lazy response to the queue' do
+          expect { subject.execute_remote_parallel_request(lazy_response2) }
+            .to change { subject.parallel_requests }
+            .from([lazy_response1])
+            .to([lazy_response1, lazy_response2])
+        end
+      end
+
+      context 'when the queue is full' do
+        before do
+          stub_const("Gitlab::Ci::Config::External::Context::MAX_PARALLEL_REMOTE_REQUESTS", 1)
+        end
+
+        context 'when the first lazy response in the queue is complete' do
+          let(:complete1) { true }
+
+          it 'removes the completed lazy response and adds the new one to the queue' do
+            expect(lazy_response1).not_to receive(:wait)
+
+            expect { subject.execute_remote_parallel_request(lazy_response2) }
+              .to change { subject.parallel_requests }
+              .from([lazy_response1])
+              .to([lazy_response2])
+          end
+        end
+
+        context 'when the first lazy response in the queue is not complete' do
+          let(:complete1) { false }
+
+          it 'waits for the first lazy response to complete and then adds the new one to the queue' do
+            expect(lazy_response1).to receive(:wait)
+
+            expect { subject.execute_remote_parallel_request(lazy_response2) }
+              .to change { subject.parallel_requests }
+              .from([lazy_response1])
+              .to([lazy_response1, lazy_response2])
+          end
+        end
       end
     end
   end
