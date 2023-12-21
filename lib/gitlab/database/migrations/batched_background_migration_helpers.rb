@@ -199,7 +199,7 @@ module Gitlab
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
-            Gitlab::Database.gitlab_schemas_for_connection(connection),
+            gitlab_schema_from_context,
             job_class_name, table_name, column_name, job_arguments
           )
 

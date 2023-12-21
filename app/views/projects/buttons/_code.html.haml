@@ -8,9 +8,9 @@
       %span.js-clone-dropdown-label
         = _('Code')
       = sprite_icon("chevron-down", css_class: "icon")
-    %ul.dropdown-menu.dropdown-menu-large.clone-options-dropdown{ class: dropdown_class, data: { testid: 'clone-dropdown-content' } }
+    %ul.dropdown-menu.dropdown-menu-large.clone-options-dropdown{ role: 'menu', class: dropdown_class, data: { testid: 'clone-dropdown-content' } }
       - if ssh_enabled?
-        %li.gl-dropdown-item.js-clone-links{ class: 'gl-px-4!' }
+        %li.gl-dropdown-item.js-clone-links{ role: 'menuitem', class: 'gl-px-4!' }
           %label.label-bold
             = _('Clone with SSH')
           .input-group.btn-group
@@ -19,7 +19,7 @@
               = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
       - if http_enabled?
-        %li.pt-2.gl-dropdown-item.js-clone-links{ class: 'gl-px-4!' }
+        %li.pt-2.gl-dropdown-item.js-clone-links{ role: 'menuitem',  class: 'gl-px-4!' }
           %label.label-bold
             = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
           .input-group.btn-group
@@ -28,8 +28,8 @@
               = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), category: :primary, size: :medium)
               = render_if_exists 'projects/buttons/geo'
         = render_if_exists 'projects/buttons/kerberos_clone_field'
-      %li.divider.mt-2
-      %li.pt-2.gl-dropdown-item.js-clone-links
+      %li.divider.mt-2{ role: 'presentation' }
+      %li.pt-2.gl-dropdown-item.js-clone-links{ role: 'menuitem' }
         %label.label-bold{ class: 'gl-px-4!' }
           = _('Open in your IDE')
         - if ssh_enabled?
@@ -55,5 +55,5 @@
             .gl-dropdown-item-text-wrapper
               = _("Xcode")
         - if !project.empty_repo? && can?(current_user, :download_code, project)
-          %li.divider.mt-2
+          %li.divider.mt-2{ role: 'presentation' }
           = render 'projects/buttons/download_menu_items', project: project, ref: ref

@@ -8,7 +8,7 @@ import UserTabs from './user_tabs';
 function initUserProfile(action) {
   // TODO: Remove both Vue and legacy JS tabs code/feature flag uses with the
   // removal of the old navigation.
-  // See https://gitlab.com/groups/gitlab-org/-/epics/11875.
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
 
   if (gon.features?.profileTabsVue) {
     initProfileTabs();

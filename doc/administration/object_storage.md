@@ -431,6 +431,29 @@ gitlab_rails['object_store']['connection'] = {
 The signature version must be `2`. Using v4 results in a HTTP 411 Length Required error.
 For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/issues/4419).
 
+### Hitachi Vantara HCP
+
+NOTE:
+Connections to HCP may return an error stating `SigntureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
+
+[HCP](https://knowledge.hitachivantara.com/Documents/Storage/HCP_for_Cloud_Scale/1.0.0/Adminstering_HCP_for_cloud_scale/Getting_started/02_Support_for_Amazon_S3_API) provides an S3-compatible API. Use the following configuration example:
+
+```ruby
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'endpoint' => 'https://<tenant_endpoint>',
+  'path_style' => true,
+  'region' => 'eu1',
+  'aws_access_key_id' => 'ACCESS_KEY',
+  'aws_secret_access_key' => 'SECRET_KEY',
+  'aws_signature_version' => 4,
+  'enable_signature_v4_streaming' => false
+}
+
+# Example of <namespace_name/bucket_name> formatting
+gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_name>/<bucket_name>'
+```
+
 ## Full example using the consolidated form and Amazon S3
 
 The following example uses AWS S3 to enable object storage for all supported services:

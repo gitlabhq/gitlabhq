@@ -31,6 +31,9 @@ class Import::ManifestController < Import::BaseController
     if manifest.valid?
       manifest_import_metadata.save(manifest.projects, group.id)
 
+      experiment(:default_to_import_tab, actor: current_user)
+        .track(:successfully_imported, property: provider_name)
+
       redirect_to status_import_manifest_path
     else
       @errors = manifest.errors

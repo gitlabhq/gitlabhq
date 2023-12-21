@@ -13,7 +13,6 @@
       namespace_id: namespace&.id,
       plan_name: namespace&.actual_plan_name,
       project_id: @project&.id,
-      user_id: current_user&.id,
-      new_nav: show_super_sidebar?
+      user_id: current_user&.id
     ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};

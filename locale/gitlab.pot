@@ -14524,6 +14524,9 @@ msgstr ""
 msgid "CreateGitTag|Set tag message"
 msgstr ""
 
+msgid "CreateGroup|You don't have permission to create a group in the provided organization."
+msgstr ""
+
 msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
 msgstr ""
 
@@ -44399,6 +44402,9 @@ msgid "SecurityReports|Still detected"
 msgstr ""
 
 msgid "SecurityReports|Submit vulnerability"
+msgstr ""
+
+msgid "SecurityReports|The Activity filter now defaults to showing only vulnerabilities that are \"still detected\". To see vulnerabilities regardless of their detection status, remove this filter."
 msgstr ""
 
 msgid "SecurityReports|The Vulnerability Report shows results of successful scans on your project's default branch, manually added vulnerability records, and vulnerabilities found from scanning operational environments. %{linkStart}Learn more%{linkEnd}."

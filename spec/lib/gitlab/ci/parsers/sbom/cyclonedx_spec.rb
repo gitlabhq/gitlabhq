@@ -125,6 +125,56 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       parse!
     end
 
+    context 'when component is trivy type' do
+      let(:parsed_properties) do
+        {
+          'PkgID' => 'adduser@3.134',
+          'PkgType' => 'debian'
+        }
+      end
+
+      let(:components) do
+        [
+          {
+            # Trivy component
+            "bom-ref" => "0eda252d-d8a4-4250-b816-b6314f029063",
+            "type" => "library",
+            "name" => "analyzer",
+            "purl" => "pkg:gem/activesupport@5.1.4",
+            "properties" => [
+              {
+                "name" => "aquasecurity:trivy:PkgID",
+                "value" => "apt@2.6.1"
+              },
+              {
+                "name" => "aquasecurity:trivy:PkgType",
+                "value" => "debian"
+              }
+            ]
+          }
+        ]
+      end
+
+      before do
+        allow(properties_parser).to receive(:parse_trivy_source).and_return(parsed_properties)
+        stub_const('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties', properties_parser)
+      end
+
+      it 'adds each component, ignoring unused attributes' do
+        expect(report).to receive(:add_component)
+          .with(
+            an_object_having_attributes(
+              component_type: "library",
+              properties: parsed_properties,
+              purl: an_object_having_attributes(
+                type: "gem"
+              )
+            )
+          )
+        parse!
+      end
+    end
+
     context 'when a component has an invalid purl' do
       before do
         components.push(

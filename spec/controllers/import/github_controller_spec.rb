@@ -100,7 +100,20 @@ RSpec.describe Import::GithubController, feature_category: :importers do
   end
 
   describe "POST personal_access_token" do
+    let(:experiment) { instance_double(ApplicationExperiment) }
+
     it_behaves_like 'a GitHub-ish import controller: POST personal_access_token'
+
+    it 'tracks default_to_import_tab experiment' do
+      allow(controller)
+        .to receive(:experiment)
+        .with(:default_to_import_tab, actor: user)
+        .and_return(experiment)
+
+      expect(experiment).to receive(:track).with(:authentication, property: :github)
+
+      post :personal_access_token
+    end
   end
 
   describe "GET status" do

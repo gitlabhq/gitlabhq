@@ -19,6 +19,8 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
   end
 
   describe 'POST upload' do
+    let(:experiment) { instance_double(ApplicationExperiment) }
+
     context 'with a valid manifest' do
       it 'saves the manifest and redirects to the status page', :aggregate_failures do
         post :upload, params: {
@@ -34,6 +36,20 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
 
         expect(response).to redirect_to(status_import_manifest_path)
       end
+
+      it 'tracks default_to_import_tab experiment' do
+        allow(controller)
+          .to receive(:experiment)
+          .with(:default_to_import_tab, actor: user)
+          .and_return(experiment)
+
+        expect(experiment).to receive(:track).with(:successfully_imported, property: :manifest)
+
+        post :upload, params: {
+               group_id: group.id,
+               manifest: fixture_file_upload('spec/fixtures/aosp_manifest.xml')
+             }
+      end
     end
 
     context 'with an invalid manifest' do
@@ -44,6 +60,20 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
              }
 
         expect(assigns(:errors)).to be_present
+      end
+
+      it 'does not track default_to_import_tab experiment' do
+        allow(controller)
+          .to receive(:experiment)
+          .with(:default_to_import_tab, actor: user)
+          .and_return(experiment)
+
+        expect(experiment).not_to receive(:track)
+
+        post :upload, params: {
+               group_id: group.id,
+               manifest: fixture_file_upload('spec/fixtures/invalid_manifest.xml')
+             }
       end
     end
 

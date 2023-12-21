@@ -340,6 +340,10 @@ are supported and can be added if needed.
 In this section, you'll be guided through configuring an external Redis instance
 to be used with GitLab.
 
+NOTE:
+Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 ### Provide your own Redis instance
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
@@ -603,6 +607,10 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
 1. SSH in to the Sidekiq server.
@@ -716,11 +724,6 @@ Updates to example must be made at:
    run: node-exporter: (pid 26864) 92997s; run: log: (pid 26446) 93036s
    run: sidekiq: (pid 26870) 92996s; run: log: (pid 26391) 93042s
    ```
-
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

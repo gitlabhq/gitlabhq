@@ -6,7 +6,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   let!(:user) { create(:user) }
   let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
 
-  subject { service.execute }
+  subject(:execute) { service.execute }
 
   shared_examples 'has sync-ed traversal_ids' do
     specify { expect(subject.reload.traversal_ids).to eq([subject.parent&.traversal_ids, subject.id].flatten.compact) }
@@ -116,6 +116,37 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       end
 
       it { is_expected.not_to be_persisted }
+    end
+  end
+
+  describe 'creating a group within a provided organization' do
+    let_it_be(:organization) { create(:organization) }
+
+    let(:current_user) { user }
+    let(:params) { group_params.merge(organization_id: organization.id) }
+    let(:service) { described_class.new(current_user, params) }
+
+    context 'when user can create the group' do
+      before do
+        create(:organization_user, user: user, organization: organization)
+      end
+
+      it { is_expected.to be_persisted }
+    end
+
+    context 'when user is an admin', :enable_admin_mode do
+      let(:current_user) { create(:admin) }
+
+      it { is_expected.to be_persisted }
+    end
+
+    context 'when user can not create the group' do
+      it 'does not save group and returns an error' do
+        expect(execute).not_to be_persisted
+        expect(execute.errors[:organization_id].first)
+          .to eq(s_("CreateGroup|You don't have permission to create a group in the provided organization."))
+        expect(execute.organization_id).to be_nil
+      end
     end
   end
 

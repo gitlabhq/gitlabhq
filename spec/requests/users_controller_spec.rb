@@ -799,6 +799,46 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
   end
 
+  describe 'GET #groups' do
+    before do
+      sign_in(user)
+    end
+
+    context 'format html' do
+      it 'renders groups page' do
+        get user_groups_url user.username
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('show')
+      end
+    end
+
+    context 'format json' do
+      it 'response with groups data' do
+        get user_groups_url user.username, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('html')
+      end
+
+      context 'pagination' do
+        let!(:per_page_limit) { 3 }
+
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(per_page_limit)
+          create_list(:group, per_page_limit + 2).each { |group| group.add_owner(user) }
+        end
+
+        it 'paginates without count' do
+          get user_groups_url user.username, format: :json
+
+          expect(assigns(:groups).size).to eq(per_page_limit)
+          expect(assigns(:groups)).to be_a(Kaminari::PaginatableWithoutCount)
+        end
+      end
+    end
+  end
+
   describe '#ensure_canonical_path' do
     before do
       sign_in(user)

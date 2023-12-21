@@ -13,12 +13,14 @@ module Organizations
 
     rule { admin }.policy do
       enable :admin_organization
+      enable :create_group
       enable :read_organization
       enable :read_organization_user
     end
 
     rule { organization_user }.policy do
       enable :admin_organization
+      enable :create_group
       enable :read_organization
       enable :read_organization_user
     end

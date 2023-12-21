@@ -429,6 +429,14 @@ Using [Redis](https://redis.io/) in scalable environment is possible using a **P
 topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service to watch and automatically
 start the failover procedure.
 
+NOTE:
+Multi-node Redis must be deployed in an odd number of 3 nodes or more to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally,
+such as a cloud provider service.
+
+NOTE:
+Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
@@ -985,6 +993,10 @@ before proceeding.
 
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
+
+NOTE:
+PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 The following IPs are used as an example:
 

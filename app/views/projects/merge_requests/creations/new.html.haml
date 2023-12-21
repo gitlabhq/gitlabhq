@@ -11,7 +11,7 @@
   = render 'new_submit'
 - else
   - if conflicting_mr
-    - link_to_mr = link_to(conflicting_mr.to_reference, project_merge_request_path(@project, conflicting_mr))
+    - link_to_mr = link_to(conflicting_mr.to_reference, project_merge_request_path(conflicting_mr.target_project, conflicting_mr))
     - flash.now[:alert] = safe_format(s_("These branches already have an open merge request: %{link_to_mr}. Select a different source or target branch."), link_to_mr: link_to_mr)
 
   = render 'new_compare'

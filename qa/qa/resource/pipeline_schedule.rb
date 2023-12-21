@@ -2,7 +2,7 @@
 
 module QA
   module Resource
-    class PipelineSchedules < Base
+    class PipelineSchedule < Base
       attribute :id
       attribute :ref
       attribute :description

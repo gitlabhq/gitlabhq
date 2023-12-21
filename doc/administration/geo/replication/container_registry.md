@@ -170,3 +170,70 @@ To verify container registry replication is working, on the **secondary** site:
    The initial replication, or "backfill", is probably still in progress.
 
 You can monitor the synchronization process on each Geo site from the **primary** site's **Geo Nodes** dashboard in your browser.
+
+## Troubleshooting
+
+### Confirm that container registry replication is enabled
+
+This can be done with a check using the [Rails console](../../operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Geo::ContainerRepositoryRegistry.replication_enabled?
+```
+
+### Missing container registry notification event
+
+1. When an image is pushed to the primary site's container registry, it should trigger a [Container Registry notification](../../../administration/packages/container_registry.md#configure-container-registry-notifications)
+1. The primary site's container registry calls the primary site's API on `https://<example.com>/api/v4/container_registry_event/events`
+1. The primary site inserts a record to the `geo_events` table with `replicable_name: 'container_repository', model_record_id: <ID of the container repository>`.
+1. The record gets replicated by PostgreSQL to the secondary site's database.
+1. The Geo Log Cursor service processes the new event and enqueues a Sidekiq job `Geo::EventWorker`
+
+To verify this is working correctly, push an image to the registry on the primary site, and run the following command on the Rails console to verify that the notification was received, and processed into an event:
+
+```ruby
+Geo::Event.where(replicable_name: 'container_repository')
+```
+
+You can further verify this by checking `geo.log` for entries from `Geo::ContainerRepositorySyncService`.
+
+### Registry events logs response status 401 Unauthorized unaccepted
+
+`401 Unauthorized` errors indicate that the primary site's container registry notification is not accepted by the Rails application, preventing it from notifying GitLab that something was pushed.
+
+To fix this, make sure that the authorization headers being sent with the registry notification match what's configured on the primary site, as should be done during step [Configure primary site](#configure-primary-site).
+
+#### Registry error: `token from untrusted issuer: "<token>"`
+
+To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../../administration/packages/container_registry.md) has been done correctly.
+
+Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../../administration/packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
+
+On multinode deployments, make sure that the issuer configured on the Sidekiq node matches the value configured on the registries.
+
+### Manually trigger a container registry sync event
+
+To help with troubleshooting, you can manually trigger the container registry replication process by running the following commands on the secondary's Rails console:
+
+```ruby
+registry = Geo::ContainerRepositoryRegistry.first # Choose a Geo registry entry
+registry.replicator.sync_repository # Resync the container repository
+pp registry.reload # Look at replication state fields
+
+#<Geo::ContainerRepositoryRegistry:0x00007f54c2a36060
+ id: 1,
+ container_repository_id: 1,
+ state: "2",
+ retry_count: 0,
+ last_sync_failure: nil,
+ retry_at: nil,
+ last_synced_at: Thu, 28 Sep 2023 19:38:05.823680000 UTC +00:00,
+ created_at: Mon, 11 Sep 2023 15:38:06.262490000 UTC +00:00>
+```
+
+The `state` field represents sync state:
+
+- `"0"`: pending sync (usually means it was never synced)
+- `"1"`: started sync (a sync job is currently running)
+- `"2"`: successfully synced
+- `"3"`: failed to sync

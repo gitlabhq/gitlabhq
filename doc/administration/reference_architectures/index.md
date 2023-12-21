@@ -13,8 +13,7 @@ GitLab Quality Engineering and Support teams to provide recommended deployments 
 
 The following Reference Architectures are available as recommended starting points for your environment.
 
-The architectures are named in terms of user count, which in this case means the architecture is designed against
-the _total_ load that comes with such a user count based on real data along with substantial headroom added to cover most scenarios such as CI or other automated workloads.
+The architectures are named in terms of _total_ load, both manual and automated, correlated to user count and based on real data along with substantial headroom added to add additional coverage for most scenarios.
 
 However, it should be noted that in some cases, known heavy scenarios such as [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads) may require adjustments to be made.
 
@@ -679,32 +678,44 @@ You should upgrade a Reference Architecture in the same order as you created it.
 
 ### Scaling an environment
 
-Scaling a GitLab environment is designed to be as flexible and seamless as possible.
+The Reference Architectures have been designed to support scaling in various ways depending on your use case and circumstances.
+This can be done iteratively or wholesale to the next size of architecture depending on if metrics suggest a component is being exhausted.
 
-This can be done iteratively or wholesale to the next size of architecture depending on your circumstances.
-For example, if any of your GitLab Rails, Sidekiq, Gitaly, Redis or PostgreSQL nodes are consistently oversaturated, then increase their resources accordingly while leaving the rest of the environment as is.
+NOTE:
+If you're seeing a component continuously exhausting it's given resources it's strongly recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before performing any scaling. This is especially so if you're planning to scale any component significantly.
 
-If expecting a large increase in users, you may elect to scale up the whole environment to the next
-size of architecture.
+For most components vertical and horizontal scaling can be applied as normal. However, before doing so though please be aware of the below caveats:
 
-If the overall design is being followed, you can scale the environment vertically as required.
+- When scaling Puma or Sidekiq vertically the amount of workers will need to be adjusted to use the additional specs. Puma will be scaled automatically on the next reconfigure but Sidekiq will need [its configuration changed beforehand](../sidekiq/extra_sidekiq_processes.md#start-multiple-processes).
+- Redis and PgBouncer are primarily single threaded. If these components are seeing CPU exhaustion they may need to be scaled out horizontally.
+- Scaling certain components significantly can result in notable knock on effects that affect the performance of the environment. [Refer to the dedicated section below for more guidance](#scaling-knock-on-effects).
 
-If robust metrics are in place that show the environment is over-provisioned, you can apply the same process for
-scaling downwards. You should take an iterative approach when scaling downwards to ensure there are no issues.
+Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can scale downwards similarly.
+You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
+
+#### Scaling knock on effects
+
+In some cases scaling a component significantly may result in knock on effects for downstream components, impacting performance. The Reference Architectures were designed with balance in mind to ensure components that depend on each other are congruent in terms of specs. As such you may find when notably scaling a component that it's increase may result in additional throughput being passed to the other components it depends on and that they, in turn, may need to be scaled as well.
+
+NOTE:
+As a general rule most components have good headroom to accommodate an upstream component being scaled, so this is typically on a case by case basis and specific to what has been changed. It's recommended for you to reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to the environment.
+
+The following components can impact others when they have been significantly scaled:
+
+- Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis respectively.
+  - Redis is primarily single threaded and in some cases may need to be split up into different instances (Cache / Persistent) if the increased throughput causes CPU exhaustion if a combined cluster is currently being used.
+  - PgBouncer is also single threaded but note that a scale out will result in a new pool being added that in turn will increase total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
+- Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 
 #### Scaling from a non-HA to an HA architecture
 
-While in most cases vertical scaling is only required to increase an environment's resources, if you are moving to an HA environment,
-there may be some additional steps required as shown below:
+While in most cases vertical scaling is only required to increase an environment's resources, if you are moving to an HA environment
+additional steps will be required for the following components to switch over to their HA forms respectively by following the given
+documentation for each as follows
 
-- If you're scaling from a non-HA environment to an HA environment, various components are recommended to be deployed in their HA forms:
-  - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
-  - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-  - [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/index.md#migrate-to-gitaly-cluster)
-- From 10k users and higher, Redis is recommended to be split into multiple HA servers as it's single threaded.
-
-Conversely, if you have robust metrics in place that show the environment is over-provisioned, you can apply the same process for
-scaling downwards. You should take an iterative approach when scaling downwards, however, to ensure there are no issues.
+- [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
+- [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
+- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/index.md#migrate-to-gitaly-cluster)
 
 ### Monitoring
 
@@ -720,6 +731,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2023:**
 
+- [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
 - [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expanded details on what each Reference Architecture is designed for, the testing methodology used as well as added details on how to scale environments.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Added expanded notes on disk types, object storage and monitoring.

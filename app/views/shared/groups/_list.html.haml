@@ -11,6 +11,7 @@
   %ul.content-list
     - groups.each_with_index do |group, i|
       = render "shared/groups/group", group: group, user: user
+    = paginate_collection(groups)
 - else
   = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: illustration_path,
     current_user_empty_message_header: current_user_empty_message_header,

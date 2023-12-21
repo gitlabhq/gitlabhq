@@ -13,9 +13,11 @@ module QA
       before do
         project.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
-        Resource::PipelineSchedules.fabricate_via_api! do |schedule|
-          schedule.api_client = user_api_client
-          schedule.project = project
+        # Retry is needed due to delays with project authorization updates
+        # Long term solution to accessing the status of a project authorization update
+        # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+        Support::Retrier.retry_on_exception(max_attempts: 60, sleep_interval: 1) do
+          create(:pipeline_schedule, api_client: user_api_client, project: project)
         end
 
         Support::Waiter.wait_until { !pipeline_schedule[:id].nil? && pipeline_schedule[:active] == true }
