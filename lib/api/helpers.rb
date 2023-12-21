@@ -217,7 +217,7 @@ module API
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_group(id, organization = nil)
+    def find_group(id, organization: nil)
       collection = organization.present? ? Group.in_organization(organization) : Group.all
 
       if id.to_s =~ INTEGER_ID_REGEX
@@ -228,8 +228,8 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def find_group!(id, organization = nil)
-      group = find_group(id, organization)
+    def find_group!(id, organization: nil)
+      group = find_group(id, organization: organization)
       check_group_access(group)
     end
 

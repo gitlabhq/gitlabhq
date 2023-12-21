@@ -26,11 +26,17 @@ export default {
         .map(([k]) => this.$options.i18n.verificationMethods[k])
         .join(', ');
     },
-    showSimilarRecords() {
+    showCreditCardSimilarRecords() {
       return this.user.creditCard.similarRecordsCount > 1;
     },
-    similarRecordsCount() {
+    creditCardSimilarRecordsCount() {
       return formatNumber(this.user.creditCard.similarRecordsCount);
+    },
+    showPhoneNumberSimilarRecords() {
+      return this.user.phoneNumber.similarRecordsCount > 1;
+    },
+    phoneNumberSimilarRecordsCount() {
+      return formatNumber(this.user.phoneNumber.similarRecordsCount);
     },
   },
   i18n: USER_DETAILS_I18N,
@@ -60,11 +66,33 @@ export default {
       data-testid="credit-card-verification"
       :label="$options.i18n.creditCard"
     >
-      <gl-sprintf v-if="showSimilarRecords" :message="$options.i18n.similarRecords">
+      <gl-sprintf
+        v-if="showCreditCardSimilarRecords"
+        :message="$options.i18n.creditCardSimilarRecords"
+      >
         <template #cardMatchesLink="{ content }">
           <gl-link :href="user.creditCard.cardMatchesLink">
             <gl-sprintf :message="content">
-              <template #count>{{ similarRecordsCount }}</template>
+              <template #count>{{ creditCardSimilarRecordsCount }}</template>
+            </gl-sprintf>
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </user-detail>
+
+    <user-detail
+      v-if="user.phoneNumber"
+      data-testid="phone-number-verification"
+      :label="$options.i18n.phoneNumber"
+    >
+      <gl-sprintf
+        v-if="showPhoneNumberSimilarRecords"
+        :message="$options.i18n.phoneNumberSimilarRecords"
+      >
+        <template #phoneMatchesLink="{ content }">
+          <gl-link :href="user.phoneNumber.phoneMatchesLink">
+            <gl-sprintf :message="content">
+              <template #count>{{ phoneNumberSimilarRecordsCount }}</template>
             </gl-sprintf>
           </gl-link>
         </template>

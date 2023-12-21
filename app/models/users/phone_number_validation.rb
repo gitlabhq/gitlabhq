@@ -9,7 +9,7 @@ module Users
 
     ignore_column :verification_attempts, remove_with: '16.7', remove_after: '2023-11-17'
 
-    belongs_to :user, foreign_key: :user_id
+    belongs_to :user
     belongs_to :banned_user, class_name: '::Users::BannedUser', foreign_key: :user_id
 
     validates :country, presence: true, length: { maximum: 3 }
@@ -26,13 +26,24 @@ module Users
       presence: true,
       format: {
         with: /\A\d+\Z/,
-        message: -> (object, data) { _('can contain only digits') }
+        message: ->(_object, _data) { _('can contain only digits') }
       },
       length: { maximum: 12 }
 
     validates :telesign_reference_xid, length: { maximum: 255 }
 
-    scope :for_user, -> (user_id) { where(user_id: user_id) }
+    scope :for_user, ->(user_id) { where(user_id: user_id) }
+
+    scope :similar_to, ->(phone_number_validation) do
+      where(
+        international_dial_code: phone_number_validation.international_dial_code,
+        phone_number: phone_number_validation.phone_number
+      )
+    end
+
+    def similar_records
+      self.class.similar_to(self).includes(:user)
+    end
 
     def self.related_to_banned_user?(international_dial_code, phone_number)
       joins(:banned_user)

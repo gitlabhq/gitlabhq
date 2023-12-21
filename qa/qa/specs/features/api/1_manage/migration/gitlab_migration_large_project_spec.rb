@@ -56,7 +56,7 @@ module QA
             pat.user = user
             # importing very large project can take multiple days
             # token must not expire while we still poll for import result
-            pat.expires_at = (Time.now.to_date + 5)
+            pat.expires_at = (Time.now.to_date + 6)
           end.token
         )
       end

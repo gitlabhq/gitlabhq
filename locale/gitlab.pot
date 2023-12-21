@@ -1439,6 +1439,12 @@ msgstr ""
 msgid "(Unlimited pipeline minutes)"
 msgstr ""
 
+msgid "(banned)"
+msgstr ""
+
+msgid "(blocked)"
+msgstr ""
+
 msgid "(check progress)"
 msgstr ""
 
@@ -2433,6 +2439,12 @@ msgid "AbuseReport|Phishing"
 msgstr ""
 
 msgid "AbuseReport|Phone"
+msgstr ""
+
+msgid "AbuseReport|Phone matches %{phoneMatchesLinkStart}%{count} accounts%{phoneMatchesLinkEnd}"
+msgstr ""
+
+msgid "AbuseReport|Phone number"
 msgstr ""
 
 msgid "AbuseReport|Reason"
@@ -4890,6 +4902,9 @@ msgid "All users must have a name."
 msgstr ""
 
 msgid "All users with matching cards"
+msgstr ""
+
+msgid "All users with matching phone numbers"
 msgstr ""
 
 msgid "Allow %{strongOpen}%{group_name}%{strongClose} to sign you in?"
@@ -28188,6 +28203,9 @@ msgstr ""
 msgid "Last activity"
 msgstr ""
 
+msgid "Last attempted number:"
+msgstr ""
+
 msgid "Last commit"
 msgstr ""
 
@@ -32248,6 +32266,9 @@ msgstr ""
 msgid "No parent group"
 msgstr ""
 
+msgid "No phone number data for matching"
+msgstr ""
+
 msgid "No plan"
 msgstr ""
 
@@ -32440,6 +32461,9 @@ msgid "Not started"
 msgstr ""
 
 msgid "Not supported"
+msgstr ""
+
+msgid "Not validated"
 msgstr ""
 
 msgid "Note"
@@ -35025,6 +35049,9 @@ msgid "PersonalProject|Your project %{projectName} is not in a group"
 msgstr ""
 
 msgid "Phone"
+msgstr ""
+
+msgid "Phone:"
 msgstr ""
 
 msgid "PhoneVerification|Enter a valid code."
@@ -53653,6 +53680,9 @@ msgid "View open merge request"
 msgstr ""
 
 msgid "View page @ "
+msgstr ""
+
+msgid "View phone number matches"
 msgstr ""
 
 msgid "View project in admin area"

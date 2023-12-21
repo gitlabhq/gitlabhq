@@ -14,12 +14,12 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
   it { is_expected.to validate_presence_of(:international_dial_code) }
 
-  it {
+  it do
     is_expected.to validate_numericality_of(:international_dial_code)
       .only_integer
       .is_greater_than_or_equal_to(1)
       .is_less_than_or_equal_to(999)
-  }
+  end
 
   it { is_expected.to validate_presence_of(:phone_number) }
   it { is_expected.to validate_length_of(:phone_number).is_at_most(12) }
@@ -29,6 +29,27 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
   it { is_expected.not_to allow_value('555 555').for(:phone_number) }
 
   it { is_expected.to validate_length_of(:telesign_reference_xid).is_at_most(255) }
+
+  describe '#similar_records' do
+    let_it_be(:phone_number_validation) { create(:phone_number_validation, :validated) }
+
+    let_it_be(:phone_number) do
+      phone_number_validation.attributes.with_indifferent_access.slice(
+        :international_dial_code, :phone_number
+      )
+    end
+
+    let_it_be(:match) { create(:phone_number_validation, :validated, phone_number) }
+    let_it_be(:unvalidated_match) { create(:phone_number_validation, phone_number) }
+
+    let_it_be(:non_match_1) { create(:phone_number_validation, phone_number.merge(international_dial_code: 81)) }
+    let_it_be(:non_match_2) { create(:phone_number_validation, phone_number.merge(phone_number: '5555555555')) }
+
+    it 'returns matches with the same international dialing code and phone number' do
+      expect(phone_number_validation.similar_records).to match_array([unvalidated_match, match,
+        phone_number_validation])
+    end
+  end
 
   describe '.related_to_banned_user?' do
     let_it_be(:international_dial_code) { 1 }
@@ -41,7 +62,12 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
     context 'when banned user has the same international dial code and phone number' do
       context 'and the matching record has not been verified' do
         before do
-          create(:phone_number_validation, user: banned_user)
+          create(
+            :phone_number_validation,
+            user: banned_user,
+            international_dial_code: international_dial_code,
+            phone_number: phone_number
+          )
         end
 
         it { is_expected.to eq(false) }
@@ -49,7 +75,13 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
       context 'and the matching record has been verified' do
         before do
-          create(:phone_number_validation, :validated, user: banned_user)
+          create(
+            :phone_number_validation,
+            :validated,
+            user: banned_user,
+            international_dial_code: international_dial_code,
+            phone_number: phone_number
+          )
         end
 
         it { is_expected.to eq(true) }
@@ -58,7 +90,14 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when banned user has the same international dial code and phone number, but different country code' do
       before do
-        create(:phone_number_validation, :validated, user: banned_user, country: 'CA')
+        create(
+          :phone_number_validation,
+          :validated,
+          user: banned_user,
+          international_dial_code: international_dial_code,
+          phone_number: phone_number,
+          country: 'CA'
+        )
       end
 
       it { is_expected.to eq(true) }
@@ -66,7 +105,13 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when banned user does not have the same international dial code' do
       before do
-        create(:phone_number_validation, :validated, user: banned_user, international_dial_code: 61)
+        create(
+          :phone_number_validation,
+          :validated,
+          user: banned_user,
+          international_dial_code: 81,
+          phone_number: phone_number
+        )
       end
 
       it { is_expected.to eq(false) }
@@ -74,7 +119,13 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when banned user does not have the same phone number' do
       before do
-        create(:phone_number_validation, :validated, user: banned_user, phone_number: '666')
+        create(
+          :phone_number_validation,
+          :validated,
+          user: banned_user,
+          international_dial_code: international_dial_code,
+          phone_number: '666'
+        )
       end
 
       it { is_expected.to eq(false) }
@@ -82,7 +133,13 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
     context 'when not-banned user has the same international dial code and phone number' do
       before do
-        create(:phone_number_validation, :validated, user: user)
+        create(
+          :phone_number_validation,
+          :validated,
+          user: user,
+          international_dial_code: international_dial_code,
+          phone_number: phone_number
+        )
       end
 
       it { is_expected.to eq(false) }
@@ -103,6 +160,57 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
           expect(records.count).to be(1)
           expect(records.first).to eq(phone_number_record_1)
         end
+      end
+    end
+
+    describe '.similar_to' do
+      subject(:similar_to) { described_class.similar_to(phone_number_validation) }
+
+      let_it_be(:international_dial_code) { 44 }
+      let_it_be(:phone_number) { '111' }
+
+      let_it_be(:phone_number_validation) do
+        create(:phone_number_validation,
+          :validated,
+          international_dial_code: international_dial_code,
+          phone_number: phone_number
+        )
+      end
+
+      let_it_be(:match) do
+        create(:phone_number_validation,
+          :validated,
+          international_dial_code: phone_number_validation.international_dial_code,
+          phone_number: phone_number_validation.phone_number
+        )
+      end
+
+      let_it_be(:non_match_1) do
+        create(:phone_number_validation,
+          :validated,
+          international_dial_code: phone_number_validation.international_dial_code,
+          phone_number: '222'
+        )
+      end
+
+      let_it_be(:non_match_2) do
+        create(:phone_number_validation,
+          :validated,
+          international_dial_code: 81,
+          phone_number: phone_number_validation.phone_number
+        )
+      end
+
+      let_it_be(:non_match_3) do
+        create(:phone_number_validation,
+          :validated,
+          international_dial_code: 82,
+          phone_number: '333'
+        )
+      end
+
+      it 'returns only records with the same international dialing code and phone number' do
+        expect(similar_to).to match_array([phone_number_validation, match])
       end
     end
   end

@@ -1,6 +1,5 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { sprintf } from '~/locale';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { USER_DETAILS_I18N } from '~/admin/abuse_report/constants';
@@ -61,7 +60,7 @@ describe('UserDetails', () => {
   describe('verification', () => {
     it('renders the users verification with the correct label', () => {
       expect(findUserDetailLabel('verification')).toBe(USER_DETAILS_I18N.verification);
-      expect(findUserDetailValue('verification')).toBe('Email, Credit card');
+      expect(findUserDetailValue('verification')).toBe('Email, Phone, Credit card');
     });
   });
 
@@ -73,7 +72,7 @@ describe('UserDetails', () => {
     describe('similar credit cards', () => {
       it('renders the number of similar records', () => {
         expect(findUserDetail('credit-card-verification').text()).toContain(
-          sprintf('Card matches %{similarRecordsCount} accounts', { ...user.creditCard }),
+          `Card matches ${user.creditCard.similarRecordsCount} accounts`,
         );
       });
 
@@ -83,7 +82,7 @@ describe('UserDetails', () => {
         );
 
         expect(findLinkFor('credit-card-verification').text()).toBe(
-          sprintf('%{similarRecordsCount} accounts', { ...user.creditCard }),
+          `${user.creditCard.similarRecordsCount} accounts`,
         );
 
         expect(findLinkFor('credit-card-verification').text()).toContain(
@@ -100,7 +99,7 @@ describe('UserDetails', () => {
 
         it('does not render the number of similar records', () => {
           expect(findUserDetail('credit-card-verification').text()).not.toContain(
-            sprintf('Card matches %{similarRecordsCount} accounts', { ...user.creditCard }),
+            `Card matches ${user.creditCard.similarRecordsCount} accounts`,
           );
         });
 
@@ -123,6 +122,60 @@ describe('UserDetails', () => {
     });
   });
 
+  describe('phoneNumber', () => {
+    it('renders the correct label', () => {
+      expect(findUserDetailLabel('phone-number-verification')).toBe(USER_DETAILS_I18N.phoneNumber);
+    });
+
+    describe('similar phone numbers', () => {
+      it('renders the number of similar records', () => {
+        expect(findUserDetail('phone-number-verification').text()).toContain(
+          `Phone matches ${user.phoneNumber.similarRecordsCount} accounts`,
+        );
+      });
+
+      it('renders a link to the matching phone numbers', () => {
+        expect(findLinkFor('phone-number-verification').attributes('href')).toBe(
+          user.phoneNumber.phoneMatchesLink,
+        );
+
+        expect(findLinkFor('phone-number-verification').text()).toBe(
+          `${user.phoneNumber.similarRecordsCount} accounts`,
+        );
+      });
+
+      describe('when the number of similar phone numbers is less than 2', () => {
+        beforeEach(() => {
+          createComponent({
+            user: { ...user, phoneNumber: { ...user.phoneNumber, similarRecordsCount: 1 } },
+          });
+        });
+
+        it('does not render the number of similar records', () => {
+          expect(findUserDetail('phone-number-verification').text()).not.toContain(
+            `Phone matches ${user.phoneNumber.similarRecordsCount} accounts`,
+          );
+        });
+
+        it('does not render a link to the matching phone numbers', () => {
+          expect(findLinkFor('phone-number-verification').exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('when the users phoneNumber is blank', () => {
+      beforeEach(() => {
+        createComponent({
+          user: { ...user, phoneNumber: undefined },
+        });
+      });
+
+      it('does not render the users phoneNumber', () => {
+        expect(findUserDetail('phone-number-verification').exists()).toBe(false);
+      });
+    });
+  });
+
   describe('otherReports', () => {
     it('renders the correct label', () => {
       expect(findUserDetailLabel('past-closed-reports')).toBe(USER_DETAILS_I18N.pastReports);
@@ -132,9 +185,7 @@ describe('UserDetails', () => {
       const index = user.pastClosedReports.indexOf(pastReport);
 
       it('renders the category', () => {
-        expect(findPastReport(index).text()).toContain(
-          sprintf('Reported for %{category}', { ...pastReport }),
-        );
+        expect(findPastReport(index).text()).toContain(`Reported for ${pastReport.category}`);
       });
 
       it('renders a link to the report', () => {

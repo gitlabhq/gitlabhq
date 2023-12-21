@@ -44,6 +44,15 @@ module Admin
         end
       end
 
+      expose :phone_number, if: ->(report) { report.user.phone_number_validation.present? } do
+        expose :similar_records_count do |report|
+          report.user.phone_number_validation.similar_records.count
+        end
+        expose :phone_matches_link do |report|
+          phone_match_admin_user_path(report.user) if Gitlab.ee?
+        end
+      end
+
       expose :past_closed_reports do |report|
         AbuseReportEntity.represent(report.past_closed_reports_for_user, only: [:created_at, :category, :report_path])
       end

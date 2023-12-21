@@ -24888,7 +24888,6 @@ CREATE TABLE vulnerabilities (
     title_html text,
     description text,
     description_html text,
-    start_date_sourcing_milestone_id bigint,
     state smallint DEFAULT 1 NOT NULL,
     severity smallint NOT NULL,
     severity_overridden boolean DEFAULT false,
@@ -35087,8 +35086,6 @@ CREATE INDEX index_vulnerabilities_on_project_id_and_state_and_severity ON vulne
 
 CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING btree (resolved_by_id);
 
-CREATE INDEX index_vulnerabilities_on_start_date_sourcing_milestone_id ON vulnerabilities USING btree (start_date_sourcing_milestone_id);
-
 CREATE INDEX index_vulnerabilities_on_updated_by_id ON vulnerabilities USING btree (updated_by_id);
 
 CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulnerabilities USING btree (project_id, id) WHERE (present_on_default_branch IS TRUE);
@@ -37816,9 +37813,6 @@ ALTER TABLE p_ci_builds
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_88b4d546ef FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_88c725229f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

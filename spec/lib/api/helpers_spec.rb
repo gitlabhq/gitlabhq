@@ -545,7 +545,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
         allow(helper).to receive(:authenticate_non_public?).and_return(false)
       end
 
-      subject { helper.find_group!(group.id, organization) }
+      subject { helper.find_group!(group.id, organization: organization) }
 
       context 'when group exists in the organization' do
         before do

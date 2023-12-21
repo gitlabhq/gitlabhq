@@ -9,11 +9,15 @@ export const mockAbuseReport = {
     path: '/spamuser417',
     adminPath: '/admin/users/spamuser417',
     plan: 'Free',
-    verificationState: { email: true, phone: false, creditCard: true },
+    verificationState: { email: true, phone: true, creditCard: true },
     creditCard: {
       name: 'S. User',
       similarRecordsCount: 2,
       cardMatchesLink: '/admin/users/spamuser417/card_match',
+    },
+    phoneNumber: {
+      similarRecordsCount: 2,
+      phoneMatchesLink: '/admin/users/spamuser417/phone_match',
     },
     pastClosedReports: [
       {

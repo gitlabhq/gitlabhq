@@ -221,7 +221,7 @@ module API
         organization = find_organization!(params[:organization_id]) if params[:organization_id].present?
         authorize! :create_group, organization if organization
 
-        parent_group = find_group!(params[:parent_id], organization) if params[:parent_id].present?
+        parent_group = find_group!(params[:parent_id], organization: organization) if params[:parent_id].present?
         if parent_group
           authorize! :create_subgroup, parent_group
         else
