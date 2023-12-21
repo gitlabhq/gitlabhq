@@ -12,8 +12,17 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
     let(:event_name) { data[:event_name] }
     let(:attributes) do
       [
-        :event_name, :created_at, :updated_at, :name, :path, :path_with_namespace, :project_id,
-        :owners, :owner_name, :owner_email, :project_visibility
+        :created_at,
+        :event_name,
+        :name,
+        :owner_email,
+        :owner_name,
+        :owners,
+        :path,
+        :path_with_namespace,
+        :project_id,
+        :project_visibility,
+        :updated_at
       ]
     end
 
@@ -118,6 +127,19 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
 
           it_behaves_like 'includes the required attributes'
           it_behaves_like 'does not include `old_path_with_namespace` attribute'
+
+          context 'group has pending owner invitation' do
+            let_it_be(:group) { create(:group) }
+            let_it_be(:project) { create(:project, :internal, name: 'group project', namespace: group) }
+
+            let(:owners_data) { [] }
+
+            before do
+              create(:group_member, :invited, group: group)
+            end
+
+            it { expect(event_name).to eq('project_create') }
+          end
         end
 
         context 'on destroy' do
