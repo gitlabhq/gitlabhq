@@ -588,15 +588,6 @@ msgstr ""
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr ""
 
-msgid "%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
-msgstr ""
-
-msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
-msgstr ""
-
-msgid "%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags."
-msgstr ""
-
 msgid "%{commit_author_link} authored %{commit_authored_timeago}"
 msgstr ""
 
@@ -10115,6 +10106,9 @@ msgstr ""
 msgid "Checkout|Billing address"
 msgstr ""
 
+msgid "Checkout|Billing contact"
+msgstr ""
+
 msgid "Checkout|CI minutes"
 msgstr ""
 
@@ -10125,6 +10119,9 @@ msgid "Checkout|Checkout"
 msgstr ""
 
 msgid "Checkout|City"
+msgstr ""
+
+msgid "Checkout|Company information"
 msgstr ""
 
 msgid "Checkout|Compute pack"
@@ -10262,6 +10259,9 @@ msgstr ""
 msgid "Checkout|Submitting the credit card form failed with code %{errorCode}: %{errorMessage}"
 msgstr ""
 
+msgid "Checkout|Subscription contact"
+msgstr ""
+
 msgid "Checkout|Subscription details"
 msgstr ""
 
@@ -10272,6 +10272,9 @@ msgid "Checkout|Success: subscription"
 msgstr ""
 
 msgid "Checkout|Tax"
+msgstr ""
+
+msgid "Checkout|Tax ID"
 msgstr ""
 
 msgid "Checkout|Total"
@@ -10592,6 +10595,15 @@ msgstr ""
 msgid "CiStatusText|Warning"
 msgstr ""
 
+msgid "CiVariables|%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
+msgstr ""
+
+msgid "CiVariables|%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
+msgstr ""
+
+msgid "CiVariables|%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags."
+msgstr ""
+
 msgid "CiVariables|A variable key can only contain letters, numbers, and '_'."
 msgstr ""
 
@@ -10719,6 +10731,12 @@ msgid "CiVariables|Variable will be masked in job logs. Requires values to meet 
 msgstr ""
 
 msgid "CiVariables|Variables"
+msgstr ""
+
+msgid "CiVariables|Variables can be accidentally exposed in a job log, or maliciously sent to a third party server. The masked variable feature can help reduce the risk of accidentally exposing variable values, but is not a guaranteed method to prevent malicious users from accessing variables."
+msgstr ""
+
+msgid "CiVariables|Variables can have several attributes."
 msgstr ""
 
 msgid "CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}"
@@ -24301,6 +24319,9 @@ msgid "Housekeeping"
 msgstr ""
 
 msgid "Housekeeping successfully started"
+msgstr ""
+
+msgid "How can I make my variables more secure?"
 msgstr ""
 
 msgid "How do I change my password in GitLab?"
@@ -53492,12 +53513,6 @@ msgid "Variable name '%{variable}' must not start with '%{prefix}'"
 msgstr ""
 
 msgid "Variables"
-msgstr ""
-
-msgid "Variables can be:"
-msgstr ""
-
-msgid "Variables can have several attributes."
 msgstr ""
 
 msgid "Various container registry settings."

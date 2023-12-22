@@ -4,9 +4,9 @@ group: Observability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Distributed tracing **(ULTIMATE SAAS EXPERIMENT)**
+# Distributed tracing **(ULTIMATE SAAS BETA)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md#beta).
 > - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.
 
 FLAG:
@@ -16,7 +16,7 @@ The feature is not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 
-This feature is an [Experiment](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2363) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
+This feature is in [Beta](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2590) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
 
 ## Configure distributed tracing for a project
 
@@ -81,3 +81,10 @@ The trace details page and a list of spans are displayed.
 To view the attributes for a single span, select it from the list.
 
 ![tracing drawer](img/tracing_drawer_v16_7.png)
+
+## Tracing ingestion limits
+
+Tracing ingests a maximum of 102,400 bytes per minute.
+After the limit is exceeded, a `429 Too Many Requests` response is returned.
+
+To request a limit increase to 104,8576 bytes per minute, contact GitLab support.

@@ -138,11 +138,6 @@ download-knapsack-report:
     - cd qa && bundle install
   after_script: []
 
-download-fast-quarantine-report:
-  extends:
-    - .download-fast-quarantine-report
-    - .rules:download-fast-quarantine-report
-
 # ==========================================
 # Test stage
 # ==========================================

@@ -29,6 +29,7 @@ job logs, and project management features such as issues, epics, and MRs.
 - Support platform-wide detection of tokens to avoid secret leaks
 - Prevent exposure by rejecting detected secrets
 - Provide scalable means of detection without harming end user experience
+- Unified list of token patterns and masking
 
 See [target types](#target-types) for scan target priorities.
 
@@ -39,9 +40,7 @@ during [preceive Git interactions and browser-based detection](#iterations).
 
 Secret revocation and rotation is also beyond the scope of this new capability.
 
-Scanned object types beyond the scope of this MVC include:
-
-See [target types](#target-types) for scan target priorities.
+Scanned object types beyond the scope of this MVC are included within [target types](#target-types).
 
 #### Management UI
 
@@ -67,7 +66,7 @@ Target object types refer to the scanning targets prioritized for detection of l
 
 In order of priority this includes:
 
-1. non-binary Git blobs
+1. non-binary Git blobs under 1 megabyte
 1. job logs
 1. issuable creation (issues, MRs, epics)
 1. issuable updates (issues, MRs, epics)
@@ -75,30 +74,33 @@ In order of priority this includes:
 
 Targets out of scope for the initial phases include:
 
+- non-binary Git blobs over 1 megabyte
+- binary Git blobs
 - Media types (JPEG, PDF, ...)
 - Snippets
 - Wikis
 - Container images
+- External media (Youtube platform videos)
 
 ### Token types
 
-The existing Secret Detection configuration covers ~100 rules across a variety
+The existing Secret Detection configuration covers 100+ rules across a variety
 of platforms. To reduce total cost of execution and likelihood of false positives
 the dedicated service targets only well-defined tokens. A well-defined token is
-defined as a token with a precise definition, most often a fixed substring prefix or
-suffix and fixed length.
+defined as a token with a precise definition, most often a fixed substring prefix (or
+suffix) and fixed length.
 
 Token types to identify in order of importance:
 
 1. Well-defined GitLab tokens (including Personal Access Tokens and Pipeline Trigger Tokens)
 1. Verified Partner tokens (including AWS)
-1. Remainder tokens currently included in Secret Detection CI configuration
+1. Well-defined third party tokens
+1. Remainder tokens currently included in Secret Detection analyzer configuration
+
+In order to minimize false positives, there are no plans to introduce or alert on high-entropy,
+arbitrary strings; i.e. patterns such as `3lsjkw3a22`.
 
 ## Proposal
-
-### Decisions
-
-- [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
 
 The first iteration of the experimental capability will feature a blocking
 pre-receive hook implemented in the Rails application. This iteration
@@ -118,6 +120,10 @@ This service must be:
 
 Platform-wide secret detection should be enabled by-default on GitLab SaaS as well
 as self-managed instances.
+
+### Decisions
+
+- [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
 
 ## Challenges
 
@@ -153,6 +159,23 @@ for further background exploration.
 
 See [this thread](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105142#note_1194863310)
 for past discussion around scaling approaches.
+
+### Detection engine
+
+Our current secret detection offering uses [Gitleaks](https://github.com/zricethezav/gitleaks/)
+for all secret scanning in pipeline contexts. By using its `--no-git` configuration
+we can scan arbitrary text blobs outside of a repository context and continue to
+use it for non-pipeline scanning.
+
+Changes to the detection engine are out of scope until benchmarking unveils performance concerns.
+
+For the long-term direction of GitLab Secret Detection, the scope is greater than that of the Gitleaks tool. As such, we should consider feature encapsulation to limit the Gitleaks domain to the relevant build context only.
+
+In the case of pre-receive detection, we rely on a combination of keyword/substring matches
+for pre-filtering and `re2` for regex detections. See [spike issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423832) for initial benchmarks.
+
+Notable alternatives include high-performance regex engines such as [Hyperscan](https://github.com/intel/hyperscan) or it's portable fork [Vectorscan](https://github.com/VectorCamp/vectorscan).
+These systems may be worth exploring in the future if our performance characteristics show a need to grow beyond the existing stack, however the team's velocity in building an independently scalable and generic scanning engine was prioritized, see [ADR 001](decisions/001_use_ruby_push_check_approach_within_monolith.md) for more on the implementation language considerations.
 
 ### Phase 1 - Ruby pushcheck pre-receive integration
 
@@ -204,7 +227,7 @@ sidekiq .[#ff8dd1]----> postgres
 @enduml
 ```
 
-#### Push event detection flow
+#### Push Event Detection Flow
 
 ```mermaid
 sequenceDiagram
@@ -308,7 +331,7 @@ consul .[#e76a9b]-> prsd_cluster
 @enduml
 ```
 
-#### Push event detection flow
+#### Push Event Detection Flow
 
 ```mermaid
 sequenceDiagram
@@ -345,7 +368,7 @@ sequenceDiagram
     Rails->>User: accepted
 ```
 
-### Phase 3 - Expansion beyond pre-
+### Phase 3 - Expansion beyond pre-receive service
 
 The detection flow for arbitrary text blobs, such as issue comments, relies on
 subscribing to `Notes::PostProcessService` (or equivalent service) to enqueue
@@ -364,11 +387,11 @@ In any other case of detection, the Rails application manually creates a vulnera
 using the `Vulnerabilities::ManuallyCreateService` to surface the finding in the
 existing Vulnerability Management UI.
 
-#### Architecture
+#### High-Level Architecture
 
 There is no change to the architecture defined in Phase 2, however the individual load requirements may require scaling up the node counts for the detection service.
 
-#### Detection flow
+#### Push Event Detection Flow
 
 There is no change to the push event detection flow defined in Phase 2, however the added capability to scan
 arbitary text blobs directly from Rails allows us to emulate a pre-receive behavior for issuable creations,
@@ -403,53 +426,6 @@ sequenceDiagram
     Rails->>User: rejected: secret found
 ```
 
-### Target types
-
-Target object types refer to the scanning targets prioritized for detection of leaked secrets.
-
-In order of priority this includes:
-
-1. non-binary Git blobs
-1. job logs
-1. issuable creation (issues, MRs, epics)
-1. issuable updates (issues, MRs, epics)
-1. issuable comments (issues, MRs, epics)
-
-Targets out of scope for the initial phases include:
-
-- Media types (JPEG, PDF, ...)
-- Snippets
-- Wikis
-- Container images
-
-### Token types
-
-The existing Secret Detection configuration covers ~100 rules across a variety
-of platforms. To reduce total cost of execution and likelihood of false positives
-the dedicated service targets only well-defined tokens. A well-defined token is
-defined as a token with a precise definition, most often a fixed substring prefix or
-suffix and fixed length.
-
-Token types to identify in order of importance:
-
-1. Well-defined GitLab tokens (including Personal Access Tokens and Pipeline Trigger Tokens)
-1. Verified Partner tokens (including AWS)
-1. Remainder tokens included in Secret Detection CI configuration
-
-### Detection engine
-
-Our current secret detection offering uses [Gitleaks](https://github.com/zricethezav/gitleaks/)
-for all secret scanning in pipeline contexts. By using its `--no-git` configuration
-we can scan arbitrary text blobs outside of a repository context and continue to
-use it for non-pipeline scanning.
-
-In the case of pre-receive detection, we rely on a combination of keyword/substring matches
-for pre-filtering and `re2` for regex detections. See [spike issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423832) for initial benchmarks
-
-Changes to the detection engine are out of scope until benchmarking unveils performance concerns.
-
-Notable alternatives include high-performance regex engines such as [Hyperscan](https://github.com/intel/hyperscan) or it's portable fork [Vectorscan](https://github.com/VectorCamp/vectorscan).
-
 ## Iterations
 
 - ✓ Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
@@ -459,9 +435,9 @@ Notable alternatives include high-performance regex engines such as [Hyperscan](
 - [Pre-Production Performance Profiling for pre-receive PoCs](https://gitlab.com/gitlab-org/gitlab/-/issues/428499)
   - Profiling service capabilities
     - ✓ [Benchmarking regex performance between Ruby and Go approaches](https://gitlab.com/gitlab-org/gitlab/-/issues/423832)
-    - gRPC commit retrieval from Gitaly
+    - x gRPC commit retrieval from Gitaly
     - transfer latency, CPU, and memory footprint
-- Implementation of secret scanning service MVC (targeting individual commits)
+- ✓ Implementation of secret scanning gem integration MVC (targeting individual commits)
 - Capacity planning for addition of service component to Reference Architectures headroom
 - Security and readiness review
 - Deployment and monitoring

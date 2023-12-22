@@ -31,7 +31,7 @@ The following video gives you an overview of GitLab scan result policies:
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
   Otherwise, scan result policies do not have any effect.
-- The maximum number of policies is five.
+- The maximum number of scan result policies is five per security policy project. 
 - Each policy can have a maximum of five rules.
 - All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
 - Scan result policies evaluate findings and determine approval requirements based on the job artifact reports published in a completed pipeline. However, scan result policies do not check the integrity or authenticity of the scan results generated in the artifact reports.

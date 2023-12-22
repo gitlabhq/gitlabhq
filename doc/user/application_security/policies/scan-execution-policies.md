@@ -46,6 +46,10 @@ to remove the `test` stage, jobs will run in the `scan-policies` stage instead. 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
+## Requirements and limitations
+
+- The maximum number of scan execution policies is five per security policy project.
+
 ## Scan execution policy editor
 
 NOTE:
