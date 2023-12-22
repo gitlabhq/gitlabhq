@@ -10,7 +10,8 @@ module Integrations
     validate :validate_confluence_url_is_cloud, if: :activated?
 
     field :confluence_url,
-      title: -> { _('Confluence Cloud Workspace URL') },
+      title: -> { _('Confluence Workspace URL') },
+      description: -> { _("URL of the Confluence Workspace hosted on `atlassian.net`.") },
       placeholder: 'https://example.atlassian.net/wiki',
       required: true
 

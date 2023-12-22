@@ -372,7 +372,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `confluence_url` | string | true | The URL of the Confluence Workspace hosted on `atlassian.net`. |
+| `confluence_url` | string | true | URL of the Confluence Workspace hosted on `atlassian.net`. |
 
 ### Disable Confluence Workspace
 

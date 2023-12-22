@@ -55,7 +55,16 @@ class UsersFinder
   private
 
   def base_scope
-    scope = current_user&.can_admin_all_resources? ? User.all : User.without_forbidden_states
+    group = params[:group]
+
+    if group
+      raise Gitlab::Access::AccessDeniedError unless user_can_read_group?(group)
+
+      scope = ::Autocomplete::GroupUsersFinder.new(group: group).execute # rubocop: disable CodeReuse/Finder -- For SQL optimization sake we need to scope out group members first see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137647#note_1664081899
+    else
+      scope = current_user&.can_admin_all_resources? ? User.all : User.without_forbidden_states
+    end
+
     scope.order_id_desc
   end
 
@@ -155,6 +164,10 @@ class UsersFinder
     users.order_by(params[:sort])
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def user_can_read_group?(group)
+    Ability.allowed?(current_user, :read_group, group)
+  end
 end
 
 UsersFinder.prepend_mod_with('UsersFinder')

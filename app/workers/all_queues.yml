@@ -786,6 +786,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:releases_publish_event
+  :worker_name: Releases::PublishEventWorker
+  :feature_category: :release_orchestration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
   :feature_category: :system_access

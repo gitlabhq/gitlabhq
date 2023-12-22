@@ -101,7 +101,11 @@ module Support
       end
 
       def load_average
-        `uptime`[/(load average:[^\n]+)/, 1]
+        if File.exist?('/proc/loadavg')
+          "load average: #{File.read('/proc/loadavg')}"
+        else
+          `uptime`[/(load average:[^\n]+)/, 1] || '(uptime failed)'
+        end
       end
     end
   end

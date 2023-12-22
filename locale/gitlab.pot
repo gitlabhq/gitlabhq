@@ -13189,7 +13189,7 @@ msgstr ""
 msgid "Confluence"
 msgstr ""
 
-msgid "Confluence Cloud Workspace URL"
+msgid "Confluence Workspace URL"
 msgstr ""
 
 msgid "ConfluenceService|Confluence Workspace"
@@ -16987,9 +16987,6 @@ msgid "DeployTokens|Username"
 msgstr ""
 
 msgid "DeployTokens|Username (optional)"
-msgstr ""
-
-msgid "DeployTokens|Your new Deploy Token username"
 msgstr ""
 
 msgid "DeployTokens|Your new deploy token"
@@ -51773,6 +51770,9 @@ msgid "URL must be percent-encoded if necessary."
 msgstr ""
 
 msgid "URL must start with %{codeStart}http://%{codeEnd}, %{codeStart}https://%{codeEnd}, or %{codeStart}ftp://%{codeEnd}"
+msgstr ""
+
+msgid "URL of the Confluence Workspace hosted on `atlassian.net`."
 msgstr ""
 
 msgid "URL of the Grafana instance to link to from the Metrics Dashboard menu item."

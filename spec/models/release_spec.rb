@@ -156,6 +156,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
   describe 'latest releases' do
     let_it_be(:yesterday) { Time.zone.now - 1.day }
+    let_it_be(:today) { Time.zone.now }
     let_it_be(:tomorrow) { Time.zone.now + 1.day }
 
     let_it_be(:project2) { create(:project) }
@@ -174,6 +175,14 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
     let_it_be(:project2_release2) do
       create(:release, project: project2, released_at: tomorrow, created_at: yesterday)
+    end
+
+    let_it_be(:project2_release3) do
+      create(:release, project: project2, released_at: today, created_at: yesterday)
+    end
+
+    let_it_be(:project2_release4) do
+      create(:release, project: project2, released_at: today, created_at: yesterday, release_published_at: today)
     end
 
     let(:args) { {} }
@@ -238,6 +247,16 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
           expect(latest_for_projects).to be_empty
         end
+      end
+    end
+
+    describe '.waiting_for_publish_event' do
+      let(:releases) { [project2_release3] }
+
+      subject(:waiting) { described_class.waiting_for_publish_event }
+
+      it "find today's releases not yet published" do
+        expect(waiting).to match_array(releases)
       end
     end
   end

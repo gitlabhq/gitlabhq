@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import IntegrationView from '~/profile/preferences/components/integration_view.vue';
 import ProfilePreferences from '~/profile/preferences/components/profile_preferences.vue';
 import { i18n } from '~/profile/preferences/constants';
@@ -32,11 +32,17 @@ describe('ProfilePreferences component', () => {
     profilePreferencesPath: '/update-profile',
     formEl: document.createElement('form'),
   };
+  const showToast = jest.fn();
 
   function createComponent(options = {}) {
     const { props = {}, provide = {}, attachTo } = options;
     return extendedWrapper(
       shallowMount(ProfilePreferences, {
+        mocks: {
+          $toast: {
+            show: showToast,
+          },
+        },
         provide: {
           ...defaultProvide,
           ...provide,
@@ -136,10 +142,7 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success');
       form.dispatchEvent(successEvent);
 
-      expect(createAlert).toHaveBeenCalledWith({
-        message: i18n.defaultSuccess,
-        variant: VARIANT_INFO,
-      });
+      expect(showToast).toHaveBeenCalledWith(i18n.defaultSuccess);
     });
 
     it('displays the custom success message', () => {
@@ -147,7 +150,7 @@ describe('ProfilePreferences component', () => {
       const successEvent = new CustomEvent('ajax:success', { detail: [{ message }] });
       form.dispatchEvent(successEvent);
 
-      expect(createAlert).toHaveBeenCalledWith({ message, variant: VARIANT_INFO });
+      expect(showToast).toHaveBeenCalledWith(message);
     });
 
     it('displays the default error message', () => {

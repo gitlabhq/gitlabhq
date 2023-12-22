@@ -30,12 +30,9 @@ describe('Board Card Move to position', () => {
   let store;
   const itemIndex = 1;
 
-  const createComponent = (propsData, isApolloBoard = false) => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(BoardCardMoveToPosition, {
       store,
-      provide: {
-        isApolloBoard,
-      },
       propsData: {
         item: mockIssue2,
         list: mockList,

@@ -735,6 +735,30 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     it { is_expected.to respond_to(:user_email) }
   end
 
+  describe 'callbacks' do
+    describe '#send_invite' do
+      context 'with an invited group member' do
+        it 'sends an invite email' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).to receive(:invite_member)
+          end
+
+          create(:group_member, :invited)
+        end
+      end
+
+      context 'with an uninvited member' do
+        it 'does not send an invite email' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).not_to receive(:invite_member)
+          end
+
+          create(:group_member)
+        end
+      end
+    end
+  end
+
   describe '.valid_email?' do
     it 'is a valid email format' do
       expect(described_class.valid_email?('foo')).to eq(false)

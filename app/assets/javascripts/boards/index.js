@@ -24,7 +24,6 @@ const apolloProvider = new VueApollo({
 
 function mountBoardApp(el) {
   const { boardId, groupId, fullPath, rootPath } = el.dataset;
-  const isApolloBoard = true;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
@@ -34,23 +33,6 @@ function mountBoardApp(el) {
 
   const boardType = el.dataset.parent;
 
-  if (!isApolloBoard) {
-    store.dispatch('fetchBoard', {
-      fullPath,
-      fullBoardId: fullBoardId(boardId),
-      boardType,
-    });
-
-    store.dispatch('setInitialBoardData', {
-      boardId,
-      fullBoardId: fullBoardId(boardId),
-      fullPath,
-      boardType,
-      disabled: parseBoolean(el.dataset.disabled) || true,
-      issuableType: TYPE_ISSUE,
-    });
-  }
-
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -58,7 +40,6 @@ function mountBoardApp(el) {
     store,
     apolloProvider,
     provide: {
-      isApolloBoard,
       initialBoardId: fullBoardId(boardId),
       disabled: parseBoolean(el.dataset.disabled),
       groupId: Number(groupId),

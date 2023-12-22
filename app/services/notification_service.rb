@@ -522,11 +522,8 @@ class NotificationService
     ).deliver_later
   end
 
-  # Project invite
-  def invite_project_member(project_member, token)
-    return true unless project_member.notifiable?(:subscription)
-
-    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
+  def invite_member(member, token)
+    mailer.member_invited_email(member.real_source_type, member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
@@ -551,11 +548,6 @@ class NotificationService
     return true unless member.notifiable?(:mention)
 
     mailer.member_about_to_expire_email(member.real_source_type, member.id).deliver_later
-  end
-
-  # Group invite
-  def invite_group_member(group_member, token)
-    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def invite_member_reminder(group_member, token, reminder_index)

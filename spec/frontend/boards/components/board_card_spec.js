@@ -76,7 +76,6 @@ describe('Board card', () => {
         isGroupBoard: true,
         disabled: false,
         allowSubEpics: false,
-        isApolloBoard: true,
         ...provide,
       },
     });

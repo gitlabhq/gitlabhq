@@ -40,13 +40,6 @@ module Ci
       end
     end
 
-    def ci_variable_type_options
-      [
-        %w[Variable env_var],
-        %w[File file]
-      ]
-    end
-
     def ci_variable_maskable_raw_regex
       Ci::Maskable::MASK_AND_RAW_REGEX.inspect.sub('\\A', '^').sub('\\z', '$')[1...-1]
     end

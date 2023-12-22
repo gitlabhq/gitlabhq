@@ -15,12 +15,8 @@ External users:
 
 - Cannot create project, groups, and snippets in their personal namespaces.
 - Can only create projects (including forks), subgroups, and snippets within top-level groups to which they are explicitly granted access.
-- Can only access public projects and projects to which they are explicitly granted access,
-  thus hiding all other internal or private ones from them (like being
-  logged out).
-- Can only access public groups and groups to which they are explicitly granted access,
-  thus hiding all other internal or private ones from them (like being
-  logged out).
+- Can access public groups and public projects.
+- Can only access projects and groups to which they are explicitly granted access. External users cannot access internal or private projects or groups that they are not granted access to.
 - Can only access public snippets.
 
 Access can be granted by adding the user as member to the project or group.

@@ -64,7 +64,6 @@ export default function createComponent({
       disabled: false,
       boardType: 'group',
       issuableType: 'issue',
-      isApolloBoard: true,
       ...provide,
     },
     stubs,

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import { initListboxInputs } from '~/vue_shared/components/listbox_input/init_listbox_inputs';
 import ProfilePreferences from './components/profile_preferences.vue';
 
@@ -20,6 +21,8 @@ export default () => {
     },
     { formEl },
   );
+
+  Vue.use(GlToast);
 
   return new Vue({
     el,

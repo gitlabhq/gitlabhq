@@ -190,14 +190,7 @@ module API
               desc: 'Campfire room'
             }
           ],
-          'confluence' => [
-            {
-              required: true,
-              name: :confluence_url,
-              type: String,
-              desc: 'The URL of the Confluence Cloud Workspace hosted on atlassian.net'
-            }
-          ],
+          'confluence' => ::Integrations::Confluence.api_fields,
           'custom-issue-tracker' => [
             {
               required: true,

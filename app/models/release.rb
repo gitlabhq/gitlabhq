@@ -54,6 +54,7 @@ class Release < ApplicationRecord
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
   scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
   scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }
+  scope :unpublished, -> { where(release_published_at: nil) }
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :by_tag, ->(tag) { where(tag: tag) }
 
@@ -66,6 +67,7 @@ class Release < ApplicationRecord
   delegate :repository, to: :project
 
   MAX_NUMBER_TO_DISPLAY = 3
+  MAX_NUMBER_TO_PUBLISH = 5000
 
   class << self
     # In the future, we should support `order_by=semver`;
@@ -96,6 +98,10 @@ class Release < ApplicationRecord
       Release
         .from("(VALUES #{project_ids_list}) projects (id)")
         .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{Release.table_name} ON TRUE")
+    end
+
+    def waiting_for_publish_event
+      unpublished.released_within_2hrs.joins(:project).merge(Project.with_feature_enabled(:releases)).limit(MAX_NUMBER_TO_PUBLISH)
     end
   end
 

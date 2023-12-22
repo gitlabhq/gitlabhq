@@ -62,6 +62,42 @@ RSpec.describe Resolvers::UsersResolver do
       end
     end
 
+    context 'when a set of group_id is passed' do
+      let_it_be(:group) { create(:group, :private) }
+      let_it_be(:subgroup) { create(:group, :private, parent: group) }
+      let_it_be(:group_member) { create(:user) }
+
+      let_it_be(:indirect_group_member) do
+        create(:user).tap { |u| subgroup.add_developer(u) }
+      end
+
+      let_it_be(:direct_group_members) do
+        [current_user, user1, group_member].each { |u| group.add_developer(u) }
+      end
+
+      it 'returns direct and indirect members of the group' do
+        expect(
+          resolve_users(args: { group_id: group.to_global_id })
+        ).to contain_exactly(indirect_group_member, *direct_group_members)
+      end
+
+      it 'raise an no resource not available error if the group do not exist group' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_users(args: { group_id: "gid://gitlab/Group/#{non_existing_record_id}" })
+        end
+      end
+
+      context 'when user cannot read group' do
+        let(:current_user) { create(:user) }
+
+        it 'raise an no resource not available error the user cannot read the group' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+            resolve_users(args: { group_id: group.to_global_id })
+          end
+        end
+      end
+    end
+
     context 'with anonymous access' do
       let_it_be(:current_user) { nil }
 

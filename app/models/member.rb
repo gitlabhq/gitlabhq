@@ -513,7 +513,7 @@ class Member < ApplicationRecord
   end
 
   def send_invite
-    # override in subclass
+    run_after_commit_or_now { notification_service.invite_member(self, @raw_invite_token) }
   end
 
   def send_request

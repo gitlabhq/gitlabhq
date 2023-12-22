@@ -180,6 +180,31 @@ RSpec.describe UsersFinder do
       let_it_be(:user) { create(:user) }
 
       it_behaves_like 'executes users finder as normal user'
+
+      context 'with group argument is passed' do
+        let_it_be(:group) { create(:group, :private) }
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:not_group_member) { create(:user) }
+
+        let_it_be(:indirect_group_member) do
+          create(:user).tap { |u| subgroup.add_developer(u) }
+        end
+
+        let_it_be(:direct_group_members) do
+          [user, omniauth_user, internal_user].each { |u| group.add_developer(u) }
+        end
+
+        it 'filtered by search' do
+          users = described_class.new(user, group: group).execute
+          expect(users).to contain_exactly(indirect_group_member, *direct_group_members)
+        end
+
+        context 'when user cannot read group' do
+          it 'filtered by search' do
+            expect { described_class.new(not_group_member, group: group).execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+          end
+        end
+      end
     end
 
     context 'with an admin user' do

@@ -133,8 +133,8 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 ```
 
 ### `.gitlab-ci.yml` for a static site generator
@@ -145,7 +145,7 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with the [`only` parameter](../../../ci/yaml/index.md#only--except),
+the `pages` job with [`rules:if`](../../../ci/yaml/index.md#rulesif),
 whenever a new commit is pushed to a branch used specifically for your
 pages.
 
@@ -175,8 +175,8 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - pages
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "pages"'
 ```
 
 See an example that has different files in the [`main` branch](https://gitlab.com/pages/jekyll-branched/tree/main)

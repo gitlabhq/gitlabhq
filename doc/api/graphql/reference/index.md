@@ -577,6 +577,26 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.memberRoles`
+
+Member roles available for the instance.
+
+WARNING:
+**Introduced** in 16.7.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`MemberRoleConnection`](#memberroleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+
 ### `Query.mergeRequest`
 
 Find a merge request.
@@ -957,6 +977,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryusersadmins"></a>`admins` | [`Boolean`](#boolean) | Return only admin users. |
+| <a id="queryusersgroupid"></a>`groupId` | [`GroupID`](#groupid) | Return users member of a given group. |
 | <a id="queryusersids"></a>`ids` | [`[ID!]`](#id) | List of user Global IDs. |
 | <a id="queryuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or primary email. |
 | <a id="queryuserssort"></a>`sort` | [`Sort`](#sort) | Sort users by this criteria. |
@@ -6747,7 +6768,9 @@ Input type: `RunnersExportUsageInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnersexportusageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrunnersexportusagefromdate"></a>`fromDate` | [`ISO8601Date`](#iso8601date) | UTC start date of the period to report on. Defaults to the start of last full month. |
 | <a id="mutationrunnersexportusagemaxprojectcount"></a>`maxProjectCount` | [`Int`](#int) | Maximum number of projects to return. All other runner usage will be attributed to a '<Other projects>' entry. Defaults to 1000 projects. |
+| <a id="mutationrunnersexportusagetodate"></a>`toDate` | [`ISO8601Date`](#iso8601date) | UTC end date of the period to report on. " \ "Defaults to the end of the month specified by `fromDate`. |
 | <a id="mutationrunnersexportusagetype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Scope of the runners to include in the report. |
 
 #### Fields

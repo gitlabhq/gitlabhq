@@ -22718,7 +22718,8 @@ CREATE TABLE releases (
     author_id integer,
     name character varying,
     sha character varying,
-    released_at timestamp with time zone NOT NULL
+    released_at timestamp with time zone NOT NULL,
+    release_published_at timestamp with time zone
 );
 
 CREATE SEQUENCE releases_id_seq
@@ -35391,6 +35392,8 @@ CREATE UNIQUE INDEX partial_index_sop_configs_on_project_id ON security_orchestr
 CREATE INDEX partial_index_user_id_app_id_created_at_token_not_revoked ON oauth_access_tokens USING btree (resource_owner_id, application_id, created_at) WHERE (revoked_at IS NULL);
 
 CREATE UNIQUE INDEX pm_checkpoints_path_components ON pm_checkpoints USING btree (purl_type, data_type, version_format);
+
+CREATE INDEX releases_published_at_index ON releases USING btree (release_published_at);
 
 CREATE INDEX scan_finding_approval_mr_rule_index_id ON approval_merge_request_rules USING btree (id) WHERE (report_type = 4);
 

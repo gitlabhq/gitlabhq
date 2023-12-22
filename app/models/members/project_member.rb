@@ -116,12 +116,6 @@ class ProjectMember < Member
     self.member_namespace_id = project&.project_namespace_id
   end
 
-  def send_invite
-    run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }
-
-    super
-  end
-
   def post_create_hook
     # The creator of a personal project gets added as a `ProjectMember`
     # with `OWNER` access during creation of a personal project,

@@ -94,7 +94,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
   end
 
   def expect_preferences_saved_message
-    page.within('.flash-container') do
+    page.within('.b-toaster') do
       expect(page).to have_content('Preferences saved.')
     end
   end
