@@ -338,6 +338,18 @@ class Group < Namespace
       by_ids_or_paths(ids, paths).pluck(:id)
     end
 
+    def descendant_groups_counts
+      left_joins(:children).group(:id).count(:children_namespaces)
+    end
+
+    def projects_counts
+      left_joins(:non_archived_projects).group(:id).count(:projects)
+    end
+
+    def group_members_counts
+      left_joins(:group_members).group(:id).count(:members)
+    end
+
     private
 
     def public_to_user_arel(user)

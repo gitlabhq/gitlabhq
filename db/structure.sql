@@ -25794,6 +25794,23 @@ CREATE SEQUENCE zentao_tracker_data_id_seq
 
 ALTER SEQUENCE zentao_tracker_data_id_seq OWNED BY zentao_tracker_data.id;
 
+CREATE TABLE zoekt_enabled_namespaces (
+    id bigint NOT NULL,
+    root_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    search boolean DEFAULT true NOT NULL
+);
+
+CREATE SEQUENCE zoekt_enabled_namespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zoekt_enabled_namespaces_id_seq OWNED BY zoekt_enabled_namespaces.id;
+
 CREATE TABLE zoekt_indexed_namespaces (
     id bigint NOT NULL,
     zoekt_shard_id bigint,
@@ -25812,6 +25829,25 @@ CREATE SEQUENCE zoekt_indexed_namespaces_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoekt_indexed_namespaces_id_seq OWNED BY zoekt_indexed_namespaces.id;
+
+CREATE TABLE zoekt_indices (
+    id bigint NOT NULL,
+    zoekt_enabled_namespace_id bigint,
+    zoekt_node_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE zoekt_indices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zoekt_indices_id_seq OWNED BY zoekt_indices.id;
 
 CREATE TABLE zoekt_nodes (
     id bigint NOT NULL,
@@ -27460,7 +27496,11 @@ ALTER TABLE ONLY xray_reports ALTER COLUMN id SET DEFAULT nextval('xray_reports_
 
 ALTER TABLE ONLY zentao_tracker_data ALTER COLUMN id SET DEFAULT nextval('zentao_tracker_data_id_seq'::regclass);
 
+ALTER TABLE ONLY zoekt_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('zoekt_enabled_namespaces_id_seq'::regclass);
+
 ALTER TABLE ONLY zoekt_indexed_namespaces ALTER COLUMN id SET DEFAULT nextval('zoekt_indexed_namespaces_id_seq'::regclass);
+
+ALTER TABLE ONLY zoekt_indices ALTER COLUMN id SET DEFAULT nextval('zoekt_indices_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_nodes ALTER COLUMN id SET DEFAULT nextval('zoekt_nodes_id_seq'::regclass);
 
@@ -30168,8 +30208,14 @@ ALTER TABLE ONLY xray_reports
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT zentao_tracker_data_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY zoekt_enabled_namespaces
+    ADD CONSTRAINT zoekt_enabled_namespaces_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY zoekt_indexed_namespaces
     ADD CONSTRAINT zoekt_indexed_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY zoekt_indices
+    ADD CONSTRAINT zoekt_indices_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zoekt_nodes
     ADD CONSTRAINT zoekt_nodes_pkey PRIMARY KEY (id);
@@ -35274,6 +35320,10 @@ CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data 
 
 CREATE INDEX index_zoekt_indexed_namespaces_on_namespace_id ON zoekt_indexed_namespaces USING btree (namespace_id);
 
+CREATE INDEX index_zoekt_indices_on_state ON zoekt_indices USING btree (state);
+
+CREATE INDEX index_zoekt_indices_on_zoekt_node_id ON zoekt_indices USING btree (zoekt_node_id);
+
 CREATE UNIQUE INDEX index_zoekt_node_and_namespace ON zoekt_indexed_namespaces USING btree (zoekt_node_id, namespace_id);
 
 CREATE INDEX index_zoekt_nodes_on_last_seen_at ON zoekt_nodes USING btree (last_seen_at);
@@ -35412,6 +35462,8 @@ CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USIN
 
 CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON project_compliance_standards_adherence USING btree (project_id, check_name, standard);
 
+CREATE UNIQUE INDEX u_zoekt_indices_zoekt_enabled_namespace_id_and_zoekt_node_id ON zoekt_indices USING btree (zoekt_enabled_namespace_id, zoekt_node_id);
+
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
@@ -35501,6 +35553,8 @@ CREATE UNIQUE INDEX unique_streaming_instance_event_type_filters_destination_id 
 CREATE UNIQUE INDEX unique_user_id_and_setting_type ON vs_code_settings USING btree (user_id, setting_type);
 
 CREATE UNIQUE INDEX unique_vuln_merge_request_link_vuln_id_and_mr_id ON vulnerability_merge_request_links USING btree (vulnerability_id, merge_request_id);
+
+CREATE UNIQUE INDEX unique_zoekt_enabled_namespaces_on_root_namespace_id ON zoekt_enabled_namespaces USING btree (root_namespace_id);
 
 CREATE UNIQUE INDEX unique_zoekt_shards_uuid ON zoekt_shards USING btree (uuid);
 
@@ -37333,6 +37387,9 @@ ALTER TABLE ONLY vulnerabilities
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY zoekt_enabled_namespaces
+    ADD CONSTRAINT fk_1effa65b25 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_1fbed67632 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -37762,9 +37819,6 @@ ALTER TABLE ONLY import_export_uploads
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT fk_83b29894de FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY organization_users
-    ADD CONSTRAINT fk_8471abad75 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_8483f3258f FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -37815,9 +37869,6 @@ ALTER TABLE ONLY work_item_dates_sources
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY organization_users
-    ADD CONSTRAINT fk_8d9b20725d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_8e4456f90f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -38052,6 +38103,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_be88aed360 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_indices
+    ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT fk_c1440b4896 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -38310,6 +38364,9 @@ ALTER TABLE ONLY boards
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_indices
+    ADD CONSTRAINT fk_f34800a202 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT fk_f3953d86c6 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

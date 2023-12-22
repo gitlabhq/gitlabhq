@@ -37,6 +37,7 @@ describe('Commit signature', () => {
   describe.each`
     signatureType          | verificationStatus
     ${signatureTypes.GPG}  | ${verificationStatuses.VERIFIED}
+    ${signatureTypes.GPG}  | ${verificationStatuses.VERIFIED_SYSTEM}
     ${signatureTypes.GPG}  | ${verificationStatuses.UNVERIFIED}
     ${signatureTypes.GPG}  | ${verificationStatuses.UNVERIFIED_KEY}
     ${signatureTypes.GPG}  | ${verificationStatuses.UNKNOWN_KEY}

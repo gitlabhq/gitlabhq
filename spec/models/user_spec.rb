@@ -222,6 +222,17 @@ RSpec.describe User, feature_category: :user_profile do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
     end
 
+    describe 'organizations association' do
+      it 'does not create a cross-database query' do
+        user = create(:user)
+        create(:organization_user, user: user)
+
+        with_cross_joins_prevented do
+          expect(user.organizations.count).to eq(1)
+        end
+      end
+    end
+
     describe 'default values' do
       let(:user) { described_class.new }
 

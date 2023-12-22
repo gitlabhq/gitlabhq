@@ -207,6 +207,8 @@ describe('WorkItemTokenInput', () => {
         await waitForPromises();
 
         expect(resolver).toHaveBeenCalledWith({
+          fullPath: 'test-project-path',
+          types: [WORK_ITEM_TYPE_ENUM_TASK],
           searchTerm,
           in: 'TITLE',
           iid,
@@ -232,6 +234,8 @@ describe('WorkItemTokenInput', () => {
         await waitForPromises();
 
         expect(emptyWorkItemResolver).toHaveBeenCalledWith({
+          fullPath: 'test-project-path',
+          types: [WORK_ITEM_TYPE_ENUM_TASK],
           searchTerm,
           in: 'TITLE',
           iid,

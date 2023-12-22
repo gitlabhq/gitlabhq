@@ -256,6 +256,13 @@ notification_settings:
   - table: users
     column: user_id
     on_delete: async_delete
+organization_users:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 p_ci_builds:
   - table: users
     column: user_id

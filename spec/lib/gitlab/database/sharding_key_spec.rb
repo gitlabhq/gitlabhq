@@ -26,7 +26,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
-      'p_catalog_resource_sync_events.project_id'
+      'p_catalog_resource_sync_events.project_id',
+      'zoekt_indices.namespace_id'
     ]
   end
 

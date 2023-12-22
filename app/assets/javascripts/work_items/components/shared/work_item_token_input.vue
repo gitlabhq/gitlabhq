@@ -59,19 +59,15 @@ export default {
     },
   },
   apollo: {
-    availableWorkItems: {
+    workspaceWorkItems: {
       query() {
         return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {
-        return {
-          fullPath: this.fullPath,
-          searchTerm: '',
-          types: this.childrenType ? [this.childrenType] : [],
-        };
+        return this.queryVariables;
       },
       skip() {
-        return !this.searchStarted;
+        return !this.searchStarted || this.isSearchingByReference;
       },
       update(data) {
         return [
@@ -83,11 +79,29 @@ export default {
         this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
       },
     },
+    workItemsByReference: {
+      query: workItemsByReferencesQuery,
+      variables() {
+        return {
+          contextNamespacePath: this.fullPath,
+          refs: [this.searchTerm],
+        };
+      },
+      skip() {
+        return !this.isSearchingByReference;
+      },
+      update(data) {
+        return data.workItemsByReference.nodes;
+      },
+      error() {
+        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
+      },
+    },
   },
   data() {
     return {
-      availableWorkItems: [],
-      query: '',
+      workspaceWorkItems: [],
+      searchTerm: '',
       searchStarted: false,
       error: '',
       textInputAttrs: {
@@ -96,6 +110,12 @@ export default {
     };
   },
   computed: {
+    availableWorkItems() {
+      return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
+    },
+    isSearchingByReference() {
+      return isReference(this.searchTerm) || isSafeURL(this.searchTerm);
+    },
     workItemsToAdd: {
       get() {
         return this.value;
@@ -105,13 +125,27 @@ export default {
       },
     },
     isLoading() {
-      return this.$apollo.queries.availableWorkItems.loading;
+      return (
+        this.$apollo.queries.workspaceWorkItems.loading ||
+        this.$apollo.queries.workItemsByReference.loading
+      );
     },
     childrenTypeName() {
       return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
     },
     tokenSelectorContainerClass() {
       return !this.areWorkItemsToAddValid ? 'gl-inset-border-1-red-500!' : '';
+    },
+    queryVariables() {
+      return {
+        fullPath: this.fullPath,
+        searchTerm: this.searchTerm,
+        types: this.childrenType ? [this.childrenType] : [],
+        in: this.searchTerm ? 'TITLE' : undefined,
+        iid: isNumeric(this.searchTerm) ? this.searchTerm : null,
+        searchByIid: isNumeric(this.searchTerm),
+        searchByText: true,
+      };
     },
   },
   created() {
@@ -121,44 +155,6 @@ export default {
     getIdFromGraphQLId,
     async setSearchKey(value) {
       this.searchTerm = value;
-
-      // Check if it is a URL or reference
-      if (isReference(value) || isSafeURL(value)) {
-        const {
-          data: {
-            workItemsByReference: { nodes },
-          },
-        } = await this.$apollo.query({
-          query: workItemsByReferencesQuery,
-          variables: {
-            contextNamespacePath: this.fullPath,
-            refs: [value],
-          },
-        });
-
-        this.availableWorkItems = nodes;
-      } else {
-        // Query parameters for searching by text
-        let variables = {
-          searchTerm: this.searchTerm,
-          in: this.searchTerm ? 'TITLE' : undefined,
-          iid: null,
-          searchByIid: false,
-          searchByText: true,
-        };
-
-        // Check if it is a number, add iid as query parameter
-        if (this.searchTerm && isNumeric(this.searchTerm)) {
-          variables = {
-            ...variables,
-            iid: this.searchTerm,
-            searchByIid: true,
-          };
-        }
-
-        // Fetch combined results of search by iid and search by title.
-        this.$apollo.queries.availableWorkItems.refetch(variables);
-      }
     },
     handleFocus() {
       this.searchStarted = true;
@@ -178,7 +174,7 @@ export default {
     focusInputText() {
       this.$nextTick(() => {
         if (this.areWorkItemsToAddValid) {
-          this.$refs.tokenSelector.$el.querySelector('input[type="text"]').focus();
+          this.$refs.tokenSelector.focusTextInput();
         }
       });
     },

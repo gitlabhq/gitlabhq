@@ -1,0 +1,68 @@
+- name: GitLab Duo Code Suggestions is generally available
+  description: |  # Do not modify this line, instead modify the lines below.
+    [GitLab Duo Code Suggestions](https://about.gitlab.com/solutions/code-suggestions/) is now generally available!
+
+    GitLab Duo Code Suggestions helps teams create software faster and more efficiently, by completing lines of code and defining and generating logic for functions.
+
+    Code Suggestions is built with privacy as a critical foundation. Private, non-public customer code stored in GitLab is not used as training data. Learn about [data usage](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/index.html#code-suggestions-data-usage) when using Code Suggestions.
+
+    In the general release, we've made [Code Suggestions available across several IDEs](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/#supported-editor-extensions). Code Suggestions is also now more intuitive and responsive.
+
+    GitLab Duo Code Suggestions is [free to try](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/#start-using-code-suggestions) subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) until February 15, 2024. Starting today, you can buy Code Suggestions as an add-on to GitLab subscriptions for an introductory price of $9 USD per user/per month. Please [contact us](https://about.gitlab.com/solutions/code-suggestions/) to get started with Code Suggestions.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/code_suggestions/
+  image_url: https://img.youtube.com/vi/hCAyCTacdAQ/hqdefault.jpg
+  published_at: 2023-12-21
+  release: 16.7
+
+- name: New drill-down view from Insights report charts
+  description: |  # Do not modify this line, instead modify the lines below.
+    With the Insights report you can analyze patterns over time using customizable charts. The new drill-down capability added to the “Bugs created by priority” and “Bugs created by severity” Insights reports allows you to drill down on the Issue analytics report for deeper analysis.
+
+    We plan to include this capability in the other Insight reports as a custom option in a later version.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/insights/#drill-down-on-charts
+  image_url: https://about.gitlab.com/images/16_7/insights_drill_16_7.gif
+  published_at: 2023-12-21
+  release: 16.7
+
+- name: SAST results in MR changes view
+  description: |  # Do not modify this line, instead modify the lines below.
+    SAST findings now appear in the merge request Changes view.
+      This makes it easier to see, understand, and fix potential weaknesses during the code review process.
+
+      Lines containing SAST issues are marked by a symbol beside the gutter.
+      Select the symbol to see the list of issues, then select an issue to see its details.
+
+      We've enabled this feature on GitLab.com.
+      We plan to enable the [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) by default for Self-Managed instances in GitLab 16.8.
+  stage: Secure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/sast/#merge-request-changes-view
+  image_url: https://img.youtube.com/vi/COaFZ5aNnZs/hqdefault.jpg  # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/hCAyCTacdAQ/hqdefault.jpg
+  published_at: 2023-12-21
+  release: 16.7
+
+- name: CI/CD Catalog - Beta release
+  description: |  # Do not modify this line, instead modify the lines below.
+    GitLab 16.7 sees the Beta release of the CI/CD catalog! The catalog is where you can search for [CI/CD components](https://docs.gitlab.com/ee/ci/components/) maintained by you, your organization, or the public community. This is the place where DevOps engineers come together to create, contribute, and share reusable pipeline configurations.
+
+    Unlike other methods of reusing CI/CD configuration, CI/CD components published in the catalog have an improved experience, and are easily added to your pipeline. We invite you to start testing this new and exciting feature! You can try out components that others have created and shared in the catalog, or create your own components and share them with everyone.
+
+    While this is our initial beta release of the feature, we continue to work on making the experience even better. Our goal is to make the CI/CD catalog a fundamental part of the GitLab CI/CD experience.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/components/#cicd-catalog
+  image_url: https://img.youtube.com/vi/NTbUq30NA7U/hqdefault.jpg
+  published_at: 2023-12-21
+  release: 16.7

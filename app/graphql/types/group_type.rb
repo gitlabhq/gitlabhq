@@ -214,6 +214,21 @@ module Types
           complexity: 5,
           resolver: Resolvers::NestedGroupsResolver
 
+    field :descendant_groups_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Count of direct descendant groups of this group.'
+
+    field :group_members_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Count of direct members of this group.'
+
+    field :projects_count,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Count of direct projects in this group.'
+
     field :ci_variables,
           Types::Ci::GroupVariableType.connection_type,
           null: true,
@@ -337,6 +352,27 @@ module Types
 
     def dependency_proxy_setting
       group.dependency_proxy_setting || group.create_dependency_proxy_setting
+    end
+
+    def descendant_groups_count
+      BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
+        descendants_counts = Group.id_in(group_ids).descendant_groups_counts
+        descendants_counts.each { |group_id, count| loader.call(group_id, count) }
+      end
+    end
+
+    def projects_count
+      BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
+        projects_counts = Group.id_in(group_ids).projects_counts
+        projects_counts.each { |group_id, count| loader.call(group_id, count) }
+      end
+    end
+
+    def group_members_count
+      BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
+        members_counts = Group.id_in(group_ids).group_members_counts
+        members_counts.each { |group_id, count| loader.call(group_id, count) }
+      end
     end
 
     private

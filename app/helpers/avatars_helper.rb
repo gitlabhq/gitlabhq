@@ -113,7 +113,7 @@ module AvatarsHelper
     when Namespaces::UserNamespace
       user_avatar_without_link(options.merge(user: resource.first_owner))
     when Group
-      group_icon(resource, options.merge(class: 'avatar'))
+      render Pajamas::AvatarComponent.new(resource, class: 'gl-avatar-circle gl-mr-3', size: 32)
     end
   end
 

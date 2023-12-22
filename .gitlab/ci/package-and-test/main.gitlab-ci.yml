@@ -567,6 +567,22 @@ importers:
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
 
+ai-gateway-sync-seat-link:
+  extends:
+    - .qa
+    - .failure-videos
+  variables:
+    QA_SCENARIO: Test::Integration::AiGateway
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-sync-service-token:
+  extends: ai-gateway-sync-seat-link
+  variables:
+    QA_USE_SYNC_SERVICE_TOKEN_WORKER: "true"
+
 # ------------------------------------------
 # Update jobs
 # ------------------------------------------

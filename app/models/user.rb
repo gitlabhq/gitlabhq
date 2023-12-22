@@ -270,7 +270,8 @@ class User < MainClusterwide::ApplicationRecord
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users
+  has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
+    disable_joins: true
 
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference

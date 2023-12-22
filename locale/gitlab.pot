@@ -49767,6 +49767,9 @@ msgstr ""
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
+msgid "This commit was signed with a certificate issued by top-level group Certificate Authority (CA) and the committer email was verified to belong to the same user."
+msgstr ""
+
 msgid "This commit was signed with a different user's verified signature."
 msgstr ""
 
