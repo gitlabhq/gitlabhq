@@ -52,31 +52,19 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
 
       it_behaves_like 'does not send the password reset email'
     end
-  end
 
-  describe '#send_reset_password_instructions' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:opts) { { email: 'random@email.com' } }
-    let_it_be(:token) { 'passwordresettoken' }
+    context 'with one email matching user and one not matching' do
+      let(:email) { [verified_email.email, 'other_email@example.com'] }
 
-    before do
-      allow(user).to receive(:set_reset_password_token).and_return(token)
-    end
-
-    subject { user.send_reset_password_instructions(opts) }
-
-    it 'sends the email' do
-      expect { subject }.to have_enqueued_mail(DeviseMailer, :reset_password_instructions)
-    end
-
-    it 'calls send_reset_password_instructions_notification with correct arguments' do
-      expect(user).to receive(:send_reset_password_instructions_notification).with(token, opts)
-
-      subject
-    end
-
-    it 'returns the generated token' do
-      expect(subject).to eq(token)
+      it 'sends an email only to the user verified email' do
+        expect { send_reset_password_instructions }
+          .to have_enqueued_mail(DeviseMailer, :reset_password_instructions)
+                .with(
+                  user,
+                  anything, # reset token
+                  to: user.verified_emails(include_private_email: false)
+                )
+      end
     end
   end
 end
