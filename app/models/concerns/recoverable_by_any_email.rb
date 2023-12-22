@@ -11,7 +11,7 @@ module RecoverableByAnyEmail
       super unless email
 
       recoverable = by_email_with_errors(email)
-      recoverable.send_reset_password_instructions(to: email) if recoverable&.persisted?
+      recoverable.send_reset_password_instructions if recoverable&.persisted?
       recoverable
     end
 
@@ -24,8 +24,10 @@ module RecoverableByAnyEmail
     end
   end
 
-  def send_reset_password_instructions(opts = {})
+  def send_reset_password_instructions
     token = set_reset_password_token
+    opts = { to: verified_emails(include_private_email: false) }
+
     send_reset_password_instructions_notification(token, opts)
 
     token
