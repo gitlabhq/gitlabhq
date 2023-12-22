@@ -27,6 +27,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
+    it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
   end
 
   describe 'validations' do

@@ -49,18 +49,6 @@ module LoginHelpers
     @current_user = user
   end
 
-  def gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: true)
-    if use_mock_admin_mode
-      enable_admin_mode!(user)
-    else
-      visit new_admin_session_path
-      fill_in 'user_password', with: user.password
-      click_button 'Enter admin mode'
-
-      wait_for_requests
-    end
-  end
-
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
     mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
     visit new_user_session_path

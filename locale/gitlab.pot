@@ -4964,6 +4964,9 @@ msgstr ""
 msgid "Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications."
 msgstr ""
 
+msgid "Allow users with up to Guest role to create groups and personal projects"
+msgstr ""
+
 msgid "Allowed"
 msgstr ""
 
@@ -23523,6 +23526,9 @@ msgstr ""
 msgid "GroupSettings|Enforce SSH Certificates"
 msgstr ""
 
+msgid "GroupSettings|Experiment"
+msgstr ""
+
 msgid "GroupSettings|Experiment and Beta features"
 msgstr ""
 
@@ -23574,7 +23580,7 @@ msgstr ""
 msgid "GroupSettings|Reporting"
 msgstr ""
 
-msgid "GroupSettings|Security policy custom CI Experiment"
+msgid "GroupSettings|Security policy Pipeline Execution Action Experiment"
 msgstr ""
 
 msgid "GroupSettings|Security policy scope Experiment"

@@ -24,7 +24,7 @@ RSpec.describe 'Admin Mode Login', feature_category: :system_access do
 
           repeated_otp = user.current_otp
           enter_code(repeated_otp)
-          gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: false)
+          enable_admin_mode!(user, use_ui: true)
 
           expect(page).to have_content(_('Enter verification code'))
 
@@ -41,7 +41,7 @@ RSpec.describe 'Admin Mode Login', feature_category: :system_access do
             expect(page).to have_content('Enter verification code')
 
             enter_code(user.current_otp)
-            gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: false)
+            enable_admin_mode!(user, use_ui: true)
 
             expect(page).to have_content(_('Enter verification code'))
           end

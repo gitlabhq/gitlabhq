@@ -7,7 +7,7 @@ RSpec.describe "Admin > Admin sees project statistics", feature_category: :group
 
   before do
     sign_in(current_user)
-    gitlab_enable_admin_mode_sign_in(current_user)
+    enable_admin_mode!(current_user)
 
     visit admin_project_path(project)
   end

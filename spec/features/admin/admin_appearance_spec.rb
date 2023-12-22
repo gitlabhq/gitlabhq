@@ -12,7 +12,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'create new appearance' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit admin_application_settings_appearances_path
 
     fill_in 'appearance_title', with: 'MyCompany'
@@ -39,7 +39,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'preview sign-in page appearance' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
 
     visit admin_application_settings_appearances_path
     click_link "Sign-in page"
@@ -53,7 +53,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'preview new project page appearance', :js do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
 
     visit admin_application_settings_appearances_path
     click_link "New project page"
@@ -64,7 +64,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
   context 'Custom system header and footer' do
     before do
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
     end
 
     context 'when system header and footer messages are empty' do
@@ -102,7 +102,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'custom new project page', :js do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit new_project_path
     click_link 'Create blank project'
 
@@ -112,7 +112,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
   context 'Profile page with custom profile image guidelines' do
     before do
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
       visit admin_application_settings_appearances_path
       fill_in 'appearance_profile_image_guidelines', with: 'Custom profile image guidelines, please :smile:!'
       click_button 'Update appearance settings'
@@ -128,7 +128,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'appearance logo' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit admin_application_settings_appearances_path
 
     attach_file(:appearance_logo, logo_fixture)
@@ -141,7 +141,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'appearance pwa icon' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit admin_application_settings_appearances_path
 
     attach_file(:appearance_pwa_icon, logo_fixture)
@@ -154,7 +154,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'header logos' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit admin_application_settings_appearances_path
 
     attach_file(:appearance_header_logo, logo_fixture)
@@ -167,7 +167,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
   it 'Favicon' do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     visit admin_application_settings_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)

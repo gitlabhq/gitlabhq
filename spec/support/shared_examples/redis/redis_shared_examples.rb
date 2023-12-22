@@ -217,6 +217,10 @@ RSpec.shared_examples "redis_shared_examples" do
       clear_pool
     end
 
+    it 'yields a ::Redis' do
+      described_class.with { |conn| expect(conn).to be_instance_of(::Redis) }
+    end
+
     context 'when running on single-threaded runtime' do
       before do
         allow(Gitlab::Runtime).to receive(:multi_threaded?).and_return(false)

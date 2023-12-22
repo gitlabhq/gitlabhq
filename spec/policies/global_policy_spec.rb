@@ -90,6 +90,22 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { create(:user, can_create_group: true) }
 
       it { is_expected.to be_allowed(:create_group) }
+
+      context 'when can_create_group_and_projects returns true' do
+        before do
+          allow(current_user).to receive(:allow_user_to_create_group_and_project?).and_return(true)
+        end
+
+        it { is_expected.to be_allowed(:create_group) }
+      end
+
+      context 'when can_create_group_and_projects returns false' do
+        before do
+          allow(current_user).to receive(:allow_user_to_create_group_and_project?).and_return(false)
+        end
+
+        it { is_expected.to be_disallowed(:create_group) }
+      end
     end
 
     context 'when user does not have the ability to create group' do

@@ -43,6 +43,49 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           end
         end
       end
+
+      context 'with managable group' do
+        context 'when managable_group_count is 1' do
+          before do
+            group.add_owner(user)
+          end
+
+          it 'renders the template' do
+            get :new
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template('new')
+          end
+        end
+
+        context 'when managable_group_count is 0' do
+          context 'when create_projects on personal namespace is allowed' do
+            before do
+              allow(user).to receive(:can_create_project?).and_return(true)
+            end
+
+            it 'renders the template' do
+              get :new
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template('new')
+            end
+          end
+
+          context 'when create_projects on personal namespace is not allowed' do
+            before do
+              stub_application_setting(allow_project_creation_for_guest_and_below: false)
+            end
+
+            it 'responds with status 404' do
+              get :new
+
+              expect(response).to have_gitlab_http_status(:not_found)
+              expect(response).not_to render_template('new')
+            end
+          end
+        end
+      end
     end
   end
 

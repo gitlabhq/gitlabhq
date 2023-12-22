@@ -10,7 +10,7 @@ RSpec.describe "Admin Health Check", :js, feature_category: :error_budgets do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   describe '#show' do

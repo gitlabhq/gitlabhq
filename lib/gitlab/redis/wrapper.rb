@@ -30,7 +30,12 @@ module Gitlab
         end
 
         def pool
-          @pool ||= ConnectionPool.new(size: pool_size, name: store_name.underscore) { redis }
+          @pool ||= if config_fallback &&
+              config_fallback.params.except(:instrumentation_class) == params.except(:instrumentation_class)
+                      config_fallback.pool
+                    else
+                      ConnectionPool.new(size: pool_size, name: store_name.underscore) { redis }
+                    end
         end
 
         def pool_size

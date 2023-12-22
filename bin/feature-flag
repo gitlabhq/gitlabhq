@@ -155,13 +155,58 @@ class FeatureFlagOptionParser
       groups.find { |_, group| group['label'] == label }[1]
     end
 
+    def types_list
+      list = []
+      TYPES.each_with_index do |(type, data), index|
+        next if data[:deprecated]
+
+        list << "#{index + 1}. #{type.to_s.rjust(17)}    #{data[:description]}"
+      end
+
+      list
+    end
+
     def group_list
       list = []
       group_labels.each_with_index do |group_label, index|
         list << "#{index + 1}. #{group_label}"
       end
 
-      list.join("\n")
+      list
+    end
+
+    def fzf_available?
+      find_compatible_command(%w[fzf])
+    end
+
+    def prompt_readline(prompt:)
+      Readline.readline('?> ', false)&.strip
+    end
+
+    def prompt_fzf(list:, prompt:)
+      arr = list.join("\n")
+      selection = IO.popen("echo \"#{arr}\" | fzf --tac --prompt=\"#{prompt}\"") { |pipe| pipe.readlines }.join.strip
+      selection.match(/(\d+)\./)[1]
+    end
+
+    def print_list(list)
+      return if list.empty?
+
+      $stdout.puts list.join("\n")
+    end
+
+    def print_prompt(prompt)
+      $stdout.puts
+      $stdout.puts ">> #{prompt}:"
+      $stdout.puts
+    end
+
+    def prompt_list(prompt:, list: nil)
+      if fzf_available?
+        prompt_fzf(list: list, prompt: prompt)
+      else
+        prompt_readline(prompt: prompt)
+      end
     end
 
     def fetch_json(json_url)
@@ -177,17 +222,14 @@ class FeatureFlagOptionParser
     end
 
     def read_type
-      $stdout.puts
-      $stdout.puts ">> Specify the feature flag type:"
-      $stdout.puts
-      TYPES.each_with_index do |(type, data), index|
-        next if data[:deprecated]
-
-        $stdout.puts "#{index + 1}. #{type.to_s.rjust(17)}    #{data[:description]}"
+      prompt = 'Specify the feature flag type'
+      unless fzf_available?
+        print_prompt(prompt)
+        print_list(types_list)
       end
 
       loop do
-        type = Readline.readline('?> ', false)&.strip
+        type = prompt_list(prompt: prompt, list: types_list)
         type = TYPES.keys[type.to_i - 1] unless type.to_i.zero?
         type = type&.to_sym
         type_def = TYPES[type]
@@ -202,11 +244,15 @@ class FeatureFlagOptionParser
     end
 
     def read_group
-      $stdout.puts
-      $stdout.puts ">> Specify the group label to which the feature flag belongs, from the following list:\n#{group_list}"
+      prompt = "Specify the group label to which the feature flag belongs, from the following list"
+
+      unless fzf_available?
+        print_prompt(prompt)
+        print_list(group_list)
+      end
 
       loop do
-        group = Readline.readline('?> ', false)&.strip
+        group = prompt_list(prompt: prompt, list: group_list)
         group = group_labels[group.to_i - 1] unless group.to_i.zero?
 
         if group_labels.include?(group)

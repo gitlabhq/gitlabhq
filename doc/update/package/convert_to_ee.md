@@ -17,7 +17,7 @@ you are upgrading the same version (for example, CE 12.1 to EE 12.1), which is *
 WARNING:
 When updating to EE from CE, avoid reverting back to CE if you plan to go to EE again in the
 future. Reverting back to CE can cause
-[database issues](index.md#500-error-when-accessing-project--settings--repository)
+[database issues](package_troubleshooting.md#500-error-when-accessing-project--settings--repository)
 that may require Support intervention.
 
 The steps can be summed up to:

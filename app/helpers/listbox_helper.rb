@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ListboxHelper
-  DROPDOWN_CONTAINER_CLASSES = %w[dropdown b-dropdown gl-dropdown btn-group js-redirect-listbox].freeze
+  DROPDOWN_CONTAINER_CLASSES = %w[dropdown b-dropdown gl-dropdown js-redirect-listbox].freeze
   DROPDOWN_BUTTON_CLASSES = %w[btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle].freeze
   DROPDOWN_INNER_CLASS = 'gl-dropdown-button-text'
   DROPDOWN_ICON_CLASS = 'gl-button-icon dropdown-chevron gl-icon'

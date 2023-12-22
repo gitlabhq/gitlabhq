@@ -4,7 +4,7 @@ module ContainerRegistry
   class Tag
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :repository, :name, :updated_at
+    attr_reader :repository, :name, :updated_at, :referrers
     attr_writer :created_at, :manifest_digest, :revision, :total_size
 
     delegate :registry, :client, to: :repository
@@ -12,6 +12,10 @@ module ContainerRegistry
     def initialize(repository, name)
       @repository = repository
       @name = name
+    end
+
+    def referrers=(refs)
+      @referrers = Array.wrap(refs).map { |ref| Referrer.new(ref['artifactType'], ref['digest'], self) }
     end
 
     def revision

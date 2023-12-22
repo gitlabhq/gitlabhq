@@ -5,5 +5,5 @@
 
 .gl-ml-3
   .btn-group{ role: 'group' }
-    = gl_redirect_listbox_tag(items, selected, data: { placement: 'right' })
+    = gl_redirect_listbox_tag(items, selected, class: 'btn-group', data: { placement: 'right' })
     = issuable_sort_direction_button(@sort)

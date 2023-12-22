@@ -233,6 +233,12 @@ Audit event types belong to the following product categories.
 | [`feature_flag_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | Triggered when a feature flag is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) |
 | [`feature_flag_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | Triggered when a feature flag is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) |
 
+### Fleet visibility
+
+| Name | Description | Saved to database | Streamed | Introduced in |
+|:-----|:------------|:------------------|:---------|:--------------|
+| [`ci_runner_usage_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139578) | Triggered when a runner usage report is generated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/426560) |
+
 ### Fuzz testing
 
 | Name | Description | Saved to database | Streamed | Introduced in |

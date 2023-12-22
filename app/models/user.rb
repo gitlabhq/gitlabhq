@@ -1322,7 +1322,13 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def can_create_project?
-    projects_limit_left > 0
+    projects_limit_left > 0 && allow_user_to_create_group_and_project?
+  end
+
+  def allow_user_to_create_group_and_project?
+    return true if Gitlab::CurrentSettings.allow_project_creation_for_guest_and_below
+
+    highest_role > Gitlab::Access::GUEST
   end
 
   def can_create_group?

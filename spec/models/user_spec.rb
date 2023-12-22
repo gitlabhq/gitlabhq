@@ -3669,6 +3669,66 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#can_create_project?' do
+    let(:user) { create(:user) }
+
+    context "when projects_limit_left is 0" do
+      before do
+        allow(user).to receive(:projects_limit_left).and_return(0)
+      end
+
+      it "returns false" do
+        expect(user.can_create_project?).to be_falsey
+      end
+    end
+
+    context "when projects_limit_left is > 0" do
+      before do
+        allow(user).to receive(:projects_limit_left).and_return(1)
+      end
+
+      context "with allow_project_creation_for_guest_and_below default value of true" do
+        it "returns true" do
+          expect(user.can_create_project?).to be_truthy
+        end
+      end
+
+      context "when Gitlab::CurrentSettings.allow_project_creation_for_guest_and_below is false" do
+        before do
+          stub_application_setting(allow_project_creation_for_guest_and_below: false)
+        end
+
+        [
+          Gitlab::Access::NO_ACCESS,
+          Gitlab::Access::MINIMAL_ACCESS,
+          Gitlab::Access::GUEST
+        ].each do |role|
+          context "when users highest role is #{role}" do
+            it "returns false" do
+              allow(user).to receive(:highest_role).and_return(role)
+              expect(user.can_create_project?).to be_falsey
+            end
+          end
+        end
+
+        [
+          Gitlab::Access::REPORTER,
+          Gitlab::Access::DEVELOPER,
+          Gitlab::Access::MAINTAINER,
+          Gitlab::Access::OWNER,
+          Gitlab::Access::ADMIN
+        ].each do |role|
+          context "when users highest role is #{role}" do
+            it "returns true" do
+              allow(user).to receive(:highest_role).and_return(role)
+              expect(user.can_create_project?).to be_truthy
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#all_emails' do
     let(:user) { create(:user) }
     let!(:unconfirmed_secondary_email) { create(:email, user: user) }

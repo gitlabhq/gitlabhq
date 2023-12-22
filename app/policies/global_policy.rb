@@ -15,6 +15,8 @@ class GlobalPolicy < BasePolicy
     @user&.required_terms_not_accepted?
   end
 
+  condition(:can_create_group_and_projects, scope: :user) { @user&.allow_user_to_create_group_and_project? }
+
   condition(:password_expired, scope: :user) do
     @user&.password_expired_if_applicable?
   end
@@ -89,6 +91,8 @@ class GlobalPolicy < BasePolicy
   rule { can_create_group }.policy do
     enable :create_group
   end
+
+  rule { ~can_create_group_and_projects }.prevent :create_group
 
   rule { can_create_organization }.policy do
     enable :create_organization

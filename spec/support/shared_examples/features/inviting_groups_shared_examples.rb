@@ -9,7 +9,7 @@ RSpec.shared_examples 'inviting groups search results' do
 
       before do
         sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
+        enable_admin_mode!(admin)
       end
 
       it 'shows groups where the admin has no direct membership' do

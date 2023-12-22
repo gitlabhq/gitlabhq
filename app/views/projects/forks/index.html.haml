@@ -16,7 +16,7 @@
 
     .dropdown.gl-display-inline.gl-md-ml-3.issue-sort-dropdown.gl-mt-3.gl-md-mt-0
       .btn-group{ role: 'group' }
-        = gl_redirect_listbox_tag [created_at, activity], @sort
+        = gl_redirect_listbox_tag [created_at, activity], @sort, class: 'btn-group'
         = forks_sort_direction_button(sort_value)
 
     - if current_user && can?(current_user, :fork_project, @project)

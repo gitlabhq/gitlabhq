@@ -66,7 +66,7 @@ RSpec.describe 'Groups > Members > List members', :js, feature_category: :groups
 
     it 'shows 2FA badge to admins' do
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
 
       visit group_group_members_path(group)
 

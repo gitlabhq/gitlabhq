@@ -53,11 +53,11 @@ module Banzai
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,
           Filter::References::CommitRangeReferenceFilter,
-          Filter::References::CommitReferenceFilter,
           Filter::References::LabelReferenceFilter,
           Filter::References::MilestoneReferenceFilter,
           Filter::References::AlertReferenceFilter,
-          Filter::References::FeatureFlagReferenceFilter
+          Filter::References::FeatureFlagReferenceFilter,
+          Filter::References::CommitReferenceFilter
         ]
       end
 

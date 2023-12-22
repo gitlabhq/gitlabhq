@@ -167,6 +167,21 @@ RSpec.describe Banzai::Pipeline::GfmPipeline, feature_category: :team_planning d
     end
   end
 
+  context 'when label reference is similar to a commit SHA' do
+    let(:numeric_commit_sha) { '8634272' }
+    let(:project) { create(:project, :repository) }
+    let(:label) { create(:label, project: project, id: numeric_commit_sha) }
+
+    it 'renders a label reference' do
+      expect(project.commit_by(oid: numeric_commit_sha)).to be_present
+
+      output = described_class.to_html(label.to_reference(format: :id), project: project)
+
+      expect(output).to include(label.name)
+      expect(output).to include(Gitlab::Routing.url_helpers.project_issues_path(project, label_name: label.name))
+    end
+  end
+
   describe 'asset proxy' do
     let(:project) { create(:project, :public) }
     let(:image)   { '![proxy](http://example.com/test.png)' }

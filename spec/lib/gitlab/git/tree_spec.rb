@@ -9,7 +9,17 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
   let_it_be(:repository) { project.repository.raw }
 
   shared_examples 'repo' do
-    subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params) }
+    subject(:tree) do
+      Gitlab::Git::Tree.tree_entries(
+        repository: repository,
+        sha: sha,
+        path: path,
+        recursive: recursive,
+        skip_flat_paths: skip_flat_paths,
+        rescue_not_found: rescue_not_found,
+        pagination_params: pagination_params
+      )
+    end
 
     let(:sha) { SeedRepo::Commit::ID }
     let(:path) { nil }

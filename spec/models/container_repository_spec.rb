@@ -693,7 +693,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it 'calls GitlabApiClient#tags and passes parameters' do
       allow(repository.gitlab_api_client).to receive(:tags).and_return({})
       expect(repository.gitlab_api_client).to receive(:tags).with(
-        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name)
+        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name, referrers: nil)
 
       subject
     end
@@ -708,7 +708,13 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567890,
             created_at: 5.minutes.ago,
-            updated_at: 5.minutes.ago
+            updated_at: 5.minutes.ago,
+            referrers: [
+              {
+                artifactType: 'application/vnd.example+type',
+                digest: 'sha256:57d3be92c2f857566ecc7f9306a80021c0a7fa631e0ef5146957235aea859961'
+              }
+            ]
           },
           {
             name: 'latest',
@@ -755,6 +761,14 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
             updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339)
           )
+
+          Array(tag.referrers).each_with_index do |ref, ref_index|
+            expect(ref.is_a?(ContainerRegistry::Referrer)).to eq(true)
+            expect(ref).to have_attributes(
+              artifact_type: tags_response[index][:referrers][ref_index][:artifactType],
+              digest: tags_response[index][:referrers][ref_index][:digest]
+            )
+          end
         end
       end
     end

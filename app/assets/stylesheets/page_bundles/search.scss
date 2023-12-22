@@ -281,14 +281,6 @@ $language-filter-max-height: 20rem;
       margin-right: 5px;
     }
   }
-
-  .dropdown-menu-toggle,
-  .gl-dropdown {
-    @include media-breakpoint-up(sm) {
-      width: 180px;
-      margin-top: 0;
-    }
-  }
 }
 
 .search-page-form {

@@ -130,7 +130,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :environment_management do
         gitlab_sign_out
 
         gitlab_sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
+        enable_admin_mode!(admin)
 
         visit group_clusters_path(group)
       end

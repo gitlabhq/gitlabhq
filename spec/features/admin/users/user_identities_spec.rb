@@ -8,7 +8,7 @@ RSpec.describe 'Admin::Users::UserIdentities', feature_category: :user_managemen
 
   before do
     sign_in(current_user)
-    gitlab_enable_admin_mode_sign_in(current_user, use_mock_admin_mode: false)
+    enable_admin_mode!(current_user, use_ui: true)
   end
 
   describe 'GET /admin/users/:id' do

@@ -44,7 +44,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
   ```
 
-  A workaround exists to [complete the data change and the upgrade manually](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+  A workaround exists to [complete the data change and the upgrade manually](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
 
 ### Linux package installations
 
@@ -287,7 +287,7 @@ that may remain stuck permanently in a **pending** state.
   Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
   ```
 
-  [There is a workaround to complete the data change and the upgrade manually](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+  [There is a workaround to complete the data change and the upgrade manually](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
 
 - As part of [enabling real-time issue assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/330117), Action Cable is now enabled by default.
   For **self-compiled (source) installations**, `config/cable.yml` is required to be present.

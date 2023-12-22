@@ -47,7 +47,7 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, fe
         )
 
         gitlab_sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
+        enable_admin_mode!(admin)
 
         visit admin_user_path(user)
 

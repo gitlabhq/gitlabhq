@@ -16671,6 +16671,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
+| <a id="containerrepositorydetailstagsreferrers"></a>`referrers` | [`Boolean`](#boolean) | Include tag referrers. |
 | <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
 ### `ContainerRepositoryPermissions`
@@ -16680,6 +16681,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerrepositorypermissionsdestroycontainerrepository"></a>`destroyContainerRepository` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_container_image` on this resource. |
+
+### `ContainerRepositoryReferrer`
+
+A referrer for a container repository tag.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositoryreferrerartifacttype"></a>`artifactType` | [`String`](#string) | Artifact type of the referrer. |
+| <a id="containerrepositoryreferrerdigest"></a>`digest` | [`String`](#string) | Digest of the referrer. |
+| <a id="containerrepositoryreferreruserpermissions"></a>`userPermissions` | [`ContainerRepositoryTagPermissions!`](#containerrepositorytagpermissions) | Permissions for the current user on the resource. |
 
 ### `ContainerRepositoryRegistry`
 
@@ -16719,6 +16732,7 @@ A tag from a container repository.
 | <a id="containerrepositorytaglocation"></a>`location` | [`String!`](#string) | URL of the tag. |
 | <a id="containerrepositorytagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 | <a id="containerrepositorytagpath"></a>`path` | [`String!`](#string) | Path of the tag. |
+| <a id="containerrepositorytagreferrers"></a>`referrers` | [`[ContainerRepositoryReferrer!]`](#containerrepositoryreferrer) | Referrers for this tag. |
 | <a id="containerrepositorytagrevision"></a>`revision` | [`String`](#string) | Revision of the tag. |
 | <a id="containerrepositorytagshortrevision"></a>`shortRevision` | [`String`](#string) | Short revision of the tag. |
 | <a id="containerrepositorytagtotalsize"></a>`totalSize` | [`BigInt`](#bigint) | Size of the tag. |
