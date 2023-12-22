@@ -232,9 +232,9 @@ Supported attributes:
 |--------------------------|----------------|----------|-------------|
 | `id`                     | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid`      | integer        | Yes      | The internal ID of the merge request. |
-| `when_pipeline_succeeds` | boolean        | No       | If true, the merge request is added to the merge train when the pipeline succeeds. When false or unspecified, the merge request is added directly to the merge train. |
 | `sha`                    | string         | No       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |
 | `squash`                 | boolean        | No       | If true, the commits are squashed into a single commit on merge. |
+| `when_pipeline_succeeds` | boolean        | No       | If true, the merge request is added to the merge train when the pipeline succeeds. When false or unspecified, the merge request is added directly to the merge train. |
 
 Example request:
 

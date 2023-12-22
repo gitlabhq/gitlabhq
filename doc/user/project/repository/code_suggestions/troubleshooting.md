@@ -12,9 +12,9 @@ When working with GitLab Duo Code Suggestions, you might encounter the following
 
 If Code Suggestions are not displayed, and you have [installed a supported IDE extension](index.md#supported-editor-extensions), try the following troubleshooting steps.
 
-In GitLab, ensure Code Suggestions is enabled:
-
-- [For **all** top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group). If you do not have a role that lets you view the top-level group's settings, contact a group Owner.
+In GitLab, ensure Code Suggestions is enabled for **at least one**
+[top-level group your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group).
+If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
 ### Code Suggestions not displayed in VS Code or GitLab WebIDE
 
@@ -24,14 +24,14 @@ If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
-1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion (Beta)**
+1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion**
    checkbox.
 
 If the settings are enabled, but Code Suggestions are still not displayed, try the following steps:
 
 1. Enable the `Debug` checkbox in the GitLab Workflow **Extension Settings**.
 1. Open the extension log in **View > Output** and change the dropdown list to **GitLab Workflow** as the log filter. The command palette command is `GitLab: Show Extension Logs`.
-1. Disable and re-enable the **Enable code completion (Beta)** checkbox.
+1. Disable and re-enable the **Enable code completion** checkbox.
 1. Verify that the debug log contains similar output:
 
 ```shell

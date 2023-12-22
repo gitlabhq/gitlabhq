@@ -78,8 +78,8 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_disable_admin_mode
-    click_on 'Search or go to…'
-    click_on 'Leave admin mode'
+    find_by_testid('user-menu-toggle').click
+    click_on 'Leave Admin Mode'
   end
 
   private

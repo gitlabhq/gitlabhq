@@ -85,17 +85,17 @@ Create a new variable.
 POST /groups/:id/variables
 ```
 
-| Attribute                         | Type           | Required | Description |
-|-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `key`                             | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| `value`                           | string         | Yes      | The `value` of a variable |
-| `variable_type`                   | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`                       | boolean        | No       | Whether the variable is protected |
-| `masked`                          | boolean        | No       | Whether the variable is masked |
-| `raw`                             | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| Attribute                             | Type           | Required | Description |
+|---------------------------------------|----------------|----------|-------------|
+| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `key`                                 | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
+| `value`                               | string         | Yes      | The `value` of a variable |
+| `description`                         | string         | No       | The `description` of the variable. Default: `null` |
 | `environment_scope` **(PREMIUM ALL)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
-| `description`                     | string         | No       | The `description` of the variable. Default: `null` |
+| `masked`                              | boolean        | No       | Whether the variable is masked |
+| `protected`                           | boolean        | No       | Whether the variable is protected |
+| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -123,17 +123,17 @@ Update a group's variable.
 PUT /groups/:id/variables/:key
 ```
 
-| Attribute                         | Type           | Required | Description |
-|-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `key`                             | string         | Yes      | The `key` of a variable |
-| `value`                           | string         | Yes      | The `value` of a variable |
-| `variable_type`                   | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`                       | boolean        | No       | Whether the variable is protected |
-| `masked`                          | boolean        | No       | Whether the variable is masked |
-| `raw`                             | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| Attribute                             | Type           | Required | Description |
+|---------------------------------------|----------------|----------|-------------|
+| `id`                                  | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `key`                                 | string         | Yes      | The `key` of a variable |
+| `value`                               | string         | Yes      | The `value` of a variable |
+| `description`                         | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
 | `environment_scope` **(PREMIUM ALL)** | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable |
-| `description`                     | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
+| `masked`                              | boolean        | No       | Whether the variable is masked |
+| `protected`                           | boolean        | No       | Whether the variable is protected |
+| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -163,7 +163,7 @@ DELETE /groups/:id/variables/:key
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)     |
+| `id`      | integer/string | Yes      | The ID of a group or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `key`     | string         | Yes      | The `key` of a variable |
 
 ```shell

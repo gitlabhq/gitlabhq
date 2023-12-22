@@ -506,6 +506,64 @@ describe('UserMenu component', () => {
     });
   });
 
+  describe('Admin Mode items', () => {
+    const findEnterAdminModeItem = () => wrapper.findByTestId('enter-admin-mode-item');
+    const findLeaveAdminModeItem = () => wrapper.findByTestId('leave-admin-mode-item');
+
+    describe('when user is not admin', () => {
+      it('should not render', () => {
+        createWrapper({
+          admin_mode: {
+            user_is_admin: false,
+          },
+        });
+        expect(findEnterAdminModeItem().exists()).toBe(false);
+        expect(findLeaveAdminModeItem().exists()).toBe(false);
+      });
+    });
+
+    describe('when user is admin but admin mode feature is not enabled', () => {
+      it('should not render', () => {
+        createWrapper({
+          admin_mode: {
+            user_is_admin: true,
+            admin_mode_feature_enabled: false,
+          },
+        });
+        expect(findEnterAdminModeItem().exists()).toBe(false);
+        expect(findLeaveAdminModeItem().exists()).toBe(false);
+      });
+    });
+
+    describe('when user is admin, admin mode feature is enabled but inactive', () => {
+      it('should render only "enter admin mode" item', () => {
+        createWrapper({
+          admin_mode: {
+            user_is_admin: true,
+            admin_mode_feature_enabled: true,
+            admin_mode_active: false,
+          },
+        });
+        expect(findEnterAdminModeItem().exists()).toBe(true);
+        expect(findLeaveAdminModeItem().exists()).toBe(false);
+      });
+    });
+
+    describe('when user is admin, admin mode feature is enabled and active', () => {
+      it('should render only "leave admin mode" item', () => {
+        createWrapper({
+          admin_mode: {
+            user_is_admin: true,
+            admin_mode_feature_enabled: true,
+            admin_mode_active: true,
+          },
+        });
+        expect(findEnterAdminModeItem().exists()).toBe(false);
+        expect(findLeaveAdminModeItem().exists()).toBe(true);
+      });
+    });
+  });
+
   describe('Sign out group', () => {
     const findSignOutGroup = () => wrapper.findByTestId('sign-out-group');
 

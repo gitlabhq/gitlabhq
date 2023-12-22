@@ -1,5 +1,5 @@
 - data = { provider: provider, track_action: "#{provider}_sso", track_label: tracking_label }
-- button_options = { class: 'js-oauth-login', data: data, id: "oauth-login-#{provider}" }
+- button_options = { class: 'js-track-omni-auth', data: data, id: "oauth-login-#{provider}" }
 
 = render Pajamas::ButtonComponent.new(href: href, method: :post, form: true, block: true, button_options: button_options) do
   - if provider_has_icon?(provider)

@@ -56,6 +56,10 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 During onboarding, you can specify an AWS KMS encryption key stored in your own AWS account that GitLab uses to encrypt the data for your Dedicated instance. This gives you full control over the data you store in GitLab.
 
+#### SMTP
+
+Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/). The connection to Amazon SES is encrypted.
+
 ### Compliance
 
 #### Certifications

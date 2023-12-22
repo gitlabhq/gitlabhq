@@ -20,18 +20,18 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
     context 'when not in admin mode' do
       it 'has no leave admin mode button' do
         visit new_admin_session_path
-        open_search_modal
+        open_user_menu
 
         expect(page).not_to have_link(href: destroy_admin_session_path)
       end
 
       it 'can open pages not in admin scope' do
         visit new_admin_session_path
-        open_search_modal
+        open_user_menu
 
-        click_link('View all my projects')
+        click_link('Edit profile')
 
-        expect(page).to have_current_path(dashboard_projects_path)
+        expect(page).to have_current_path(profile_path)
       end
 
       it 'is necessary to provide credentials again before opening pages in admin scope' do
@@ -41,11 +41,14 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
       end
 
       it 'can enter admin mode' do
-        visit new_admin_session_path
+        visit root_dashboard_path
+        open_user_menu
+        click_link 'Enter Admin Mode'
 
         fill_in 'user_password', with: admin.password
 
         click_button 'Enter admin mode'
+        click_link 'Admin Area'
 
         expect(page).to have_current_path(admin_root_path)
       end
@@ -73,34 +76,26 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
       end
 
       it 'contains link to leave admin mode' do
-        open_search_modal
-
-        expect(page).to have_link(href: destroy_admin_session_path)
-      end
-
-      it 'can leave admin mode using main dashboard link' do
-        gitlab_disable_admin_mode
-
-        open_search_modal
-
-        expect(page).to have_link(href: new_admin_session_path)
+        open_user_menu
+        click_link('Leave Admin Mode', href: destroy_admin_session_path)
+        expect(page).to have_text 'Admin mode disabled'
       end
 
       it 'can open pages not in admin scope' do
-        open_search_modal
+        open_user_menu
 
-        click_link('View all my projects')
+        click_link('Edit profile')
 
-        expect(page).to have_current_path(dashboard_projects_path)
+        expect(page).to have_current_path(profile_path)
       end
 
-      context 'nav bar' do
-        it 'shows admin dashboard links on bigger screen' do
+      context 'sidebar' do
+        it 'shows admin dashboard link' do
           visit root_dashboard_path
-          open_search_modal
 
-          expect(page).to have_link(text: 'Admin', href: admin_root_path, visible: true)
-          expect(page).to have_link(text: 'Leave admin mode', href: destroy_admin_session_path, visible: true)
+          within '#super-sidebar' do
+            expect(page).to have_link('Admin Area')
+          end
         end
       end
 
@@ -112,7 +107,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
         it 'can leave admin mode' do
           gitlab_disable_admin_mode
 
-          open_search_modal
+          open_user_menu
 
           expect(page).to have_link(href: new_admin_session_path)
         end
@@ -128,14 +123,14 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
 
     it 'shows no admin mode buttons in navbar' do
       visit admin_root_path
-      open_search_modal
+      open_user_menu
 
       expect(page).not_to have_link(href: new_admin_session_path)
       expect(page).not_to have_link(href: destroy_admin_session_path)
     end
   end
 
-  def open_search_modal
-    click_button 'Search or go to…'
+  def open_user_menu
+    find_by_testid('user-menu-toggle').click
   end
 end

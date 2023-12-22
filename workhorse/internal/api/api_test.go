@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -129,4 +132,77 @@ func testRailsServer(url *regexp.Regexp, code int, body string) *httptest.Server
 		w.WriteHeader(code)
 		fmt.Fprint(w, body)
 	})
+}
+
+func TestPreAuthorizeFixedPath(t *testing.T) {
+	var (
+		upstreamHeaders http.Header
+		upstreamQuery   url.Values
+	)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/my/api/path" {
+			return
+		}
+
+		upstreamHeaders = r.Header
+		upstreamQuery = r.URL.Query()
+		w.Header().Set("Content-Type", ResponseContentType)
+		io.WriteString(w, `{"TempPath":"HELLO!!"}`)
+	}))
+	defer ts.Close()
+
+	req, err := http.NewRequest("GET", "/original/request/path?q1=Q1&q2=Q2", nil)
+	require.NoError(t, err)
+	req.Header.Set("key1", "value1")
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	resp, err := api.PreAuthorizeFixedPath(req, "POST", "/my/api/path")
+	require.NoError(t, err)
+
+	require.Equal(t, "value1", upstreamHeaders.Get("key1"), "original headers must propagate")
+	require.Equal(t, url.Values{"q1": []string{"Q1"}, "q2": []string{"Q2"}}, upstreamQuery,
+		"original query must propagate")
+	require.Equal(t, "HELLO!!", resp.TempPath, "sanity check: successful API call")
+}
+
+func TestSendGitAuditEvent(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	var (
+		requestHeaders http.Header
+		requestBody    GitAuditEventRequest
+	)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v4/internal/shellhorse/git_audit_event" {
+			return
+		}
+
+		requestHeaders = r.Header
+		defer r.Body.Close()
+		b, err := io.ReadAll(r.Body)
+		require.NoError(t, err)
+		err = json.Unmarshal(b, &requestBody)
+		require.NoError(t, err)
+	}))
+	defer ts.Close()
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+	auditRequest := GitAuditEventRequest{
+		Action:   "git-receive-request",
+		Protocol: "http",
+		Repo:     "project-1",
+		Username: "GitLab-Shell",
+		PackfileStats: &gitalypb.PackfileNegotiationStatistics{
+			Wants: 3,
+			Haves: 23,
+		},
+	}
+	err := api.SendGitAuditEvent(context.Background(), auditRequest)
+	require.NoError(t, err)
+
+	require.NotEmpty(t, requestHeaders)
+	require.NotEmpty(t, requestHeaders["Gitlab-Workhorse-Api-Request"])
+	require.Equal(t, auditRequest, requestBody)
 }

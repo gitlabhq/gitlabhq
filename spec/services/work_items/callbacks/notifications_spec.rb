@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::NotificationsService::UpdateService, feature_category: :team_planning do
+RSpec.describe WorkItems::Callbacks::Notifications, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
@@ -10,13 +10,13 @@ RSpec.describe WorkItems::Widgets::NotificationsService::UpdateService, feature_
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, author: author) }
   let_it_be(:current_user) { guest }
 
-  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Notifications) } }
-  let(:service) { described_class.new(widget: widget, current_user: current_user) }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Callbacks::Notifications) } }
+  let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
 
   describe '#before_update_in_transaction' do
     let(:expected) { params[:subscribed] }
 
-    subject(:update_notifications) { service.before_update_in_transaction(params: params) }
+    subject(:update_notifications) { service.before_update }
 
     shared_examples 'failing to update subscription' do
       context 'when user is subscribed with a subscription record' do

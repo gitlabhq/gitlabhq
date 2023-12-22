@@ -187,8 +187,8 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 |-------------------|--------------------------------|----------|-------------|
 | `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
-| `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 | `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9. |
+| `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running"
@@ -669,10 +669,10 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 
 Possible response status codes:
 
-| Status    | Description                   |
-|-----------|-------------------------------|
-| 200       | Serves the log file           |
-| 404       | Job not found or no log file  |
+| Status | Description |
+|--------|-------------|
+| 200    | Serves the log file |
+| 404    | Job not found or no log file |
 
 ## Cancel a job
 

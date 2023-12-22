@@ -21,7 +21,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
     expect(page).to have_current_path root_path, ignore_query: true
 
-    click_button 'Search or go to…'
+    find_by_testid('user-menu-toggle').click
 
     expect(page).to have_link(href: new_admin_session_path)
   end
@@ -42,7 +42,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
       expect(page).to have_current_path root_path, ignore_query: true
 
-      click_button 'Search or go to…'
+      find_by_testid('user-menu-toggle').click
 
       expect(page).to have_link(href: new_admin_session_path)
     end

@@ -60,7 +60,7 @@ Code Suggestions is aware of common popular programming concepts and
 infrastructure-as-code interfaces, like Kubernetes Resource Model (KRM),
 Google Cloud CLI, and Terraform.
 
-The editor supports these languages: 
+The editor supports these languages:
 
 | Language         | VS Code                | JetBrains IDEs         | Visual Studio          | Neovim |
 |------------------|------------------------|------------------------|------------------------|--------|
@@ -136,7 +136,7 @@ For more information on GitLab Code Suggestions data [sub-processors](https://ab
 ## Known limitations
 
 We are continuing to work on the accuracy of overall generated content.
-Code Suggestions may generate suggestions that are:
+However, Code Suggestions may generate suggestions that are:
 
 - Irrelevant.
 - Incomplete.

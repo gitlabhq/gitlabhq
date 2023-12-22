@@ -175,6 +175,11 @@ export const userMenuMockPipelineMinutes = {
 export const userMenuMockData = {
   name: 'Orange Fox',
   username: 'thefox',
+  admin_mode: {
+    user_is_admin: false,
+    admin_mode_feature_enabled: false,
+    admin_mode_active: false,
+  },
   avatar_url: invalidUrl,
   has_link_to_profile: true,
   link_to_profile: '/thefox',

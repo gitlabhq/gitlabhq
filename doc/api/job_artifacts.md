@@ -24,11 +24,11 @@ as the request might redirect through a CDN.
 GET /projects/:id/jobs/:job_id/artifacts
 ```
 
-| Attribute                 | Type           | Required | Description |
-|---------------------------|----------------|----------|-------------|
-| `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `job_id`                  | integer        | Yes      | ID of a job. |
-| `job_token` **(PREMIUM ALL)** | string     | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| Attribute                     | Type           | Required | Description |
+|-------------------------------|----------------|----------|-------------|
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `job_id`                      | integer        | Yes      | ID of a job. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -65,10 +65,10 @@ Use either:
 
 Possible response status codes:
 
-| Status    | Description                     |
-|-----------|---------------------------------|
-| 200       | Serves the artifacts file.      |
-| 404       | Build not found or no artifacts.|
+| Status | Description |
+|--------|-------------|
+| 200    | Serves the artifacts file. |
+| 404    | Build not found or no artifacts. |
 
 ## Download the artifacts archive
 
@@ -93,12 +93,12 @@ GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 
 Parameters
 
-| Attribute                 | Type           | Required | Description |
-|---------------------------|----------------|----------|-------------|
-| `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `ref_name`                | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
-| `job`                     | string         | Yes      | The name of the job. |
-| `job_token` **(PREMIUM ALL)** | string     | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| Attribute                     | Type           | Required | Description |
+|-------------------------------|----------------|----------|-------------|
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `job`                         | string         | Yes      | The name of the job. |
+| `ref_name`                    | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -136,10 +136,10 @@ Use either:
 
 Possible response status codes:
 
-| Status    | Description                     |
-|-----------|---------------------------------|
-| 200       | Serves the artifacts file.      |
-| 404       | Build not found or no artifacts.|
+| Status | Description |
+|--------|-------------|
+| 200    | Serves the artifacts file. |
+| 404    | Build not found or no artifacts. |
 
 ## Download a single artifact file by job ID
 
@@ -156,12 +156,12 @@ GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 
 Parameters
 
-| Attribute                 | Type           | Required | Description |
-|---------------------------|----------------|----------|-------------|
-| `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `job_id`                  | integer        | Yes      | The unique job identifier. |
-| `artifact_path`           | string         | Yes      | Path to a file inside the artifacts archive. |
-| `job_token` **(PREMIUM ALL)** | string     | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| Attribute                     | Type           | Required | Description |
+|-------------------------------|----------------|----------|-------------|
+| `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `job_id`                      | integer        | Yes      | The unique job identifier. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request:
 
@@ -174,11 +174,11 @@ in a CI/CD job by using a [CI/CD job token](../ci/jobs/ci_job_token.md).
 
 Possible response status codes:
 
-| Status    | Description                          |
-|-----------|--------------------------------------|
-| 200       | Sends a single artifact file         |
-| 400       | Invalid path provided                |
-| 404       | Build not found or no file/artifacts |
+| Status | Description |
+|--------|-------------|
+| 200    | Sends a single artifact file |
+| 400    | Invalid path provided |
+| 404    | Build not found or no file/artifacts |
 
 ## Download a single artifact file from specific tag or branch
 
@@ -202,13 +202,13 @@ GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 
 Parameters:
 
-| Attribute                 | Type           | Required | Description |
-|---------------------------|----------------|----------|-------------|
-| `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `ref_name`                | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
-| `artifact_path`           | string         | Yes      | Path to a file inside the artifacts archive. |
-| `job`                     | string         | Yes      | The name of the job. |
-| `job_token` **(PREMIUM ALL)** | string     | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| Attribute                     | Type           | Required | Description |
+|-------------------------------|----------------|----------|-------------|
+| `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
+| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `job`                         | string         | Yes      | The name of the job. |
+| `ref_name`                    | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request:
 
@@ -221,11 +221,11 @@ in a CI/CD job by using a [CI/CD job token](../ci/jobs/ci_job_token.md).
 
 Possible response status codes:
 
-| Status    | Description                          |
-|-----------|--------------------------------------|
-| 200       | Sends a single artifact file         |
-| 400       | Invalid path provided                |
-| 404       | Build not found or no file/artifacts |
+| Status | Description |
+|--------|-------------|
+| 200    | Sends a single artifact file |
+| 400    | Invalid path provided |
+| 404    | Build not found or no file/artifacts |
 
 ## Keep artifacts
 

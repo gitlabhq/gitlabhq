@@ -227,12 +227,12 @@ Configure and verify a custom email address when you want to send Service Desk e
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
-1. Expand **Service Desk** and find the **Custom email** settings.
+1. Expand **Service Desk** and find the **Configure a custom email address** section.
 1. Note the presented Service Desk address of this project, and with your email provider
    (for example, Gmail), set up email forwarding from the custom email address to the
    Service Desk address.
 1. Back in GitLab, complete the fields.
-1. Select **Save & test settings**.
+1. Select **Save & test connection**.
 
 The configuration has been saved and the verification of the custom email address is triggered.
 
