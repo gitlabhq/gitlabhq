@@ -12538,6 +12538,9 @@ msgstr ""
 msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
 msgstr ""
 
+msgid "Compliance Center Export|Export contents of the standards adherence report as a CSV file."
+msgstr ""
+
 msgid "Compliance Center Export|Export custody report"
 msgstr ""
 
@@ -12551,6 +12554,9 @@ msgid "Compliance Center Export|Export list of project frameworks as a CSV file.
 msgstr ""
 
 msgid "Compliance Center Export|Export merge request violations as a CSV file."
+msgstr ""
+
+msgid "Compliance Center Export|Export standards adherence report"
 msgstr ""
 
 msgid "Compliance Center Export|Export violations report"
@@ -27987,6 +27993,15 @@ msgstr ""
 msgid "KubernetesDashboard|Annotations"
 msgstr ""
 
+msgid "KubernetesDashboard|Completed"
+msgstr ""
+
+msgid "KubernetesDashboard|CronJob"
+msgstr ""
+
+msgid "KubernetesDashboard|CronJobs"
+msgstr ""
+
 msgid "KubernetesDashboard|DaemonSet"
 msgstr ""
 
@@ -28003,6 +28018,12 @@ msgid "KubernetesDashboard|Deployments"
 msgstr ""
 
 msgid "KubernetesDashboard|Failed"
+msgstr ""
+
+msgid "KubernetesDashboard|Job"
+msgstr ""
+
+msgid "KubernetesDashboard|Jobs"
 msgstr ""
 
 msgid "KubernetesDashboard|Kind"
@@ -28057,6 +28078,9 @@ msgid "KubernetesDashboard|Status"
 msgstr ""
 
 msgid "KubernetesDashboard|Succeeded"
+msgstr ""
+
+msgid "KubernetesDashboard|Suspended"
 msgstr ""
 
 msgid "KubernetesDashboard|View projects"
@@ -43474,6 +43498,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{allLabel} %{projectCount} %{projectLabel} in this group"
+msgstr ""
+
 msgid "SecurityOrchestration|%{branchName}"
 msgstr ""
 
@@ -43532,6 +43559,9 @@ msgid "SecurityOrchestration|After dismissing the alert, the information will ne
 msgstr ""
 
 msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects and sub-groups in this group."
+msgstr ""
+
+msgid "SecurityOrchestration|All projects in this group except:"
 msgstr ""
 
 msgid "SecurityOrchestration|All sources"
@@ -43669,6 +43699,9 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load images."
 msgstr ""
 
+msgid "SecurityOrchestration|Following projects:"
+msgstr ""
+
 msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply. No additional approvals are required."
 msgstr ""
 
@@ -43682,6 +43715,9 @@ msgid "SecurityOrchestration|Groups"
 msgstr ""
 
 msgid "SecurityOrchestration|Hide extra items"
+msgstr ""
+
+msgid "SecurityOrchestration|Hide extra projects"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
@@ -43742,6 +43778,9 @@ msgid "SecurityOrchestration|No exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|No rules defined - policy will not run."
+msgstr ""
+
+msgid "SecurityOrchestration|No scope"
 msgstr ""
 
 msgid "SecurityOrchestration|No tags available"
@@ -43860,6 +43899,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Scope"
+msgstr ""
+
 msgid "SecurityOrchestration|Security Approvals"
 msgstr ""
 
@@ -43902,6 +43944,9 @@ msgstr ""
 msgid "SecurityOrchestration|Severity is %{severity}."
 msgstr ""
 
+msgid "SecurityOrchestration|Show all included projects"
+msgstr ""
+
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr ""
 
@@ -43933,6 +43978,12 @@ msgid "SecurityOrchestration|This %{namespaceType} does not contain any security
 msgstr ""
 
 msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|This applies to %{projects} associated with following compliance frameworks:"
+msgstr ""
+
+msgid "SecurityOrchestration|This applies to following compliance frameworks:"
 msgstr ""
 
 msgid "SecurityOrchestration|This group"
@@ -55301,6 +55352,9 @@ msgid "WorkItem|New task"
 msgstr ""
 
 msgid "WorkItem|No child items are currently assigned. Use child items to break down this issue into smaller parts."
+msgstr ""
+
+msgid "WorkItem|No epics or issues are currently assigned."
 msgstr ""
 
 msgid "WorkItem|No iteration"

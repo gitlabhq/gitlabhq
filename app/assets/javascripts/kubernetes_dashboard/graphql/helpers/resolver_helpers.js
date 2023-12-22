@@ -43,6 +43,44 @@ export const mapSetItem = (item) => {
   return { status, metadata, spec };
 };
 
+export const mapJobItem = (item) => {
+  const metadata = {
+    ...item.metadata,
+    annotations: item.metadata?.annotations || {},
+    labels: item.metadata?.labels || {},
+  };
+
+  const status = {
+    failed: item.status?.failed || 0,
+    succeeded: item.status?.succeeded || 0,
+  };
+
+  return {
+    status,
+    metadata,
+    spec: item.spec,
+  };
+};
+
+export const mapCronJobItem = (item) => {
+  const metadata = {
+    ...item.metadata,
+    annotations: item.metadata?.annotations || {},
+    labels: item.metadata?.labels || {},
+  };
+
+  const status = {
+    active: item.status?.active || 0,
+    lastScheduleTime: item.status?.lastScheduleTime || null,
+  };
+
+  return {
+    status,
+    metadata,
+    spec: item.spec,
+  };
+};
+
 export const watchWorkloadItems = ({
   client,
   query,

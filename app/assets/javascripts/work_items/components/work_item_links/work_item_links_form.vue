@@ -11,6 +11,7 @@ import {
 import { __, s__, sprintf } from '~/locale';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
+import groupWorkItemTypesQuery from '../../graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '../../graphql/project_work_item_types.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
@@ -90,7 +91,9 @@ export default {
   },
   apollo: {
     workItemTypes: {
-      query: projectWorkItemTypesQuery,
+      query() {
+        return this.isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

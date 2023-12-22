@@ -201,6 +201,8 @@ export const WORK_ITEMS_TYPE_MAP = {
 export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
+  [WORK_ITEM_TYPE_VALUE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
 };
 
 export const WORK_ITEMS_TREE_TEXT_MAP = {
@@ -214,9 +216,14 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
       'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
     ),
   },
+  [WORK_ITEM_TYPE_VALUE_EPIC]: {
+    title: s__('WorkItem|Child items'),
+    empty: s__('WorkItem|No epics or issues are currently assigned.'),
+  },
 };
 
 export const WORK_ITEM_NAME_TO_ICON_MAP = {
+  Epic: 'epic',
   Issue: 'issue-type-issue',
   Task: 'issue-type-task',
   Objective: 'issue-type-objective',

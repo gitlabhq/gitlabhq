@@ -564,10 +564,6 @@ module ApplicationSettingsHelper
       can?(current_user, :read_cluster, clusterable)
   end
 
-  def omnibus_protected_paths_throttle?
-    Rack::Attack.throttles.key?('protected paths')
-  end
-
   def valid_runner_registrars
     Gitlab::CurrentSettings.valid_runner_registrars
   end

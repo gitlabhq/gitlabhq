@@ -49,7 +49,6 @@ Style/ExplicitBlockArgument:
     - 'lib/gitlab/gitaly_client/storage_settings.rb'
     - 'lib/gitlab/github_import/client.rb'
     - 'lib/gitlab/graphql/tracers/application_context_tracer.rb'
-    - 'lib/gitlab/import_export/import_failure_service.rb'
     - 'lib/gitlab/import_export/json/ndjson_writer.rb'
     - 'lib/gitlab/import_export/json/streaming_serializer.rb'
     - 'lib/gitlab/import_export/project/base_task.rb'

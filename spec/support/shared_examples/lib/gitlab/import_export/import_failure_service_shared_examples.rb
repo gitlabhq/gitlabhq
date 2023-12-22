@@ -34,6 +34,7 @@ RSpec.shared_examples 'log import failure' do |importable_column|
       expect(import_failure.exception_message).to eq(standard_error_message)
       expect(import_failure.correlation_id_value).to eq(correlation_id)
       expect(import_failure.retry_count).to eq(retry_count)
+      expect(import_failure.external_identifiers).to eq("iid" => 1234)
     end
   end
 end

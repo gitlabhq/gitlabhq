@@ -354,7 +354,6 @@ Layout/SpaceInLambdaLiteral:
     - 'lib/gitlab/event_store.rb'
     - 'lib/gitlab/gl_repository.rb'
     - 'lib/gitlab/health_checks/server.rb'
-    - 'lib/gitlab/import_export/import_failure_service.rb'
     - 'lib/gitlab/merge_requests/message_generator.rb'
     - 'lib/gitlab/metrics/exporter/base_exporter.rb'
     - 'lib/gitlab/visibility_level.rb'

@@ -84,7 +84,8 @@ module Gitlab
             source: 'process_relation_item!',
             relation_key: relation_key,
             relation_index: relation_index,
-            exception: e)
+            exception: e,
+            external_identifiers: external_identifiers(data_hash))
         end
 
         def save_relation_object(relation_object, relation_key, relation_definition, relation_index)
@@ -313,6 +314,10 @@ module Gitlab
 
         def importable_column_name
           @column_name ||= @importable.class.reflect_on_association(:import_failures).foreign_key.to_sym
+        end
+
+        def external_identifiers(data_hash)
+          { iid: data_hash['iid'] }.compact
         end
       end
     end

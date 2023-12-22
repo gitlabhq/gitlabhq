@@ -33,6 +33,7 @@ import {
   mockParent,
   workItemByIidResponseFactory,
   objectiveType,
+  epicType,
   mockWorkItemCommentNote,
   mockBlockingLinkedItem,
 } from '../mock_data';
@@ -429,9 +430,18 @@ describe('WorkItemDetail component', () => {
         workItemType: objectiveType,
         confidential: true,
       });
-      const handler = jest.fn().mockResolvedValue(objectiveWorkItem);
+      const objectiveHandler = jest.fn().mockResolvedValue(objectiveWorkItem);
 
-      it('renders children tree when work item is an Objective', async () => {
+      const epicWorkItem = workItemByIidResponseFactory({
+        workItemType: epicType,
+      });
+      const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
+
+      it.each`
+        type           | handler
+        ${'Objective'} | ${objectiveHandler}
+        ${'Epic'}      | ${epicHandler}
+      `('renders children tree when work item type is $type', async ({ handler }) => {
         createComponent({ handler });
         await waitForPromises();
 
@@ -439,14 +449,14 @@ describe('WorkItemDetail component', () => {
       });
 
       it('renders a modal', async () => {
-        createComponent({ handler });
+        createComponent({ handler: objectiveHandler });
         await waitForPromises();
 
         expect(findModal().exists()).toBe(true);
       });
 
       it('opens the modal with the child when `show-modal` is emitted', async () => {
-        createComponent({ handler, workItemsMvc2Enabled: true });
+        createComponent({ handler: objectiveHandler, workItemsMvc2Enabled: true });
         await waitForPromises();
 
         const event = {
@@ -469,7 +479,7 @@ describe('WorkItemDetail component', () => {
         beforeEach(async () => {
           createComponent({
             isModal: true,
-            handler,
+            handler: objectiveHandler,
             workItemsMvc2Enabled: true,
           });
 

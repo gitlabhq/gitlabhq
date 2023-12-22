@@ -351,3 +351,165 @@ export const mockDaemonSetsTableItems = [
 ];
 
 export const k8sDaemonSetsMock = [readyDaemonSet, failedDaemonSet];
+
+const completedJob = {
+  status: { failed: 0, succeeded: 1 },
+  spec: { completions: 1 },
+  metadata: {
+    name: 'job-1',
+    namespace: 'default',
+    creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+const failedJob = {
+  status: { failed: 1, succeeded: 1 },
+  spec: { completions: 2 },
+  metadata: {
+    name: 'job-2',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+const anotherFailedJob = {
+  status: { failed: 0, succeeded: 1 },
+  spec: { completions: 2 },
+  metadata: {
+    name: 'job-3',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+export const mockJobsStats = [
+  {
+    title: 'Completed',
+    value: 1,
+  },
+  {
+    title: 'Failed',
+    value: 2,
+  },
+];
+
+export const mockJobsTableItems = [
+  {
+    name: 'job-1',
+    namespace: 'default',
+    status: 'Completed',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Job',
+  },
+  {
+    name: 'job-2',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Job',
+  },
+  {
+    name: 'job-3',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Job',
+  },
+];
+
+export const k8sJobsMock = [completedJob, failedJob, anotherFailedJob];
+
+const readyCronJob = {
+  status: { active: 0, lastScheduleTime: '2023-07-31T11:50:17Z' },
+  spec: { suspend: 0 },
+  metadata: {
+    name: 'cronJob-1',
+    namespace: 'default',
+    creationTimestamp: '2023-07-31T11:50:17Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+const suspendedCronJob = {
+  status: { active: 0, lastScheduleTime: null },
+  spec: { suspend: 1 },
+  metadata: {
+    name: 'cronJob-2',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+const failedCronJob = {
+  status: { active: 1, lastScheduleTime: null },
+  spec: { suspend: 0 },
+  metadata: {
+    name: 'cronJob-3',
+    namespace: 'default',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+    labels: {},
+    annotations: {},
+  },
+};
+
+export const mockCronJobsStats = [
+  {
+    title: 'Ready',
+    value: 1,
+  },
+  {
+    title: 'Failed',
+    value: 1,
+  },
+  {
+    title: 'Suspended',
+    value: 1,
+  },
+];
+
+export const mockCronJobsTableItems = [
+  {
+    name: 'cronJob-1',
+    namespace: 'default',
+    status: 'Ready',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'CronJob',
+  },
+  {
+    name: 'cronJob-2',
+    namespace: 'default',
+    status: 'Suspended',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'CronJob',
+  },
+  {
+    name: 'cronJob-3',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'CronJob',
+  },
+];
+
+export const k8sCronJobsMock = [readyCronJob, suspendedCronJob, failedCronJob];

@@ -1114,9 +1114,10 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       let(:user) { create(:user) }
       let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
       let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
+      let(:project_fixture) { 'with_invalid_records' }
 
       before do
-        setup_import_export_config('with_invalid_records')
+        setup_import_export_config(project_fixture)
         setup_reader
 
         subject
@@ -1141,6 +1142,21 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           expect(import_failure.exception_message).to be_present
           expect(import_failure.correlation_id_value).not_to be_empty
           expect(import_failure.created_at).to be_present
+        end
+
+        context 'when there are a mix of invalid milestones and issues with IIDs' do
+          let(:project_fixture) { 'with_invalid_issues_and_milestones' }
+
+          it 'tracks the relation IID if present' do
+            iids_for_failures = project.import_failures.collect { |f| [f.relation_key, f.external_identifiers] }
+            expected_iids = [
+              ["milestones", { "iid" => 1 }],
+              ["issues", { "iid" => 9 }],
+              ["issues", {}]
+            ]
+
+            expect(iids_for_failures).to match_array(expected_iids)
+          end
         end
       end
     end

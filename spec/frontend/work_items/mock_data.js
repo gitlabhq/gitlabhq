@@ -475,6 +475,13 @@ export const issueType = {
   iconName: 'issue-type-issue',
 };
 
+export const epicType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Epic',
+  iconName: 'issue-type-epic',
+};
+
 export const mockEmptyLinkedItems = {
   type: WIDGET_TYPE_LINKED_ITEMS,
   blocked: false,
@@ -905,6 +912,18 @@ export const projectWorkItemTypesQueryResponse = {
           { id: 'gid://gitlab/WorkItems::Type/4', name: 'Objective' },
           { id: 'gid://gitlab/WorkItems::Type/5', name: 'Key Result' },
         ],
+      },
+    },
+  },
+};
+
+export const groupWorkItemTypesQueryResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/2',
+      workItemTypes: {
+        nodes: [{ id: 'gid://gitlab/WorkItems::Type/6', name: 'Epic' }],
       },
     },
   },

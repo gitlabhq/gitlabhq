@@ -5,6 +5,8 @@ export const STATUS_PENDING = 'Pending';
 export const STATUS_SUCCEEDED = 'Succeeded';
 export const STATUS_FAILED = 'Failed';
 export const STATUS_READY = 'Ready';
+export const STATUS_COMPLETED = 'Completed';
+export const STATUS_SUSPENDED = 'Suspended';
 
 export const STATUS_LABELS = {
   [STATUS_RUNNING]: s__('KubernetesDashboard|Running'),
@@ -12,6 +14,8 @@ export const STATUS_LABELS = {
   [STATUS_SUCCEEDED]: s__('KubernetesDashboard|Succeeded'),
   [STATUS_FAILED]: s__('KubernetesDashboard|Failed'),
   [STATUS_READY]: s__('KubernetesDashboard|Ready'),
+  [STATUS_COMPLETED]: s__('KubernetesDashboard|Completed'),
+  [STATUS_SUSPENDED]: s__('KubernetesDashboard|Suspended'),
 };
 
 export const WORKLOAD_STATUS_BADGE_VARIANTS = {
@@ -20,6 +24,8 @@ export const WORKLOAD_STATUS_BADGE_VARIANTS = {
   [STATUS_SUCCEEDED]: 'success',
   [STATUS_FAILED]: 'danger',
   [STATUS_READY]: 'success',
+  [STATUS_COMPLETED]: 'success',
+  [STATUS_SUSPENDED]: 'neutral',
 };
 
 export const PAGE_SIZE = 20;

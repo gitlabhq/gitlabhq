@@ -19,6 +19,7 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
 } from '../constants';
@@ -231,6 +232,11 @@ export default {
     },
     workItemLinkedItems() {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
+    },
+    showWorkItemTree() {
+      return [WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC].includes(
+        this.workItemType,
+      );
     },
     showWorkItemLinkedItems() {
       return this.hasLinkedWorkItems && this.workItemLinkedItems;
@@ -586,7 +592,7 @@ export default {
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
             <work-item-tree
-              v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
+              v-if="showWorkItemTree"
               :full-path="fullPath"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"

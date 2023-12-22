@@ -5,6 +5,8 @@ import {
   STATUS_PENDING,
   STATUS_READY,
   STATUS_FAILED,
+  STATUS_COMPLETED,
+  STATUS_SUSPENDED,
 } from '../constants';
 
 export function getAge(creationTimestamp) {
@@ -57,4 +59,21 @@ export function calculateDaemonSetStatus(item) {
     return STATUS_READY;
   }
   return STATUS_FAILED;
+}
+
+export function calculateJobStatus(item) {
+  if (item.status.failed > 0 || item.status?.succeeded !== item.spec?.completions) {
+    return STATUS_FAILED;
+  }
+  return STATUS_COMPLETED;
+}
+
+export function calculateCronJobStatus(item) {
+  if (item.status?.active > 0 && !item.status?.lastScheduleTime) {
+    return STATUS_FAILED;
+  }
+  if (item.spec?.suspend) {
+    return STATUS_SUSPENDED;
+  }
+  return STATUS_READY;
 }
