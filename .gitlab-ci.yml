@@ -155,6 +155,7 @@ variables:
   GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
   DEBIAN_VERSION: "bullseye"
   UBI_VERSION: "8.6"

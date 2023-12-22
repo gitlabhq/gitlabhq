@@ -557,19 +557,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '.stale', :freeze_time do
-    subject { described_class.stale }
-
-    let!(:runner1) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago + 1.second) }
-    let!(:runner2) { create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: 3.months.ago) }
-    let!(:runner3) { create(:ci_runner, :instance, created_at: 3.months.ago, contacted_at: nil) }
-    let!(:runner4) { create(:ci_runner, :instance, created_at: 2.months.ago, contacted_at: nil) }
-
-    it 'returns stale runners' do
-      is_expected.to match_array([runner2, runner3])
-    end
-  end
-
   describe '#stale?', :clean_gitlab_redis_cache, :freeze_time do
     let(:runner) { build(:ci_runner, :instance) }
 
@@ -630,15 +617,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         end
       end
     end
-  end
-
-  describe '.online', :freeze_time do
-    subject { described_class.online }
-
-    let!(:runner1) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
-    let!(:runner2) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
-
-    it { is_expected.to match_array([runner2]) }
   end
 
   describe '#online?', :clean_gitlab_redis_cache, :freeze_time do
@@ -713,15 +691,6 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
           .and_return({ contacted_at: value }.to_json).at_least(:once)
       end
     end
-  end
-
-  describe '.offline' do
-    subject { described_class.offline }
-
-    let!(:runner1) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
-    let!(:runner2) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
-
-    it { is_expected.to eq([runner1]) }
   end
 
   describe '.with_running_builds' do
@@ -2124,6 +2093,104 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       it 'returns the correct value based on saas and runner type' do
         expect(runner.gitlab_hosted?).to eq(expected_value)
       end
+    end
+  end
+
+  describe 'status scopes' do
+    let_it_be(:online_runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
+    let_it_be(:offline_runner) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
+    let_it_be(:never_contacted_runner) { create(:ci_runner, :instance, contacted_at: nil) }
+
+    describe '.online' do
+      subject(:runners) { described_class.online }
+
+      it 'returns online runners' do
+        expect(runners).to contain_exactly(online_runner)
+      end
+    end
+
+    describe '.offline' do
+      subject(:runners) { described_class.offline }
+
+      it 'returns offline runners' do
+        expect(runners).to contain_exactly(offline_runner)
+      end
+    end
+
+    describe '.never_contacted' do
+      subject(:runners) { described_class.never_contacted }
+
+      it 'returns never contacted runners' do
+        expect(runners).to contain_exactly(never_contacted_runner)
+      end
+    end
+
+    describe '.stale', :freeze_time do
+      subject { described_class.stale }
+
+      let!(:stale_runner1) do
+        create(:ci_runner, :instance, created_at: described_class.stale_deadline - 1.second, contacted_at: nil)
+      end
+
+      let!(:stale_runner2) do
+        create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: described_class.stale_deadline - 1.second)
+      end
+
+      it 'returns stale runners' do
+        is_expected.to contain_exactly(stale_runner1, stale_runner2)
+      end
+    end
+
+    include_examples 'runner with status scope'
+  end
+
+  describe '.available_statuses' do
+    subject { described_class.available_statuses }
+
+    it { is_expected.to eq(%w[active paused online offline never_contacted stale]) }
+  end
+
+  describe '.online_contact_time_deadline', :freeze_time do
+    subject { described_class.online_contact_time_deadline }
+
+    it { is_expected.to eq(2.hours.ago) }
+  end
+
+  describe '.stale_deadline', :freeze_time do
+    subject { described_class.stale_deadline }
+
+    it { is_expected.to eq(3.months.ago) }
+  end
+
+  describe '.with_runner_type' do
+    subject { described_class.with_runner_type(runner_type) }
+
+    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+    let_it_be(:group_runner) { create(:ci_runner, :group) }
+    let_it_be(:project_runner) { create(:ci_runner, :project) }
+
+    context 'with instance_type' do
+      let(:runner_type) { 'instance_type' }
+
+      it { is_expected.to contain_exactly(instance_runner) }
+    end
+
+    context 'with group_type' do
+      let(:runner_type) { 'group_type' }
+
+      it { is_expected.to contain_exactly(group_runner) }
+    end
+
+    context 'with project_type' do
+      let(:runner_type) { 'project_type' }
+
+      it { is_expected.to contain_exactly(project_runner) }
+    end
+
+    context 'with invalid runner type' do
+      let(:runner_type) { 'invalid runner type' }
+
+      it { is_expected.to contain_exactly(instance_runner, group_runner, project_runner) }
     end
   end
 end

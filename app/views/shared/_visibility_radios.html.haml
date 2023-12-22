@@ -6,7 +6,7 @@
   = form.gitlab_ui_radio_component model_method, level,
      "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
      help_text: '<span class="option-description">%{visibility_level_description}</span><span class="option-disabled-reason"></span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model)},
-     radio_options: { checked: (selected_level == level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "", qa_selector: "#{visibility_level_label(level).downcase}_radio" } },
+     radio_options: { checked: (selected_level == level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "" } },
      label_options: { class: 'js-visibility-level-radio' }
 
 

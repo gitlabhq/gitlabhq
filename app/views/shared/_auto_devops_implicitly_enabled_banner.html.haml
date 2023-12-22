@@ -1,5 +1,5 @@
 - if show_auto_devops_implicitly_enabled_banner?(project, current_user)
-  = render Pajamas::AlertComponent.new(alert_options: { class: 'auto-devops-implicitly-enabled-banner', data: { qa_selector: 'auto_devops_banner_content' } },
+  = render Pajamas::AlertComponent.new(alert_options: { class: 'auto-devops-implicitly-enabled-banner' },
     close_button_options: { class: 'hide-auto-devops-implicitly-enabled-banner',
                             data: { project_id: project.id }}) do |c|
     - c.with_body do

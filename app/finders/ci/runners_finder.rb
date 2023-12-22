@@ -88,7 +88,7 @@ module Ci
     end
 
     def filter_by_status!
-      filter_by!(:status_status, Ci::Runner::AVAILABLE_STATUSES)
+      @runners = @runners.with_status(@params[:status_status]) if @params[:status_status].present?
     end
 
     def filter_by_upgrade_status!
@@ -104,7 +104,10 @@ module Ci
     end
 
     def filter_by_runner_type!
-      filter_by!(:type_type, Ci::Runner::AVAILABLE_TYPES)
+      runner_type = @params[:type_type]
+      return if runner_type.blank?
+
+      @runners = @runners.with_runner_type(runner_type)
     end
 
     def filter_by_tag_list!
@@ -136,14 +139,6 @@ module Ci
 
     def request_tag_list!
       @runners = @runners.with_tags if !@params[:preload].present? || @params.dig(:preload, :tag_name)
-    end
-
-    def filter_by!(scope_name, available_scopes)
-      scope = @params[scope_name]
-
-      if scope.present? && available_scopes.include?(scope)
-        @runners = @runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
-      end
     end
   end
 end

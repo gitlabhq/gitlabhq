@@ -41,20 +41,70 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe '.stale', :freeze_time do
-    subject { described_class.stale.ids }
+  describe 'status scopes' do
+    let_it_be(:runner) { create(:ci_runner, :instance) }
 
-    let!(:runner_manager1) { create(:ci_runner_machine, :stale) }
-    let!(:runner_manager2) { create(:ci_runner_machine, :stale, contacted_at: nil) }
-    let!(:runner_manager3) { create(:ci_runner_machine, created_at: 6.months.ago, contacted_at: Time.current) }
-    let!(:runner_manager4) { create(:ci_runner_machine, created_at: 5.days.ago) }
-    let!(:runner_manager5) do
-      create(:ci_runner_machine, created_at: (7.days - 1.second).ago, contacted_at: (7.days - 1.second).ago)
+    let_it_be(:offline_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 2.hours.ago) }
+    let_it_be(:online_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 1.second.ago) }
+    let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: nil) }
+
+    describe '.online' do
+      subject(:runner_managers) { described_class.online }
+
+      it 'returns online runner managers' do
+        expect(runner_managers).to contain_exactly(online_runner_manager)
+      end
     end
 
-    it 'returns stale runner managers' do
-      is_expected.to match_array([runner_manager1.id, runner_manager2.id])
+    describe '.offline' do
+      subject(:runner_managers) { described_class.offline }
+
+      it 'returns offline runner managers' do
+        expect(runner_managers).to contain_exactly(offline_runner_manager)
+      end
     end
+
+    describe '.never_contacted' do
+      subject(:runner_managers) { described_class.never_contacted }
+
+      it 'returns never contacted runner managers' do
+        expect(runner_managers).to contain_exactly(never_contacted_runner_manager)
+      end
+    end
+
+    describe '.stale', :freeze_time do
+      subject { described_class.stale }
+
+      let!(:stale_runner_manager1) do
+        create(
+          :ci_runner_machine,
+          runner: runner,
+          created_at: described_class.stale_deadline - 1.second,
+          contacted_at: nil
+        )
+      end
+
+      let!(:stale_runner_manager2) do
+        create(
+          :ci_runner_machine,
+          runner: runner,
+          created_at: 8.days.ago,
+          contacted_at: described_class.stale_deadline - 1.second
+        )
+      end
+
+      it 'returns stale runner managers' do
+        is_expected.to contain_exactly(stale_runner_manager1, stale_runner_manager2)
+      end
+    end
+
+    include_examples 'runner with status scope'
+  end
+
+  describe '.available_statuses' do
+    subject { described_class.available_statuses }
+
+    it { is_expected.to eq(%w[online offline never_contacted stale]) }
   end
 
   describe '.online_contact_time_deadline', :freeze_time do

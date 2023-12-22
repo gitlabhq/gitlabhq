@@ -11,6 +11,9 @@ module QA
 
       before do
         wait_until_project_is_ready(project)
+        # Associating an access token to a project requires a job to be processed in sidekiq
+        # We need to be sure that this has happened or else we may get flaky test failures
+        wait_until_token_associated_to_project(project, user_api_client)
       end
 
       context 'for the same project' do

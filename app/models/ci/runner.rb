@@ -14,6 +14,7 @@ module Ci
     include Presentable
     include EachBatch
     include Ci::HasRunnerExecutor
+    include Ci::HasRunnerStatus
 
     extend ::Gitlab::Utils::Override
 
@@ -85,22 +86,22 @@ module Ci
 
     before_save :ensure_token
 
-    scope :active, -> (value = true) { where(active: value) }
+    scope :active, ->(value = true) { where(active: value) }
     scope :paused, -> { active(false) }
-    scope :online, -> { where(arel_table[:contacted_at].gt(online_contact_time_deadline)) }
     scope :recent, -> do
       timestamp = stale_deadline
 
       where(arel_table[:created_at].gteq(timestamp).or(arel_table[:contacted_at].gteq(timestamp)))
     end
     scope :stale, -> do
-      timestamp = stale_deadline
+      stale_timestamp = stale_deadline
 
-      where(arel_table[:created_at].lteq(timestamp))
-        .where(arel_table[:contacted_at].eq(nil).or(arel_table[:contacted_at].lteq(timestamp)))
+      created_before_stale_deadline = arel_table[:created_at].lteq(stale_timestamp)
+      contacted_before_stale_deadline = arel_table[:contacted_at].lteq(stale_timestamp)
+      never_contacted = arel_table[:contacted_at].eq(nil)
+
+      where(created_before_stale_deadline).where(never_contacted.or(contacted_before_stale_deadline))
     end
-    scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
-    scope :never_contacted, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where(arel_table[:contacted_at].gt(recent_queue_deadline)) }
@@ -220,6 +221,11 @@ module Ci
     validate :exactly_one_group, if: :group_type?
 
     scope :with_version_prefix, ->(value) { joins(:runner_managers).merge(RunnerManager.with_version_prefix(value)) }
+    scope :with_runner_type, ->(runner_type) do
+      return all if AVAILABLE_TYPES.exclude?(runner_type.to_s)
+
+      where(runner_type: runner_type)
+    end
 
     acts_as_taggable
 
@@ -346,23 +352,6 @@ module Ci
       return short_sha if description.blank?
 
       description
-    end
-
-    def online?
-      contacted_at && contacted_at > self.class.online_contact_time_deadline
-    end
-
-    def stale?
-      return false unless created_at
-
-      [created_at, contacted_at].compact.max <= self.class.stale_deadline
-    end
-
-    def status
-      return :stale if stale?
-      return :never_contacted unless contacted_at
-
-      online? ? :online : :offline
     end
 
     # DEPRECATED

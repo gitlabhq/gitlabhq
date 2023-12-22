@@ -11,7 +11,7 @@
   - c.with_body do
     = gitlab_ui_form_for @hook, as: :hook, url: url, html: { class: 'js-webhook-form gl-new-card-add-form gl-m-3 gl-display-none js-toggle-content' } do |f|
       = render partial: partial, locals: { form: f, hook: @hook }
-      = f.submit _('Add webhook'), pajamas_button: true, data: { qa_selector: "create_webhook_button" }
+      = f.submit _('Add webhook'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-webhook-edit-close gl-ml-2 js-toggle-button' }) do
         = _('Cancel')
     - if hooks.any?

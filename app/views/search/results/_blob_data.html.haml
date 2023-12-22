@@ -1,6 +1,6 @@
-.js-blob-result.gl-mt-3.gl-mb-5{ data: { qa_selector: 'result_item_content' } }
+.js-blob-result.gl-mt-3.gl-mb-5{ data: { testid: 'result-item-content' } }
   .file-holder.file-holder-top-border
-    .js-file-title.file-title{ data: { qa_selector: 'file_title_content' } }
+    .js-file-title.file-title{ data: { testid: 'file-title-content' } }
       = link_to blob_link, data: {track_action: 'click_text', track_label: 'blob_path', track_property: 'search_result'} do
         = sprite_icon('document')
         %strong
@@ -8,7 +8,7 @@
       = copy_file_path_button(path)
     - if blob.data
       - if blob.data.size > 0
-        .file-content.code.term{ data: { qa_selector: 'file_text_content' } }
+        .file-content.code.term{ data: { testid: 'file-text-content' } }
           = render 'search/results/blob_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link, blame_link: blame_link, highlight_line: blob.highlight_line
       - else
         .file-content.code

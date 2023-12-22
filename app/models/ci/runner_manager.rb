@@ -5,9 +5,12 @@ module Ci
     include FromUnion
     include RedisCacheable
     include Ci::HasRunnerExecutor
+    include Ci::HasRunnerStatus
 
     # For legacy reasons, the table name is ci_runner_machines in the database
     self.table_name = 'ci_runner_machines'
+
+    AVAILABLE_STATUSES = %w[online offline never_contacted stale].freeze
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner Machine DB entry can be updated
     UPDATE_CONTACT_COLUMN_EVERY = (40.minutes)..(55.minutes)
@@ -36,13 +39,16 @@ module Ci
     STALE_TIMEOUT = 7.days
 
     scope :stale, -> do
-      created_some_time_ago = arel_table[:created_at].lteq(STALE_TIMEOUT.ago)
-      contacted_some_time_ago = arel_table[:contacted_at].lteq(STALE_TIMEOUT.ago)
+      stale_timestamp = stale_deadline
+
+      created_before_stale_deadline = arel_table[:created_at].lteq(stale_timestamp)
+      contacted_before_stale_deadline = arel_table[:contacted_at].lteq(stale_timestamp)
 
       from_union(
-        where(contacted_at: nil),
-        where(contacted_some_time_ago),
-        remove_duplicates: false).where(created_some_time_ago)
+        never_contacted,
+        where(contacted_before_stale_deadline),
+        remove_duplicates: false
+      ).where(created_before_stale_deadline)
     end
 
     scope :for_runner, ->(runner_id) do
@@ -114,24 +120,7 @@ module Ci
       end
     end
 
-    def status
-      return :stale if stale?
-      return :never_contacted unless contacted_at
-
-      online? ? :online : :offline
-    end
-
     private
-
-    def online?
-      contacted_at && contacted_at > self.class.online_contact_time_deadline
-    end
-
-    def stale?
-      return false unless created_at
-
-      [created_at, contacted_at].compact.max <= self.class.stale_deadline
-    end
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.
