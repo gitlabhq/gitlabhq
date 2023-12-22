@@ -25,10 +25,12 @@ When this list is rendered, it looks like this:
 - Dog
 - Turtle
 
-These styles are **valid for GitLab only**. The [GitLab documentation website](https://docs.gitlab.com)
-and the [main GitLab website](https://about.gitlab.com) use [Kramdown](https://kramdown.gettalong.org) instead.
+NOTE:
+As this Markdown specification is **valid for GitLab only**, you should
+[view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
 
-You should not view this page in the documentation, but instead [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
+We do our best to render the Markdown faithfully here, however the [GitLab documentation website](https://docs.gitlab.com)
+and the [GitLab handbook](https://handbook.gitlab.com) use a different Markdown processor.
 
 GitLab Flavored Markdown extends the [CommonMark specification](https://spec.commonmark.org/current/).
 It was inspired by [GitHub Flavored Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
@@ -39,12 +41,12 @@ You can use GitLab Flavored Markdown in the following areas:
 
 - Comments
 - Issues
+- Epics
 - Merge requests
 - Milestones
 - Snippets (the snippet must be named with a `.md` extension)
 - Wiki pages
 - Markdown documents inside repositories
-- Epics
 
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
@@ -54,7 +56,7 @@ to do so. For more information, see the [`gitlab-markup` gem project](https://gi
 GitLab uses standard CommonMark formatting. However, GitLab Flavored Markdown
 extends standard Markdown with features made specifically for GitLab.
 
-Features not found in standard Markdown:
+The following features are not found in standard Markdown:
 
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
@@ -66,7 +68,7 @@ Features not found in standard Markdown:
 - [Table of Contents](#table-of-contents)
 - [Wiki specific Markdown](#wiki-specific-markdown)
 
-Features [extended from standard Markdown](#features-extended-from-standard-markdown):
+The following features be are extended from standard Markdown:
 
 | Standard Markdown                     | Extended Markdown in GitLab                                                           |
 |---------------------------------------|---------------------------------------------------------------------------------------|
@@ -234,10 +236,6 @@ For more information, see the [Kroki integration](../administration/integration/
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emoji).
 
-::Tabs
-
-:::TabTitle Rendered Markdown
-
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">. Well we have a gift for you:
 
 <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/zap.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;"  title=":zap:" alt=":zap:">You can use emoji anywhere GitLab Flavored Markdown is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/v.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":v:" alt=":v:">
@@ -248,7 +246,7 @@ If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-f
 
 Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
 
-:::TabTitle Code
+The above paragraphs in raw Markdown:
 
 ```markdown
 Sometimes you want to :monkey: around a bit and add some :star2: to your
@@ -267,12 +265,10 @@ Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/)
 for a list of all supported emoji codes. :thumbsup:
 ```
 
-::EndTabs
-
 #### Emoji and your operating system
 
 The previous emoji example uses hard-coded images. Rendered emoji
-in GitLab may be different depending on the OS and browser used.
+in GitLab might look different depending on the OS and browser used.
 
 Most emoji are natively supported on macOS, Windows, iOS, Android, and fall back on image-based
 emoji where there is no support.
@@ -280,7 +276,7 @@ emoji where there is no support.
 <!-- vale gitlab.Spelling = NO -->
 
 On Linux, you can download [Noto Color Emoji](https://github.com/googlefonts/noto-emoji)
-to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
+to get full native emoji support. Ubuntu 22.04 (like many modern Linux distributions) has
 this font installed by default.
 
 <!-- vale gitlab.Spelling = YES -->
@@ -377,8 +373,8 @@ However, you cannot mix the wrapping tags:
 - [- deletion -}
 ```
 
-If your diff includes words in `` `code` `` font, make sure to escape each backtick `` ` `` with a
-backslash <code>&#92;</code>. Otherwise the diff highlight does not render correctly:
+Diff highlighting doesn't work with `` `inline code` ``. If your text includes backticks (`` ` ``), escape
+each backtick with a backslash <code>&#92;</code>:
 
 ```markdown
 - {+ Just regular text +}
@@ -397,7 +393,7 @@ backslash <code>&#92;</code>. Otherwise the diff highlight does not render corre
 
 Math written in LaTeX syntax is rendered with [KaTeX](https://github.com/KaTeX/KaTeX).
 _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
-This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
+This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 To prevent malicious activity, GitLab renders only the first 50 inline math instances.
@@ -453,12 +449,12 @@ $$
 
 You can add task lists anywhere Markdown is supported.
 
-- In issues, merge requests, and comments, you can select the boxes.
+- In issues, merge requests, epics, and comments, you can select the boxes.
 - In all other places, you cannot select the boxes. You must edit the Markdown manually
   by adding or removing an `x` in the brackets.
 
 Besides complete and incomplete, tasks can also be **inapplicable**. Selecting an inapplicable checkbox
-in an issue, merge request, or comment has no effect.
+in an issue, merge request, epic, or comment has no effect.
 
 To create a task list, follow the format of an ordered or unordered list:
 
@@ -480,28 +476,39 @@ To create a task list, follow the format of an ordered or unordered list:
 
 ![Task list as rendered by GitLab](img/completed_tasks_v15_3.png)
 
+To include task lists in tables, [use HTML list tags or HTML tables](#task-lists-in-tables).
+
 ### Table of contents
 
 <!--
-The following paragraphs use HTML to work around a Markdown bug.
-Do not change it back to a Markdown backticks.
+Tags for the table of contents are presented in a code block to work around a Markdown bug.
+Do not change the code block back to single backticks.
 For more information, see https://gitlab.com/gitlab-org/gitlab/-/issues/359077.
 -->
-<!-- vale gitlab.Uppercase = NO -->
 A table of contents is an unordered list that links to subheadings in the document.
-You can add a table of contents to issues and merge requests, but you can't add one
-to notes or comments. Add either the `[[_TOC_]]` or <code>[TOC]</code> tag on its own line
-to the **Description** field of any of the supported content types:
-<!-- vale gitlab.Uppercase = YES -->
+You can add a table of contents to issues, merge requests, and epics, but you can't add one
+to notes or comments.
 
-NOTE:
-A table of contents renders also when you use <code>`[TOC]`</code>, regardless of being on its own line or not.
-This behavior is unintended. For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
+Add one of these tags on their own line to the **description** field of any of the supported
+content types:
+
+```markdown
+[[_TOC_]]
+
+[TOC]
+```
 
 - Markdown files.
 - Wiki pages.
 - Issues.
 - Merge requests.
+- Epics.
+
+NOTE:
+A table of contents renders also when you use the TOC code in single square brackets, regardless of
+being on its own line or not.
+This behavior is unintended.
+For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
 
 ```markdown
 This sentence introduces my wiki page.
@@ -522,6 +529,8 @@ Second section content.
 ### Wiki-specific Markdown
 
 The following topics show how links inside wikis behave.
+
+When linking to wiki pages, you should use the **page slug** rather than the page name.
 
 #### Wiki - direct page link
 
@@ -608,18 +617,23 @@ For more information, see [Diagrams.net](../administration/integration/diagrams_
 
 To create a diagram in the plain text editor:
 
+1. On the wiki page you want to edit, select **Edit**.
+1. In the text box, make sure you're using the plain text editor
+   (the button on the bottom left says **Switch to rich text editing**).
 1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
-1. Use the diagrams.net editor to create the diagram.
+1. Create the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
 A Markdown image reference to the diagram is inserted in the wiki content.
 
 To edit a diagram in the plain text editor:
 
-1. Place the plain text editor's text field cursor in a Markdown image reference
-that contains the diagram.
-1. Select **Insert or edit diagram** (**{diagram}**) in the plain text editor.
-1. Use the diagrams.net editor to edit the diagram.
+1. On the wiki page you want to edit, select **Edit**.
+1. In the text box, make sure you're using the plain text editor
+   (the button on the bottom left says **Switch to rich text editing**).
+1. Position your cursor in the Markdown image reference that contains the diagram.
+1. Select **Insert or edit diagram** (**{diagram}**).
+1. Edit the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
 A Markdown image reference to the diagram is inserted in the wiki content,
@@ -629,18 +643,24 @@ replacing the previous diagram.
 
 To create a diagram in the rich text editor:
 
+1. On the wiki page you want to edit, select **Edit**.
+1. In the text box, make sure you're using the rich text editor
+   (the button on the bottom left says **Switch to plain text editing**).
 1. In the editor's toolbar, select **More options** (**{plus}**).
 1. In the dropdown list, select **Create or edit diagram**.
-1. Use the diagrams.net editor to create the diagram.
+1. Create the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
 The diagram as visualized in the diagrams.net editor is inserted in the wiki content.
 
 To edit a diagram in the rich text editor:
 
+1. On the wiki page you want to edit, select **Edit**.
+1. In the text box, make sure you're using the rich text editor
+   (the button on the bottom left says **Switch to plain text editing**).
 1. Select the diagram that you want to edit.
 1. In the floating toolbar, select **Edit diagram** (**{diagram}**).
-1. Use the diagrams.net editor to edit the diagram.
+1. Edit the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
 The selected diagram is replaced with an updated version.
@@ -657,45 +677,44 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-| references                                                                  | input                         | cross-project reference                 | shortcut inside same namespace |
-|:----------------------------------------------------------------------------|:------------------------------|:----------------------------------------|:-------------------------------|
-| specific user                                                               | `@user_name`                  |                                         |                                |
-| specific group                                                              | `@group_name`                 |                                         |                                |
-| entire team                                                                 | [`@all`](discussions/index.md#mentioning-all-members)                        |                                         |                                |
-| project                                                                     | `namespace/project>`          |                                         |                                |
-| issue                                                                       | ``#123``                      | `namespace/project#123`                 | `project#123`                  |
-| merge request                                                               | `!123`                        | `namespace/project!123`                 | `project!123`                  |
-| snippet                                                                     | `$123`                        | `namespace/project$123`                 | `project$123`                  |
-| [epic](group/epics/index.md)                                                | `&123`                        | `group1/subgroup&123`                   |                                |
-| [iteration](group/iterations/index.md)                                      | `*iteration:"iteration title"`|                                         |                                |
-| [vulnerability](application_security/vulnerabilities/index.md) <sup>1</sup> | `[vulnerability:123]`         | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`  |
-| feature flag                                                                | `[feature_flag:123]`          | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`   |
-| label by ID                                                                 | `~123`                        | `namespace/project~123`                 | `project~123`                  |
-| one-word label by name                                                      | `~bug`                        | `namespace/project~bug`                 | `project~bug`                  |
-| multi-word label by name                                                    | `~"feature request"`          | `namespace/project~"feature request"`   | `project~"feature request"`    |
-| scoped label by name                                                        | `~"priority::high"`           | `namespace/project~"priority::high"`    | `project~"priority::high"`     |
-| project milestone by ID                                                     | `%123`                        | `namespace/project%123`                 | `project%123`                  |
-| one-word milestone by name                                                  | `%v1.23`                      | `namespace/project%v1.23`               | `project%v1.23`                |
-| multi-word milestone by name                                                | `%"release candidate"`        | `namespace/project%"release candidate"` | `project%"release candidate"`  |
-| specific commit                                                             | `9ba12248`                    | `namespace/project@9ba12248`            | `project@9ba12248`             |
-| commit range comparison                                                     | `9ba12248...b19a04f5`         | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`  |
-| repository file references                                                  | `[README](doc/README.md)`     |                                         |                                |
-| repository file line references                                             | `[README](doc/README.md#L13)` |                                         |                                |
-| [alert](../operations/incident_management/alerts.md)                        | `^alert#123`                  | `namespace/project^alert#123`           | `project^alert#123`            |
-| contact                                                                     | `[contact:test@example.com]`  |                                         |                                |
-
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222483) in GitLab 13.7.
+| References                                                     | Input                          | Cross-project reference                 | Shortcut inside the same namespace |
+| -------------------------------------------------------------- | ------------------------------ | --------------------------------------- | ---------------------------------- |
+| Specific user                                                  | `@user_name`                   |                                         |                                    |
+| Specific group                                                 | `@group_name`                  |                                         |                                    |
+| Entire team                                                    | [`@all`](discussions/index.md#mentioning-all-members) |                  |                                    |
+| Project                                                        | `namespace/project>`           |                                         |                                    |
+| Issue                                                          | ``#123``                       | `namespace/project#123`                 | `project#123`                      |
+| Merge request                                                  | `!123`                         | `namespace/project!123`                 | `project!123`                      |
+| Snippet                                                        | `$123`                         | `namespace/project$123`                 | `project$123`                      |
+| [Epic](group/epics/index.md)                                   | `&123`                         | `group1/subgroup&123`                   |                                    |
+| [Iteration](group/iterations/index.md)                         | `*iteration:"iteration title"` |                                         |                                    |
+| [Vulnerability](application_security/vulnerabilities/index.md) | `[vulnerability:123]`          | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
+| Feature flag                                                   | `[feature_flag:123]`           | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
+| Label by ID                                                    | `~123`                         | `namespace/project~123`                 | `project~123`                      |
+| Label by name (one word)                                       | `~bug`                         | `namespace/project~bug`                 | `project~bug`                      |
+| Label by name (multiple words)                                 | `~"feature request"`           | `namespace/project~"feature request"`   | `project~"feature request"`        |
+| Label by name (scoped)                                         | `~"priority::high"`            | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
+| Project milestone by ID                                        | `%123`                         | `namespace/project%123`                 | `project%123`                      |
+| Milestone by name (one word)                                   | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
+| Milestone by name (multiple words)                             | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
+| Commit (specific)                                              | `9ba12248`                     | `namespace/project@9ba12248`            | `project@9ba12248`                 |
+| Commit range comparison                                        | `9ba12248...b19a04f5`          | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
+| Repository file reference                                      | `[README](doc/README.md)`      |                                         |                                    |
+| Repository file reference (specific line)                      | `[README](doc/README.md#L13)`  |                                         |                                    |
+| [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
+| [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
 recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
 add a leading backslash `\#123`.
 
-In addition to this, links to some objects are also recognized and formatted. Some examples of these are:
+In addition to this, links to some objects are also recognized and formatted.
+For example:
 
-- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, which are rendered as `#1234 (comment 101075757)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, which are rendered as `#1234 (designs)`.
-- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, which are rendered as `#1234[layout.png]`.
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, rendered as `#1234 (comment 101075757)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, rendered as `#1234 (designs)`.
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, rendered as `#1234[layout.png]`.
 
 ### Show the issue, merge request, or epic title in the reference
 
@@ -713,18 +732,23 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 > - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
 > - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include an extended summary in the rendered link of an issue, work item, or merge request, add a `+s`
-at the end of the reference. Summary includes information about **assignees**, **milestone**
-and **health status** of referenced item.
+To include an extended summary in the rendered link of an issue, work item, or merge request:
+
+- Add a `+s` at the end of the reference.
+
+Summary includes information about **assignees**, **milestone** and **health status** of referenced item.
 
 For example, a reference like `#123+s` is rendered as
 `The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
 
-To update the rendered references if the assignee, milestone, or health status changed,
-edit the comment or description and save it.
-For more information, see issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807).
+To update the rendered references if the assignee, milestone, or health status changed:
+
+- Edit the comment or description and save it.
+
+Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
+references refresh.
 
 ### Embedding Observability dashboards
 
@@ -733,8 +757,7 @@ You can embed GitLab Observability UI dashboards descriptions and comments, for 
 To embed an Observability dashboard URL:
 
 1. In GitLab Observability UI, copy the URL in the address bar.
-
-1. Paste your link wherever you want to embed your dashboard. GitLab Flavored Markdown recognizes the URL and displays the source.
+1. Paste your link in a comment or description. GitLab Flavored Markdown recognizes the URL and displays the source.
 
 ## Features extended from standard Markdown
 
@@ -753,7 +776,7 @@ by starting the lines of the blockquote with `>`:
 
 Quote break.
 
-> This very long line is still quoted properly when it wraps. Keep writing to make sure this line is long enough to actually wrap for everyone. You can also *add* **Markdown** into a blockquote.
+> This very long line is still quoted properly when it wraps. Keep writing to make sure this line is long enough to actually wrap for everyone. You can also *use* **Markdown** in a blockquote.
 ```
 
 > Blockquotes help you emulate reply text.
@@ -761,7 +784,7 @@ Quote break.
 
 Quote break.
 
-> This very long line is still quoted properly when it wraps. Keep writing to make sure this line is long enough to actually wrap for everyone. You can also *add* **Markdown** into a blockquote.
+> This very long line is still quoted properly when it wraps. Keep writing to make sure this line is long enough to actually wrap for everyone. You can also *use* **Markdown** in a blockquote.
 
 #### Multiline blockquote
 
@@ -811,6 +834,9 @@ Inline `code` has `back-ticks around` it.
 To achieve a similar effect for a larger code example, you can:
 
 - Fence an entire block of code with triple backticks (```` ``` ````).
+  - You can use more than three backticks, as long as both the opening and closing set have the same number.
+    Use multiple backticks for example when you want to include [suggestions](project/merge_requests/reviews/suggestions.md#nest-code-blocks-in-suggestions)
+    in your code blocks, or the other way around.
 - Fence an entire block of code with triple tildes (`~~~`).
 - Indent it four or more spaces.
 
@@ -926,24 +952,24 @@ Strikethrough is not part of the core Markdown standard, but is part of GitLab F
 Examples:
 
 ```markdown
-Emphasis, aka italics, with *asterisks* or _underscores_.
+Emphasis, or italics, with *asterisks* or _underscores_.
 
-Strong emphasis, aka bold, with double **asterisks** or __underscores__.
+Strong emphasis, or bold, with double **asterisks** or __underscores__.
 
 Combined emphasis with **asterisks and _underscores_**.
 
-Strikethrough uses two tildes. ~~Scratch this.~~
+Strikethrough with double tildes. ~~Scratch this.~~
 ```
 
 <!-- markdownlint-disable MD050 -->
 
-Emphasis, aka italics, with *asterisks* or _underscores_.
+Emphasis, or italics, with *asterisks* or _underscores_.
 
-Strong emphasis, aka bold, with double **asterisks** or __underscores__.
+Strong emphasis, or bold, with double **asterisks** or __underscores__.
 
 Combined emphasis with **asterisks and _underscores_**.
 
-Strikethrough uses two tildes. ~~Scratch this.~~
+Strikethrough with double tildes. ~~Scratch this.~~
 
 <!-- markdownlint-enable MD050 -->
 
@@ -991,7 +1017,7 @@ do*this*and*do*that*and*another thing
 
 ### Footnotes
 
-Footnotes add a link to a note that are rendered at the end of a Markdown file.
+Footnotes add a link to a note rendered at the end of a Markdown file.
 
 To make a footnote, you need both a reference tag and a separate line (anywhere in the file) with
 the note content.
@@ -1210,7 +1236,7 @@ To see the second example of Markdown rendered in HTML,
 
 You can also use raw HTML in your Markdown, and it usually works pretty well.
 
-See the documentation for HTML::Pipeline's [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
+See the documentation for `HTML::Pipeline`'s [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
 `SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 `rel="license"` is allowed on links to support the [Rel-License microformat](https://microformats.org/wiki/rel-license) and license attribution.
@@ -1243,7 +1269,7 @@ are separated into their own lines:
   <dt>Markdown in HTML</dt>
   <dd>Does *not* work **very** well. HTML tags work, in most cases.</dd>
 
-  <dt>Markdown in HTML</dt>
+  <dt>Markdown in HTML with proper spacing</dt>
   <dd>
 
   Does *not* work **very** well. HTML tags work, in most cases.
@@ -1261,7 +1287,7 @@ Markdown is fine in GitLab.
   <dt>Markdown in HTML</dt>
   <dd>Does *not* work **very** well. HTML tags work, in most cases.</dd>
 
-  <dt>Markdown in HTML</dt>
+  <dt>Markdown in HTML with proper spacing</dt>
   <dd>
 
   Does <em>not</em> work <b>very</b> well. HTML tags work, in most cases.
@@ -1279,28 +1305,24 @@ and [`<summary>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summ
 tags. For example, collapse a long log file so it takes up less screen space.
 
 ```html
-<p>
 <details>
-<summary>Click this to collapse/fold.</summary>
+<summary>Click to expand</summary>
 
 These details <em>remain</em> <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
 
 </details>
-</p>
 ```
 
-<p>
 <details>
-<summary>Click this to collapse/fold.</summary>
+<summary>Click to expand</summary>
 
 These details <em>remain</em> <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
 
 </details>
-</p>
 
 ---
 
@@ -1312,7 +1334,7 @@ Remember to leave a blank line before and after any Markdown sections, as shown 
 <details>
 <summary>
 
-Click this to _collapse/fold._
+Click to _expand._
 
 </summary>
 
@@ -1331,7 +1353,7 @@ works correctly in GitLab.
 -->
 
 <details>
-<summary>Click this to <em>collapse/fold.</em></summary>
+<summary>Click to <em>expand.</em></summary>
 
 These details <em>remain</em> <b>hidden</b> until expanded.
 
@@ -1343,7 +1365,7 @@ These details <em>remain</em> <b>hidden</b> until expanded.
 
 A line break is inserted (a new paragraph starts) if the previous text is
 ended with two newlines, like when you press <kbd>Enter</kbd> twice in a row. If you only
-use one newline (select <kbd>Enter</kbd> once), the next sentence remains part of the
+use one newline (press <kbd>Enter</kbd> once), the next sentence remains part of the
 same paragraph. Use this approach if you want to keep long lines from wrapping, and keep
 them editable:
 
@@ -1382,7 +1404,7 @@ paragraph, with a blank line in between:
 ```markdown
 First paragraph.
 Another line in the same paragraph.
-A third line in the same paragraph, but this time ending with two spaces.{space}{space}
+A third line in the same paragraph, but this time ending with two spaces.<space><space>
 A new line directly under the first paragraph.
 
 Second paragraph.
@@ -1469,8 +1491,8 @@ GitLab Flavored Markdown auto-links almost any URL you put into your text:
 - <https://www.google.com>
 - <https://www.google.com>
 - <ftp://ftp.us.debian.org/debian/>
-- <smb://foo/bar/baz>
-- <irc://irc.freenode.net/>
+- <a href="smb://foo/bar/baz/">smb://foo/bar/baz</a>
+- <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
 - <http://localhost:3000>
 
 <!-- vale gitlab.Spelling = YES -->
@@ -1660,23 +1682,21 @@ Press <kbd>Enter</kbd> to go to the next page.
 
 Tables are not part of the core Markdown specification, but are part of GitLab Flavored Markdown.
 
-#### Markdown
-
-1. The first line contains the headers, separated by "pipes" (`|`).
-1. The second line separates the headers from the cells.
-   - The cells can contain only empty spaces, hyphens, and
-     (optionally) colons for horizontal alignment.
-   - Each cell must contain at least one hyphen, but adding more hyphens to a
-     cell does not change the cell's rendering.
-   - Any content other than hyphens, whitespace, or colons is not allowed
-1. The third, and any following lines, contain the cell values.
-   - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
-     but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
-   - The cell sizes **don't** have to match each other. They are flexible, but must be separated
-     by pipes (`|`).
-   - You **can** have blank cells.
-1. Column widths are calculated dynamically based on the content of the cells.
-1. To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).
+- The first line contains the headers, separated by "pipes" (`|`).
+- The second line separates the headers from the cells.
+  - The cells can contain only empty spaces, hyphens, and
+   (optionally) colons for horizontal alignment.
+  - Each cell must contain at least one hyphen, but adding more hyphens to a
+   cell does not change the cell's rendering.
+  - Any content other than hyphens, whitespace, or colons is not allowed
+- The third, and any following lines, contain the cell values.
+  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
+   but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+  - The cell sizes **don't** have to match each other. They are flexible, but must be separated
+   by pipes (`|`).
+  - You **can** have blank cells.
+- Column widths are calculated dynamically based on the content of the cells.
+- To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).
 
 Example:
 
@@ -1693,6 +1713,8 @@ Example:
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
+
+#### Alignment
 
 Additionally, you can choose the alignment of text in columns by adding colons (`:`)
 to the sides of the "dash" lines in the second row. This affects every cell in the column:
@@ -1712,6 +1734,8 @@ to the sides of the "dash" lines in the second row. This affects every cell in t
 [In GitLab itself](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables),
 the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
 
+#### Cells with multiple lines
+
 You can use HTML formatting to adjust the rendering of tables. For example, you can
 use `<br>` tags to force a cell to have multiple lines:
 
@@ -1727,45 +1751,49 @@ use `<br>` tags to force a cell to have multiple lines:
 | Item1 | This text is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
-You can use HTML formatting in GitLab itself to add [task lists](#task-lists) with checkboxes,
-but they do not render properly on `docs.gitlab.com`. These tasks will not save their
-state when selected, like regular GitLab task lists.
+#### Task lists in tables
 
-```markdown
-| header 1 | header 2 |
-| ---      | ---      |
-| cell 1   | cell 2   |
-| cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
-```
+To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
 
-To have fully functioning task lists in a table, create an HTML table with Markdown in the cells:
+- **An HTML table with Markdown in the cells.** Tables formatted this way result in fully functioning
+  task lists.
 
-```html
-<table>
-<thead>
-<tr><th>header 1</th><th>header 2</th></tr>
-</thead>
-<tbody>
-<tr>
-<td>cell 1</td>
-<td>cell 2</td>
-</tr>
-<tr>
-<td>cell 3</td>
-<td>
+  ```html
+  <table>
+  <thead>
+  <tr><th>header 1</th><th>header 2</th></tr>
+  </thead>
+  <tbody>
+  <tr>
+  <td>cell 1</td>
+  <td>cell 2</td>
+  </tr>
+  <tr>
+  <td>cell 3</td>
+  <td>
 
-- [ ] Task one
-- [ ] Task two
+  - [ ] Task one
+  - [ ] Task two
 
-</td>
-</tr>
-</tbody>
-</table>
-```
+  </td>
+  </tr>
+  </tbody>
+  </table>
+  ```
 
-##### Copy and paste from a spreadsheet
+- **A Markdown table with HTML list tags.** These tasks don't save their state when selected.
+  Tables formatted this way do not render properly on `docs.gitlab.com`.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27205) in GitLab 12.7.
+  ```markdown
+  | header 1 | header 2 |
+  | ---      | ---      |
+  | cell 1   | cell 2   |
+  | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
+  ```
+
+You can also [create a table in the rich text editor](rich_text_editor.md#tables) and insert a task list then.
+
+#### Copy and paste from a spreadsheet
 
 If you're working in spreadsheet software (for example, Microsoft Excel, Google
 Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy and paste

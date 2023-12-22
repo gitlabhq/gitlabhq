@@ -41,9 +41,7 @@ module QA
         attr_reader :public_port, :admin_port
 
         def host_name
-          @host_name ||= if QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
-                           return host_ip if gdk_network
-
+          @host_name ||= if qa_environment? && !gdk_network && @network_cache != 'bridge'
                            "#{@name}.#{@network_cache}"
                          else
                            host_ip
@@ -67,11 +65,15 @@ module QA
             #{@image}
           CMD
 
-          unless QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
-            command.gsub!("--network #{@network_cache} ", '')
-          end
+          command.gsub!("--network #{@network_cache} ", '') unless qa_environment?
 
           shell command
+        end
+
+        private
+
+        def qa_environment?
+          QA::Runtime::Env.running_in_ci? || QA::Runtime::Env.qa_hostname
         end
       end
     end

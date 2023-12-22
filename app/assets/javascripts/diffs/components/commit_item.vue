@@ -94,7 +94,7 @@ export default {
       class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
     >
       <div
-        class="commit-actions flex-row d-none d-sm-flex align-items-start flex-wrap justify-content-end"
+        class="commit-actions flex-row d-none d-sm-flex align-items-center flex-wrap justify-content-end"
       >
         <div
           v-if="commit.signature_html"
@@ -105,7 +105,7 @@ export default {
           :endpoint="commit.pipeline_status_path"
           class="d-inline-flex mb-2"
         />
-        <gl-button-group class="gl-ml-4 gl-mb-4" data-testid="commit-sha-group">
+        <gl-button-group class="gl-ml-4" data-testid="commit-sha-group">
           <gl-button label class="gl-font-monospace" data-testid="commit-sha-short-id">{{
             commit.short_id
           }}</gl-button>

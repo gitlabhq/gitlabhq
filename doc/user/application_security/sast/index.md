@@ -241,7 +241,7 @@ SAST results are shown in the:
 ### Merge request widget **(ULTIMATE ALL)**
 
 SAST results display in the merge request widget area if a report from the target
-branch is available for comparison. The merge request widget displays SAST findings and resolutions that
+branch is available for comparison. The merge request widget displays SAST results and resolutions that
 were introduced by the changes made in the merge request.
 
 ![Security Merge request widget](img/sast_mr_widget_v16_7.png)
