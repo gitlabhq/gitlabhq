@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.5 (2023-12-23)
+
+### Security (1 change)
+
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@533a35411b589a615ddfedb26abf2a340cf3259e) ([merge request](gitlab-org/security/gitlab!3774))
+
 ## 16.5.4 (2023-12-13)
 
 ### Fixed (1 change)
