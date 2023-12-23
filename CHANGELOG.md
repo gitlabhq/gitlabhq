@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.6.3 (2023-12-23)
+
+### Fixed (1 change)
+
+- [Fix the index_name in IndexrepairService](gitlab-org/security/gitlab@a4171ada62adcee6b5c721bf2b6a3ef8235c83c5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139540)) **GitLab Enterprise Edition**
+
+### Security (1 change)
+
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@c1c628c9223282b1982ed648d48c305619b509b3) ([merge request](gitlab-org/security/gitlab!3773))
+
 ## 16.6.2 (2023-12-13)
 
 ### Fixed (1 change)
