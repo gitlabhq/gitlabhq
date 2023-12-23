@@ -14578,6 +14578,9 @@ msgstr ""
 msgid "CreateGitTag|Set tag message"
 msgstr ""
 
+msgid "CreateGroup|You don't have permission to create a group in the provided organization."
+msgstr ""
+
 msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
 msgstr ""
 

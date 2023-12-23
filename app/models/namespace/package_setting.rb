@@ -12,7 +12,7 @@ class Namespace::PackageSetting < ApplicationRecord
 
   PackageSettingNotImplemented = Class.new(StandardError)
 
-  PACKAGES_WITH_SETTINGS = %w[maven generic nuget].freeze
+  PACKAGES_WITH_SETTINGS = %w[maven generic nuget terraform_module].freeze
 
   belongs_to :namespace, inverse_of: :package_setting_relation
 
@@ -24,6 +24,14 @@ class Namespace::PackageSetting < ApplicationRecord
   validates :nuget_duplicates_allowed, inclusion: { in: [true, false] }
   validates :nuget_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
   validates :nuget_symbol_server_enabled, inclusion: { in: [true, false] }
+  validates :terraform_module_duplicates_allowed, inclusion: { in: [true, false] }
+  validates :terraform_module_duplicate_exception_regex, untrusted_regexp: true, length: { maximum: 255 }
+
+  scope :namespace_id_in, ->(namespace_ids) { where(namespace_id: namespace_ids) }
+  scope :with_terraform_module_duplicates_allowed_or_exception_regex, -> do
+    where(terraform_module_duplicates_allowed: true)
+      .or(where.not(terraform_module_duplicate_exception_regex: ''))
+  end
 
   class << self
     def duplicates_allowed?(package)

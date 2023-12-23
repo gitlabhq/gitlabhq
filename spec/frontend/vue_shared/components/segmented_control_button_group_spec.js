@@ -122,6 +122,7 @@ describe('~/vue_shared/components/segmented_control_button_group.vue', () => {
       [[{ value: '1' }]],
       [[{ value: 1, disabled: true }]],
       [[{ value: true, disabled: false }]],
+      [[{ value: true, props: { 'data-testid': 'test' } }]],
     ])('with options=%j, passes validation', (options) => {
       createComponent({ options });
 

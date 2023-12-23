@@ -92,7 +92,30 @@ module Groups
         end
       end
 
+      unless organization_setting_valid?
+        # We are unsetting this here to match behavior of invalid parent_id above and protect against possible
+        # committing to the database of a value that isn't allowed.
+        @group.organization = nil
+        message = s_("CreateGroup|You don't have permission to create a group in the provided organization.")
+        @group.errors.add(:organization_id, message)
+
+        return false
+      end
+
       true
+    end
+
+    def organization_setting_valid?
+      # we check for the params presence explicitly since:
+      # 1. We have a default organization_id at db level set and organization exists and may not have the entry
+      #    in organization_users table to allow authorization. This shouldn't be the case longterm as we
+      #    plan on populating organization_users correctly.
+      # 2. We shouldn't need to check if this is allowed if the user didn't try to set it themselves. i.e.
+      #    provided in the params
+      return true if params[:organization_id].blank?
+      return true if @group.organization.blank?
+
+      can?(current_user, :create_group, @group.organization)
     end
 
     def can_use_visibility_level?

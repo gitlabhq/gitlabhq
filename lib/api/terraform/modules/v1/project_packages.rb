@@ -171,7 +171,7 @@ module API
                       .new(authorized_user_project, current_user, create_package_file_params)
                       .execute
 
-                    render_api_error!(result[:message], result[:http_status]) if result[:status] == :error
+                    render_api_error!(result.message, result.reason) if result.error?
 
                     track_package_event('push_package', :terraform_module, project: authorized_user_project,
                       namespace: authorized_user_project.namespace)

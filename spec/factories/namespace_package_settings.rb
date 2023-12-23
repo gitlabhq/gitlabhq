@@ -15,6 +15,9 @@ FactoryBot.define do
 
     nuget_symbol_server_enabled { false }
 
+    terraform_module_duplicates_allowed { false }
+    terraform_module_duplicate_exception_regex { 'foo' }
+
     trait :group do
       namespace { association(:group) }
     end

@@ -23,6 +23,7 @@ module API
       expose :full_name, :full_path
       expose :created_at
       expose :parent_id
+      expose :organization_id
       expose :shared_runners_setting
 
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes

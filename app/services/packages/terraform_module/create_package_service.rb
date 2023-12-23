@@ -6,10 +6,20 @@ module Packages
       include Gitlab::Utils::StrongMemoize
 
       def execute
-        return error('Version is empty.', 400) if params[:module_version].blank?
-        return error('Access Denied', 403) if current_package_exists_elsewhere?
-        return error('Package version already exists.', 403) if current_package_version_exists?
-        return error('File is too large.', 400) if file_size_exceeded?
+        if params[:module_version].blank?
+          return ServiceResponse.error(message: 'Version is empty.', reason: :bad_request)
+        end
+
+        if duplicates_not_allowed? && current_package_exists_elsewhere?
+          return ServiceResponse.error(
+            message: 'A package with the same name already exists in the namespace',
+            reason: :forbidden
+          )
+        end
+
+        if current_package_version_exists?
+          return ServiceResponse.error(message: 'Package version already exists.', reason: :forbidden)
+        end
 
         ApplicationRecord.transaction { create_terraform_module_package! }
       end
@@ -22,6 +32,15 @@ module Packages
         ::Packages::CreatePackageFileService.new(package, file_params).execute
 
         package
+      end
+
+      def duplicates_not_allowed?
+        return true if package_settings_with_duplicates_allowed.blank?
+
+        package_settings_with_duplicates_allowed.none? do |setting|
+          setting.terraform_module_duplicates_allowed ||
+            ::Gitlab::UntrustedRegexp.new("\\A#{setting.terraform_module_duplicate_exception_regex}\\z").match?(name)
+        end
       end
 
       def current_package_exists_elsewhere?
@@ -62,9 +81,13 @@ module Packages
         }
       end
 
-      def file_size_exceeded?
-        project.actual_limits.exceeded?(:generic_packages_max_file_size, params[:file].size)
+      def package_settings_with_duplicates_allowed
+        ::Namespace::PackageSetting
+          .select(:terraform_module_duplicates_allowed, :terraform_module_duplicate_exception_regex)
+          .namespace_id_in(project.namespace.self_and_ancestor_ids)
+          .with_terraform_module_duplicates_allowed_or_exception_regex
       end
+      strong_memoize_attr :package_settings_with_duplicates_allowed
     end
   end
 end

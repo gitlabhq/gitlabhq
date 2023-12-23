@@ -33,6 +33,8 @@ RSpec.describe GitlabSchema.types['PackageSettings'], feature_category: :package
       npm_package_requests_forwarding_locked
       pypi_package_requests_forwarding_locked
       nuget_symbol_server_enabled
+      terraform_module_duplicates_allowed
+      terraform_module_duplicate_exception_regex
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

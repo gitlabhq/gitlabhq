@@ -103,7 +103,28 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       )
     end
 
+    shared_examples 'creating a package' do
+      it 'creates a package' do
+        expect { api_request }
+          .to change { project.packages.count }.by(1)
+          .and change { Packages::PackageFile.count }.by(1)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    shared_examples 'not creating a package' do |expected_status|
+      it 'does not create a package' do
+        expect { api_request }
+          .to change { project.packages.count }.by(0)
+          .and change { Packages::PackageFile.count }.by(0)
+        expect(response).to have_gitlab_http_status(expected_status)
+      end
+    end
+
     context 'with valid project' do
+      let(:user_headers) { { 'PRIVATE-TOKEN' => personal_access_token.token } }
+      let(:headers) { user_headers.merge(workhorse_headers) }
+
       where(:visibility, :user_role, :member, :token_header, :token_type, :shared_examples_name, :expected_status) do
         :public  | :developer  | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'process terraform module upload'          | :created
         :public  | :guest      | true  | 'PRIVATE-TOKEN' | :personal_access_token | 'rejects terraform module packages access' | :forbidden
@@ -147,7 +168,6 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
 
       with_them do
         let(:user_headers) { user_role == :anonymous ? {} : { token_header => token } }
-        let(:headers) { user_headers.merge(workhorse_headers) }
         let(:snowplow_gitlab_standard_context) do
           { project: project, namespace: project.namespace, user: snowplow_user,
             property: 'i_package_terraform_module_user' }
@@ -172,43 +192,73 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       end
 
       context 'when failed package file save' do
-        let(:user_headers) { { 'PRIVATE-TOKEN' => personal_access_token.token } }
-        let(:headers) { user_headers.merge(workhorse_headers) }
+        before do
+          project.add_developer(user)
+          allow(Packages::CreatePackageFileService).to receive(:new).and_raise(StandardError)
+        end
+
+        it_behaves_like 'not creating a package', :error
+      end
+
+      context 'with an existing package in the same project' do
+        let_it_be_with_reload(:existing_package) do
+          create(:terraform_module_package, name: 'mymodule/mysystem', version: '1.0.0', project: project)
+        end
 
         before do
           project.add_developer(user)
         end
 
-        it 'does not create package record', :aggregate_failures do
-          allow(Packages::CreatePackageFileService).to receive(:new).and_raise(StandardError)
+        it_behaves_like 'not creating a package', :forbidden
 
-          expect { api_request }
-              .to change { project.packages.count }.by(0)
-              .and change { Packages::PackageFile.count }.by(0)
-          expect(response).to have_gitlab_http_status(:error)
+        context 'when marked as pending_destruction' do
+          before do
+            existing_package.pending_destruction!
+          end
+
+          it_behaves_like 'creating a package'
+        end
+      end
+
+      context 'with existing package in another project' do
+        let_it_be(:package_settings) { create(:namespace_package_setting, namespace: group) }
+        let_it_be(:project2) { create(:project, namespace: group) }
+        let!(:existing_package) { create(:terraform_module_package, name: 'mymodule/mysystem', project: project2) }
+
+        before do
+          project.add_developer(user)
         end
 
-        context 'with an existing package' do
-          let_it_be_with_reload(:existing_package) do
-            create(:terraform_module_package, name: 'mymodule/mysystem', version: '1.0.0', project: project)
+        context 'when duplicates not allowed' do
+          it_behaves_like 'not creating a package', :forbidden
+        end
+
+        context 'when duplicates allowed' do
+          before do
+            package_settings.update_column(:terraform_module_duplicates_allowed, true)
           end
 
-          it 'does not create a new package' do
-            expect { api_request }
-              .to change { project.packages.count }.by(0)
-              .and change { Packages::PackageFile.count }.by(0)
-            expect(response).to have_gitlab_http_status(:forbidden)
+          it_behaves_like 'creating a package'
+        end
+
+        context 'with duplicate regex exception' do
+          before do
+            package_settings.update_columns(
+              terraform_module_duplicates_allowed: false,
+              terraform_module_duplicate_exception_regex: regex
+            )
           end
 
-          context 'when marked as pending_destruction' do
-            it 'does create a new package' do
-              existing_package.pending_destruction!
+          context 'when regex matches' do
+            let(:regex) { ".*#{existing_package.name.last(3)}.*" }
 
-              expect { api_request }
-                .to change { project.packages.count }.by(1)
-                .and change { Packages::PackageFile.count }.by(1)
-              expect(response).to have_gitlab_http_status(:created)
-            end
+            it_behaves_like 'creating a package'
+          end
+
+          context 'when regex does not match' do
+            let(:regex) { '.*non-matching-regex.*' }
+
+            it_behaves_like 'not creating a package', :forbidden
           end
         end
       end

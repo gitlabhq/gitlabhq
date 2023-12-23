@@ -39,7 +39,9 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           lock_npm_package_requests_forwarding: false,
           pypi_package_requests_forwarding: nil,
           lock_pypi_package_requests_forwarding: false,
-          nuget_symbol_server_enabled: false
+          nuget_symbol_server_enabled: false,
+          terraform_module_duplicates_allowed: false,
+          terraform_module_duplicate_exception_regex: 'foo'
         }, to: {
           maven_duplicates_allowed: false,
           maven_duplicate_exception_regex: 'RELEASE',
@@ -53,7 +55,9 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           lock_npm_package_requests_forwarding: true,
           pypi_package_requests_forwarding: true,
           lock_pypi_package_requests_forwarding: true,
-          nuget_symbol_server_enabled: true
+          nuget_symbol_server_enabled: true,
+          terraform_module_duplicates_allowed: true,
+          terraform_module_duplicate_exception_regex: 'bar'
         }
 
       it_behaves_like 'returning a success'
@@ -109,7 +113,9 @@ RSpec.describe Mutations::Namespace::PackageSettings::Update, feature_category: 
           lock_npm_package_requests_forwarding: true,
           pypi_package_requests_forwarding: true,
           lock_pypi_package_requests_forwarding: true,
-          nuget_symbol_server_enabled: true
+          nuget_symbol_server_enabled: true,
+          terraform_module_duplicates_allowed: true,
+          terraform_module_duplicate_exception_regex: 'bar'
         }
       end
 

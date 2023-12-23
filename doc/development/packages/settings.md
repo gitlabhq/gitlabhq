@@ -70,6 +70,8 @@ Setting | Table | Description
 `nuget_duplicates_allowed` | `namespace_package_settings` | Allow or prevent duplicate NuGet packages.
 `nuget_duplicate_exception_regex` | `namespace_package_settings` | Regex defining NuGet packages that are allowed to be duplicate when duplicates are not allowed.
 `nuget_symbol_server_enabled` | `namespace_package_settings` | Enable or disable the NuGet symbol server.
+`terraform_module_duplicates_allowed` | `namespace_package_settings` | Allow or prevent duplicate Terraform module packages.
+`terraform_module_duplicate_exception_regex` | `namespace_package_settings` | Regex defining Terraform module packages that are allowed to be duplicate when duplicates are not allowed.
 Dependency Proxy Cleanup Policies - `ttl` | `dependency_proxy_image_ttl_group_policies` | Number of days to retain an unused Dependency Proxy file before it is removed.
 Dependency Proxy - `enabled` | `dependency_proxy_image_ttl_group_policies` | Enable or disable the Dependency Proxy cleanup policy.
 

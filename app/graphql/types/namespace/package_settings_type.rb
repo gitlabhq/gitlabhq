@@ -35,6 +35,12 @@ module Types
     field :pypi_package_requests_forwarding, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates whether PyPI package forwarding is allowed for this namespace.'
+    field :terraform_module_duplicate_exception_regex, Types::UntrustedRegexp,
+      null: true,
+      description: 'When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.'
+    field :terraform_module_duplicates_allowed, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates whether duplicate Terraform packages are allowed for this namespace.'
 
     field :lock_maven_package_requests_forwarding, GraphQL::Types::Boolean,
       null: false,

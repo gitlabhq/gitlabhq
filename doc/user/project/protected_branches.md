@@ -395,6 +395,6 @@ third-party Git clients.
 
 ### Branch names are case-sensitive
 
-Branch names in `git` are case-sensitive. When configuring your protected branch
-or [target branch rule](repository/branches/index.md#configure-rules-for-target-branches),
+Branch names in `git` are case-sensitive. When configuring your protected branch,
+or your [target branch workflow](repository/branches/index.md#configure-workflows-for-target-branches),
 `dev` is not the same `DEV` or `Dev`.

@@ -7788,6 +7788,8 @@ Input type: `UpdateNamespacePackageSettingsInput`
 | <a id="mutationupdatenamespacepackagesettingsnugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
 | <a id="mutationupdatenamespacepackagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
+| <a id="mutationupdatenamespacepackagesettingsterraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="mutationupdatenamespacepackagesettingsterraformmoduleduplicatesallowed"></a>`terraformModuleDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Terraform packages are allowed for this namespace. |
 
 #### Fields
 
@@ -23730,6 +23732,8 @@ Namespace-level Package Registry settings.
 | <a id="packagesettingsnugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean!`](#boolean) | Indicates wheather the NuGet symbol server is enabled for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for this namespace. |
 | <a id="packagesettingspypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
+| <a id="packagesettingsterraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
+| <a id="packagesettingsterraformmoduleduplicatesallowed"></a>`terraformModuleDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate Terraform packages are allowed for this namespace. |
 
 ### `PackageTag`
 

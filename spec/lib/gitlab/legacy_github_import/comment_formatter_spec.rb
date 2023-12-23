@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let(:client) { double }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
@@ -76,12 +76,6 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
     context 'when author is a GitLab user' do
       let(:raw) { base.merge(user: octocat) }
 
-      it 'returns GitLab user id associated with GitHub id as author_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
-
-        expect(comment.attributes.fetch(:author_id)).to eq gl_user.id
-      end
-
       it 'returns GitLab user id associated with GitHub email as author_id' do
         gl_user = create(:user, email: octocat[:email])
 
@@ -89,7 +83,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter do
       end
 
       it 'returns note without created at tag line' do
-        create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
+        create(:user, email: octocat[:email])
 
         expect(comment.attributes.fetch(:note)).to eq("I'm having a problem with this.")
       end

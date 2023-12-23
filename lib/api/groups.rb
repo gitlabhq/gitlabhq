@@ -213,11 +213,15 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
         optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+        optional :organization_id, type: Integer, desc: 'The organization id for the group'
 
         use :optional_params
       end
       post feature_category: :groups_and_projects, urgency: :low do
-        parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
+        organization = find_organization!(params[:organization_id]) if params[:organization_id].present?
+        authorize! :create_group, organization if organization
+
+        parent_group = find_group!(params[:parent_id], organization: organization) if params[:parent_id].present?
         if parent_group
           authorize! :create_subgroup, parent_group
         else

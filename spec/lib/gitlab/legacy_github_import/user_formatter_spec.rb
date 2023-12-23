@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :importers do
   let(:client) { double }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:gitea_ghost) { { id: -1, login: 'Ghost', email: '' } }
@@ -15,12 +15,6 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter do
     end
 
     context 'when GitHub user is a GitLab user' do
-      it 'return GitLab user id when user associated their account with GitHub' do
-        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
-
-        expect(user.gitlab_id).to eq gl_user.id
-      end
-
       it 'returns GitLab user id when user confirmed primary email matches GitHub email' do
         gl_user = create(:user, email: octocat[:email])
 
