@@ -30,7 +30,7 @@ module DiffHelper
   def diff_options
     options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded?, use_extra_viewer_as_main: true }
 
-    if action_name == 'diff_for_path'
+    if action_name == 'diff_for_path' || action_name == 'diff_by_file_hash'
       options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
       options[:use_extra_viewer_as_main] = false

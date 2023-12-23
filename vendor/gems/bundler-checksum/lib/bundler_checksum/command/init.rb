@@ -11,8 +11,13 @@ module BundlerChecksum::Command
 
       checksums = []
 
+      require "bundler/vendored_uri"
+      args = [nil, Bundler::Source::Rubygems::Remote.new(Bundler::URI("https://rubygems.org")), nil]
+      # gem_remote_fetcher added in https://github.com/rubygems/rubygems/pull/7092/
+      args << nil if Gem::Version.new(Bundler::VERSION) >= Gem::Version.new("2.5.0")
+
       compact_index_cache = Bundler::Fetcher::CompactIndex
-        .new(nil, Bundler::Source::Rubygems::Remote.new(Bundler::URI("https://rubygems.org")), nil)
+        .new(*args)
         .send(:compact_index_client)
         .instance_variable_get(:@cache)
 
