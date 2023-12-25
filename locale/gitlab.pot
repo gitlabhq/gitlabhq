@@ -1935,7 +1935,7 @@ msgstr ""
 msgid "AIPoweredSM|AI-powered features"
 msgstr ""
 
-msgid "AIPoweredSM|By enabling this feature, you agree to the %{terms_link_start}GitLab Testing Agreement%{link_end}."
+msgid "AIPoweredSM|By enabling this feature, you agree to the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."

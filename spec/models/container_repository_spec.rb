@@ -699,6 +699,10 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
 
     context 'with a call to tags' do
+      let_it_be(:created_at) { 15.minutes.ago }
+      let_it_be(:updated_at) { 10.minutes.ago }
+      let_it_be(:published_at) { 5.minutes.ago }
+
       let_it_be(:tags_response) do
         [
           {
@@ -707,8 +711,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             config_digest: 'sha256:66b1132a0173910b01ee69583bbf2f7f1e4462c99efbe1b9ab5bf',
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567890,
-            created_at: 5.minutes.ago,
-            updated_at: 5.minutes.ago,
+            created_at: created_at,
+            updated_at: updated_at,
+            published_at: published_at,
             referrers: [
               {
                 artifactType: 'application/vnd.example+type',
@@ -722,8 +727,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             config_digest: nil,
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567892,
-            created_at: 10.minutes.ago,
-            updated_at: 10.minutes.ago
+            created_at: created_at,
+            updated_at: updated_at,
+            published_at: published_at
           }
         ]
       end
@@ -759,7 +765,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             revision: expected_revision,
             short_revision: expected_revision[0..8],
             created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
-            updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339)
+            updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339),
+            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339)
           )
 
           Array(tag.referrers).each_with_index do |ref, ref_index|

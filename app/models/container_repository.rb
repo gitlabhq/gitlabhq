@@ -658,6 +658,7 @@ class ContainerRepository < ApplicationRecord
       tag.manifest_digest = raw_tag['digest']
       tag.revision = raw_tag['config_digest'].to_s.split(':')[1] || ''
       tag.referrers = raw_tag['referrers']
+      tag.published_at = raw_tag['published_at']
       tag
     end
   end

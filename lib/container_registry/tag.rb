@@ -4,7 +4,7 @@ module ContainerRegistry
   class Tag
     include Gitlab::Utils::StrongMemoize
 
-    attr_reader :repository, :name, :updated_at, :referrers
+    attr_reader :repository, :name, :updated_at, :referrers, :published_at
     attr_writer :created_at, :manifest_digest, :revision, :total_size
 
     delegate :registry, :client, to: :repository
@@ -101,24 +101,20 @@ module ContainerRegistry
     # this function will set and memoize a created_at
     # to avoid a #config_blob call.
     def force_created_at_from_iso8601(string_value)
-      date =
-        begin
-          DateTime.iso8601(string_value)
-        rescue ArgumentError
-          nil
-        end
+      date = parse_iso8601_string(string_value)
       instance_variable_set(ivar(:memoized_created_at), date)
     end
 
     def updated_at=(string_value)
       return unless string_value
 
-      @updated_at =
-        begin
-          DateTime.iso8601(string_value)
-        rescue ArgumentError
-          nil
-        end
+      @updated_at = parse_iso8601_string(string_value)
+    end
+
+    def published_at=(string_value)
+      return unless string_value
+
+      @published_at = parse_iso8601_string(string_value)
     end
 
     def layers
@@ -154,6 +150,14 @@ module ContainerRegistry
       return unless digest
 
       client.delete_repository_tag_by_digest(repository.path, digest)
+    end
+
+    private
+
+    def parse_iso8601_string(string_value)
+      DateTime.iso8601(string_value)
+    rescue ArgumentError
+      nil
     end
   end
 end
