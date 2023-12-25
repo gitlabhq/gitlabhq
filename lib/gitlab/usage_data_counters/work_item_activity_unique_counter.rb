@@ -8,6 +8,7 @@ module Gitlab
       WORK_ITEM_DATE_CHANGED = 'users_updating_work_item_dates'
       WORK_ITEM_LABELS_CHANGED = 'users_updating_work_item_labels'
       WORK_ITEM_MILESTONE_CHANGED = 'users_updating_work_item_milestone'
+      WORK_ITEM_TODO_MARKED = 'users_updating_work_item_todo'
 
       class << self
         def track_work_item_created_action(author:)
@@ -28,6 +29,10 @@ module Gitlab
 
         def track_work_item_milestone_changed_action(author:)
           track_unique_action(WORK_ITEM_MILESTONE_CHANGED, author)
+        end
+
+        def track_work_item_mark_todo_action(author:)
+          track_unique_action(WORK_ITEM_TODO_MARKED, author)
         end
 
         private

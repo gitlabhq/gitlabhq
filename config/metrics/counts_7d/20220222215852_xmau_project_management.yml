@@ -23,6 +23,7 @@ options:
     - users_updating_work_item_iteration
     - users_updating_weight_estimate
     - users_updating_work_item_milestone
+    - users_updating_work_item_todo
 data_category: optional
 distribution:
 - ce
