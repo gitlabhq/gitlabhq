@@ -164,6 +164,30 @@ RSpec.describe API::Ml::Mlflow::ModelVersions, feature_category: :mlops do
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
         end
+
+        # TODO: Ensure consisted error responses https://gitlab.com/gitlab-org/gitlab/-/issues/429731
+        context 'when a duplicate tag name is supplied' do
+          let(:params) do
+            { name: model_name, tags: [{ key: 'key1', value: 'value1' }, { key: 'key1', value: 'value2' }] }
+          end
+
+          it "returns a validation error", :aggregate_failures do
+            expect(json_response).to include({ 'error_code' => 'INVALID_PARAMETER_VALUE' })
+            expect(model.metadata.count).to be 0
+          end
+        end
+
+        # TODO: Ensure consisted error responses https://gitlab.com/gitlab-org/gitlab/-/issues/429731
+        context 'when an empty tag name is supplied' do
+          let(:params) do
+            { name: model_name, tags: [{ key: '', value: 'value1' }, { key: 'key1', value: 'value2' }] }
+          end
+
+          it "returns a validation error", :aggregate_failures do
+            expect(json_response).to include({ 'error_code' => 'INVALID_PARAMETER_VALUE' })
+            expect(model.metadata.count).to be 0
+          end
+        end
       end
 
       it_behaves_like 'MLflow|an authenticated resource'

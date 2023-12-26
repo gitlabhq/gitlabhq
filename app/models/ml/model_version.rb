@@ -21,11 +21,24 @@ module Ml
     belongs_to :project
     belongs_to :package, class_name: 'Packages::MlModel::Package', optional: true
     has_one :candidate, class_name: 'Ml::Candidate'
+    has_many :metadata, class_name: 'Ml::ModelVersionMetadata'
 
     delegate :name, to: :model
 
     scope :order_by_model_id_id_desc, -> { order('model_id, id DESC') }
     scope :latest_by_model, -> { order_by_model_id_id_desc.select('DISTINCT ON (model_id) *') }
+
+    def add_metadata(metadata_key_value)
+      return unless metadata_key_value.present?
+
+      metadata_key_value.each do |entry|
+        metadata.create!(
+          project_id: project_id,
+          name: entry[:key],
+          value: entry[:value]
+        )
+      end
+    end
 
     class << self
       def find_or_create!(model, version, package, description)

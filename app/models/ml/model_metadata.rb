@@ -3,7 +3,7 @@
 module Ml
   class ModelMetadata < ApplicationRecord
     validates :name,
-      length: { maximum: 250 },
+      length: { maximum: 255 },
       presence: true,
       uniqueness: { scope: :model, message: ->(metadata, _) { "'#{metadata.name}' already taken" } }
     validates :value, length: { maximum: 5000 }, presence: true

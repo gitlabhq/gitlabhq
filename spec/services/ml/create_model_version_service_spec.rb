@@ -75,5 +75,36 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
       expect(model.reload.latest_version.package.name).to eq(model.name)
       expect(model.latest_version.package.version).to eq(model.latest_version.version)
     end
+
+    context 'when metadata are supplied, add them as metadata' do
+      let(:metadata) { [{ key: 'key1', value: 'value1' }, { key: 'key2', value: 'value2' }] }
+      let(:params) { { metadata: metadata } }
+
+      it 'creates metadata records', :aggregate_failures do
+        expect { service }.to change { Ml::ModelVersion.count }.by(1)
+
+        expect(service.metadata.count).to be 2
+      end
+    end
+
+    # TODO: Ensure consisted error responses https://gitlab.com/gitlab-org/gitlab/-/issues/429731
+    context 'for metadata with duplicate keys, it does not create duplicate records' do
+      let(:metadata) { [{ key: 'key1', value: 'value1' }, { key: 'key1', value: 'value2' }] }
+      let(:params) { { metadata: metadata } }
+
+      it 'raises an error', :aggregate_failures do
+        expect { service }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    # # TODO: Ensure consisted error responses https://gitlab.com/gitlab-org/gitlab/-/issues/429731
+    context 'for metadata with invalid keys, it does not create invalid records' do
+      let(:metadata) { [{ key: 'key1', value: 'value1' }, { key: '', value: 'value2' }] }
+      let(:params) { { metadata: metadata } }
+
+      it 'raises an error', :aggregate_failures do
+        expect { service }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 end

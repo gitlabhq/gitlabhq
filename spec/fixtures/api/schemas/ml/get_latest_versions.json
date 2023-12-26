@@ -21,7 +21,7 @@
             "run_id",
             "status",
             "status_message",
-            "metadata",
+            "tags",
             "run_link",
             "aliases"
           ],
@@ -59,7 +59,7 @@
             "status_message": {
               "type": "string"
             },
-            "metadata": {
+            "tags": {
               "type": "array",
               "items": {
               }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ml::CandidateMetric do
+RSpec.describe Ml::CandidateMetric, feature_category: :mlops do
   describe 'associations' do
     it { is_expected.to belong_to(:candidate) }
   end
