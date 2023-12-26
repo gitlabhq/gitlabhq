@@ -1054,10 +1054,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       context 'FIPS mode', :fips_mode do
         it_behaves_like 'package workhorse uploads'
 
-        it 'rejects the request for md5 file' do
+        it 'returns 200 for the request for md5 file' do
           upload_file_with_token(params: params, file_extension: 'jar.md5')
 
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -1276,10 +1276,13 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
 
         context 'with FIPS mode enabled', :fips_mode do
-          it 'rejects the request' do
+          it 'returns an empty body' do
+            expect_use_primary
+
             subject
 
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(response.body).to eq('')
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end

@@ -19,11 +19,11 @@ module API
             documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
         end
 
-        def extract_format(file_name)
+        def extract_format(file_name, skip_fips_check: false)
           name, _, format = file_name.rpartition('.')
 
           if %w[md5 sha1].include?(format)
-            unprocessable_entity! if Gitlab::FIPS.enabled? && format == 'md5'
+            unprocessable_entity! if !skip_fips_check && Gitlab::FIPS.enabled? && format == 'md5'
 
             [name, format]
           else

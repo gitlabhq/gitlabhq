@@ -449,11 +449,6 @@ for the ability to set merge request approval rules for groups is tracked in
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
-Beta users should read about the [known limitations](../project/repository/code_suggestions/index.md#known-limitations).
-We look forward to hearing your [feedback](../project/repository/code_suggestions/index.md#feedback).
-
 You can give all users in a group and its subgroups access to
 [Code Suggestions](../project/repository/code_suggestions/index.md). This setting
 [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.

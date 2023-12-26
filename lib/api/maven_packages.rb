@@ -260,7 +260,13 @@ module API
         authorize_upload!
         bad_request!('File is too large') if user_project.actual_limits.exceeded?(:maven_max_file_size, params[:file].size)
 
-        file_name, format = extract_format(params[:file_name])
+        # In FIPS mode, we've already told Workhorse not to generate a
+        # MD5 checksum via UploadHashFunctions, and the FIPS check above
+        # ensures that Workhorse obeys that. However, Gradle will attempt to issue a PUT request
+        # with the MD5 checksum, and the publish step will fail if this endpoint returns a
+        # 422 (https://github.com/gradle/gradle/blob/v8.5.0/platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/AbstractMavenPublisher.java#L240),
+        # so we need to skip the second FIPS check here.
+        file_name, format = extract_format(params[:file_name], skip_fips_check: true)
 
         ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
           result = ::Packages::Maven::FindOrCreatePackageService
