@@ -18888,6 +18888,7 @@ CREATE TABLE merge_request_diffs (
     diff_type smallint DEFAULT 1 NOT NULL,
     patch_id_sha bytea,
     project_id bigint,
+    CONSTRAINT check_11c5f029ad CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_93ee616ac9 CHECK ((external_diff_store IS NOT NULL))
 );
 
@@ -28399,9 +28400,6 @@ ALTER TABLE ONLY chat_names
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
-
-ALTER TABLE merge_request_diffs
-    ADD CONSTRAINT check_11c5f029ad CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
