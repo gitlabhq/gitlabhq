@@ -803,6 +803,41 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
+## Google Play
+
+### Set up Google Play
+
+Set up the Google Play integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/google-play
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `package_name` | string | true | Package name of the app in Google Play. |
+| `service_account_key` | string | true | Google Play service account key. |
+| `service_account_key_file_name` | string | true | File name of the Google Play service account key. |
+| `google_play_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
+
+### Disable Google Play
+
+Disable the Google Play integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/google-play
+```
+
+### Get Google Play settings
+
+Get the Google Play integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/google-play
+```
+
 ## irker (IRC gateway)
 
 ### Set up irker

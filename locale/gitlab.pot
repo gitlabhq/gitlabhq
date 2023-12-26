@@ -4454,9 +4454,6 @@ msgstr ""
 msgid "After the report is generated, an email will be sent with the report attached."
 msgstr ""
 
-msgid "After you enable the integration, the following protected variable is created for CI/CD use:"
-msgstr ""
-
 msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
 msgstr ""
 
@@ -20910,6 +20907,9 @@ msgstr ""
 msgid "File name"
 msgstr ""
 
+msgid "File name of the Google Play service account key."
+msgstr ""
+
 msgid "File permissions"
 msgstr ""
 
@@ -22908,6 +22908,9 @@ msgstr ""
 msgid "Google Cloud authorizations required"
 msgstr ""
 
+msgid "Google Play service account key."
+msgstr ""
+
 msgid "GoogleCloud|Cancel"
 msgstr ""
 
@@ -22944,10 +22947,10 @@ msgstr ""
 msgid "GoogleCloud|Revoke authorizations granted to GitLab. This does not invalidate service accounts."
 msgstr ""
 
-msgid "GooglePlayStore|Only set variables on protected branches and tags"
+msgid "GooglePlayStore|Protected branches and tags only"
 msgstr ""
 
-msgid "GooglePlayStore|Protected branches and tags only"
+msgid "GooglePlayStore|Set variables on protected branches and tags only"
 msgstr ""
 
 msgid "GooglePlay|Drag your key file here or %{linkStart}click to upload%{linkEnd}."
@@ -34195,6 +34198,9 @@ msgstr ""
 msgid "Package file size limits"
 msgstr ""
 
+msgid "Package name of the app in Google Play."
+msgstr ""
+
 msgid "Package recipe already exists"
 msgstr ""
 
@@ -45440,6 +45446,9 @@ msgstr ""
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
+msgid "Set variables on protected branches and tags only."
+msgstr ""
+
 msgid "Set weight"
 msgstr ""
 
@@ -52792,9 +52801,6 @@ msgstr ""
 msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
 msgstr ""
 
-msgid "Use the Google Play integration to connect to Google Play with fastlane in CI/CD pipelines."
-msgstr ""
-
 msgid "Use the link below to confirm your email address (%{email})"
 msgstr ""
 
@@ -52805,6 +52811,9 @@ msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link
 msgstr ""
 
 msgid "Use the search bar on the top of this page"
+msgstr ""
+
+msgid "Use this integration to connect to Google Play with fastlane in CI/CD pipelines."
 msgstr ""
 
 msgid "Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."

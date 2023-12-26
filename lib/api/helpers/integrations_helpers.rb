@@ -325,32 +325,7 @@ module API
               desc: 'The URL of the external wiki'
             }
           ],
-          'google-play' => [
-            {
-              required: true,
-              name: :package_name,
-              type: String,
-              desc: 'The package name of the app in Google Play'
-            },
-            {
-              required: true,
-              name: :service_account_key,
-              type: String,
-              desc: 'The Google Play service account key'
-            },
-            {
-              required: true,
-              name: :service_account_key_file_name,
-              type: String,
-              desc: 'The filename of the Google Play service account key'
-            },
-            {
-              required: false,
-              name: :google_play_protected_refs,
-              type: ::Grape::API::Boolean,
-              desc: 'Only enable for protected refs'
-            }
-          ],
+          'google-play' => ::Integrations::GooglePlay.api_fields,
           'hangouts-chat' => [
             {
               required: true,

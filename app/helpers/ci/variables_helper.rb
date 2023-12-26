@@ -32,14 +32,6 @@ module Ci
       end
     end
 
-    def ci_variable_masked?(variable, only_key_value)
-      if variable && !only_key_value
-        variable.masked
-      else
-        false
-      end
-    end
-
     def ci_variable_maskable_raw_regex
       Ci::Maskable::MASK_AND_RAW_REGEX.inspect.sub('\\A', '^').sub('\\z', '$')[1...-1]
     end
