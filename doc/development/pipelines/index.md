@@ -750,28 +750,29 @@ graph LR
 
 ### Backend pipeline
 
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/433316063).
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/1118782302).
 
 ```mermaid
 graph RL;
   classDef criticalPath fill:#f66;
 
-  1-3["compile-test-assets (5.5 minutes)"];
-  class 1-3 criticalPath;
+  1-1["clone-gitlab-repo (1 minute)"];
+  1-3["compile-test-assets (3 minutes)"];
   click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
-  1-6["setup-test-env (3.6 minutes)"];
+  1-6["setup-test-env (4 minutes)"];
+  class 1-6 criticalPath;
   click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
-  1-14["retrieve-tests-metadata"];
+  1-14["retrieve-tests-metadata (50 seconds)"];
   click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
-  1-15["detect-tests"];
+  1-15["detect-tests (1 minute)"];
   click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
 
-  2_5-1["rspec & db jobs (24 minutes)"];
+  2_5-1["rspec & db jobs (30~50 minutes)"];
   class 2_5-1 criticalPath;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
-  2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
+  2_5-1 --> 1-1 & 1-3 & 1-6 & 1-14 & 1-15;
 
-  ac-1["rspec:artifact-collector (2 minutes)<br/>(workaround for 'needs' limitation)"];
+  ac-1["rspec:artifact-collector (30 seconds)<br/>(workaround for 'needs' limitation)"];
   class ac-1 criticalPath;
   ac-1 --> 2_5-1;
 
@@ -784,7 +785,6 @@ graph RL;
   class 4_3-1 criticalPath;
   click 4_3-1 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=13446492&udv=1005715"
   4_3-1 --> 3_2-1;
-
 ```
 
 ### Review app pipeline

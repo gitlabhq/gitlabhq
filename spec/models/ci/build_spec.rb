@@ -5507,10 +5507,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       stub_current_partition_id
     end
 
-    it 'includes partition_id as a token prefix' do
-      prefix = ci_build.token.split('_').first.to_i(16)
+    it 'includes partition_id in the token prefix' do
+      prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
+      partition_prefix = prefix[1].to_i(16)
 
-      expect(prefix).to eq(ci_testing_partition_id)
+      expect(partition_prefix).to eq(ci_testing_partition_id)
     end
   end
 
@@ -5648,7 +5649,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'generates a token' do
         expect { ci_build.enqueue }
-          .to change { ci_build.token }.from(nil).to(a_string_starting_with(partition_id_prefix_in_16_bit_encode))
+          .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
       end
     end
 
@@ -5662,6 +5663,53 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'does not change the existing token' do
         expect { ci_build.enqueue }
           .not_to change { ci_build.token }.from(token)
+      end
+    end
+  end
+
+  describe '#prefix_and_partition_for_token' do
+    # 100.to_s(16) -> 64
+    let(:ci_build) { described_class.new(partition_id: 100) }
+
+    shared_examples 'partition prefix' do
+      it 'is prefixed with partition_id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^64_[\w-]{20}$/)
+      end
+    end
+
+    shared_examples 'static and partition prefixes' do
+      it 'is prefixed with static string and partition id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
+      end
+    end
+
+    it_behaves_like 'static and partition prefixes'
+
+    context 'when feature flag is globally disabled' do
+      before do
+        stub_feature_flags(prefix_ci_build_tokens: false)
+      end
+
+      it_behaves_like 'partition prefix'
+
+      context 'when enabled for a different project' do
+        let_it_be(:project) { create(:project) }
+
+        before do
+          stub_feature_flags(prefix_ci_build_tokens: project)
+        end
+
+        it_behaves_like 'partition prefix'
+      end
+
+      context 'when enabled for the project' do
+        before do
+          stub_feature_flags(prefix_ci_build_tokens: ci_build.project)
+        end
+
+        it_behaves_like 'static and partition prefixes'
       end
     end
   end

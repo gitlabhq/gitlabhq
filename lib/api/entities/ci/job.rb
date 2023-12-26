@@ -12,6 +12,7 @@ module API
         expose :runner, with: ::API::Entities::Ci::Runner
         expose :artifacts_expire_at,
           documentation: { type: 'dateTime', example: '2016-01-19T09:05:50.355Z' }
+        expose :archived?, as: :archived, documentation: { type: 'boolean', example: false }
 
         expose(
           :tag_list,

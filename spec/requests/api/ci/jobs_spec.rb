@@ -70,6 +70,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       expect(json_response['artifacts']).to be_an Array
       expect(json_response['artifacts']).to be_empty
       expect(json_response['web_url']).to be_present
+      expect(json_response['archived']).to eq(jobx.archived?)
     end
   end
 

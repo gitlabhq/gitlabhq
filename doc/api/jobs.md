@@ -46,6 +46,7 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
+    "archived": false,
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -115,6 +116,7 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
+    "archived": false,
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -209,6 +211,7 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
+    "archived": false,
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -269,6 +272,7 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
+    "archived": false,
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -363,6 +367,7 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
+    "archived": false,
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -450,6 +455,7 @@ Example of response
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -600,6 +606,7 @@ Example of response
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -705,6 +712,7 @@ Example of response
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:14:09.526Z",
@@ -759,6 +767,7 @@ Example of response
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,
@@ -817,6 +826,7 @@ Example of response
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "download_url": null,
   "id": 1,
@@ -899,6 +909,7 @@ Example response:
     "title": "Test the CI integration."
   },
   "coverage": null,
+  "archived": false,
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,

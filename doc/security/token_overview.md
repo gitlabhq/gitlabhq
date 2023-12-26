@@ -238,7 +238,7 @@ The following tables show the prefixes for each type of token where applicable.
 | Deploy key                        | Not applicable.    |
 | Runner registration token         | Not applicable.    |
 | Runner authentication token       | `glrt-`            |
-| Job token                         | Not applicable.    |
+| CI/CD Job token                   | `glcbt-` ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426137) in GitLab 16.8 behind a feature flag named `prefix_ci_build_tokens`. Disabled by default.) |
 | Trigger token                     | `glptt-`           |
 | Legacy runner registration token  | GR1348941          |
 | Feed token                        | `glft-`            |

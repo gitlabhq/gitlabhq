@@ -42,6 +42,8 @@ module Ci
 
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
+    TOKEN_PREFIX = 'glcbt-'
+
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
@@ -204,7 +206,7 @@ module Ci
 
     add_authentication_token_field :token,
       encrypted: :required,
-      format_with_prefix: :partition_id_prefix_in_16_bit_encode
+      format_with_prefix: :prefix_and_partition_for_token
 
     after_save :stick_build_if_status_changed
 
@@ -1231,6 +1233,14 @@ module Ci
 
     def partition_id_prefix_in_16_bit_encode
       "#{partition_id.to_s(16)}_"
+    end
+
+    def prefix_and_partition_for_token
+      if Feature.enabled?(:prefix_ci_build_tokens, project, type: :beta)
+        TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+      else
+        partition_id_prefix_in_16_bit_encode
+      end
     end
   end
 end
