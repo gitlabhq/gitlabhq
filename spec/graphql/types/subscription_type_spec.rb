@@ -15,6 +15,7 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       merge_request_reviewers_updated
       merge_request_merge_status_updated
       merge_request_approval_state_updated
+      merge_request_diff_generated
       work_item_updated
     ]
 

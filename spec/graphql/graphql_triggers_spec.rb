@@ -132,6 +132,20 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
     end
   end
 
+  describe '.merge_request_diff_generated' do
+    it 'triggers the merge_request_diff_generated subscription' do
+      merge_request = build_stubbed(:merge_request)
+
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :merge_request_diff_generated,
+        { issuable_id: merge_request.to_gid },
+        merge_request
+      ).and_call_original
+
+      described_class.merge_request_diff_generated(merge_request)
+    end
+  end
+
   describe '.work_item_updated' do
     it 'triggers the work_item_updated subscription' do
       expect(GitlabSchema.subscriptions).to receive(:trigger).with(

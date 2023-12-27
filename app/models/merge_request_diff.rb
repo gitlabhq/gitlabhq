@@ -196,6 +196,7 @@ class MergeRequestDiff < ApplicationRecord
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
+  after_create_commit :trigger_diff_generated_subscription, unless: :importing?
 
   after_save :update_external_diff_store
   after_save :set_count_columns
@@ -256,6 +257,12 @@ class MergeRequestDiff < ApplicationRecord
     MergeRequest
       .where('id = ? AND COALESCE(latest_merge_request_diff_id, 0) < ?', self.merge_request_id, self.id)
       .update_all(latest_merge_request_diff_id: self.id)
+  end
+
+  def trigger_diff_generated_subscription
+    return unless Feature.enabled?(:merge_request_diff_generated_subscription, merge_request.project)
+
+    GraphqlTriggers.merge_request_diff_generated(merge_request)
   end
 
   def ensure_commit_shas

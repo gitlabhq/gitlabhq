@@ -1911,6 +1911,12 @@
       changes: *redis-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:single-redis-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-redis", "rules"]
+
 .rails:rules:single-db:
   rules:
     - <<: *if-merge-request-labels-run-single-db
@@ -1921,6 +1927,12 @@
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:single-db-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db", "rules"]
 
 .rails:rules:single-db-as-if-foss:
   rules:
@@ -1947,6 +1959,12 @@
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:single-db-ci-connection-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:single-db-ci-connection-as-if-foss:
   rules:

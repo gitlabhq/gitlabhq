@@ -53,6 +53,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
     it { expect(subject.patch_id_sha).to eq('1e05e04d4c2a6414d9d4ab38208511a3bbe715f2') }
 
+    it 'calls GraphqlTriggers.merge_request_diff_generated' do
+      merge_request = create(:merge_request, :skip_diff_creation)
+
+      expect(GraphqlTriggers).to receive(:merge_request_diff_generated).with(merge_request)
+
+      merge_request.create_merge_request_diff
+    end
+
+    context 'when merge_request_diff_generated_subscription flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_generated_subscription: false)
+      end
+
+      it 'does not call GraphqlTriggers.merge_request_diff_generated' do
+        merge_request = create(:merge_request, :skip_diff_creation)
+
+        expect(GraphqlTriggers).not_to receive(:merge_request_diff_generated)
+
+        merge_request.create_merge_request_diff
+      end
+    end
+
     context 'when diff_type is merge_head' do
       let_it_be(:merge_request) { create(:merge_request) }
 

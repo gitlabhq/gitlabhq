@@ -5377,6 +5377,7 @@ Input type: `MemberRoleCreateInput`
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID`](#id) | Group the member role to mutate is in. Required for SaaS. |
+| <a id="mutationmemberrolecreatemanagegroupaccesstokens"></a>`manageGroupAccessTokens` | [`Boolean`](#boolean) | Permission to admin group access tokens. |
 | <a id="mutationmemberrolecreatemanageprojectaccesstokens"></a>`manageProjectAccessTokens` | [`Boolean`](#boolean) | Permission to admin project access tokens. |
 | <a id="mutationmemberrolecreatename"></a>`name` | [`String`](#string) | Name of the member role. |
 | <a id="mutationmemberrolecreatepermissions"></a>`permissions` | [`[MemberRolePermission!]`](#memberrolepermission) | List of all customizable permissions. |
@@ -21477,6 +21478,7 @@ Represents a member role.
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`[MemberRolePermission!]`](#memberrolepermission) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
+| <a id="memberrolemanagegroupaccesstokens"></a>`manageGroupAccessTokens` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. Permission to admin group access tokens. |
 | <a id="memberrolemanageprojectaccesstokens"></a>`manageProjectAccessTokens` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Permission to admin project access tokens. |
 | <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Total number of members with the custom role. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
@@ -30833,6 +30835,7 @@ Member role permission.
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows to approve merge requests. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Allows admin access to the vulnerability reports. |
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows to archive projects. |
+| <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Allows manage access to the group access tokens. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Allows manage access to the project access tokens. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies. |

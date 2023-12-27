@@ -63,6 +63,10 @@ module Types
     field :merge_request_approval_state_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when approval state of a merge request is updated.'
+
+    field :merge_request_diff_generated,
+      subscription: Subscriptions::IssuableUpdated, null: true,
+      description: 'Triggered when a merge request diff is generated.'
   end
 end
 

@@ -825,25 +825,25 @@ rspec-ee migration pg14 single-db:
   extends:
     - rspec-ee migration pg14
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-ee
 
 rspec-ee background_migration pg14 single-db:
   extends:
     - rspec-ee background_migration pg14
     - .single-db-rspec
-    - .rails:rules:single-db
+    - .rails:rules:single-db-ee
 
 rspec-ee migration pg14 single-db-ci-connection:
   extends:
     - rspec-ee migration pg14
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-ee
 
 rspec-ee background_migration pg14 single-db-ci-connection:
   extends:
     - rspec-ee background_migration pg14
     - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-ee
 
 rspec-ee migration pg14 clusterwide-db:
   extends:
@@ -887,21 +887,21 @@ rspec-ee unit pg14 single-db:
     - rspec-ee unit pg14
     - .single-db-rspec
     - .rspec-ee-unit-parallel
-    - .rails:rules:single-db
+    - .rails:rules:single-db-ee
 
 rspec-ee unit pg14 single-redis:
   extends:
     - rspec-ee unit pg14
     - .no-redis-cluster
     - .rspec-ee-unit-parallel
-    - .rails:rules:single-redis
+    - .rails:rules:single-redis-ee
 
 rspec-ee unit pg14 single-db-ci-connection:
   extends:
     - rspec-ee unit pg14
     - .single-db-ci-connection-rspec
     - .rspec-ee-unit-parallel
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-ee
 
 rspec-ee unit pg14 clusterwide-db:
   extends:
@@ -926,21 +926,21 @@ rspec-ee integration pg14 single-db:
     - rspec-ee integration pg14
     - .single-db-rspec
     - .rspec-ee-integration-parallel
-    - .rails:rules:single-db
+    - .rails:rules:single-db-ee
 
 rspec-ee integration pg14 single-redis:
   extends:
     - rspec-ee integration pg14
     - .no-redis-cluster
     - .rspec-ee-integration-parallel
-    - .rails:rules:single-redis
+    - .rails:rules:single-redis-ee
 
 rspec-ee integration pg14 single-db-ci-connection:
   extends:
     - rspec-ee integration pg14
     - .single-db-ci-connection-rspec
     - .rspec-ee-integration-parallel
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-ee
 
 rspec-ee integration pg14 clusterwide-db:
   extends:
@@ -965,21 +965,21 @@ rspec-ee system pg14 single-db:
     - rspec-ee system pg14
     - .single-db-rspec
     - .rspec-ee-system-parallel
-    - .rails:rules:single-db
+    - .rails:rules:single-db-ee
 
 rspec-ee system pg14 single-redis:
   extends:
     - rspec-ee system pg14
     - .no-redis-cluster
     - .rspec-ee-system-parallel
-    - .rails:rules:single-redis
+    - .rails:rules:single-redis-ee
 
 rspec-ee system pg14 single-db-ci-connection:
   extends:
     - rspec-ee system pg14
     - .single-db-ci-connection-rspec
     - .rspec-ee-system-parallel
-    - .rails:rules:single-db-ci-connection
+    - .rails:rules:single-db-ci-connection-ee
 
 rspec-ee system pg14 clusterwide-db:
   extends:

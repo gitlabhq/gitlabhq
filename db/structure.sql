@@ -18621,6 +18621,7 @@ CREATE TABLE member_roles (
     admin_group_member boolean DEFAULT false NOT NULL,
     manage_project_access_tokens boolean DEFAULT false NOT NULL,
     archive_project boolean DEFAULT false NOT NULL,
+    manage_group_access_tokens boolean DEFAULT false NOT NULL,
     remove_project boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
@@ -33336,7 +33337,7 @@ CREATE INDEX index_issues_on_milestone_id ON issues USING btree (milestone_id);
 
 CREATE INDEX index_issues_on_moved_to_id ON issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
 
-CREATE INDEX index_issues_on_namespace_id ON issues USING btree (namespace_id);
+CREATE UNIQUE INDEX index_issues_on_namespace_id_iid_unique ON issues USING btree (namespace_id, iid);
 
 CREATE INDEX index_issues_on_project_health_status_asc_work_item_type ON issues USING btree (project_id, health_status, id DESC, state_id, work_item_type_id);
 

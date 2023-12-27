@@ -5812,9 +5812,6 @@ msgstr ""
 msgid "Ancestors"
 msgstr ""
 
-msgid "And this registration token:"
-msgstr ""
-
 msgid "Anonymous"
 msgstr ""
 
@@ -14126,9 +14123,6 @@ msgid "Copy source branch name"
 msgstr ""
 
 msgid "Copy to clipboard"
-msgstr ""
-
-msgid "Copy token"
 msgstr ""
 
 msgid "Copy value"
@@ -24247,11 +24241,6 @@ msgstr ""
 msgid "Hide tooltips or popovers"
 msgstr ""
 
-msgid "Hide value"
-msgid_plural "Hide values"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Hide values"
 msgstr ""
 
@@ -25753,9 +25742,6 @@ msgid "Insights|Some items are not visible beacuse the project was filtered out 
 msgstr ""
 
 msgid "Insights|This project is filtered out in the insights.yml file (see the projects.only config for more information)."
-msgstr ""
-
-msgid "Install GitLab Runner and ensure it's running."
 msgstr ""
 
 msgid "Installation"
@@ -39974,9 +39960,6 @@ msgstr ""
 msgid "Register now"
 msgstr ""
 
-msgid "Register the runner with this URL:"
-msgstr ""
-
 msgid "Register with two-factor app"
 msgstr ""
 
@@ -41267,11 +41250,6 @@ msgstr ""
 msgid "Retry verification"
 msgstr ""
 
-msgid "Reveal value"
-msgid_plural "Reveal values"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Reveal values"
 msgstr ""
 
@@ -42129,9 +42107,6 @@ msgid "Runners|Show only inherited"
 msgstr ""
 
 msgid "Runners|Show runner installation and registration instructions"
-msgstr ""
-
-msgid "Runners|Show runner installation instructions"
 msgstr ""
 
 msgid "Runners|Something went wrong while deleting. Please refresh the page to try again."
@@ -45414,9 +45389,6 @@ msgid "Set up CI/CD"
 msgstr ""
 
 msgid "Set up Jira Integration"
-msgstr ""
-
-msgid "Set up a %{type} runner for a project"
 msgstr ""
 
 msgid "Set up a hardware device to enable two-factor authentication (2FA)."

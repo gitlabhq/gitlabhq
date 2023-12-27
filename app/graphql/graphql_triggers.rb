@@ -59,6 +59,12 @@ module GraphqlTriggers
     )
   end
 
+  def self.merge_request_diff_generated(merge_request)
+    GitlabSchema.subscriptions.trigger(
+      :merge_request_diff_generated, { issuable_id: merge_request.to_gid }, merge_request
+    )
+  end
+
   def self.work_item_updated(work_item)
     # becomes is necessary here since this can be triggered with both a WorkItem and also an Issue
     # depending on the update service the call comes from

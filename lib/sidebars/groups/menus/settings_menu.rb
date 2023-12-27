@@ -25,6 +25,10 @@ module Sidebars
             # Billing is the only group setting that is visible to auditors.
             # Create an empty sub-menu here and EE adds Settings menu item (with only Billing).
             return true
+          elsif Gitlab.ee? && can?(context.current_user, :read_resource_access_tokens, context.group)
+            # Managing group acccess tokens is a custom ability independent of the access level.
+            # Create an empty sub-menu here and EE adds Settings menu item (with only Billing).
+            return true
           end
 
           false
