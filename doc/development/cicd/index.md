@@ -9,7 +9,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 Development guides that are specific to CI/CD are listed here:
 
 - If you are creating new CI/CD templates, read [the development guide for GitLab CI/CD templates](templates.md).
-- If you are adding a new keyword or changing the CI schema, check the [CI schema guide](schema.md)
+- If you are adding a new keyword or changing the CI schema, refer to the following guides:
+  - [The CI configuration guide](configuration.md)
+  - [The CI schema guide](schema.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [reference page](../../ci/yaml/index.md).

@@ -232,9 +232,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New issue URL. |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `new_issue_url` | string | true |  URL of the new issue. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable Bugzilla
 
@@ -339,8 +339,8 @@ Parameters:
 
 | Parameter     | Type   | Required | Description    |
 | ------------- | ------ | -------- | -------------- |
-| `issues_url`  | string | true     | Issue URL.     |
-| `project_url` | string | true     | Project URL.   |
+| `issues_url`  | string | true     | URL of the issue.     |
+| `project_url` | string | true     | URL of the project.   |
 
 ### Disable ClickUp
 
@@ -404,9 +404,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New issue URL. |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `new_issue_url` | string | true |  URL of the new issue. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable a custom issue tracker
 
@@ -610,9 +610,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | The URL to create an issue in EWM. |
-| `project_url`   | string | true | The URL to the project in EWM. |
-| `issues_url`    | string | true | The URL to view an issue in EWM. Must contain `:id`. |
+| `new_issue_url` | string | true | URL of the new issue. |
+| `project_url`   | string | true | URL of the project. |
+| `issues_url`    | string | true | URL of the issue. |
 
 ### Disable EWM
 
@@ -1364,9 +1364,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | New issue URL. |
-| `project_url` | string | true | Project URL. |
-| `issues_url` | string | true | Issue URL. |
+| `new_issue_url` | string | true | URL of the new issue. |
+| `project_url` | string | true | URL of the project. |
+| `issues_url` | string | true | URL of the issue. |
 
 ### Disable Redmine
 
@@ -1620,8 +1620,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable YouTrack
 

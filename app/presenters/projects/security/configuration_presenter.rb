@@ -85,7 +85,8 @@ module Projects
           available: scan.available?,
           can_enable_by_merge_request: scan.can_enable_by_merge_request?,
           meta_info_path: scan.meta_info_path,
-          on_demand_available: scan.on_demand_available?
+          on_demand_available: scan.on_demand_available?,
+          security_features: scan.security_features
         }
       end
 

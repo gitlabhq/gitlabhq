@@ -25,8 +25,6 @@ GET /users
 | Attribute          | Type    | Required | Description                                                                                                            |
 | ------------------ | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `username`         | string  | no       | Get a single user with a specific username.                                                                            |
-| `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID.                                                |
-| `provider`         | string  | no       | The external provider.                                                                                                 |
 | `search`           | string  | no       | Search for a username.                                                                                                |
 | `active`           | boolean | no       | Filters only active users. Default is `false`.                                                                         |
 | `external`         | boolean | no       | Filters only external users. Default is `false`.                                                                       |
@@ -146,6 +144,8 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 
 | Attribute          | Type    | Required | Description                                                                                                           |
 | ------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID.                                                |
+| `provider`         | string  | no       | The external provider.                                                                                                 |
 | `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id`               |
 | `sort`             | string  | no       | Return users sorted in `asc` or `desc` order. Default is `desc`                                                       |
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |

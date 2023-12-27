@@ -130,26 +130,7 @@ module API
           'asana' => ::Integrations::Asana.api_fields,
           'assembla' => ::Integrations::Assembla.api_fields,
           'bamboo' => ::Integrations::Bamboo.api_fields,
-          'bugzilla' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New issue URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            }
-          ],
+          'bugzilla' => ::Integrations::Bugzilla.api_fields,
           'buildkite' => [
             {
               required: true,
@@ -191,26 +172,7 @@ module API
             }
           ],
           'confluence' => ::Integrations::Confluence.api_fields,
-          'custom-issue-tracker' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New issue URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            }
-          ],
+          'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_fields,
           'datadog' => [
             {
               required: true,
@@ -634,74 +596,10 @@ module API
               desc: 'The sound of the notification'
             }
           ],
-          'redmine' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'The new issue URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
-          'ewm' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New Issue URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            }
-          ],
-          'youtrack' => [
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
-          'clickup' => [
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
+          'redmine' => ::Integrations::Redmine.api_fields,
+          'ewm' => ::Integrations::Ewm.api_fields,
+          'youtrack' => ::Integrations::Youtrack.api_fields,
+          'clickup' => ::Integrations::Clickup.api_fields,
           'slack' => [
             chat_notification_settings,
             chat_notification_flags,

@@ -109,6 +109,8 @@ This setting is visible only in self-managed GitLab instances.
 WARNING:
 If you clear the **Turn on Code Suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
+::EndTabs
+
 ### Request access to Code Suggestions
 
 GitLab provisions access on a customer-by-customer basis for Code Suggestions
@@ -149,8 +151,6 @@ You must [manually synchronize your subscription](../../../../subscriptions/self
 - You already have a Premium or Ultimate tier subscription and have just upgraded to GitLab 16.3.
 
 Without the manual synchronization, it might take up to 24 hours to active Code Suggestions on your instance.
-
-::EndTabs
 
 ## Use Code Suggestions
 

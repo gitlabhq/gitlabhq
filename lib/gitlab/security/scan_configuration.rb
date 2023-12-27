@@ -37,6 +37,10 @@ module Gitlab
         false
       end
 
+      def security_features
+        Features.data[type] || {}
+      end
+
       private
 
       attr_reader :project, :configured
