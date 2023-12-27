@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
 security issues that other QA processes may miss. Use DAST API tests in addition to
 other [GitLab Secure](../index.md) security scanners and your own test processes. You can run DAST
-API tests either as part your CI/CD workflow, [on-demand](../dast/proxy-based.md#on-demand-scans), or both.
+API tests either as part your CI/CD workflow, [on-demand](../dast/on-demand_scan.md), or both.
 
 WARNING:
 Do not run DAST API testing against a production server. Not only can it perform _any_ function that

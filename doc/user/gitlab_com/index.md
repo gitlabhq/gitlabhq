@@ -245,7 +245,7 @@ which GitLab you use:
 | [Bitbucket Server](../project/import/bitbucket_server.md)                                           | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [FogBugz](../project/import/fogbugz.md)                                                             | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [Gitea](../project/import/gitea.md)                                                                 | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitLab by direct transfer](../group/import/index.md#migrate-groups-by-direct-transfer-recommended) | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [GitLab by direct transfer](../group/import/index.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [GitLab using file exports](../project/settings/import_export.md)                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [GitHub](../project/import/github.md)                                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
 | [Manifest file](../project/import/manifest.md)                                                      | **{check-circle}** Yes | **{dotted-circle}** No      |
@@ -454,7 +454,7 @@ To help avoid abuse, the following are rate limited:
 For more information, see:
 
 - [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits).
-- [Group import/export rate limits](../../user/group/import/index.md#rate-limits).
+- [Group import/export rate limits](../../user/project/settings/import_export.md#rate-limits-1).
 
 ### Non-configurable limits
 

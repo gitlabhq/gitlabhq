@@ -150,7 +150,7 @@ Backups of GitLab databases and file systems are taken every 24 hours, and are k
 - You can use the project export option in:
   - [The UI](../user/project/settings/import_export.md#export-a-project-and-its-data).
   - [The API](../api/project_import_export.md#schedule-an-export).
-- [Group export by uploading a file export](../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated)
+- [Group export by uploading a file export](../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated)
   does **not** export the projects in it, but does export:
   - Epics
   - Milestones

@@ -197,7 +197,7 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
         )
       end
 
-      where(:project, :access_level, :repository_path, :push_protected) do
+      where(:project, :access_level, :repository_path, :for_push_exists) do
         ref(:project_with_crpr)    | Gitlab::Access::REPORTER   | 'my-scope/my-container-stage-sha-1234' | true
         ref(:project_with_crpr)    | Gitlab::Access::DEVELOPER  | 'my-scope/my-container-stage-sha-1234' | true
         ref(:project_with_crpr)    | Gitlab::Access::MAINTAINER | 'my-scope/my-container-stage-sha-1234' | false
@@ -237,7 +237,7 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
       end
 
       with_them do
-        it { is_expected.to eq push_protected }
+        it { is_expected.to eq for_push_exists }
       end
     end
   end

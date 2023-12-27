@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 The GitLab.com importer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108502) in GitLab 15.8
 and removed in GitLab 16.0. To import GitLab projects from GitLab.com to a self-managed GitLab instance use
-[migrating groups and projects by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+[migrating groups and projects by direct transfer](../../group/import/index.md).
 
 ## Related topics
 

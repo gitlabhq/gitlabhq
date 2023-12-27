@@ -165,7 +165,7 @@ Transferring groups moves them from one place to another in the same GitLab inst
 - Convert a subgroup into a top-level group by transferring it out of its current group.
 
 If you need to copy a group to a different GitLab instance,
-[migrate the group by direct transfer](import/index.md#migrate-groups-by-direct-transfer-recommended).
+[migrate the group by direct transfer](import/index.md).
 
 When transferring groups, note:
 

@@ -32,7 +32,7 @@ To preserve the member list and their respective permissions on imported groups,
 ## Prerequisites
 
 - For information on prerequisites for group import and export API, see prerequisites for
-  [migrating groups by uploading an export file](../user/group/import/index.md#preparation).
+  [migrating groups by uploading an export file](../user/project/settings/import_export.md#preparation).
 
 ## Schedule new export
 

@@ -15,7 +15,7 @@ To bring existing projects to GitLab, or copy GitLab groups and projects to a di
 ## Migrate from GitLab to GitLab by using direct transfer
 
 The best way to migrate GitLab groups and projects between GitLab instances, or in the same GitLab instance, is
-[by using direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+[by using direct transfer](../../group/import/index.md).
 
 You can also migrate GitLab projects by using a GitLab file export, which is a supported import source.
 

@@ -28557,9 +28557,6 @@ msgstr ""
 msgid "LearnGitLab|Set up your workspace"
 msgstr ""
 
-msgid "LearnGitLab|Start Learning GitLab"
-msgstr ""
-
 msgid "LearnGitLab|Start a free trial of GitLab Ultimate"
 msgstr ""
 
@@ -51515,27 +51512,6 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "TrialBenefits|Container Scanning"
-msgstr ""
-
-msgid "TrialBenefits|Dynamic Applications Security Testing"
-msgstr ""
-
-msgid "TrialBenefits|Multi-Level Epics"
-msgstr ""
-
-msgid "TrialBenefits|Security Dashboards"
-msgstr ""
-
-msgid "TrialBenefits|Static Application Security Testing"
-msgstr ""
-
-msgid "TrialBenefits|Suggested Reviewers"
-msgstr ""
-
-msgid "TrialBenefits|Vulnerability Management"
-msgstr ""
-
 msgid "TrialRegistration|Start GitLab Ultimate free trial"
 msgstr ""
 
@@ -51551,9 +51527,6 @@ msgstr ""
 msgid "Trials|Compare all plans"
 msgstr ""
 
-msgid "Trials|Congrats on starting your 30-day free trial!"
-msgstr ""
-
 msgid "Trials|Create a new group to start your GitLab Ultimate trial."
 msgstr ""
 
@@ -51566,13 +51539,7 @@ msgstr ""
 msgid "Trials|Looking to do more with GitLab?"
 msgstr ""
 
-msgid "Trials|Trials benefits"
-msgstr ""
-
 msgid "Trials|Upgrade to regain access to powerful features like advanced team management for code, security, and reporting."
-msgstr ""
-
-msgid "Trials|With GitLab Ultimate, you'll have access to:"
 msgstr ""
 
 msgid "Trials|You can apply your trial to a new group or an existing group."

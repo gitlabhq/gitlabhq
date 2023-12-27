@@ -1910,8 +1910,8 @@ to select a specific site profile and scanner profile.
 
 **Related topics**:
 
-- [Site profile](../../user/application_security/dast/proxy-based.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/proxy-based.md#scanner-profile).
+- [Site profile](../../user/application_security/dast/on-demand_scan.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/on-demand_scan.md#scanner-profile).
 
 ### `dependencies`
 

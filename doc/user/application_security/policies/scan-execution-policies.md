@@ -214,8 +214,8 @@ rule in the defined policy are met.
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning`, `custom` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/on-demand_scan.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `ci_configuration` <sup>1</sup> | `string` | | GitLab CI YAML as formatted as string. |
@@ -225,7 +225,7 @@ rule in the defined policy are met.
 
 Note the following:
 
-- You must create the [site profile](../dast/proxy-based.md#site-profile) and [scanner profile](../dast/proxy-based.md#scanner-profile)
+- You must create the [site profile](../dast/on-demand_scan.md#site-profile) and [scanner profile](../dast/on-demand_scan.md#scanner-profile)
   with selected names for each project that is assigned to the selected Security Policy Project.
   Otherwise, the policy is not applied and a job with an error message is created instead.
 - Once you associate the site profile and scanner profile by name in the policy, it is not possible
