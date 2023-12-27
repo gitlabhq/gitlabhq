@@ -56,10 +56,6 @@ module Ci
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    def pipeline_status_cache_key(pipeline_status)
-      "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
-    end
-
     def render_commit_status(commit, status, ref: nil, tooltip_placement: 'left')
       project = commit.project
       path = pipelines_project_commit_path(project, commit, ref: ref)

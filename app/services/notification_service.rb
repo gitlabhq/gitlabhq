@@ -532,14 +532,21 @@ class NotificationService
     mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
-  def new_project_member(project_member)
-    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
+  def updated_member_access_level(member)
+    return true unless member.notifiable?(:mention)
 
-    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
   end
 
-  def update_project_member(project_member)
-    return true unless project_member.notifiable?(:mention)
+  def updated_member_expiration(member)
+    return true unless member.source.is_a?(Group)
+    return true unless member.notifiable?(:mention)
+
+    mailer.member_expiration_date_updated_email(member.real_source_type, member.id).deliver_later
+  end
+
+  def new_project_member(project_member)
+    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
 
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
@@ -562,18 +569,6 @@ class NotificationService
     return true unless group_member.notifiable?(:mention)
 
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def update_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def updated_group_member_expiration(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_expiration_date_updated_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

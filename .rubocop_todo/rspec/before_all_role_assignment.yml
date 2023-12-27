@@ -321,7 +321,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/models/ee/vulnerability_spec.rb'
     - 'ee/spec/models/epic_issue_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
-    - 'ee/spec/models/group_member_spec.rb'
+    - 'ee/spec/models/ee/group_member_spec.rb'
     - 'ee/spec/models/instance_security_dashboard_spec.rb'
     - 'ee/spec/models/issue_spec.rb'
     - 'ee/spec/models/merge_request_spec.rb'

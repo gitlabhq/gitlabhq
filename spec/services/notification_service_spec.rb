@@ -3319,18 +3319,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         let(:notification_trigger) { group.add_guest(added_user) }
       end
     end
-
-    describe '#updated_group_member_expiration' do
-      let_it_be(:group_member) { create(:group_member) }
-
-      it 'emails the user that their group membership expiry has changed' do
-        expect_next_instance_of(NotificationService) do |notification|
-          allow(notification).to receive(:updated_group_member_expiration).with(group_member)
-        end
-
-        group_member.update!(expires_at: 5.days.from_now)
-      end
-    end
   end
 
   describe 'ProjectMember', :deliver_mails_inline do
@@ -3506,6 +3494,42 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     def create_member!
       create(:project_member, user: added_user, project: project)
+    end
+  end
+
+  describe '#updated_member_expiration' do
+    subject(:updated_member_expiration) { notification.updated_member_expiration(member) }
+
+    context 'for group member' do
+      let_it_be(:member) { create(:group_member) }
+
+      it 'triggers a notification about the expiration change' do
+        updated_member_expiration
+
+        expect_delivery_jobs_count(1)
+        expect_enqueud_email('Group', member.id, mail: 'member_expiration_date_updated_email')
+      end
+    end
+
+    context 'for project member' do
+      let_it_be(:member) { create(:project_member) }
+
+      it 'does not trigger a notification' do
+        updated_member_expiration
+
+        expect_delivery_jobs_count(0)
+      end
+    end
+  end
+
+  describe '#updated_member_access_level' do
+    let_it_be(:member) { create(:group_member) }
+
+    it 'triggers a notification about the access_level change' do
+      notification.updated_member_access_level(member)
+
+      expect_delivery_jobs_count(1)
+      expect_enqueud_email('Group', member.id, mail: 'member_access_granted_email')
     end
   end
 

@@ -526,6 +526,14 @@ class Member < ApplicationRecord
   end
 
   def post_update_hook
+    if saved_change_to_access_level?
+      run_after_commit { notification_service.updated_member_access_level(self) }
+    end
+
+    if saved_change_to_expires_at?
+      run_after_commit { notification_service.updated_member_expiration(self) }
+    end
+
     system_hook_service.execute_hooks_for(self, :update)
   end
 

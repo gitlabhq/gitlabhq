@@ -128,14 +128,6 @@ class ProjectMember < Member
     super
   end
 
-  def post_update_hook
-    if saved_change_to_access_level?
-      run_after_commit { notification_service.update_project_member(self) }
-    end
-
-    super
-  end
-
   def post_destroy_hook
     if expired?
       event_service.expired_leave_project(self.project, self.user)

@@ -5719,6 +5719,31 @@ Input type: `MergeRequestUpdateApprovalRuleInput`
 | <a id="mutationmergerequestupdateapprovalruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestupdateapprovalrulemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mlModelCreate`
+
+WARNING:
+**Introduced** in 16.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `MlModelCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelcreatedescription"></a>`description` | [`String`](#string) | Description of the model. |
+| <a id="mutationmlmodelcreatename"></a>`name` | [`String!`](#string) | Name of the model. |
+| <a id="mutationmlmodelcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the model to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmlmodelcreatemodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
+
 ### `Mutation.namespaceBanDestroy`
 
 Input type: `NamespaceBanDestroyInput`
@@ -23051,6 +23076,7 @@ Machine learning model in the model registry.
 | <a id="mlmodel_links"></a>`_links` | [`MLModelLinks!`](#mlmodellinks) | Map of links to perform actions on the model. |
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlmodeldescription"></a>`description` | [`String!`](#string) | Description of the model. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 | <a id="mlmodellatestversion"></a>`latestVersion` | [`MlModelVersion`](#mlmodelversion) | Latest version of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |

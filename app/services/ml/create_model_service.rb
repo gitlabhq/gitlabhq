@@ -12,21 +12,25 @@ module Ml
 
     def execute
       ApplicationRecord.transaction do
-        model = Ml::Model.create!(
+        model = Ml::Model.new(
           project: @project,
           name: @name,
-          user: (@user.is_a?(User) ? @user : nil),
+          user: @user,
           description: @description,
           default_experiment: default_experiment
         )
 
-        add_metadata(model, @metadata)
+        model.save
 
-        Gitlab::InternalEvents.track_event(
-          'model_registry_ml_model_created',
-          project: @project,
-          user: @user
-        )
+        if model.persisted?
+          add_metadata(model, @metadata)
+
+          Gitlab::InternalEvents.track_event(
+            'model_registry_ml_model_created',
+            project: @project,
+            user: @user
+          )
+        end
 
         model
       end

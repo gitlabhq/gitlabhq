@@ -131,7 +131,7 @@ Lint/UnusedBlockArgument:
     - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
     - 'ee/spec/lib/gitlab/insights/project_insights_config_spec.rb'
     - 'ee/spec/lib/gitlab/usage_data_metrics_spec.rb'
-    - 'ee/spec/models/member_spec.rb'
+    - 'ee/spec/models/ee/member_spec.rb'
     - 'ee/spec/requests/api/graphql/project/pipeline/security_report_summary_spec.rb'
     - 'ee/spec/requests/api/graphql/vulnerabilities/sort_spec.rb'
     - 'ee/spec/requests/api/related_epic_links_spec.rb'

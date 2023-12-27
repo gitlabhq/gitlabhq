@@ -1095,6 +1095,32 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when after_update :post_update_hook' do
+    let_it_be(:member) { create(:group_member, :developer) }
+
+    context 'when access_level is changed' do
+      it 'calls NotificationService.update_member' do
+        expect(NotificationService).to receive_message_chain(:new, :updated_member_access_level).with(member)
+
+        member.update_attribute(:access_level, Member::MAINTAINER)
+      end
+
+      it 'does not send an email when the access level has not changed' do
+        expect(NotificationService).not_to receive(:new)
+
+        member.touch
+      end
+    end
+
+    context 'when expiration is changed' do
+      it 'calls the notification service when membership expiry has changed' do
+        expect(NotificationService).to receive_message_chain(:new, :updated_member_expiration).with(member)
+
+        member.update!(expires_at: 5.days.from_now)
+      end
+    end
+  end
+
   describe 'log_invitation_token_cleanup' do
     let_it_be(:project) { create :project }
 

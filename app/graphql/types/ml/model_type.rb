@@ -9,11 +9,15 @@ module Types
 
       connection_type_class Types::LimitedCountableConnectionType
 
+      present_using ::Ml::ModelPresenter
+
       field :id, ::Types::GlobalIDType[::Ml::Model], null: false, description: 'ID of the model.'
 
       field :name, ::GraphQL::Types::String, null: false, description: 'Name of the model.'
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
+
+      field :description, ::GraphQL::Types::String, null: false, description: 'Description of the model.'
 
       field :latest_version, ::Types::Ml::ModelVersionType, null: true, description: 'Latest version of the model.'
 

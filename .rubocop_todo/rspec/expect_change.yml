@@ -36,7 +36,7 @@ RSpec/ExpectChange:
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/group_wiki_spec.rb'
     - 'ee/spec/models/incident_management/issuable_escalation_status_spec.rb'
-    - 'ee/spec/models/member_spec.rb'
+    - 'ee/spec/models/ee/member_spec.rb'
     - 'ee/spec/models/project_import_state_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
