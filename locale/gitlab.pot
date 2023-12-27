@@ -15294,9 +15294,6 @@ msgstr ""
 msgid "CycleAnalytics|project dropdown filter"
 msgstr ""
 
-msgid "CycleAnalytics|the assigned object is not supported"
-msgstr ""
-
 msgid "DAG visualization requires at least 3 dependent jobs."
 msgstr ""
 

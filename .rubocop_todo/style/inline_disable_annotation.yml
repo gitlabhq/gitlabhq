@@ -390,7 +390,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/commit.rb'
     - 'app/models/commit_collection.rb'
     - 'app/models/commit_status.rb'
-    - 'app/models/concerns/analytics/cycle_analytics/parentable.rb'
     - 'app/models/concerns/approvable.rb'
     - 'app/models/concerns/async_devise_email.rb'
     - 'app/models/concerns/atomic_internal_id.rb'

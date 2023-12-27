@@ -131,39 +131,52 @@ RSpec.describe Analytics::CycleAnalytics::Aggregation, type: :model, feature_cat
   end
 
   describe '#safe_create_for_namespace' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
+    context 'when group namespace is provided' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
 
-    it 'creates the aggregation record' do
-      record = described_class.safe_create_for_namespace(group)
-
-      expect(record).to be_persisted
-    end
-
-    context 'when non top-level group is given' do
-      it 'creates the aggregation record for the top-level group' do
-        record = described_class.safe_create_for_namespace(subgroup)
+      it 'creates the aggregation record' do
+        record = described_class.safe_create_for_namespace(group)
 
         expect(record).to be_persisted
       end
-    end
 
-    context 'when the record is already present' do
-      it 'does nothing' do
-        described_class.safe_create_for_namespace(group)
+      context 'when non top-level group is given' do
+        it 'creates the aggregation record for the top-level group' do
+          record = described_class.safe_create_for_namespace(subgroup)
 
-        expect do
+          expect(record).to be_persisted
+        end
+      end
+
+      context 'when the record is already present' do
+        it 'does nothing' do
           described_class.safe_create_for_namespace(group)
-          described_class.safe_create_for_namespace(subgroup)
-        end.not_to change { described_class.count }
+
+          expect do
+            described_class.safe_create_for_namespace(group)
+            described_class.safe_create_for_namespace(subgroup)
+          end.not_to change { described_class.count }
+        end
+      end
+
+      context 'when the aggregation was disabled for some reason' do
+        it 're-enables the aggregation' do
+          create(:cycle_analytics_aggregation, enabled: false, namespace: group)
+
+          aggregation = described_class.safe_create_for_namespace(group)
+
+          expect(aggregation).to be_enabled
+        end
       end
     end
 
-    context 'when the aggregation was disabled for some reason' do
-      it 're-enables the aggregation' do
-        create(:cycle_analytics_aggregation, enabled: false, namespace: group)
+    context 'when personal namespace is provided' do
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:project) { create(:project, :public, namespace: user2.namespace) }
 
-        aggregation = described_class.safe_create_for_namespace(group)
+      it 'is successful' do
+        aggregation = described_class.safe_create_for_namespace(user2.namespace)
 
         expect(aggregation).to be_enabled
       end

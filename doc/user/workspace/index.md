@@ -181,3 +181,4 @@ For more information, see the
 ## Related topics
 
 - [GitLab workspaces demo](https://go.gitlab.com/qtu66q)
+- [Developer documentation](../../development/remote_development/index.md)]

@@ -14,15 +14,14 @@ RSpec.shared_examples 'value stream analytics namespace models' do
     end
   end
 
-  context 'when Namespace is given' do
-    it 'fails' do
-      namespace = create(:namespace)
+  context 'when personal namespace is given' do
+    it 'is valid' do
+      namespace = create(:namespace, owner: create(:user))
       model = build(factory_name, namespace: namespace)
 
-      expect(model).to be_invalid
-
-      error_message = s_('CycleAnalytics|the assigned object is not supported')
-      expect(model.errors.messages_for(:namespace)).to eq([error_message])
+      expect(model).to be_valid
+      expect(model.save).to be(true)
+      expect(model.namespace).to eq(namespace)
     end
   end
 end

@@ -94,8 +94,8 @@ module CycleAnalyticsHelpers
     wait_for_requests
   end
 
-  def create_value_stream_aggregation(group_or_project_namespace)
-    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group_or_project_namespace)
+  def create_value_stream_aggregation(namespace)
+    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(namespace)
     Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
   end
 

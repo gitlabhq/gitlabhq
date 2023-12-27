@@ -59,19 +59,26 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     estimation < 1 ? nil : estimation.from_now
   end
 
-  def self.safe_create_for_namespace(group_or_project_namespace)
+  def self.safe_create_for_namespace(target_namespace)
     # Namespaces::ProjectNamespace has no root_ancestor
     # Related: https://gitlab.com/gitlab-org/gitlab/-/issues/386124
-    group = group_or_project_namespace.is_a?(Group) ? group_or_project_namespace : group_or_project_namespace.parent
-    top_level_group = group.root_ancestor
-    aggregation = find_by(group_id: top_level_group.id)
+    namespace = if target_namespace.is_a?(Group) || target_namespace.is_a?(Namespaces::UserNamespace)
+                  target_namespace
+                else
+                  target_namespace.parent
+                end
+    # personal namespace projects and associated ProjectNamespace respond to `namespace`
+    # and this is close enough to "root ancestor"
+    top_level_namespace =
+      target_namespace.respond_to?(:root_ancestor) ? namespace.root_ancestor : namespace.namespace
+    aggregation = find_by(group_id: top_level_namespace.id)
     return aggregation if aggregation&.enabled?
 
     # At this point we're sure that the group is licensed, we can always enable the aggregation.
     # This re-enables the aggregation in case the group downgraded and later upgraded the license.
-    upsert({ group_id: top_level_group.id, enabled: true })
+    upsert({ group_id: top_level_namespace.id, enabled: true })
 
-    find(top_level_group.id)
+    find(top_level_namespace.id)
   end
 
   private
