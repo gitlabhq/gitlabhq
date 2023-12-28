@@ -6,32 +6,17 @@ module Sidebars
       class SettingsMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          if can?(context.current_user, :admin_group, context.group)
-            add_item(general_menu_item)
-            add_item(integrations_menu_item)
-            add_item(access_tokens_menu_item)
-            add_item(group_projects_menu_item)
-            add_item(repository_menu_item)
-            add_item(ci_cd_menu_item)
-            add_item(applications_menu_item)
-            add_item(packages_and_registries_menu_item)
-            add_item(usage_quotas_menu_item)
-            return true
-          elsif Gitlab.ee? && can?(context.current_user, :change_push_rules, context.group)
-            # Push Rules are the only group setting that can also be edited by maintainers.
-            # Create an empty sub-menu here and EE adds Repository menu item (with only Push Rules).
-            return true
-          elsif Gitlab.ee? && can?(context.current_user, :read_billing, context.group)
-            # Billing is the only group setting that is visible to auditors.
-            # Create an empty sub-menu here and EE adds Settings menu item (with only Billing).
-            return true
-          elsif Gitlab.ee? && can?(context.current_user, :read_resource_access_tokens, context.group)
-            # Managing group acccess tokens is a custom ability independent of the access level.
-            # Create an empty sub-menu here and EE adds Settings menu item (with only Billing).
-            return true
-          end
+          return unless can?(context.current_user, :admin_group, context.group)
 
-          false
+          add_item(general_menu_item)
+          add_item(integrations_menu_item)
+          add_item(access_tokens_menu_item)
+          add_item(group_projects_menu_item)
+          add_item(repository_menu_item)
+          add_item(ci_cd_menu_item)
+          add_item(applications_menu_item)
+          add_item(packages_and_registries_menu_item)
+          add_item(usage_quotas_menu_item)
         end
 
         override :title

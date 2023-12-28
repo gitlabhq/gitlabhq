@@ -1232,7 +1232,7 @@ lib/gitlab/checks/**
 /lib/tasks/tokens.rake
 
 # Necessary for GitLab availability
-[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
+[Verify] @gitlab-org/maintainers/cicd-verify @stanhu @ayufan
 # With these catch-all rules we will require backend approval and use it as an
 # opportunity to refine specific rules defined in this section.
 # Note that frontend, CI templates and other concerns should be kept within

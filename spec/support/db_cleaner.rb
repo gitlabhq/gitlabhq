@@ -2,7 +2,7 @@
 
 module DbCleaner
   def all_connection_classes
-    ::TestProfBeforeAllAdapter::MultipleDatabaseAdapter.all_connection_classes
+    ::TestProf::BeforeAll::Adapters::ActiveRecord.all_connections.map(&:connection_class).uniq
   end
 
   def delete_from_all_tables!(except: [])

@@ -3153,7 +3153,6 @@ Style/InlineDisableAnnotation:
     - 'spec/sidekiq/cron/job_gem_dependency_spec.rb'
     - 'spec/sidekiq_cluster/sidekiq_cluster_spec.rb'
     - 'spec/spec_helper.rb'
-    - 'spec/support/before_all_adapter.rb'
     - 'spec/support/capybara.rb'
     - 'spec/support/database/click_house/hooks.rb'
     - 'spec/support/db_cleaner.rb'

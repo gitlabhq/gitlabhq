@@ -5908,6 +5908,9 @@ msgstr ""
 msgid "AppleAppStore|Protected branches and tags only"
 msgstr ""
 
+msgid "AppleAppStore|Set variables on protected branches and tags only"
+msgstr ""
+
 msgid "AppleAppStore|Set variables on protected branches and tags only."
 msgstr ""
 
