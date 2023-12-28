@@ -32125,7 +32125,7 @@ CREATE INDEX index_catalog_resource_versions_on_resource_id_and_released_at ON c
 
 CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources USING btree (project_id);
 
-CREATE INDEX index_catalog_resources_on_search_vector_triagram ON catalog_resources USING gin (search_vector);
+CREATE INDEX index_catalog_resources_on_search_vector ON catalog_resources USING gin (search_vector);
 
 CREATE INDEX index_catalog_resources_on_state ON catalog_resources USING btree (state);
 

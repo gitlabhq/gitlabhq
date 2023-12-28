@@ -52437,7 +52437,7 @@ msgstr ""
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr ""
 
-msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images. %{linkStart}More information%{linkEnd}"
+msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr ""
 
 msgid "UsageQuota|Month"
