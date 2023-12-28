@@ -33,6 +33,7 @@ PATH
   remote: gems/gitlab-housekeeper
   specs:
     gitlab-housekeeper (0.1.0)
+      activesupport
       httparty
       rubocop
 

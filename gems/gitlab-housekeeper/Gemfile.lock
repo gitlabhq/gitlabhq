@@ -10,6 +10,7 @@ PATH
   remote: .
   specs:
     gitlab-housekeeper (0.1.0)
+      activesupport
       httparty
       rubocop
 

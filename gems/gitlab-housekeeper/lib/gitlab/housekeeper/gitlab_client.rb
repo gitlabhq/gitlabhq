@@ -109,7 +109,12 @@ module Gitlab
 
       def current_user_id
         @current_user_id = begin
-          response = HTTParty.get("#{@base_uri}/user")
+          response = HTTParty.get(
+            "#{@base_uri}/user",
+            headers: {
+              "Private-Token" => @token
+            }
+          )
 
           unless (200..299).cover?(response.code)
             raise Error,

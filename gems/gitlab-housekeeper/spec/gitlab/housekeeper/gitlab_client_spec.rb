@@ -75,6 +75,11 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
     before do
       # Get the current housekeeper user
       stub_request(:get, "https://gitlab.com/api/v4/user")
+        .with(
+          headers: {
+            'Private-Token' => 'the-api-token'
+          }
+        )
         .to_return(status: 200, body: { id: housekeeper_user_id }.to_json)
 
       # Get the id of the current merge request
