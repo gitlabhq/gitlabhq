@@ -42,6 +42,7 @@ export const newCandidate = () => ({
 
 const LATEST_VERSION = {
   version: '1.2.3',
+  path: 'path/to/modelversion',
 };
 
 export const makeModel = ({ latestVersion } = { latestVersion: LATEST_VERSION }) => ({

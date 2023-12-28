@@ -31,11 +31,12 @@ module Projects
       def latest_version_view_model
         return unless model.latest_version
 
-        model_version = model.latest_version
+        model_version = model.latest_version.present
 
         {
           version: model_version.version,
           description: model_version.description,
+          path: model_version.path,
           project_path: project_path(model_version.project),
           package_id: model_version.package_id,
           **::Ml::CandidateDetailsPresenter.new(model_version.candidate, current_user).present

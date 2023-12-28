@@ -1,7 +1,7 @@
 import { GlBadge, GlTab } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
@@ -19,7 +19,7 @@ let wrapper;
 Vue.use(VueApollo);
 
 const createWrapper = (model = MODEL) => {
-  wrapper = shallowMount(ShowMlModel, {
+  wrapper = shallowMountExtended(ShowMlModel, {
     apolloProvider,
     propsData: { model },
     stubs: { GlTab },
@@ -37,6 +37,7 @@ const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge)
 const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findEmptyState = () => wrapper.findComponent(EmptyState);
 const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+const findVersionLink = () => wrapper.findByTestId('model-version-link');
 
 describe('ShowMlModel', () => {
   describe('Title', () => {
@@ -67,8 +68,10 @@ describe('ShowMlModel', () => {
         expect(findModelVersionDetail().props('modelVersion')).toBe(MODEL.latestVersion);
       });
 
-      it('displays the title', () => {
-        expect(findDetailTab().text()).toContain('Latest version: 1.2.3');
+      it('displays a link to latest version', () => {
+        expect(findDetailTab().text()).toContain('Latest version:');
+        expect(findVersionLink().attributes('href')).toBe(MODEL.latestVersion.path);
+        expect(findVersionLink().text()).toBe('1.2.3');
       });
     });
 
