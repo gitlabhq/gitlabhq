@@ -31196,6 +31196,9 @@ msgstr ""
 msgid "Model experiments"
 msgstr ""
 
+msgid "Model registry"
+msgstr ""
+
 msgid "ModelRegistry|Model registry"
 msgstr ""
 

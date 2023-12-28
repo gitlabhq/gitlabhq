@@ -124,6 +124,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_model_registry_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Deploy'),
+      new_sub_nav_item_name: _('Model registry')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),

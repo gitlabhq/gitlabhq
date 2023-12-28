@@ -11,6 +11,7 @@ module Sidebars
           add_item(infrastructure_registry_menu_item)
           add_item(harbor_registry_menu_item)
           add_item(model_experiments_menu_item)
+          add_item(model_registry_menu_item)
           true
         end
 
@@ -100,6 +101,20 @@ module Sidebars
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu,
             active_routes: { controller: %w[projects/ml/experiments projects/ml/candidates] },
             item_id: :model_experiments
+          )
+        end
+
+        def model_registry_menu_item
+          unless can?(context.current_user, :read_model_registry, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :model_registry)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Model registry'),
+            link: project_ml_models_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
+            active_routes: { controller: %w[projects/ml/models] },
+            item_id: :model_registry
           )
         end
 

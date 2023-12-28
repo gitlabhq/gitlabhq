@@ -110,8 +110,8 @@ module Gitlab
           end
         end
 
-        def binary?(data, cache_key: nil)
-          EncodingHelper.detect_libgit2_binary?(data, cache_key: cache_key)
+        def binary?(data)
+          EncodingHelper.detect_libgit2_binary?(data)
         end
 
         def size_could_be_lfs?(size)
