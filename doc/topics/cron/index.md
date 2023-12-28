@@ -42,6 +42,7 @@ are valid:
 - Run once a month on the 2nd Monday: `0 0 * * 1#2`
 - Run once a year at midnight of 1 January: `0 0 1 1 *`
 - Run every other Sunday at 0900 hours: `0 9 * * sun%2`
+- Run twice a month at 3 AM, on the 1st and 15th of the month: `0 3 1,15 * *`
   - This syntax is from the [fugit modulo extension](https://github.com/floraison/fugit#the-modulo-extension)
 
 For complete cron documentation, refer to the

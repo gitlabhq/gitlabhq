@@ -218,18 +218,7 @@ module API
             }
           ],
           'discord' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'Discord webhook. For example, https://discord.com/api/webhooks/…'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            },
+            ::Integrations::Discord.api_fields,
             chat_notification_flags,
             chat_notification_channels
           ].flatten,

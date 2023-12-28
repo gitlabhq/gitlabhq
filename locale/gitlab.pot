@@ -8756,6 +8756,9 @@ msgstr ""
 msgid "Branches matching this string are retargeted. Wildcards are supported, and names are case-sensitive."
 msgstr ""
 
+msgid "Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`."
+msgstr ""
+
 msgid "Branches: %{source_branch} to %{target_branch}"
 msgstr ""
 
@@ -17795,6 +17798,9 @@ msgid "Discard changes to %{path}?"
 msgstr ""
 
 msgid "Discard draft"
+msgstr ""
+
+msgid "Discord webhook (for example, `https://discord.com/api/webhooks/…`)."
 msgstr ""
 
 msgid "DiscordService|Discord Notifications"
@@ -44897,6 +44903,9 @@ msgid "Send notifications about project events to Mattermost channels. %{docs_li
 msgstr ""
 
 msgid "Send notifications about project events to a Discord channel. %{docs_link}"
+msgstr ""
+
+msgid "Send notifications for broken pipelines."
 msgstr ""
 
 msgid "Send report"

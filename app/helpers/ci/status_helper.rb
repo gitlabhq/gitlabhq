@@ -9,11 +9,6 @@
 #
 module Ci
   module StatusHelper
-    def ci_status_for_statuseable(subject)
-      status = subject.try(:status) || 'not found'
-      status.humanize
-    end
-
     # rubocop:disable Metrics/CyclomaticComplexity
     def ci_icon_for_status(status, size: 24)
       icon_name =
