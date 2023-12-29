@@ -1198,6 +1198,46 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '#clear_heartbeat', :freeze_time do
+    let!(:runner) { create(:ci_runner, :project, version: '15.0.0') }
+    let(:heartbeat_values) do
+      {
+        version: '15.0.1',
+        platform: 'darwin',
+        architecture: '18-bit',
+        ip_address: '1.1.1.1',
+        executor: 'shell',
+        revision: 'sha',
+        config: { 'gpus' => 'all' }
+      }
+    end
+
+    let(:expected_attributes) { heartbeat_values.except(:executor).merge(executor_type: 'shell') }
+    let(:expected_cleared_attributes) { expected_attributes.to_h { |key, _| [key, nil] }.merge(config: {}) }
+
+    it 'clears contacted at and other attributes' do
+      expect do
+        runner.heartbeat(heartbeat_values)
+      end.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
+        .and change { runner.reload.uncached_contacted_at }.from(nil).to(Time.current)
+
+      expected_attributes.each do |key, value|
+        expect(runner.public_send(key)).to eq(value)
+        expect(runner.read_attribute(key)).to eq(value)
+      end
+
+      expect do
+        runner.clear_heartbeat
+      end.to change { runner.reload.contacted_at }.from(Time.current).to(nil)
+        .and change { runner.reload.uncached_contacted_at }.from(Time.current).to(nil)
+
+      expected_cleared_attributes.each do |key, value|
+        expect(runner.public_send(key)).to eq(value)
+        expect(runner.read_attribute(key)).to eq(value)
+      end
+    end
+  end
+
   describe '#destroy' do
     let(:runner) { create(:ci_runner) }
 

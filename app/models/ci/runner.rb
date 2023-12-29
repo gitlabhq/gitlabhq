@@ -464,6 +464,21 @@ module Ci
       end
     end
 
+    def clear_heartbeat
+      cleared_attributes = {
+        version: nil,
+        revision: nil,
+        platform: nil,
+        architecture: nil,
+        ip_address: nil,
+        executor_type: nil,
+        config: {},
+        contacted_at: nil
+      }
+      merge_cache_attributes(cleared_attributes)
+      update_columns(cleared_attributes)
+    end
+
     def pick_build!(build)
       tick_runner_queue if matches_build?(build)
     end
