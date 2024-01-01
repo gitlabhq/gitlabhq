@@ -638,7 +638,9 @@ class Integration < ApplicationRecord
   end
 
   def validate_belongs_to_project_or_group
-    errors.add(:project_id, 'The service cannot belong to both a project and a group') if project_level? && group_level?
+    return unless project_level? && group_level?
+
+    errors.add(:project_id, 'The integration cannot belong to both a project and a group')
   end
 
   def validate_recipients?
