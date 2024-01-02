@@ -118,7 +118,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     context 'when maintainer' do
       let(:current_user) { project_maintainer }
 
-      it 'does not show the Owner option' do
+      it 'does not show the Owner option', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436958' do
         within_modal do
           toggle_listbox
           expect_listbox_items(%w[Guest Reporter Developer Maintainer])

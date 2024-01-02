@@ -800,7 +800,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/repositories/lfs_storage_controller_spec.rb'
     - 'spec/features/admin/admin_projects_spec.rb'
-    - 'spec/features/admin/users/user_spec.rb'
+    - 'spec/features/admin/users/admin_sees_user_spec.rb'
     - 'spec/features/admin/users/users_spec.rb'
     - 'spec/features/boards/board_filters_spec.rb'
     - 'spec/features/boards/new_issue_spec.rb'

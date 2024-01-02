@@ -50,7 +50,7 @@ To create a requirement:
 
 1. In a project, go to **Plan > Requirements**.
 1. Select **New requirement**.
-1. Enter a title and description and select **Create requirement**.
+1. Enter a title and description and select **New requirement**.
 
 ![requirement create view](img/requirement_create_v13_5.png)
 
@@ -240,7 +240,8 @@ To import requirements:
 
 1. In a project, go to **Plan > Requirements**.
    - For a project with requirements, in the
-     upper-right corner, select the import icon (**{import}**).
+     upper-right corner, select the vertical ellipsis (**{ellipsis_v}**),
+     then select **Import requirements** (**{import}**).
    - For a project without requirements, in the middle of the page, select **Import CSV**.
 1. Select the file and select **Import requirements**.
 
@@ -300,7 +301,8 @@ Prerequisites:
 To export requirements:
 
 1. In a project, go to **Plan > Requirements**.
-1. In the upper-right corner, select **Export as CSV** (**{export}**).
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**),
+   then select **Export as CSV** (**{export}**).
 
    A confirmation modal appears.
 

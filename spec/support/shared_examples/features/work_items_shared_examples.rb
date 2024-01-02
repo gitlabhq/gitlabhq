@@ -2,22 +2,45 @@
 
 RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
+  let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
 
-  before do
-    stub_feature_flags(work_items_mvc_2: false)
+  context 'when the work_items_mvc_2 FF is disabled' do
+    before do
+      stub_feature_flags(work_items_mvc_2: false)
 
-    page.refresh
-    wait_for_all_requests
+      page.refresh
+      wait_for_all_requests
+    end
+
+    it 'successfully shows and changes the title of the work item' do
+      expect(work_item.reload.title).to eq work_item.title
+
+      find(title_selector).set("Work item title")
+      find(title_selector).native.send_keys(:return)
+      wait_for_requests
+
+      expect(work_item.reload.title).to eq 'Work item title'
+    end
   end
 
-  it 'successfully shows and changes the title of the work item' do
-    expect(work_item.reload.title).to eq work_item.title
+  context 'when the work_items_mvc_2 FF is enabled' do
+    before do
+      stub_feature_flags(work_items_mvc_2: true)
 
-    find(title_selector).set("Work item title")
-    find(title_selector).native.send_keys(:return)
-    wait_for_requests
+      page.refresh
+      wait_for_all_requests
+    end
 
-    expect(work_item.reload.title).to eq 'Work item title'
+    it 'successfully shows and changes the title of the work item' do
+      expect(work_item.reload.title).to eq work_item.title
+
+      click_button 'Edit'
+      find(title_with_edit_selector).set("Work item title")
+      send_keys([:command, :enter])
+      wait_for_requests
+
+      expect(work_item.reload.title).to eq 'Work item title'
+    end
   end
 end
 

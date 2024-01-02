@@ -16,17 +16,17 @@
       .col-sm-2.col-form-label
         = f.label :password, _('Current password')
       .col-sm-10
-        = f.password_field :password, required: true, autocomplete: 'current-password', class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
+        = f.password_field :password, required: true, autocomplete: 'current-password', class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :new_password, _('New password')
     .col-sm-10
-      = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation', data: { qa_selector: 'new_password_field' }
+      = f.password_field :new_password, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation', data: { testid: 'new-password-field' }
       = render_if_exists 'shared/password_requirements_list'
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :password_confirmation, _('Password confirmation')
     .col-sm-10
-      = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input', data: { qa_selector: 'confirm_password_field' }
+      = f.password_field :password_confirmation, required: true, autocomplete: 'new-password', class: 'form-control gl-form-input', data: { testid: 'confirm-password-field' }
   .form-actions
-    = f.submit _('Set new password'), data: { qa_selector: 'set_new_password_button' }, pajamas_button: true
+    = f.submit _('Set new password'), data: { testid: 'set-new-password-button' }, pajamas_button: true

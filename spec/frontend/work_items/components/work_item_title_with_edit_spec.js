@@ -51,7 +51,7 @@ describe('Work Item title with edit', () => {
     });
 
     it('emits `updateDraft` event on change of the input', () => {
-      findEditableTitleInput().vm.$emit('change', 'updated title');
+      findEditableTitleInput().vm.$emit('input', 'updated title');
 
       expect(wrapper.emitted('updateDraft')).toEqual([['updated title']]);
     });

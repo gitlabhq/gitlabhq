@@ -358,7 +358,7 @@ Layout/SpaceInLambdaLiteral:
     - 'lib/gitlab/metrics/exporter/base_exporter.rb'
     - 'lib/gitlab/visibility_level.rb'
     - 'spec/deprecation_toolkit_env.rb'
-    - 'spec/features/admin/users/user_spec.rb'
+    - 'spec/features/admin/users/admin_sees_unconfirmed_user_spec.rb'
     - 'spec/helpers/namespaces_helper_spec.rb'
     - 'spec/lib/backup/gitaly_backup_spec.rb'
     - 'spec/lib/container_registry/client_spec.rb'

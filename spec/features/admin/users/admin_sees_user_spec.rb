@@ -193,34 +193,6 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
       end
     end
 
-    describe 'show user identities' do
-      it 'shows user identities', :aggregate_failures do
-        visit admin_user_identities_path(user)
-
-        expect(page).to have_content(user.name)
-        expect(page).to have_content('twitter')
-      end
-    end
-
-    describe 'update user identities' do
-      before do
-        allow(Gitlab::Auth::OAuth::Provider).to receive(:providers).and_return([:twitter, :twitter_updated])
-      end
-
-      it 'modifies twitter identity', :aggregate_failures do
-        visit admin_user_identities_path(user)
-
-        find('.table').find(:link, 'Edit').click
-        fill_in 'identity_extern_uid', with: '654321'
-        select 'twitter_updated', from: 'identity_provider'
-        click_button 'Save changes'
-
-        expect(page).to have_content(user.name)
-        expect(page).to have_content('twitter_updated')
-        expect(page).to have_content('654321')
-      end
-    end
-
     describe 'remove users secondary email', :js do
       let_it_be(:secondary_email) do
         create :email, email: 'secondary@example.com', user: user
@@ -234,17 +206,6 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
         accept_gl_confirm { find("#remove_email_#{secondary_email.id}").click }
 
         expect(page).not_to have_content(secondary_email.email)
-      end
-    end
-
-    describe 'remove user with identities' do
-      it 'removes user with twitter identity', :aggregate_failures do
-        visit admin_user_identities_path(user)
-
-        click_link 'Delete'
-
-        expect(page).to have_content(user.name)
-        expect(page).not_to have_content('twitter')
       end
     end
 
@@ -281,42 +242,6 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
 
         expect(page).to have_content 'Account'
         expect(page).to have_content 'Personal projects limit'
-      end
-    end
-  end
-
-  context 'when user has an unconfirmed email', :js do
-    # Email address contains HTML to ensure email address is displayed in an HTML safe way.
-    let_it_be(:unconfirmed_email) { "#{generate(:email)}<h2>testing<img/src=http://localhost:8000/test.png>" }
-    let_it_be(:unconfirmed_user) { create(:user, :unconfirmed, unconfirmed_email: unconfirmed_email) }
-
-    where(:path_helper) do
-      [
-        [-> (user) { admin_user_path(user) }],
-        [-> (user) { projects_admin_user_path(user) }],
-        [-> (user) { keys_admin_user_path(user) }],
-        [-> (user) { admin_user_identities_path(user) }],
-        [-> (user) { admin_user_impersonation_tokens_path(user) }]
-      ]
-    end
-
-    with_them do
-      it "allows an admin to force confirmation of the user's email", :aggregate_failures do
-        visit path_helper.call(unconfirmed_user)
-
-        click_button 'Confirm user'
-
-        within_modal do
-          expect(page).to have_content("Confirm user #{unconfirmed_user.name}?")
-          expect(page).to have_content(
-            "This user has an unconfirmed email address (#{unconfirmed_email}). You may force a confirmation."
-          )
-
-          click_button 'Confirm user'
-        end
-
-        expect(page).to have_content('Successfully confirmed')
-        expect(page).not_to have_button('Confirm user')
       end
     end
   end

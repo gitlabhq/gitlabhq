@@ -27,10 +27,12 @@ export default {
 <template>
   <gl-form-group v-if="isEditing" :label="$options.i18n.titleLabel" label-for="work-item-title">
     <gl-form-input
-      id="work-item-title"
       class="gl-w-full"
       :value="title"
-      @change="$emit('updateDraft', $event)"
+      data-testid="work-item-title-with-edit"
+      @keydown.meta.enter="$emit('updateWorkItem')"
+      @keydown.ctrl.enter="$emit('updateWorkItem')"
+      @input="$emit('updateDraft', $event)"
     />
   </gl-form-group>
   <h1

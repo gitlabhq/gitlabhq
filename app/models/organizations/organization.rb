@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Organizations
-  class Organization < ApplicationRecord
+  class Organization < MainClusterwide::ApplicationRecord
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }

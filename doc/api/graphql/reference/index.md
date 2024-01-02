@@ -24256,8 +24256,8 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |
-| <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Triggers a new pipeline in the downstream project when a pipeline successfullycompletes on the(upstream) project. (see [Connections](#connections)) |
-| <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Triggers a new pipeline in the(downstream) project when a pipeline successfullycompletes on the upstream project. (see [Connections](#connections)) |
+| <a id="projectcisubscribedprojects"></a>`ciSubscribedProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for projects subscribed to the project. (see [Connections](#connections)) |
+| <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | Pipeline subscriptions for the project. (see [Connections](#connections)) |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |

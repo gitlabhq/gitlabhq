@@ -5,5 +5,5 @@ feature_category: web_ide
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138355
 milestone: '16.7'
 queued_migration_version: 20231130140901
-finalize_after: '2023-12-17'
+finalize_after: '2023-01-31'
 finalized_by: # version of the migration that finalized this BBM

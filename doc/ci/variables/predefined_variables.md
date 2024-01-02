@@ -165,7 +165,8 @@ These variables are available when:
 | `CI_MERGE_REQUEST_DIFF_ID`                  | 13.7   | all    | The version of the merge request diff. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_ID`                       | 11.6   | all    | The instance-level ID of the merge request. This is a unique ID across all projects on the GitLab instance. |
-| `CI_MERGE_REQUEST_DESCRIPTION`              | 16.7   | all    | The description of the merge request. |
+| `CI_MERGE_REQUEST_DESCRIPTION`              | 16.7   | all    | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. |
+| `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | 16.8   | all    | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long. |
 | `CI_MERGE_REQUEST_IID`                      | 11.6   | all    | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | 11.9   | all    | Comma-separated label names of the merge request. |
 | `CI_MERGE_REQUEST_MILESTONE`                | 11.9   | all    | The milestone title of the merge request. |

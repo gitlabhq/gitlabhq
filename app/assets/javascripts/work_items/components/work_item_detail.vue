@@ -449,6 +449,7 @@ export default {
               class="gl-mt-3 gl-sm-display-block!"
               :is-editing="editMode"
               :title="workItem.title"
+              @updateWorkItem="updateWorkItem"
               @updateDraft="updateDraft('title', $event)"
             />
             <work-item-title
@@ -518,6 +519,7 @@ export default {
             :is-editing="editMode"
             :class="titleClassComponent"
             :title="workItem.title"
+            @updateWorkItem="updateWorkItem"
             @updateDraft="updateDraft('title', $event)"
           />
           <work-item-title

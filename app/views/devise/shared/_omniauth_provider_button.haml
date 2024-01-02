@@ -1,0 +1,7 @@
+- button_options = { class: classes, data: data, id: id }
+
+= render Pajamas::ButtonComponent.new(href: href, method: :post, form: true, block: true, button_options: button_options) do
+  - if provider_has_icon?(provider)
+    = provider_image_tag(provider)
+  %span.gl-button-text
+    = label_for_provider(provider)

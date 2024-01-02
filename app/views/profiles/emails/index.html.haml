@@ -24,7 +24,7 @@
             = sprite_icon('mail', css_class: 'gl-mr-2')
             = @emails.load.size
         .gl-new-card-actions
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'toggle_email_address_field' } }) do
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'toggle-email-address-field' } }) do
             = s_('Profiles|Add new email')
       - c.with_body do
         .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
@@ -33,9 +33,9 @@
           = gitlab_ui_form_for 'email', url: profile_emails_path do |f|
             .form-group
               = f.label :email, s_('Profiles|Email address'), class: 'label-bold'
-              = f.text_field :email, class: 'form-control gl-form-input gl-form-input-xl', data: { qa_selector: 'email_address_field' }
+              = f.text_field :email, class: 'form-control gl-form-input gl-form-input-xl', data: { testid: 'email-address-field' }
             .gl-mt-3
-              = f.submit s_('Profiles|Add email address'), data: { qa_selector: 'add_email_address_button' }, pajamas_button: true
+              = f.submit s_('Profiles|Add email address'), data: { testid: 'add-email-address-button' }, pajamas_button: true
               = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
                 = _('Cancel')
         - if @emails.any?
@@ -59,7 +59,7 @@
                     = s_('Profiles|Default notification email')
                     .gl-text-secondary.gl-font-sm= notification_message.html_safe
             - @emails.reject(&:user_primary_email?).each do |email|
-              %li{ class: 'gl-px-5!', data: { qa_selector: 'email_row_content' } }
+              %li{ class: 'gl-px-5!', data: { testid: 'email-row-content' } }
                 .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-gap-3
                   %div
                     = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
@@ -81,4 +81,4 @@
                       - confirm_title = "#{email.confirmation_sent_at ? s_('Profiles|Resend confirmation email') : s_('Profiles|Send confirmation email')}"
                       = link_button_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, size: :small
 
-                    = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), confirm_btn_variant: 'danger', qa_selector: 'delete_email_link'}, method: :delete, size: :small, icon: 'remove', 'aria-label': _('Remove')
+                    = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), confirm_btn_variant: 'danger', testid: 'delete-email-link'}, method: :delete, size: :small, icon: 'remove', 'aria-label': _('Remove')
