@@ -577,6 +577,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_ff16c1fd43ea() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."geo_event_id_convert_to_bigint" := NEW."geo_event_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION unset_has_issues_on_vulnerability_reads() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16824,7 +16833,8 @@ CREATE TABLE geo_event_log (
     hashed_storage_attachments_event_id bigint,
     reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
-    geo_event_id integer
+    geo_event_id integer,
+    geo_event_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE geo_event_log_id_seq
@@ -37245,6 +37255,8 @@ CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDAT
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_eaec934fe6b2 BEFORE INSERT OR UPDATE ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION trigger_eaec934fe6b2();
+
+CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 
 CREATE TRIGGER trigger_has_external_issue_tracker_on_delete AFTER DELETE ON integrations FOR EACH ROW WHEN ((((old.category)::text = 'issue_tracker'::text) AND (old.active = true) AND (old.project_id IS NOT NULL))) EXECUTE FUNCTION set_has_external_issue_tracker();
 

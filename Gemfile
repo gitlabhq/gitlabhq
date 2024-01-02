@@ -133,11 +133,11 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap' # rubocop:todo 
 gem 'net-ldap', '~> 0.17.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # API
-gem 'grape', '~> 1.7.1', feature_category: :api
+gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 0.10.0', feature_category: :api
-gem 'grape-swagger', '~> 1.6.1', group: [:development, :test], feature_category: :api
+gem 'grape-swagger', '~> 2.0.0', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
-gem 'grape-path-helpers', '~> 1.7.1', feature_category: :api
+gem 'grape-path-helpers', '~> 2.0.0', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API

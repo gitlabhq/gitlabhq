@@ -183,7 +183,6 @@ Layout/ArrayAlignment:
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/npm/npm_instance_level_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/npm/npm_project_level_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/package_registry/pypi_repository_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/10_govern/group/group_audit_logs_2_spec.rb'
     - 'qa/spec/specs/runner_spec.rb'
     - 'rubocop/cop/gitlab/rspec/avoid_setup.rb'
     - 'rubocop/cop/graphql/authorize_types.rb'
