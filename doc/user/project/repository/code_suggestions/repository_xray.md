@@ -54,3 +54,7 @@ xray:
 - The added rules restrict the job to the default branch only. Restricting the job this way ensures development changes do not impact the baseline X-Ray data used for production code suggestions.
 
 After the initial x-ray job completes and uploads the repository analysis reports, no further action is required. Repository X-Ray automatically enriches all code generation requests from that point forward.
+
+The X-Ray data for your project updates each time a CI/CD pipeline containing the `xray`
+job is run. To learn more about pipeline configuration and triggers, see the
+[pipelines documentation](../../../../ci/pipelines/merge_request_pipelines.md).

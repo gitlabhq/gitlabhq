@@ -56,7 +56,7 @@ module ImportHelper
     link_url = 'https://github.com/settings/tokens'
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: link_url }
 
-    html_escape(_('Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import.')) % { link_start: link_start, link_end: '</a>'.html_safe, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    ERB::Util.html_escape(_('Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import.')) % { link_start: link_start, link_end: '</a>'.html_safe, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
   end
 
   def import_configure_github_admin_message

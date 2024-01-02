@@ -24,7 +24,7 @@ module FormHelper
       # user"), use the message as-is
       message = error.message if custom_message.include?(attribute)
 
-      message = html_escape_once(message).html_safe
+      message = ERB::Util.html_escape_once(message).html_safe
       message = tag.span(message, class: 'str-truncated-100') if truncate.include?(attribute)
       message = append_help_page_link(message, error.options) if error.options[:help_page_url].present?
 

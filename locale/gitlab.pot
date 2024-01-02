@@ -41079,7 +41079,7 @@ msgstr ""
 msgid "Requires you to deploy or set up cloud-hosted Sentry."
 msgstr ""
 
-msgid "Requires your primary GitLab email address."
+msgid "Requires your primary GitLab email address. If you want to confirm a secondary email address, go to %{emails_link_start}Emails%{emails_link_end}"
 msgstr ""
 
 msgid "Resend"

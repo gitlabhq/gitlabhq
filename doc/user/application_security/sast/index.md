@@ -220,7 +220,7 @@ as shown in the following table:
 | Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}**  | **{check-circle}** |
 | [Configure SAST scanners](#configuration)                         | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST settings](#available-cicd-variables)              | **{check-circle}**  | **{check-circle}** |
-| Download [JSON Report](#reports-json-format)                      | **{check-circle}**  | **{check-circle}** |
+| Download [SAST output](#output)                                   | **{check-circle}**  | **{check-circle}** |
 | See new findings in merge request widget                          | **{dotted-circle}** | **{check-circle}** |
 | See new findings in merge request changes                         | **{dotted-circle}** | **{check-circle}** |
 | [Manage vulnerabilities](../vulnerabilities/index.md)             | **{dotted-circle}** | **{check-circle}** |
@@ -230,13 +230,25 @@ as shown in the following table:
 | [Detect False Positives](#false-positive-detection)               | **{dotted-circle}** | **{check-circle}** |
 | [Track moved vulnerabilities](#advanced-vulnerability-tracking)   | **{dotted-circle}** | **{check-circle}** |
 
+## Output
+
+SAST outputs the file `gl-sast-report.json` as a job artifact. The file contains details of all
+detected vulnerabilities. You can
+[download](../../../ci/jobs/job_artifacts.md#download-job-artifacts) the file for processing
+outside GitLab.
+
+For more information, see:
+
+- [SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
+- [Example SAST report file](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/qa/expect/js/default/gl-sast-report.json)
+
 ## View SAST results
 
-SAST results are shown in the:
+The [SAST report file](#output) is processed by GitLab and the details are shown in the UI:
 
 - Merge request widget
 - Merge request changes view
-- Vulnerability Report
+- Vulnerability report
 
 ### Merge request widget **(ULTIMATE ALL)**
 
@@ -646,21 +658,6 @@ include:
 variables:
   SAST_EXPERIMENTAL_FEATURES: "true"
 ```
-
-## Reports JSON format
-
-SAST outputs a report file in JSON format. The report file contains details of all found vulnerabilities.
-To download the report file, you can either:
-
-- Download the file from the CI/CD pipelines page.
-- In the pipelines tab on merge requests, set [`artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.
-
-For information, see [Download job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
-
-For details of the report file's schema, see
-[SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
-
-For an example SAST report file, see [`gl-sast-report.json`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/qa/expect/js/default/gl-sast-report.json) example.
 
 ## Running SAST in an offline environment
 

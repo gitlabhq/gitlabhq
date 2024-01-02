@@ -175,7 +175,7 @@ class SearchController < ApplicationController
     return false unless commit.present?
 
     link = search_path(safe_params.merge(force_search_results: true))
-    flash[:notice] = html_escape(_("You have been redirected to the only result; see the %{a_start}search results%{a_end} instead.")) % { a_start: "<a href=\"#{link}\"><u>".html_safe, a_end: '</u></a>'.html_safe }
+    flash[:notice] = ERB::Util.html_escape(_("You have been redirected to the only result; see the %{a_start}search results%{a_end} instead.")) % { a_start: "<a href=\"#{link}\"><u>".html_safe, a_end: '</u></a>'.html_safe }
     redirect_to project_commit_path(@project, commit)
 
     true

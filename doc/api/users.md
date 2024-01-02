@@ -554,6 +554,7 @@ Parameters:
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme)) |
+| `commit_email`                       | No       | User's commit email address                                                                                                                        |
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
@@ -568,7 +569,9 @@ Parameters:
 | `password`                           | No       | Password                                                                                                                                                |
 | `private_profile`                    | No       | User's profile is private - true or false. The default value is determined by [this](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting. |
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
+| `pronouns`                           | No       | User's pronouns                                                                                                                                    |
 | `provider`                           | No       | External provider name                                                                                                                                  |
+| `public_email`                       | No       | User's public email address                                                                                                                        |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
 | `shared_runners_minutes_limit` **(PREMIUM ALL)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |

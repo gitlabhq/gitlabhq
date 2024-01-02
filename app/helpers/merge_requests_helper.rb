@@ -253,13 +253,13 @@ module MergeRequestsHelper
                 end
 
     branch = if merge_request.for_fork?
-               html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % { fork_icon: fork_icon.html_safe, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % { fork_icon: fork_icon.html_safe, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
              else
                merge_request.source_branch
              end
 
     branch_title = if merge_request.for_fork?
-                     html_escape(_('%{source_project_path}:%{source_branch}')) % { source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % { source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
                    else
                      merge_request.source_branch
                    end

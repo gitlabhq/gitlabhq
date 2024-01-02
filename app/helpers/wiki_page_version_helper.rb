@@ -15,6 +15,6 @@ module WikiPageVersionHelper
     name = "<strong>".html_safe + wiki_page_version.author_name + "</strong>".html_safe
     link_start = "<a href='".html_safe + wiki_page_version_author_url(wiki_page_version) + "'>".html_safe
 
-    html_escape(_("Last edited by %{link_start}%{avatar} %{name}%{link_end}")) % { avatar: avatar, name: name, link_start: link_start, link_end: '</a>'.html_safe }
+    ERB::Util.html_escape(_("Last edited by %{link_start}%{avatar} %{name}%{link_end}")) % { avatar: avatar, name: name, link_start: link_start, link_end: '</a>'.html_safe }
   end
 end

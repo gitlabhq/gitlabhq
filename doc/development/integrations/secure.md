@@ -288,7 +288,7 @@ The report is a JSON document that combines vulnerabilities with possible remedi
 This documentation gives an overview of the report JSON format,
 as well as recommendations and examples to help integrators set its fields.
 The format is extensively described in the documentation of
-[SAST](../../user/application_security/sast/index.md#reports-json-format),
+[SAST](../../user/application_security/sast/index.md#output),
 [DAST](../../user/application_security/dast/proxy-based.md#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
 and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)

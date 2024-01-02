@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::DependencyLinker do
   describe '.link' do
@@ -106,6 +106,17 @@ RSpec.describe Gitlab::DependencyLinker do
       expect(described_class::GoSumLinker).to receive(:link)
 
       described_class.link(blob_name, nil, nil)
+    end
+
+    it 'increments usage counter based on specified used_on', :prometheus do
+      allow(described_class::GemfileLinker).to receive(:link)
+
+      described_class.link('Gemfile', nil, nil, used_on: :diff)
+
+      dependency_linker_usage_counter = Gitlab::Metrics.registry.get(:dependency_linker_usage)
+
+      expect(dependency_linker_usage_counter.get(used_on: :diff)).to eq(1)
+      expect(dependency_linker_usage_counter.get(used_on: :blob)).to eq(0)
     end
   end
 end

@@ -19,7 +19,7 @@ module Projects::ProjectMembersHelper
     if can?(current_user, :admin_project_member, project)
       share_project_description(project)
     else
-      html_escape(_("Members can be added by project " \
+      ERB::Util.html_escape(_("Members can be added by project " \
                   "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
         i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
       }
@@ -41,7 +41,7 @@ module Projects::ProjectMembersHelper
         _("You can invite a new member to %{project_name}.")
       end
 
-    html_escape(description) % { project_name: tag.strong(project.name) }
+    ERB::Util.html_escape(description) % { project_name: tag.strong(project.name) }
   end
 
   def project_members_serialized(project, members)

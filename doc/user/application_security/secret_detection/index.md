@@ -56,17 +56,17 @@ If you operate a cloud or SaaS product and you're interested in partnering with 
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
 
-| Capability                                                       | In Free & Premium      | In Ultimate            |
-|:---------------------------------------------------------------- |:-----------------------|:-----------------------|
-| [Configure Secret Detection scanner](#enable-secret-detection)   | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Customize Secret Detection settings](#configure-scan-settings)  | **{check-circle}** Yes | **{check-circle}** Yes |
-| Download [JSON Report](../sast/index.md#reports-json-format)     | **{check-circle}** Yes | **{check-circle}** Yes |
+| Capability                                                                                           | In Free & Premium      | In Ultimate            |
+|:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| [Configure Secret Detection scanner](#enable-secret-detection)                                       | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Customize Secret Detection settings](#configure-scan-settings)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
+| Download [SAST output](../sast/index.md#output)                                                      | **{check-circle}** Yes | **{check-circle}** Yes |
 | [Check text for potential secrets](#warnings-for-potential-leaks-in-text-content) before it's posted | **{check-circle}** Yes | **{check-circle}** Yes |
-| See new findings in the merge request widget                     | **{dotted-circle}** No | **{check-circle}** Yes |
-| View identified secrets in the pipelines' **Security** tab       | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../vulnerability_report/index.md)       | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access the Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Customize Secret Detection rulesets](#custom-rulesets)          | **{dotted-circle}** No | **{check-circle}** Yes |
+| See new findings in the merge request widget                                                         | **{dotted-circle}** No | **{check-circle}** Yes |
+| View identified secrets in the pipelines' **Security** tab                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Manage vulnerabilities](../vulnerability_report/index.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Access the Security Dashboard](../security_dashboard/index.md)                                      | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Customize Secret Detection rulesets](#custom-rulesets)                                              | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Coverage
 
