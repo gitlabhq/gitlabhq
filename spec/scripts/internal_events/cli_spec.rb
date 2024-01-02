@@ -8,6 +8,11 @@ RSpec.describe Cli, feature_category: :service_ping do
   let(:prompt) { TTY::Prompt::Test.new }
   let(:files_to_cleanup) { [] }
 
+  let(:example_timeout) { 3 }
+  let(:example_error) { Class.new(Timeout::Error) }
+  let(:interaction_timeout) { 1 }
+  let(:interaction_error) { Class.new(Timeout::Error) }
+
   let(:event1_filepath) { 'config/events/internal_events_cli_used.yml' }
   let(:event1_content) { internal_event_fixture('events/event_with_identifiers.yml') }
   let(:event2_filepath) { 'ee/config/events/internal_events_cli_opened.yml' }
@@ -26,13 +31,29 @@ RSpec.describe Cli, feature_category: :service_ping do
     delete_files(files_to_cleanup)
   end
 
+  around do |example|
+    Timeout.timeout(example_timeout, example_error) { example.run }
+  rescue example_error => e
+    # Override error to include CLI output in error detail
+    raise e.class, timeout_error_message, e.backtrace
+  end
+
+  subject(:execute) do
+    Timeout.timeout(interaction_timeout, interaction_error) { described_class.new(prompt).run }
+  rescue interaction_error
+    # Rescue from timeout so we can make assertions on the CLI output
+  end
+
+  # Shared examples used for examples defined in new_events.yml & new_metrics.yml fixtures.
+  # Note: Expects CLI to be exited using the 'Exit' option or completing definition flow
   shared_examples 'creates the right defintion files' do |description, test_case = {}|
     # For expected keystroke mapping, see https://github.com/piotrmurach/tty-reader/blob/master/lib/tty/reader/keys.rb
     let(:keystrokes) { test_case.dig('inputs', 'keystrokes') || [] }
     let(:input_files) { test_case.dig('inputs', 'files') || [] }
     let(:output_files) { test_case.dig('outputs', 'files') || [] }
 
-    subject { run_with_verbose_timeout }
+    # Script execution should stop without a reduced timeout
+    let(:interaction_timeout) { example_timeout }
 
     it "in scenario: #{description}" do
       delete_old_ouputs # just in case
@@ -40,7 +61,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       queue_cli_inputs(keystrokes)
       expect_file_creation
 
-      subject
+      execute
     end
 
     private
@@ -117,7 +138,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Copy & continue
         ])
 
-        run_with_timeout
+        execute
 
         # Filter down to "dev" options
         expect(plain_last_lines(9)).to eq <<~TEXT.chomp
@@ -149,7 +170,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Copy & continue
         ])
 
-        run_with_timeout
+        execute
 
         # Filter down to "dev:create" options
         expect(plain_last_lines(5)).to eq <<~TEXT.chomp
@@ -185,7 +206,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "2\n" # Modify attributes
         ])
 
-        run_with_timeout
+        execute
 
         # Filter down to "dev" options
         expect(plain_last_lines(50)).to include 'Select one: Which group owns the metric?'
@@ -262,7 +283,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Select: config/events/internal_events_cli_used.yml
         ])
 
-        run_with_timeout
+        execute
       end
     end
 
@@ -279,7 +300,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Select: config/events/internal_events_cli_opened.yml
         ])
 
-        run_with_timeout
+        execute
 
         expect(plain_last_lines(5)).to eq <<~TEXT.chomp
         ✘ Monthly/Weekly count of unique users [who triggered internal_events_cli_opened] (user unavailable)
@@ -318,7 +339,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Select: config/events/00_event1.yml
         ])
 
-        run_with_timeout
+        execute
 
         expect(plain_last_lines(15)).to include 'Looks like the potential metrics for this event ' \
                                                 'either already exist or are unsupported.'
@@ -389,7 +410,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        run_with_timeout
+        execute
 
         output = plain_last_lines(100)
 
@@ -556,7 +577,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        run_with_timeout
+        execute
 
         output = plain_last_lines(1000)
 
@@ -616,7 +637,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        run_with_timeout
+        execute
 
         output = plain_last_lines(300)
 
@@ -735,7 +756,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Are you trying to track customer usage of a GitLab feature?
       ])
 
-      run_with_timeout
+      execute
 
       expect(plain_last_lines(50)).to include("Oh no! This probably isn't the tool you need!")
     end
@@ -747,7 +768,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Can usage for the feature be measured by tracking a specific user action?
       ])
 
-      run_with_timeout
+      execute
 
       expect(plain_last_lines(50)).to include("Oh no! This probably isn't the tool you need!")
     end
@@ -761,7 +782,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Ready to start?
       ])
 
-      run_with_timeout
+      execute
 
       expect(plain_last_lines(30)).to include("Okay! The next step is adding a new event! (~5 min)")
     end
@@ -775,7 +796,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Ready to start?
       ])
 
-      run_with_timeout
+      execute
 
       expect(plain_last_lines(30)).to include("Amazing! The next step is adding a new metric! (~8 min)")
     end
@@ -788,18 +809,8 @@ RSpec.describe Cli, feature_category: :service_ping do
     prompt.input.rewind
   end
 
-  def run_with_timeout(duration = 1)
-    Timeout.timeout(duration) { described_class.new(prompt).run }
-  rescue Timeout::Error
-    # Timeout is needed to break out of the CLI, but we may want
-    # to make assertions afterwards
-  end
-
-  def run_with_verbose_timeout(duration = 1)
-    Timeout.timeout(duration) { described_class.new(prompt).run }
-  rescue Timeout::Error => e
-    # Re-raise error so CLI output is printed with the error
-    message = <<~TEXT
+  def timeout_error_message
+    <<~TEXT
     Awaiting input too long. Entire CLI output:
 
     #{
@@ -811,8 +822,6 @@ RSpec.describe Cli, feature_category: :service_ping do
 
 
     TEXT
-
-    raise e.class, message, e.backtrace
   end
 
   def plain_last_lines(size)
@@ -820,7 +829,8 @@ RSpec.describe Cli, feature_category: :service_ping do
       .lines
       .last(size)
       .join('')
-      .gsub(/\e[^\sm]{2,4}[mh]/, '')
+      .gsub(/\e[^\sm]{2,4}[mh]/, '') # Ignore text colors
+      .gsub(/(\e\[(2K|1G|1A))+\z/, '') # Remove trailing characters if timeout occurs
   end
 
   def collect_file_writes(collector)
@@ -844,7 +854,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   def stub_product_groups(body)
     allow(Net::HTTP).to receive(:get)
-      .with(URI('https://gitlab.com/gitlab-com/www-gitlab-com/-/raw/master/data/stages.yml'))
+      .with(URI(InternalEventsCli::Helpers::GroupOwnership::STAGES_YML))
       .and_return(body)
   end
 
