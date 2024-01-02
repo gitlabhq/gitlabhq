@@ -1259,6 +1259,20 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `metric` filter and `value` field for DORA API
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393172).
+</div>
+
+Multiple DORA metrics can now be queried simultaneously using a new metrics field. The `metric` filter and `value` field for Graphql DORA API will be removed in GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `postgres_exporter['per_table_stats']` configuration setting
 
 <div class="deprecation-notes">

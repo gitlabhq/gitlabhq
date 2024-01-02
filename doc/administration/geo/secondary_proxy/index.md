@@ -164,11 +164,13 @@ In this context, accelerated reads refer to read requests served from the second
 | Pages                                               | **{dotted-circle}** No <sup>2</sup> |
 | Advanced search (using the web UI)                  | **{dotted-circle}** No |
 | Container registry                                  | **{dotted-circle}** No <sup>3</sup>|
+| Dependency Proxy                                    | **{dotted-circle}** No <sup>4</sup>|
 
 1. Git reads are served from the local secondary while pushes get proxied to the primary.
    Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.
 1. Pages can use the same URL (without access control), but must be configured separately and are not proxied.
 1. The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site.
+1. Read requests to a Geo secondary site's Dependency Proxy are always proxied to the primary site.
 
 ## Disable Geo proxying
 
