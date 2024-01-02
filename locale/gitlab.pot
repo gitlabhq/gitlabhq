@@ -8456,6 +8456,9 @@ msgid_plural "Boards|Blocked by %{blockedByCount} %{issuableType}s"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Boards|Card options"
+msgstr ""
+
 msgid "Boards|Collapse"
 msgstr ""
 
@@ -8475,9 +8478,6 @@ msgid "Boards|Expand"
 msgstr ""
 
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
-msgstr ""
-
-msgid "Boards|Move card"
 msgstr ""
 
 msgid "Boards|Move to end of list"

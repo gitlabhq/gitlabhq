@@ -1,6 +1,7 @@
 <script>
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import { s__ } from '~/locale';
 import {
   BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS,
   BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
@@ -11,6 +12,9 @@ export default {
   name: 'BoardCardMoveToPosition',
   components: {
     GlDisclosureDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -87,6 +91,9 @@ export default {
       }
     },
   },
+  i18n: {
+    moveCardText: s__('Boards|Card options'),
+  },
 };
 </script>
 
@@ -94,12 +101,16 @@ export default {
   <gl-disclosure-dropdown
     ref="dropdown"
     :key="itemIdentifier"
+    v-gl-tooltip.hover.focus.top="{
+      title: $options.i18n.moveCardText,
+      boundary: 'viewport',
+    }"
     class="move-to-position gl-display-block gl-mb-2 gl-ml-auto gl-mt-n3 gl-mr-n3 js-no-trigger"
     category="tertiary"
     :items="$options.BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS"
     icon="ellipsis_v"
     :tabindex="index"
-    :toggle-text="s__('Boards|Move card')"
+    :aria-label="$options.i18n.moveCardText"
     :text-sr-only="true"
     no-caret
     data-testid="board-move-to-position"

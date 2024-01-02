@@ -223,8 +223,8 @@ To remove a custom role from a group member:
 1. Select the **Max role** dropdown list for the member you want to remove a custom role from.
 1. On the **Change role** dialog, select a static role.
 
-You can update or remove a custom role from a group member also with the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project).
-and pass an empty `member_role_id` value:
+You can also use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
+to update or remove a custom role from a group member by passing an empty `member_role_id` value:
 
 ```shell
 # to update a project membership

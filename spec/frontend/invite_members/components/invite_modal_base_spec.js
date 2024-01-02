@@ -70,6 +70,7 @@ describe('InviteModalBase', () => {
   const findDisabledInput = () => wrapper.findByTestId('disabled-input');
   const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
   const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
+  const findModal = () => wrapper.findComponent(GlModal);
 
   describe('rendering the modal', () => {
     let trackingSpy;
@@ -82,7 +83,7 @@ describe('InviteModalBase', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe(propsData.modalTitle);
+      expect(findModal().props('title')).toBe(propsData.modalTitle);
     });
 
     it('displays the introText', () => {
@@ -200,9 +201,7 @@ describe('InviteModalBase', () => {
         });
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
-        const modal = wrapper.findComponent(GlModal);
-
-        modal.vm.$emit('shown');
+        findModal().vm.$emit('shown');
         expectTracking('render', ON_SHOW_TRACK_LABEL, 'default');
 
         unmockTracking();
@@ -279,5 +278,15 @@ describe('InviteModalBase', () => {
       invalidFeedback: 'invalid message!',
       state: false,
     });
+  });
+
+  it('emits the shown event when the modal is shown', () => {
+    createComponent();
+    // Verify that the shown event isn't emitted when the component is first created.
+    expect(wrapper.emitted('shown')).toBeUndefined();
+
+    findModal().vm.$emit('shown');
+
+    expect(wrapper.emitted('shown')).toHaveLength(1);
   });
 });

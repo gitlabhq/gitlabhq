@@ -48,6 +48,25 @@ from using `$FORCE_GITLAB_CI`.
 - [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
 - [Gitaly downstream GitLab pipeline](https://gitlab.com/gitlab-org/gitaly/-/issues/4615)
 
+See the next section for how we can enable pipelines without using
+`$FORCE_GITLAB_CI`.
+
+#### Alternative to `$FORCE_GITLAB_CI`
+
+Essentially, we use different variables to enable different pipelines.
+An example doing this is `$START_AS_IF_FOSS`. When we want to trigger a
+cross project FOSS pipeline, we set `$START_AS_IF_FOSS`, along with a set of
+other variables like `$ENABLE_RSPEC_UNIT`, `$ENABLE_RSPEC_SYSTEM`, and so on
+so forth to enable each jobs we want to run in the as-if-foss cross project
+downstream pipeline.
+
+The advantage of this over `$FORCE_GITLAB_CI` is that we have full control
+over how we want to run the pipeline because `$START_AS_IF_FOSS` is only used
+for this purpose, and changing how the pipeline behaves under this variable
+will not affect other types of pipelines, while using `$FORCE_GITLAB_CI` we
+do not know what exactly the pipeline is because it's used for multiple
+purposes.
+
 ## Default image
 
 The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).

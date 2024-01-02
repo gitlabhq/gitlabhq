@@ -17,21 +17,54 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 ## Issues to be aware of when upgrading from 15.11
 
 - [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
-- Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
-  [Long-running user type data change](#long-running-user-type-data-change).
-- Other installations can skip 16.0, 16.1, and 16.2 as the first required stop on the upgrade path is 16.3. Review the notes for those intermediate
-  versions.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
-  Recommended: perform the workaround before upgrading to 16.x.
-  See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
-- Linux package installations must change Gitaly and Praefect configuration structure before upgrading to GitLab 16.
+  Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
+- Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
+  In all cases, you should review the notes for those intermediate versions.
+
+  Some GitLab installations must stop at those intermediate versions depending on which features are used
+  and the size of the environment:
+
+  - 16.0.8: Instances with lots of records in the users table.
+    For more information, see [long-running user type data change](#long-running-user-type-data-change).
+  - [16.1.5](#1610): Instances that use the NPM package registry.
+  - [16.2.8](#1620): Instances with lots of pipeline variables (including historical pipelines).
+
+  If your instance is affected and you skip these stops:
+
+  - The upgrade can take hours to complete.
+  - The instance generates 500 errors until all the database changes are finished, after which
+    Puma and Sidekiq must restarted.
+  - For Linux package installations, a timeout occurs and a
+    [manual workaround to complete the migrations](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+    is necessary.
+
+- GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
+  these limits, projects that have reached their limit causes error messages when pushing to unaffected Git
+  repositories in the same group. The errors often refer to exceeding a limit of zero bytes (`limit of 0 B`).
+
+  The pushes succeed, but the errors imply otherwise and might cause issues with automation.
+  [Read more in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416646).
+  The [bug is fixed in GitLab 16.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131122).
+
+### Linux package installations
+
+- Gitaly and Praefect configuration structure must be changed before upgrading to GitLab 16.
   **To avoid data loss** reconfigure Praefect first, and as part of the new configuration, disable metadata verification.
   Read more:
 
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+- If you reconfigure Gitaly to store Git data in a location other than `/var/opt/gitlab/git-data/repositories`,
+  packaged GitLab 16.0 and later does not automatically create the directory structure.
+  [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
+
 ## 16.7.0
+
+- GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
+  in GitLab 16.7 and earlier have been implemented on all self-managed instances. Dependent changes can then be released
+  in GitLab 16.8 and later. [Issue 429611](https://gitlab.com/gitlab-org/gitlab/-/issues/429611) provides more details.
 
 ### Linux package installations
 

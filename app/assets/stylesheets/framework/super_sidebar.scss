@@ -408,6 +408,13 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 }
 
+.super-sidebar-empty-pinned-text {
+  mix-blend-mode: multiply;
+
+  .gl-dark & {
+    mix-blend-mode: screen;
+  }
+}
 
 // Styles for the ScrollScrim component.
 // Should eventually be moved to gitlab-ui.

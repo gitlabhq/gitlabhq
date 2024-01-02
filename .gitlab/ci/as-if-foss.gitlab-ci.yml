@@ -1,0 +1,70 @@
+prepare-as-if-foss-branch:
+  extends:
+    - .as-if-foss:rules:start-as-if-foss
+  stage: prepare
+  needs: []
+  variables:
+    AS_IF_FOSS_BRANCH: "as-if-foss/${CI_COMMIT_REF_NAME}"
+    FOSS_REPOSITORY: "https://dummy:${AS_IF_FOSS_TOKEN}@gitlab.com/gitlab-org/gitlab-foss.git"
+  before_script:
+    - git clone --single-branch --branch master "${FOSS_REPOSITORY}" gitlab-foss
+    - git -C gitlab-foss checkout -b "${AS_IF_FOSS_BRANCH}" master
+    - rm -r .git/
+    - mv gitlab-foss/.git .
+    - rm -r gitlab-foss
+  script:
+    # See: https://gitlab.com/gitlab-org/merge-train/-/blob/041d942ae1b5615703b7a786982340b61620e7c5/bin/merge-train#L228-239
+    - git checkout VERSION
+    - rm -rf ee
+    - rm -rf qa/spec/ee
+    - rm -rf qa/qa/specs/features/ee
+    - rm -rf qa/qa/ee
+    - rm -f qa/qa/ee.rb
+    - rm -f CHANGELOG-EE.md
+    - rm -f changelogs/*-ee.md
+    - git add -A
+    - git commit -m 'Update from merge request'  # TODO: Mark which SHA we add
+    - git push -f "${FOSS_REPOSITORY}" "${AS_IF_FOSS_BRANCH}"
+
+prepare-as-if-foss-env:
+  extends:
+    - .as-if-foss:rules:start-as-if-foss
+  stage: prepare
+  needs: []
+  variables:
+    BUILD_ENV: build.env
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/setup/generate-as-if-foss-env.rb | tee $BUILD_ENV
+  artifacts:
+    expire_in: 3 days
+    reports:
+      dotenv: $BUILD_ENV
+    paths:
+      - $BUILD_ENV
+
+start-as-if-foss:
+  extends:
+    - .as-if-foss:rules:start-as-if-foss
+  stage: prepare
+  needs:
+    - prepare-as-if-foss-branch
+    - prepare-as-if-foss-env
+  inherit:
+    variables: false  # Otherwise variables will be messed up
+  variables:
+    START_AS_IF_FOSS: $START_AS_IF_FOSS
+    RUBY_VERSION: $RUBY_VERSION
+    ENABLE_RSPEC: $ENABLE_RSPEC
+    ENABLE_RSPEC_FAST_SPEC_HELPER: $ENABLE_RSPEC_FAST_SPEC_HELPER
+    ENABLE_RSPEC_UNIT: $ENABLE_RSPEC_UNIT
+    ENABLE_RSPEC_INTEGRATION: $ENABLE_RSPEC_INTEGRATION
+    ENABLE_RSPEC_MIGRATION: $ENABLE_RSPEC_MIGRATION
+    ENABLE_RSPEC_BACKGROUND_MIGRATION: $ENABLE_RSPEC_BACKGROUND_MIGRATION
+    ENABLE_RSPEC_SYSTEM: $ENABLE_RSPEC_SYSTEM
+  trigger:
+    project: gitlab-org/gitlab-foss
+    branch: as-if-foss/${CI_COMMIT_REF_NAME}
+    strategy: depend

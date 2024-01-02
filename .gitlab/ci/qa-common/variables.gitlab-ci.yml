@@ -1,7 +1,6 @@
 # Default variables for package-and-test
 
 variables:
-  USE_OLD_RUBY_VERSION: "true"
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
   ALLURE_JOB_NAME: $CI_PROJECT_NAME

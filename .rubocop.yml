@@ -1035,7 +1035,6 @@ Cop/FeatureFlagUsage:
 
 Style/ArgumentsForwarding:
   Enabled: true
-  AllowOnlyRestArgument: false
 
 Search/NamespacedClass:
   Enabled: true
