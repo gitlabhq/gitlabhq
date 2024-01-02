@@ -23994,6 +23994,15 @@ msgstr ""
 msgid "HarborIntegration|The name of the project in Harbor."
 msgstr ""
 
+msgid "HarborIntegration|The name of the project in the Harbor instance. For example, `testproject`."
+msgstr ""
+
+msgid "HarborIntegration|The password of the user."
+msgstr ""
+
+msgid "HarborIntegration|The username created in the Harbor interface."
+msgstr ""
+
 msgid "HarborIntegration|Use Harbor as this project's container registry."
 msgstr ""
 
@@ -48734,6 +48743,9 @@ msgid "The associated issue #%{issueId} has been closed as the error is now reso
 msgstr ""
 
 msgid "The authentication token."
+msgstr ""
+
+msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."
 msgstr ""
 
 msgid "The branch for this project has no active pipeline configuration."

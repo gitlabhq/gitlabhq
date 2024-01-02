@@ -838,6 +838,41 @@ Get the Google Play integration settings for a project.
 GET /projects/:id/integrations/google-play
 ```
 
+## Harbor
+
+### Set up Harbor
+
+Set up the Harbor integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/harbor
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `url` | string | true | The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`. |
+| `project_name` | string | true | The name of the project in the Harbor instance. For example, `testproject`. |
+| `username` | string | true | The username created in the Harbor interface. |
+| `password` | string | true | The password of the user. |
+
+### Disable Harbor
+
+Disable the Harbor integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/harbor
+```
+
+### Get Harbor settings
+
+Get the Harbor integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/harbor
+```
+
 ## irker (IRC gateway)
 
 ### Set up irker

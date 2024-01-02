@@ -291,32 +291,7 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ].flatten,
-          'harbor' => [
-            {
-              required: true,
-              name: :url,
-              type: String,
-              desc: 'The base URL to the Harbor instance which is being linked to this GitLab project. For example, https://demo.goharbor.io.'
-            },
-            {
-              required: true,
-              name: :project_name,
-              type: String,
-              desc: 'The Project name to the Harbor instance. For example, testproject.'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'The username created from Harbor interface.'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'The password of the user.'
-            }
-          ],
+          'harbor' => ::Integrations::Harbor.api_fields,
           'irker' => [
             {
               required: true,

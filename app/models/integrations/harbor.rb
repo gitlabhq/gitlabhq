@@ -10,6 +10,7 @@ module Integrations
 
     field :url,
       title: -> { s_('HarborIntegration|Harbor URL') },
+      description: -> { _('The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`.') },
       placeholder: 'https://demo.goharbor.io',
       help: -> { s_('HarborIntegration|Base URL of the Harbor instance.') },
       exposes_secrets: true,
@@ -17,16 +18,19 @@ module Integrations
 
     field :project_name,
       title: -> { s_('HarborIntegration|Harbor project name') },
+      description: -> { s_('HarborIntegration|The name of the project in the Harbor instance. For example, `testproject`.') },
       help: -> { s_('HarborIntegration|The name of the project in Harbor.') },
       required: true
 
     field :username,
       title: -> { s_('HarborIntegration|Harbor username') },
+      description: -> { s_('HarborIntegration|The username created in the Harbor interface.') },
       required: true
 
     field :password,
       type: :password,
       title: -> { s_('HarborIntegration|Harbor password') },
+      description: -> { s_('HarborIntegration|The password of the user.') },
       help: -> { s_('HarborIntegration|Password for your Harbor username.') },
       non_empty_password_title: -> { s_('HarborIntegration|Enter new Harbor password') },
       non_empty_password_help: -> { s_('HarborIntegration|Leave blank to use your current password.') },
