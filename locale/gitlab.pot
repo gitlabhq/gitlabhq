@@ -10493,6 +10493,9 @@ msgstr ""
 msgid "CiCatalog|Set project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
+msgid "CiCatalog|The CI/CD components in this project can be published in the CI/CD Catalog by creating a release. We recommend using the %{linkStart}release%{linkEnd} keyword in a CI/CD job to release new component versions for the Catalog."
+msgstr ""
+
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
 msgstr ""
 
@@ -39538,6 +39541,9 @@ msgstr ""
 msgid "Public projects compute cost factor"
 msgstr ""
 
+msgid "Publish the CI/CD components in this project to the CI/CD Catalog"
+msgstr ""
+
 msgid "Publish to status page"
 msgstr ""
 
@@ -53789,6 +53795,9 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"
+msgstr ""
+
+msgid "View the publishing guide"
 msgstr ""
 
 msgid "View trigger token usage examples"

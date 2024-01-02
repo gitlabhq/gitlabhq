@@ -8,9 +8,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
-import catalogResourcesCreate from '~/pages/projects/shared/permissions/graphql/mutations/catalog_resources_create.mutation.graphql';
-import catalogResourcesDestroy from '~/pages/projects/shared/permissions/graphql/mutations/catalog_resources_destroy.mutation.graphql';
-import getCiCatalogSettingsQuery from '~/pages/projects/shared/permissions/graphql/queries/get_ci_catalog_settings.query.graphql';
+import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
+import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
+import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
 
 import { generateCatalogSettingsResponse } from './mock_data';

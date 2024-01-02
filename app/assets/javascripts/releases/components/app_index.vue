@@ -1,13 +1,15 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import allReleasesQuery from '../graphql/queries/all_releases.query.graphql';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
@@ -18,7 +20,10 @@ import ReleasesSort from './releases_sort.vue';
 export default {
   name: 'ReleasesIndexApp',
   components: {
+    GlAlert,
     GlButton,
+    GlLink,
+    GlSprintf,
     ReleaseBlock,
     ReleaseSkeletonLoader,
     ReleasesEmptyState,
@@ -77,6 +82,20 @@ export default {
           captureError: true,
           error,
         });
+      },
+    },
+    isCatalogResource: {
+      query: getCiCatalogSettingsQuery,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+        };
+      },
+      update({ project }) {
+        return project?.isCatalogResource || false;
+      },
+      error() {
+        createAlert({ message: this.$options.i18n.catalogResourceQueryError });
       },
     },
   },
@@ -227,13 +246,44 @@ export default {
     },
   },
   i18n: {
-    newRelease: __('New release'),
+    alertButtonLink: helpPagePath('ci/components/index', { anchor: 'release-a-component' }),
+    alertButtonText: __('View the publishing guide'),
+    alertInfoMessage: s__(
+      'CiCatalog|The CI/CD components in this project can be published in the CI/CD Catalog by creating a release. We recommend using the %{linkStart}release%{linkEnd} keyword in a CI/CD job to release new component versions for the Catalog.',
+    ),
+    alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
+    alertTitle: __('Publish the CI/CD components in this project to the CI/CD Catalog'),
+    catalogResourceQueryError: s__(
+      'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
+    ),
     errorMessage: __('An error occurred while fetching the releases. Please try again.'),
+    newRelease: __('New release'),
   },
 };
 </script>
 <template>
   <div class="gl-display-flex gl-flex-direction-column gl-mt-3">
+    <gl-alert
+      v-if="isCatalogResource"
+      :title="$options.i18n.alertTitle"
+      :primary-button-text="$options.i18n.alertButtonText"
+      :primary-button-link="$options.i18n.alertButtonLink"
+      :dismissible="false"
+      variant="warning"
+      class="mb-3 mt-2"
+    >
+      <gl-sprintf :message="$options.i18n.alertInfoMessage">
+        <template #link="{ content }">
+          <gl-link
+            :href="$options.i18n.alertInfoMessageLink"
+            target="_blank"
+            class="gl-text-decoration-none!"
+          >
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <releases-empty-state v-if="shouldRenderEmptyState" />
     <div v-else class="gl-align-self-end gl-mb-3">
       <releases-sort :value="sort" class="gl-mr-2" @input="onSortChanged" />

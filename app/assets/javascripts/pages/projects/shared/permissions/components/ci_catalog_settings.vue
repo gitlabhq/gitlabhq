@@ -5,9 +5,9 @@ import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
-import getCiCatalogSettingsQuery from '../graphql/queries/get_ci_catalog_settings.query.graphql';
-import catalogResourcesCreate from '../graphql/mutations/catalog_resources_create.mutation.graphql';
-import catalogResourcesDestroy from '../graphql/mutations/catalog_resources_destroy.mutation.graphql';
+import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
+import catalogResourcesCreate from '~/ci/catalog/graphql/mutations/catalog_resources_create.mutation.graphql';
+import catalogResourcesDestroy from '~/ci/catalog/graphql/mutations/catalog_resources_destroy.mutation.graphql';
 
 const i18n = {
   catalogResourceQueryError: s__(
