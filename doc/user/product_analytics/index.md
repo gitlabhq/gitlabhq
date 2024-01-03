@@ -4,7 +4,7 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product analytics **(ULTIMATE ALL EXPERIMENT)**
+# Product analytics **(ULTIMATE SAAS BETA)**
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
@@ -12,11 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 > - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
+> - Enabled in GitLab 16.7 as a [Beta](../../policy/experiment-beta-support.md#beta) feature.
 
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
@@ -65,22 +62,23 @@ flowchart TB
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards`, `product_analytics_admin_settings`, and `combined_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-To track events in your project applications on a self-managed instance,
-you must enable and configure product analytics.
+To track events in your project's applications on GitLab.com,
+you must enable and configure Product Analytics.
 
 Prerequisites:
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an Owner of the group you wish to enable Product Analytics for.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+### Group-level settings
+
+NOTE:
+These group-level settings are available for top-level groups and cascade to all projects that belong to the group.
+
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
-1. Expand the **Analytics** tab and find the **Product analytics** section.
-1. Select **Enable product analytics** and enter the configuration values.
+1. Expand the **Permissions and group features** section.
+1. Check **Use Experiment and Beta features** checkbox.
+1. Check **Use product analytics** checkbox.
 1. Select **Save changes**.
 
 ### Project-level settings
@@ -90,7 +88,6 @@ have a different configured product analytics instance for your project.
 
 Prerequisites:
 
-- Product analytics must be enabled at the instance-level.
 - You must have at least the Maintainer role for the project or group the project belongs to.
 - The project must be in a group namespace.
 
@@ -111,18 +108,6 @@ To onboard a project:
 1. Select **Set up product analytics**.
 Your instance is being created, and the project onboarded.
 
-### Onboard an internal project
-
-GitLab team members can enable Product Analytics on their internal projects on GitLab.com (Ultimate) during the experiment phase.
-
-1. Send a message to the Product Analytics team (`#g_analyze_product_analytics`) informing them of the repository to be enabled.
-1. Using ChatOps, enable both the `product_analytics_dashboards` and `combined_analytics_dashboards`:
-
-    ```plaintext
-    /chatops run feature set product_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    /chatops run feature set combined_analytics_dashboards true --project=FULLPATH_TO_PROJECT
-    ```
-
 ## Instrument your application
 
 To instrument code to collect data, use one or more of the existing SDKs:
@@ -137,11 +122,6 @@ To instrument code to collect data, use one or more of the existing SDKs:
 
 > - Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
 
 Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../analytics/analytics_dashboards.md).
 

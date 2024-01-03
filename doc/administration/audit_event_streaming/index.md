@@ -589,11 +589,8 @@ To delete Google Cloud Logging streaming destinations to an instance:
 
 ### AWS S3 destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138245) in GitLab 16.7 [with a flag](../feature_flags.md) named `allow_streaming_instance_audit_events_to_amazon_s3`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To enable the feature, an administrator can [enable the feature flag](../feature_flags.md) named
-`allow_streaming_instance_audit_events_to_amazon_s3`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138245) in GitLab 16.7 [with a flag](../feature_flags.md) named `allow_streaming_instance_audit_events_to_amazon_s3`. Disabled by default.
+> - [Feature flag `allow_streaming_instance_audit_events_to_amazon_s3`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137391) removed in GitLab 16.8.
 
 Manage AWS S3 destinations for entire instance.
 

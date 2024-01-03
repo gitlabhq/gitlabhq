@@ -84,18 +84,9 @@ module Boards
     end
 
     def remove_label_ids
-      label_ids =
-        if moving_to_list.movable?
-          moving_from_list.label_id
-        else
-          board_label_ids
-        end
+      label_ids = moving_to_list.movable? ? moving_from_list.label_id : []
 
       Array(label_ids).compact
-    end
-
-    def board_label_ids
-      ::Label.ids_on_board(board.id)
     end
 
     def move_params_from_list_position(position)
