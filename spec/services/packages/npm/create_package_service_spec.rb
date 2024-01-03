@@ -39,18 +39,9 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       it { is_expected.to be_valid }
-
-      it 'creates a package with name and version' do
-        package = subject
-
-        expect(package.name).to eq(package_name)
-        expect(package.version).to eq(version)
-      end
+      it { is_expected.to have_attributes name: package_name, version: version }
 
       it { expect(subject.npm_metadatum.package_json).to eq(version_data) }
-
-      it { expect(subject.name).to eq(package_name) }
-      it { expect(subject.version).to eq(version) }
 
       context 'with build info' do
         let_it_be(:job) { create(:ci_build, user: user) }

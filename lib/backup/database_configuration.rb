@@ -19,7 +19,8 @@ module Backup
       @connection_name = connection_name
       @source_model = Gitlab::Database.database_base_models_with_gitlab_shared[connection_name] ||
         Gitlab::Database.database_base_models_with_gitlab_shared['main']
-      @activerecord_database_config = ActiveRecord::Base.configurations.find_db_config(connection_name)
+      @activerecord_database_config = ActiveRecord::Base.configurations.find_db_config(connection_name) ||
+        ActiveRecord::Base.configurations.find_db_config('main')
     end
 
     # ENV variables that can override each database configuration

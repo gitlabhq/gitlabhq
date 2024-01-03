@@ -90,8 +90,8 @@ module QA
             click_element 'mirror-repository-button'
           end
 
-          def update(url)
-            row_index = find_repository_row_index(url)
+          def update_uri(uri)
+            row_index = find_repository_row_index(uri)
             within_element_by_index('mirrored-repository-row-container', row_index) do
               # When a repository is first mirrored, the update process might
               # already be started, so the button is already "clicked"

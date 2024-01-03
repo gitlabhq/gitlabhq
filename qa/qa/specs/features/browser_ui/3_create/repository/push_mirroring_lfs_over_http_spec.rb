@@ -35,7 +35,7 @@ module QA
             mirror_settings.username = Runtime::User.username
             mirror_settings.password = Runtime::User.password
             mirror_settings.mirror_repository
-            mirror_settings.update(target_project_uri) # rubocop:disable Rails/SaveBang
+            mirror_settings.update_uri(target_project_uri)
             mirror_settings.verify_update(target_project_uri)
           end
         end

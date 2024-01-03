@@ -52,7 +52,7 @@ module Gitlab
           ApplicationRecord.connection.execute(
             ApplicationRecord.sanitize_sql([
               TABLE_SIZE_QUERY,
-              { table_catalog: main_config.dig(:activerecord, :database) }
+              { table_catalog: main_database_name }
             ])
           ).first["total"].to_f
         end
@@ -86,7 +86,7 @@ module Gitlab
         end
 
         def ci_database_connect_ok?
-          _, status = with_transient_pg_env(ci_config[:pg_env]) do
+          _, status = with_transient_pg_env(ci_config.pg_env_variables) do
             psql_args = ["--dbname=#{ci_database_name}", "-tAc", "select 1"]
 
             Open3.capture2e('psql', *psql_args)
@@ -94,7 +94,7 @@ module Gitlab
 
           unless status.success?
             raise MigrateError,
-              "Can't connect to database '#{ci_database_name} on host '#{ci_config[:pg_env]['PGHOST']}'. " \
+              "Can't connect to database '#{ci_database_name} on host '#{ci_config.pg_env_variables['PGHOST']}'. " \
               "Ensure the database has been created."
           end
 
@@ -107,7 +107,7 @@ module Gitlab
             { table_catalog: ci_database_name }
           ])
 
-          output, status = with_transient_pg_env(ci_config[:pg_env]) do
+          output, status = with_transient_pg_env(ci_config.pg_env_variables) do
             psql_args = ["--dbname=#{ci_database_name}", "-tAc", sql]
 
             Open3.capture2e('psql', *psql_args)
@@ -149,7 +149,7 @@ module Gitlab
         end
 
         def import_dump_to_ci_db
-          with_transient_pg_env(ci_config[:pg_env]) do
+          with_transient_pg_env(ci_config.pg_env_variables) do
             restore_args = ["--jobs=4", "--dbname=#{ci_database_name}"]
 
             Open3.capture2e('pg_restore', *restore_args, @backup_location)
@@ -157,23 +157,27 @@ module Gitlab
         end
 
         def dump_main_db
-          with_transient_pg_env(main_config[:pg_env]) do
+          with_transient_pg_env(main_config.pg_env_variables) do
             args = ['--format=d', '--jobs=4', "--file=#{@backup_location}"]
 
-            Open3.capture2e('pg_dump', *args, main_config.dig(:activerecord, :database))
+            Open3.capture2e('pg_dump', *args, main_database_name)
           end
         end
 
         def main_config
-          @main_config ||= ::Backup::DatabaseModel.new('main').config
+          @main_config ||= ::Backup::DatabaseConfiguration.new('main')
         end
 
         def ci_config
-          @ci_config ||= ::Backup::DatabaseModel.new('ci').config
+          @ci_config ||= ::Backup::DatabaseConfiguration.new('ci')
+        end
+
+        def main_database_name
+          main_config.activerecord_configuration.database
         end
 
         def ci_database_name
-          @ci_database_name ||= "#{main_config.dig(:activerecord, :database)}_ci"
+          "#{main_config.activerecord_configuration.database}_ci"
         end
       end
     end
