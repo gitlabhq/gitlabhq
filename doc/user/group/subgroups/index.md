@@ -10,12 +10,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can organize GitLab [groups](../index.md) into subgroups. You can use subgroups to:
 
-- Separate internal and external organizations. Because every subgroup can have its own
+- Separate internal and external content. Because every subgroup can have its own
   [visibility level](../../public_access.md), you can host groups for different
   purposes under the same parent group.
-- Organize large projects. You can use subgroups to give different access to parts of
+- Organize large projects. You can use subgroups to manage who can access parts of
   the source code.
-- Manage people and control visibility. Give a user a different
+- Manage permissions. Give a user a different
   [role](../../permissions.md#group-members-permissions) for each group they're [a member of](#subgroup-membership).
 
 Subgroups can:
@@ -25,7 +25,7 @@ Subgroups can:
 - Be nested up to 20 levels.
 - Use [runners](../../../ci/runners/index.md) registered to parent groups:
   - Secrets configured for the parent group are available to subgroup jobs.
-  - Users with the Maintainer role in projects that belong to subgroups can see the details of runners registered to
+  - Users with at least the Maintainer role in projects that belong to subgroups can see the details of runners registered to
     parent groups.
 
 For example:
@@ -117,7 +117,7 @@ For more information, view the [permissions table](../../permissions.md#group-me
 ## Subgroup membership
 
 When you add a member to a group, that member is also added to all subgroups of that group.
-The member's permissions are inherited from the group's parent.
+The member's permissions are inherited from the group into all subgroups.
 
 Subgroup members can be:
 
@@ -189,8 +189,8 @@ Members can be [filtered by inherited or direct membership](../index.md#filter-a
 
 Users with the Owner role in a subgroup can add members to it.
 
-You can't give a user a role in a subgroup that is lower than the roles the user has in ancestor groups.
-To override a user's role in an ancestor group, add the user to the subgroup again with a higher role.
+You can't give a user a role in a subgroup that is lower than the roles the user has in parent groups.
+To override a user's role in a parent group, add the user to the subgroup again with a higher role.
 For example:
 
 - If User 1 is added to group _Two_ with the Developer role, User 1 inherits that role in every subgroup of group _Two_.
@@ -201,7 +201,7 @@ For example:
 
 ## Mention subgroups
 
-Mentioning subgroups ([`@<subgroup_name>`](../../discussions/index.md#mentions)) in issues, commits, and merge requests
+Mentioning subgroups ([`@<subgroup_name>`](../../discussions/index.md#mentions)) in epics, issues, commits, and merge requests
 notifies all direct members of that group. Inherited members of a subgroup are not notified by mentions.
 Mentioning works the same as for projects and groups, and you can choose the group of members to be notified.
 

@@ -12,8 +12,8 @@ describe('CiResourceAbout', () => {
     openMergeRequestsCount: 9,
     latestVersion: {
       id: 1,
-      tagName: 'v1.0.0',
-      tagPath: 'path/to/release',
+      name: 'v1.0.0',
+      path: 'path/to/release',
       releasedAt: '2022-08-23T17:19:09Z',
     },
     webPath: 'path/to/project',

@@ -70,7 +70,7 @@ This specific Ruby image is maintained on [DockerHub](https://hub.docker.com/_/r
 Edit your `.gitlab-ci.yml` file and add this text as the first line:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 ```
 
 If your SSG needs [NodeJS](https://nodejs.org/) to build, you must specify an
@@ -156,7 +156,7 @@ pages:
 Your `.gitlab-ci.yml` file should now look like this:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 pages:
   script:
@@ -198,7 +198,7 @@ First, add a `workflow` section to force the pipeline to run only when changes a
 pushed to branches:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:
@@ -218,7 +218,7 @@ Then configure the pipeline to run the job for the
 [default branch](../../repository/branches/default.md) (here, `main`) only.
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:
@@ -249,7 +249,7 @@ To specify a stage for your job to run in,
 add a `stage` line to your CI file:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:
@@ -273,7 +273,7 @@ Now add another job to the CI file, telling it to
 test every push to every branch **except** the `main` branch:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:
@@ -325,7 +325,7 @@ for both jobs, `pages` and `test`.
 Move these commands to a `before_script` section:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:
@@ -366,7 +366,7 @@ This example caches Jekyll dependencies in a `vendor` directory
 when you run `bundle install`:
 
 ```yaml
-image: ruby:2.7
+image: ruby:3.2
 
 workflow:
   rules:

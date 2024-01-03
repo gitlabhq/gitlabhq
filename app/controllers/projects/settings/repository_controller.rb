@@ -7,6 +7,10 @@ module Projects
       before_action :authorize_admin_project!
       before_action :define_variables, only: [:create_deploy_token]
 
+      before_action do
+        push_frontend_feature_flag(:add_branch_rule, @project)
+      end
+
       feature_category :source_code_management, [:show, :cleanup, :update]
       feature_category :continuous_delivery, [:create_deploy_token]
       urgency :low, [:show, :create_deploy_token]

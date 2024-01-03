@@ -49,7 +49,7 @@ export default {
       return getIdFromGraphQLId(this.resource.id);
     },
     hasLatestVersion() {
-      return this.latestVersion?.tagName;
+      return this.latestVersion?.name;
     },
     hasPipelineStatus() {
       return this.pipelineStatus?.text;
@@ -58,7 +58,7 @@ export default {
       return this.resource.latestVersion;
     },
     versionBadgeText() {
-      return this.latestVersion.tagName;
+      return this.latestVersion.name;
     },
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
@@ -92,7 +92,7 @@ export default {
             v-if="hasLatestVersion"
             size="sm"
             class="gl-ml-3 gl-my-1"
-            :href="latestVersion.tagPath"
+            :href="latestVersion.path"
           >
             {{ versionBadgeText }}
           </gl-badge>

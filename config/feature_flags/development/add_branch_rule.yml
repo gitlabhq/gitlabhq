@@ -1,0 +1,8 @@
+---
+name: add_branch_rule
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435948
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437003
+milestone: '16.8'
+type: development
+group: group::source code
+default_enabled: false

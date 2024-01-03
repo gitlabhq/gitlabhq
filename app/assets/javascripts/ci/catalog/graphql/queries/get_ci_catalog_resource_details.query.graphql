@@ -22,7 +22,7 @@ query getCiCatalogResourceDetails($fullPath: ID!) {
             }
           }
         }
-        tagName
+        name
         releasedAt
       }
     }

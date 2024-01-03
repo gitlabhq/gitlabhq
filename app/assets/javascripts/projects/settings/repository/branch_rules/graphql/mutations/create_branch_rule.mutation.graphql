@@ -1,0 +1,8 @@
+mutation createBranchRule($projectPath: ID!, $name: String!) {
+  branchRuleCreate(input: { projectPath: $projectPath, name: $name }) {
+    errors
+    branchRule {
+      name
+    }
+  }
+}

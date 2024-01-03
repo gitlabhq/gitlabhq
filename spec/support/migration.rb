@@ -17,7 +17,6 @@ RSpec.configure do |config|
   end
 
   config.after(:context, :migration) do
-    Gitlab::CurrentSettings.clear_in_memory_application_settings!
     Gitlab::ApplicationSettingFetcher.clear_in_memory_application_settings!
   end
 

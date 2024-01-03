@@ -102,193 +102,39 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
 
       described_class.home_page_url
     end
-
-    context 'in a Rake task with DB unavailable' do
-      before do
-        allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
-        allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_return(nil)
-
-        # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
-        # during the initialization phase of the test suite, so instead let's mock the internals of it
-        allow(ApplicationSetting.connection).to receive(:active?).and_return(false)
-      end
-
-      context 'and no settings in cache' do
-        it 'returns a FakeApplicationSettings object' do
-          expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
-        end
-
-        it 'does not issue any query' do
-          expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
-        end
-      end
-    end
-
-    context 'with DB available' do
-      # This method returns the ::ApplicationSetting.defaults hash
-      # but with respect of custom attribute accessors of ApplicationSetting model
-      def settings_from_defaults
-        ar_wrapped_defaults = ::ApplicationSetting.build_from_defaults.attributes
-        ar_wrapped_defaults.slice(*::ApplicationSetting.defaults.keys)
-      end
-
-      context 'and settings in cache' do
-        include_context 'with settings in cache'
-
-        it 'fetches the settings from cache' do
-          # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(true)` causes issues
-          # during the initialization phase of the test suite, so instead let's mock the internals of it
-          expect(ApplicationSetting.connection).not_to receive(:active?)
-          expect(ApplicationSetting.connection).not_to receive(:cached_table_exists?)
-          expect_any_instance_of(ActiveRecord::MigrationContext).not_to receive(:needs_migration?)
-          expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
-        end
-      end
-
-      context 'and no settings in cache' do
-        before do
-          allow(ApplicationSetting.connection).to receive(:active?).and_return(true)
-          allow(ApplicationSetting.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
-        end
-
-        context 'with RequestStore enabled', :request_store do
-          it 'fetches the settings from DB only once' do
-            described_class.current_application_settings # warm the cache
-
-            expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
-          end
-        end
-
-        it 'creates default ApplicationSettings if none are present' do
-          settings = described_class.current_application_settings
-
-          expect(settings).to be_a(ApplicationSetting)
-          expect(settings).to be_persisted
-          expect(settings).to have_attributes(settings_from_defaults)
-        end
-
-        context 'when we hit a recursive loop' do
-          before do
-            expect(ApplicationSetting).to receive(:create_from_defaults) do
-              raise ApplicationSetting::Recursion
-            end
-          end
-
-          it 'recovers and returns in-memory settings' do
-            settings = described_class.current_application_settings
-
-            expect(settings).to be_a(ApplicationSetting)
-            expect(settings).not_to be_persisted
-          end
-        end
-
-        context 'when ApplicationSettings does not have a primary key' do
-          before do
-            allow(ApplicationSetting.connection).to receive(:primary_key).with('application_settings').and_return(nil)
-          end
-
-          it 'raises an exception if ApplicationSettings does not have a primary key' do
-            expect { described_class.current_application_settings }.to raise_error(/table is missing a primary key constraint/)
-          end
-        end
-
-        context 'with pending migrations' do
-          let(:current_settings) { described_class.current_application_settings }
-
-          before do
-            allow(Gitlab::Runtime).to receive(:rake?).and_return(false)
-          end
-
-          shared_examples 'a non-persisted ApplicationSetting object' do
-            it 'uses the default value from ApplicationSetting.defaults' do
-              expect(current_settings.signup_enabled).to eq(ApplicationSetting.defaults[:signup_enabled])
-            end
-
-            it 'uses the default value from custom ApplicationSetting accessors' do
-              expect(current_settings.commit_email_hostname).to eq(ApplicationSetting.default_commit_email_hostname)
-            end
-
-            it 'responds to predicate methods' do
-              expect(current_settings.signup_enabled?).to eq(current_settings.signup_enabled)
-            end
-          end
-
-          context 'in a Rake task' do
-            before do
-              allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
-              expect_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(true)
-            end
-
-            it_behaves_like 'a non-persisted ApplicationSetting object'
-
-            it 'returns a FakeApplicationSettings object' do
-              expect(current_settings).to be_a(Gitlab::FakeApplicationSettings)
-            end
-
-            context 'when a new column is used before being migrated' do
-              before do
-                allow(ApplicationSetting).to receive(:defaults).and_return({ foo: 'bar' })
-              end
-
-              it 'uses the default value if present' do
-                expect(current_settings.foo).to eq('bar')
-              end
-            end
-          end
-
-          context 'with no ApplicationSetting DB record' do
-            it_behaves_like 'a non-persisted ApplicationSetting object'
-          end
-
-          context 'with an existing ApplicationSetting DB record' do
-            before do
-              described_class.update!(home_page_url: 'http://mydomain.com')
-            end
-
-            it_behaves_like 'a non-persisted ApplicationSetting object'
-
-            it 'uses the value from the DB attribute if present and not overridden by an accessor' do
-              expect(current_settings.home_page_url).to eq('http://mydomain.com')
-            end
-          end
-        end
-
-        context 'when ApplicationSettings.current is present' do
-          it 'returns the existing application settings' do
-            expect(ApplicationSetting).to receive(:current).and_return(:current_settings)
-
-            expect(described_class.current_application_settings).to eq(:current_settings)
-          end
-        end
-      end
-    end
   end
 
-  describe '#current_application_settings?', :use_clean_rails_memory_store_caching do
+  describe '#current_application_settings?' do
+    subject(:settings_set) { described_class.current_application_settings? }
+
     before do
+      # unstub, it is stubbed in spec/spec_helper.rb
       allow(described_class).to receive(:current_application_settings?).and_call_original
-      ApplicationSetting.delete_all # ensure no settings exist
     end
 
-    it 'returns true when settings exist' do
-      described_class.update!(
-        home_page_url: 'http://mydomain.com',
-        signup_enabled: false)
+    context 'when settings are cached in RequestStore' do
+      before do
+        allow(Gitlab::SafeRequestStore).to receive(:exist?).with(:current_application_settings).and_return(true)
+      end
 
-      expect(described_class.current_application_settings?).to eq(true)
+      it 'returns true' do
+        expect(settings_set).to be(true)
+      end
     end
 
-    it 'returns false when settings do not exist' do
-      expect(described_class.current_application_settings?).to eq(false)
+    context 'when ApplicationSettingFetcher.current_application_settings? returns true' do
+      before do
+        allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(settings_set).to be(true)
+      end
     end
 
-    context 'with cache', :request_store do
-      include_context 'with settings in cache'
-
-      it 'returns an in-memory ApplicationSetting object' do
-        expect(ApplicationSetting).not_to receive(:current)
-
-        expect(described_class.current_application_settings?).to eq(true)
+    context 'when not cached and not in ApplicationSettingFetcher' do
+      it 'returns false' do
+        expect(settings_set).to be(false)
       end
     end
   end
