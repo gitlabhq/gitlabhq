@@ -1,4 +1,4 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
@@ -11,10 +11,18 @@ import EmptyState from '~/ml/model_registry/components/empty_state.vue';
 import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
 
 let wrapper;
-const createWrapper = (
-  propsData = { models: mockModels, pageInfo: defaultPageInfo, modelCount: 2 },
-) => {
-  wrapper = shallowMountExtended(IndexMlModels, { propsData });
+
+const createWrapper = (propsData = {}) => {
+  wrapper = shallowMountExtended(IndexMlModels, {
+    propsData: {
+      models: mockModels,
+      pageInfo: defaultPageInfo,
+      modelCount: 2,
+      createModelPath: 'path/to/create',
+      canWriteModelRegistry: false,
+      ...propsData,
+    },
+  });
 };
 
 const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);
@@ -24,8 +32,9 @@ const findSearchBar = () => wrapper.findComponent(SearchBar);
 const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
 const findBadge = () => wrapper.findComponent(GlBadge);
+const findCreateButton = () => findTitleArea().findComponent(GlButton);
 
-describe('MlModelsIndex', () => {
+describe('ml/model_registry/apps/index_ml_models', () => {
   describe('empty state', () => {
     beforeEach(() => createWrapper({ models: [], pageInfo: defaultPageInfo }));
 
@@ -39,6 +48,24 @@ describe('MlModelsIndex', () => {
 
     it('does not show search bar', () => {
       expect(findSearchBar().exists()).toBe(false);
+    });
+  });
+
+  describe('create button', () => {
+    describe('when user has no permission to write model registry', () => {
+      it('does not display create button', () => {
+        createWrapper();
+
+        expect(findCreateButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when user has permission to write model registry', () => {
+      it('displays create button', () => {
+        createWrapper({ canWriteModelRegistry: true });
+
+        expect(findCreateButton().attributes().href).toBe('path/to/create');
+      });
     });
   });
 

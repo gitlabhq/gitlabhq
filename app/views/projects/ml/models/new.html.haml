@@ -1,0 +1,5 @@
+- breadcrumb_title s_('ModelRegistry|New model')
+- page_title s_('ModelRegistry|New model')
+- view_model = Gitlab::Json.generate({ projectPath: @project.full_path })
+
+#js-mount-new-ml-model{ data: { view_model: view_model } }

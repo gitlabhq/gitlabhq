@@ -1,0 +1,11 @@
+mutation createModel($projectPath: ID!, $name: String!, $description: String) {
+  mlModelCreate(input: { projectPath: $projectPath, name: $name, description: $description }) {
+    model {
+      id
+      _links {
+        showPath
+      }
+    }
+    errors
+  }
+}

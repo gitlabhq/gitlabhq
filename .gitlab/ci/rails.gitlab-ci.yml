@@ -295,15 +295,15 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
 
-rspec unit clickhouse:
+rspec clickhouse:
   extends:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:clickhouse-changes
 
-rspec-ee unit clickhouse:
+rspec-ee clickhouse:
   extends:
     - .rspec-base-pg14-clickhouse23
-    - .rails:rules:clickhouse-changes
+    - .rails:rules:ee-only-clickhouse-changes
 
 gitlab:clickhouse:rollback:main:
   extends:
@@ -355,7 +355,7 @@ rspec:artifact-collector unit:
     - .rails:rules:ee-and-foss-unit
   needs:
     - rspec unit pg14  # 24 jobs
-    - job: rspec unit clickhouse  # 1 job
+    - job: rspec clickhouse  # 1 job
       optional: true
 
 rspec:artifact-collector system:
@@ -446,7 +446,7 @@ rspec:artifact-collector ee:
       optional: true
     - job: rspec-ee unit pg14  # 22 jobs
       optional: true
-    - job: rspec-ee unit clickhouse  # 1 job
+    - job: rspec-ee clickhouse  # 1 job
       optional: true
     - job: rspec-ee integration pg14  # 5 jobs
       optional: true

@@ -3,11 +3,15 @@
 module Projects
   module Ml
     class ModelsIndexComponent < ViewComponent::Base
-      attr_reader :paginator, :model_count
+      include Rails.application.routes.url_helpers
 
-      def initialize(paginator:, model_count:)
+      attr_reader :paginator, :model_count, :project, :user
+
+      def initialize(project:, current_user:, paginator:, model_count:)
+        @project = project
         @paginator = paginator
         @model_count = model_count
+        @user = current_user
       end
 
       private
@@ -16,7 +20,9 @@ module Projects
         vm = {
           models: models_view_model,
           page_info: page_info_view_model,
-          model_count: model_count
+          model_count: model_count,
+          create_model_path: create_model_path,
+          can_write_model_registry: user.can?(:write_model_registry, project)
         }
 
         Gitlab::Json.generate(vm.deep_transform_keys { |k| k.to_s.camelize(:lower) })
@@ -33,6 +39,10 @@ module Projects
             version_path: m.latest_version_path
           }
         end
+      end
+
+      def create_model_path
+        new_project_ml_model_path(project)
       end
 
       def page_info_view_model

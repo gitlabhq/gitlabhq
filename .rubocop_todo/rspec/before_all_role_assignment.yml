@@ -739,7 +739,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/workers/ee/new_issue_worker_spec.rb'
     - 'ee/spec/workers/groups/export_memberships_worker_spec.rb'
     - 'ee/spec/workers/llm/completion_worker_spec.rb'
-    - 'ee/spec/workers/merge_requests/llm/summarize_merge_request_worker_spec.rb'
     - 'ee/spec/workers/security/orchestration_configuration_create_bot_worker_spec.rb'
     - 'spec/controllers/autocomplete_controller_spec.rb'
     - 'spec/controllers/dashboard_controller_spec.rb'

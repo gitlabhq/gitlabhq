@@ -4,7 +4,7 @@ module Projects
   module Ml
     class ModelsController < ::Projects::ApplicationController
       before_action :authorize_read_model_registry!
-      before_action :authorize_write_model_registry!, only: [:destroy]
+      before_action :authorize_write_model_registry!, only: [:destroy, :new]
       before_action :set_model, only: [:show, :destroy]
       feature_category :mlops
 
@@ -21,6 +21,8 @@ module Projects
 
         @model_count = finder.count
       end
+
+      def new; end
 
       def show; end
 

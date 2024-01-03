@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -21,6 +21,7 @@ export default {
     TitleArea,
     GlBadge,
     EmptyState,
+    GlButton,
   },
   props: {
     models: {
@@ -31,10 +32,19 @@ export default {
       type: Object,
       required: true,
     },
+    createModelPath: {
+      type: String,
+      required: true,
+    },
     modelCount: {
       type: Number,
       required: false,
       default: 0,
+    },
+    canWriteModelRegistry: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -62,6 +72,11 @@ export default {
       </template>
       <template #metadata-models-count>
         <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(modelCount)" />
+      </template>
+      <template #right-actions>
+        <gl-button v-if="canWriteModelRegistry" :href="createModelPath">{{
+          $options.i18n.CREATE_MODEL_LABEL
+        }}</gl-button>
       </template>
     </title-area>
     <template v-if="hasModels">

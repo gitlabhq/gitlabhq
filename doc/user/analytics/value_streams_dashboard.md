@@ -92,17 +92,9 @@ If multiple topics are provided, all topics will need to match for the project t
 
 ## Enable or disable overview background aggregation **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-Prerequisites:
-
-- You must have administrator access to the instance.
+> - [Feature flag `value_stream_dashboard_on_off_setting` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134619) in GitLab 16.6.
 
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 

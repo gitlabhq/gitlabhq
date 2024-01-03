@@ -32,6 +32,15 @@ export const CI_SECTION_LABEL = s__('MlModelRegistry|CI Info');
 export const JOB_LABEL = __('Job');
 export const CI_USER_LABEL = s__('MlModelRegistry|Triggered by');
 export const CI_MR_LABEL = __('Merge request');
+export const NEW_MODEL_LABEL = s__('MlModelRegistry|New model');
+export const CREATE_MODEL_LABEL = s__('MlModelRegistry|Create model');
+export const ERROR_CREATING_MODEL_LABEL = s__(
+  'MlModelRegistry|An error has occurred when saving the model.',
+);
+export const CREATE_MODEL_WITH_CLIENT_LABEL = s__(
+  'MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}',
+);
+export const NAME_LABEL = __('Name');
 
 export const makeLoadVersionsErrorMessage = (message) =>
   sprintf(s__('MlModelRegistry|Failed to load model versions with error: %{message}'), {

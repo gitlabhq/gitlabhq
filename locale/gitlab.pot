@@ -31101,6 +31101,9 @@ msgstr[1] ""
 msgid "MlModelRegistry|Add a model"
 msgstr ""
 
+msgid "MlModelRegistry|An error has occurred when saving the model."
+msgstr ""
+
 msgid "MlModelRegistry|Artifacts"
 msgstr ""
 
@@ -31111,6 +31114,12 @@ msgid "MlModelRegistry|Candidate not linked to a CI build"
 msgstr ""
 
 msgid "MlModelRegistry|Create a model version"
+msgstr ""
+
+msgid "MlModelRegistry|Create model"
+msgstr ""
+
+msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
 msgstr ""
 
 msgid "MlModelRegistry|Details"
@@ -31147,6 +31156,9 @@ msgid "MlModelRegistry|Model performance"
 msgstr ""
 
 msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|New model"
 msgstr ""
 
 msgid "MlModelRegistry|No description provided"
@@ -31212,6 +31224,9 @@ msgid "Model registry"
 msgstr ""
 
 msgid "ModelRegistry|Model registry"
+msgstr ""
+
+msgid "ModelRegistry|New model"
 msgstr ""
 
 msgid "Modified"
