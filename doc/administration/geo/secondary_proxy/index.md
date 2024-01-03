@@ -79,11 +79,6 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 NOTE:
 The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
 
-There are minor known issues linked in the
-["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865).
-You can also add feedback in the epic about any use-cases that
-are not possible anymore with proxying enabled.
-
 If you run into issues, to disable this feature, disable the `geo_secondary_proxy_separate_urls` feature flag.
 
 1. SSH into one node running Rails on your primary Geo site and run:
@@ -121,7 +116,7 @@ for details.
   To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
   the certificate, then copy it to all other sites.
 
-- Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
+- Using Geo secondary sites to accelerate runners is experimental and is not recommended for production. It can be configured and tested by following the steps in [secondary proxy runners](runners.md). Progress toward general availability can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779).
 
 - When secondary proxying is used together with separate URLs,
   [signing in the secondary site using SAML](../replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled)

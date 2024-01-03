@@ -53,7 +53,7 @@ RSpec.shared_examples 'Base action controller' do
           skip: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424334' do
           before do
             stub_rails_env('development')
-            stub_feature_flags(vite: true)
+            allow(ViteHelper).to receive(:vite_enabled?).and_return(true)
           end
 
           it 'adds vite csp' do
@@ -65,7 +65,7 @@ RSpec.shared_examples 'Base action controller' do
 
         context 'when vite disabled' do
           before do
-            stub_feature_flags(vite: false)
+            allow(ViteHelper).to receive(:vite_enabled?).and_return(false)
           end
 
           it "doesn't add vite csp" do

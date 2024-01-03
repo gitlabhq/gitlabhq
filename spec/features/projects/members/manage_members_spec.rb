@@ -93,7 +93,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     end
   end
 
-  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures do
+  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436958' do
     before do
       sign_in(current_user)
 
@@ -118,7 +119,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     context 'when maintainer' do
       let(:current_user) { project_maintainer }
 
-      it 'does not show the Owner option', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436958' do
+      it 'does not show the Owner option' do
         within_modal do
           toggle_listbox
           expect_listbox_items(%w[Guest Reporter Developer Maintainer])

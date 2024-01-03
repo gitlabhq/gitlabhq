@@ -221,23 +221,24 @@ To configure the Code Quality job:
 
 For an example, see [Download output in JSON format](#download-output-in-json-format).
 
-### Available CI/CD variables
-
-> In [GitLab 13.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/11100), the option to override the Code Quality environment variables was added.
+## Available CI/CD variables
 
 Code Quality can be customized by defining available CI/CD variables:
 
-| CI/CD variable              | Description |
-| --------------------------- | ----------- |
-| `SOURCE_CODE`               | Path to the source code to scan. |
-| `TIMEOUT_SECONDS`           | Custom timeout per engine container for the `codeclimate analyze` command, default is 900 seconds (15 minutes). |
-| `CODECLIMATE_DEBUG`         | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
-| `CODECLIMATE_DEV`           | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
-| `REPORT_STDOUT`             | Set to print the report to `STDOUT` instead of generating the usual report file. |
-| `REPORT_FORMAT`             | Set to control the format of the generated report file. One of: `json\|html`. |
-| `ENGINE_MEMORY_LIMIT_BYTES` | Set the memory limit for engines, default is 1,024,000,000 bytes. |
-| `CODE_QUALITY_DISABLED`     | Prevents the Code Quality job from running. |
-| `CODECLIMATE_PREFIX`        | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). |
+| CI/CD variable                  | Description |
+|---------------------------------|-------------|
+| `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
+| `CODECLIMATE_DEV`               | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
+| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [Use a private container registry](#use-a-private-container-image-registry). |
+| `CODECLIMATE_REGISTRY_USERNAME` | Set to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`. |
+| `CODECLIMATE_REGISTRY_PASSWORD` | Set to specify the password for the registry domain parsed from `CODECLIMATE_PREFIX`. |
+| `CODE_QUALITY_DISABLED`         | Prevents the Code Quality job from running. |
+| `CODE_QUALITY_IMAGE`            | Set to a fully prefixed image name. Image must be accessible from your job environment. |
+| `ENGINE_MEMORY_LIMIT_BYTES`     | Set the memory limit for engines. Default: 1,024,000,000 bytes. |
+| `REPORT_STDOUT`                 | Set to print the report to `STDOUT` instead of generating the usual report file. |
+| `REPORT_FORMAT`                 | Set to control the format of the generated report file. Either `json` or `html`. |
+| `SOURCE_CODE`                   | Path to the source code to scan. |
+| `TIMEOUT_SECONDS`               | Custom timeout per engine container for the `codeclimate analyze` command. Default: 900 seconds (15 minutes) |
 
 ## Output
 

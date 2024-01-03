@@ -118,3 +118,9 @@ mapping:
     test: 'spec/graphql/types/project_member_relation_enum_spec.rb'
   - source: 'app/finders/group_members_finder\.rb'
     test: 'spec/graphql/types/group_member_relation_enum_spec.rb'
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/4440#note_1675547256
+  - source: lib/gitlab/ci/templates/.*\.gitlab-ci\.yml
+    test:
+      - spec/lib/gitlab/ci/templates/templates_spec.rb
+      - ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb

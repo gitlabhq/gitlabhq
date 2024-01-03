@@ -1640,12 +1640,36 @@ When names change, it is more complicated to search or grep text that has line b
 
 Tier badges provide information about a feature and are displayed next to the topic title.
 
-You should assign a tier badge:
+#### When to add tier badges
 
-- To all H1 topic titles, except the pages under `doc/development/*`.
-- To topic titles that don't apply to the same tier as the H1.
+Assign tier badges to:
+
+- All H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
+- Topic titles that don't apply to the same tier as the H1.
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
+
+#### When not to add tier badges
+
+Do not assign tier badges:
+
+- When a feature does not have one obvious subscription tier or offering.
+  For example, if a feature applies to one tier for SaaS and a different tier for self-managed.
+
+In this case, do any or all of the following:
+
+- Use a `NOTE` in an alert box to describe the tiers.
+- Add tier badges to other topic titles where this information makes more sense.
+- Do not add tier badges to the H1.
+
+##### Pages that don't need a tier badge
+
+Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 #### Available product tier badges
 
@@ -1671,7 +1695,9 @@ You can also add a third component for the feature's status:
 
 For example, `**(FREE ALL EXPERIMENT)**`.
 
-A tier or status can stand alone. An offering should always have a tier.
+- A tier or status can stand alone.
+- An offering should always have a tier.
+- Do not add more than one offering, tier, or status. Multiples do not render properly in the documentation.
 
 #### Add a tier badge
 
@@ -1700,15 +1726,6 @@ Or add the status by itself:
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
 The single source of truth for a feature should be the topic where the
 functionality is described.
-
-##### Pages that don't need a tier badge
-
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
-
-- Tutorials.
-- Pages that compare features from different tiers.
-- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
-- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 ##### Administrator documentation tier badges
 

@@ -24,9 +24,11 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "parallel", "~> 1.22"
   spec.add_runtime_dependency "re2", "~> 2.4"
   spec.add_runtime_dependency "toml-rb", "~> 2.2"
 
+  spec.add_development_dependency "benchmark-malloc", "~> 0.2"
   spec.add_development_dependency "gitlab-styles", "~> 11.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"

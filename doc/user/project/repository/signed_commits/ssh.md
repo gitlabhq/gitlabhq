@@ -156,7 +156,7 @@ To revoke an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select (**{key}**) **SSH Keys**.
+1. On the left sidebar, select **SSH Keys** (**{key}**).
 1. Select **Revoke** next to the SSH key you want to delete.
 
 ## Related topics

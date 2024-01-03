@@ -6,6 +6,10 @@ RSpec.describe WebpackHelper do
   let(:source) { 'foo.js' }
   let(:asset_path) { "/assets/webpack/#{source}" }
 
+  before do
+    allow(helper).to receive(:vite_enabled?).and_return(false)
+  end
+
   describe '#prefetch_link_tag' do
     it 'returns prefetch link tag' do
       expect(helper.prefetch_link_tag(source)).to eq("<link rel=\"prefetch\" href=\"/#{source}\">")
@@ -40,7 +44,6 @@ RSpec.describe WebpackHelper do
 
     before do
       stub_rails_env('development')
-      stub_feature_flags(vite: true)
 
       allow(helper).to receive(:vite_javascript_tag).and_return('vite')
       allow(helper).to receive(:vite_enabled?).and_return(true)

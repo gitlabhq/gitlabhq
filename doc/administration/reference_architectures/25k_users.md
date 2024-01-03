@@ -715,7 +715,7 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PostgreSQL replication and failover troubleshooting section](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 before proceeding.
 
 <div align="right">

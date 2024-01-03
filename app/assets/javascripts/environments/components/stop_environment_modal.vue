@@ -1,13 +1,15 @@
 <script>
 import { GlSprintf, GlTooltipDirective, GlModal } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import eventHub from '../event_hub';
 import stopEnvironmentMutation from '../graphql/mutations/stop_environment.mutation.graphql';
 
 export default {
-  yamlDocsLink: `${DOCS_URL_IN_EE_DIR}/ee/ci/yaml/`,
-  stoppingEnvironmentDocsLink: `${DOCS_URL_IN_EE_DIR}/environments/#stopping-an-environment`,
+  yamlDocsLink: helpPagePath('ci/yaml/index'),
+  stoppingEnvironmentDocsLink: helpPagePath('ci/environments/index', {
+    anchor: 'stopping-an-environment',
+  }),
 
   id: 'stop-environment-modal',
   name: 'StopEnvironmentModal',

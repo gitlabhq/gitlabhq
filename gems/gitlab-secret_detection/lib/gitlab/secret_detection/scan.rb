@@ -4,6 +4,7 @@ require 'toml-rb'
 require 're2'
 require 'logger'
 require 'timeout'
+require 'parallel'
 
 module Gitlab
   module SecretDetection
@@ -23,12 +24,16 @@ module Gitlab
       DEFAULT_BLOB_TIMEOUT_SECS = 5
       # file path where the secrets ruleset file is located
       RULESET_FILE_PATH = File.expand_path('../../gitleaks.toml', __dir__)
-      # ignore the scanning of a line which ends with the following keyword
-      GITLEAKS_KEYWORD_IGNORE = 'gitleaks:allow'
+      # Max no of child processes to spawn per request
+      # ref: https://gitlab.com/gitlab-org/gitlab/-/issues/430160
+      MAX_PROCS_PER_REQUEST = 5
+      # Minimum cumulative size of the blobs required to spawn and
+      # run the scan within a new subprocess.
+      MIN_CHUNK_SIZE_PER_PROC_BYTES = 2_097_152 # 2MiB
 
       # Initializes the instance with logger along with following operations:
       # 1. Parse ruleset for the given +ruleset_path+(default: +RULESET_FILE_PATH+). Raises +RulesetParseError+
-      # incase the operation fails.
+      # in case the operation fails.
       # 2. Extract keywords from the parsed ruleset to use it for matching keywords before regex operation.
       # 3. Build and Compile rule regex patterns obtained from the ruleset. Raises +RulesetCompilationError+
       # in case the compilation fails.
@@ -46,13 +51,31 @@ module Gitlab
       # +timeout+:: No of seconds(accepts floating point for smaller time values) to limit the total scan duration
       # +blob_timeout+:: No of seconds(accepts floating point for smaller time values) to limit
       #                  the scan duration on each blob
+      # +subprocess+:: If passed true, the scan is performed within subprocess instead of main process.
+      #           To avoid over-consuming memory by running scan on multiple large blobs within a single subprocess,
+      #           it instead groups the blobs into smaller array where each array contains blobs with cumulative size of
+      #           +MIN_CHUNK_SIZE_PER_PROC_BYTES+ bytes and each group runs in a separate sub-process. Default value
+      #           is true.
+      #
+      # NOTE:
+      # Running the scan in fork mode primarily focuses on reducing the memory consumption of the scan by
+      # offloading regex operations on large blobs to sub-processes. However, it does not assure the improvement
+      # in the overall latency of the scan, specifically in the case of smaller blob sizes, where the overhead of
+      # forking a new process adds to the overall latency of the scan instead. More reference on Subprocess-based
+      # execution is found here: https://gitlab.com/gitlab-org/gitlab/-/issues/430160.
       #
       # Returns an instance of SecretDetection::Response by following below structure:
       # {
       #     status: One of the SecretDetection::Status values
       #     results: [SecretDetection::Finding]
       # }
-      def secrets_scan(blobs, timeout: DEFAULT_SCAN_TIMEOUT_SECS, blob_timeout: DEFAULT_BLOB_TIMEOUT_SECS)
+      #
+      def secrets_scan(
+        blobs,
+        timeout: DEFAULT_SCAN_TIMEOUT_SECS,
+        blob_timeout: DEFAULT_BLOB_TIMEOUT_SECS,
+        subprocess: true
+      )
         return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(blobs)
 
         Timeout.timeout(timeout) do
@@ -60,7 +83,11 @@ module Gitlab
 
           next SecretDetection::Response.new(SecretDetection::Status::NOT_FOUND) if matched_blobs.empty?
 
-          secrets = find_secrets_bulk(matched_blobs, blob_timeout)
+          secrets = if subprocess
+                      run_scan_within_subprocess(blobs, blob_timeout)
+                    else
+                      run_scan(blobs, blob_timeout)
+                    end
 
           scan_status = overall_scan_status(secrets)
 
@@ -114,7 +141,7 @@ module Gitlab
         secrets_keywords.flatten.compact.to_set
       end
 
-      # returns only those blobs that contain atleast one of the keywords
+      # returns only those blobs that contain at least one of the keywords
       # from the keywords list
       def filter_by_keywords(blobs)
         matched_blobs = []
@@ -126,22 +153,43 @@ module Gitlab
         matched_blobs.freeze
       end
 
-      # finds secrets in the given list of blobs
-      def find_secrets_bulk(blobs, blob_timeout)
-        found_secrets = []
-
-        blobs.each do |blob|
-          found_secrets << Timeout.timeout(blob_timeout) { find_secrets(blob) }
+      def run_scan(blobs, blob_timeout)
+        found_secrets = blobs.flat_map do |blob|
+          Timeout.timeout(blob_timeout) do
+            find_secrets(blob)
+          end
         rescue Timeout::Error => e
-          logger.error "Secret detection scan timed out on the blob(id:#{blob.id}): #{e}"
-
-          found_secrets << SecretDetection::Finding.new(
-            blob.id,
-            SecretDetection::Status::BLOB_TIMEOUT
-          )
+          logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
+          SecretDetection::Finding.new(blob.id,
+            SecretDetection::Status::BLOB_TIMEOUT)
         end
 
-        found_secrets.flatten.freeze
+        found_secrets.freeze
+      end
+
+      def run_scan_within_subprocess(blobs, blob_timeout)
+        blob_sizes = blobs.map(&:size)
+        grouped_blob_indicies = group_by_chunk_size(blob_sizes)
+
+        grouped_blobs = grouped_blob_indicies.map { |idx_arr| idx_arr.map { |i| blobs[i] } }
+
+        found_secrets = Parallel.flat_map(
+          grouped_blobs,
+          in_processes: MAX_PROCS_PER_REQUEST,
+          isolation: true # do not reuse sub-processes
+        ) do |grouped_blob|
+          grouped_blob.flat_map do |blob|
+            Timeout.timeout(blob_timeout) do
+              find_secrets(blob)
+            end
+          rescue Timeout::Error => e
+            logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
+            SecretDetection::Finding.new(blob.id,
+              SecretDetection::Status::BLOB_TIMEOUT)
+          end
+        end
+
+        found_secrets.freeze
       end
 
       # finds secrets in the given blob with a timeout circuit breaker
@@ -149,10 +197,8 @@ module Gitlab
         secrets = []
 
         blob.data.each_line.with_index do |line, index|
-          # ignore the line scan if it is suffixed with '#gitleaks:allow'
-          next if line.end_with?(GITLEAKS_KEYWORD_IGNORE)
-
           patterns = pattern_matcher.match(line, exception: false)
+
           next unless patterns.any?
 
           line_number = index + 1
@@ -172,7 +218,7 @@ module Gitlab
 
         secrets
       rescue StandardError => e
-        logger.error "Secret detection scan failed on the blob(id:#{blob.id}): #{e}"
+        logger.error "Secret Detection scan failed on the blob(id:#{blob.id}): #{e}"
 
         SecretDetection::Finding.new(blob.id, SecretDetection::Status::SCAN_ERROR)
       end
@@ -200,6 +246,35 @@ module Gitlab
         else
           SecretDetection::Status::FOUND_WITH_ERRORS
         end
+      end
+
+      # This method accepts an array of blob sizes(in bytes) and groups them into an array
+      # of arrays structure where each element is the group of indicies of the input
+      # array whose cumulative blob sizes has at least +MIN_CHUNK_SIZE_PER_PROC_BYTES+
+      def group_by_chunk_size(blob_size_arr)
+        cumulative_size = 0
+        chunk_indexes = []
+        chunk_idx_start = 0
+
+        blob_size_arr.each_with_index do |size, index|
+          cumulative_size += size
+          next unless cumulative_size >= MIN_CHUNK_SIZE_PER_PROC_BYTES
+
+          chunk_indexes << (chunk_idx_start..index).to_a
+
+          chunk_idx_start = index + 1
+          cumulative_size = 0
+        end
+
+        if cumulative_size.positive? && (chunk_idx_start < blob_size_arr.length)
+          chunk_indexes << if chunk_idx_start == blob_size_arr.length - 1
+                             [chunk_idx_start]
+                           else
+                             (chunk_idx_start..blob_size_arr.length - 1).to_a
+                           end
+        end
+
+        chunk_indexes
       end
     end
   end

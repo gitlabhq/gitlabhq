@@ -2,17 +2,11 @@
 
 module QA
   RSpec.describe 'Create', :runner, product_group: :code_review do
-    describe 'Merge requests' do
-      shared_examples 'merge when pipeline succeeds' do |repeat: 1|
+    describe 'Merge request' do
+      shared_examples 'set to auto-merge' do |repeat: 1|
         let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-        let(:project) { create(:project, :with_readme, name: 'merge-when-pipeline-succeeds') }
-        let!(:runner) do
-          Resource::ProjectRunner.fabricate! do |runner|
-            runner.project = project
-            runner.name = runner_name
-            runner.tags = [runner_name]
-          end
-        end
+        let(:project) { create(:project, :with_readme, name: 'set-to-auto-merge') }
+        let!(:runner) { create(:project_runner, project: project, name: runner_name, tags: [runner_name]) }
 
         let!(:ci_file) do
           create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
@@ -48,7 +42,7 @@ module QA
             QA::Runtime::Logger.info("Transient bug test - Trial #{i + 1}") if transient_test
 
             # Create a merge request to trigger pipeline
-            merge_request = create(:project,
+            merge_request = create(:merge_request,
               project: project,
               description: Faker::Lorem.sentence,
               target_new_branch: false,
@@ -64,22 +58,26 @@ module QA
               # possible components will be relevant, so it would be inefficient for this test to check for each of
               # them. Instead, we fail on anything but the expected state.
               #
-              # The following method allows us to handle and ignore states (as we find them) that users could safely ignore.
+              # The following method allows us to handle and ignore states (as we find them) that users could safely
+              # ignore.
               mr.wait_until_ready_to_merge(transient_test: transient_test)
 
-              mr.retry_until(reload: true, message: 'Wait until ready to click MWPS') do
-                # Click the MWPS button if we can
-                break mr.merge_when_pipeline_succeeds! if mr.has_element?('merge-button', text: 'Merge when pipeline succeeds')
+              mr.retry_until(reload: true, message: 'Wait until ready to click Set to auto-merge') do
+                # Click the Set to auto-merge button if we can
+                break mr.set_to_auto_merge! if mr.has_element?('merge-button', text: 'Set to auto-merge')
 
                 # But fail if the button is missing because the pipeline is complete
-                raise "The pipeline already finished before we could click MWPS" if mr.wait_until { project.pipelines.first }[:status] == 'success'
+                raise "The pipeline already finished before we could set to auto-merge" if mr.wait_until do
+                                                                                             project.pipelines.first
+                                                                                           end[:status] == 'success'
 
                 # Otherwise, if this is not a transient test reload the page and retry
                 next false unless transient_test
               end
 
               aggregate_failures do
-                expect { mr.merged? }.to eventually_be_truthy.within(max_duration: 120), "Expected content 'The changes were merged' but it did not appear."
+                expect { mr.merged? }.to eventually_be_truthy.within(max_duration: 120),
+                  "Expected content 'The changes were merged' but it did not appear."
                 expect(merge_request.reload!.merge_when_pipeline_succeeds).to be_truthy
                 expect(merge_request.state).to eq('merged')
                 expect(project.pipelines.last[:status]).to eq('success')
@@ -90,11 +88,12 @@ module QA
       end
 
       context 'when merging once', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347686' do
-        it_behaves_like 'merge when pipeline succeeds'
+        it_behaves_like 'set to auto-merge'
       end
 
-      context 'when merging several times', :transient, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347641' do
-        it_behaves_like 'merge when pipeline succeeds', repeat: Runtime::Env.transient_trials
+      context 'when merging several times', :transient,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347641' do
+        it_behaves_like 'set to auto-merge', repeat: Runtime::Env.transient_trials
       end
     end
   end

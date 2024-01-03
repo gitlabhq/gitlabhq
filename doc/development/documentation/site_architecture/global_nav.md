@@ -26,6 +26,11 @@ For example:
 
 While some older sections of the nav are alphabetical, the nav should primarily be workflow-based.
 
+Without a navigation entry:
+
+- The navigation closes when the page is opened, and the reader loses their place.
+- The page isn't visible in a group with other pages.
+
 ## Choose the right words for your navigation entry
 
 Before you add an item to the left nav, choose the parts of speech you want to use.
@@ -41,35 +46,14 @@ as helpful as **Get started with runners**.
 
 ## Add a navigation entry
 
-To add a topic to the global nav, edit
-[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
-and add your item.
+**Do not** add items to the global nav without
+the consent of one of the technical writers.
 
-Without a navigation entry:
+To add a topic to the global navigation:
 
-- The navigation closes when the page is opened, and the reader loses their place.
-- The page isn't visible in a group with other pages.
-
-### Pages you don't need to add
-
-Exclude these pages from the global nav:
-
-- Legal notices.
-- Pages in the `architecture/blueprints` directory.
-- Pages in the `user/application_security/dast/checks/` directory.
-
-The following pages should probably be in the global nav, but the technical writers
-do not actively work to add them:
-
-- Pages in the `/development` directory.
-- Pages authored by the support team, which are under the `doc/administration/troubleshooting` directory.
-
-Sometimes pages for deprecated features are not in the global nav, depending on how long ago the feature was deprecated.
-
-All other pages should be in the global nav.
-
-The technical writing team runs a report to determine which pages are not in the nav.
-The team reviews this list each month.
+1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
+file, add the item.
+1. Assign the MR to a technical writer for review and merge.
 
 ### Where to add
 
@@ -110,7 +94,28 @@ mechanics of what is required is [documented below](#data-file) but, in principl
     substitution for **Continuous Integration**.
 - Navigation links must follow the rules documented in the [data file](#data-file).
 
-## How it works
+### Pages you don't need to add
+
+Exclude these pages from the global nav:
+
+- Legal notices.
+- Pages in the `architecture/blueprints` directory.
+- Pages in the `user/application_security/dast/checks/` directory.
+
+The following pages should probably be in the global nav, but the technical writers
+do not actively work to add them:
+
+- Pages in the `/development` directory.
+- Pages authored by the support team, which are under the `doc/administration/troubleshooting` directory.
+
+Sometimes pages for deprecated features are not in the global nav, depending on how long ago the feature was deprecated.
+
+All other pages should be in the global nav.
+
+The technical writing team runs a report to determine which pages are not in the nav.
+The team reviews this list each month.
+
+## Navigation structure
 
 The global nav has five levels:
 
@@ -121,9 +126,6 @@ The global nav has five levels:
         - Doc
 
 You can view this structure in [the `navigation.yml` file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
-
-**Do not** [add items](#add-a-navigation-entry) to the global nav without
-the consent of one of the technical writers.
 
 ## Composition
 

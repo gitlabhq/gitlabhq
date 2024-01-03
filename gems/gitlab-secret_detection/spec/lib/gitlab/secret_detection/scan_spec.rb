@@ -16,28 +16,28 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         {
           "id" => "gitlab_personal_access_token",
           "description" => "GitLab Personal Access Token",
-          "regex" => "glpat-[0-9a-zA-Z_\\-]{20}",
+          "regex" => "\bglpat-[0-9a-zA-Z_-]{20}\b",
           "tags" => %w[gitlab revocation_type],
           "keywords" => ["glpat"]
         },
         {
           "id" => "gitlab_pipeline_trigger_token",
           "description" => "GitLab Pipeline Trigger Token",
-          "regex" => "glptt-[0-9a-zA-Z_\\-]{40}",
+          "regex" => "\bglptt-[0-9a-zA-Z_-]{40}\b",
           "tags" => ["gitlab"],
           "keywords" => ["glptt"]
         },
         {
           "id" => "gitlab_runner_registration_token",
           "description" => "GitLab Runner Registration Token",
-          "regex" => "GR1348941[0-9a-zA-Z_-]{20}",
+          "regex" => "\bGR1348941[0-9a-zA-Z_-]{20}\b",
           "tags" => ["gitlab"],
           "keywords" => ["GR1348941"]
         },
         {
           "id" => "gitlab_feed_token_v2",
           "description" => "GitLab Feed Token",
-          "regex" => "glft-[0-9a-zA-Z_-]{20}",
+          "regex" => "\bglft-[0-9a-zA-Z_-]{20}\b",
           "tags" => ["gitlab"],
           "keywords" => ["glft"]
         }
@@ -98,12 +98,16 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           new_blob(id: 111, data: "glpat-12312312312312312312"), # gitleaks:allow
           new_blob(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312"), # gitleaks:allow
           new_blob(id: 333, data: "data with no secret"),
-          new_blob(id: 444, data: "GR134894112312312312312312312\nglft-12312312312312312312") # gitleaks:allow
+          new_blob(id: 444,
+            data: "GR134894112312312312312312312\nglft-12312312312312312312"), # gitleaks:allow
+          new_blob(id: 555, data: "data with no secret"),
+          new_blob(id: 666, data: "data with no secret"),
+          new_blob(id: 777, data: "\nglptt-1231231231231231231212312312312312312312") # gitleaks:allow
         ]
       end
 
-      it "matches different types of rules" do
-        expected_response = Gitlab::SecretDetection::Response.new(
+      let(:expected_response) do
+        Gitlab::SecretDetection::Response.new(
           Gitlab::SecretDetection::Status::FOUND,
           [
             Gitlab::SecretDetection::Finding.new(
@@ -133,11 +137,66 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
               2,
               ruleset['rules'][3]['id'],
               ruleset['rules'][3]['description']
+            ),
+            Gitlab::SecretDetection::Finding.new(
+              blobs[6].id,
+              Gitlab::SecretDetection::Status::FOUND,
+              2,
+              ruleset['rules'][1]['id'],
+              ruleset['rules'][1]['description']
             )
           ]
         )
+      end
 
-        expect(scan.secrets_scan(blobs)).to eq(expected_response)
+      it "matches multiple rules when running in main process" do
+        expect(scan.secrets_scan(blobs, subprocess: false)).to eq(expected_response)
+      end
+
+      context "in subprocess" do
+        let(:dummy_lines) do
+          10_000
+        end
+
+        let(:large_blobs) do
+          dummy_data = "\nrandom data" * dummy_lines
+          [
+            new_blob(id: 111, data: "glpat-12312312312312312312#{dummy_data}"), # gitleaks:allow
+            new_blob(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312#{dummy_data}"), # gitleaks:allow
+            new_blob(id: 333, data: "data with no secret#{dummy_data}"),
+            new_blob(id: 444,
+              data: "GR134894112312312312312312312\nglft-12312312312312312312#{dummy_data}"), # gitleaks:allow
+            new_blob(id: 555, data: "data with no secret#{dummy_data}"),
+            new_blob(id: 666, data: "data with no secret#{dummy_data}"),
+            new_blob(id: 777, data: "#{dummy_data}\nglptt-1231231231231231231212312312312312312312") # gitleaks:allow
+          ]
+        end
+
+        it "matches multiple rules" do
+          expect(scan.secrets_scan(blobs, subprocess: true)).to eq(expected_response)
+        end
+
+        it "takes at least same time to run as running in main process" do
+          expect { scan.secrets_scan(large_blobs, subprocess: true) }.to perform_faster_than {
+                                                                           scan.secrets_scan(large_blobs,
+                                                                             subprocess: false)
+                                                                         }.once
+        end
+
+        it "allocates less memory than when running in main process" do
+          forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: true) }
+          non_forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: false) }
+
+          max_processes = Gitlab::SecretDetection::Scan::MAX_PROCS_PER_REQUEST
+
+          forked_memory = forked_stats.allocated.total_memory
+          non_forked_memory = non_forked_stats.allocated.total_memory
+          forked_obj_allocs = forked_stats.allocated.total_objects
+          non_forked_obj_allocs = non_forked_stats.allocated.total_objects
+
+          expect(non_forked_memory).to be >= forked_memory * max_processes
+          expect(non_forked_obj_allocs).to be >= forked_obj_allocs * max_processes
+        end
       end
     end
 

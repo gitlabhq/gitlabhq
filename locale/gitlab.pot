@@ -12039,6 +12039,18 @@ msgstr ""
 msgid "CodeSuggestionsGAAlert| (Code Suggestions transitions to a paid feature on %{date}.)"
 msgstr ""
 
+msgid "CodeSuggestionsGAAlert|Contact Sales"
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Continue accelerating your development with Code Suggestions. Starting February 15, 2024, a paid subscription will be required for access. Upgrade now to lock in the introductory price of $9 per user."
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|Dismiss Code Suggestions banner"
+msgstr ""
+
+msgid "CodeSuggestionsGAAlert|GitLab Duo Code Suggestions free access is ending soon"
+msgstr ""
+
 msgid "CodeSuggestionsGAAlert|Learn more"
 msgstr ""
 
