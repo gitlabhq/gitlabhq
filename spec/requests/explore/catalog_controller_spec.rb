@@ -13,10 +13,6 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
     catalog_resource.project.add_reporter(user)
   end
 
-  before do
-    sign_in(user)
-  end
-
   shared_examples 'basic get requests' do |action|
     let(:path) do
       if action == :index
@@ -34,6 +30,10 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
   end
 
   describe 'GET #show' do
+    before do
+      sign_in(user)
+    end
+
     it_behaves_like 'basic get requests', :show
 
     context 'when rendering a draft catalog resource' do
@@ -56,14 +56,30 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
   end
 
   describe 'GET #index' do
-    let(:subject) { get explore_catalog_index_path }
+    subject(:visit_explore_catalog) { get explore_catalog_index_path }
 
-    it_behaves_like 'basic get requests', :index
+    context 'with an authenticated user' do
+      before do
+        sign_in(user)
+      end
 
-    it_behaves_like 'internal event tracking' do
-      let(:namespace) { user.namespace }
-      let(:project) { nil }
-      let(:event) { 'unique_users_visiting_ci_catalog' }
+      it_behaves_like 'basic get requests', :index
+
+      it_behaves_like 'internal event tracking' do
+        let(:namespace) { user.namespace }
+        let(:project) { nil }
+        let(:event) { 'unique_users_visiting_ci_catalog' }
+      end
+    end
+
+    context 'with an anonymous user' do
+      it_behaves_like 'basic get requests', :index
+
+      it 'does not track the event' do
+        expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+        visit_explore_catalog
+      end
     end
   end
 end
