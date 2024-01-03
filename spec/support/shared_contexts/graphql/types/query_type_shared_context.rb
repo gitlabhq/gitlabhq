@@ -26,6 +26,8 @@ RSpec.shared_context 'with FOSS query type fields' do
       :milestone,
       :namespace,
       :note,
+      :organization,
+      :organizations,
       :package,
       :project,
       :projects,

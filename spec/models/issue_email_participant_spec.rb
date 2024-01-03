@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueEmailParticipant do
+RSpec.describe IssueEmailParticipant, feature_category: :service_desk do
   describe "Associations" do
     it { is_expected.to belong_to(:issue) }
   end
@@ -25,6 +25,20 @@ RSpec.describe IssueEmailParticipant do
       subject.email = nil
 
       expect(subject).to be_invalid
+    end
+  end
+
+  describe 'Scopes' do
+    describe '.with_emails' do
+      let!(:participant) { create(:issue_email_participant, email: 'user@example.com') }
+      let!(:participant1) { create(:issue_email_participant, email: 'user1@example.com') }
+      let!(:participant2) { create(:issue_email_participant, email: 'user2@example.com') }
+
+      it 'returns only participant with matching emails' do
+        expect(described_class.with_emails([participant.email, participant1.email])).to match_array(
+          [participant, participant1]
+        )
+      end
     end
   end
 end

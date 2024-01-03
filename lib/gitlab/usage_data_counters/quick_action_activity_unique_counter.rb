@@ -37,6 +37,8 @@ module Gitlab
             event_name_for_unlabel(args)
           when 'invite_email'
             'invite_email' + event_name_quantifier(args.split)
+          when 'remove_email'
+            'remove_email' + event_name_quantifier(args.split)
           else
             name
           end

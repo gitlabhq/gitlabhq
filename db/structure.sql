@@ -37895,9 +37895,6 @@ ALTER TABLE ONLY bulk_import_entities
 ALTER TABLE ONLY requirements_management_test_reports
     ADD CONSTRAINT fk_88f30752fc FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY epics
-    ADD CONSTRAINT fk_893ee302e5 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_899c8f3231 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -38392,6 +38389,9 @@ ALTER TABLE ONLY approval_group_rules_groups
 
 ALTER TABLE ONLY emails
     ADD CONSTRAINT fk_emails_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY epics
+    ADD CONSTRAINT fk_epics_issue_id_with_on_delete_nullify FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_f05c5e5a42 FOREIGN KEY (management_project_id) REFERENCES projects(id) ON DELETE SET NULL;

@@ -770,6 +770,14 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
     end
   end
 
+  describe '#email_participants' do
+    let(:body) { "added user@example.com" }
+
+    subject(:system_note) { service.email_participants(body) }
+
+    it { expect(system_note.note).to eq(body) }
+  end
+
   describe '#discussion_lock' do
     subject { service.discussion_lock }
 

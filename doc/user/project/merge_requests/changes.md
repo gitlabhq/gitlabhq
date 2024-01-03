@@ -162,6 +162,13 @@ per conflicted file on the merge request diff:
 
 ![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
 
+## Show scanner findings in diff **(ULTIMATE ALL)**
+
+You can show scanner findings in the diff. For details, see:
+
+- [Code Quality findings](../../../ci/testing/code_quality.md#merge-request-changes-view)
+- [Static Analysis findings](../../application_security/sast/index.md#merge-request-changes-view)
+
 ## Add a comment to a merge request file
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123515) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `comment_on_files`. Enabled by default.

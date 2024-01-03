@@ -431,7 +431,7 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
     end
 
-    def add_email_participants(body)
+    def email_participants(body)
       create_note(NoteSummary.new(noteable, project, author, body))
     end
 

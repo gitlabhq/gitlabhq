@@ -2,10 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service_desk do
+RSpec.describe IssueEmailParticipants::DestroyService, feature_category: :service_desk do
   shared_examples 'a successful service execution' do
-    it 'creates new participants', :aggregate_failures do
-      response = service.execute
+    it 'removes participants', :aggregate_failures do
       expect(response).to be_success
 
       issue.reset
@@ -16,7 +15,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
       participants_emails = issue.email_participants_emails_downcase
 
       expected_emails.each do |email|
-        expect(participants_emails).to include(email)
+        expect(participants_emails).not_to include(email)
         expect(response.message).to include(email)
         expect(note.note).to include(email)
       end
@@ -25,7 +24,6 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
   shared_examples 'a failed service execution' do
     it 'returns error ServiceResponse with message', :aggregate_failures do
-      response = service.execute
       expect(response).to be_error
       expect(response.message).to eq(error_message)
     end
@@ -42,9 +40,11 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
 
     let(:error_feature_flag) { "Feature flag issue_email_participants is not enabled for this project." }
     let(:error_underprivileged) { _("You don't have permission to manage email participants.") }
-    let(:error_no_participants_added) do
-      _("No email participants were added. Either none were provided, or they already exist.")
+    let(:error_no_participants_removed) do
+      _("No email participants were removed. Either none were provided, or they don't exist.")
     end
+
+    subject(:response) { service.execute }
 
     context 'when the user is not a project member' do
       let(:error_message) { error_underprivileged }
@@ -58,63 +58,49 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
       end
 
       context 'when no emails are provided' do
-        let(:error_message) { error_no_participants_added }
+        let(:error_message) { error_no_participants_removed }
 
         it_behaves_like 'a failed service execution'
       end
 
       context 'when one email is provided' do
         let(:emails) { ['user@example.com'] }
+        let(:error_message) { error_no_participants_removed }
 
-        it_behaves_like 'a successful service execution'
+        it_behaves_like 'a failed service execution'
 
-        context 'when email is already a participant of the issue' do
-          let(:error_message) { error_no_participants_added }
-
+        context 'when email is a participant of the issue' do
           before do
-            issue.issue_email_participants.create!(email: emails.first)
+            issue.issue_email_participants.create!(email: 'user@example.com')
           end
 
-          it_behaves_like 'a failed service execution'
+          it_behaves_like 'a successful service execution'
 
           context 'when email is formatted in a different case' do
             let(:emails) { ['USER@example.com'] }
+            let(:expected_emails) { emails.map(&:downcase) }
+            let(:error_message) { error_no_participants_removed }
 
-            it_behaves_like 'a failed service execution'
-          end
-
-          context 'when participants limit on issue is reached' do
-            before do
-              stub_const("#{described_class}::MAX_NUMBER_OF_RECORDS", 1)
-            end
-
-            let(:emails) { ['over-max@example.com'] }
-            let(:error_message) { error_no_participants_added }
-
-            it_behaves_like 'a failed service execution'
-
-            it 'logs count of emails above limit' do
-              expect(Gitlab::AppLogger).to receive(:info).with({ above_limit_count: 1 }).once
-              service.execute
-            end
+            it_behaves_like 'a successful service execution'
           end
         end
       end
 
       context 'when multiple emails are provided' do
-        let(:emails) { ['user@example.com', 'other-user@example.com'] }
+        let(:emails) { ['user@example.com', 'user2@example.com'] }
+        let(:error_message) { error_no_participants_removed }
 
-        it_behaves_like 'a successful service execution'
+        it_behaves_like 'a failed service execution'
 
         context 'when duplicate email provided' do
           let(:emails) { ['user@example.com', 'user@example.com'] }
           let(:expected_emails) { emails[...-1] }
 
-          it_behaves_like 'a successful service execution'
+          it_behaves_like 'a failed service execution'
         end
 
-        context 'when an email is already a participant of the issue' do
-          let(:expected_emails) { emails[1...] }
+        context 'when one email is a participant of the issue' do
+          let(:expected_emails) { emails[...-1] }
 
           before do
             issue.issue_email_participants.create!(email: emails.first)
@@ -123,26 +109,26 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
           it_behaves_like 'a successful service execution'
         end
 
-        context 'when only some emails can be added because of participants limit' do
+        context 'when both emails are a participant of the issue' do
           before do
-            stub_const("#{described_class}::MAX_NUMBER_OF_RECORDS", 1)
+            emails.each do |email|
+              issue.issue_email_participants.create!(email: email)
+            end
           end
-
-          let(:expected_emails) { emails[...-1] }
 
           it_behaves_like 'a successful service execution'
-
-          it 'logs count of emails above limit' do
-            expect(Gitlab::AppLogger).to receive(:info).with({ above_limit_count: 1 }).once
-            service.execute
-          end
         end
       end
 
       context 'when more than the allowed number of emails are provided' do
         let(:emails) { (1..7).map { |i| "user#{i}@example.com" } }
-
         let(:expected_emails) { emails[...-1] }
+
+        before do
+          emails.each do |email|
+            issue.issue_email_participants.create!(email: email)
+          end
+        end
 
         it_behaves_like 'a successful service execution'
       end

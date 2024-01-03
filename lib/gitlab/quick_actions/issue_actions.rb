@@ -240,6 +240,26 @@ module Gitlab
           @execution_message[:invite_email] = response.message
         end
 
+        desc { _('Remove email participant(s)') }
+        explanation { _('Removes email participant(s).') }
+        params 'email1@example.com email2@example.com (up to 6 emails)'
+        types Issue
+        condition do
+          quick_action_target.persisted? &&
+            Feature.enabled?(:issue_email_participants, parent) &&
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
+            quick_action_target.issue_email_participants.any?
+        end
+        command :remove_email do |emails = ""|
+          response = ::IssueEmailParticipants::DestroyService.new(
+            target: quick_action_target,
+            current_user: current_user,
+            emails: emails.split(' ')
+          ).execute
+
+          @execution_message[:remove_email] = response.message
+        end
+
         desc { _('Promote issue to incident') }
         explanation { _('Promotes issue to incident') }
         execution_message { _('Issue has been promoted to incident') }

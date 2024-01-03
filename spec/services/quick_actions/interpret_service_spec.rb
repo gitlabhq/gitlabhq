@@ -2324,7 +2324,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    context 'invite_email command' do
+    describe 'invite_email command' do
       let_it_be(:issuable) { issue }
 
       it_behaves_like 'failed command', "No email participants were added. Either none were provided, or they already exist." do
@@ -2450,6 +2450,102 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
         it 'is not part of the available commands' do
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :invite_email))
+        end
+      end
+    end
+
+    describe 'remove_email command' do
+      let_it_be_with_reload(:issuable) { issue }
+
+      it 'is not part of the available commands' do
+        expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :remove_email))
+      end
+
+      context 'with existing email participant' do
+        let(:content) { '/remove_email user@example.com' }
+
+        subject(:remove_email) { service.execute(content, issuable) }
+
+        before do
+          issuable.issue_email_participants.create!(email: "user@example.com")
+        end
+
+        it 'returns message' do
+          _, _, message = service.execute(content, issuable)
+
+          expect(message).to eq('Removed user@example.com.')
+        end
+
+        it 'removes 1 participant' do
+          expect { remove_email }.to change { issue.issue_email_participants.count }.by(-1)
+        end
+
+        context 'with mixed case email' do
+          let(:content) { '/remove_email FirstLast@GitLab.com' }
+
+          before do
+            issuable.issue_email_participants.create!(email: "FirstLast@GitLab.com")
+          end
+
+          it 'returns correctly cased message' do
+            _, _, message = service.execute(content, issuable)
+
+            expect(message).to eq('Removed FirstLast@GitLab.com.')
+          end
+
+          it 'removes 1 participant' do
+            expect { remove_email }.to change { issue.issue_email_participants.count }.by(-1)
+          end
+        end
+
+        context 'with invalid email' do
+          let(:content) { '/remove_email user@example.com bad_email' }
+
+          it 'only removes valid emails' do
+            expect { remove_email }.to change { issue.issue_email_participants.count }.by(-1)
+          end
+        end
+
+        context 'with non-existing email address' do
+          let(:content) { '/remove_email NonExistent@gitlab.com' }
+
+          it 'returns message' do
+            _, _, message = service.execute(content, issuable)
+
+            expect(message).to eq("No email participants were removed. Either none were provided, or they don't exist.")
+          end
+        end
+
+        context 'with more than the max number of emails' do
+          let(:content) { '/remove_email user@example.com user1@example.com' }
+
+          before do
+            stub_const("IssueEmailParticipants::DestroyService::MAX_NUMBER_OF_EMAILS", 1)
+            # user@example.com has already been added above
+            issuable.issue_email_participants.create!(email: "user1@example.com")
+          end
+
+          it 'only removes the max allowed number of emails' do
+            expect { remove_email }.to change { issue.issue_email_participants.count }.by(-1)
+          end
+        end
+      end
+
+      context 'with non-persisted issue' do
+        let(:issuable) { build(:issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :remove_email))
+        end
+      end
+
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(issue_email_participants: false)
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :remove_email))
         end
       end
     end

@@ -103,7 +103,7 @@ GitLab instances, JSON API, and gRPC differ on these items:
 | + A new Ruby-gRPC server for vscode: likely faster because we can limit dependencies to load ([modular monolith](https://gitlab.com/gitlab-org/gitlab/-/issues/365293)) | - Existing Grape API for vscode: meaning slow boot time and unneeded resources loaded             |
 | + Bi-directional streaming                                                                                                                                              | - Straight forward way to stream requests and responses (could still be added)                    |
 | - A new Python-gRPC server: we don't have experience running gRPC-Python servers                                                                                        | + Existing Python fastapi server, already running for Code Suggestions to extend                  |
-| - Hard to pass on unknown messages from vscode through GitLab to ai-gateway                                                                                             | + Easier support for newer vscode + newer ai-gatway, through old GitLab instance                  |
+| - Hard to pass on unknown messages from vscode through GitLab to ai-gateway                                                                                             | + Easier support for newer VS Code + newer AI-gateway, through old GitLab instance                  |
 | - Unknown support for gRPC in other clients (vscode, jetbrains, other editors)                                                                                          | + Support in all external clients                                                                 |
 | - Possible protocol mismatch (VSCode --REST--> Rails --gRPC--> AI gateway)                                                                                              | + Same protocol across the stack                                                                  |
 
@@ -264,7 +264,7 @@ Another example use case includes 2 versions of a prompt passed in the `prompt_c
 a field in the gateway, and keep them around for at least 2 major
 versions of GitLab.**
 
-A good practise that might help support backwards compatibility is to provide building blocks for the prompt inside the `prompt_components` rather then a complete prompt. By moving responsibility of compiling prompt out of building blocks on the AI-Gateway, one can achive more flexibility in terms of prompt adjustments in the future.
+A good practice that might help support backward compatibility: provide building blocks for the prompt inside the `prompt_components`, rather then a complete prompt. By moving responsibility of compiling the prompt out of building blocks and into the AI-Gateway, more flexible prompt adjustments are possible in the future.
 
 #### Example feature: Code Suggestions
 
@@ -503,7 +503,7 @@ It is deployed to a Kubernetes cluster in it's own project. There is a
 staging environment that is currently used directly by engineers for
 testing.
 
-In the future, this will be deloyed using
+In the future, this will be deployed using
 [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway/). At
 that time, there will be a production and staging deployment. The
 staging deployment can be used for automated QA-runs that will have

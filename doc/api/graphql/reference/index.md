@@ -687,6 +687,20 @@ Returns [`Organization`](#organization).
 | ---- | ---- | ----------- |
 | <a id="queryorganizationid"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization. |
 
+### `Query.organizations`
+
+List organizations.
+
+WARNING:
+**Introduced** in 16.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`OrganizationConnection`](#organizationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.package`
 
 Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.

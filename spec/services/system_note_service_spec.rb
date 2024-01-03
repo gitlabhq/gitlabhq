@@ -515,6 +515,18 @@ RSpec.describe SystemNoteService, feature_category: :shared do
     end
   end
 
+  describe '.email_participants' do
+    let(:body) { 'added user@example.com' }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:email_participants).with(body)
+      end
+
+      described_class.email_participants(noteable, project, author, body)
+    end
+  end
+
   describe '.discussion_lock' do
     let(:issuable) { double }
 

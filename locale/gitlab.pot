@@ -32229,6 +32229,9 @@ msgstr ""
 msgid "No email participants were added. Either none were provided, or they already exist."
 msgstr ""
 
+msgid "No email participants were removed. Either none were provided, or they don't exist."
+msgstr ""
+
 msgid "No endpoint provided"
 msgstr ""
 
@@ -40280,6 +40283,9 @@ msgstr ""
 msgid "Remove due date"
 msgstr ""
 
+msgid "Remove email participant(s)"
+msgstr ""
+
 msgid "Remove epic reference"
 msgstr ""
 
@@ -40461,6 +40467,9 @@ msgid "Removes all labels."
 msgstr ""
 
 msgid "Removes an issue from an epic."
+msgstr ""
+
+msgid "Removes email participant(s)."
 msgstr ""
 
 msgid "Removes link with %{issue_ref}."
@@ -56189,10 +56198,10 @@ msgstr ""
 msgid "You don't have any recent searches"
 msgstr ""
 
-msgid "You don't have permission to add email participants."
+msgid "You don't have permission to approve this deployment. Contact the project or group owner for help."
 msgstr ""
 
-msgid "You don't have permission to approve this deployment. Contact the project or group owner for help."
+msgid "You don't have permission to manage email participants."
 msgstr ""
 
 msgid "You don't have permission to view this epic"
@@ -58868,6 +58877,9 @@ msgid "remove start date"
 msgstr ""
 
 msgid "remove weight"
+msgstr ""
+
+msgid "removed %{emails}"
 msgstr ""
 
 msgid "removed a %{link_type} link"
