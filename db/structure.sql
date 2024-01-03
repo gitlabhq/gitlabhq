@@ -24898,7 +24898,6 @@ CREATE TABLE vulnerabilities (
     updated_by_id bigint,
     last_edited_by_id bigint,
     start_date date,
-    last_edited_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     title character varying(255) NOT NULL,
@@ -25531,6 +25530,15 @@ CREATE SEQUENCE wiki_repository_states_id_seq
     CACHE 1;
 
 ALTER SEQUENCE wiki_repository_states_id_seq OWNED BY wiki_repository_states.id;
+
+CREATE TABLE work_item_colors (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    color text NOT NULL,
+    CONSTRAINT check_485e19ad7b CHECK ((char_length(color) <= 7))
+);
 
 CREATE TABLE work_item_dates_sources (
     created_at timestamp with time zone NOT NULL,
@@ -30203,6 +30211,9 @@ ALTER TABLE ONLY wiki_page_slugs
 
 ALTER TABLE ONLY wiki_repository_states
     ADD CONSTRAINT wiki_repository_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_colors
+    ADD CONSTRAINT work_item_colors_pkey PRIMARY KEY (issue_id);
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
@@ -35606,6 +35617,8 @@ CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree 
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 
+CREATE INDEX wi_colors_namespace_id_index ON work_item_colors USING btree (namespace_id);
+
 CREATE INDEX wi_datessources_due_date_sourcing_milestone_id_index ON work_item_dates_sources USING btree (due_date_sourcing_milestone_id);
 
 CREATE INDEX wi_datessources_due_date_sourcing_work_item_id_index ON work_item_dates_sources USING btree (due_date_sourcing_work_item_id);
@@ -38066,6 +38079,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_stages
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_b01280dae4 FOREIGN KEY (forked_from_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY work_item_colors
+    ADD CONSTRAINT fk_b15b0912d0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_b1de915a15 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -38812,6 +38828,9 @@ ALTER TABLE ONLY boards_epic_board_labels
 
 ALTER TABLE ONLY error_tracking_error_events
     ADD CONSTRAINT fk_rails_2c096c0076 FOREIGN KEY (error_id) REFERENCES error_tracking_errors(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_colors
+    ADD CONSTRAINT fk_rails_2c2032206e FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY onboarding_progresses
     ADD CONSTRAINT fk_rails_2ccfd420cc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

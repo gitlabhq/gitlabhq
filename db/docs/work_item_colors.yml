@@ -1,0 +1,12 @@
+---
+table_name: work_item_colors
+classes:
+- WorkItems::Color
+feature_categories:
+- team_planning
+description: The color of a Work Item.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140331
+milestone: '16.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

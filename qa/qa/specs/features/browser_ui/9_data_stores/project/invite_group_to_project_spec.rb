@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Invite group', :reliable, product_group: :tenant_scale do
+    describe 'Invite group', :reliable, product_group: :tenant_scale, quarantine: {
+      type: :bug,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/436950",
+      only: { pipeline: %i[canary production] }
+    } do
       shared_examples 'invites group to project' do
         it 'grants group and members correct access level' do
           Page::Project::Menu.perform(&:go_to_members)

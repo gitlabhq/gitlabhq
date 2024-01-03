@@ -28974,6 +28974,18 @@ Represents the emoji reactions widget.
 | <a id="workitemwidgetawardemojitype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetawardemojiupvotes"></a>`upvotes` | [`Int!`](#int) | Number of upvotes the work item has received. |
 
+### `WorkItemWidgetColor`
+
+Represents a color widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcolorcolor"></a>`color` | [`String`](#string) | Color of the Work Item. |
+| <a id="workitemwidgetcolortextcolor"></a>`textColor` | [`String`](#string) | Text color generated for the Work Item. |
+| <a id="workitemwidgetcolortype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetCurrentUserTodos`
 
 Represents a todos widget.
@@ -32108,6 +32120,7 @@ Type of a work item widget.
 | ----- | ----------- |
 | <a id="workitemwidgettypeassignees"></a>`ASSIGNEES` | Assignees widget. |
 | <a id="workitemwidgettypeaward_emoji"></a>`AWARD_EMOJI` | Award Emoji widget. |
+| <a id="workitemwidgettypecolor"></a>`COLOR` | Color widget. |
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypehealth_status"></a>`HEALTH_STATUS` | Health Status widget. |
@@ -33793,6 +33806,7 @@ Implementations:
 
 - [`WorkItemWidgetAssignees`](#workitemwidgetassignees)
 - [`WorkItemWidgetAwardEmoji`](#workitemwidgetawardemoji)
+- [`WorkItemWidgetColor`](#workitemwidgetcolor)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus)

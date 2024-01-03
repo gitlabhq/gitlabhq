@@ -116,14 +116,6 @@ module Ci
 
     private
 
-    def commit
-      @commit ||= project.commit(origin_sha || origin_ref)
-    end
-
-    def sha
-      commit.try(:id)
-    end
-
     def create_namespace_onboarding_action
       Onboarding::PipelineCreatedWorker.perform_async(project.namespace_id)
     end

@@ -1443,11 +1443,13 @@ ee/lib/ee/api/entities/project.rb
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
-# Necessary for availablity, similar to DB migrations
+# Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/elastic/migrate/
-/ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
+
+^[Global Search] @gitlab-org/search-team/migration-maintainers
+/ee/spec/elastic/migrate/
 
 ^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
 /ee/app/models/remote_development/

@@ -22,7 +22,8 @@ module Gitlab
           notifications: 'Notifications',
           current_user_todos: 'Current user todos',
           award_emoji: 'Award emoji',
-          linked_items: 'Linked items'
+          linked_items: 'Linked items',
+          color: 'Color'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -126,7 +127,8 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :color
           ],
           ticket: [
             :assignees,

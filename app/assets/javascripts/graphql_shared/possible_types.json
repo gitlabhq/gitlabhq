@@ -187,6 +187,7 @@
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",
+    "WorkItemWidgetColor",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHealthStatus",
