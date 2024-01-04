@@ -33,7 +33,7 @@ When you use SaaS runners:
 - The VM is active only for the duration of the job and immediately deleted. This means that any changes that your job makes to the virtual machine will not be available to a subsequent job.
 - The virtual machine where your job runs has `sudo` access with no password.
 - The storage is shared by the operating system, the image with pre-installed software, and a copy of your cloned repository.
-This means that the available free disk space for your jobs to use is reduced.
+  This means that the available free disk space for your jobs to use is reduced.
 
 NOTE:
 Jobs handled by SaaS runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.

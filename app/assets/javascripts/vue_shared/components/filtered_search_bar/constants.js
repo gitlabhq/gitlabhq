@@ -67,6 +67,7 @@ export const TOKEN_TITLE_AUTHOR = __('Author');
 export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
 export const TOKEN_TITLE_CONTACT = s__('Crm|Contact');
 export const TOKEN_TITLE_GROUP = __('Group');
+export const TOKEN_TITLE_GROUP_INVITE = __('Group invite');
 export const TOKEN_TITLE_LABEL = __('Label');
 export const TOKEN_TITLE_PROJECT = __('Project');
 export const TOKEN_TITLE_MILESTONE = __('Milestone');
@@ -90,6 +91,7 @@ export const TOKEN_TYPE_AUTHOR = 'author';
 export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_CONTACT = 'contact';
 export const TOKEN_TYPE_GROUP = 'group';
+export const TOKEN_TYPE_GROUP_INVITE = 'group-invite';
 export const TOKEN_TYPE_EPIC = 'epic';
 // As health status gets reused between issue lists and boards
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar

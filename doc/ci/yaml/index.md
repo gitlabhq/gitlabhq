@@ -1634,7 +1634,7 @@ use the new cache, instead of rebuilding the dependencies.
 **Additional details**:
 
 - The cache `key` is a SHA computed from the most recent commits
-that changed each listed file.
+  that changed each listed file.
   If neither file is changed in any commits, the fallback key is `default`.
 
 ##### `cache:key:prefix`

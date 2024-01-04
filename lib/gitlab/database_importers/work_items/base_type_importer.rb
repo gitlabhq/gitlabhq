@@ -23,7 +23,8 @@ module Gitlab
           current_user_todos: 'Current user todos',
           award_emoji: 'Award emoji',
           linked_items: 'Linked items',
-          color: 'Color'
+          color: 'Color',
+          rolledup_dates: 'Rolledup dates'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -128,7 +129,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :color
+            :color,
+            :rolledup_dates
           ],
           ticket: [
             :assignees,

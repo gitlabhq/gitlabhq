@@ -367,11 +367,34 @@ Alternatively:
 
 ## Promote an issue to an epic **(PREMIUM ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
-> - Moved from GitLab Ultimate to GitLab Premium in 12.8.
-> - Promoting issues to epics via the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233974) in GitLab 13.6.
-
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
+
+NOTE:
+Promoting a confidential issue to an epic makes all information
+related to the issue public, as epics are public to group members.
+
+When an issue is promoted to an epic:
+
+- If the issue was confidential, an additional warning is displayed first.
+- An epic is created in the same group as the project of the issue.
+- Subscribers of the issue are notified that the epic was created.
+
+The following issue metadata is copied to the epic:
+
+- Title, description, activity, and comment threads.
+- Upvotes and downvotes.
+- Participants.
+- Group labels that the issue had.
+- Parent epic.
+
+Prerequisites:
+
+- The project to which the issue belongs must be in a group.
+- You must have at least the Reporter role the project's immediate parent group.
+- You must either:
+  - Have at least the Reporter role for the project.
+  - Be the author of the issue.
+  - Be assigned to the issue.
 
 To promote an issue to an epic:
 
@@ -381,8 +404,6 @@ To promote an issue to an epic:
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
-
-Read more about [promoting an issues to epics](../../group/epics/manage_epics.md#promote-an-issue-to-an-epic).
 
 ## Promote an issue to an incident
 

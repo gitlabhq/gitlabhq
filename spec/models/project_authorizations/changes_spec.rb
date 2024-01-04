@@ -74,22 +74,6 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
 
         apply_project_authorization_changes
       end
-
-      context 'when feature flag "user_approval_rules_removal" is disabled' do
-        before do
-          stub_feature_flags(user_approval_rules_removal: false)
-        end
-
-        it 'does not publish a AuthorizationsRemovedEvent event' do
-          expect(::Gitlab::EventStore).not_to(
-            receive(:publish_group).with(
-              array_including(an_instance_of(::ProjectAuthorizations::AuthorizationsRemovedEvent))
-            )
-          )
-
-          apply_project_authorization_changes
-        end
-      end
     end
 
     shared_examples_for 'publishes AuthorizationsAddedEvent' do

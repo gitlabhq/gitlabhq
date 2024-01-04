@@ -2560,7 +2560,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/legacy_github_import/importer.rb'
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/legacy_github_import/user_formatter.rb'
-    - 'lib/gitlab/legacy_http.rb'
     - 'lib/gitlab/lets_encrypt/client.rb'
     - 'lib/gitlab/lfs_token.rb'
     - 'lib/gitlab/local_and_remote_storage_migration/base_migrater.rb'

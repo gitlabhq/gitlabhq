@@ -576,12 +576,15 @@ A runner can have one of the following statuses.
 
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
-- The **Median job queued time** value is calculated by sampling the queue duration of the
+The **Median job queued time** value is calculated by sampling the queue duration of the
 most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000
 runners are considered.
-- The median is a value that falls into the 50th percentile: half of the jobs
+
+The median is a value that falls into the 50th percentile: half of the jobs
 queued for longer than the median value, and half of the jobs queued for less than the
 median value.
+
+To view runner statistics:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.

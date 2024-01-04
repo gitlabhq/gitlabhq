@@ -716,9 +716,9 @@ We also run tests with a single database in nightly scheduled pipelines, and in 
 Single database tests run in two modes:
 
 1. **Single database with one connection**. Where GitLab connects to all the tables using one connection pool.
-This runs through all the jobs that end with `-single-db`
+   This runs through all the jobs that end with `-single-db`
 1. **Single database with two connections**. Where GitLab connects to `gitlab_main`, `gitlab_ci` database tables
-using different database connections. This runs through all the jobs that end with `-single-db-ci-connection`.
+   using different database connections. This runs through all the jobs that end with `-single-db-ci-connection`.
 
 If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
 

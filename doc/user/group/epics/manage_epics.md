@@ -11,10 +11,6 @@ to them.
 
 ## Create an epic
 
-> - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in GitLab 13.2.
-> - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
-> - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty roadmap.
-
 Prerequisites:
 
 - You must have at least the Reporter role for the epic's group.
@@ -174,6 +170,9 @@ To do so, either:
 
 - In the upper-right corner, select **epic actions** (**{ellipsis_v}**) and then **Reopen epic**
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
+
+You can also create an epic by
+[promoting an issue](../../project/issues/managing_issues.md#promote-an-issue-to-an-epic).
 
 ## Go to an epic from an issue
 
@@ -452,40 +451,6 @@ To move an issue to another epic:
 
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired parent epic in the visible hierarchy.
-
-### Promote an issue to an epic
-
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
-
-Prerequisites:
-
-- The project to which the issue belongs must be in a group.
-- You must have at least the Reporter role the project's immediate parent group.
-- You must either:
-  - Have at least the Reporter role for the project.
-  - Be the author of the issue.
-  - Be assigned to the issue.
-
-You can promote an issue to an epic with the `/promote`
-[quick action](../../project/quick_actions.md#issues-merge-requests-and-epics).
-
-NOTE:
-Promoting a confidential issue to an epic makes all information
-related to the issue public as epics are public to group members.
-
-When an issue is promoted to an epic:
-
-- If the issue was confidential, an additional warning is displayed first.
-- An epic is created in the same group as the project of the issue.
-- Subscribers of the issue are notified that the epic was created.
-
-The following issue metadata is copied to the epic:
-
-- Title, description, activity/comment thread.
-- Upvotes and downvotes.
-- Participants.
-- Group labels that the issue already has.
-- Parent epic.
 
 ### Use an epic template for repeating issues
 

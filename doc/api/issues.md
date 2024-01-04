@@ -2020,7 +2020,8 @@ The `assignee` column is deprecated. We now show it as a single-sized array `ass
 Promotes an issue to an epic by adding a comment with the `/promote`
 [quick action](../user/project/quick_actions.md).
 
-For more information about promoting issues to epics, see [Manage epics](../user/group/epics/manage_epics.md#promote-an-issue-to-an-epic).
+For more information about promoting issues to epics, see
+[Promote an issue to an epic](../user/project/issues/managing_issues.md#promote-an-issue-to-an-epic).
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes

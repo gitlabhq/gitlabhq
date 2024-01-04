@@ -200,6 +200,7 @@
     "WorkItemWidgetNotifications",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
+    "WorkItemWidgetRolledupDates",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",

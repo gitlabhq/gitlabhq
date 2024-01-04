@@ -23148,6 +23148,9 @@ msgstr ""
 msgid "Group information"
 msgstr ""
 
+msgid "Group invite"
+msgstr ""
+
 msgid "Group jobs by"
 msgstr ""
 
@@ -29934,7 +29937,7 @@ msgstr ""
 msgid "MemberRole|can't be changed"
 msgstr ""
 
-msgid "MemberRole|cannot be changed because it is already assigned to a user. Please create a new Member Role instead"
+msgid "MemberRole|cannot be changed. Please create a new Member Role instead."
 msgstr ""
 
 msgid "MemberRole|cannot be deleted because it is already assigned to a user. Please disassociate the member role from all users before deletion."

@@ -445,7 +445,7 @@ projects, only one of the following tags should be added to a job:
 
 - `gitlab-org`: Jobs randomly use privileged and unprivileged runners.
 - `gitlab-org-docker`: Jobs must use a privileged runner. If you need [Docker-in-Docker support](../../ci/docker/using_docker_build.md#use-docker-in-docker),
-use `gitlab-org-docker` instead of `gitlab-org`.
+  use `gitlab-org-docker` instead of `gitlab-org`.
 
 The `gitlab-org-docker` tag is added by the `.use-docker-in-docker` job
 definition above.

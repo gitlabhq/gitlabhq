@@ -1,6 +1,6 @@
 <script>
 import { GlCollapse, GlBadge, GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
-import { CONTAINING_COMMIT, FETCH_CONTAINING_REFS_EVENT } from '../constants';
+import { CONTAINING_COMMIT, FETCH_CONTAINING_REFS_EVENT, BRANCHES_REF_TYPE } from '../constants';
 
 export default {
   name: 'RefsList',
@@ -55,6 +55,9 @@ export default {
     isLoadingRefs() {
       return this.isLoading && !this.containingRefs.length;
     },
+    refIcon() {
+      return this.refType === BRANCHES_REF_TYPE ? 'branch' : 'tag';
+    },
   },
   methods: {
     toggleCollapse() {
@@ -75,7 +78,8 @@ export default {
 </script>
 
 <template>
-  <div class="gl-pt-4">
+  <div class="gl-p-5 gl-border-b gl-border-gray-50">
+    <gl-icon :name="refIcon" :size="14" class="gl-ml-2 gl-mr-3" />
     <span data-testid="title" class="gl-mr-2">{{ namespace }}</span>
     <gl-badge
       v-for="ref in tippingRefs"

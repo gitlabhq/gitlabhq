@@ -1842,7 +1842,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/kubernetes/default_namespace_spec.rb'
     - 'spec/lib/gitlab/kubernetes/kube_client_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/client_spec.rb'
-    - 'spec/lib/gitlab/legacy_http_spec.rb'
     - 'spec/lib/gitlab/lfs/client_spec.rb'
     - 'spec/lib/gitlab/lfs_token_spec.rb'
     - 'spec/lib/gitlab/lograge/custom_options_spec.rb'

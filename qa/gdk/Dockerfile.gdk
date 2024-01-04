@@ -98,6 +98,7 @@ RUN set -eux; \
     gdk config set gitaly.skip_setup true \
     && gdk config set workhorse.skip_setup true \
     && gdk config set gitlab_shell.skip_setup true \
+    && cp .ruby-version ./gitlab/ \
     && cp .tool-versions ./gitlab/ \
     && make redis/redis.conf all \
     && gdk kill

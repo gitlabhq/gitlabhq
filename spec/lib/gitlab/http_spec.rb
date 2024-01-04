@@ -104,40 +104,4 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       end
     end
   end
-
-  context 'when the FF use_gitlab_http_v2 is disabled' do
-    before do
-      stub_feature_flags(use_gitlab_http_v2: false)
-    end
-
-    describe '.get' do
-      it 'calls Gitlab::LegacyHTTP.get with default options' do
-        expect(Gitlab::LegacyHTTP).to receive(:get).with('/path', {})
-
-        described_class.get('/path')
-      end
-    end
-
-    describe '.try_get' do
-      it 'calls .get' do
-        expect(described_class).to receive(:get).with('/path', {})
-
-        described_class.try_get('/path')
-      end
-
-      it 'returns nil when .get raises an error' do
-        expect(described_class).to receive(:get).and_raise(SocketError)
-
-        expect(described_class.try_get('/path')).to be_nil
-      end
-    end
-
-    describe '.perform_request' do
-      it 'calls Gitlab::LegacyHTTP.perform_request with default options' do
-        expect(Gitlab::LegacyHTTP).to receive(:perform_request).with(Net::HTTP::Get, '/path', {})
-
-        described_class.perform_request(Net::HTTP::Get, '/path', {})
-      end
-    end
-  end
 end

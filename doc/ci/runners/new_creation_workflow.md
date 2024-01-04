@@ -39,7 +39,7 @@ The new runner registration workflow has the following benefits:
 
 - Preserved ownership records for runners, and minimized impact on users.
 - The addition of a unique system ID ensures that you can reuse the same authentication token across
-multiple runners. For more information, see [Reusing a GitLab Runner configuration](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration).
+  multiple runners. For more information, see [Reusing a GitLab Runner configuration](https://docs.gitlab.com/runner/fleet_scaling/#reusing-a-gitlab-runner-configuration).
 
 ## Estimated time frame for planned changes
 
@@ -61,7 +61,7 @@ To avoid a broken workflow, you must:
 
 1. [Create a shared runner](runners_scope.md#create-a-shared-runner-with-a-runner-authentication-token) and obtain the authentication token.
 1. Replace the registration token in your runner registration workflow with the
-authentication token.
+   authentication token.
 
 ## Using registration tokens after GitLab 17.0
 
@@ -159,7 +159,9 @@ Several runner configuration options cannot be set during runner registration. T
 The following configuration options are no longer supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml):
 
 ```yaml
-## All these fields are DEPRECATED and the runner WILL FAIL TO START if you specify them
+## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 18.0 and later if you specify them.
+## If a runner authentication token is specified in runnerRegistrationToken, the registration will succeed, however the
+## other values will be ignored.
 runnerRegistrationToken: ""
 locked: true
 tags: ""

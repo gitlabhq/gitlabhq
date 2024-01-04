@@ -5443,6 +5443,7 @@ Input type: `MemberRoleUpdateInput`
 | <a id="mutationmemberroleupdatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberroleupdateid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role to mutate. |
 | <a id="mutationmemberroleupdatename"></a>`name` | [`String`](#string) | Name of the member role. |
+| <a id="mutationmemberroleupdatepermissions"></a>`permissions` | [`[MemberRolePermission!]`](#memberrolepermission) | List of all customizable permissions. |
 
 #### Fields
 
@@ -29233,6 +29234,24 @@ Represents a legacy requirement widget.
 | <a id="workitemwidgetrequirementlegacylegacyiid"></a>`legacyIid` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 15.9. Use Work Item IID instead. |
 | <a id="workitemwidgetrequirementlegacytype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetRolledupDates`
+
+Represents the rolledup dates widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetrolledupdatesduedate"></a>`dueDate` | [`Date`](#date) | Due date for the work item. |
+| <a id="workitemwidgetrolledupdatesduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date for the work item is fixed. |
+| <a id="workitemwidgetrolledupdatesduedatesourcingmilestone"></a>`dueDateSourcingMilestone` | [`Milestone`](#milestone) | Indicates which milestone sources the rolledup due date. |
+| <a id="workitemwidgetrolledupdatesduedatesourcingworkitem"></a>`dueDateSourcingWorkItem` | [`WorkItem`](#workitem) | Indicates which work_item sources the rolledup due date. |
+| <a id="workitemwidgetrolledupdatesstartdate"></a>`startDate` | [`Date`](#date) | Start date for the work item. |
+| <a id="workitemwidgetrolledupdatesstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date for the work item is fixed. |
+| <a id="workitemwidgetrolledupdatesstartdatesourcingmilestone"></a>`startDateSourcingMilestone` | [`Milestone`](#milestone) | Indicates which milestone sources the rolledup start date. |
+| <a id="workitemwidgetrolledupdatesstartdatesourcingworkitem"></a>`startDateSourcingWorkItem` | [`WorkItem`](#workitem) | Indicates which work_item sources the rolledup start date. |
+| <a id="workitemwidgetrolledupdatestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetStartAndDueDate`
 
 Represents a start and due date widget.
@@ -32134,6 +32153,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
 | <a id="workitemwidgettypeprogress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettyperequirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
+| <a id="workitemwidgettyperolledup_dates"></a>`ROLLEDUP_DATES` | Rolledup Dates widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettypetest_reports"></a>`TEST_REPORTS` | Test Reports widget. |
@@ -33820,6 +33840,7 @@ Implementations:
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
+- [`WorkItemWidgetRolledupDates`](#workitemwidgetrolledupdates)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetTestReports`](#workitemwidgettestreports)

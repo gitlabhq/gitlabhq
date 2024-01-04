@@ -160,7 +160,6 @@ module ProjectAuthorizations
     end
 
     def publish_removed_event
-      return if ::Feature.disabled?(:user_approval_rules_removal)
       return if @removed_user_ids.none?
 
       events = @affected_project_ids.flat_map do |project_id|

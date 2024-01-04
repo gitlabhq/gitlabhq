@@ -108,7 +108,7 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 
 1. Define a job in the `deploy` stage.
 1. In the job, define the environment `name` and `url`. If an
-environment of that name doesn't exist when the pipeline runs, it is created.
+   environment of that name doesn't exist when the pipeline runs, it is created.
 
 NOTE:
 Some characters cannot be used in environment names. For more information about the

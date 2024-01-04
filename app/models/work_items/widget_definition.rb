@@ -33,7 +33,8 @@ module WorkItems
       current_user_todos: 15,
       award_emoji: 16,
       linked_items: 17,
-      color: 18 # EE-only
+      color: 18, # EE-only
+      rolledup_dates: 19 # EE-only
     }
 
     def self.available_widgets

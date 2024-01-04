@@ -1,8 +1,0 @@
----
-name: use_gitlab_http_v2
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132742
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426549
-milestone: '16.5'
-type: development
-group: group::pipeline authoring
-default_enabled: true
