@@ -74,7 +74,7 @@ GitLab reads insights from the
 To configure group insights:
 
 1. Create a new file [`.gitlab/insights.yml`](../../project/insights/index.md#configure-project-insights)
-in a project that belongs to your group.
+   in a project that belongs to your group.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Analytics** and find the **Insights** section.

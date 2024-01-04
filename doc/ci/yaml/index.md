@@ -480,6 +480,46 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)
 - [Switch between branch pipelines and merge request pipelines](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
 
+#### `workflow:auto_cancel:on_new_commit`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or
+for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
+the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
+
+**Possible inputs**:
+
+- `conservative`: Cancel the pipeline, but only if no jobs with `interruptible: false` have started yet. Default when not defined.
+- `interruptible`: Cancel only jobs with `interruptible: true`.
+- `none`: Do not auto-cancel any jobs.
+
+**Example of `workflow:auto_cancel:on_new_commit`**:
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
+job1:
+  interruptible: true
+  script: sleep 60
+
+job2:
+  interruptible: false  # Default when not defined.
+  script: sleep 60
+```
+
+In this example:
+
+- When a new commit is pushed to a branch, GitLab creates a new pipeline and `job1` and `job2` start.
+- If a new commit is pushed to the branch before the jobs complete, only `job1` is canceled.
+
 #### `workflow:name`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
@@ -2621,7 +2661,8 @@ job2:
 
 ### `interruptible`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
+> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
@@ -2686,6 +2727,12 @@ In this example, a new pipeline causes a running pipeline to be:
   a pipeline to allow users to manually prevent a pipeline from being automatically
   cancelled. After a user starts the job, the pipeline cannot be canceled by the
   **Auto-cancel redundant pipelines** feature.
+- When using `interruptible` with a [trigger job](#trigger):
+  - The triggered downstream pipeline is never affected by the trigger job's `interruptible` configuration.
+  - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `conservative`,
+    the trigger job's `interruptible` configuration has no effect.
+  - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `interruptible`,
+    a trigger job with `interruptible: true` can be automatically cancelled.
 
 ### `needs`
 

@@ -19,7 +19,7 @@ module Gitlab
       InvalidPathError = Class.new(StandardError)
 
       class << self
-        delegate :params, :url, :store, :encrypted_secrets, to: :new
+        delegate :params, :url, :store, :encrypted_secrets, :redis_client_params, to: :new
 
         def with
           pool.with { |redis| yield redis }
@@ -99,6 +99,33 @@ module Gitlab
 
       def params
         redis_store_options
+      end
+
+      # redis_client_params modifies redis_store_options to be compatible with redis-client
+      # TODO: when redis-rb is updated to v5, there is no need to support 2 types of config format
+      def redis_client_params
+        options = redis_store_options
+
+        # avoid passing classes into options as Sidekiq scrubs the options with Marshal.dump + Marshal.load
+        # ref https://github.com/sidekiq/sidekiq/blob/v7.1.6/lib/sidekiq/redis_connection.rb#L37
+        #
+        # this does not play well with spring enabled as the forked process references the old constant
+        # we use strings to look up Gitlab::Instrumentation::Redis.storage_hash as a bypass
+        options[:custom] = { instrumentation_class: self.class.store_name }
+
+        # TODO: add support for cluster when upgrading to redis-rb v5.y.z we do not need cluster support
+        # as Sidekiq workload should not and does not run in a Redis Cluster
+        # support to be added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134862
+        if options[:sentinels]
+          # name is required in RedisClient::SentinelConfig
+          # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/sentinel_config.rb#L17
+          options[:name] = options[:host]
+          options.except(:scheme, :instrumentation_class, :host, :port)
+        else
+          # remove disallowed keys as seen in
+          # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/config.rb#L21
+          options.except(:scheme, :instrumentation_class)
+        end
       end
 
       def url
@@ -188,6 +215,7 @@ module Gitlab
           config
         else
           redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(redis_url)
+          redis_hash[:ssl] = true if redis_hash[:scheme] == 'rediss'
           # order is important here, sentinels must be after the connection keys.
           # {url: ..., port: ..., sentinels: [...]}
           redis_hash.merge(config)

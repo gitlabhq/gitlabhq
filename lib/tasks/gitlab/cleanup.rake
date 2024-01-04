@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :gitlab do
-  require 'set'
+  require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
   namespace :cleanup do
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"

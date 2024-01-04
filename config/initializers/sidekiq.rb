@@ -28,26 +28,41 @@ def enable_semi_reliable_fetch_mode?
 end
 
 # Custom Queues configuration
-queues_config_hash = Gitlab::Redis::Queues.params
+queues_config_hash = Gitlab::Redis::Queues.redis_client_params
 
 enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
+
+# Sidekiq's `strict_args!` raises an exception by default in 7.0
+# https://github.com/sidekiq/sidekiq/blob/31bceff64e10d501323bc06ac0552652a47c082e/docs/7.0-Upgrade.md?plain=1#L59
+Sidekiq.strict_args!(false)
 
 Sidekiq.configure_server do |config|
   config[:strict] = false
   config[:queues] = Gitlab::SidekiqConfig.expand_queues(config[:queues])
 
   if enable_json_logs
-    config.log_formatter = Gitlab::SidekiqLogging::JSONFormatter.new
+    config.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
 
     # Remove the default-provided handler. The exception is logged inside
     # Gitlab::SidekiqLogging::StructuredLogger
-    config.error_handlers.delete(Sidekiq::DEFAULT_ERROR_HANDLER)
+    config.error_handlers.delete(Sidekiq::Config::ERROR_HANDLER)
   end
 
   Sidekiq.logger.info "Listening on queues #{config[:queues].uniq.sort}"
 
-  config.redis = queues_config_hash
+  # In Sidekiq 6.x, connection pools have a size of concurrency+5.
+  # ref: https://github.com/sidekiq/sidekiq/blob/v6.5.10/lib/sidekiq/redis_connection.rb#L93
+  #
+  # In Sidekiq 7.x, capsule connection pools have a size equal to its concurrency. Internal
+  # housekeeping pool has a size of 10.
+  # ref: https://github.com/sidekiq/sidekiq/blob/v7.1.6/lib/sidekiq/capsule.rb#L94
+  # ref: https://github.com/sidekiq/sidekiq/blob/v7.1.6/lib/sidekiq/config.rb#L133
+  #
+  # We restore the concurrency+5 in Sidekiq 7.x to ensure that we do not experience resource bottlenecks with Redis
+  # connections. The connections are created lazily so slightly over-provisioning a connection pool is not an issue.
+  # This also increases the internal redis pool from 10 to concurrency+5.
+  config.redis = queues_config_hash.merge({ size: config.concurrency + 5 })
 
   config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator(
     metrics: Settings.monitoring.sidekiq_exporter,
@@ -107,8 +122,8 @@ Sidekiq.configure_client do |config|
   # We only need to do this for other clients. If Sidekiq-server is the
   # client scheduling jobs, we have access to the regular sidekiq logger that
   # writes to STDOUT
-  Sidekiq.logger = Gitlab::SidekiqLogging::ClientLogger.build
-  Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new if enable_json_logs
+  config.logger = Gitlab::SidekiqLogging::ClientLogger.build
+  config.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new if enable_json_logs
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end

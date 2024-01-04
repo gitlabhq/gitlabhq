@@ -28,7 +28,7 @@ module Resolvers
         return unless runner.project_type?
 
         # rubocop:disable CodeReuse/ActiveRecord
-        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_projects) do |runner_ids, loader|
+        BatchLoader::GraphQL.for(runner.id).batch do |runner_ids, loader|
           plucked_runner_and_project_ids = ::Ci::RunnerProject
                                              .select(:runner_id, :project_id)
                                              .where(runner_id: runner_ids)

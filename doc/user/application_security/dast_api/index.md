@@ -417,15 +417,15 @@ The following is a summary of the variable scopes supported by the Postman Clien
 
 - **Global Environment (Global) scope** is a special pre-defined environment that is available throughout a workspace. We can also refer to the _global environment_ scope as the _global_ scope. The Postman Client allows exporting the global environment into a JSON file, which can be used with DAST API.
 - **Environment scope** is a named group of variables created by a user in the Postman Client.
-The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with DAST API.
+  The Postman Client supports a single active environment along with the global environment. The variables defined in an active user-created environment take precedence over variables defined in the global environment. The Postman Client allows exporting your environment into a JSON file, which can be used with DAST API.
 - **Collection scope** is a group of variables declared in a given collection. The collection variables are available to the collection where they have been declared and the nested requests or collections. Variables defined in the collection scope take precedence over the _global environment_ scope and also the _environment_ scope.
-The Postman Client can export one or more collections into a JSON file, this JSON file contains selected collections, requests, and collection variables.
+  The Postman Client can export one or more collections into a JSON file, this JSON file contains selected collections, requests, and collection variables.
 - **DAST API Scope** is a new scope added by DAST API to allow users to provide extra variables, or override variables defined in other supported scopes. This scope is not supported by Postman. The _DAST API Scope_ variables are provided using a [custom JSON file format](#dast-api-scope-custom-json-file-format).
   - Override values defined in the environment or collection
   - Defining variables from scripts
   - Define a single row of data from the unsupported _data scope_
 - **Data scope** is a group of variables in which their name and values come from JSON or CSV files. A Postman collection runner like [Newman](https://learning.postman.com/docs/running-collections/using-newman-cli/command-line-integration-with-newman/) or [Postman Collection Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/) executes the requests in a collection as many times as entries have the JSON or CSV file. A good use case for these variables is to automate tests using scripts in Postman.
-DAST API does **not** support reading data from a CSV or JSON file.
+  DAST API does **not** support reading data from a CSV or JSON file.
 - **Local scope** are variables that are defined in Postman scripts. DAST API does **not** support Postman scripts and by extension, variables defined in scripts. You can still provide values for the script-defined variables by defining them in one of the supported scopes, or our custom JSON format.
 
 Not all scopes are supported by DAST API and variables defined in scripts are not supported. The following table is sorted by broadest scope to narrowest scope.

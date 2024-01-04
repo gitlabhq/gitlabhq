@@ -133,11 +133,11 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap' # rubocop:todo 
 gem 'net-ldap', '~> 0.17.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # API
-gem 'grape', '~> 1.7.1', feature_category: :api
+gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 0.10.0', feature_category: :api
-gem 'grape-swagger', '~> 1.6.1', group: [:development, :test], feature_category: :api
+gem 'grape-swagger', '~> 2.0.1', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
-gem 'grape-path-helpers', '~> 1.7.1', feature_category: :api
+gem 'grape-path-helpers', '~> 2.0.0', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
@@ -251,7 +251,7 @@ gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeat
 gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
-gem 'sidekiq', '~> 6.5.10' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq', '~> 7.1.6' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'sidekiq-cron', '~> 1.12.0', feature_category: :shared
 gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', require: 'sidekiq-reliable-fetch' # rubocop:todo Gemfile/MissingFeatureCategory
 

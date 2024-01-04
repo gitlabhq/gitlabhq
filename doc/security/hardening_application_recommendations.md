@@ -108,7 +108,7 @@ If GitLab is in FIPS mode, use the following:
   - If using `RSA`, set it to **Must be at least 2048 bits**.
   - Set all other key types to **Are forbidden**.
 - If you are setting up an instance for a new group of users, define your user SSH
-key policy with the maximum bits settings for added security.
+  key policy with the maximum bits settings for added security.
 
 In a hardened environment RSS feeds are typically not required, and in **Feed token**,
 select the **Disabled feed token** checkbox.
@@ -192,14 +192,14 @@ process or authenticated user.
 The main focus for hardening is **Usage statistics**:
 
 - You should make sure **Enable version check** is selected. This checks to see if you
-are running the latest version of GitLab, and as new versions with new features and
-security patches come out frequently, this helps you stay up to date.
+  are running the latest version of GitLab, and as new versions with new features and
+  security patches come out frequently, this helps you stay up to date.
 
 - If your environment is isolated or one where your organizational requirements
-restrict data gathering and statistics reporting to a software vendor, you may have
-to disable the **Enable service ping** feature. For more information on what data is collected to
-help you make an informed decision, see
-[service ping](../development/internal_analytics/service_ping/index.md).
+  restrict data gathering and statistics reporting to a software vendor, you may have
+  to disable the **Enable service ping** feature. For more information on what data is collected to
+  help you make an informed decision, see
+  [service ping](../development/internal_analytics/service_ping/index.md).
 
 ## Network
 
@@ -215,12 +215,12 @@ and user needs, which may require disabling and adjusting rate limits or enablin
 accesses. Here are a few notables to keep in mind:
 
 - In **Outbound requests**, if you need to open up access to a limited
-number of systems, you can limit access to just those systems by specifying
-IP address or hostname. Also in this section, make sure you've selected
-**Enforce DNS rebinding attack protection** if you're allowing any access at all.
+  number of systems, you can limit access to just those systems by specifying
+  IP address or hostname. Also in this section, make sure you've selected
+  **Enforce DNS rebinding attack protection** if you're allowing any access at all.
 
 - Under **Notes rate limit** and **Users API rate limit** you can exclude specific users
-from those limits if needed.
+  from those limits if needed.
 
 <!-- ## Troubleshooting
 

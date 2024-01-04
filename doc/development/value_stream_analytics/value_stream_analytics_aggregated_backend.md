@@ -45,7 +45,7 @@ Benefits of the aggregated VSA backend:
 - Possibility to introduce further aggregations for improving the first page load time.
 - Better performance for large groups (with many subgroups, projects, issues and, merge requests).
 - Ready for database decomposition. The VSA related database tables could live in a separate
-database with a minimal development effort.
+  database with a minimal development effort.
 - Ready for keyset pagination which can be useful for exporting the data.
 - Possibility to implement more complex event definitions.
   - For example, the start event can be two timestamp columns where the earliest value would be
@@ -107,8 +107,7 @@ the service performs operations in batches and enforces strict application limit
 
 - Load records in batches.
 - Insert records in batches.
-- Stop processing when a limit is reached, schedule a background job to continue the processing
-later.
+- Stop processing when a limit is reached, schedule a background job to continue the processing later.
 - Continue processing data from a specific point.
 
 As of GitLab 14.7, the data loading is done manually. Once the feature is ready, the service is
@@ -267,16 +266,15 @@ database tables. This change could be implemented using array columns.
 The feature uses private JSON APIs for delivering the data to the frontend. On the first page load
 , the following requests are invoked:
 
-- Initial HTML page load which is mostly empty. Some configuration data is exposed via `data`
-attributes.
+- Initial HTML page load which is mostly empty. Some configuration data is exposed via `data` attributes.
 - `value_streams` - Load the available value streams for the given group.
 - `stages` - Load the stages for the currently selected value stream.
 - `median` - For each stage, request the median duration.
 - `count` - For each stage, request the number of items in the stage (this is a
-[limit count](../merge_request_concepts/performance.md#badge-counters), maximum 1000 rows).
+  [limit count](../merge_request_concepts/performance.md#badge-counters), maximum 1000 rows).
 - `average_duration_chart` - Data for the duration chart.
 - `summary`, `time_summary` - Top-level aggregations, most of the metrics are using different APIs/
-finders and not invoking the aggregated backend.
+  finders and not invoking the aggregated backend.
 
 When selecting a specific stage, the `records` endpoint is invoked, which returns the related
 records (paginated) for the chosen stage in a specific order.

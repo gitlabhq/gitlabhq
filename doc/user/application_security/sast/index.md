@@ -76,14 +76,17 @@ For more information about our plans for language support in SAST, see the [cate
 | Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                                                                    |
 | Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 10.3                                                                                    |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 16.0                                                                                    |
-| Scala<sup>1</sup>            | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
+| Scala <sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
 | Swift (iOS)                  | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
 | TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.10                                                                                   |
 
-1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
-[Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
-[Grails](https://grails.org/),
-and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java or Scala projects.
+<html>
+<small>Footnotes:
+  <ol>
+    <li>The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), [Grails](https://grails.org/), and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java or Scala projects.</li>
+  </ol>
+</small>
+</html>
 
 ## End of supported analyzers
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'sidekiq/capsule'
 
 module Gitlab
   module SidekiqConfig
@@ -161,7 +162,7 @@ module Gitlab
       # the current Sidekiq process
       def current_worker_queue_mappings
         worker_queue_mappings
-          .select { |worker, queue| Sidekiq[:queues].include?(queue) }
+          .select { |worker, queue| Sidekiq.default_configuration.queues.include?(queue) }
           .to_h
       end
 

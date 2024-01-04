@@ -39,9 +39,9 @@ GitLab package.
 Upgrading versions might need some manual intervention. For more information,
 check the version your are upgrading to:
 
-- [GitLab 16](https://docs.gitlab.com/omnibus/update/gitlab_16_changes.html)
-- [GitLab 15](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html)
-- [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
+- [GitLab 16](../versions/gitlab_16_changes.md)
+- [GitLab 15](../versions/gitlab_15_changes.md)
+- [GitLab 14](../versions/gitlab_14_changes.md)
 
 ### Earlier GitLab versions
 
@@ -93,10 +93,10 @@ To upgrade to the latest GitLab version:
 # Ubuntu/Debian
 sudo apt update && sudo apt install gitlab-ee
 
-# RHEL/CentOS 6 and 7
+# RHEL/CentOS 7 and Amazon Linux 2
 sudo yum install gitlab-ee
 
-# RHEL/CentOS 8
+# RHEL/Almalinux 8/9 and Amazon Linux 2023
 sudo dnf install gitlab-ee
 
 # SUSE
@@ -124,10 +124,10 @@ or upgrade command:
    # Ubuntu/Debian
    sudo apt-cache madison gitlab-ee
 
-   # RHEL/CentOS 6 and 7
+   # RHEL/CentOS 7 and Amazon Linux 2
    yum --showduplicates list gitlab-ee
 
-   # RHEL/CentOS 8
+   # RHEL/Almalinux 8/9 and Amazon Linux 2023
    dnf --showduplicates list gitlab-ee
 
    # SUSE
@@ -143,10 +143,10 @@ or upgrade command:
    # Ubuntu/Debian
    sudo apt install gitlab-ee=<version>
 
-   # RHEL/CentOS 6 and 7
+   # RHEL/CentOS 7 and Amazon Linux 2
    yum install gitlab-ee-<version>
 
-   # RHEL/CentOS 8
+   # RHEL/Almalinux 8/9 and Amazon Linux 2023
    dnf install gitlab-ee-<version>
 
    # SUSE
@@ -184,10 +184,10 @@ To download and install GitLab:
    # Debian/Ubuntu
    dpkg -i <package_name>
 
-   # RHEL/CentOS 6 and 7
+   # RHEL/CentOS 7 and Amazon Linux 2
    rpm -Uvh <package_name>
 
-   # RHEL/CentOS 8
+   # RHEL/Almalinux 8/9 and Amazon Linux 2023
    dnf install <package_name>
 
    # SUSE

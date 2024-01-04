@@ -3,7 +3,7 @@
 
 # In spec/scripts/setup/generate_as_if_foss_env_spec.rb we completely stub it
 require 'gitlab' unless Object.const_defined?(:Gitlab)
-require 'set'
+require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class GenerateAsIfFossEnv
   def initialize

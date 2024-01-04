@@ -52,7 +52,7 @@ graph TD
 Prerequisites:
 
 - To view private nested subgroups, you must be a direct or inherited member of
-the private subgroup.
+  the private subgroup.
 
 To view the subgroups of a group:
 

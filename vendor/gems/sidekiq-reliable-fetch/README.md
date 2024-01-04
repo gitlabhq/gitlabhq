@@ -6,7 +6,7 @@ fetches from Redis.
 
 It's based on https://github.com/TEA-ebook/sidekiq-reliable-fetch.
 
-**IMPORTANT NOTE:** Since version `0.7.0` this gem works only with `sidekiq >= 6.1` (which introduced Fetch API breaking changes). Please use version `~> 0.5` if you use older version of the `sidekiq` .
+**IMPORTANT NOTE:** Since version `0.11.0` this gem works only with `sidekiq >= 7` (which introduced Fetch API breaking changes). Please use version `~> 0.10` if you use older version of the `sidekiq` .
 
 **UPGRADE NOTE:** If upgrading from 0.7.0, strongly consider a full deployed step on 0.7.1 before 0.8.0; that fixes a bug in the queue name validation that will hit if sidekiq nodes running 0.7.0 see working queues named by 0.8.0.  See https://gitlab.com/gitlab-org/sidekiq-reliable-fetch/-/merge_requests/22
 

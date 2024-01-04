@@ -330,7 +330,7 @@ Entry points can be seen at:
 When adding new attributes, make sure they're exposed within the context of the entry points above and:
 
 - Pass them within the hash to the `with_context` (or `push`) method (make sure to pass a Proc if the
-method or variable shouldn't be evaluated right away)
+  method or variable shouldn't be evaluated right away)
 - Change `Gitlab::ApplicationContext` to accept these new values
 - Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
 

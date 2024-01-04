@@ -17,7 +17,7 @@ vulnerabilities and displays them in a merge request, you can use GitLab to audi
 apps.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+  For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Container Scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 
 Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
@@ -766,8 +766,7 @@ The images use data from upstream advisory databases depending on which scanner 
 
 In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
 
-- The proprietary
-[GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
+- The proprietary [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
 - The open source [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
 
 In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.

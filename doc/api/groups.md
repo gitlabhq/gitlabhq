@@ -147,7 +147,7 @@ If you request this list as:
 
 - An unauthenticated user, the response returns only public groups.
 - An authenticated user, the response returns only the groups you're
-a member of and does not include public groups.
+  a member of and does not include public groups.
 
 Parameters:
 
@@ -306,7 +306,7 @@ Parameters:
 | `id`                                   | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                             | boolean        | no       | Limit by archived status |
 | `visibility`                           | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` (1), or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, or `last_activity_at` fields. Default is `created_at` |
 | `sort`                                 | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                               | string         | no       | Return list of authorized projects matching the search criteria |
 | `simple`                               | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
@@ -316,14 +316,18 @@ Parameters:
 | `with_issues_enabled`                  | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled`          | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                          | boolean        | no       | Include projects shared to this group. Default is `true` |
-| `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
+| `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false` |
 | `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `with_security_reports` **(ULTIMATE ALL)** | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+| `with_security_reports` **(ULTIMATE ALL)** | boolean    | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
-1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
-URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search`
-parameter is not provided, the API returns the projects ordered by `name`.
+<html>
+<small>Footnotes:
+  <ol>
+    <li>Order by similarity: Orders the results by a similarity score calculated from the provided `search` URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.</li>
+  </ol>
+</small>
+</html>
 
 Example response:
 

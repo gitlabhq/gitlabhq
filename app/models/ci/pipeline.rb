@@ -438,7 +438,7 @@ module Ci
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
-    scope :with_only_interruptible_builds, -> do
+    scope :conservative_interruptible, -> do
       where_not_exists(
         Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).not_interruptible
       )
@@ -1391,6 +1391,10 @@ module Ci
       return unless merge_request?
 
       merge_request.merge_request_diff_for(merge_request_diff_sha)
+    end
+
+    def auto_cancel_on_new_commit
+      pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
     end
 
     private

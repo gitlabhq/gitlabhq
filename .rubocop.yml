@@ -1035,6 +1035,7 @@ Cop/FeatureFlagUsage:
 
 Style/ArgumentsForwarding:
   Enabled: true
+  UseAnonymousForwarding: false # Turn this on only after Ruby 3.2+ is required
 
 Search/NamespacedClass:
   Enabled: true

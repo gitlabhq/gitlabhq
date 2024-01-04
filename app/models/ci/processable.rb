@@ -33,6 +33,10 @@ module Ci
       where('NOT EXISTS (?)', needs)
     end
 
+    scope :interruptible, -> do
+      joins(:metadata).merge(Ci::BuildMetadata.with_interruptible)
+    end
+
     scope :not_interruptible, -> do
       joins(:metadata).where.not(
         Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) }

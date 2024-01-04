@@ -5798,27 +5798,6 @@ RSpec.describe User, feature_category: :user_profile do
 
         expect(user.namespace).to be_nil
       end
-
-      context 'when create_personal_ns_outside_model feature flag is disabled' do
-        before do
-          stub_feature_flags(create_personal_ns_outside_model: false)
-        end
-
-        it 'creates the namespace' do
-          expect(user.namespace).to be_nil
-
-          user.save!
-
-          expect(user.namespace).to be_present
-          expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
-        end
-
-        it 'creates the namespace setting' do
-          user.save!
-
-          expect(user.namespace.namespace_settings).to be_persisted
-        end
-      end
     end
 
     context 'for an existing user' do

@@ -63,8 +63,8 @@ address. This top-level group setting applies to:
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
 - In self-managed installations of GitLab 15.1 and later, you can also configure
-[globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
-at the group level.
+  [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
+  at the group level.
 
 Administrators can combine restricted access by IP address with
 [globally-allowed IP addresses](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).

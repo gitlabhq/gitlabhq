@@ -15,7 +15,7 @@ module Gitlab
         end
 
         yield
-      rescue ::Redis::BaseError => ex
+      rescue ::Redis::BaseError, ::RedisClient::Error => ex
         if ex.message.start_with?('MOVED', 'ASK')
           instrumentation_class.instance_count_cluster_redirection(ex)
         else

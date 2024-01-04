@@ -7,7 +7,7 @@ module Ci
     enum auto_cancel_on_new_commit: {
       conservative: 0,
       interruptible: 1,
-      disabled: 2
+      none: 2
     }, _prefix: true
 
     enum auto_cancel_on_job_failure: {

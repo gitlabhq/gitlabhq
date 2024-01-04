@@ -121,7 +121,7 @@ GitLab calculates this as the number of incidents divided by the number of deplo
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
 - All incidents are related to a production environment.
 - Incidents and deployments have a strictly one-to-one relationship. An incident is related to only one production deployment, and any production deployment is related to no
-more than one incident.
+  more than one incident.
 
 ### How to improve change failure rate
 

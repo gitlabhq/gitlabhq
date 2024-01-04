@@ -45,10 +45,10 @@ A project can have multiple pipeline types configured. A single commit can initi
 pipelines, each of which may contain a security scan.
 
 - In GitLab 16.3 and later, the results of all completed pipelines for the latest commit in
-the merge request's source and target branch are evaluated and used to enforce the scan result policy.
-Parent-child pipelines and on-demand DAST pipelines are not considered.
+  the merge request's source and target branch are evaluated and used to enforce the scan result policy.
+  Parent-child pipelines and on-demand DAST pipelines are not considered.
 - In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
-when enforcing scan result policies.
+  when enforcing scan result policies.
 
 ## Scan result policy editor
 

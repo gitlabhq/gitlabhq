@@ -278,6 +278,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `group`             | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
+| `log_state_changes` | no       | Used to log the state of the feature flag                      |
 
 NOTE:
 All validations are skipped when running in `RAILS_ENV=production`.
@@ -665,6 +666,19 @@ as follows:
 ```ruby
 Feature.remove(:feature_flag_name)
 ```
+
+### Logging
+
+Usage and state of the feature flag is logged if either:
+
+- `log_state_changes` is set to `true` in the feature flag definition.
+- `milestone` refers to a milestone that is greater than or equal to the current GitLab version.
+
+When the state of a feature flag is logged, it can be identified by using the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition in Kibana.
+You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-7d%2Fd,to:now))&_a=(columns:!(json.feature_flag_states),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,field:json.feature_flag_states,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',key:json.feature_flag_states,negate:!f,params:(query:'optimize_where_full_path_in:1'),type:phrase),query:(match_phrase:(json.feature_flag_states:'optimize_where_full_path_in:1')))),hideChart:!f,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',interval:auto,query:(language:kuery,query:''),sort:!(!(json.time,desc)))) link.
+
+NOTE:
+Only 20% of the requests log the state of the feature flags. This is controlled with the [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) feature flag.
 
 ## Changelog
 

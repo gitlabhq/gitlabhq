@@ -57,7 +57,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       it 'creates a pipeline with errors' do
         expect(pipeline).to be_persisted
         expect(pipeline.errors.full_messages).to include(
-          'workflow:auto_cancel on new commit must be one of: conservative, interruptible, disabled')
+          'workflow:auto_cancel on new commit must be one of: conservative, interruptible, none')
       end
     end
   end

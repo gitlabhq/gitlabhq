@@ -82,7 +82,7 @@ module Resolvers
           creator_id:
             params[:creator_id] ? ::GitlabSchema.parse_gid(params[:creator_id], expected_type: ::User).model_id : nil,
           version_prefix: params[:version_prefix],
-          preload: false # we'll handle preloading ourselves
+          preload: {} # we'll handle preloading ourselves
         }.compact
          .merge(parent_param)
       end

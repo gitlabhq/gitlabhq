@@ -27,14 +27,15 @@ You can extend the code coverage either by using Code Climate
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                             | In Free             | In Premium          | In Ultimate        |
-|:-----------------------------------------------------------------------|:--------------------|:--------------------|:-------------------|
-| [Configure scanners](#customizing-scan-settings)                       | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [Integrate custom scanners](#implement-a-custom-tool)                  | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [See findings in merge request widget](#merge-request-widget)          | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [Generate JSON or HTML report artifacts](#output)                      | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [See reports in CI pipelines](#pipeline-details-view)                  | **{dotted-circle}** | **{check-circle}**  | **{check-circle}** |
-| [See findings in merge request diff view](#merge-request-changes-view) | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}** |
+| Feature                                                               | In Free                | In Premium             | In Ultimate            |
+|:----------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|
+| [Configure scanners](#customizing-scan-settings)                      | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Integrate custom scanners](#implement-a-custom-tool)                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Generate JSON or HTML report artifacts](#output)                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in merge request widget](#merge-request-widget)             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in pipelines](#pipeline-details-view)                       | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in merge request changes view](#merge-request-changes-view) | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Summary in project quality view](#project-quality-view)              | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## View Code Quality results
 
@@ -227,7 +228,7 @@ Code Quality can be customized by defining available CI/CD variables:
 
 | CI/CD variable                  | Description |
 |---------------------------------|-------------|
-| `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
+| `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables). |
 | `CODECLIMATE_DEV`               | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
 | `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [Use a private container registry](#use-a-private-container-image-registry). |
 | `CODECLIMATE_REGISTRY_USERNAME` | Set to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`. |

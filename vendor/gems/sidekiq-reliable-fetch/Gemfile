@@ -11,4 +11,5 @@ group :test do
   gem "pry"
   gem 'simplecov', require: false
   gem 'stub_env', '~> 1.0'
+  gem 'redis', '~> 4.8'
 end

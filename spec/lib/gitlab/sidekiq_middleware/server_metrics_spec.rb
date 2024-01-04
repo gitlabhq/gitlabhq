@@ -10,7 +10,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
       describe '.initialize_process_metrics' do
         it 'sets concurrency metrics' do
-          expect(concurrency_metric).to receive(:set).with({}, Sidekiq[:concurrency].to_i)
+          expect(concurrency_metric).to receive(:set).with({}, Sidekiq.default_configuration[:concurrency].to_i)
 
           described_class.initialize_process_metrics
         end
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           end
 
           it 'sets the concurrency metric' do
-            expect(concurrency_metric).to receive(:set).with({}, Sidekiq[:concurrency].to_i)
+            expect(concurrency_metric).to receive(:set).with({}, Sidekiq.default_configuration[:concurrency].to_i)
 
             described_class.initialize_process_metrics
           end

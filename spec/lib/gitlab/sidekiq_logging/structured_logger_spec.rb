@@ -492,7 +492,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'completed_at' => current_utc_time.to_i }
     end
 
-    subject { described_class.new }
+    subject { described_class.new(Sidekiq.logger) }
 
     it 'update payload correctly' do
       travel_to(current_utc_time) do

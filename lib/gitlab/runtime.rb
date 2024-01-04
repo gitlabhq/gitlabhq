@@ -89,12 +89,11 @@ module Gitlab
         if puma? && ::Puma.respond_to?(:cli_config)
           threads += ::Puma.cli_config.options[:max_threads]
         elsif sidekiq?
-          # 2 extra threads for the pollers in Sidekiq and Sidekiq Cron:
-          # https://github.com/ondrejbartas/sidekiq-cron#under-the-hood
+          # Sidekiq has a internal connection pool to handle heartbeat, scheduled polls,
+          # cron polls and housekeeping. max_threads can match Sidekqi process's concurrency.
           #
-          # These threads execute Sidekiq client middleware when jobs
-          # are enqueued and those can access DB / Redis.
-          threads += Sidekiq[:concurrency] + 2
+          # The Sidekiq main thread does not perform GitLab-related logic, so we can ignore it.
+          threads = Sidekiq.default_configuration[:concurrency]
         end
 
         if puma?

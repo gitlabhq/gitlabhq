@@ -93,9 +93,9 @@ concern, some instrumentations are disabled by default. To enable those disabled
 instrumentations, set the following environment variables:
 
 - `GITLAB_TRACING_TRACK_CACHES`: enable tracking cache operations, such as cache
-read, write, or delete.
+  read, write, or delete.
 - `GITLAB_TRACING_TRACK_REDIS`: enable tracking Redis operations. Most Redis
-operations are for caching, though.
+  operations are for caching, though.
 
 ## Using Jaeger in the GitLab Development Kit
 

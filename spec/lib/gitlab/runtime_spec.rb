@@ -127,10 +127,10 @@ RSpec.describe Gitlab::Runtime, feature_category: :cloud_connector do
     before do
       stub_const('::Sidekiq', sidekiq_type)
       allow(sidekiq_type).to receive(:server?).and_return(true)
-      allow(sidekiq_type).to receive(:[]).with(:concurrency).and_return(2)
+      allow(sidekiq_type).to receive(:default_configuration).and_return({ concurrency: 2 })
     end
 
-    it_behaves_like "valid runtime", :sidekiq, 5
+    it_behaves_like "valid runtime", :sidekiq, 2
 
     it 'identifies as an application runtime' do
       expect(described_class.application?).to be true

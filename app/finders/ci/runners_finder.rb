@@ -138,7 +138,7 @@ module Ci
     end
 
     def request_tag_list!
-      @runners = @runners.with_tags if !@params[:preload].present? || @params.dig(:preload, :tag_name)
+      @runners = @runners.with_tags if @params.exclude?(:preload) || @params.dig(:preload, :tag_name)
     end
   end
 end

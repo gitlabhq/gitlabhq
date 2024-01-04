@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::AutoCancel, feature_category: :pipelin
 
       it 'returns errors' do
         expect(config.errors)
-          .to include('auto cancel on new commit must be one of: conservative, interruptible, disabled')
+          .to include('auto cancel on new commit must be one of: conservative, interruptible, none')
       end
     end
   end

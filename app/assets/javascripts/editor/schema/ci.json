@@ -944,7 +944,8 @@
     },
     "workflowAutoCancel": {
       "type": "object",
-      "markdownDescription": "Define the rules for when pipeline should be automatically cancelled.",
+      "description": "Define the rules for when pipeline should be automatically cancelled.",
+      "additionalProperties": false,
       "properties": {
         "on_job_failure": {
           "markdownDescription": "Define which jobs to stop after a job fails.",
@@ -953,6 +954,15 @@
           "enum": [
             "none",
             "all"
+          ]
+        },
+        "on_new_commit": {
+          "markdownDescription": "Configure the behavior of the auto-cancel redundant pipelines feature. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#workflowauto_cancelon_new_commit)",
+          "type": "string",
+          "enum": [
+            "conservative",
+            "interruptible",
+            "none"
           ]
         }
       }

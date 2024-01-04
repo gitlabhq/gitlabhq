@@ -22,18 +22,18 @@ individual scenarios themselves are numerous, we have summarized some basic
 information to help harden the CI/CD process.
 
 - **Secrets Management**. Passwords, tokens, keys, and other secrets that require any
-level of protection should never be stored in plaintext. Some type of encrypted
-container technology should be used, such as GCP Secret Manager, AWS KMS, or
-HashiCorp Vault. For self-managed and standalone instances, HashiCorp Vault is
-recommended, and many GitLab features can take advantage of Vault and are well
-documented in the main [Documentation](../index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/index.md).
+  level of protection should never be stored in plaintext. Some type of encrypted
+  container technology should be used, such as GCP Secret Manager, AWS KMS, or
+  HashiCorp Vault. For self-managed and standalone instances, HashiCorp Vault is
+  recommended, and many GitLab features can take advantage of Vault and are well
+  documented in the main [Documentation](../index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/index.md).
 - **External Communications**. If your CI/CD process requires connectivity to other
-hosts, ensure that these communication channels are encrypted. You should use TLS 1.2 or 1.3, and where possible implement mutual TLS.
+  hosts, ensure that these communication channels are encrypted. You should use TLS 1.2 or 1.3, and where possible implement mutual TLS.
 - **Logging**. Logging can be very important for auditing and troubleshooting, so it
-is important that you enable any logging features to ensure you are getting
-the information in logs you need. Make sure through periodic testing that
-plaintext secrets or other sensitive information is not inadvertently added to log
-files.
+  is important that you enable any logging features to ensure you are getting
+  the information in logs you need. Make sure through periodic testing that
+  plaintext secrets or other sensitive information is not inadvertently added to log
+  files.
 
 ## Specific Recommendations
 

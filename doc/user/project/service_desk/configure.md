@@ -63,14 +63,14 @@ For example, you can format the emails to include a header and footer in accorda
 organization's brand guidelines. You can also include the following placeholders to display dynamic
 content specific to the Service Desk ticket or your GitLab instance.
 
-| Placeholder            | `thank_you.md`         | `new_note.md`          | Description
-| ---------------------- | ---------------------- | ---------------------- | -----------
-| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID.
-| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID.
-| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default).
-| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design.
-| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL.
-| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket.
+| Placeholder            | `thank_you.md`         | `new_note.md`          | Description |
+|------------------------|------------------------|------------------------|-------------|
+| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID. |
+| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID. |
+| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
+| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL. |
+| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 
@@ -947,7 +947,7 @@ or completely separately.
    ::EndTabs
 
 1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
-application. You can configure the `delivery_method` for each email setting individually:
+   application. You can configure the `delivery_method` for each email setting individually:
    1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
       application. It uses a shared token to authenticate. If you choose this method,
       make sure the `mail_room` process can access the API endpoint and distribute the shared

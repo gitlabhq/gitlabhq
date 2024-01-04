@@ -16,7 +16,7 @@ For a project that was created by `Group 1`:
 
 - The members of `Group 1` have access to the project.
 - The owner of `Group 1` can invite `Group 2` to the project.
-This way, members of both `Group 1` and `Group 2` have access to the shared project.
+  This way, members of both `Group 1` and `Group 2` have access to the shared project.
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ In addition:
 - You must be a member of the group or the subgroup being invited.
 
 - The [visibility level](../../public_access.md) of the group you're inviting
-must be at least as restrictive as that of the project. For example, you can invite:
+  must be at least as restrictive as that of the project. For example, you can invite:
   - A _private_ group to a _private_ project
   - A _private_ group to an _internal_ project.
   - A _private_ group to a _public_ project.
@@ -46,12 +46,9 @@ must be at least as restrictive as that of the project. For example, you can inv
 
 ## Share a project with a group
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal
-    window [with a flag](../../feature_flags.md). Disabled by default.
-> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208)
-    in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
+> - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a group with another group](../../group/manage.md#share-a-group-with-another-group),
 you can share a project with a group by inviting that group to the project.

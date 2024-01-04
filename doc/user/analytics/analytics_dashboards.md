@@ -55,7 +55,7 @@ With custom dashboards, you can design and create visualizations for the metrics
 You can create custom dashboards with the dashboard designer.
 
 - Each project can have an unlimited number of dashboards.
-The only limitation might be the [repository size limit](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
+  The only limitation might be the [repository size limit](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
 - Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
 - Visualizations are shared across dashboards.
 
@@ -304,5 +304,5 @@ If a dashboard panel displays a message that the visualization configuration is 
 If a dashboard panel displays an error message:
 
 - Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
-configurations, and make sure they are set up correctly.
+  configurations, and make sure they are set up correctly.
 - For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.

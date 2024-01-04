@@ -15,7 +15,7 @@ RSpec.describe Ci::PipelineMetadata, feature_category: :pipeline_composition do
       is_expected.to define_enum_for(
         :auto_cancel_on_new_commit
       ).with_values(
-        conservative: 0, interruptible: 1, disabled: 2
+        conservative: 0, interruptible: 1, none: 2
       ).with_prefix
     end
 

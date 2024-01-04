@@ -106,7 +106,7 @@ To onboard a project:
 1. Select **Analyze > Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 1. Select **Set up product analytics**.
-Your instance is being created, and the project onboarded.
+   Your instance is being created, and the project onboarded.
 
 ## Instrument your application
 

@@ -86,6 +86,67 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe '.redis_client_params' do
+    # .redis_client_params wraps over `.redis_store_options` by modifying its outputs
+    # to be compatible with `RedisClient`. We test for compatibility in this block while
+    # the contents of redis_store_options are tested in the `.params` block.
+
+    subject { described_class.new(rails_env).redis_client_params }
+
+    let(:rails_env) { 'development' }
+    let(:config_file_name) { config_old_format_socket }
+
+    shared_examples 'instrumentation_class in custom key' do
+      it 'moves instrumentation class into custom' do
+        expect(subject[:custom][:instrumentation_class]).to eq(described_class.store_name)
+        expect(subject[:instrumentation_class]).to be_nil
+      end
+    end
+
+    context 'when url is host based' do
+      context 'with old format' do
+        let(:config_file_name) { config_old_format_host }
+
+        it 'does not raise ArgumentError for invalid keywords' do
+          expect { RedisClient.config(**subject) }.not_to raise_error
+        end
+
+        it_behaves_like 'instrumentation_class in custom key'
+      end
+
+      context 'with new format' do
+        let(:config_file_name) { config_new_format_host }
+
+        where(:rails_env, :host) do
+          [
+            %w[development development-host],
+            %w[test test-host],
+            %w[production production-host]
+          ]
+        end
+
+        with_them do
+          it 'does not raise ArgumentError for invalid keywords in SentinelConfig' do
+            expect(subject[:name]).to eq(host)
+            expect { RedisClient.sentinel(**subject) }.not_to raise_error
+          end
+
+          it_behaves_like 'instrumentation_class in custom key'
+        end
+      end
+    end
+
+    context 'when url contains unix socket reference' do
+      let(:config_file_name) { config_old_format_socket }
+
+      it 'does not raise ArgumentError for invalid keywords' do
+        expect { RedisClient.config(**subject) }.not_to raise_error
+      end
+
+      it_behaves_like 'instrumentation_class in custom key'
+    end
+  end
+
   describe '.params' do
     subject { described_class.new(rails_env).params }
 

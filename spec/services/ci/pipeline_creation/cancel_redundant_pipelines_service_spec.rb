@@ -53,7 +53,7 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         project.update!(auto_cancel_pending_pipelines: 'enabled')
       end
 
-      it 'cancels only previous interruptible builds' do
+      it 'cancels only previous non started builds' do
         execute
 
         expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
@@ -153,6 +153,36 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
             expect(build_statuses(child_pipeline)).to contain_exactly('running', 'success')
           end
+
+          context 'when the child pipeline auto_cancel_on_new_commit is `interruptible`' do
+            before do
+              child_pipeline.create_pipeline_metadata!(
+                project: child_pipeline.project, auto_cancel_on_new_commit: 'interruptible'
+              )
+            end
+
+            it 'cancels interruptible child pipeline builds' do
+              expect(build_statuses(child_pipeline)).to contain_exactly('running', 'success')
+
+              execute
+
+              expect(build_statuses(child_pipeline)).to contain_exactly('canceled', 'success')
+            end
+
+            context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+              before do
+                stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+              end
+
+              it 'does not cancel any child pipeline builds' do
+                expect(build_statuses(child_pipeline)).to contain_exactly('running', 'success')
+
+                execute
+
+                expect(build_statuses(child_pipeline)).to contain_exactly('running', 'success')
+              end
+            end
+          end
         end
 
         context 'when the child pipeline has non-interruptible non-started job' do
@@ -227,6 +257,37 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         end
       end
 
+      context 'when there are non-interruptible completed jobs in the pipeline' do
+        before do
+          create(:ci_build, :failed, pipeline: prev_pipeline)
+          create(:ci_build, :success, pipeline: prev_pipeline)
+        end
+
+        it 'does not cancel any job' do
+          execute
+
+          expect(job_statuses(prev_pipeline)).to contain_exactly(
+            'running', 'success', 'created', 'failed', 'success'
+          )
+          expect(job_statuses(pipeline)).to contain_exactly('pending')
+        end
+
+        context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+          before do
+            stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+          end
+
+          it 'does not cancel any job' do
+            execute
+
+            expect(job_statuses(prev_pipeline)).to contain_exactly(
+              'running', 'success', 'created', 'failed', 'success'
+            )
+            expect(job_statuses(pipeline)).to contain_exactly('pending')
+          end
+        end
+      end
+
       context 'when there are trigger jobs' do
         before do
           create(:ci_bridge, :created, pipeline: prev_pipeline)
@@ -243,6 +304,152 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
           expect(job_statuses(prev_pipeline)).to contain_exactly(
             'canceled', 'success', 'canceled', 'canceled', 'canceled', 'success', 'canceled', 'canceled', 'success')
           expect(job_statuses(pipeline)).to contain_exactly('pending')
+        end
+      end
+
+      context 'when auto_cancel_on_new_commit is `interruptible`' do
+        before do
+          prev_pipeline.create_pipeline_metadata!(
+            project: prev_pipeline.project, auto_cancel_on_new_commit: 'interruptible'
+          )
+        end
+
+        it 'cancels only interruptible jobs' do
+          execute
+
+          expect(job_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'created')
+          expect(job_statuses(pipeline)).to contain_exactly('pending')
+        end
+
+        context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+          before do
+            stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+          end
+
+          it 'cancels non started builds' do
+            execute
+
+            expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+            expect(build_statuses(pipeline)).to contain_exactly('pending')
+          end
+        end
+
+        context 'when there are non-interruptible completed jobs in the pipeline' do
+          before do
+            create(:ci_build, :failed, pipeline: prev_pipeline)
+            create(:ci_build, :success, pipeline: prev_pipeline)
+          end
+
+          it 'still cancels only interruptible jobs' do
+            execute
+
+            expect(job_statuses(prev_pipeline)).to contain_exactly(
+              'canceled', 'success', 'created', 'failed', 'success'
+            )
+            expect(job_statuses(pipeline)).to contain_exactly('pending')
+          end
+
+          context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+            before do
+              stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+            end
+
+            it 'does not cancel any job' do
+              execute
+
+              expect(build_statuses(prev_pipeline)).to contain_exactly(
+                'created', 'success', 'running', 'failed', 'success'
+              )
+              expect(build_statuses(pipeline)).to contain_exactly('pending')
+            end
+          end
+        end
+      end
+
+      context 'when auto_cancel_on_new_commit is `none`' do
+        before do
+          prev_pipeline.create_pipeline_metadata!(
+            project: prev_pipeline.project, auto_cancel_on_new_commit: 'none'
+          )
+        end
+
+        it 'does not cancel any job' do
+          execute
+
+          expect(job_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+          expect(job_statuses(pipeline)).to contain_exactly('pending')
+        end
+      end
+
+      context 'when auto_cancel_on_new_commit is `conservative`' do
+        before do
+          prev_pipeline.create_pipeline_metadata!(
+            project: prev_pipeline.project, auto_cancel_on_new_commit: 'conservative'
+          )
+        end
+
+        it 'cancels only previous non started builds' do
+          execute
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+          expect(build_statuses(pipeline)).to contain_exactly('pending')
+        end
+
+        context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+          before do
+            stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+          end
+
+          it 'cancels only previous non started builds' do
+            execute
+
+            expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+            expect(build_statuses(pipeline)).to contain_exactly('pending')
+          end
+        end
+
+        context 'when there are non-interruptible completed jobs in the pipeline' do
+          before do
+            create(:ci_build, :failed, pipeline: prev_pipeline)
+            create(:ci_build, :success, pipeline: prev_pipeline)
+          end
+
+          it 'does not cancel any job' do
+            execute
+
+            expect(job_statuses(prev_pipeline)).to contain_exactly(
+              'running', 'success', 'created', 'failed', 'success'
+            )
+            expect(job_statuses(pipeline)).to contain_exactly('pending')
+          end
+
+          context 'when the FF ci_workflow_auto_cancel_on_new_commit is disabled' do
+            before do
+              stub_feature_flags(ci_workflow_auto_cancel_on_new_commit: false)
+            end
+
+            it 'does not cancel any job' do
+              execute
+
+              expect(job_statuses(prev_pipeline)).to contain_exactly(
+                'running', 'success', 'created', 'failed', 'success'
+              )
+              expect(job_statuses(pipeline)).to contain_exactly('pending')
+            end
+          end
+        end
+      end
+
+      context 'when auto_cancel_on_new_commit is an invalid value' do
+        before do
+          allow(prev_pipeline).to receive(:auto_cancel_on_new_commit).and_return('invalid')
+          relation = Ci::Pipeline.id_in(prev_pipeline.id)
+          allow(relation).to receive(:each).and_yield(prev_pipeline)
+          allow(Ci::Pipeline).to receive(:id_in).and_return(relation)
+        end
+
+        it 'raises an error' do
+          expect { execute }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_new_commit value: invalid')
         end
       end
 

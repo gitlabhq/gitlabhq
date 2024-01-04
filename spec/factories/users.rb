@@ -20,8 +20,6 @@ FactoryBot.define do
                     true
                   end
 
-      assign_ns &&= Feature.enabled?(:create_personal_ns_outside_model, Feature.current_request)
-
       user.assign_personal_namespace if assign_ns
     end
 

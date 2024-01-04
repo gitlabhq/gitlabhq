@@ -119,8 +119,8 @@ See [Use security scanning tools with merge request pipelines](../index.md#use-s
 Prerequisites:
 
 - Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
-shared runners on GitLab.com, this is enabled by default.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
+  shared runners on GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See

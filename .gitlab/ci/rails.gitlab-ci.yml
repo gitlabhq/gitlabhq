@@ -85,7 +85,7 @@ rspec migration pg14:
   extends:
     - .rspec-base-pg14
     - .rspec-base-migration
-    - .rspec-migration-parallel-pg14
+    - .rspec-migration-parallel
     - .rails:rules:ee-and-foss-migration
 
 rspec background_migration pg14:
@@ -154,8 +154,8 @@ rspec background_migration pg14 clusterwide-db:
 rspec unit pg14:
   extends:
     - .rspec-base-pg14
+    - .rspec-unit-parallel
     - .rails:rules:ee-and-foss-unit
-    - .rspec-unit-pg14-parallel
 
 rspec unit pg14 single-redis:
   extends:
@@ -195,7 +195,7 @@ rspec unit pg14 praefect:
 rspec integration pg14:
   extends:
     - .rspec-base-pg14
-    - .rspec-integration-parallel-pg14
+    - .rspec-integration-parallel
     - .rails:rules:ee-and-foss-integration
 
 rspec integration pg14 single-redis:
@@ -236,8 +236,8 @@ rspec integration pg14 praefect:
 rspec system pg14:
   extends:
     - .rspec-base-pg14
+    - .rspec-system-parallel
     - .rails:rules:ee-and-foss-system
-    - .rspec-system-parallel-pg14
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
@@ -354,7 +354,7 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:ee-and-foss-unit
   needs:
-    - rspec unit pg14  # 24 jobs
+    - rspec unit pg14  # 32 jobs
     - job: rspec clickhouse  # 1 job
       optional: true
 
@@ -363,17 +363,17 @@ rspec:artifact-collector system:
     - .artifact-collector
     - .rails:rules:ee-and-foss-system
   needs:
-    - rspec system pg14  # 26 jobs
+    - rspec system pg14  # 32 jobs
 
 rspec:artifact-collector remainder:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec integration pg14  # 13 jobs
+    - job: rspec integration pg14  # 16 jobs
       optional: true
-    - job: rspec migration pg14  # 12 jobs
+    - job: rspec migration pg14  # 15 jobs
       optional: true
-    - job: rspec background_migration pg14  # 4 jobs
+    - job: rspec background_migration pg14  # 5 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
@@ -385,58 +385,73 @@ rspec:artifact-collector as-if-foss unit:
     - .artifact-collector
     - .rails:rules:as-if-foss-unit
   needs:
-    - rspec unit pg14-as-if-foss  # 28 jobs
+    - rspec unit pg14-as-if-foss  # 32 jobs
 
 rspec:artifact-collector as-if-foss system:
   extends:
     - .artifact-collector
     - .rails:rules:as-if-foss-system
   needs:
-    - rspec system pg14-as-if-foss  # 28 jobs
+    - rspec system pg14-as-if-foss  # 32 jobs
 
 rspec:artifact-collector as-if-foss remainder:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec integration pg14-as-if-foss  # 12 jobs
+    - job: rspec integration pg14-as-if-foss  # 16 jobs
       optional: true
-    - job: rspec migration pg14-as-if-foss  # 8 jobs
+    - job: rspec migration pg14-as-if-foss  # 15 jobs
       optional: true
-    - job: rspec background_migration pg14-as-if-foss  # 4 jobs
+    - job: rspec background_migration pg14-as-if-foss  # 5 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:as-if-foss-integration', rules]
     - !reference ['.rails:rules:as-if-foss-migration', rules]
     - !reference ['.rails:rules:as-if-foss-background-migration', rules]
 
-rspec:artifact-collector single-redis:
+rspec:artifact-collector unit single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec unit pg14 single-redis  # 28 jobs
-    - rspec integration pg14 single-redis  # 12 jobs
+    - rspec unit pg14 single-redis  # 32 jobs
 
 rspec:artifact-collector system single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec system pg14 single-redis  # 28 jobs
+    - rspec system pg14 single-redis  # 32 jobs
+
+rspec:artifact-collector remainder single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - rspec integration pg14 single-redis  # 16 jobs
 
 rspec:artifact-collector ee single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg14 single-redis  # 18 jobs
+    - job: rspec-ee unit pg14 single-redis  # 28 jobs
       optional: true
-    - job: rspec-ee integration pg14 single-redis  # 6 jobs
+    - job: rspec-ee integration pg14 single-redis  # 7 jobs
       optional: true
-    - job: rspec-ee system pg14 single-redis  # 10 jobs
+    - job: rspec-ee system pg14 single-redis  # 14 jobs
       optional: true
 
-rspec:artifact-collector ee:
+rspec:artifact-collector ee unit:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec-ee unit pg14  # 28 jobs
+      optional: true
+  rules:
+    - !reference ['.rails:rules:ee-only-unit', rules]
+
+rspec:artifact-collector ee remainder:
   extends:
     - .artifact-collector
   needs:
@@ -444,18 +459,15 @@ rspec:artifact-collector ee:
       optional: true
     - job: rspec-ee background_migration pg14  # 2 jobs
       optional: true
-    - job: rspec-ee unit pg14  # 22 jobs
-      optional: true
     - job: rspec-ee clickhouse  # 1 job
       optional: true
-    - job: rspec-ee integration pg14  # 5 jobs
+    - job: rspec-ee integration pg14  # 7 jobs
       optional: true
-    - job: rspec-ee system pg14  # 12 jobs
+    - job: rspec-ee system pg14  # 14 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-migration', rules]
     - !reference ['.rails:rules:ee-only-background-migration', rules]
-    - !reference ['.rails:rules:ee-only-unit', rules]
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
 
@@ -475,9 +487,11 @@ rspec:coverage:
       optional: true
     - job: rspec:artifact-collector remainder
       optional: true
-    - job: rspec:artifact-collector single-redis
+    - job: rspec:artifact-collector unit single-redis
       optional: true
     - job: rspec:artifact-collector system single-redis
+      optional: true
+    - job: rspec:artifact-collector remainder single-redis
       optional: true
     # as-if-foss jobs
     - job: rspec:artifact-collector as-if-foss unit
@@ -489,7 +503,9 @@ rspec:coverage:
     # EE jobs
     - job: rspec:artifact-collector ee single-redis
       optional: true
-    - job: rspec:artifact-collector ee
+    - job: rspec:artifact-collector ee unit
+      optional: true
+    - job: rspec:artifact-collector ee remainder
       optional: true
     # Memory jobs
     - job: memory-on-boot
@@ -637,7 +653,7 @@ rspec migration pg14-as-if-foss:
   extends:
     - .rspec-base-pg14-as-if-foss
     - .rspec-base-migration
-    - .rspec-migration-parallel-pg14-as-if-foss
+    - .rspec-migration-parallel
     - .rails:rules:as-if-foss-migration
 
 rspec background_migration pg14-as-if-foss:
@@ -874,8 +890,8 @@ rspec-ee background_migration pg14 praefect:
 rspec-ee unit pg14:
   extends:
     - .rspec-ee-base-pg14
+    - .rspec-ee-unit-parallel
     - .rails:rules:ee-only-unit
-    - .rspec-ee-unit-pg14-parallel
 
 rspec-ee unit pg14 es8:
   extends:
@@ -913,8 +929,8 @@ rspec-ee unit pg14 clusterwide-db:
 rspec-ee integration pg14:
   extends:
     - .rspec-ee-base-pg14
+    - .rspec-ee-integration-parallel
     - .rails:rules:ee-only-integration
-    - .rspec-ee-integration-parallel-pg14
 
 rspec-ee integration pg14 es8:
   extends:
@@ -952,8 +968,8 @@ rspec-ee integration pg14 clusterwide-db:
 rspec-ee system pg14:
   extends:
     - .rspec-ee-base-pg14
+    - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
-    - .rspec-ee-system-parallel-pg14
 
 rspec-ee system pg14 es8:
   extends:

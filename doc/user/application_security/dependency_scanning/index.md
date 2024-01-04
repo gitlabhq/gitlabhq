@@ -69,11 +69,11 @@ WARNING:
 Dependency Scanning does not support runtime installation of compilers and interpreters.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+  For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
+  For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+  For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Supported languages and package managers
 

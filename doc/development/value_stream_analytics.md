@@ -28,7 +28,7 @@ Apart from the durations, we expose the record count within a stage.
 ## Feature availability
 
 - Group level (licensed): Requires Ultimate or Premium subscription. This version is the most
-feature-full.
+  feature-full.
 - Project level (licensed): We are continually adding features to project level VSA to bring it in line with group level VSA.
 - Project level (FOSS): Keep it as is.
 

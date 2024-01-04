@@ -305,7 +305,7 @@ In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on
 Prerequisites:
 
 - To view deployment metrics, you must have a
-[production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
+  [production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
 
 To view lifecycle metrics:
 
@@ -442,11 +442,11 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. In the upper-right corner, select the dropdown list, then select a value stream.
 1. Next to the value stream dropdown list, select **Edit**.
 1. Optional:
-    - Rename the value stream.
-    - Hide or re-order default stages.
-    - Remove existing custom stages.
-    - To add new stages, select **Add another stage**.
-    - Select the start and end events for the stage.
+   - Rename the value stream.
+   - Hide or re-order default stages.
+   - Remove existing custom stages.
+   - To add new stages, select **Add another stage**.
+   - Select the start and end events for the stage.
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
 
