@@ -27,7 +27,7 @@ The parameters are split into two groups:
 - The parameters that define tags to destroy:
   - `older_than`. Destroy tags older than this timestamp.
   - `name_regex`. Destroy tags matching this regular expression.
-  
+
 The remaining parameters impact when the policy is executed:
 
 - `enabled`. Defines if the policy is enabled or not.
@@ -41,8 +41,7 @@ follows this design.
 
 - Policy executions are limited in time.
 - Policy executions are either complete or partial.
-- The background jobs will consider the next job to be executed based on two
-priorities:
+- The background jobs will consider the next job to be executed based on two priorities:
   - Policy with a `next_run_at` in the past.
   - Partially executed policies.
 
@@ -54,7 +53,7 @@ Background jobs for this execution are organized on:
 
 - A cron background job that runs every hour.
 - A set of background jobs that will loop on container repositories that need
-a policy execution.
+  a policy execution.
 
 #### The cron background job
 
@@ -63,7 +62,7 @@ is quite simple.
 Its main tasks are:
 
 1. Check if there are any container repositories in need of a cleanup. If any,
-enqueue as many limited capacity jobs as necessary, up to a limit.
+   enqueue as many limited capacity jobs as necessary, up to a limit.
 1. Compute metrics for cleanup policies and log them.
 
 #### The limited capacity job
@@ -97,14 +96,14 @@ flowchart TD
 ```
 
 - [`ContainerExpirationPolicies::CleanupService`](https://gitlab.com/gitlab-org/gitlab/-/blob/6546ffc6fe4e9b447a1b7f050edddb8926fe4a3d/app/services/container_expiration_policies/cleanup_service.rb).
-This service mainly deals with container repository `expiration_policy_cleanup_status`
-updates and will call the cleanup tags service.
+  This service mainly deals with container repository `expiration_policy_cleanup_status`
+  updates and will call the cleanup tags service.
 - [`Projects::ContainerRepository::CleanupTagsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/f23d70b7d638c38d71af102cfd32a3f6751596f9/app/services/projects/container_repository/cleanup_tags_service.rb).
-This service receives the policy parameters and builds the list of tags to
-destroy on the container registry.
+  This service receives the policy parameters and builds the list of tags to
+  destroy on the container registry.
 - [`Projects::ContainerRepository::DeleteTagsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/f23d70b7d638c38d71af102cfd32a3f6751596f9/app/services/projects/container_repository/delete_tags_service.rb).
-This service receives a list of tags and loops on that list. For each tag,
-the service will call the container registry API endpoint to destroy the target tag.
+  This service receives a list of tags and loops on that list. For each tag,
+  the service will call the container registry API endpoint to destroy the target tag.
 
 The cleanup tags service uses a very specific [execution order](../../user/packages/container_registry/reduce_container_registry_storage.md#how-the-cleanup-policy-works)
 to build the list of tags to destroy.

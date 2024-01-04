@@ -19,15 +19,15 @@ table. If the application is designed to work with partitioning in mind,
 there can be multiple benefits, such as:
 
 - Query performance can be improved greatly, because the database can
-cheaply eliminate much of the data from the search space, while still
-providing full SQL capabilities.
+  cheaply eliminate much of the data from the search space, while still
+  providing full SQL capabilities.
 
 - Bulk deletes can be achieved with minimal impact on the database by
-dropping entire partitions. This is a natural fit for features that need
-to periodically delete data that falls outside the retention window.
+  dropping entire partitions. This is a natural fit for features that need
+  to periodically delete data that falls outside the retention window.
 
 - Administrative tasks like `VACUUM` and index rebuilds can operate on
-individual partitions, rather than across a single massive table.
+  individual partitions, rather than across a single massive table.
 
 Unfortunately, not all models fit a partitioning scheme, and there are
 significant drawbacks if implemented incorrectly. Additionally, tables

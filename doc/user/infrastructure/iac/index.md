@@ -84,13 +84,13 @@ To use a Terraform template:
 
    ```yaml
    variables:
-    TF_STATE_NAME: default
-    # If your terraform files are in a subdirectory, set TF_ROOT accordingly. For example:
-    # TF_ROOT: terraform/production
+     TF_STATE_NAME: default
+     # If your terraform files are in a subdirectory, set TF_ROOT accordingly. For example:
+     # TF_ROOT: terraform/production
    ```
 
 1. Optional. Override in your `.gitlab-ci.yml` file the attributes present
-in the template you fetched to customize your configuration.
+   in the template you fetched to customize your configuration.
 
 ### Terraform template recipes
 

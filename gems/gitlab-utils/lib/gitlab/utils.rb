@@ -261,9 +261,23 @@ module Gitlab
       end
     end
 
+    # Use this method to set the `restrict_within_concurrent_ruby` to `true` for the block.
+    # `raise_if_concurrent_ruby!` will use this flag to raise an error if it's set to `true`.
     def restrict_within_concurrent_ruby
       previous = Thread.current[:restrict_within_concurrent_ruby]
       Thread.current[:restrict_within_concurrent_ruby] = true
+
+      yield
+    ensure
+      Thread.current[:restrict_within_concurrent_ruby] = previous
+    end
+
+    # Use this method to disable the `restrict_within_concurrent_ruby` for the block.
+    # It is mainly used to prevent infinite loop when `ConcurrentRubyThreadIsUsedError` is rescued and sent to Sentry.
+    # More info: https://gitlab.com/gitlab-org/gitlab/-/issues/432145#note_1671305713
+    def allow_within_concurrent_ruby
+      previous = Thread.current[:restrict_within_concurrent_ruby]
+      Thread.current[:restrict_within_concurrent_ruby] = false
 
       yield
     ensure

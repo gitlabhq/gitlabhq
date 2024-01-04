@@ -1121,6 +1121,86 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when after_create :post_create_hook' do
+    include NotificationHelpers
+
+    let_it_be(:source) { create(:group) }
+    let(:member) { create(:group_member, source: source) }
+
+    subject(:create_member) { member }
+
+    shared_examples_for 'invokes a notification' do
+      it 'enqueues an email to user' do
+        create_member
+
+        expect_delivery_jobs_count(1)
+        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_access_granted_email')
+      end
+    end
+
+    shared_examples_for 'performs all the common hooks' do
+      it_behaves_like 'invokes a notification'
+
+      it 'creates an event' do
+        expect { create_member }.to change { Event.count }.by(1)
+      end
+    end
+
+    it 'calls the system hook service' do
+      expect_next_instance_of(SystemHooksService) do |instance|
+        expect(instance).to receive(:execute_hooks_for).with(an_instance_of(GroupMember), :create)
+      end
+
+      create_member
+    end
+
+    context 'when source is a group' do
+      it_behaves_like 'invokes a notification'
+
+      it 'does not create an event' do
+        expect { create_member }.not_to change { Event.count }
+      end
+    end
+
+    context 'when source is a project' do
+      context 'when source is a personal project' do
+        let_it_be(:namespace) { create(:namespace) }
+
+        context 'when member is the owner of the namespace' do
+          subject(:create_member) { create(:project, namespace: namespace) }
+
+          it 'does not enqueue an email' do
+            create_member
+
+            expect_delivery_jobs_count(0)
+          end
+
+          it 'does not create an event' do
+            expect { create_member }.not_to change { Event.count }
+          end
+        end
+
+        context 'when member is not the namespace owner' do
+          let_it_be(:project) { create(:project, namespace: namespace) }
+          let(:member) { create(:project_member, source: project) }
+
+          subject(:create_member) { member }
+
+          it_behaves_like 'performs all the common hooks'
+        end
+      end
+
+      context 'when source is not a personal project' do
+        let_it_be(:project) { create(:project, namespace: create(:group)) }
+        let(:member) { create(:project_member, source: project) }
+
+        subject(:create_member) { member }
+
+        it_behaves_like 'performs all the common hooks'
+      end
+    end
+  end
+
   describe 'log_invitation_token_cleanup' do
     let_it_be(:project) { create :project }
 

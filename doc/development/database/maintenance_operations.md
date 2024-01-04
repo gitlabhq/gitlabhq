@@ -18,7 +18,7 @@ There are certain situations in which you might want to disable an index before 
 To disable an index before removing it:
 
 1. Open a [production infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new)
-and use the "Production Change" template.
+   and use the "Production Change" template.
 1. Inform the database team in the issue `@gl-database` or in Slack `#database`.
 1. Add a step to verify the index is used (this would likely be an `EXPLAIN` command known to use the index).
 1. Add the step to disable the index:

@@ -4,7 +4,7 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Suggestions on self-managed GitLab **(SELF)**
+# Code Suggestions on self-managed GitLab **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10653) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta) on self-managed GitLab.
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
@@ -41,7 +41,7 @@ version of GitLab. This setting is visible only in self-managed GitLab instances
 
 ::Tabs
 
-:::TabTitle GitLab 16.3 and later **(PREMIUM)**
+:::TabTitle GitLab 16.3 and later
 
 Prerequisites:
 

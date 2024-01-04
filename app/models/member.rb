@@ -522,6 +522,14 @@ class Member < ApplicationRecord
   end
 
   def post_create_hook
+    # The creator of a personal project gets added as a `ProjectMember`
+    # with `OWNER` access during creation of a personal project,
+    # but we do not want to trigger notifications to the same person who created the personal project.
+    unless source.is_a?(Project) && source.personal_namespace_holder?(user)
+      event_service.join_source(source, user)
+      run_after_commit_or_now { notification_service.new_member(self) }
+    end
+
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -630,6 +638,10 @@ class Member < ApplicationRecord
 
     error = StandardError.new("Invitation token is present but invite was already accepted!")
     Gitlab::ErrorTracking.track_exception(error, attributes.slice(%w["invite_accepted_at created_at source_type source_id user_id id"]))
+  end
+
+  def event_service
+    EventCreateService.new # rubocop:todo CodeReuse/ServiceClass -- Legacy, convert to value object eventually
   end
 end
 

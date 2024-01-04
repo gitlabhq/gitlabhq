@@ -88,12 +88,6 @@ class GroupMember < Member
     super
   end
 
-  def post_create_hook
-    run_after_commit_or_now { notification_service.new_group_member(self) }
-
-    super
-  end
-
   def after_accept_invite
     run_after_commit_or_now do
       notification_service.accept_group_invite(self)

@@ -29,15 +29,15 @@ default:
 
 .old-ruby-variables: &old-ruby-variables
   RUBY_VERSION: "3.0"
-  CACHE_EDITION: "GITLAB_RUBY3_0"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_0"
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "3.1"
-  CACHE_EDITION: "GITLAB_RUBY3_1"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_1"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "3.2"
-  CACHE_EDITION: "GITLAB_RUBY3_2"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"

@@ -116,18 +116,6 @@ class ProjectMember < Member
     self.member_namespace_id = project&.project_namespace_id
   end
 
-  def post_create_hook
-    # The creator of a personal project gets added as a `ProjectMember`
-    # with `OWNER` access during creation of a personal project,
-    # but we do not want to trigger notifications to the same person who created the personal project.
-    unless project.personal_namespace_holder?(user)
-      event_service.join_project(self.project, self.user)
-      run_after_commit_or_now { notification_service.new_project_member(self) }
-    end
-
-    super
-  end
-
   def post_destroy_hook
     if expired?
       event_service.expired_leave_project(self.project, self.user)
@@ -145,12 +133,6 @@ class ProjectMember < Member
 
     super
   end
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def event_service
-    EventCreateService.new
-  end
-  # rubocop: enable CodeReuse/ServiceClass
 end
 
 ProjectMember.prepend_mod_with('ProjectMember')

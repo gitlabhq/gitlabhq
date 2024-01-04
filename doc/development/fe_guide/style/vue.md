@@ -123,7 +123,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
 ## Naming
 
 1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension
-([#34371](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34371)).
+   ([#34371](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34371)).
 1. **Reference Naming**: Use PascalCase for their default imports:
 
    ```javascript
@@ -142,7 +142,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    };
    ```
 
-1. **Props Naming:**  Avoid using DOM component prop names.
+1. **Props Naming:** Avoid using DOM component prop names.
 1. **Props Naming:** Use kebab-case instead of camelCase to provide props in templates.
 
    ```html
@@ -582,8 +582,8 @@ describe('MyComponent', () => {
 ### Setting component state
 
 1. Avoid using [`setProps`](https://v1.test-utils.vuejs.org/api/wrapper/#setprops) to set
-component state wherever possible. Instead, set the component's
-[`propsData`](https://v1.test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
+   component state wherever possible. Instead, set the component's
+   [`propsData`](https://v1.test-utils.vuejs.org/api/options.html#propsdata) when mounting the component:
 
    ```javascript
    // bad
@@ -603,7 +603,7 @@ component state wherever possible. Instead, set the component's
 ### Accessing component state
 
 1. When accessing props or attributes, prefer the `wrapper.props('myProp')` syntax over
-`wrapper.props().myProp` or `wrapper.vm.myProp`:
+   `wrapper.props().myProp` or `wrapper.vm.myProp`:
 
    ```javascript
    // good
@@ -616,7 +616,7 @@ component state wherever possible. Instead, set the component's
    ```
 
 1. When asserting multiple props, check the deep equality of the `props()` object with
-[`toEqual`](https://jestjs.io/docs/expect#toequalvalue):
+   [`toEqual`](https://jestjs.io/docs/expect#toequalvalue):
 
    ```javascript
    // good
@@ -633,8 +633,8 @@ component state wherever possible. Instead, set the component's
    ```
 
 1. If you are only interested in some of the props, you can use
-[`toMatchObject`](https://jestjs.io/docs/expect#tomatchobjectobject). Prefer `toMatchObject`
-over [`expect.objectContaining`](https://jestjs.io/docs/expect#expectobjectcontainingobject):
+   [`toMatchObject`](https://jestjs.io/docs/expect#tomatchobjectobject). Prefer `toMatchObject`
+   over [`expect.objectContaining`](https://jestjs.io/docs/expect#expectobjectcontainingobject):
 
    ```javascript
    // good
@@ -652,7 +652,7 @@ over [`expect.objectContaining`](https://jestjs.io/docs/expect#expectobjectconta
 
 ### Testing props validation
 
-1. When checking component props use `assertProps` helper. Props validation failures will be thrown as errors
+When checking component props use `assertProps` helper. Props validation failures will be thrown as errors:
 
 ```javascript
 import { assertProps } from 'helpers/assert_props'
@@ -668,12 +668,12 @@ The goal of this accord is to make sure we are all on the same page.
 
 1. When writing Vue, you may not use jQuery in your application.
    1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your
-   application to grab data attributes using `dataset`. You can do this without jQuery.
+      application to grab data attributes using `dataset`. You can do this without jQuery.
    1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
    1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use
-   jQuery event listeners.
+      jQuery event listeners.
    1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery
-   events take a look at [different methods to do the same task](https://v2.vuejs.org/v2/api/#vm-emit).
+      events take a look at [different methods to do the same task](https://v2.vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object one time, while bootstrapping your application for application
    specific data (for example, `scrollTo` is ok to access anytime). Do this access during the
    bootstrapping of your application.

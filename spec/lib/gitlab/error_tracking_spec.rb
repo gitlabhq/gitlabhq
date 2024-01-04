@@ -173,6 +173,20 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
         )
       end.to raise_error(RuntimeError)
     end
+
+    it 'processes the exception even it is called within a `restrict_within_concurrent_ruby` block' do
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(logger_payload)
+
+      expect do
+        Gitlab::Utils.restrict_within_concurrent_ruby do
+          described_class.track_and_raise_exception(
+            exception,
+            issue_url: issue_url,
+            some_other_info: 'info'
+          )
+        end
+      end.to raise_error(RuntimeError, /boom/)
+    end
   end
 
   describe '.log_and_raise_exception' do
@@ -186,6 +200,16 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
       expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(logger_payload)
 
       expect { log_and_raise_exception }.to raise_error(RuntimeError)
+    end
+
+    it 'processes the exception even it is called within a `restrict_within_concurrent_ruby` block' do
+      expect(Gitlab::ErrorTracking::Logger).to receive(:error).with(logger_payload)
+
+      expect do
+        Gitlab::Utils.restrict_within_concurrent_ruby do
+          log_and_raise_exception
+        end
+      end.to raise_error(RuntimeError)
     end
 
     context 'when extra details are provided' do
@@ -226,6 +250,14 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :shared do
 
     it 'calls Gitlab::ErrorTracking::Logger.error with formatted payload' do
       track_exception
+
+      expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(logger_payload)
+    end
+
+    it 'processes the exception even it is called within a `restrict_within_concurrent_ruby` block' do
+      Gitlab::Utils.restrict_within_concurrent_ruby do
+        track_exception
+      end
 
       expect(Gitlab::ErrorTracking::Logger).to have_received(:error).with(logger_payload)
     end

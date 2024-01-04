@@ -255,9 +255,9 @@ credentials += Credentials("GitLab Packages Registry", "<host>", "<name>", "<tok
 In this example:
 
 - `<endpoint url>` is the [endpoint URL](#endpoint-urls).
-Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
+  Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
 - `<host>` is the host present in the `<endpoint url>` without the protocol
-scheme or the port. Example: `gitlab.example.com`.
+  scheme or the port. Example: `gitlab.example.com`.
 - `<name>` and `<token>` are explained in the table above.
 
 ::EndTabs
@@ -289,11 +289,11 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 #### Endpoint URLs
 
-| Endpoint | Endpoint URL for `pom.xml`                                               | Additional information                                                                                                             |
-| -------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Endpoint | Endpoint URL for `pom.xml`                                               | Additional information |
+|----------|--------------------------------------------------------------------------|------------------------|
 | Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your project's homepage. |
-| Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage.      |
-| Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name.                                                                                |
+| Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage. |
+| Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name. |
 
 ### Edit the configuration file for publishing
 

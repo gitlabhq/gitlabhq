@@ -349,7 +349,7 @@ possible).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
-| `spec/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) | If your test has the `:js` metadata, the browser driver is [Poltergeist](https://github.com/teamcapybara/capybara#poltergeist), otherwise it's using [RackTest](https://github.com/teamcapybara/capybara#racktest). |
+| `spec/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) | If your test has the `:js` metadata, the browser driver is [Selenium](https://github.com/teamcapybara/capybara#selenium), otherwise it's using [RackTest](https://github.com/teamcapybara/capybara#racktest). |
 
 ### Frontend feature tests
 

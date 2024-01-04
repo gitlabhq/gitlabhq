@@ -21,8 +21,7 @@ You can follow our work towards this goal in the
 
 ## Machine types available for macOS
 
-GitLab SaaS provides macOS build machines on Apple silicon (M1) chips.
-Intel x86-64 runners were deprecated in favor of Apple silicon. To build for an x86-64 target, use Rosetta 2 to emulate an Intel x86-64 build environment.
+GitLab SaaS provides macOS build machines on Apple silicon (M1) chips. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 build environment.
 
 | Runner Tag             | vCPUS | Memory | Storage |
 | ---------------------- | ----- | ------ | ------- |
@@ -40,7 +39,7 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 |----------------------------|--------|--------------|
 | `macos-12-xcode-14`        | `GA`   |              |
 | `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-13.yml) |
-| `macos-14-xcode-15`        | `Beta` | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-14.yml) |
+| `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-14.yml) |
 
 If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 

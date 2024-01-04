@@ -499,7 +499,7 @@ cron job where the schedule depends on the configuration of the GitLab instance.
 
 - Non-decomposed GitLab (1 database): invoked every minute.
 - Decomposed GitLab (2 databases, CI and Main): invoked every minute, cleaning up one database
-at a time. For example, the cleanup worker for the main database runs every two minutes.
+  at a time. For example, the cleanup worker for the main database runs every two minutes.
 
 To avoid lock contention and the processing of the same database rows, the worker does not run
 parallel. This behavior is ensured with a Redis lock.
@@ -509,13 +509,13 @@ parallel. This behavior is ensured with a Redis lock.
 1. Acquire the Redis lock.
 1. Determine which database to clean up.
 1. Collect all database tables where the deletions are tracked (parent tables).
-    - This is achieved by reading the `config/gitlab_loose_foreign_keys.yml` file.
-    - A table is considered "tracked" when a loose foreign key definition exists for the table and
-    the `DELETE` trigger is installed.
+   - This is achieved by reading the `config/gitlab_loose_foreign_keys.yml` file.
+   - A table is considered "tracked" when a loose foreign key definition exists for the table and
+     the `DELETE` trigger is installed.
 1. Cycle through the tables with an infinite loop.
 1. For each table, load a batch of deleted parent records to clean up.
 1. Depending on the YAML configuration, build `DELETE` or `UPDATE` (nullify) queries for the
-referenced child tables.
+   referenced child tables.
 1. Invoke the queries.
 1. Repeat until all child records are cleaned up or the maximum limit is reached.
 1. Remove the deleted parent records when all child records are cleaned up.
@@ -530,13 +530,13 @@ The inserted record stores the following information about the deleted record:
 
 - `fully_qualified_table_name`: name of the database table where the record was located.
 - `primary_key_value`: the ID of the record, the value is present in the child tables as
-the foreign key value. At the moment, composite primary keys are not supported, the parent table
-must have an `id` column.
+  the foreign key value. At the moment, composite primary keys are not supported, the parent table
+  must have an `id` column.
 - `status`: defaults to pending, represents the status of the cleanup process.
 - `consume_after`: defaults to the current time.
 - `cleanup_attempts`: defaults to 0. The number of times the worker tried to clean up this record.
-A non-zero number would mean that this record has many child records and cleaning it up requires
-several runs.
+  A non-zero number would mean that this record has many child records and cleaning it up requires
+  several runs.
 
 #### Database decomposition
 
@@ -692,7 +692,7 @@ The loop-based batch processing is preferred over `EachBatch` for the following 
 
 - The records in the batch are modified, so the next batch contains different records.
 - There is always an index on the foreign key column however, the column is usually not unique.
-`EachBatch` requires a unique column for the iteration.
+  `EachBatch` requires a unique column for the iteration.
 - The record order doesn't matter for the cleanup.
 
 Notice that we have two loops. The initial loop processes records with the `SKIP LOCKED` clause.
@@ -747,23 +747,23 @@ For example, a project with millions of `ci_builds` records is deleted. The `ci_
 is deleted by the loose foreign keys feature.
 
 1. The cleanup worker is scheduled and picks up a batch of deleted `projects` records. The large
-project is part of the batch.
+   project is part of the batch.
 1. Deletion of the orphaned `ci_builds` rows has started.
 1. The time limit is reached, but the cleanup is not complete.
 1. The `cleanup_attempts` column is incremented for the deleted records.
 1. Go to step 1. The next cleanup worker continues the cleanup.
 1. When the `cleanup_attempts` reaches 3, the batch is re-scheduled 10 minutes later by updating
-the `consume_after` column.
+   the `consume_after` column.
 1. The next cleanup worker processes a different batch.
 
 We have Prometheus metrics in place to monitor the deleted record cleanup:
 
 - `loose_foreign_key_processed_deleted_records`: Number of processed deleted records. When large
-cleanup happens, this number would decrease.
+  cleanup happens, this number would decrease.
 - `loose_foreign_key_incremented_deleted_records`: Number of deleted records which were not
-finished processing. The `cleanup_attempts` column was incremented.
+  finished processing. The `cleanup_attempts` column was incremented.
 - `loose_foreign_key_rescheduled_deleted_records`: Number of deleted records that had to be
-rescheduled at a later time after 3 cleanup attempts.
+  rescheduled at a later time after 3 cleanup attempts.
 
 Example Thanos query:
 

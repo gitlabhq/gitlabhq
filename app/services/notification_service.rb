@@ -526,6 +526,19 @@ class NotificationService
     mailer.member_invited_email(member.real_source_type, member.id, token).deliver_later
   end
 
+  def new_member(member)
+    notifiable_options = case member.source
+                         when Group
+                           {}
+                         when Project
+                           { skip_read_ability: true }
+                         end
+
+    return true unless member.notifiable?(:mention, notifiable_options)
+
+    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
+  end
+
   def accept_project_invite(project_member)
     return true unless project_member.notifiable?(:subscription)
 
@@ -545,12 +558,6 @@ class NotificationService
     mailer.member_expiration_date_updated_email(member.real_source_type, member.id).deliver_later
   end
 
-  def new_project_member(project_member)
-    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
-
-    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
-  end
-
   def member_about_to_expire(member)
     return true unless member.notifiable?(:mention)
 
@@ -563,12 +570,6 @@ class NotificationService
 
   def accept_group_invite(group_member)
     mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def new_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

@@ -41,10 +41,10 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
 ### Writing
 
-- Follow [Pajamas](https://design.gitlab.com/content/punctuation/) as the primary
+- Follow [Pajamas](https://design.gitlab.com/content/ui-text/) as the primary
   guidelines for UI text and [documentation style guide](../documentation/styleguide/index.md)
   as the secondary.
-- Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
+- Use clear and consistent terminology.
 - Check grammar and spelling.
 - Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
 - Request review from the [appropriate Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments),

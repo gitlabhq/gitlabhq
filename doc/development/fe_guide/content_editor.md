@@ -46,7 +46,7 @@ export default {
 The rich text editor requires two properties:
 
 - `renderMarkdown` is an asynchronous function that returns the response (String) of invoking the
-[Markdown API](../../api/markdown.md).
+  [Markdown API](../../api/markdown.md).
 - `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/index.md)
   with `multipart/form-data` support.
 

@@ -489,6 +489,26 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
     end
   end
 
+  describe '.allow_within_concurrent_ruby' do
+    it 'assigns restrict_within_concurrent_ruby false to the current thread and ensures it restores' do
+      expect(Thread.current[:restrict_within_concurrent_ruby]).to be_nil
+
+      described_class.allow_within_concurrent_ruby do
+        expect(Thread.current[:restrict_within_concurrent_ruby]).to be(false)
+      end
+
+      expect(Thread.current[:restrict_within_concurrent_ruby]).to be_nil
+    end
+
+    it 'overrides the value of restrict_within_concurrent_ruby' do
+      described_class.restrict_within_concurrent_ruby do
+        described_class.allow_within_concurrent_ruby do
+          expect(Thread.current[:restrict_within_concurrent_ruby]).to be(false)
+        end
+      end
+    end
+  end
+
   describe '.raise_if_concurrent_ruby!' do
     subject(:raise_if_concurrent_ruby!) { described_class.raise_if_concurrent_ruby!('test') }
 

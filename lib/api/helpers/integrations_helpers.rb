@@ -418,14 +418,7 @@ module API
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
             }
           ],
-          'mattermost-slash-commands' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Mattermost token'
-            }
-          ],
+          'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
           'slack-slash-commands' => [
             {
               required: true,

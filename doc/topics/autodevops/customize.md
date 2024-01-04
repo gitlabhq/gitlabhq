@@ -266,12 +266,12 @@ To add custom behaviors to the CI/CD pipeline used by Auto DevOps:
    ```
 
 1. Add your changes to the `.gitlab-ci.yml` file. Your changes are merged with the Auto DevOps template. For more information about
-how `include` merges your changes, see [the `include` documentation](../../ci/yaml/index.md#include).
+   how `include` merges your changes, see [the `include` documentation](../../ci/yaml/index.md#include).
 
 To remove behaviors from the Auto DevOps pipeline:
 
 1. Copy the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
-into your project.
+   into your project.
 1. Edit your copy of the template as needed.
 
 ### Use individual components of Auto DevOps

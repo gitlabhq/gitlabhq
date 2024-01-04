@@ -47,7 +47,7 @@ Management projects are restricted to the following:
 To use a cluster management project to manage your cluster:
 
 1. Create a new project to serve as the cluster management project
-for your cluster.
+   for your cluster.
 1. [Associate the cluster with the management project](#associate-the-cluster-management-project-with-the-cluster).
 1. [Configure your cluster's pipelines](#configuring-your-pipeline).
 1. [Set the environment scope](#setting-the-environment-scope).
@@ -66,7 +66,7 @@ To associate a cluster management project with your cluster:
      1. Select **Kubernetes**.
 1. Expand **Advanced settings**.
 1. From the **Cluster management project** dropdown list, select the cluster management project
-you created in the previous step.
+   you created in the previous step.
 
 ### Configuring your pipeline
 

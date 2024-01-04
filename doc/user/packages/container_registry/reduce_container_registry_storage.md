@@ -191,14 +191,14 @@ To create a cleanup policy in the UI:
 1. In the **Cleanup policies** section, select **Set cleanup rules**.
 1. Complete the fields:
 
-   | Field                      | Description                                     |
-   |----------------------------|-------------------------------------------------|
-   | **Toggle**                 | Turn the policy on or off.                      |
-   | **Run cleanup**            | How often the policy should run.                |
-   | **Keep the most recent**   | How many tags to _always_ keep for each image.  |
+   | Field                      | Description |
+   |----------------------------|-------------|
+   | **Toggle**                 | Turn the policy on or off. |
+   | **Run cleanup**            | How often the policy should run. |
+   | **Keep the most recent**   | How many tags to _always_ keep for each image. |
    | **Keep tags matching**     | A regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-   | **Remove tags older than** | Remove only tags older than X days.             |
-   | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples).             |
+   | **Remove tags older than** | Remove only tags older than X days. |
+   | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
 1. Select **Save**.
 
@@ -275,9 +275,9 @@ You can use the following application settings to prevent server resource starva
 
 For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-  ```ruby
-  ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
-  ```
+```ruby
+ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
+```
 
 They are also available in the [administrator area](../../../administration/admin_area.md):
 
@@ -292,7 +292,7 @@ You can set, update, and disable the cleanup policies using the GitLab API.
 Examples:
 
 - Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve
-any images with the name `main`, and the policy is enabled:
+  any images with the name `main`, and the policy is enabled:
 
   ```shell
   curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \

@@ -25,7 +25,7 @@ See the prerequisites below to add existing clusters to GitLab.
 To add any cluster to GitLab, you need:
 
 - Either a GitLab.com account or an account for a self-managed installation
-running GitLab 12.5 or later.
+  running GitLab 12.5 or later.
 - The Maintainer role for group-level and project-level clusters.
 - Access to the Admin Area for instance-level clusters.
 - A Kubernetes cluster.
@@ -48,7 +48,7 @@ To add an existing **EKS** cluster, you need:
 
 - An Amazon EKS cluster with worker nodes properly configured.
 - `kubectl` [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
-for access to the EKS cluster.
+  for access to the EKS cluster.
 - Ensure the token of the account has administrator privileges for the cluster.
 
 ### GKE clusters
@@ -56,8 +56,8 @@ for access to the EKS cluster.
 To add an existing **GKE** cluster, you need:
 
 - The `container.clusterRoleBindings.create` permission to create a cluster
-role binding. You can follow the [Google Cloud documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
-to grant access.
+  role binding. You can follow the [Google Cloud documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
+  to grant access.
 
 ## How to add an existing cluster
 

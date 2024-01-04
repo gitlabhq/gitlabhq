@@ -55,8 +55,19 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       end
 
       context 'when there is a DB call in the concurrent thread' do
-        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432145' do
+        before do
+          # Simulating Sentry is active and configured.
+          # More info: https://gitlab.com/gitlab-org/gitlab/-/issues/432145#note_1671305713
+          stub_sentry_settings
+          allow(Gitlab::ErrorTracking).to receive(:sentry_configurable?).and_return(true)
+          Gitlab::ErrorTracking.configure
+        end
+
+        after do
+          clear_sentry_settings
+        end
+
+        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error' do
           stub_request(:get, 'http://example.org').to_return(status: 200, body: 'hello world')
 
           result = described_class.get('http://example.org', async: true) do |_fragment|

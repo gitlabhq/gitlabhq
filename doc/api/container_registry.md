@@ -33,13 +33,11 @@ PUT /projects/:id/
 Descriptions of the possible values for `container_registry_access_level`:
 
 - **enabled** (Default): The container registry is visible to everyone with access to the project.
-If the project is public, the container registry is also public. If the project is internal or
-private, the container registry is also internal or private.
-
+  If the project is public, the container registry is also public. If the project is internal or
+  private, the container registry is also internal or private.
 - **private**: The container registry is visible only to project members with Reporter role or
-higher. This behavior is similar to that of a private project with container registry visibility set
-to **enabled**.
-
+  higher. This behavior is similar to that of a private project with container registry visibility set
+  to **enabled**.
 - **disabled**: The container registry is disabled.
 
 See the [container registry visibility permissions](../user/packages/container_registry/index.md#container-registry-visibility-permissions)

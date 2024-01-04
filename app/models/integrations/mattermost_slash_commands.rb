@@ -6,8 +6,10 @@ module Integrations
 
     field :token,
       type: :password,
+      description: -> { _('The Mattermost token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
+      required: true,
       placeholder: ''
 
     def testable?

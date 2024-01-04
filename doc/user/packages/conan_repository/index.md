@@ -318,11 +318,11 @@ To search by full or partial package name, or by exact recipe, run the
 The scope of your search depends on your Conan remote configuration:
 
 - If you have a remote configured for your [instance](#add-a-remote-for-your-instance), your search includes
-all projects you have permission to access. This includes your private projects
- as well as all public projects.
+  all projects you have permission to access. This includes your private projects
+  as well as all public projects.
 
 - If you have a remote configured for a [project](#add-a-remote-for-your-project), your search includes all
-packages in the target project, as long as you have permission to access it.
+  packages in the target project, as long as you have permission to access it.
 
 NOTE:
 The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.

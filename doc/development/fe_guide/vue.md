@@ -543,7 +543,7 @@ Based on the Vue guidance:
 - **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data).
 - **Do not** add new JavaScript class implementations.
 - **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
-cannot use primitives or objects.
+  cannot use primitives or objects.
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
 - **Do** add business logic to helpers or utilities, so you can test them separately from your component.
@@ -555,7 +555,7 @@ Additional reasons why having a JavaScript class presents maintainability issues
 - After a class is created, it can be extended in a way that can infringe Vue reactivity and best practices.
 - A class adds a layer of abstraction, which makes the component API and its inner workings less clear.
 - It makes it harder to test. Because the class is instantiated by the component data function, it is
-harder to 'manage' component and class separately.
+  harder to 'manage' component and class separately.
 - Adding Object Oriented Principles (OOP) to a functional codebase adds another way of writing code, reducing consistency and clarity.
 
 ## Style guide
@@ -831,7 +831,7 @@ describe('~/todos/app.vue', () => {
 
 1. Test any directive that defines if/how child component is rendered (for example, `v-if` and `v-for`).
 1. Test any props we are passing to child components (especially if the prop is calculated in the
-component under test, with the `computed` property, for example). Remember to use `.props()` and not `.vm.someProp`.
+   component under test, with the `computed` property, for example). Remember to use `.props()` and not `.vm.someProp`.
 1. Test we react correctly to any events emitted from child components:
 
   ```javascript

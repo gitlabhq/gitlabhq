@@ -414,12 +414,12 @@ the queries, where the `issues` table is batched first.
 When to use `JOINS`:
 
 - When there's a 1:1 or 1:N relationship between the tables where we know that the joined record
-(almost) always exists. This works well for "extension-like" tables:
+  (almost) always exists. This works well for "extension-like" tables:
   - `projects` - `project_settings`
   - `users` - `user_details`
   - `users` - `user_statuses`
 - `LEFT JOIN` works well in this case. Conditions on the joined table need to go to the yielded
-relation so the iteration is not affected by the data distribution in the joined table.
+  relation so the iteration is not affected by the data distribution in the joined table.
 
 Example:
 
@@ -555,7 +555,7 @@ table or a range of rows. The scaling and performance characteristics are very s
 Examples:
 
 - Iterate over the table in a specific order (timestamp columns) in combination with a tie-breaker
-if column user to sort by does not contain unique values.
+  if column user to sort by does not contain unique values.
 - Iterate over the table with composite primary keys.
 
 ### Iterate over the issues in a project by creation date
@@ -619,8 +619,8 @@ To keep the iteration stable and predictable, avoid updating the columns in the 
 
 ### Iterate over the `merge_request_diff_commits` table
 
-The `merge_request_diff_commits` table uses a composite primary key (`merge_request_diff_id,
-relative_order`), which makes `EachBatch` impossible to use efficiently.
+The `merge_request_diff_commits` table uses a composite primary key (`merge_request_diff_id, relative_order`),
+which makes `EachBatch` impossible to use efficiently.
 
 To paginate over the `merge_request_diff_commits` table, you can use the following snippet:
 
@@ -654,7 +654,7 @@ end
 ### Order object configuration
 
 Keyset pagination works well with simple `ActiveRecord` `order` scopes
-([first example](#iterate-over-the-issues-in-a-project-by-creation-date).
+([first example](#iterate-over-the-issues-in-a-project-by-creation-date)).
 However, in special cases, you need to describe the columns in the `ORDER BY` clause (second example)
 for the underlying keyset pagination library. When the `ORDER BY` configuration cannot be
 automatically determined by the keyset pagination library, an error is raised.

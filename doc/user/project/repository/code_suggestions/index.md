@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-With Code Suggestions, you get:
+With [GitLab Duo Code Suggestions](https://about.gitlab.com/solutions/code-suggestions/), you get:
 
 - Code Completion, which suggests completions to the current line you are typing. These suggestions are usually low latency.
 - Code Generation, which generates code based on a natural language code
@@ -26,7 +26,7 @@ With Code Suggestions, you get:
 
 GitLab Duo Code Suggestions are available:
 
-- On [self-managed](self_managed.md) and [SaaS](saas.md). View these pages to get started.
+- In the Premium and Ultimate tier for [self-managed](self_managed.md), and across all tiers for [SaaS](saas.md). View these pages to get started.
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
 - In the GitLab Web IDE.
 

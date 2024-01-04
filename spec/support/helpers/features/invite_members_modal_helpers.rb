@@ -66,6 +66,7 @@ module Features
 
     def choose_options(role, expires_at)
       page.within role_dropdown_selector do
+        wait_for_requests
         toggle_listbox
         select_listbox_item(role, exact_text: true)
       end

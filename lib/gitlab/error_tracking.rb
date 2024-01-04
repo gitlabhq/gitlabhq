@@ -158,10 +158,12 @@ module Gitlab
       end
 
       def process_exception(exception, extra:, tags: {}, trackers: default_trackers)
-        context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra, tags)
+        Gitlab::Utils.allow_within_concurrent_ruby do
+          context_payload = Gitlab::ErrorTracking::ContextPayloadGenerator.generate(exception, extra, tags)
 
-        trackers.each do |tracker|
-          tracker.capture_exception(exception, **context_payload)
+          trackers.each do |tracker|
+            tracker.capture_exception(exception, **context_payload)
+          end
         end
       end
 

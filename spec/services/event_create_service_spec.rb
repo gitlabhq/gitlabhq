@@ -364,19 +364,37 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  describe 'Project' do
-    describe '#join_project' do
-      subject { service.join_project(project, user) }
+  describe '#join_source' do
+    let(:source) { project }
 
-      it { is_expected.to be_truthy }
-      it { expect { subject }.to change { Event.count }.from(0).to(1) }
+    subject(:join_source) { service.join_source(source, user) }
+
+    context 'when source is a group' do
+      let_it_be(:source) { create(:group) }
+
+      it { is_expected.to be_falsey }
+
+      specify do
+        expect { join_source }.not_to change { Event.count }
+      end
     end
 
-    describe '#expired_leave_project' do
-      subject { service.expired_leave_project(project, user) }
-
+    context 'when source is a project' do
       it { is_expected.to be_truthy }
-      it { expect { subject }.to change { Event.count }.from(0).to(1) }
+
+      specify do
+        expect { join_source }.to change { Event.count }.from(0).to(1)
+      end
+    end
+  end
+
+  describe '#expired_leave_project' do
+    subject(:expired_leave_project) { service.expired_leave_project(project, user) }
+
+    it { is_expected.to be_truthy }
+
+    specify do
+      expect { expired_leave_project }.to change { Event.count }.from(0).to(1)
     end
   end
 
