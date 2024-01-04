@@ -43,15 +43,15 @@ RSpec.describe Resolvers::DesignManagement::VersionsResolver do
 
         context 'loading associations' do
           it 'prevents N+1 queries when loading author' do
-            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               resolve_versions(object).items.map(&:author)
-            end.count
+            end
 
             create_list(:design_version, 3, issue: issue)
 
             expect do
               resolve_versions(object).items.map(&:author)
-            end.not_to exceed_all_query_limit(control_count)
+            end.not_to exceed_all_query_limit(control)
           end
         end
       end

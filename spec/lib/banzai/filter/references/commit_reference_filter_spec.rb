@@ -283,11 +283,11 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
 
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
       markdown = commit_reference.to_s
-      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
-      end.count
+      end
 
-      expect(max_count).to eq 0
+      expect(control.count).to eq 0
 
       markdown = "#{commit_reference} 8b95f2f1 8b95f2f2 8b95f2f3 #{commit2_reference} #{commit3_reference}"
 
@@ -298,11 +298,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       # 1 for loading the namespaces associated to the project
       # 1 for loading the routes associated with the namespace
       # Total = 5
-      max_count += 5
-
       expect do
         reference_filter(markdown)
-      end.not_to exceed_all_query_limit(max_count)
+      end.not_to exceed_all_query_limit(control).with_threshold(5)
     end
   end
 end

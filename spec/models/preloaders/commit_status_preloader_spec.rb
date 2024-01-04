@@ -21,13 +21,13 @@ RSpec.describe Preloaders::CommitStatusPreloader do
     it 'prevents N+1 for specified relations', :use_sql_query_cache do
       execute
 
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         call_each_relation(statuses.sample(3))
       end
 
       expect do
         call_each_relation(statuses)
-      end.to issue_same_number_of_queries_as(control_count)
+      end.to issue_same_number_of_queries_as(control)
     end
 
     private

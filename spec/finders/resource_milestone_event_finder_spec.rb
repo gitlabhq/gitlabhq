@@ -49,8 +49,8 @@ RSpec.describe ResourceMilestoneEventFinder do
         milestone1 = create(:milestone, project: issue_project)
         milestone2 = create(:milestone, project: issue_project)
 
-        control_count = ActiveRecord::QueryRecorder.new { described_class.new(user, issue).execute }.count
-        expect(control_count).to eq(1) # 1 events query
+        control = ActiveRecord::QueryRecorder.new { described_class.new(user, issue).execute }
+        expect(control.count).to eq(1) # 1 events query
 
         create_event(milestone1, :add)
         create_event(milestone1, :remove)
@@ -60,7 +60,7 @@ RSpec.describe ResourceMilestoneEventFinder do
         create_event(milestone2, :remove)
 
         # 1 milestones + 1 project + 1 user + 4 ability
-        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control_count + 6)
+        expect { described_class.new(user, issue).execute }.not_to exceed_query_limit(control).with_threshold(6)
       end
     end
 

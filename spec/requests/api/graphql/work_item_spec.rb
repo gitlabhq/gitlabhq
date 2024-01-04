@@ -199,7 +199,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         it 'avoids N+1 queries' do
           post_graphql(query, current_user: current_user) # warm up
 
-          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             post_graphql(query, current_user: current_user)
           end
 
@@ -207,7 +207,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           expect do
             post_graphql(query, current_user: current_user)
-          end.not_to exceed_all_query_limit(control_count)
+          end.not_to exceed_all_query_limit(control)
         end
 
         context 'when user is guest' do

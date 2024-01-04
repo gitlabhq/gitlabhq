@@ -2461,23 +2461,27 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       it 'avoids N+1 cached queries when rendering html', :use_sql_query_cache, :request_store do
-        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
           subject.html_part
         end
 
         create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
 
-        expect { described_class.new_review_email(recipient.id, review.id).html_part }.not_to exceed_all_query_limit(control_count)
+        expect do
+          described_class.new_review_email(recipient.id, review.id).html_part
+        end.not_to exceed_all_query_limit(control)
       end
 
       it 'avoids N+1 cached queries when rendering text', :use_sql_query_cache, :request_store do
-        control_count = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(query_recorder_debug: true, skip_cached: false) do
           subject.text_part
         end
 
         create_list(:diff_note_on_merge_request, 3, review: review, project: project, author: review.author, noteable: merge_request)
 
-        expect { described_class.new_review_email(recipient.id, review.id).text_part }.not_to exceed_all_query_limit(control_count)
+        expect do
+          described_class.new_review_email(recipient.id, review.id).text_part
+        end.not_to exceed_all_query_limit(control)
       end
     end
 

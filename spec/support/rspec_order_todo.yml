@@ -7116,7 +7116,6 @@
 - './spec/models/concerns/counter_attribute_spec.rb'
 - './spec/models/concerns/cron_schedulable_spec.rb'
 - './spec/models/concerns/cross_database_modification_spec.rb'
-- './spec/models/concerns/database_event_tracking_spec.rb'
 - './spec/models/concerns/database_reflection_spec.rb'
 - './spec/models/concerns/delete_with_limit_spec.rb'
 - './spec/models/concerns/deployment_platform_spec.rb'

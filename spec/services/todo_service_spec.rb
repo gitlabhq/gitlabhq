@@ -1276,9 +1276,9 @@ RSpec.describe TodoService, feature_category: :team_planning do
         # Excluding queries for user permissions because those do execute N+1 queries
         allow_any_instance_of(User).to receive(:can?).and_return(true)
 
-        control_count = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }.count
+        control = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }
 
-        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control_count)
+        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control)
       end
     end
 

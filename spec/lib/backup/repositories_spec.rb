@@ -68,20 +68,20 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
     end
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         subject.dump(destination, backup_id)
-      end.count
+      end
 
       create_list(:project, 2, :repository)
       create_list(:snippet, 2, :repository)
 
-      # Number of expected queries are 2 more than control_count
+      # Number of expected queries are 2 more than control.count
       # to account for the queries for project.design_management_repository
       # for each project.
       # We are using 2 projects here.
       expect do
         subject.dump(destination, backup_id)
-      end.not_to exceed_query_limit(control_count + 2)
+      end.not_to exceed_query_limit(control).with_threshold(2)
     end
 
     describe 'storages' do

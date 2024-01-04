@@ -165,38 +165,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
       end
     end
 
-    describe '.database_event' do
-      context 'when the action is not passed in as a string' do
-        it 'allows symbols' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-
-          described_class.database_event('category', :some_action)
-        end
-
-        it 'allows nil' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-
-          described_class.database_event('category', nil)
-        end
-
-        it 'allows integers' do
-          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
-
-          described_class.database_event('category', 1)
-        end
-      end
-
-      it_behaves_like 'rescued error raised by destination class' do
-        let(:category) { 'Issue' }
-        let(:action) { 'created' }
-        let(:destination_class) { Gitlab::Tracking::Destinations::DatabaseEventsSnowplow }
-
-        subject(:tracking_method) { described_class.database_event(category, action) }
-      end
-
-      it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::DatabaseEventsSnowplow, :database_event
-    end
-
     describe '.event' do
       context 'when the action is not passed in as a string' do
         it 'allows symbols' do

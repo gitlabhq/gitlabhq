@@ -89,7 +89,7 @@ RSpec.shared_examples 'routable resource' do
 
       context 'when use_includes: true' do
         it 'includes route information when loading records' do
-          control_count = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new do
             described_class.where_full_path_in([record.full_path, record_2.full_path], use_includes: true)
               .map(&:route)
           end
@@ -103,7 +103,7 @@ RSpec.shared_examples 'routable resource' do
                 record_4.full_path
               ], use_includes: true)
               .map(&:route)
-          end.to issue_same_number_of_queries_as(control_count)
+          end.to issue_same_number_of_queries_as(control)
         end
       end
 

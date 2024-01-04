@@ -135,7 +135,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'lib/gitlab/gon_helper.rb'
     - 'lib/gitlab/monitor/demo_projects.rb'
     - 'lib/gitlab/qa.rb'
-    - 'lib/gitlab/tracking/destinations/database_events_snowplow.rb'
     - 'lib/gitlab/tracking/standard_context.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_ci_internal_pipelines_metric.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_issues_created_manually_from_alerts_metric.rb'

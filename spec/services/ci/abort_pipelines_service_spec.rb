@@ -70,12 +70,12 @@ RSpec.describe Ci::AbortPipelinesService, feature_category: :continuous_integrat
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new { abort_project_pipelines }.count
+        control = ActiveRecord::QueryRecorder.new { abort_project_pipelines }
 
         pipelines = create_list(:ci_pipeline, 5, :running, project: project)
         create_list(:ci_build, 5, :running, pipeline: pipelines.first)
 
-        expect { abort_project_pipelines }.not_to exceed_query_limit(control_count)
+        expect { abort_project_pipelines }.not_to exceed_query_limit(control)
       end
 
       context 'with live build logs' do

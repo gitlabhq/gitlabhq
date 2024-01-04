@@ -381,7 +381,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         # Set up all required variables
         get_pipeline_json
 
-        control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
+        control = ActiveRecord::QueryRecorder.new { get_pipeline_json }
 
         first_build = pipeline.builds.first
         first_build.tag_list << [:hello, :world]
@@ -391,9 +391,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         second_build.tag_list << [:docker, :ruby]
         create(:deployment, deployable: second_build)
 
-        new_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
-
-        expect(new_count).to be_within(1).of(control_count)
+        expect { get_pipeline_json }.not_to exceed_query_limit(control).with_threshold(1)
       end
     end
 
@@ -1074,7 +1072,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         clear_controller_memoization
 
-        control_count = ActiveRecord::QueryRecorder.new { get_test_report_json }.count
+        control = ActiveRecord::QueryRecorder.new { get_test_report_json }
 
         create(:ci_build, name: 'karma', pipeline: pipeline).tap do |build|
           create(:ci_job_artifact, :junit, job: build)
@@ -1082,7 +1080,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         clear_controller_memoization
 
-        expect { get_test_report_json }.not_to exceed_query_limit(control_count)
+        expect { get_test_report_json }.not_to exceed_query_limit(control)
       end
     end
 

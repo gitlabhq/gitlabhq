@@ -268,14 +268,7 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ],
-          'external-wiki' => [
-            {
-              required: true,
-              name: :external_wiki_url,
-              type: String,
-              desc: 'The URL of the external wiki'
-            }
-          ],
+          'external-wiki' => ::Integrations::ExternalWiki.api_fields,
           'google-play' => ::Integrations::GooglePlay.api_fields,
           'hangouts-chat' => [
             {

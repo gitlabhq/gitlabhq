@@ -1,8 +1,0 @@
----
-name: use_merge_approval_rules_when_merged
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129165
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422380
-milestone: '16.4'
-type: development
-group: group::code review
-default_enabled: false

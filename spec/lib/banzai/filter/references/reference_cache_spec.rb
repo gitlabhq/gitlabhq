@@ -70,13 +70,13 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       filter_single = filter_class.new(doc_single, project: project)
       cache_single = described_class.new(filter_single, { project: project }, {})
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         cache_single.load_references_per_parent(filter_single.nodes)
         cache_single.load_parent_per_reference
         cache_single.load_records_per_parent
-      end.count
+      end
 
-      expect(control_count).to eq 3
+      expect(control.count).to eq 3
       # Since this is an issue filter that is not batching issue queries
       # across projects, we have to account for that.
       # 1 for for routes to find routes.source_id of projects matching paths
@@ -88,13 +88,11 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       # 1x2 for groups
       # 1x2 for work_item_types
       # Total = 11
-      max_count = control_count + 8
-
       expect do
         cache.load_references_per_parent(filter.nodes)
         cache.load_parent_per_reference
         cache.load_records_per_parent
-      end.not_to exceed_query_limit(max_count)
+      end.not_to exceed_query_limit(control).with_threshold(8)
     end
   end
 

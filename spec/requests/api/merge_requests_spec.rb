@@ -193,7 +193,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
             control = ActiveRecord::QueryRecorder.new do
               get api(path, user)
-            end.count
+            end
 
             mr = create(:merge_request)
             create(:label_link, label: label, target: mr)
@@ -1232,7 +1232,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
         control = ActiveRecord::QueryRecorder.new do
           get api("/projects/#{project.id}/merge_requests", user)
-        end.count
+        end
 
         create(:merge_request, author: user, assignees: [user], source_project: project, target_project: project, created_at: base_time)
 

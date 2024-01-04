@@ -45,11 +45,11 @@ RSpec.describe MergeRequests::ReloadDiffsService, :use_clean_rails_memory_store_
         current_user
         merge_request
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           subject.execute
-        end.count
+        end
 
-        expect { subject.execute }.not_to exceed_query_limit(control_count)
+        expect { subject.execute }.not_to exceed_query_limit(control)
       end
     end
   end

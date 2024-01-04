@@ -114,13 +114,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         helper.group_title(nested_group)
       end
 
       expect do
         helper.group_title(very_deep_nested_group)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_query_limit(control)
     end
   end
 

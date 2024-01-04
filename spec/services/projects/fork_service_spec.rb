@@ -224,6 +224,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           it "creates fork with lowest level" do
             forked_project = fork_project(@from_project, @to_user, using_service: true)
 
+            expect(forked_project).to be_persisted
             expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
         end
@@ -233,10 +234,11 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE])
           end
 
-          it "creates fork with private visibility levels" do
+          it "doesn't create a fork" do
             forked_project = fork_project(@from_project, @to_user, using_service: true)
 
-            expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            expect(forked_project).not_to be_persisted
+            expect(forked_project.errors[:visibility_level]).to eq ['private has been restricted by your GitLab administrator']
           end
         end
       end

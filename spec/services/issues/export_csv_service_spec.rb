@@ -175,11 +175,11 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
         let(:labeled_issues) { create_list(:labeled_issue, 2, project: project, author: user, labels: [feature_label, idea_label]) }
 
         it 'does not run a query for each label link' do
-          control_count = ActiveRecord::QueryRecorder.new { csv }.count
+          control = ActiveRecord::QueryRecorder.new { csv }
 
           labeled_issues
 
-          expect { csv }.not_to exceed_query_limit(control_count)
+          expect { csv }.not_to exceed_query_limit(control)
           expect(csv.count).to eq(4)
         end
 

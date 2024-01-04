@@ -1842,11 +1842,11 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         it 'are returned without N + 1' do
           get api(route, current_user) # warm up the cache
 
-          control_count = ActiveRecord::QueryRecorder.new { get api(route, current_user) }.count
+          control = ActiveRecord::QueryRecorder.new { get api(route, current_user) }
 
           create(:diff_note_on_commit, project: project, author: create(:user))
 
-          expect { get api(route, current_user) }.not_to exceed_query_limit(control_count)
+          expect { get api(route, current_user) }.not_to exceed_query_limit(control)
         end
       end
     end
@@ -2386,11 +2386,11 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     it 'returns multiple merge requests without N + 1' do
       perform_request(user)
 
-      control_count = ActiveRecord::QueryRecorder.new { perform_request(user) }.count
+      control = ActiveRecord::QueryRecorder.new { perform_request(user) }
 
       create(:merge_request, :closed, source_project: project, source_branch: 'master', target_branch: 'feature')
 
-      expect { perform_request(user) }.not_to exceed_query_limit(control_count)
+      expect { perform_request(user) }.not_to exceed_query_limit(control)
     end
   end
 

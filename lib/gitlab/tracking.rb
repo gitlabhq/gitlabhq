@@ -33,21 +33,6 @@ module Gitlab
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
-      def database_event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
-        action = action.to_s
-        destination = Gitlab::Tracking::Destinations::DatabaseEventsSnowplow.new
-        contexts = [
-          Tracking::StandardContext.new(
-            namespace_id: namespace&.id,
-            plan_name: namespace&.actual_plan_name,
-            project_id: project&.id,
-            user_id: user&.id,
-            **extra).to_context, *context
-        ]
-
-        track_struct_event(destination, category, action, label: label, property: property, value: value, contexts: contexts)
-      end
-
       def definition(basename, category: nil, action: nil, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
         definition = YAML.load_file(Rails.root.join("config/events/#{basename}.yml"))
 

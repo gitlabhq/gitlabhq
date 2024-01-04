@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
-import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
-import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
 import CandidateListRow from '~/ml/model_registry/components/candidate_list_row.vue';
 import getModelCandidatesQuery from '~/ml/model_registry/graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
@@ -24,10 +22,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
   let wrapper;
   let apolloProvider;
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findLoader = () => wrapper.findComponent(PackagesListLoader);
-  const findRegistryList = () => wrapper.findComponent(RegistryList);
-  const findListRow = () => wrapper.findComponent(CandidateListRow);
+  const findSearchableList = () => wrapper.findComponent(SearchableList);
   const findAllRows = () => wrapper.findAllComponents(CandidateListRow);
 
   const mountComponent = ({
@@ -37,14 +32,11 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     const requestHandlers = [[getModelCandidatesQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMount(CandidateList, {
+    wrapper = mount(CandidateList, {
       apolloProvider,
       propsData: {
         modelId: 2,
         ...props,
-      },
-      stubs: {
-        RegistryList,
       },
     });
   };
@@ -60,24 +52,8 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       await waitForPromises();
     });
 
-    it('displays empty slot message', () => {
+    it('shows empty state', () => {
       expect(wrapper.text()).toContain('This model has no candidates');
-    });
-
-    it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
-    });
-
-    it('does not display rows', () => {
-      expect(findListRow().exists()).toBe(false);
-    });
-
-    it('does not display registry list', () => {
-      expect(findRegistryList().exists()).toBe(false);
-    });
-
-    it('does not display alert', () => {
-      expect(findAlert().exists()).toBe(false);
     });
   });
 
@@ -90,19 +66,9 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     });
 
     it('is displayed', () => {
-      expect(findAlert().exists()).toBe(true);
-    });
-
-    it('shows error message', () => {
-      expect(findAlert().text()).toContain('Failed to load model candidates with error: Failure!');
-    });
-
-    it('is not dismissible', () => {
-      expect(findAlert().props('dismissible')).toBe(false);
-    });
-
-    it('is of variant danger', () => {
-      expect(findAlert().attributes('variant')).toBe('danger');
+      expect(findSearchableList().props('errorMessage')).toBe(
+        'Failed to load model candidates with error: Failure!',
+      );
     });
 
     it('error is logged in sentry', () => {
@@ -116,21 +82,11 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       await waitForPromises();
     });
 
-    it('displays package registry list', () => {
-      expect(findRegistryList().exists()).toEqual(true);
+    it('Passes items to list', () => {
+      expect(findSearchableList().props('items')).toEqual(graphqlCandidates);
     });
 
-    it('binds the right props', () => {
-      expect(findRegistryList().props()).toMatchObject({
-        items: graphqlCandidates,
-        pagination: {},
-        isLoading: false,
-        hiddenDelete: true,
-      });
-    });
-
-    it('displays candidate rows', () => {
-      expect(findAllRows().exists()).toEqual(true);
+    it('displays package version rows', () => {
       expect(findAllRows()).toHaveLength(graphqlCandidates.length);
     });
 
@@ -143,17 +99,9 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
         candidate: expect.objectContaining(graphqlCandidates[1]),
       });
     });
-
-    it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
-    });
-
-    it('does not display empty message', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
   });
 
-  describe('when user interacts with pagination', () => {
+  describe('when list requests update', () => {
     const resolver = jest.fn().mockResolvedValue(modelCandidatesQuery());
 
     beforeEach(async () => {
@@ -161,21 +109,17 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       await waitForPromises();
     });
 
-    it('when list emits next-page fetches the next set of records', async () => {
-      findRegistryList().vm.$emit('next-page');
+    it('when list emits fetch-page fetches the next set of records', async () => {
+      findSearchableList().vm.$emit('fetch-page', {
+        after: 'eyJpZCI6IjIifQ',
+        first: 30,
+        id: 'gid://gitlab/Ml::Model/2',
+      });
+
       await waitForPromises();
 
       expect(resolver).toHaveBeenLastCalledWith(
         expect.objectContaining({ after: graphqlPageInfo.endCursor, first: GRAPHQL_PAGE_SIZE }),
-      );
-    });
-
-    it('when list emits prev-page fetches the prev set of records', async () => {
-      findRegistryList().vm.$emit('prev-page');
-      await waitForPromises();
-
-      expect(resolver).toHaveBeenLastCalledWith(
-        expect.objectContaining({ before: graphqlPageInfo.startCursor, last: GRAPHQL_PAGE_SIZE }),
       );
     });
   });

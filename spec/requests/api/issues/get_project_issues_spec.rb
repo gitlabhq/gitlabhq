@@ -233,9 +233,9 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       issues = create_list(:issue, 3, project: project, closed_by: user)
 
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
-      end.count
+      end
 
       milestone = create(:milestone, project: project)
       create(:issue, project: project, milestone: milestone, closed_by: create(:user))
@@ -245,7 +245,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
       expect do
         get api("/projects/#{project.id}/issues", user)
-      end.not_to exceed_all_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control)
     end
 
     it 'returns 404 when project does not exist' do
@@ -361,9 +361,9 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:label_c) { create(:label, title: 'bar', project: project) }
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/issues?with_labels_details=true", user)
-        end.count
+        end
 
         new_issue = create(:issue, project: project)
         create(:label_link, label: label, target: new_issue)
@@ -372,7 +372,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         expect do
           get api("/projects/#{project.id}/issues?with_labels_details=true", user)
-        end.not_to exceed_all_query_limit(control_count)
+        end.not_to exceed_all_query_limit(control)
       end
     end
 

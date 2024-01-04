@@ -656,12 +656,12 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       @project = create(:project)
 
       description = FFaker::Lorem.characters(210)
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { search_md_sanitize(description) }.count
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { search_md_sanitize(description) }
 
       issues = create_list(:issue, 4, project: @project)
 
       description_with_issues = description + ' ' + issues.map { |issue| "##{issue.iid}" }.join(' ')
-      expect { search_md_sanitize(description_with_issues) }.not_to exceed_all_query_limit(control_count)
+      expect { search_md_sanitize(description_with_issues) }.not_to exceed_all_query_limit(control)
     end
   end
 

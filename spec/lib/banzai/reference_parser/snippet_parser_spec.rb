@@ -37,11 +37,11 @@ RSpec.describe Banzai::ReferenceParser::SnippetParser, feature_category: :team_p
         # Run this once to establish a baseline
         visible_references(:public)
 
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           subject.nodes_visible_to_user(user, [link])
         end
 
-        expect { subject.nodes_visible_to_user(user, Array.new(10, link)) }.not_to exceed_all_query_limit(control_count.count)
+        expect { subject.nodes_visible_to_user(user, Array.new(10, link)) }.not_to exceed_all_query_limit(control)
       end
 
       it 'creates a reference for guest for a public snippet' do

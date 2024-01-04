@@ -244,7 +244,7 @@ malicious code can compromise both masked and protected variables.
 
 Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 and stored in the database. This data can only be read and decrypted with a
-valid [secrets file](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost).
+valid [secrets file](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Mask a CI/CD variable
 

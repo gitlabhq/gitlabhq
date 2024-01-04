@@ -965,7 +965,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
         expect do
           get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
-        end.not_to exceed_query_limit(control.count)
+        end.not_to exceed_query_limit(control)
       end
 
       it 'batches loading of commits' do

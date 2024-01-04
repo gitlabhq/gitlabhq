@@ -135,11 +135,11 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
     it 'returns multiple deploy keys without N + 1' do
       perform_request
 
-      control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+      control = ActiveRecord::QueryRecorder.new { perform_request }
 
       create(:deploy_key, public: true, projects: [project], user: maintainer)
 
-      expect { perform_request }.not_to exceed_query_limit(control_count)
+      expect { perform_request }.not_to exceed_query_limit(control)
     end
   end
 

@@ -171,12 +171,12 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
         new_branches_count = 20
         sql_queries_count_threshold = 10
 
-        control_count = ActiveRecord::QueryRecorder.new { visit project_branches_path(project) }.count
+        control = ActiveRecord::QueryRecorder.new { visit project_branches_path(project) }
 
         (1..new_branches_count).each { |number| repository.add_branch(user, "new-branch-#{number}", 'master') }
 
         expect { visit project_branches_filtered_path(project, state: 'all') }
-          .not_to exceed_query_limit(control_count).with_threshold(sql_queries_count_threshold)
+          .not_to exceed_query_limit(control).with_threshold(sql_queries_count_threshold)
       end
     end
 

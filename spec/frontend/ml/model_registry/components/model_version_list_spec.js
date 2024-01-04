@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
-import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
-import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
 import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vue';
 import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
 import EmptyState from '~/ml/model_registry/components/empty_state.vue';
@@ -25,11 +23,8 @@ describe('ModelVersionList', () => {
   let wrapper;
   let apolloProvider;
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findLoader = () => wrapper.findComponent(PackagesListLoader);
-  const findRegistryList = () => wrapper.findComponent(RegistryList);
+  const findSearchableList = () => wrapper.findComponent(SearchableList);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
-  const findListRow = () => wrapper.findComponent(ModelVersionRow);
   const findAllRows = () => wrapper.findAllComponents(ModelVersionRow);
 
   const mountComponent = ({
@@ -39,14 +34,11 @@ describe('ModelVersionList', () => {
     const requestHandlers = [[getModelVersionsQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMountExtended(ModelVersionList, {
+    wrapper = mountExtended(ModelVersionList, {
       apolloProvider,
       propsData: {
         modelId: 2,
         ...props,
-      },
-      stubs: {
-        RegistryList,
       },
     });
   };
@@ -65,22 +57,6 @@ describe('ModelVersionList', () => {
     it('shows empty state', () => {
       expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.modelVersion);
     });
-
-    it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
-    });
-
-    it('does not display rows', () => {
-      expect(findListRow().exists()).toBe(false);
-    });
-
-    it('does not display registry list', () => {
-      expect(findRegistryList().exists()).toBe(false);
-    });
-
-    it('does not display alert', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
   });
 
   describe('if load fails, alert', () => {
@@ -92,19 +68,9 @@ describe('ModelVersionList', () => {
     });
 
     it('is displayed', () => {
-      expect(findAlert().exists()).toBe(true);
-    });
-
-    it('shows error message', () => {
-      expect(findAlert().text()).toContain('Failed to load model versions with error: Failure!');
-    });
-
-    it('is not dismissible', () => {
-      expect(findAlert().props('dismissible')).toBe(false);
-    });
-
-    it('is of variant danger', () => {
-      expect(findAlert().attributes('variant')).toBe('danger');
+      expect(findSearchableList().props('errorMessage')).toBe(
+        'Failed to load model versions with error: Failure!',
+      );
     });
 
     it('error is logged in sentry', () => {
@@ -118,21 +84,11 @@ describe('ModelVersionList', () => {
       await waitForPromises();
     });
 
-    it('displays package registry list', () => {
-      expect(findRegistryList().exists()).toEqual(true);
-    });
-
-    it('binds the right props', () => {
-      expect(findRegistryList().props()).toMatchObject({
-        items: graphqlModelVersions,
-        pagination: {},
-        isLoading: false,
-        hiddenDelete: true,
-      });
+    it('Passes items to list', () => {
+      expect(findSearchableList().props('items')).toEqual(graphqlModelVersions);
     });
 
     it('displays package version rows', () => {
-      expect(findAllRows().exists()).toEqual(true);
       expect(findAllRows()).toHaveLength(graphqlModelVersions.length);
     });
 
@@ -145,17 +101,9 @@ describe('ModelVersionList', () => {
         modelVersion: expect.objectContaining(graphqlModelVersions[1]),
       });
     });
-
-    it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
-    });
-
-    it('does not display empty state', () => {
-      expect(findEmptyState().exists()).toBe(false);
-    });
   });
 
-  describe('when user interacts with pagination', () => {
+  describe('when list requests update', () => {
     const resolver = jest.fn().mockResolvedValue(modelVersionsQuery());
 
     beforeEach(async () => {
@@ -163,21 +111,17 @@ describe('ModelVersionList', () => {
       await waitForPromises();
     });
 
-    it('when list emits next-page fetches the next set of records', async () => {
-      findRegistryList().vm.$emit('next-page');
+    it('when list emits fetch-page fetches the next set of records', async () => {
+      findSearchableList().vm.$emit('fetch-page', {
+        after: 'eyJpZCI6IjIifQ',
+        first: 30,
+        id: 'gid://gitlab/Ml::Model/2',
+      });
+
       await waitForPromises();
 
       expect(resolver).toHaveBeenLastCalledWith(
         expect.objectContaining({ after: graphqlPageInfo.endCursor, first: GRAPHQL_PAGE_SIZE }),
-      );
-    });
-
-    it('when list emits prev-page fetches the prev set of records', async () => {
-      findRegistryList().vm.$emit('prev-page');
-      await waitForPromises();
-
-      expect(resolver).toHaveBeenLastCalledWith(
-        expect.objectContaining({ before: graphqlPageInfo.startCursor, last: GRAPHQL_PAGE_SIZE }),
       );
     });
   });

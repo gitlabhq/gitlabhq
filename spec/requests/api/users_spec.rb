@@ -265,9 +265,9 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           end
 
           it 'avoids N+1 queries when requested by admin' do
-            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               get api(path, admin)
-            end.count
+            end
 
             create_list(:user, 3)
 
@@ -277,19 +277,19 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
             expect do
               get api(path, admin)
-            end.not_to exceed_all_query_limit(control_count + 3)
+            end.not_to exceed_all_query_limit(control).with_threshold(3)
           end
 
           it 'avoids N+1 queries when requested by a regular user' do
-            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               get api(path, user)
-            end.count
+            end
 
             create_list(:user, 3)
 
             expect do
               get api(path, user)
-            end.not_to exceed_all_query_limit(control_count)
+            end.not_to exceed_all_query_limit(control)
           end
         end
 
@@ -2272,16 +2272,16 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         it 'avoids N+1 queries' do
           second_project.add_maintainer(user)
 
-          control_count = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new do
             get api(path, user)
-          end.count
+          end
 
           deploy_key = create(:deploy_key, user: second_user)
           create(:deploy_keys_project, project: second_project, deploy_key_id: deploy_key.id)
 
           expect do
             get api(path, user)
-          end.not_to exceed_query_limit(control_count)
+          end.not_to exceed_query_limit(control)
         end
       end
     end
@@ -2328,15 +2328,15 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       end
 
       it 'avoids N+1 queries', :request_store do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           request
-        end.count
+        end
 
         create_list(:key, 2, user: user)
 
         expect do
           request
-        end.not_to exceed_all_query_limit(control_count)
+        end.not_to exceed_all_query_limit(control)
       end
     end
   end
@@ -3044,15 +3044,15 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         end
 
         it 'avoids N+1 queries', :request_store do
-          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             request
-          end.count
+          end
 
           create_list(:key, 2, user: user)
 
           expect do
             request
-          end.not_to exceed_all_query_limit(control_count)
+          end.not_to exceed_all_query_limit(control)
         end
       end
 

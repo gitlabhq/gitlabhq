@@ -141,11 +141,11 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
     it 'returns multiple issues without performing N + 1' do
       perform_request
 
-      control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+      control = ActiveRecord::QueryRecorder.new { perform_request }
 
       create(:issue, project: project, milestone: milestone)
 
-      expect { perform_request }.not_to exceed_query_limit(control_count)
+      expect { perform_request }.not_to exceed_query_limit(control)
     end
   end
 

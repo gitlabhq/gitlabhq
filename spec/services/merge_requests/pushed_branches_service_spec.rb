@@ -37,11 +37,11 @@ RSpec.describe MergeRequests::PushedBranchesService, feature_category: :source_c
     end
 
     it 'returns empty result without any SQL query performed' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         expect(service.execute).to be_empty
-      end.count
+      end
 
-      expect(control_count).to be_zero
+      expect(control.count).to be_zero
     end
   end
 end

@@ -89,11 +89,11 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
     it 'avoids N+1 queries', :request_store do
       get :edit, params: { id: runner.id }
 
-      control_count = ActiveRecord::QueryRecorder.new { get :edit, params: { id: runner.id } }.count
+      control = ActiveRecord::QueryRecorder.new { get :edit, params: { id: runner.id } }
 
       # There is one additional query looking up subject.group in ProjectPolicy for the
       # needs_new_sso_session permission
-      expect { get :edit, params: { id: runner.id } }.not_to exceed_query_limit(control_count + 1)
+      expect { get :edit, params: { id: runner.id } }.not_to exceed_query_limit(control).with_threshold(1)
 
       expect(response).to have_gitlab_http_status(:ok)
     end

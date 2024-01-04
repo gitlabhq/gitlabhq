@@ -621,7 +621,7 @@ to back up the `gitlab.rb` file.
 
 WARNING:
 [Backing up the GitLab secrets file](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) is required
-to avoid [complicated steps](../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
+to avoid [complicated steps](../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
 GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.json` inside the container, or
 `$GITLAB_HOME/config/gitlab-secrets.json` [on the container host](#set-up-the-volumes-location).
 

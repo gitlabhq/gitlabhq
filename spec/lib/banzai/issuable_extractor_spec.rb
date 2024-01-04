@@ -45,9 +45,9 @@ RSpec.describe Banzai::IssuableExtractor, feature_category: :team_planning do
 
       second_call_queries = ActiveRecord::QueryRecorder.new do
         extractor.extract([issue_link, work_item_link, merge_request_link])
-      end.count
+      end
 
-      expect(second_call_queries).to eq 0
+      expect(second_call_queries.count).to eq 0
     end
   end
 end

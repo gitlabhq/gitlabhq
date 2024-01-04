@@ -897,12 +897,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'does not cause N+1 query in fetching registries' do
         stub_container_registry_tags(repository: :any, tags: [])
-        control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
+        control = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }
 
         other_repositories = create_list(:container_repository, 2)
         create(:project, namespace: namespace, container_repositories: other_repositories)
 
-        expect { namespace.first_project_with_container_registry_tags }.not_to exceed_query_limit(control_count + 1)
+        expect do
+          namespace.first_project_with_container_registry_tags
+        end.not_to exceed_query_limit(control).with_threshold(1)
       end
     end
 

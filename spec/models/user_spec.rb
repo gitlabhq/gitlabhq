@@ -4573,13 +4573,13 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'avoids N+1 queries' do
           fresh_user = described_class.find(user.id)
-          control_count = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new do
             fresh_user.solo_owned_groups
-          end.count
+          end
 
           create(:group).add_owner(user)
 
-          expect { solo_owned_groups }.not_to exceed_query_limit(control_count)
+          expect { solo_owned_groups }.not_to exceed_query_limit(control)
         end
       end
     end

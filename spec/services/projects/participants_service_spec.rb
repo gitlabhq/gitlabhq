@@ -43,27 +43,27 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
       it 'avoids N+1 UserDetail queries' do
         project.add_developer(create(:user))
 
-        control_count = ActiveRecord::QueryRecorder.new { run_service.to_a }.count
+        control = ActiveRecord::QueryRecorder.new { run_service.to_a }
 
         BatchLoader::Executor.clear_current
 
         project.add_developer(create(:user, status: build(:user_status, availability: :busy)))
 
-        expect { run_service.to_a }.not_to exceed_query_limit(control_count)
+        expect { run_service.to_a }.not_to exceed_query_limit(control)
       end
 
       it 'avoids N+1 groups queries' do
         group_1 = create(:group)
         group_1.add_owner(user)
 
-        control_count = ActiveRecord::QueryRecorder.new { run_service }.count
+        control = ActiveRecord::QueryRecorder.new { run_service }
 
         BatchLoader::Executor.clear_current
 
         group_2 = create(:group)
         group_2.add_owner(user)
 
-        expect { run_service }.not_to exceed_query_limit(control_count)
+        expect { run_service }.not_to exceed_query_limit(control)
       end
     end
 

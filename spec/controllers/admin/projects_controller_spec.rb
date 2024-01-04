@@ -49,11 +49,11 @@ RSpec.describe Admin::ProjectsController do
     it 'does not have N+1 queries', :use_clean_rails_memory_store_caching, :request_store do
       get :index
 
-      control_count = ActiveRecord::QueryRecorder.new { get :index }.count
+      control = ActiveRecord::QueryRecorder.new { get :index }
 
       create(:project)
 
-      expect { get :index }.not_to exceed_query_limit(control_count)
+      expect { get :index }.not_to exceed_query_limit(control)
     end
   end
 

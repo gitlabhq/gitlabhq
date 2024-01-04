@@ -2425,7 +2425,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/terraform_registry_token_spec.rb'
     - 'spec/lib/gitlab/throttle_spec.rb'
     - 'spec/lib/gitlab/time_tracking_formatter_spec.rb'
-    - 'spec/lib/gitlab/tracking/destinations/database_events_snowplow_spec.rb'
     - 'spec/lib/gitlab/tracking/destinations/snowplow_micro_spec.rb'
     - 'spec/lib/gitlab/tracking/destinations/snowplow_spec.rb'
     - 'spec/lib/gitlab/tracking_spec.rb'

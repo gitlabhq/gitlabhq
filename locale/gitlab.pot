@@ -172,11 +172,6 @@ msgid_plural "%d authors"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d candidate"
-msgid_plural "%d candidates"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -20341,6 +20336,9 @@ msgid "ExternalWikiService|External wiki URL"
 msgstr ""
 
 msgid "ExternalWikiService|Link to an external wiki from the sidebar."
+msgstr ""
+
+msgid "ExternalWikiService|URL of the external wiki."
 msgstr ""
 
 msgid "ExternalWikiService|https://example.com/xxx/wiki/..."
@@ -54011,6 +54009,9 @@ msgid "VulnerabilityExport|Details"
 msgstr ""
 
 msgid "VulnerabilityExport|Detected At"
+msgstr ""
+
+msgid "VulnerabilityExport|Dismissal Reason"
 msgstr ""
 
 msgid "VulnerabilityExport|Full Path"

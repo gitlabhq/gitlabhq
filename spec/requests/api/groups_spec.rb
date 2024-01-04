@@ -660,24 +660,24 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         get api("/groups/#{group1.id}", user1)
         expect(response).to have_gitlab_http_status(:ok)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get api("/groups/#{group1.id}", user1)
-        end.count
+        end
 
         create(:project, namespace: group1)
 
         expect do
           get api("/groups/#{group1.id}", user1)
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
 
       it 'avoids N+1 queries with shared group links' do
         # setup at least 1 shared group, so that we record the queries that preload the nested associations too.
         create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get api("/groups/#{group1.id}", user1)
-        end.count
+        end
 
         # setup "n" more shared groups
         create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
@@ -686,7 +686,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         # test that no of queries for 1 shared group is same as for n shared groups
         expect do
           get api("/groups/#{group1.id}", user1)
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
     end
 
@@ -1364,15 +1364,15 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         get api("/groups/#{group1.id}/projects", user1)
         expect(response).to have_gitlab_http_status(:ok)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get api("/groups/#{group1.id}/projects", user1)
-        end.count
+        end
 
         create(:project, namespace: group1)
 
         expect do
           get api("/groups/#{group1.id}/projects", user1)
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
     end
 
@@ -1563,15 +1563,15 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         subject
         expect(response).to have_gitlab_http_status(:ok)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           subject
-        end.count
+        end
 
         create(:project_group_link, project: create(:project), group: group1)
 
         expect do
           subject
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
     end
 

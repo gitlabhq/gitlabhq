@@ -42,11 +42,15 @@ RSpec.describe Labels::AvailableLabelsService, feature_category: :team_planning 
 
         it 'do not cause additional query for finding labels' do
           label_titles = [project_label.title]
-          control_count = ActiveRecord::QueryRecorder.new { described_class.new(user, project, labels: label_titles).find_or_create_by_titles }
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.new(user, project, labels: label_titles).find_or_create_by_titles
+          end
 
           new_label = create(:label, project: project)
           label_titles = [project_label.title, new_label.title]
-          expect { described_class.new(user, project, labels: label_titles).find_or_create_by_titles }.not_to exceed_query_limit(control_count)
+          expect do
+            described_class.new(user, project, labels: label_titles).find_or_create_by_titles
+          end.not_to exceed_query_limit(control)
         end
       end
     end

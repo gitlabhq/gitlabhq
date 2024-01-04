@@ -644,7 +644,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `external_wiki_url` | string | true | The URL of the external wiki. |
+| `external_wiki_url` | string | true | URL of the external wiki. |
 
 ### Disable an external wiki
 

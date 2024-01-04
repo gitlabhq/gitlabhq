@@ -259,15 +259,15 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
           # warm up
           filter(link, context)
 
-          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             filter(link, context)
-          end.count
+          end
 
-          expect(control_count).to eq 12
+          expect(control.count).to eq 12
 
           expect do
             filter("#{link} #{link2}", context)
-          end.not_to exceed_all_query_limit(control_count)
+          end.not_to exceed_all_query_limit(control)
         end
       end
     end
@@ -419,15 +419,15 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
           # warm up
           filter(link, context)
 
-          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             filter(link, context)
-          end.count
+          end
 
-          expect(control_count).to eq 10
+          expect(control.count).to eq 10
 
           expect do
             filter("#{link} #{link2}", context)
-          end.not_to exceed_all_query_limit(control_count)
+          end.not_to exceed_all_query_limit(control)
         end
       end
     end

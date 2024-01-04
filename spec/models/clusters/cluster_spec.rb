@@ -576,9 +576,9 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
       it 'avoids N+1 queries' do
         another_project = create(:project)
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           described_class.ancestor_clusters_for_clusterable(another_project, hierarchy_order: hierarchy_order)
-        end.count
+        end
 
         cluster2 = create(:cluster, :provided_by_gcp, :group)
         child2 = cluster2.group
@@ -587,7 +587,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
         expect do
           described_class.ancestor_clusters_for_clusterable(project, hierarchy_order: hierarchy_order)
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
 
       context 'for a group' do

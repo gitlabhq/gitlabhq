@@ -81,20 +81,4 @@ RSpec.describe Analytics::CycleAnalytics::Stage, feature_category: :value_stream
       expect(current_event_pairs).to eq(expected_event_pairs)
     end
   end
-
-  it_behaves_like 'database events tracking' do
-    let(:namespace) { create(:group) }
-    let(:value_stream) { create(:cycle_analytics_value_stream) }
-    let(:record) { described_class.create!(stage_params) }
-    let(:update_params) { { name: 'st 2' } }
-    let(:stage_params) do
-      {
-        namespace: namespace,
-        name: 'st1',
-        start_event_identifier: :merge_request_created,
-        end_event_identifier: :merge_request_merged,
-        group_value_stream_id: value_stream.id
-      }
-    end
-  end
 end

@@ -77,7 +77,7 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
 
     it 'avoids N+1 cached queries', :use_sql_query_cache, :request_store do
       # Run this once to establish a baseline
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         service.execute
       end
 
@@ -87,7 +87,7 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
                                             .with([[1], [2], [3], [4], [5]])
                                             .and_return(10)
 
-      expect { service.execute }.not_to exceed_all_query_limit(control_count.count)
+      expect { service.execute }.not_to exceed_all_query_limit(control)
     end
   end
 end

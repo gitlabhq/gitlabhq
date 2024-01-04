@@ -168,9 +168,9 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
               let(:params) { query_params }
 
               it 'subgroups avoids N+1 queries' do
-                control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+                control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
                   releases
-                end.count
+                end
 
                 subgroups = create_list(:group, 10, parent: group)
                 projects = create_list(:project, 10, namespace: subgroups[0])
@@ -178,7 +178,7 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
 
                 expect do
                   releases
-                end.not_to exceed_all_query_limit(control_count)
+                end.not_to exceed_all_query_limit(control)
               end
             end
           end

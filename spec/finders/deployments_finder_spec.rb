@@ -343,14 +343,14 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
 
       it 'avoids N+1 queries' do
         execute_queries = -> { described_class.new({ group: group }).execute.first }
-        control_count = ActiveRecord::QueryRecorder.new { execute_queries }.count
+        control = ActiveRecord::QueryRecorder.new { execute_queries }
 
         new_project = create(:project, :repository, group: group)
         new_env = create(:environment, project: new_project, name: "production")
         create_list(:deployment, 2, status: :success, project: new_project, environment: new_env)
         group.reload
 
-        expect { execute_queries }.not_to exceed_query_limit(control_count)
+        expect { execute_queries }.not_to exceed_query_limit(control)
       end
     end
   end

@@ -47,13 +47,13 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
   it 'does not do N+1 query' do
     create(:custom_emoji, name: 'party-parrot', group: group)
 
-    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+    control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
       filter('<p>:tanuki:</p>')
     end
 
     expect do
       filter('<p>:tanuki:</p> <p>:party-parrot:</p>')
-    end.not_to exceed_all_query_limit(control_count.count)
+    end.not_to exceed_all_query_limit(control)
   end
 
   it 'uses custom emoji from ancestor group' do

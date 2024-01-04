@@ -448,13 +448,13 @@ RSpec.describe Note, feature_category: :team_planning do
       # Project authorization checks are cached, establish a baseline
       retrieve_participants
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         retrieve_participants
       end
 
       create(:note_on_commit, project: note.project, note: 'another note', noteable_id: commit.id)
 
-      expect { retrieve_participants }.not_to exceed_query_limit(control_count)
+      expect { retrieve_participants }.not_to exceed_query_limit(control)
     end
   end
 

@@ -2342,11 +2342,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'avoids n + 1', :aggregate_failures do
       create(:prometheus_integration)
       run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
-      control_count = ActiveRecord::QueryRecorder.new { run_test.call }
+      control = ActiveRecord::QueryRecorder.new { run_test.call }
       create(:prometheus_integration)
 
       expect(run_test.call.count).to eq(2)
-      expect { run_test.call }.not_to exceed_query_limit(control_count)
+      expect { run_test.call }.not_to exceed_query_limit(control)
     end
   end
 
@@ -6593,17 +6593,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:subject) { create(:project) }
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }.count
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
 
-      expect(control_count).to be <= 4
+      expect(control.count).to be <= 4
     end
 
     it 'avoids N+1 database queries with more available integrations' do
       allow(Integration).to receive(:available_integration_names).and_return(%w[pushover])
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
-      expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control_count)
+      expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control)
     end
 
     context 'with disabled integrations' do
@@ -6650,11 +6650,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'avoids N+1 database queries' do
       allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover])
 
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }.count
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
 
-      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control_count)
+      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control)
     end
 
     it 'returns nil if integration is disabled' do
