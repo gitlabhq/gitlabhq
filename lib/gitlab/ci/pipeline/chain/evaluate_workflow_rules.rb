@@ -13,13 +13,9 @@ module Gitlab
 
             return if workflow_passed?
 
-            if Feature.enabled?(:always_set_pipeline_failure_reason, @command.project)
-              drop_reason = :filtered_by_workflow_rules
-            end
-
             error(
               'Pipeline filtered out by workflow rules.',
-              drop_reason: drop_reason
+              drop_reason: :filtered_by_workflow_rules
             )
           end
 

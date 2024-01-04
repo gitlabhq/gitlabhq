@@ -2079,7 +2079,7 @@ DEPENDENCIES
   sidekiq-cron (~> 1.12.0)
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)
-  simplecov (~> 0.21)
+  simplecov (~> 0.22)
   simplecov-cobertura (~> 2.1.0)
   simplecov-lcov (~> 0.8.0)
   slack-messenger (~> 2.3.4)

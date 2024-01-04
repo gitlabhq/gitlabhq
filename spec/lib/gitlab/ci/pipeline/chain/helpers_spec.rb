@@ -52,22 +52,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
         expect(pipeline.status).to eq 'failed'
         expect(pipeline.failure_reason).to eq drop_reason.to_s
       end
-
-      context 'when feature flag always_set_pipeline_failure_reason is false' do
-        before do
-          stub_feature_flags(always_set_pipeline_failure_reason: false)
-        end
-
-        specify do
-          subject.error(message, config_error: config_error, drop_reason: drop_reason)
-
-          if command.save_incompleted
-            expect(pipeline.failure_reason).to eq drop_reason.to_s
-          else
-            expect(pipeline.failure_reason).not_to be_present
-          end
-        end
-      end
     end
 
     context 'when the error includes malicious HTML' do

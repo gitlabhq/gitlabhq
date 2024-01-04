@@ -472,7 +472,7 @@ group :development, :test, :danger do
 end
 
 group :development, :test, :coverage do
-  gem 'simplecov', '~> 0.21', require: false, feature_category: :tooling
+  gem 'simplecov', '~> 0.22', require: false, feature_category: :tooling
   gem 'simplecov-lcov', '~> 0.8.0', require: false, feature_category: :tooling
   gem 'simplecov-cobertura', '~> 2.1.0', require: false, feature_category: :tooling
   gem 'undercover', '~> 0.4.4', require: false, feature_category: :tooling

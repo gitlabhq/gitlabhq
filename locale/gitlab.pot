@@ -44027,6 +44027,9 @@ msgstr ""
 msgid "SecurityOrchestration|Show all included projects"
 msgstr ""
 
+msgid "SecurityOrchestration|Show more projects"
+msgstr ""
+
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr ""
 

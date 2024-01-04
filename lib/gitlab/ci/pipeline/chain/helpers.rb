@@ -45,7 +45,7 @@ module Gitlab
             else
               command.increment_pipeline_failure_reason_counter(drop_reason)
 
-              pipeline.set_failed(drop_reason) if Feature.enabled?(:always_set_pipeline_failure_reason, command.project)
+              pipeline.set_failed(drop_reason)
             end
           end
         end

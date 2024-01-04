@@ -1117,3 +1117,10 @@ Style/SymbolProc:
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+Gitlab/LicenseAvailableUsage:
+  Enabled: true
+  Include:
+    - 'app/models/application_setting.rb'
+    - 'ee/app/models/ee/application_setting.rb'
+    - 'lib/gitlab/current_settings.rb'
