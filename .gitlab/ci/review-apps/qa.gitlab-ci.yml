@@ -1,7 +1,7 @@
 include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - template: Verify/Browser-Performance.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@7.3.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.0.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "post-qa"

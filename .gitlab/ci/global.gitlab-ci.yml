@@ -459,7 +459,7 @@
   extends: .use-pg14
   services:
     - !reference [.db-services-with-auto-explain, services]
-    - name: clickhouse/clickhouse-server:23-alpine
+    - name: clickhouse/clickhouse-server:23.11.3.23-alpine
       alias: clickhouse
   variables:
     CLICKHOUSE_USER: clickhouse
