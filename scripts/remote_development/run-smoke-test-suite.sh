@@ -54,15 +54,23 @@ done < <(find . -path './**/remote_development/*.rb' -print0)
 
 REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 
-###########
-## RSPEC ##
-###########
+##########
+## JEST ##
+##########
 
-printf "\n\n${BBlue}Running Remote Development and related backend RSpec specs${Color_Off}\n\n"
+printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
+
+yarn jest ee/spec/frontend/remote_development
+
+#######################
+## RSPEC NON-FEATURE ##
+#######################
+
+printf "\n\n${BBlue}Running Remote Development and related backend RSpec non-selenium specs${Color_Off}\n\n"
 
 while IFS= read -r file; do
     files_for_rspec+=("$file")
-done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa')
+done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
 files_for_rspec+=(
     "ee/spec/graphql/types/query_type_spec.rb"
@@ -74,13 +82,18 @@ files_for_rspec+=(
 )
 bin/rspec -r spec_helper "${files_for_rspec[@]}"
 
-##########
-## JEST ##
-##########
+###################
+## RSPEC FEATURE ##
+###################
 
-printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
+printf "\n\n${BBlue}Running Remote Development and related backend RSpec feature specs${Color_Off}\n\n"
 
-yarn jest ee/spec/frontend/remote_development
+while IFS= read -r file; do
+    files_for_rspec_selenium+=("$file")
+done < <(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+
+printf "\n${BRed}SKIPPING FEATURE SPECS, THEY ARE CURRENTLY BROKEN. SEE https://gitlab.slack.com/archives/C3JJET4Q6/p1702638503864429 and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140015${Color_Off} ❌❌❌\n"
+# bin/rspec -r spec_helper "${files_for_rspec_selenium[@]}"
 
 ###########################
 ## Print success message ##

@@ -203,6 +203,7 @@ RSpec.configure do |config|
   config.include PendingDirectUploadHelpers, :direct_uploads
   config.include LabelsHelper, type: :feature
   config.include UnlockPipelinesHelpers, :unlock_pipelines
+  config.include UserWithNamespaceShim
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 

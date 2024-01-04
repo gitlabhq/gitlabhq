@@ -151,7 +151,7 @@ class User < MainClusterwide::ApplicationRecord
   # Namespace for personal projects
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
-    required: true,
+    required: false,
     dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
     foreign_key: :owner_id,
     inverse_of: :owner,
@@ -316,7 +316,7 @@ class User < MainClusterwide::ApplicationRecord
   validates :username, presence: true
   validate  :check_password_weakness, if: :encrypted_password_changed?
 
-  validates :namespace, presence: true
+  validates :namespace, presence: true, unless: :optional_namespace?
   validate :namespace_move_dir_allowed, if: :username_changed?, unless: :new_record?
 
   validate :unique_email, if: :email_changed?
@@ -2325,6 +2325,10 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   private
+
+  def optional_namespace?
+    Feature.enabled?(:optional_personal_namespace, self)
+  end
 
   def block_or_ban
     user_scores = Abuse::UserTrustScore.new(self)

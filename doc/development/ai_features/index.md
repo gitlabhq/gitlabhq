@@ -48,7 +48,7 @@ To implement a new AI action, connect to the preferred AI provider. You can conn
 
 All AI features are experimental.
 
-## Test AI features locally
+## Test SaaS-only AI features locally
 
 **One-line setup**
 
@@ -165,6 +165,133 @@ end
 ### Working with GitLab Duo Chat
 
 View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
+
+## Test AI features with AI Gateway locally
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) in GitLab 16.8.
+
+In order to develop an AI feature that is compatible with both SaaS and Self-managed GitLab instances,
+the feature must request to the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md) instead of directly requesting to the 3rd party model providers.
+Therefore, a different setup is required from the [SaaS-only AI features](#test-saas-only-ai-features-locally).
+
+### Setup
+
+1. Setup AI Gateway:
+    1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
+    1. Ensure that the following environment variables are set in the `.env` file:
+
+        ```shell
+        AUTH_BYPASS_EXTERNAL=true
+        ANTHROPIC_API_KEY="[REDACTED]"                            # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
+        PALM_TEXT_MODEL_NAME=text-bison
+        PALM_TEXT_PROJECT="[REDACTED]"
+        ```
+
+    1. Run `poetry run ai_gateway`.
+    1. Visit [OpenAPI playground](`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
+       If something went wrong, check `modelgateway_debug.log` if it contains error information.
+1. Setup GitLab Development Kit (GDK):
+    1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).
+    1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#set-up-gdktest-hostname).
+    1. [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) (e.g. Ultimate).
+    1. Export these environment variables in the same terminal session with `gdk start`:
+
+        ```shell
+        export CODE_SUGGESTIONS_BASE_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance
+        export LLM_DEBUG=1                                   # Enable debug logging
+        ```
+
+        Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.
+    1. Enable the following feature flags via `gdk rails console`:
+
+        ```ruby
+        # NOTE: This feature flag name might be changed. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140352.
+        ::Feature.enable(:ai_global_switch)
+
+        # This is to request to AI Gateway instead of built-in Anthropic client. See https://gitlab.com/gitlab-org/gitlab/-/issues/433213 for more info.
+        ::Feature.enable(:gitlab_duo_chat_requests_to_ai_gateway)
+        ```
+
+    1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
+
+        ```ruby
+        # Creating dummy token, and this will work as long as `AUTH_BYPASS_EXTERNAL=true` in AI Gateway.
+        ::Ai::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
+        ```
+
+    1. Ensure GitLab-Rails can talk to the AI Gateway. Run `gdk rails console` and execute:
+
+        ```ruby
+        user = User.first
+        Gitlab::Llm::AiGateway::Client.new(user).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
+        ```
+
+#### Verify the setup with GraphQL
+
+1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+1. Execute the `aiAction` mutation. Here is an example:
+
+    ```graphql
+    mutation {
+      aiAction(
+        input: {
+          chat: {
+            resourceId: "gid://gitlab/User/1",
+            content: "Hello"
+          }
+        }
+      ){
+        requestId
+        errors
+      }
+    }
+    ```
+
+1. (GitLab Duo Chat only) Execute the following query to fetch the response:
+
+    ```graphql
+    query {
+      aiMessages {
+        nodes {
+          requestId
+          content
+          role
+          timestamp
+          chunkId
+          errors
+        }
+      }
+    }
+    ```
+
+    If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
+
+### Use GitLab as OIDC provider in AI Gateway
+
+1. Reconfigure AI Gateway:
+    1. Additionally, ensure that the following environment variables are set in the `.env` file:
+
+        ```shell
+        GITLAB_URL="http://gdk.test:3000/"
+        GITLAB_API_URL="http://gdk.test:3000/api/v4/"
+        AUTH_BYPASS_EXTERNAL=False
+        ```
+
+    1. Restart AI Gateway.
+1. Reconfigure GitLab Development Kit (GDK):
+    1. Additionally, export the following environment variables:
+
+        ```shell
+        export GITLAB_SIMULATE_SAAS=1                                 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
+        ```
+
+    1. Restart GDK.
+
+### Use Customer Dot as OIDC provider in AI Gateway
+
+1. AI Gateway:
+    1. Ensure `CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
+    1. Restart
 
 ## Experimental REST API
 

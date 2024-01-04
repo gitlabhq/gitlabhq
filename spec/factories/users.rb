@@ -13,7 +13,20 @@ FactoryBot.define do
     color_scheme_id { 1 }
 
     after(:build) do |user, evaluator|
-      user.assign_personal_namespace if Feature.enabled?(:create_personal_ns_outside_model, Feature.current_request)
+      # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.
+      assign_ns = if defined?(UserWithNamespaceShim)
+                    UserWithNamespaceShim.enabled?
+                  else
+                    true
+                  end
+
+      assign_ns &&= Feature.enabled?(:create_personal_ns_outside_model, Feature.current_request)
+
+      user.assign_personal_namespace if assign_ns
+    end
+
+    trait :with_namespace do
+      namespace { assign_personal_namespace }
     end
 
     trait :admin do
