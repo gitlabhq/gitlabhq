@@ -31,7 +31,7 @@ The following video gives you an overview of GitLab scan result policies:
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
   Otherwise, scan result policies do not have any effect.
-- The maximum number of scan result policies is five per security policy project. 
+- The maximum number of scan result policies is five per security policy project.
 - Each policy can have a maximum of five rules.
 - All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
 - Scan result policies evaluate findings and determine approval requirements based on the job artifact reports published in a completed pipeline. However, scan result policies do not check the integrity or authenticity of the scan results generated in the artifact reports.
@@ -302,8 +302,11 @@ actions:
 
 ### Scope of scan result policy comparison
 
-- To determine when approval is required on a merge request, we compare the latest completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
-- We compare findings from the latest completed pipelines that ran on `HEAD` of the source and target branch.
+- To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
+- For the source branch, the comparison pipeline is its latest completed `HEAD` pipeline.
+- For the target branch, the comparison pipeline differs for `license_finding` rules:
+  - For `license_finding` rules, we compare to a common ancestor's latest completed pipeline.
+  - For all other rules, we compare to the target branch's latest completed `HEAD` pipeline.
 - Scan result policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests

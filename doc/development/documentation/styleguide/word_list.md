@@ -130,6 +130,10 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 
 Use **AI**. Do not spell out **artificial intelligence**.
 
+## AI-powered DevSecOps platform
+
+If preceded by GitLab, capitalize **Platform**. For example, the GitLab AI-powered DevSecOps Platform.
+
 ## air gap, air-gapped
 
 Use **offline environment** to describe installations that have physical barriers or security policies that prevent or limit internet access. Do not use **air gap**, **air gapped**, or **air-gapped**. For example:
@@ -472,6 +476,10 @@ When writing about the Developer role:
   - Instead of: the Developer role or higher
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
+
+## DevSecOps platform
+
+If preceded by GitLab, capitalize **Platform**. For example, the GitLab DevSecOps Platform.
 
 ## dialog
 

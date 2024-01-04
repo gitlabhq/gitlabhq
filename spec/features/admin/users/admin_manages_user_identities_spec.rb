@@ -16,8 +16,10 @@ RSpec.describe 'Admin manages user identities', feature_category: :user_manageme
       it 'shows user identities', :aggregate_failures do
         visit admin_user_identities_path(user)
 
-        expect(page).to have_content(user.name)
-        expect(page).to have_content('twitter')
+        expect(page).to(
+          have_content(user.name)
+            .and(have_content('twitter'))
+        )
       end
     end
 

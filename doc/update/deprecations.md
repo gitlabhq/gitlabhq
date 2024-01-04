@@ -333,6 +333,22 @@ To help avoid being impacted by this breaking change, create new access tokens w
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Dependency Scanning support for sbt 1.0.X
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415835).
+</div>
+
+Supporting very old versions of sbt is preventing us from improving our support for additional use cases with this package manager without increasing our maintenance cost.
+
+Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as Dependency Scanning will no longer work.
+
+</div>
+
 <div class="deprecation " data-milestone="17.0">
 
 ### Deprecate GraphQL fields related to the temporary storage increase

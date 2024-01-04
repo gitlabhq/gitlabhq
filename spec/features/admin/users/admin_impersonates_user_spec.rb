@@ -53,7 +53,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
           it 'does not show impersonate button for admin itself' do
             subject
 
-            expect(page).not_to have_content('Impersonate')
+            expect(page).to have_no_content('Impersonate')
           end
         end
 
@@ -66,7 +66,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
         end
 
         context 'for user with expired password' do
-          let(:user_to_visit) do
+          let_it_be(:user_to_visit) do
             another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
             another_user
           end
@@ -113,7 +113,7 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
           it 'does not show impersonate button' do
             subject
 
-            expect(page).not_to have_content('Impersonate')
+            expect(page).to have_no_content('Impersonate')
           end
         end
       end
@@ -145,7 +145,6 @@ RSpec.describe 'Admin impersonates user', feature_category: :user_management do
 
           let_it_be(:another_user) { create(:user, :unconfirmed) }
           let(:warning_alert) { page.find(:css, '[data-testid="alert-warning"]') }
-          let(:expected_styling) { { 'pointer-events' => 'none', 'cursor' => 'default' } }
 
           context 'with an email that does not contain HTML' do
             before do
