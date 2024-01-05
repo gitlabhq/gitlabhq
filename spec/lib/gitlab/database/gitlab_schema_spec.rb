@@ -217,17 +217,19 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
     describe '.cross_joins_allowed?' do
       where(:schemas, :tables, :result) do
-        %i[] | %i[] | true
-        %i[gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | false
-        %i[gitlab_main gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | true
+        %i[] | %w[] | true
+        %i[gitlab_main] | %w[evidences] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %w[users evidences] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %w[users ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %w[users evidences ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
+        %i[gitlab_main gitlab_ci] | %w[evidences schema_migrations] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | true
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users activity_pub_releases_subscriptions] | false
       end
 
       with_them do
@@ -237,17 +239,19 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
     describe '.cross_transactions_allowed?' do
       where(:schemas, :tables, :result) do
-        %i[] | %i[] | true
-        %i[gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | true
-        %i[gitlab_main gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | true
+        %i[] | %w[] | true
+        %i[gitlab_main] | %w[evidences] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %w[users evidences] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %w[users ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_ci] | %w[users evidences ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | true
+        %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
+        %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | true
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users activity_pub_releases_subscriptions] | true
       end
 
       with_them do
@@ -257,15 +261,17 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
     describe '.cross_foreign_key_allowed?' do
       where(:schemas, :tables, :result) do
-        %i[] | %i[] | false
-        %i[gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_main] | %i[] | true
-        %i[gitlab_main_clusterwide gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_internal] | %i[] | false
-        %i[gitlab_main gitlab_ci] | %i[] | false
-        %i[gitlab_main_clusterwide gitlab_shared] | %i[] | false
+        %i[] | %w[] | false
+        %i[gitlab_main] | %w[evidences] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %w[users evidences] | true
+        %i[gitlab_main_clusterwide gitlab_ci] | %w[users ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
+        %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
+        %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | false
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | true
       end
 
       with_them do

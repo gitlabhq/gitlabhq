@@ -5,14 +5,16 @@
 .top-bar-fixed {
   @include gl-inset-border-b-1-gray-100;
   background-color: $body-bg;
-  left: var(--application-bar-left);
   position: fixed;
+  left: var(--application-bar-left);
   right: var(--application-bar-right);
   top: $calc-application-bars-height;
-  width: auto;
+  width: calc(100% - var(--application-bar-left));
   z-index: $top-bar-z-index;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
+    transition: left $gl-transition-duration-medium,
+                right $gl-transition-duration-medium,
+                width $gl-transition-duration-medium;
   }
 }

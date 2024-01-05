@@ -183,21 +183,17 @@ security dashboard.
 To add a new ability to a custom role:
 
 - Generate YAML file by running `./ee/bin/custom-ability` generator
-- Add a new column to `member_roles` table, for example in [this change in merge request 114734](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734/diffs#diff-content-5c53d6f1c29a272a87eecea3f62d017ab6635275).
-- Add the ability to the  `MemberRole` model, `ALL_CUSTOMIZABLE_PERMISSIONS` hash, for example in [this change in merge request 121534](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534/diffs#ce5ec769500a53ce2b603467d9984fc2b33ca71d_8_8). There are following possible keys in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash:
-
-  - `description` - description of the ability.
-  - `minimal_level` - minimal level a user has to have in order to be able to be assigned to the ability.
-  - `requirement` - required ability for the ability defined in the hash, in case the requirement is `false`, the ability can not be `true`.
-
+- Add a new column to `member_roles` table, either manually or by running `custom_roles:code`  generator, eg. by running `rails generate gitlab:custom_roles:code --ability new_ability_name`. The ability parameter is case sensitive and has to exactly match the permission name from the YAML file.
 - Add the ability to the respective Policy for example in [this change in merge request 114734](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734/diffs#diff-content-edcbe28bdecbd848d4d9efdc5b5e9bddd2a7299e).
-- Update the specs.
+- Update the specs. Don't forget to add a spec to `ee/spec/requests/custom_roles` - the spec template file was generated if you used the code generator
 
 Examples of merge requests adding new abilities to custom roles:
 
 - [Read code](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256)
 - [Read vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734)
-- [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) - this is the newest MR implementing a new custom role ability. Some changes from the previous MRs are not necessary anymore (such as a change of the Preloader query or adding a method to `User` model).
+- [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534)
+
+The above merge request don't use YAML files and code generators. Some of the changes are not needed anymore. We will update the documentation once we have a permission implemented using the generators.
 
 You should make sure a new custom roles ability is under a feature flag.
 
@@ -222,7 +218,7 @@ To add a new custom ability:
 | `description` | yes | Human-readable description of the custom ability. |
 | `feature_category` | yes | Name of the feature category. For example, `vulnerability_management`. |
 | `introduced_by_issue` | yes | Issue URL that proposed the addition of this custom ability. |
-| `introduced_by_mr` | yes | MR URL that added this custom ability. |
+| `introduced_by_mr` | no | MR URL that added this custom ability. |
 | `milestone` | yes | Milestone in which this custom ability was added. |
 | `group_ability` | yes | Indicate whether this ability is checked on group level. |
 | `project_ability` | yes | Indicate whether this ability is checked on project level. |

@@ -142,7 +142,12 @@ export default {
     </template>
 
     <template v-if="formattedSize" #metadata-size>
-      <metadata-item icon="disk" :text="formattedSize" data-testid="image-size" />
+      <metadata-item
+        icon="disk"
+        :text="formattedSize"
+        :text-tooltip="s__('ContainerRegistry|Includes both tagged and untagged images')"
+        data-testid="image-size"
+      />
     </template>
 
     <template #metadata-cleanup>

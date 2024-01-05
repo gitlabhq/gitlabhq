@@ -13473,6 +13473,9 @@ msgstr ""
 msgid "ContainerRegistry|Image tags"
 msgstr ""
 
+msgid "ContainerRegistry|Includes both tagged and untagged images"
+msgstr ""
+
 msgid "ContainerRegistry|Invalid tag: missing manifest digest"
 msgstr ""
 

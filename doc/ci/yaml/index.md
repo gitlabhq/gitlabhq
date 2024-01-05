@@ -303,7 +303,9 @@ include:
   A `not found or access denied` error may be displayed if the user does not have access to any of the included files.
 - Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger when CI/CD configuration files change.
   From a security perspective, this is similar to pulling a third-party dependency. For the `ref`, consider:
-  - Using a specific SHA hash, which should be the most stable option.
+  - Using a specific SHA hash, which should be the most stable option. Use the
+    full 40-character SHA hash to ensure the desired commit is referenced, because
+    using a short SHA hash for the `ref` might be ambiguous.
   - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
   the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
