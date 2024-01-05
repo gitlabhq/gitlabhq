@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'gitlab_edition'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/dependencies'
 
@@ -198,6 +199,6 @@ module StubConfiguration
 end
 
 require_relative '../../../ee/spec/support/helpers/ee/stub_configuration' if
-  Dir.exist?("#{__dir__}/../../../ee")
+  GitlabEdition.ee?
 
 StubConfiguration.prepend_mod_with('StubConfiguration')

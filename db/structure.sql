@@ -24514,20 +24514,13 @@ ALTER SEQUENCE user_canonical_emails_id_seq OWNED BY user_canonical_emails.id;
 CREATE TABLE user_credit_card_validations (
     user_id bigint NOT NULL,
     credit_card_validated_at timestamp with time zone NOT NULL,
-    expiration_date date,
-    last_digits smallint,
-    holder_name text,
-    network text,
     last_digits_hash text,
     holder_name_hash text,
     expiration_date_hash text,
     network_hash text,
-    CONSTRAINT check_1765e2b30f CHECK ((char_length(network) <= 32)),
-    CONSTRAINT check_3eea080c91 CHECK (((last_digits >= 0) AND (last_digits <= 9999))),
     CONSTRAINT check_7721e1961a CHECK ((char_length(network_hash) <= 44)),
     CONSTRAINT check_83f1e2ace3 CHECK ((char_length(expiration_date_hash) <= 44)),
     CONSTRAINT check_aca7c2607c CHECK ((char_length(holder_name_hash) <= 44)),
-    CONSTRAINT check_cc0c8dc0fe CHECK ((char_length(holder_name) <= 50)),
     CONSTRAINT check_f5c35b1a6e CHECK ((char_length(last_digits_hash) <= 44))
 );
 
@@ -24911,7 +24904,6 @@ CREATE TABLE vulnerabilities (
     epic_id bigint,
     project_id bigint NOT NULL,
     author_id bigint NOT NULL,
-    updated_by_id bigint,
     start_date date,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -35031,10 +35023,6 @@ CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON user_canonical_ema
 
 CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON user_canonical_emails USING btree (user_id, canonical_email);
 
-CREATE INDEX index_user_credit_card_validations_meta_data_full_match_lower ON user_credit_card_validations USING btree (lower(holder_name), expiration_date, last_digits, credit_card_validated_at);
-
-CREATE INDEX index_user_credit_card_validations_meta_data_partial_match ON user_credit_card_validations USING btree (expiration_date, last_digits, network, credit_card_validated_at);
-
 CREATE INDEX index_user_custom_attributes_on_key_and_value ON user_custom_attributes USING btree (key, value);
 
 CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON user_custom_attributes USING btree (user_id, key);
@@ -35176,8 +35164,6 @@ CREATE INDEX index_vulnerabilities_on_project_id_and_id ON vulnerabilities USING
 CREATE INDEX index_vulnerabilities_on_project_id_and_state_and_severity ON vulnerabilities USING btree (project_id, state, severity);
 
 CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING btree (resolved_by_id);
-
-CREATE INDEX index_vulnerabilities_on_updated_by_id ON vulnerabilities USING btree (updated_by_id);
 
 CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulnerabilities USING btree (project_id, id) WHERE (present_on_default_branch IS TRUE);
 
@@ -37861,9 +37847,6 @@ ALTER TABLE ONLY protected_branches
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT fk_7aa24439f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_7ac31eacb9 FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_7ad8849db4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

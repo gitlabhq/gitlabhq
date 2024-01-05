@@ -32,6 +32,28 @@ To populate the metadata, include this information:
 - `info`: How to find the Technical Writer associated with the page's stage and
   group.
 
+### Exceptions
+
+Documents in the `/development` directory get this metadata:
+
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+---
+```
+
+Documents in the `/solutions` directory get this metadata:
+
+```yaml
+---
+stage: Solutions Architecture
+group: Solutions Architecture
+info: This page is owned by the Solutions Architecture team.
+---
+```
+
 ## Additional metadata
 
 The following metadata is optional and is not actively maintained.
