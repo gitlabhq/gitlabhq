@@ -30,7 +30,7 @@ module Organizations
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
-    delegate :description, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
+    delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
 

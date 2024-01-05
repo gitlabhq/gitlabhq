@@ -119,4 +119,28 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
     it_behaves_like 'controller action that requires authentication by any user'
   end
+
+  describe 'POST #preview_markdown' do
+    subject(:gitlab_request) { post preview_markdown_organizations_path, params: { text: '### Foo \n **bar**' } }
+
+    it_behaves_like 'controller action that requires authentication by any user'
+
+    context 'when the user is signed in' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'returns html from markdown' do
+        sign_in(user)
+        gitlab_request
+
+        body = Gitlab::Json.parse(response.body)['body']
+
+        expect(body).not_to include('Foo</h3>')
+        expect(body).to include('<strong>bar</strong>')
+      end
+    end
+  end
 end

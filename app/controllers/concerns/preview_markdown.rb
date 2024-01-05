@@ -44,6 +44,7 @@ module PreviewMarkdown
     when 'groups'          then { group: group, issuable_reference_expansion_enabled: true }
     when 'projects'        then projects_filter_params
     when 'timeline_events' then timeline_events_filter_params
+    when 'organizations'   then { pipeline: :description }
     else {}
     end.merge(
       requested_path: params[:path],

@@ -232,13 +232,13 @@ After you dismiss the alert, it doesn't display until another seat is used.
 The alert displays based on the following seat usage. You cannot configure the
 amounts at which the alert displays.
 
-| Seats in subscription | Seat usage                                                             |
-|-----------------------|------------------------------------------------------------------------|
-| 0-15                  | One seat remaining in the subscription.                                |
-| 16-25                 | Two seats remaining in the subscription.                               |
-| 26-99                 | 10% of seats have been used.                                           |
-| 100-999               | 8% of seats have been used.                                            |
-| 1000+                 | 5% of seats have been used                                             |
+| Seats in subscription | Seat usage |
+|-----------------------|------------|
+| 0-15                  | One seat remaining in the subscription. |
+| 16-25                 | Two seats remaining in the subscription. |
+| 26-99                 | 10% of seats have been used. |
+| 100-999               | 8% of seats have been used. |
+| 1000+                 | 5% of seats have been used |
 
 ## Change the linked namespace
 
@@ -324,8 +324,8 @@ You can only renew your subscription 15 days before it is due to expire.
 To renew your subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
-The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before
-the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
+   The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before
+   the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 

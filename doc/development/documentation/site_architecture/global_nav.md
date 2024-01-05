@@ -52,7 +52,7 @@ the consent of one of the technical writers.
 To add a topic to the global navigation:
 
 1. In the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml)
-file, add the item.
+   file, add the item.
 1. Assign the MR to a technical writer for review and merge.
 
 ### Where to add

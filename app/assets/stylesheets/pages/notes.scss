@@ -966,7 +966,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 .unified-diff-components-diff-note-button {
   &::before {
     background-color: $blue-500;
-    mask-image: asset_url('icons-stacked.svg#comment');
+    mask-image: url('icons-stacked.svg#comment');
     mask-repeat: no-repeat;
     mask-size: cover;
     mask-position: center;

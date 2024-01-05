@@ -225,7 +225,7 @@ $diff-file-header: 41px;
           width: 15px;
           position: absolute;
           top: 0;
-          background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
+          background: url('swipemode_sprites.gif') 0 3px no-repeat;
         }
 
         .bottom-handle {
@@ -234,7 +234,7 @@ $diff-file-header: 41px;
           width: 15px;
           position: absolute;
           bottom: 0;
-          background: image-url('swipemode_sprites.gif') 0 -11px no-repeat;
+          background: url('swipemode_sprites.gif') 0 -11px no-repeat;
         }
       }
     }
@@ -272,7 +272,7 @@ $diff-file-header: 41px;
           left: 12px;
           height: 10px;
           width: 276px;
-          background: image-url('onion_skin_sprites.gif') -4px -20px repeat-x;
+          background: url('onion_skin_sprites.gif') -4px -20px repeat-x;
         }
 
         .dragger {
@@ -282,7 +282,7 @@ $diff-file-header: 41px;
           top: 0;
           height: 14px;
           width: 14px;
-          background: image-url('onion_skin_sprites.gif') 0 -34px repeat-x;
+          background: url('onion_skin_sprites.gif') 0 -34px repeat-x;
           cursor: pointer;
         }
 
@@ -293,7 +293,7 @@ $diff-file-header: 41px;
           right: 0;
           height: 10px;
           width: 10px;
-          background: image-url('onion_skin_sprites.gif') -2px 0 no-repeat;
+          background: url('onion_skin_sprites.gif') -2px 0 no-repeat;
         }
 
         .opaque {
@@ -303,7 +303,7 @@ $diff-file-header: 41px;
           left: 0;
           height: 10px;
           width: 10px;
-          background: image-url('onion_skin_sprites.gif') -2px -10px no-repeat;
+          background: url('onion_skin_sprites.gif') -2px -10px no-repeat;
         }
       }
     }
@@ -770,12 +770,12 @@ table.code {
 .frame.click-to-comment,
 .btn-transparent.image-diff-overlay-add-comment {
   position: relative;
-  cursor: image-url('illustrations/image_comment_light_cursor.svg') $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+  cursor: url('illustrations/image_comment_light_cursor.svg') $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   // Retina cursor
-  cursor: image-set(image-url('illustrations/image_comment_light_cursor.svg') 1x,
-  image-url('illustrations/image_comment_light_cursor@2x.svg') 2x) $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+  cursor: image-set(url('illustrations/image_comment_light_cursor.svg') 1x,
+  url('illustrations/image_comment_light_cursor@2x.svg') 2x) $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   .comment-indicator {

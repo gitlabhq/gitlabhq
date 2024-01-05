@@ -78,7 +78,7 @@
         @include gl-mr-2;
         @include gl-w-4;
         @include gl-h-4;
-        mask-image: asset_url('icons-stacked.svg#link');
+        mask-image: url('icons-stacked.svg#link');
         mask-repeat: no-repeat;
         mask-size: cover;
         mask-position: center;

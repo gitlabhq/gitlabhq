@@ -24,10 +24,14 @@ describe('OrganizationNewApp', () => {
   let wrapper;
   let mockApollo;
 
+  const file = new File(['foo'], 'foo.jpg', {
+    type: 'text/plain',
+  });
+
+  const successfulResponseHandler = jest.fn().mockResolvedValue(organizationCreateResponse);
+
   const createComponent = ({
-    handlers = [
-      [organizationCreateMutation, jest.fn().mockResolvedValue(organizationCreateResponse)],
-    ],
+    handlers = [[organizationCreateMutation, successfulResponseHandler]],
   } = {}) => {
     mockApollo = createMockApollo(handlers);
 
@@ -36,7 +40,12 @@ describe('OrganizationNewApp', () => {
 
   const findForm = () => wrapper.findComponent(NewEditForm);
   const submitForm = async () => {
-    findForm().vm.$emit('submit', { name: 'Foo bar', path: 'foo-bar' });
+    findForm().vm.$emit('submit', {
+      name: 'Foo bar',
+      path: 'foo-bar',
+      description: 'Foo bar description',
+      avatar: file,
+    });
     await nextTick();
   };
 
@@ -74,7 +83,15 @@ describe('OrganizationNewApp', () => {
         await waitForPromises();
       });
 
-      it('redirects user to organization web url', () => {
+      it('calls mutation with correct variables and redirects user to organization web url', () => {
+        expect(successfulResponseHandler).toHaveBeenCalledWith({
+          input: {
+            name: 'Foo bar',
+            path: 'foo-bar',
+            description: 'Foo bar description',
+            avatar: file,
+          },
+        });
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(
           organizationCreateResponse.data.organizationCreate.organization.webUrl,
           [

@@ -42,7 +42,12 @@ export default {
         } = await this.$apollo.mutate({
           mutation: organizationCreateMutation,
           variables: {
-            input: { name: formValues.name, path: formValues.path, avatar: formValues.avatar },
+            input: {
+              name: formValues.name,
+              path: formValues.path,
+              description: formValues.description,
+              avatar: formValues.avatar,
+            },
           },
           context: {
             hasUpload: formValues.avatar instanceof File,

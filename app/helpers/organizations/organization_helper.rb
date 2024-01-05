@@ -4,7 +4,8 @@ module Organizations
   module OrganizationHelper
     def organization_show_app_data(organization)
       {
-        organization: organization.slice(:id, :name).merge({ avatar_url: organization.avatar_url(size: 128) }),
+        organization: organization.slice(:id, :name, :description_html)
+          .merge({ avatar_url: organization.avatar_url(size: 128) }),
         groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
         # TODO: Update counts to use real data
         # https://gitlab.com/gitlab-org/gitlab/-/issues/424531
@@ -17,18 +18,14 @@ module Organizations
     end
 
     def organization_new_app_data
-      {
-        organizations_path: organizations_path,
-        root_url: root_url
-      }.to_json
+      shared_new_settings_general_app_data.to_json
     end
 
     def organization_settings_general_app_data(organization)
       {
-        organization: organization.slice(:id, :name, :path).merge({ avatar: organization.avatar_url(size: 192) }),
-        organizations_path: organizations_path,
-        root_url: root_url
-      }.to_json
+        organization: organization.slice(:id, :name, :path, :description)
+          .merge({ avatar: organization.avatar_url(size: 192) })
+      }.merge(shared_new_settings_general_app_data).to_json
     end
 
     def organization_groups_and_projects_app_data
@@ -63,6 +60,14 @@ module Organizations
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_group_path,
         new_project_path: new_project_path
+      }
+    end
+
+    def shared_new_settings_general_app_data
+      {
+        preview_markdown_path: preview_markdown_organizations_path,
+        organizations_path: organizations_path,
+        root_url: root_url
       }
     end
 

@@ -7176,7 +7176,7 @@
 }
 
 .emoji-icon {
-  background-image: image-url('emoji.png');
+  background-image: url('emoji.png');
   background-repeat: no-repeat;
   color: transparent;
   text-indent: -99em;
@@ -7190,7 +7190,7 @@
     only screen and (min-device-pixel-ratio: 2),
     only screen and (min-resolution: 192dpi),
     only screen and (min-resolution: 2dppx) {
-    background-image: image-url('emoji@2x.png');
+    background-image: url('emoji@2x.png');
     background-size: 860px 840px;
   }
   /* stylelint-enable media-feature-name-no-vendor-prefix */

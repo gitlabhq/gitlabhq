@@ -17,6 +17,8 @@ The Runner Fleet Dashboard shows:
 - Number of concurrent jobs executed on most busy runners.
 - Histogram of job queue times [(available only with ClickHouse)](#enable-more-ci-analytics-features-with-clickhouse).
 
+Support for usage and cost analysis are proposed in [epic 11183](https://gitlab.com/groups/gitlab-org/-/epics/11183).
+
 ![Runner Fleet Dashboard](img/runner_fleet_dashboard.png)
 
 ## View the Runner Fleet Dashboard
@@ -32,7 +34,7 @@ To view the runner fleet dashboard:
 1. Click **Fleet dashboard**.
 
 Most of the dashboard works without any additional actions, with the
-exception of **Wait time to pick a job** chart and [proposed features](#whats-next).
+exception of **Wait time to pick a job** chart and features proposed in [epic 11183](https://gitlab.com/groups/gitlab-org/-/epics/11183).
 These features require [setting up an additional infrastructure](#enable-more-ci-analytics-features-with-clickhouse).
 
 ## Enable more CI analytics features with ClickHouse **(ULTIMATE EXPERIMENT)**
@@ -41,7 +43,7 @@ These features require [setting up an additional infrastructure](#enable-more-ci
 
 This feature is an [Experiment](../../policy/experiment-beta-support.md).
 To test it, we have launched an early adopters program.
-To join the list of users testing this feature, contact us in
+To join the list of users testing this feature, see
 [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
 ### Enable ClickHouse integration and features
@@ -53,16 +55,11 @@ To enable additional CI analytics features:
 
    | Feature flag name                  | Purpose                                                                   |
    |------------------------------------|---------------------------------------------------------------------------|
-   | `ci_data_ingestion_to_click_house` | Enables synchronization of new finished CI builds to Clickhouse database. |
+   | `ci_data_ingestion_to_click_house` | Enables synchronization of new finished CI builds to ClickHouse database. |
    | `clickhouse_ci_analytics`          | Enables the **Wait time to pick a job** chart.                            |
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video walkthrough, see [Setting up Runner Fleet Dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
-
-### What's next
-
-Support for usage and cost analysis are proposed in
-[epic 11183](https://gitlab.com/groups/gitlab-org/-/epics/11183).
 
 ## Feedback
 

@@ -13,7 +13,13 @@ module Ci
     end
 
     def execute
-      items = @runner.builds
+      items = if params[:system_id].blank?
+                runner.builds
+              else
+                runner_manager = Ci::RunnerManager.for_runner(runner).with_system_xid(params[:system_id]).first
+                Ci::Build.belonging_to_runner_manager(runner_manager&.id)
+              end
+
       items = by_permission(items)
       items = by_status(items)
       sort_items(items)

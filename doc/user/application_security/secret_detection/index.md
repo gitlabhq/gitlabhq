@@ -110,10 +110,6 @@ Secret Detection can detect if a secret was added in one commit and removed in a
   [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
   results are only available after the pipeline is completed.
 
-## Running jobs in merge request pipelines
-
-See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
-
 ## Enable Secret Detection
 
 Prerequisites:
@@ -264,6 +260,10 @@ For example:
 ```ruby
  "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
 ```
+
+### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Available CI/CD variables
 

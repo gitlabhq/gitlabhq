@@ -125,7 +125,7 @@ The lock file is cached during the build phase and passed to the dependency scan
 scan occurs. Because the cache is downloaded before the analyzer run occurs, the existence of a lock
 file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
-To prevent this warning, lock files should be committed. 
+To prevent this warning, lock files should be committed.
 
 ## You no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
 

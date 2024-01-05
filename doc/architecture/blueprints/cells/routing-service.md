@@ -378,7 +378,7 @@ Each Cell does implement classification endpoint:
   requests for sharding keys that are not found.
 - The cached response is for time defined by `expiry` and `refresh`.
   - The `expiry` defines when the item is removed from cache unless used.
-  - The `refresh` defines when the item needs to be reclassified if used. 
+  - The `refresh` defines when the item needs to be reclassified if used.
   - The refresh is done asynchronously as the request should be served without a delay if they were classified. The refresh is done to ensure that cache is always hot and up-to date.
 
 For the above example:

@@ -55,6 +55,10 @@ module Ci
       where(runner_id: runner_id)
     end
 
+    scope :with_system_xid, ->(system_xid) do
+      where(system_xid: system_xid)
+    end
+
     scope :with_running_builds, -> do
       where('EXISTS(?)',
         Ci::Build.select(1)

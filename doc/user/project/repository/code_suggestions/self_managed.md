@@ -139,7 +139,7 @@ In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement fo
 If you have a GitLab Free subscription and upgrade to GitLab 16.3 or later,
 to continue having early access to Code Suggestions, you must:
 
-1. Have a [subscription that supports cloud licensing](https://about.gitlab.com/pricing/).
+1. Have a [subscription that supports cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 1. Make sure you have the latest version of your [IDE extension](index.md#supported-editor-extensions).
 1. [Manually synchronize your subscription](#manually-synchronize-your-subscription).
 

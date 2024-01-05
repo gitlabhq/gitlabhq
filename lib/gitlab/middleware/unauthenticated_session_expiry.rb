@@ -18,8 +18,9 @@ module Gitlab
         result = @app.call(env)
 
         warden = env['warden']
+        user = catch(:warden) { warden && warden.user } # rubocop:disable Cop/BanCatchThrow -- ignore Warden errors since we're outside Warden::Manager
 
-        unless warden && warden.user
+        unless user
           # This works because Rack uses these options every time a request is handled, and redis-store
           # uses the Rack setting first:
           # 1. https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342

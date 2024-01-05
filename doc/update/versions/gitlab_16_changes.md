@@ -81,7 +81,7 @@ Specific information applies to Linux package installations:
 - PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. However, due to an [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255), existing Geo secondary sites cannot be upgraded to PostgreSQL version 14. All Geo sites must run the same version of PostgreSQL. If you are adding a new Geo secondary site based on GitLab 16.7 you must take one of the following actions based on your configuration:
 
   - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
-  - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries: 
+  - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries:
     - All sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
     - All sites are running PostgreSQL 14: No special action is required.
 

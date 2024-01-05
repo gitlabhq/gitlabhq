@@ -376,7 +376,7 @@ Avoid:
   [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
 - Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
 - Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
+  through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 
@@ -412,7 +412,7 @@ that it meets all requirements, you should:
 - Select **Approve**.
 - `@` mention the author to generate a to-do notification, and advise them that their merge request has been reviewed and approved.
 - Request a review from a maintainer. Default to requests for a maintainer with [domain expertise](#domain-experts),
-however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
+  however, if one isn't available or you think the merge request doesn't need a review by a [domain expert](#domain-experts), feel free to follow the [Reviewer roulette](#reviewer-roulette) suggestion.
 - Remove yourself as a reviewer.
 
 ### The responsibility of the maintainer
@@ -580,7 +580,7 @@ experience, refactors the existing code). Then:
     optionally resolve within the merge request or follow-up at a later stage.
   - There's a [Chrome/Firefox add-on](https://gitlab.com/conventionalcomments/conventional-comments-button) which you can use to apply [Conventional Comment](https://conventionalcomments.org/) prefixes.
 - Ensure there are no open dependencies. Check [linked issues](../user/project/issues/related_issues.md) for blockers. Clarify with the authors
-if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/dependencies.md).
+  if necessary. If blocked by one or more open MRs, set an [MR dependency](../user/project/merge_requests/dependencies.md).
 - After a round of line notes, it can be helpful to post a summary note such as
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.

@@ -4,10 +4,13 @@ import { formValidators } from '@gitlab/ui/dist/utils';
 import { s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
   FORM_FIELD_PATH,
+  FORM_FIELD_DESCRIPTION,
   FORM_FIELD_AVATAR,
   FORM_FIELD_PATH_VALIDATORS,
 } from '../constants';
@@ -21,12 +24,27 @@ export default {
     GlButton,
     OrganizationUrlField,
     AvatarUploadDropzone,
+    MarkdownField,
   },
   i18n: {
     cancel: __('Cancel'),
   },
   formId: 'new-organization-form',
-  inject: ['organizationsPath'],
+  markdownDocsPath: helpPagePath('user/organization/index', {
+    anchor: 'organization-description-supported-markdown',
+  }),
+  restrictedToolBarItems: [
+    'code',
+    'quote',
+    'bullet-list',
+    'numbered-list',
+    'task-list',
+    'collapsible-section',
+    'table',
+    'attach-file',
+    'full-screen',
+  ],
+  inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {
     loading: {
       type: Boolean,
@@ -39,6 +57,7 @@ export default {
         return {
           [FORM_FIELD_NAME]: '',
           [FORM_FIELD_PATH]: '',
+          [FORM_FIELD_DESCRIPTION]: '',
           [FORM_FIELD_AVATAR]: null,
         };
       },
@@ -47,7 +66,7 @@ export default {
       type: Array,
       required: false,
       default() {
-        return [FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_AVATAR];
+        return [FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR];
       },
     },
     submitButtonText: {
@@ -102,6 +121,12 @@ export default {
             class: 'gl-w-full',
           },
         },
+        [FORM_FIELD_DESCRIPTION]: {
+          label: s__('Organization|Organization description (optional)'),
+          groupAttrs: {
+            class: 'gl-w-full common-note-form',
+          },
+        },
         [FORM_FIELD_AVATAR]: {
           label: s__('Organization|Organization avatar'),
           groupAttrs: {
@@ -137,6 +162,7 @@ export default {
       formFieldsInputEvent(event);
       this.hasPathBeenManuallySet = true;
     },
+    helpPagePath,
   },
 };
 </script>
@@ -159,6 +185,28 @@ export default {
           @blur="blur"
         />
       </template>
+      <template #input(description)="{ id, value, input, blur }">
+        <div class="gl-md-form-input-xl">
+          <markdown-field
+            :can-attach-file="false"
+            :markdown-preview-path="previewMarkdownPath"
+            :markdown-docs-path="$options.markdownDocsPath"
+            :textarea-value="value"
+            :restricted-tool-bar-items="$options.restrictedToolBarItems"
+          >
+            <template #textarea>
+              <textarea
+                :id="id"
+                :value="value"
+                class="note-textarea js-gfm-input markdown-area"
+                maxlength="1024"
+                @input="input($event.target.value)"
+                @blur="blur"
+              ></textarea>
+            </template>
+          </markdown-field>
+        </div>
+      </template>
       <template #input(avatar)="{ input, value }">
         <avatar-upload-dropzone
           :value="value"
@@ -169,9 +217,14 @@ export default {
       </template>
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">
-      <gl-button type="submit" variant="confirm" class="js-no-auto-disable" :loading="loading">{{
-        submitButtonText
-      }}</gl-button>
+      <gl-button
+        type="submit"
+        variant="confirm"
+        class="js-no-auto-disable"
+        :loading="loading"
+        data-testid="submit-button"
+        >{{ submitButtonText }}</gl-button
+      >
       <gl-button v-if="showCancelButton" :href="organizationsPath">{{
         $options.i18n.cancel
       }}</gl-button>

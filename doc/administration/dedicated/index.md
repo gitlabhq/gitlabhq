@@ -1,8 +1,8 @@
 ---
 stage: SaaS Platforms
 group: GitLab Dedicated
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: 'Learn how to configure your GitLab Dedicated instance.'
+description: IP allowlists, SAML, maintenance.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure GitLab Dedicated **(ULTIMATE)**

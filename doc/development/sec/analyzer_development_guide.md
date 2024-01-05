@@ -128,7 +128,7 @@ To use Docker with `replace` in the `go.mod` file:
 1. Copy the contents of `command` into the directory of the analyzer. `cp -r /path/to/command path/to/analyzer/command`.
 1. Add a copy statement in the analyzer's `Dockerfile`: `COPY command /command`.
 1. Update the `replace` statement to make sure it matches the destination of the `COPY` statement in the step above:
-`replace gitlab.com/gitlab-org/security-products/analyzers/command/v3 => /command`
+   `replace gitlab.com/gitlab-org/security-products/analyzers/command/v3 => /command`
 
 ## Analyzer scripts
 
@@ -189,11 +189,11 @@ are integrated with the existing application, iteration should not be blocked by
 1. Ensure that the release source (typically the `master` or `main` branch) has a passing pipeline.
 1. Create a new release for the analyzer project by selecting the **Deployments** menu on the left-hand side of the project window, then selecting the **Releases** sub-menu.
 1. Select **New release** to open the **New Release** page.
-    1. In the **Tag name** drop down, enter the same version used in the `CHANGELOG.md`, for example `v2.4.2`, and select the option to create the tag (`Create tag v2.4.2` here).
-    1. In the **Release title** text box enter the same version used above, for example `v2.4.2`.
-    1. In the `Release notes` text box, copy and paste the notes from the corresponding version in the `CHANGELOG.md`.
-    1. Leave all other settings as the default values.
-    1. Select **Create release**.
+   1. In the **Tag name** drop down, enter the same version used in the `CHANGELOG.md`, for example `v2.4.2`, and select the option to create the tag (`Create tag v2.4.2` here).
+   1. In the **Release title** text box enter the same version used above, for example `v2.4.2`.
+   1. In the `Release notes` text box, copy and paste the notes from the corresponding version in the `CHANGELOG.md`.
+   1. Leave all other settings as the default values.
+   1. Select **Create release**.
 
 After following the above process and creating a new release, a new Git tag is created with the `Tag name` provided above. This triggers a new pipeline with the given tag version and a new analyzer Docker image is built.
 
@@ -229,7 +229,7 @@ After the above steps have been completed, the automatic release process execute
 1. After a new version of the analyzer Docker image has been tagged and deployed, test it with the corresponding test project.
 1. Announce the release on the relevant group Slack channel. Example message:
 
-    > FYI I've just released `ANALYZER_NAME` `ANALYZER_VERSION`. `LINK_TO_RELEASE`
+   > FYI I've just released `ANALYZER_NAME` `ANALYZER_VERSION`. `LINK_TO_RELEASE`
 
 **Never delete a Git tag that has been pushed** as there is a good
 chance that the tag will be used and/or cached by the Go package registry.

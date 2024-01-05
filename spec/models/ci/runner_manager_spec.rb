@@ -122,23 +122,60 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   describe '.for_runner' do
     subject(:runner_managers) { described_class.for_runner(runner_arg) }
 
-    let_it_be(:runner1) { create(:ci_runner) }
-    let_it_be(:runner_manager11) { create(:ci_runner_machine, runner: runner1) }
-    let_it_be(:runner_manager12) { create(:ci_runner_machine, runner: runner1) }
+    let_it_be(:runner_a) { create(:ci_runner) }
+    let_it_be(:runner_manager_a1) { create(:ci_runner_machine, runner: runner_a) }
+    let_it_be(:runner_manager_a2) { create(:ci_runner_machine, runner: runner_a) }
 
     context 'with single runner' do
-      let(:runner_arg) { runner1 }
+      let(:runner_arg) { runner_a }
 
-      it { is_expected.to contain_exactly(runner_manager11, runner_manager12) }
+      it { is_expected.to contain_exactly(runner_manager_a1, runner_manager_a2) }
     end
 
     context 'with multiple runners' do
-      let(:runner_arg) { [runner1, runner2] }
+      let(:runner_arg) { [runner_a, runner_b] }
 
-      let_it_be(:runner2) { create(:ci_runner) }
-      let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner2) }
+      let_it_be(:runner_b) { create(:ci_runner) }
+      let_it_be(:runner_manager_b1) { create(:ci_runner_machine, runner: runner_b) }
 
-      it { is_expected.to contain_exactly(runner_manager11, runner_manager12, runner_manager2) }
+      it { is_expected.to contain_exactly(runner_manager_a1, runner_manager_a2, runner_manager_b1) }
+    end
+  end
+
+  describe '.with_system_xid' do
+    subject(:runner_managers) { described_class.with_system_xid(system_xid) }
+
+    let_it_be(:runner_a) { create(:ci_runner) }
+    let_it_be(:runner_b) { create(:ci_runner) }
+    let_it_be(:runner_manager_a1) { create(:ci_runner_machine, runner: runner_a, system_xid: 'id1') }
+    let_it_be(:runner_manager_a2) { create(:ci_runner_machine, runner: runner_a, system_xid: 'id2') }
+    let_it_be(:runner_manager_b1) { create(:ci_runner_machine, runner: runner_b, system_xid: 'id1') }
+
+    context 'with single system id' do
+      let(:system_xid) { 'id2' }
+
+      it { is_expected.to contain_exactly(runner_manager_a2) }
+    end
+
+    context 'with multiple system ids' do
+      let(:system_xid) { %w[id1 id2] }
+
+      it { is_expected.to contain_exactly(runner_manager_a1, runner_manager_a2, runner_manager_b1) }
+    end
+
+    context 'when chained with another scope' do
+      subject(:runner_managers) { described_class.for_runner(runner).with_system_xid(system_xid) }
+
+      let(:runner) { runner_a }
+      let(:system_xid) { 'id1' }
+
+      it { is_expected.to contain_exactly(runner_manager_a1) }
+
+      context 'with another runner' do
+        let(:runner) { runner_b }
+
+        it { is_expected.to contain_exactly(runner_manager_b1) }
+      end
     end
   end
 
@@ -146,18 +183,18 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     let!(:runner_version1) { create(:ci_runner_version, version: '16.0.0', status: :recommended) }
     let!(:runner_version2) { create(:ci_runner_version, version: '16.0.1', status: :available) }
 
-    let!(:runner1) { create(:ci_runner) }
-    let!(:runner2) { create(:ci_runner) }
-    let!(:runner_manager11) { create(:ci_runner_machine, runner: runner1, version: runner_version1.version) }
-    let!(:runner_manager12) { create(:ci_runner_machine, runner: runner1, version: runner_version2.version) }
-    let!(:runner_manager2) { create(:ci_runner_machine, runner: runner2, version: runner_version2.version) }
+    let!(:runner_a) { create(:ci_runner) }
+    let!(:runner_b) { create(:ci_runner) }
+    let!(:runner_manager_a1) { create(:ci_runner_machine, runner: runner_a, version: runner_version1.version) }
+    let!(:runner_manager_a2) { create(:ci_runner_machine, runner: runner_a, version: runner_version2.version) }
+    let!(:runner_manager_b1) { create(:ci_runner_machine, runner: runner_b, version: runner_version2.version) }
 
     subject { described_class.aggregate_upgrade_status_by_runner_id }
 
     it 'contains aggregate runner upgrade status by runner ID' do
       is_expected.to eq({
-        runner1.id => :recommended,
-        runner2.id => :available
+        runner_a.id => :recommended,
+        runner_b.id => :available
       })
     end
   end
@@ -187,6 +224,108 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
     specify { expect(described_class.all).to eq([runner_manager1, runner_manager2]) }
     it { is_expected.to eq([runner_manager2, runner_manager1]) }
+  end
+
+  describe '.with_upgrade_status' do
+    subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
+
+    let_it_be(:runner_manager_14_0_0) { create(:ci_runner_machine, version: '14.0.0') }
+    let_it_be(:runner_manager_14_1_0) { create(:ci_runner_machine, version: '14.1.0') }
+    let_it_be(:runner_manager_14_1_1) { create(:ci_runner_machine, version: '14.1.1') }
+
+    before_all do
+      create(:ci_runner_version, version: '14.0.0', status: :available)
+      create(:ci_runner_version, version: '14.1.0', status: :recommended)
+      create(:ci_runner_version, version: '14.1.1', status: :unavailable)
+    end
+
+    context 'as :unavailable' do
+      let(:upgrade_status) { :unavailable }
+
+      it 'returns runners with runner managers whose version is assigned :unavailable' do
+        is_expected.to contain_exactly(runner_manager_14_1_1)
+      end
+    end
+
+    context 'as :available' do
+      let(:upgrade_status) { :available }
+
+      it 'returns runners with runner managers whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_manager_14_0_0)
+      end
+    end
+
+    context 'as :recommended' do
+      let(:upgrade_status) { :recommended }
+
+      it 'returns runners with runner managers whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_manager_14_1_0)
+      end
+    end
+  end
+
+  describe '.with_version_prefix' do
+    subject { described_class.with_version_prefix(version_prefix) }
+
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, version: '15.11.0') }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, version: '15.9.0') }
+    let_it_be(:runner_manager3) { create(:ci_runner_machine, version: '15.11.5') }
+
+    context 'with a prefix string of "15."' do
+      let(:version_prefix) { "15." }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15"' do
+      let(:version_prefix) { "15" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.11."' do
+      let(:version_prefix) { "15.11." }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.11"' do
+      let(:version_prefix) { "15.11" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager1, runner_manager3)
+      end
+    end
+
+    context 'with a prefix string of "15.9"' do
+      let(:version_prefix) { "15.9" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager2)
+      end
+    end
+
+    context 'with a prefix string of "15.11.5"' do
+      let(:version_prefix) { "15.11.5" }
+
+      it 'returns runner managers' do
+        is_expected.to contain_exactly(runner_manager3)
+      end
+    end
+
+    context 'with a malformed prefix of "V2"' do
+      let(:version_prefix) { "V2" }
+
+      it 'returns no runner managers' do
+        is_expected.to be_empty
+      end
+    end
   end
 
   describe '#status', :freeze_time do
@@ -423,108 +562,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       end
 
       it { is_expected.to contain_exactly build }
-    end
-  end
-
-  describe '.with_upgrade_status' do
-    subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
-
-    let_it_be(:runner_manager_14_0_0) { create(:ci_runner_machine, version: '14.0.0') }
-    let_it_be(:runner_manager_14_1_0) { create(:ci_runner_machine, version: '14.1.0') }
-    let_it_be(:runner_manager_14_1_1) { create(:ci_runner_machine, version: '14.1.1') }
-
-    before_all do
-      create(:ci_runner_version, version: '14.0.0', status: :available)
-      create(:ci_runner_version, version: '14.1.0', status: :recommended)
-      create(:ci_runner_version, version: '14.1.1', status: :unavailable)
-    end
-
-    context 'as :unavailable' do
-      let(:upgrade_status) { :unavailable }
-
-      it 'returns runners with runner managers whose version is assigned :unavailable' do
-        is_expected.to contain_exactly(runner_manager_14_1_1)
-      end
-    end
-
-    context 'as :available' do
-      let(:upgrade_status) { :available }
-
-      it 'returns runners with runner managers whose version is assigned :available' do
-        is_expected.to contain_exactly(runner_manager_14_0_0)
-      end
-    end
-
-    context 'as :recommended' do
-      let(:upgrade_status) { :recommended }
-
-      it 'returns runners with runner managers whose version is assigned :recommended' do
-        is_expected.to contain_exactly(runner_manager_14_1_0)
-      end
-    end
-  end
-
-  describe '.with_version_prefix' do
-    subject { described_class.with_version_prefix(version_prefix) }
-
-    let_it_be(:runner_manager1) { create(:ci_runner_machine, version: '15.11.0') }
-    let_it_be(:runner_manager2) { create(:ci_runner_machine, version: '15.9.0') }
-    let_it_be(:runner_manager3) { create(:ci_runner_machine, version: '15.11.5') }
-
-    context 'with a prefix string of "15."' do
-      let(:version_prefix) { "15." }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
-      end
-    end
-
-    context 'with a prefix string of "15"' do
-      let(:version_prefix) { "15" }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager1, runner_manager2, runner_manager3)
-      end
-    end
-
-    context 'with a prefix string of "15.11."' do
-      let(:version_prefix) { "15.11." }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager1, runner_manager3)
-      end
-    end
-
-    context 'with a prefix string of "15.11"' do
-      let(:version_prefix) { "15.11" }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager1, runner_manager3)
-      end
-    end
-
-    context 'with a prefix string of "15.9"' do
-      let(:version_prefix) { "15.9" }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager2)
-      end
-    end
-
-    context 'with a prefix string of "15.11.5"' do
-      let(:version_prefix) { "15.11.5" }
-
-      it 'returns runner managers' do
-        is_expected.to contain_exactly(runner_manager3)
-      end
-    end
-
-    context 'with a malformed prefix of "V2"' do
-      let(:version_prefix) { "V2" }
-
-      it 'returns no runner managers' do
-        is_expected.to be_empty
-      end
     end
   end
 end

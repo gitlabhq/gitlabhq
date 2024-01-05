@@ -67,6 +67,7 @@ PATH
   remote: gems/gitlab-safe_request_store
   specs:
     gitlab-safe_request_store (0.1.0)
+      rack (~> 2.2.8)
       request_store
 
 PATH

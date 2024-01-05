@@ -325,14 +325,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_exposed_artifacts' do
     subject { described_class.with_exposed_artifacts }
 
-    let!(:job1) { create(:ci_build, pipeline: pipeline) }
-    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
-    let!(:job3) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:job1) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:job3) { create(:ci_build, pipeline: pipeline) }
 
-    context 'when some jobs have exposed artifacs and some not' do
+    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
+
+    context 'when some jobs have exposed artifacts and some not' do
       let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
 
-      before do
+      before_all do
         job1.ensure_metadata.update!(has_exposed_artifacts: nil)
         job3.ensure_metadata.update!(has_exposed_artifacts: false)
       end
@@ -356,10 +357,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-    let!(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
-    let!(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
-    let!(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
-    let!(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let_it_be(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let_it_be(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
+    let_it_be(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
+    let_it_be(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     it 'returns artifacts matching the given scope' do
       expect(builds).to contain_exactly(build_1, build_4)
@@ -383,10 +384,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '.with_needs' do
-    let!(:build) { create(:ci_build, pipeline: pipeline) }
-    let!(:build_b) { create(:ci_build, pipeline: pipeline) }
-    let!(:build_need_a) { create(:ci_build_need, build: build) }
-    let!(:build_need_b) { create(:ci_build_need, build: build_b) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_b) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_need_a) { create(:ci_build_need, build: build) }
+    let_it_be(:build_need_b) { create(:ci_build_need, build: build_b) }
 
     context 'when passing build name' do
       subject { described_class.with_needs(build_need_a.name) }
@@ -416,6 +417,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when a build_need is created' do
       let!(:need_a) { create(:ci_build_need, build: build) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.belonging_to_runner_manager' do
+    subject { described_class.belonging_to_runner_manager(runner_manager) }
+
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:build_b) { create(:ci_build, :success) }
+
+    context 'with runner_manager of runner associated with build' do
+      let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+      let!(:runner_manager_build) { create(:ci_runner_machine_build, build: build, runner_manager: runner_manager) }
+
+      it { is_expected.to contain_exactly(build) }
+    end
+
+    context 'with runner_manager of runner not associated with build' do
+      let!(:runner_manager) { create(:ci_runner_machine, runner: instance_runner) }
+      let!(:instance_runner) { create(:ci_runner, :with_runner_manager) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'with nil runner_manager' do
+      let(:runner_manager) { nil }
 
       it { is_expected.to be_empty }
     end

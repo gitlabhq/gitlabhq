@@ -44,6 +44,8 @@ To view the organizations you have access to:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New organization**.
 1. In the **Organization name** text box, enter a name for the organization.
 1. In the **Organization URL** text box, enter a path for the organization.
+1. In the **Organization description** text box, enter a description for the organization. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
+1. In the **Organization avatar** field, select **Upload** or drag and drop an avatar.
 1. Select **Create organization**.
 
 ## Edit an organization's name
@@ -51,6 +53,10 @@ To view the organizations you have access to:
 1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to edit.
 1. Select **Settings > General**.
 1. In the **Organization name** text box, edit the name.
+1. In the **Organization description** text box, edit the description. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
+1. In the **Organization avatar** field, if an avatar is:
+   - Selected, select **Remove avatar** to remove.
+   - Not selected, select **Upload** or drag and drop an avatar.
 1. Select **Save changes**.
 
 ## Change an organization's URL
@@ -71,6 +77,14 @@ To view the organizations you have access to:
 
 1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to manage.
 1. Select **Manage > Users**.
+
+## Supported Markdown for Organization description
+
+The Organization description field supports a limited subset of [GitLab Flavored Markdown](../markdown.md), including:
+
+- [Emphasis](../markdown.md#emphasis)
+- [Links](../markdown.md#links)
+- [Superscripts / Subscripts](../markdown.md#superscripts--subscripts)
 
 ## Related topics
 

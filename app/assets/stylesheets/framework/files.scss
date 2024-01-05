@@ -420,7 +420,7 @@ span.idiff {
   @include gl-h-5;
   @include gl-float-left;
   background-color: $gray-400;
-  mask-image: asset_url('icons-stacked.svg#doc-versions');
+  mask-image: url('icons-stacked.svg#doc-versions');
   mask-repeat: no-repeat;
   mask-size: cover;
   mask-position: center;

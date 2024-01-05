@@ -723,7 +723,7 @@ The `with_lock_retries` method **cannot** be used within the `change` method, yo
 1. For each iteration, set a pre-configured `lock_timeout`.
 1. Try to execute the given block. (`remove_column`).
 1. If `LockWaitTimeout` error is raised, sleep for the pre-configured `sleep_time`
-and retry the block.
+   and retry the block.
 1. If no error is raised, the current iteration has successfully executed the block.
 
 For more information check the [`Gitlab::Database::WithLockRetries`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/with_lock_retries.rb) class. The `with_lock_retries` helper method is implemented in the [`Gitlab::Database::MigrationHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers.rb) module.
@@ -733,7 +733,7 @@ In a worst-case scenario, the method:
 - Executes the block for a maximum of 50 times over 40 minutes.
   - Most of the time is spent in a pre-configured sleep period after each iteration.
 - After the 50th retry, the block is executed without `lock_timeout`, just
-like a standard migration invocation.
+  like a standard migration invocation.
 - If a lock cannot be acquired, the migration fails with `statement timeout` error.
 
 The migration might fail if there is a very long running transaction (40+ minutes)

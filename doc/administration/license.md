@@ -40,7 +40,7 @@ The subscription is activated.
 
 You can use one activation code or license key for multiple self-managed instances if the users on
 these instances are the same or are a subset of your licensed production instance. This means that if
-you have a licensed production instance of GitLab, and other instances with the same list of users, the 
+you have a licensed production instance of GitLab, and other instances with the same list of users, the
 production activation code applies, even if these users are configured in different groups and projects.
 
 ### Uploading licenses for scaled architectures

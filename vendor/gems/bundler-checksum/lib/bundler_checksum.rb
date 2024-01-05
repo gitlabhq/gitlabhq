@@ -41,12 +41,18 @@ module Bundler
         raise "#{@package.inspect} does not have :@gem" unless source
         raise "#{source.inspect} does not respond to :with_read_io" unless source.respond_to?(:with_read_io)
 
-        digest = source.with_read_io do |io|
-          digest = SharedHelpers.digest(:SHA256).new
-          digest << io.read(16_384) until io.eof?
-          io.rewind
-          send(checksum_type(checksum), digest)
-        end
+        digest =
+          if Gem::Version.new(Bundler::VERSION) >= Gem::Version.new("2.5.0")
+            gem_checksum.digest
+          else
+            source.with_read_io do |io|
+              digest = SharedHelpers.digest(:SHA256).new
+              digest << io.read(16_384) until io.eof?
+              io.rewind
+              send(checksum_type(checksum), digest)
+            end
+          end
+
         unless digest == checksum
           raise SecurityError, <<-MESSAGE
           Bundler cannot continue installing #{spec.name} (#{spec.version}).

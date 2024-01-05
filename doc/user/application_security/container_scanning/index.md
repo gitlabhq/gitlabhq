@@ -128,10 +128,6 @@ Setting `CS_DEFAULT_BRANCH_IMAGE` avoids duplicate vulnerability findings when a
 The value of `CS_DEFAULT_BRANCH_IMAGE` indicates the name of the scanned image as it appears on the default branch.
 For more details on how this deduplication is achieved, see [Setting the default branch image](#setting-the-default-branch-image).
 
-## Running jobs in merge request pipelines
-
-See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
-
 ### Customizing the container scanning settings
 
 There may be cases where you want to customize how GitLab scans your containers. For example, you
@@ -242,6 +238,10 @@ in the [Vulnerability Report](../vulnerability_report/index.md)
 if [Dependency Scanning](../dependency_scanning/index.md)
 is enabled for your project. This happens because GitLab can't automatically deduplicate findings
 across different types of scanning tools. To understand which types of dependencies are likely to be duplicated, see [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
+
+#### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 #### Available CI/CD variables
 

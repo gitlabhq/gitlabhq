@@ -200,7 +200,7 @@ To guard your licensed feature:
    ```
 
 1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
-feature identifiers to allow both administrators and group users. For example:
+   feature identifiers to allow both administrators and group users. For example:
 
    ```ruby
    License.feature_available?(:my_feature_name) || group.licensed_feature_available?(:my_feature_name_for_namespace) # Both admins and group members can see this EE feature

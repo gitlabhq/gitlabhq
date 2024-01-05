@@ -34035,6 +34035,9 @@ msgstr ""
 msgid "Organization|Organization avatar"
 msgstr ""
 
+msgid "Organization|Organization description (optional)"
+msgstr ""
+
 msgid "Organization|Organization name"
 msgstr ""
 
@@ -35618,10 +35621,28 @@ msgstr ""
 msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
 msgstr ""
 
+msgid "PipelineSubscriptions|Add new"
+msgstr ""
+
 msgid "PipelineSubscriptions|An error occurred while fetching downstream pipeline subscriptions."
 msgstr ""
 
 msgid "PipelineSubscriptions|An error occurred while fetching upstream pipeline subscriptions."
+msgstr ""
+
+msgid "PipelineSubscriptions|Delete subscription"
+msgstr ""
+
+msgid "PipelineSubscriptions|No project subscribes to the pipelines in this project."
+msgstr ""
+
+msgid "PipelineSubscriptions|Subscribed to this project"
+msgstr ""
+
+msgid "PipelineSubscriptions|Subscriptions"
+msgstr ""
+
+msgid "PipelineSubscriptions|This project is not subscribed to any project pipelines."
 msgstr ""
 
 msgid "PipelineWizardDefaultCommitMessage|Add %{filename}"

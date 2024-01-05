@@ -15,8 +15,7 @@
 
   .gl-snippet-icon {
     display: inline-block;
-    /* stylelint-disable-next-line function-url-quotes */
-    background: url(asset_path('ext_snippet_icons/ext_snippet_icons.png')) no-repeat;
+    background: url('ext_snippet_icons/ext_snippet_icons.png') no-repeat;
     overflow: hidden;
     text-align: left;
     width: 16px;

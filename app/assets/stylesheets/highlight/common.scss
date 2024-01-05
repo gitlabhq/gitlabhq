@@ -118,7 +118,7 @@
     @include gl-w-5;
     @include gl-h-5;
     background-color: rgba($color, 0.3);
-    mask-image: asset_url('icons-stacked.svg##{$icon}');
+    mask-image: url('icons-stacked.svg##{$icon}');
     mask-repeat: no-repeat;
     mask-size: cover;
     mask-position: center;

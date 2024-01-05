@@ -495,7 +495,7 @@
 
       &::after {
         @include gl-dark-invert-keep-hue;
-        content: image-url('icon_anchor.svg');
+        content: url('icon_anchor.svg');
         visibility: hidden;
       }
     }

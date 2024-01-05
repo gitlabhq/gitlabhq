@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
-  let_it_be(:organization) { build_stubbed(:organization) }
+  let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
+  let_it_be(:organization) { organization_detail.organization }
   let_it_be(:new_group_path) { '/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
   let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
@@ -11,6 +12,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:root_url) { 'http://127.0.0.1:3000/' }
   let_it_be(:groups_empty_state_svg_path) { 'illustrations/empty-state/empty-groups-md.svg' }
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
+  let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
 
   before do
     allow(helper).to receive(:new_group_path).and_return(new_group_path)
@@ -21,6 +23,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow(helper).to receive(:root_url).and_return(root_url)
     allow(helper).to receive(:image_path).with(groups_empty_state_svg_path).and_return(groups_empty_state_svg_path)
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
+    allow(helper).to receive(:preview_markdown_organizations_path).and_return(preview_markdown_organizations_path)
   end
 
   describe '#organization_show_app_data' do
@@ -41,6 +44,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'organization' => {
             'id' => organization.id,
             'name' => organization.name,
+            'description_html' => organization.description_html,
             'avatar_url' => 'avatar.jpg'
           },
           'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
@@ -91,7 +95,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
           'organizations_path' => organizations_path,
-          'root_url' => root_url
+          'root_url' => root_url,
+          'preview_markdown_path' => preview_markdown_organizations_path
         }
       )
     end
@@ -119,10 +124,12 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'id' => organization.id,
             'name' => organization.name,
             'path' => organization.path,
+            'description' => organization.description,
             'avatar' => 'avatar.jpg'
           },
           'organizations_path' => organizations_path,
-          'root_url' => root_url
+          'root_url' => root_url,
+          'preview_markdown_path' => preview_markdown_organizations_path
         }
       )
     end

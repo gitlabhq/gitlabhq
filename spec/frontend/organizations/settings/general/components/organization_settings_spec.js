@@ -9,6 +9,7 @@ import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
   FORM_FIELD_AVATAR,
+  FORM_FIELD_DESCRIPTION,
 } from '~/organizations/shared/constants';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
 import {
@@ -62,7 +63,13 @@ describe('OrganizationSettings', () => {
 
   const findForm = () => wrapper.findComponent(NewEditForm);
   const submitForm = async (data = {}) => {
-    findForm().vm.$emit('submit', { name: 'Foo bar', path: 'foo-bar', avatar: file, ...data });
+    findForm().vm.$emit('submit', {
+      name: 'Foo bar',
+      path: 'foo-bar',
+      description: 'Foo bar description',
+      avatar: file,
+      ...data,
+    });
     await nextTick();
   };
 
@@ -84,7 +91,7 @@ describe('OrganizationSettings', () => {
     expect(findForm().props()).toMatchObject({
       loading: false,
       initialFormValues: defaultProvide.organization,
-      fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_AVATAR],
+      fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
     });
   });
 
@@ -117,6 +124,7 @@ describe('OrganizationSettings', () => {
           input: {
             id: 'gid://gitlab/Organizations::Organization/1',
             name: 'Foo bar',
+            description: 'Foo bar description',
             avatar: file,
           },
         });
@@ -191,6 +199,7 @@ describe('OrganizationSettings', () => {
             input: {
               id: 'gid://gitlab/Organizations::Organization/1',
               name: 'Foo bar',
+              description: 'Foo bar description',
               avatar: null,
             },
           });
@@ -208,6 +217,7 @@ describe('OrganizationSettings', () => {
             input: {
               id: 'gid://gitlab/Organizations::Organization/1',
               name: 'Foo bar',
+              description: 'Foo bar description',
             },
           });
         });

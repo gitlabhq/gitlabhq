@@ -994,7 +994,7 @@ Gemspec/AvoidExecutingGit:
 
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
-    - '{,ee/,qa/}spec/**/*_{spec,shared_examples,shared_context}.rb'
+    - '{,ee/,qa/,jh/}spec/**/*_{spec,shared_examples,shared_context}.rb'
 
 Cop/SidekiqRedisCall:
   Enabled: true

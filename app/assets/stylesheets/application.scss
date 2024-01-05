@@ -27,7 +27,5 @@
 // JH-only stylesheets
 @import 'application_jh';
 
-/* print styles */
-@media print {
-  @import 'print';
-}
+// print styles
+@import 'print';

@@ -6,6 +6,7 @@ import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
+  FORM_FIELD_DESCRIPTION,
   FORM_FIELD_AVATAR,
 } from '~/organizations/shared/constants';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
@@ -29,7 +30,7 @@ export default {
     ),
     successMessage: s__('Organization|Organization was successfully updated.'),
   },
-  fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_AVATAR],
+  fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
   data() {
     return {
       loading: false,
@@ -66,6 +67,7 @@ export default {
             input: {
               id: convertToGraphQLId(TYPE_ORGANIZATION, this.organization.id),
               name: formValues.name,
+              description: formValues.description,
               ...this.avatarInput(formValues),
             },
           },
