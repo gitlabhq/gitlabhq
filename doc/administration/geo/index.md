@@ -337,18 +337,9 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Log files
 
-Geo stores structured log messages in a `geo.log` file. For Linux package
-installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+Geo stores structured log messages in a `geo.log` file. 
 
-This file contains information about when Geo attempts to sync repositories and files. Each line in the file contains a separate JSON entry that can be ingested into. For example, Elasticsearch or Splunk.
-
-For example:
-
-```json
-{"severity":"INFO","time":"2017-08-06T05:40:16.104Z","message":"Repository update","project_id":1,"source":"repository","resync_repository":true,"resync_wiki":true,"class":"Gitlab::Geo::LogCursor::Daemon","cursor_delay_s":0.038}
-```
-
-This message shows that Geo detected that a repository update was needed for project `1`.
+For more information on how to access and consume Geo logs, see the [Geo section in the log system documentation](../logs/index.md#geolog).
 
 ## Troubleshooting
 

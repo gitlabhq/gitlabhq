@@ -130,14 +130,6 @@ RSpec.shared_examples 'routable resource' do
   end
 
   it_behaves_like '.where_full_path_in', :aggregate_failures
-
-  context 'when the `optimize_where_full_path_in` feature flag is turned OFF' do
-    before do
-      stub_feature_flags(optimize_where_full_path_in: false)
-    end
-
-    it_behaves_like '.where_full_path_in', :aggregate_failures
-  end
 end
 
 RSpec.shared_examples 'routable resource with parent' do

@@ -1,24 +1,16 @@
 ---
 stage: Govern
-group: Authentication
+group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Custom roles **(ULTIMATE ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
+> - [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
-> - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `custom_roles_vulnerability`.
-> - Ability to view a vulnerability report [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123835) in GitLab 16.1.
-> - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
-> - Ability to manage group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) in GitLab 16.5.
-> - Ability to manage project access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `manage_project_access_tokens`.
-> - Ability to archive projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) in GitLab 16.7.
 > - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
-> - Ability to delete projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) in GitLab 16.8.
-> - Ability to manage group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428353) in GitLab 16.8.
 
 Custom roles allow group Owners or instance administrators to create roles
 specific to the needs of their organization.
@@ -27,6 +19,10 @@ specific to the needs of their organization.
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
+
+## Available permissions
+
+For more information on available permissions, see [custom abilities](custom_roles/abilities.md).
 
 ## Create a custom role
 
@@ -97,28 +93,6 @@ In **Settings > Roles and Permissions**, the list of all custom roles displays t
 - Permissions.
 
 To create a custom role, you can also [use the API](../api/member_roles.md#add-a-member-role-to-a-group).
-
-### Available permissions
-
-The following permissions are available. You can add these permissions in any combination
-to a base role to create a custom role.
-
-Some permissions require having other permissions enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
-
-These requirements are documented in the `Required permission` column in the following table.
-
-| Permission                      | Version                | Required permission  | Description |
-| ------------------------------- | -----------------------| -------------------- | ----------- |
-| `read_code`                     | GitLab 15.7 and later  | Not applicable       | View project code. Does not include the ability to pull code.  |
-| `read_vulnerability`            | GitLab 16.1 and later  | Not applicable       | View [vulnerability reports](application_security/vulnerability_report/index.md).  |
-| `admin_vulnerability`           | GitLab 16.1 and later  | `read_vulnerability` | Change the [status of vulnerabilities](application_security/vulnerabilities/index.md#vulnerability-status-values).  |
-| `read_dependency`               | GitLab 16.3 and later  | Not applicable       | View [project dependencies](application_security/dependency_list/index.md).  |
-| `admin_merge_request`           | GitLab 16.4 and later  | Not applicable       | View and approve [merge requests](project/merge_requests/index.md), revoke merge request approval, and view the associated merge request code. <br> Does not allow users to view or change merge request approval rules.  |
-| `manage_project_access_tokens`  | GitLab 16.5 and later  | Not applicable       | Create, delete, and list [project access tokens](project/settings/project_access_tokens.md).  |
-| `admin_group_member`            | GitLab 16.5 and later  | Not applicable       | Add or remove [group members](group/manage.md).  |
-| `archive_project`               | GitLab 16.7 and later  | Not applicable       | [Archive and unarchive projects](project/settings/migrate_projects.md#archive-a-project).  |
-| `remove_project`                | GitLab 16.8 and later  | Not applicable       | [Delete projects](project/working_with_projects.md#delete-a-project).  |
-| `manage_group_access_tokens`    | GitLab 16.8 and later  | Not applicable       | [Create, delete, and list group access tokens](group/settings/group_access_tokens.md).  |
 
 ## Billing and seat usage
 

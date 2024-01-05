@@ -34,7 +34,10 @@ export default {
     WorkItemWeight: () =>
       import('ee_component/work_items/components/work_item_weight_with_edit.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemIterationInline: () =>
+      import('ee_component/work_items/components/work_item_iteration_inline.vue'),
+    WorkItemIteration: () =>
+      import('ee_component/work_items/components/work_item_iteration_with_edit.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
     WorkItemHealthStatusInline: () =>
@@ -177,17 +180,30 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-iteration
-      v-if="workItemIteration"
-      class="gl-mb-5"
-      :full-path="fullPath"
-      :iteration="workItemIteration.iteration"
-      :can-update="canUpdate"
-      :work-item-id="workItem.id"
-      :work-item-iid="workItem.iid"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemIteration">
+      <work-item-iteration
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+      <work-item-iteration-inline
+        v-else
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         v-if="glFeatures.workItemsMvc2"

@@ -1,4 +1,4 @@
-import { GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
+import { GlBadge, GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
@@ -46,10 +46,11 @@ describe('IssuableItem', () => {
   const mockAuthor = mockIssuable.author;
   let wrapper;
 
-  const findTimestampWrapper = () => wrapper.find('[data-testid="issuable-timestamp"]');
+  const findTimestampWrapper = () => wrapper.findByTestId('issuable-timestamp');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findIssuableTitleLink = () => wrapper.findComponentByTestId('issuable-title-link');
   const findIssuableItemWrapper = () => wrapper.findByTestId('issuable-item-wrapper');
+  const findStatusEl = () => wrapper.findByTestId('issuable-status');
 
   beforeEach(() => {
     gon.gitlab_url = MOCK_GITLAB_URL;
@@ -290,7 +291,7 @@ describe('IssuableItem', () => {
 
         await nextTick();
 
-        const titleEl = wrapper.find('[data-testid="issuable-title"]');
+        const titleEl = wrapper.findByTestId('issuable-title');
 
         expect(titleEl.exists()).toBe(true);
         expect(titleEl.findComponent(GlLink).attributes('href')).toBe(expectedHref);
@@ -329,7 +330,7 @@ describe('IssuableItem', () => {
       await nextTick();
 
       expect(
-        wrapper.find('[data-testid="issuable-title"]').findComponent(GlLink).attributes('target'),
+        wrapper.findByTestId('issuable-title').findComponent(GlLink).attributes('target'),
       ).toBe('_blank');
     });
 
@@ -343,7 +344,7 @@ describe('IssuableItem', () => {
 
       await nextTick();
 
-      const confidentialEl = wrapper.find('[data-testid="issuable-title"]').findComponent(GlIcon);
+      const confidentialEl = wrapper.findByTestId('issuable-title').findComponent(GlIcon);
 
       expect(confidentialEl.exists()).toBe(true);
       expect(confidentialEl.props('name')).toBe('eye-slash');
@@ -368,7 +369,7 @@ describe('IssuableItem', () => {
     it('renders task status', () => {
       wrapper = createComponent();
 
-      const taskStatus = wrapper.find('[data-testid="task-status"]');
+      const taskStatus = wrapper.findByTestId('task-status');
       const expected = `${mockIssuable.taskCompletionStatus.completedCount} of ${mockIssuable.taskCompletionStatus.count} checklist items completed`;
 
       expect(taskStatus.text()).toBe(expected);
@@ -389,7 +390,7 @@ describe('IssuableItem', () => {
     it('renders issuable reference', () => {
       wrapper = createComponent();
 
-      const referenceEl = wrapper.find('[data-testid="issuable-reference"]');
+      const referenceEl = wrapper.findByTestId('issuable-reference');
 
       expect(referenceEl.exists()).toBe(true);
       expect(referenceEl.text()).toBe(`#${mockIssuable.iid}`);
@@ -414,7 +415,7 @@ describe('IssuableItem', () => {
     it('renders issuable createdAt info', () => {
       wrapper = createComponent();
 
-      const createdAtEl = wrapper.find('[data-testid="issuable-created-at"]');
+      const createdAtEl = wrapper.findByTestId('issuable-created-at');
 
       expect(createdAtEl.exists()).toBe(true);
       expect(createdAtEl.attributes('title')).toBe(
@@ -426,7 +427,7 @@ describe('IssuableItem', () => {
     it('renders issuable author info', () => {
       wrapper = createComponent();
 
-      const authorEl = wrapper.find('[data-testid="issuable-author"]');
+      const authorEl = wrapper.findByTestId('issuable-author');
 
       expect(authorEl.exists()).toBe(true);
       expect(authorEl.attributes()).toMatchObject({
@@ -497,20 +498,52 @@ describe('IssuableItem', () => {
       });
     });
 
-    it('renders issuable status via slot', () => {
-      wrapper = createComponent({
-        issuableSymbol: '#',
-        issuable: mockIssuable,
-        slots: {
-          status: `
-            <b class="js-status">${mockIssuable.state}</b>
-          `,
-        },
-      });
-      const statusEl = wrapper.find('.js-status');
+    describe('status', () => {
+      it('renders issuable status via slot', () => {
+        wrapper = createComponent({
+          issuableSymbol: '#',
+          issuable: mockIssuable,
+          slots: {
+            status: `
+              <b data-testid="js-status">${mockIssuable.state}</b>
+            `,
+          },
+        });
+        const statusEl = wrapper.findByTestId('js-status');
 
-      expect(statusEl.exists()).toBe(true);
-      expect(statusEl.text()).toBe(`${mockIssuable.state}`);
+        expect(statusEl.exists()).toBe(true);
+        expect(statusEl.text()).toBe(`${mockIssuable.state}`);
+      });
+
+      it('renders issuable status as badge', () => {
+        const closedMockIssuable = { ...mockIssuable, state: 'closed' };
+        wrapper = createComponent({
+          issuableSymbol: '#',
+          issuable: closedMockIssuable,
+          slots: {
+            status: closedMockIssuable.state,
+          },
+        });
+        const statusEl = findStatusEl();
+
+        expect(statusEl.findComponent(GlBadge).exists()).toBe(true);
+        expect(statusEl.text()).toBe(`${closedMockIssuable.state}`);
+      });
+
+      it('renders issuable status without badge if open', () => {
+        wrapper = createComponent({
+          issuableSymbol: '#',
+          issuable: mockIssuable,
+          slots: {
+            status: mockIssuable.state,
+          },
+        });
+
+        const statusEl = findStatusEl();
+
+        expect(statusEl.findComponent(GlBadge).exists()).toBe(false);
+        expect(statusEl.text()).toBe(`${mockIssuable.state}`);
+      });
     });
 
     it('renders discussions count', () => {
@@ -543,7 +576,7 @@ describe('IssuableItem', () => {
     it('renders issuable updatedAt info', () => {
       wrapper = createComponent();
 
-      const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
+      const timestampEl = wrapper.findByTestId('issuable-timestamp');
 
       expect(timestampEl.attributes('title')).toBe(
         localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
@@ -566,7 +599,7 @@ describe('IssuableItem', () => {
           issuable: { ...mockIssuable, closedAt, state: 'closed' },
         });
 
-        const timestampEl = wrapper.find('[data-testid="issuable-timestamp"]');
+        const timestampEl = wrapper.findByTestId('issuable-timestamp');
 
         expect(timestampEl.attributes('title')).toBe(
           localeDateFormat.asDateTimeFull.format(closedAt),

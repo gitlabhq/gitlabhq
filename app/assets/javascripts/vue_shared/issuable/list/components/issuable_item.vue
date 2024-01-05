@@ -1,19 +1,27 @@
 <script>
-import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-
+import {
+  GlBadge,
+  GlLink,
+  GlIcon,
+  GlLabel,
+  GlFormCheckbox,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_CLOSED } from '~/issues/constants';
+import { STATUS_OPEN, STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import { STATE_CLOSED } from '~/work_items/constants';
+import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
 import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
 
 export default {
   components: {
+    GlBadge,
     GlLink,
     GlIcon,
     GlLabel,
@@ -120,8 +128,11 @@ export default {
     createdAt() {
       return this.timeFormatted(this.issuable.createdAt);
     },
+    isNotOpen() {
+      return ![STATUS_OPEN, STATE_OPEN].includes(this.issuable.state);
+    },
     isClosed() {
-      return this.issuable.state === STATUS_CLOSED || this.issuable.state === STATE_CLOSED;
+      return [STATUS_CLOSED, STATE_CLOSED].includes(this.issuable.state);
     },
     timestamp() {
       return this.isClosed && this.issuable.closedAt
@@ -351,8 +362,12 @@ export default {
     </div>
     <div class="issuable-meta">
       <ul v-if="showIssuableMeta" class="controls">
-        <li v-if="hasSlotContents('status')">
-          <slot name="status"></slot>
+        <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
+        <li v-if="$slots.status" data-testid="issuable-status">
+          <gl-badge v-if="isNotOpen" size="sm" variant="info">
+            <slot name="status"></slot>
+          </gl-badge>
+          <slot v-else name="status"></slot>
         </li>
         <li v-if="assignees.length">
           <issuable-assignees

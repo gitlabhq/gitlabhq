@@ -116,22 +116,20 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
   describe '#generated_files' do
     subject(:generated_files) { compare.generated_files }
 
-    context 'with a detected generated file' do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:repository) { project.repository.raw }
-      let_it_be(:branch) { 'generated-file-test' }
-      let_it_be(:base) do
-        project
-          .repository
-          .create_file(
-            project.creator,
-            '.gitattributes',
-            "*.txt gitlab-generated\n",
-            branch_name: branch,
-            message: 'Add .gitattributes file')
-      end
+    let(:project) do
+      create(:project, :custom_repo, files: {
+        '.gitattributes' => '*.txt gitlab-generated'
+      })
+    end
 
-      let_it_be(:head) do
+    let(:repository) { project.repository.raw }
+    let(:branch) { 'generated-file-test' }
+    let(:base) { project.default_branch }
+    let(:head) { branch }
+
+    context 'with a detected generated file' do
+      before do
+        project.repository.create_branch(branch, project.default_branch)
         project
           .repository
           .create_file(
@@ -150,7 +148,7 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
             message: 'Add file2')
       end
 
-      it 'sets the diff as generated' do
+      it 'returns a set that incldues the generated file' do
         expect(generated_files).to eq Set.new(['file1.txt'])
       end
 
@@ -175,19 +173,16 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
       end
     end
 
-    context 'with updated .gitattributes in the HEAD' do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:repository) { project.repository.raw }
-      let_it_be(:branch) { 'generated-file-test' }
-      let_it_be(:head) do
+    context 'with deleted .gitattributes in the HEAD' do
+      before do
+        project.repository.create_branch(branch, project.default_branch)
         project
           .repository
-          .create_file(
+          .delete_file(
             project.creator,
             '.gitattributes',
-            "*.txt gitlab-generated\n",
             branch_name: branch,
-            message: 'Add .gitattributes file')
+            message: 'Delete .gitattributes file')
         project
           .repository
           .create_file(
@@ -206,8 +201,8 @@ RSpec.describe Gitlab::Git::Compare, feature_category: :source_code_management d
             message: 'Add file2')
       end
 
-      it 'does not set any files as generated' do
-        expect(generated_files).to eq Set.new
+      it 'ignores the .gitattributes changes in the HEAD' do
+        expect(generated_files).to eq Set.new(['file1.txt'])
       end
     end
   end

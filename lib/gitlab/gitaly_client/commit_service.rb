@@ -284,7 +284,9 @@ module Gitlab
           msg.paths.map do |path|
             Gitlab::Git::ChangedPath.new(
               status: path.status,
-              path: EncodingHelper.encode!(path.path)
+              path: EncodingHelper.encode!(path.path),
+              old_mode: path.old_mode.to_s(8),
+              new_mode: path.new_mode.to_s(8)
             )
           end
         end

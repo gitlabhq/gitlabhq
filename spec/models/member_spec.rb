@@ -922,6 +922,40 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       expect(member.invite_token).not_to be_nil
       expect_any_instance_of(described_class).not_to receive(:after_accept_invite)
     end
+
+    context 'when after accepting invite' do
+      include NotificationHelpers
+
+      let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
+      let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
+      let_it_be(:email) { member.invite_email }
+      let(:user) { build(:user, email: email) }
+
+      it 'enqueues an email to user' do
+        member.accept_invite!(user)
+
+        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_invite_accepted_email')
+      end
+
+      it 'calls updates the two factor requirement' do
+        expect(user).to receive(:require_two_factor_authentication_from_group).and_call_original
+
+        member.accept_invite!(user)
+
+        expect(user.require_two_factor_authentication_from_group).to be_truthy
+      end
+
+      context 'when member source is a project' do
+        let_it_be(:project) { create(:project, namespace: group) }
+        let_it_be(:member) { create(:project_member, :invited, source: project, invite_email: email) }
+
+        it 'calls updates the two factor requirement' do
+          expect(user).not_to receive(:require_two_factor_authentication_from_group)
+
+          member.accept_invite!(user)
+        end
+      end
+    end
   end
 
   describe '#decline_invite!' do
@@ -1198,6 +1232,26 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         it_behaves_like 'performs all the common hooks'
       end
+    end
+  end
+
+  context 'when after_create :update_two_factor_requirement' do
+    it 'calls update_two_factor_requirement after creation' do
+      user = create(:user)
+
+      expect(user).to receive(:update_two_factor_requirement)
+
+      create(:group_member, user: user)
+    end
+  end
+
+  context 'when after_destroy :update_two_factor_requirement' do
+    it 'calls update_two_factor_requirement after deletion' do
+      group_member = create(:group_member)
+
+      expect(group_member.user).to receive(:update_two_factor_requirement)
+
+      group_member.destroy!
     end
   end
 

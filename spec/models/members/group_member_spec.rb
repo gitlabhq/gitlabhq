@@ -33,10 +33,6 @@ RSpec.describe GroupMember, feature_category: :cell do
     end
   end
 
-  describe 'delegations' do
-    it { is_expected.to delegate_method(:update_two_factor_requirement).to(:user).allow_nil }
-  end
-
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options_with_owner' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)
@@ -67,22 +63,6 @@ RSpec.describe GroupMember, feature_category: :cell do
     it { is_expected.to eq 'Group' }
   end
 
-  describe '#update_two_factor_requirement' do
-    it 'is called after creation and deletion' do
-      user = create :user
-      group = create :group
-      group_member = build :group_member, user: user, group: group
-
-      expect(user).to receive(:update_two_factor_requirement)
-
-      group_member.save!
-
-      expect(user).to receive(:update_two_factor_requirement)
-
-      group_member.destroy!
-    end
-  end
-
   describe '#destroy' do
     context 'for an orphaned member' do
       let!(:orphaned_group_member) do
@@ -92,21 +72,6 @@ RSpec.describe GroupMember, feature_category: :cell do
       it 'does not raise an error' do
         expect { orphaned_group_member.destroy! }.not_to raise_error
       end
-    end
-  end
-
-  describe '#after_accept_invite' do
-    it 'calls #update_two_factor_requirement' do
-      email = 'foo@email.com'
-      user = build(:user, email: email)
-      group = create(:group, require_two_factor_authentication: true)
-      group_member = create(:group_member, group: group, invite_token: '1234', invite_email: email)
-
-      expect(user).to receive(:require_two_factor_authentication_from_group).and_call_original
-
-      group_member.accept_invite!(user)
-
-      expect(user.require_two_factor_authentication_from_group).to be_truthy
     end
   end
 

@@ -26,27 +26,17 @@ RSpec.shared_examples 'members notifications' do |entity_type|
   describe '#accept_request' do
     let(:member) { create(:"#{entity_type}_member", :access_request) }
 
-    it "calls NotificationService.new_#{entity_type}_member" do
+    it "calls NotificationService.new_member" do
       expect(notification_service).to receive(:new_member).with(member)
 
       member.accept_request(create(:user))
     end
   end
 
-  describe "#accept_invite!" do
-    let(:member) { create(:"#{entity_type}_member", :invited) }
-
-    it "calls NotificationService.accept_#{entity_type}_invite" do
-      expect(notification_service).to receive(:"accept_#{entity_type}_invite").with(member)
-
-      member.accept_invite!(build(:user))
-    end
-  end
-
   describe "#decline_invite!" do
     let(:member) { create(:"#{entity_type}_member", :invited) }
 
-    it "calls NotificationService.decline_#{entity_type}_invite" do
+    it "calls NotificationService.decline_invite" do
       expect(notification_service).to receive(:decline_invite).with(member)
 
       member.decline_invite!

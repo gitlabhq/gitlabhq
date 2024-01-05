@@ -15,7 +15,7 @@ to Geo secondaries. This may result in a larger than expected downtime.
 
 Upgrading Geo sites involves performing:
 
-1. [Version-specific upgrade steps](version_specific_upgrades.md), depending on the
+1. [Version-specific upgrade steps](../../../update/index.md#version-specific-upgrading-instructions), depending on the
    version being upgraded to or from.
 1. [General upgrade steps](#general-upgrade-steps), for all upgrades.
 

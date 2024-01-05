@@ -276,9 +276,11 @@ class Member < ApplicationRecord
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_create :update_two_factor_requirement, unless: :invite?
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
+  after_destroy :update_two_factor_requirement, unless: :invite?
   after_save :log_invitation_token_cleanup
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
@@ -498,6 +500,17 @@ class Member < ApplicationRecord
     created_by&.name
   end
 
+  def update_two_factor_requirement
+    return unless source.is_a?(Group)
+    return unless user
+
+    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+      %w[users user_details user_preferences], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424288'
+    ) do
+      user.update_two_factor_requirement
+    end
+  end
+
   private
 
   # TODO: https://gitlab.com/groups/gitlab-org/-/epics/7054
@@ -564,6 +577,12 @@ class Member < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
+    run_after_commit_or_now do
+      notification_service.accept_invite(self)
+    end
+
+    update_two_factor_requirement
+
     post_create_hook
   end
 
@@ -594,7 +613,12 @@ class Member < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def notifiable_options
-    {}
+    case source
+    when Group
+      { group: source }
+    when Project
+      { project: source }
+    end
   end
 
   def higher_access_level_than_group

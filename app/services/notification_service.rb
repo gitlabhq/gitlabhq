@@ -539,10 +539,10 @@ class NotificationService
     mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
   end
 
-  def accept_project_invite(project_member)
-    return true unless project_member.notifiable?(:subscription)
+  def accept_invite(member)
+    return true if member.source.is_a?(Project) && !member.notifiable?(:subscription)
 
-    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
+    mailer.member_invite_accepted_email(member.real_source_type, member.id).deliver_later
   end
 
   def updated_member_access_level(member)
@@ -566,10 +566,6 @@ class NotificationService
 
   def invite_member_reminder(group_member, token, reminder_index)
     mailer.member_invited_reminder_email(group_member.real_source_type, group_member.id, token, reminder_index).deliver_later
-  end
-
-  def accept_group_invite(group_member)
-    mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

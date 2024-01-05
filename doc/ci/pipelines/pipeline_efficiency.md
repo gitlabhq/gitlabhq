@@ -27,7 +27,7 @@ The easiest indicators to check for inefficient pipelines are the runtimes of th
 stages, and the total runtime of the pipeline itself. The total pipeline duration is
 heavily influenced by the:
 
-- [Size of the repository](../../user/project/repository/managing_large_repositories.md)
+- [Size of the repository](../../user/project/repository/monorepos/index.md)
 - Total number of stages and jobs.
 - Dependencies between jobs.
 - The ["critical path"](#directed-acyclic-graphs-dag-visualization), which represents

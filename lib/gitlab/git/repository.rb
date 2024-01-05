@@ -1089,6 +1089,10 @@ module Gitlab
         @praefect_info_client ||= Gitlab::GitalyClient::PraefectInfoService.new(self)
       end
 
+      def gitaly_analysis_client
+        @gitaly_analysis_client ||= Gitlab::GitalyClient::AnalysisService.new(self)
+      end
+
       def branch_names_contains_sha(sha, limit: 0)
         gitaly_ref_client.branch_names_contains_sha(sha, limit: limit)
       end
@@ -1202,6 +1206,12 @@ module Gitlab
         end
       end
 
+      def object_format
+        wrapped_gitaly_errors do
+          gitaly_repository_client.object_format.format
+        end
+      end
+
       def get_file_attributes(revision, file_paths, attributes)
         wrapped_gitaly_errors do
           gitaly_repository_client
@@ -1211,23 +1221,48 @@ module Gitlab
         end
       end
 
-      def object_format
-        wrapped_gitaly_errors do
-          gitaly_repository_client.object_format.format
-        end
-      end
-
       # rubocop: disable CodeReuse/ActiveRecord -- not an active record operation
-      def detect_generated_files(revision, paths)
-        return Set.new if paths.blank?
+      def detect_generated_files(base, head, changed_paths)
+        return Set.new if changed_paths.blank?
 
-        get_file_attributes(revision, paths, Gitlab::Git::ATTRIBUTE_OVERRIDES[:generated])
+        # Check .gitattributes overrides first
+        checked_files = get_file_attributes(
+          base,
+          changed_paths.map(&:path),
+          Gitlab::Git::ATTRIBUTE_OVERRIDES[:generated]
+        ).map { |attrs| { path: attrs[:path], generated: attrs[:value] == "set" } }
+
+        # Check automatic generated file detection for the remaining paths
+        overridden_paths = checked_files.pluck(:path)
+        remainder = changed_paths.reject { |changed_path| overridden_paths.include?(changed_path.path) }
+        checked_files += check_blobs_generated(base, head, remainder) if remainder.present?
+
+        checked_files
+          .select { |attrs| attrs[:generated] }
           .pluck(:path)
           .to_set
+
+      rescue Gitlab::Git::CommandError => e
+        # An exception can be raised due to an unknown revision or paths.
+        Gitlab::ErrorTracking.track_exception(
+          e,
+          gl_project_path: @gl_project_path,
+          base: base,
+          head: head,
+          paths: changed_paths.map(&:path)
+        )
+
+        Set.new
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
+
+      def check_blobs_generated(base, head, changed_paths)
+        wrapped_gitaly_errors do
+          gitaly_analysis_client.check_blobs_generated(base, head, changed_paths)
+        end
+      end
 
       def repository_info_size_megabytes
         bytes = gitaly_repository_client.repository_info.size

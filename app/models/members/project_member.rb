@@ -72,10 +72,6 @@ class ProjectMember < Member
     source
   end
 
-  def notifiable_options
-    { project: project }
-  end
-
   def holder_of_the_personal_namespace?
     project.personal_namespace_holder?(user)
   end
@@ -121,14 +117,6 @@ class ProjectMember < Member
       event_service.expired_leave_project(self.project, self.user)
     else
       event_service.leave_project(self.project, self.user)
-    end
-
-    super
-  end
-
-  def after_accept_invite
-    run_after_commit_or_now do
-      notification_service.accept_project_invite(self)
     end
 
     super

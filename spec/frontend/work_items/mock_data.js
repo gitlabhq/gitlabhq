@@ -736,6 +736,12 @@ export const workItemResponseFactory = ({
                 title: 'Iteration default title',
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
+                webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/iterations/23205',
+                iterationCadence: {
+                  id: 'gid://gitlab/Iterations::Cadence/5852',
+                  title: 'A dolores assumenda harum non facilis similique delectus quod.',
+                  __typename: 'IterationCadence',
+                },
               },
             }
           : { type: 'MOCK TYPE' },

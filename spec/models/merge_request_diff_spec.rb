@@ -933,11 +933,19 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       context 'handling generated files' do
-        let(:project) { create(:project, :repository) }
+        let(:project) do
+          create(:project, :custom_repo, files: {
+            '.gitattributes' => '*.txt gitlab-generated'
+          })
+        end
+
+        let(:generated_file_name_manual) { 'generated.txt' }
+        let(:generated_file_name_auto) { 'package-lock.json' }
+        let(:regular_file_name) { 'regular.rb' }
+
         let(:target_branch) { project.default_branch }
         let(:source_branch) { 'test-generated-diff-file' }
-        let(:generated_file_name) { 'generated.txt' }
-        let(:regular_file_name) { 'regular.rb' }
+
         let(:merge_request) do
           create(
             :merge_request,
@@ -953,20 +961,34 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
 
         before do
-          project.repository.update_file(
-            project.creator,
-            '.gitattributes',
-            '*.txt gitlab-generated',
-            message: 'Update',
-            branch_name: target_branch)
+          project.repository.create_branch(source_branch, target_branch)
 
-          create_file_in_repo(project, target_branch, source_branch, generated_file_name, "generated text\n")
-          create_file_in_repo(project, source_branch, source_branch, regular_file_name, "something else\n")
+          project.repository.create_file(
+            project.creator,
+            generated_file_name_manual,
+            'updated generated content',
+            message: 'Update generated file',
+            branch_name: source_branch)
+
+          project.repository.create_file(
+            project.creator,
+            generated_file_name_auto,
+            'updated generated content',
+            message: 'Update generated file',
+            branch_name: source_branch)
+
+          project.repository.create_file(
+            project.creator,
+            regular_file_name,
+            'updated regular content',
+            message: "Update regular file",
+            branch_name: source_branch)
         end
 
         context 'with collapse_generated_diff_files feature flag' do
           it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name)).to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_manual)).to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_auto)).to be_generated
             expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
           end
         end
@@ -977,7 +999,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name)).not_to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_auto)).not_to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_manual)).not_to be_generated
             expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
           end
         end

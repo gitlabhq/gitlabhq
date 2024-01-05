@@ -48,9 +48,8 @@ module Gitlab
 
         changed_paths = @repository
           .find_changed_paths([Gitlab::Git::DiffTree.new(@base.id, @head.id)])
-          .map(&:path)
 
-        @repository.detect_generated_files(@base.id, changed_paths)
+        @repository.detect_generated_files(@base.id, @head.id, changed_paths)
       end
     end
   end
