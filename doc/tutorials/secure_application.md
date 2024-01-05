@@ -1,6 +1,7 @@
 ---
 stage: none
 group: Tutorials
+description: Dependency and compliance scanning.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 

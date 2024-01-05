@@ -17,6 +17,7 @@ RSpec.describe Types::Ci::Catalog::Resources::VersionType, feature_category: :pi
       author
       commit
       components
+      readme_html
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

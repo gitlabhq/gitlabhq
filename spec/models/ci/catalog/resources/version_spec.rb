@@ -28,6 +28,23 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     end
   end
 
+  describe '.by_name' do
+    it 'returns the version that matches the name' do
+      versions = described_class.by_name('v1.0')
+
+      expect(versions.count).to eq(1)
+      expect(versions.first.name).to eq('v1.0')
+    end
+
+    context 'when no version matches the name' do
+      it 'returns empty response' do
+        versions = described_class.by_name('does_not_exist')
+
+        expect(versions).to be_empty
+      end
+    end
+  end
+
   describe '.order_by_created_at_asc' do
     it 'returns versions ordered by created_at ascending' do
       versions = described_class.order_by_created_at_asc
@@ -127,9 +144,9 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
   describe '#name' do
     it 'is equivalent to release.tag' do
-      release_v1_0.update!(name: 'Release v1.0')
+      v1_0.release.update!(name: 'Release v1.0')
 
-      expect(v1_0.name).to eq(release_v1_0.tag)
+      expect(v1_0.name).to eq(v1_0.release.tag)
     end
   end
 
@@ -142,10 +159,17 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
     context 'when the sha is nil' do
       it 'returns nil' do
-        release_v1_0.update!(sha: nil)
+        v1_0.release.update!(sha: nil)
 
         is_expected.to be_nil
       end
+    end
+  end
+
+  describe '#readme' do
+    it 'returns the correct readme for the version' do
+      expect(v1_0.readme.data).to include('Readme v1.0')
+      expect(v1_1.readme.data).to include('Readme v1.1')
     end
   end
 end

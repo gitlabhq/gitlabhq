@@ -11,12 +11,18 @@ module Resolvers
           # field is evaluated on more than one node, it causes performance degradation.
           extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
 
+          argument :name, GraphQL::Types::String,
+            required: false,
+            description: 'Name of the version.'
+
           argument :sort, Types::Ci::Catalog::Resources::VersionSortEnum,
             required: false,
             description: 'Sort versions by given criteria.'
 
-          def resolve(sort: nil)
-            ::Ci::Catalog::Resources::VersionsFinder.new(object, current_user, sort: sort).execute
+          alias_method :catalog_resource, :object
+
+          def resolve(name: nil, sort: nil)
+            ::Ci::Catalog::Resources::VersionsFinder.new(catalog_resource, current_user, name: name, sort: sort).execute
           end
         end
       end

@@ -19,6 +19,7 @@ module Ci
 
         scope :for_catalog_resources, ->(catalog_resources) { where(catalog_resource_id: catalog_resources) }
         scope :preloaded, -> { includes(:catalog_resource, project: [:route, { namespace: :route }], release: :author) }
+        scope :by_name, ->(name) { joins(:release).merge(Release.where(tag: name)) }
 
         scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
         scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
@@ -124,6 +125,10 @@ module Ci
 
         def path
           Gitlab::Routing.url_helpers.project_tag_path(project, name)
+        end
+
+        def readme
+          project.repository.tree(sha).readme
         end
 
         private

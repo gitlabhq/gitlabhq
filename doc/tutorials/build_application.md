@@ -1,6 +1,7 @@
 ---
 stage: none
 group: Tutorials
+description: CI/CD fundamentals and examples.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 

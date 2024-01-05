@@ -47,8 +47,22 @@ module Types
             description: 'Components belonging to the catalog resource.',
             alpha: { milestone: '16.7' }
 
+          field :readme_html, GraphQL::Types::String, null: true, calls_gitaly: true,
+            description: 'GitLab Flavored Markdown rendering of README.md. This field ' \
+                         'can only be resolved for one version in any single request.',
+            alpha: { milestone: '16.8' } do
+              extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1 # To avoid N+1 calls to Gitaly
+            end
+
           def author
             Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
+          end
+
+          def readme_html
+            return unless Ability.allowed?(current_user, :read_code, object.project)
+
+            markdown_context = context.to_h.dup.merge(project: object.project)
+            ::MarkupHelper.markdown(object.readme&.data, markdown_context)
           end
         end
         # rubocop: enable Graphql/AuthorizeTypes
