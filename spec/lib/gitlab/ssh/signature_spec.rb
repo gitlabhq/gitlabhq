@@ -8,7 +8,9 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
   let_it_be(:public_key_text) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHZ8NHEnCIpC4mnot+BRxv6L+fq+TnN1CgsRrHWLmfwb' }
   let_it_be_with_reload(:user) { create(:user, email: committer_email) }
   let_it_be_with_reload(:key) { create(:key, usage_type: :signing, key: public_key_text, user: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :in_group) }
 
+  let(:commit) { project.commit }
   let(:signed_text) { 'This message was signed by an ssh key' }
   let(:signer) { :SIGNER_USER }
 
@@ -24,12 +26,16 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
     SIG
   end
 
+  before do
+    allow(commit).to receive(:committer_email).and_return(committer_email)
+  end
+
   subject(:signature) do
     described_class.new(
       signature_text,
       signed_text,
       signer,
-      committer_email
+      commit
     )
   end
 
@@ -289,36 +295,23 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
         # ssh-keygen -Y sign -n git -f id_test-cert.pub message.txt
         <<~SIG
           -----BEGIN SSH SIGNATURE-----
-          U1NIU0lHAAAAAQAABGIAAAAgc3NoLWVkMjU1MTktY2VydC12MDFAb3BlbnNzaC5jb20AAA
-          Aga68FsjVAge+7I5h/qC8luu7iK+5QfrVlDnKRVy1d7zUAAAAgYAsBVqgfGrvGdSPjqY0H
+          U1NIU0lHAAAAAQAAAb0AAAAgc3NoLWVkMjU1MTktY2VydC12MDFAb3BlbnNzaC5jb20AAA
+          AgWbXlnjWbxTzOlRPcnSMlQQnnJTCsEv2y2ij5o7yVbcUAAAAgYAsBVqgfGrvGdSPjqY0H
           t8yljpOS4VumZHnAh+wCvdEAAAAAAAAAAAAAAAEAAAARYWRtaW5AZXhhbXBsZS5jb20AAA
-          AAAAAAAGV8UoAAAAAAZX2kUQAAAAAAAACCAAAAFXBlcm1pdC1YMTEtZm9yd2FyZGluZwAA
+          AAAAAAAGV9kqgAAAAAZX7kiwAAAAAAAACCAAAAFXBlcm1pdC1YMTEtZm9yd2FyZGluZwAA
           AAAAAAAXcGVybWl0LWFnZW50LWZvcndhcmRpbmcAAAAAAAAAFnBlcm1pdC1wb3J0LWZvcn
           dhcmRpbmcAAAAAAAAACnBlcm1pdC1wdHkAAAAAAAAADnBlcm1pdC11c2VyLXJjAAAAAAAA
-          AAAAAAGXAAAAB3NzaC1yc2EAAAADAQABAAABgQDWpZvEFL60+ijqjg/UGEWnjnHsxzEDZe
-          L00prZ7XdZE9yQXb2eI5TmPP/NRXHL4gRuaVBvwllOEeZRI7TJtMCVGQhw8ORVc7sYb6Pp
-          Y4j1AI35SsdM9SrNLucPtR8k46ab4vT0cuT/jx8fEppF7bjJ86NOfVUxGv5mhYv21iIX6L
-          XRUpBlLOGlxtU83PgP8Z5f4T6WUkcLM+Uh22msk15EAnWPF3FQbTH1VA88dHJG76gnpaD2
-          0FJffhaLYl9UJAzDBZqjYeqjNuVN3+BOzi3zAZNhaPXOznw2QXHMXWmgOao4hLWgk5wgUa
-          vXkQehqtB0kQhn8xXir8RbEzPDBToxVWnMJKVO27MtovjWUorNKRFlySwafKKuem/lBulU
-          2VcUvSbB4mRSdZZimqmTieSO8s0onq3TASSAX7nmtkhx1x9cFY4l49TBcZNAiNogBeR40N
-          6ByawjbptznmjkADf9qdI8rLmeuTnr1GgjJsQBsS8qdomG4ITkEG0WJHIbOr0AAAGUAAAA
-          DHJzYS1zaGEyLTUxMgAAAYCqcUD/BkdPxEc6RgaatVRyPllNTXA/7Oz7xK1ZGbhkvweO22
-          itXpb/E1Cy/ir8pppAh2Trec0MPI3vgs6TLHcsOGQbtUMVckfY9SxErlq8H0dEjouzhvnt
-          rvkNnRojfdeAUR+6UGhlZpiF8kPbNMrxkqw2Ir5uLkReZphXlw/Qg3DY/eQ2Hlns8Up9ql
-          4OD+pfoOQtegy5FICjec7fXqlb5KgpazwNoENxh/QoomndHWntnNW7B/fiJL++vGoc6OX4
-          KFxRPFKQoyemQXVa3K3Unli8hYI8o4YzcLiYJ6Uk6MR+RmYvyz7ZF469d1SoO1enDQFOzJ
-          LSq0zaeFX9HmJ8/2rzKs7bnQKWUjm3C2KmyO/NtnZr/qB45tDlWNvuP7+phMfiJRvpvIyc
-          JZdyc9T1CWrzlQoIUaH08gizmyP37NAgqzUTb3NAnhGb1dp70mTfORRnRoKQtzX/DiSfVZ
-          EOk+qnuoJ7Gs4erWNRW2363SgbKKOhPCxeMfUY2zm628sAAAAEZmlsZQAAAAAAAAAGc2hh
-          NTEyAAAAUwAAAAtzc2gtZWQyNTUxOQAAAED54YE97IiluG2xM7OFysEUQfhKEztaT+vvD3
-          kxDq9mHz0Gr6uiKd/gKL+/yGHPAoif74khm/gUe/A9AI7+JvcH
+          AAAAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIINudhvW7P4c36bBwlWTaxnCCOaSfMrUbXHcP7
+          7zH6LyAAAAUwAAAAtzc2gtZWQyNTUxOQAAAEBp9J9YQhaz+tNIKtNpZe5sAxcqvMgcYlB+
+          fVaDsYNOj445Bz7TBoFqjrs95yaF6pwARK11IEQTcwtrihLGzGkNAAAAA2dpdAAAAAAAAA
+          AGc2hhNTEyAAAAUwAAAAtzc2gtZWQyNTUxOQAAAECfVh7AzwqRBMbnHBApCnMpu9Y1qpGM
+          sOSL1EeV3SIOlrThNTCerUpcaizcSY9L8WwP2TXlqw2Sq1BGM+PPSN0C
           -----END SSH SIGNATURE-----
         SIG
       end
 
-      it 'returns nil' do
-        expect(signature.key_fingerprint).to be_nil
+      it 'returns public key fingerprint' do
+        expect(signature.key_fingerprint).to eq('3dNIFKfIAXZb/JL30KKv95cps+mZwVAuAYQhIWxAb+8')
       end
     end
   end

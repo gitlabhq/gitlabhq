@@ -11,11 +11,12 @@ module Gitlab
 
       GIT_NAMESPACE = 'git'
 
-      def initialize(signature_text, signed_text, signer, committer_email)
+      def initialize(signature_text, signed_text, signer, commit)
         @signature_text = signature_text
         @signed_text = signed_text
         @signer = signer
-        @committer_email = committer_email
+        @commit = commit
+        @committer_email = commit.committer_email
       end
 
       def verification_status
@@ -23,15 +24,8 @@ module Gitlab
           next :unverified unless all_attributes_present?
           next :verified_system if verified_by_gitlab?
           next :unverified unless valid_signature_blob?
-          next :unknown_key unless signed_by_key
-          next :other_user unless committer
-          next :other_user unless signed_by_key.user == committer
 
-          if signed_by_user_email_verified?
-            :verified
-          else
-            :unverified
-          end
+          calculate_verification_status
         end
       end
 
@@ -47,7 +41,7 @@ module Gitlab
         strong_memoize(:key_fingerprint) do
           public_key = signature&.public_key
 
-          next if public_key.is_a?(SSHData::Certificate)
+          next public_key.public_key.fingerprint if public_key.is_a?(SSHData::Certificate)
 
           public_key.fingerprint
         end
@@ -55,10 +49,12 @@ module Gitlab
 
       private
 
+      attr_reader :commit, :committer_email
+
       def all_attributes_present?
         # Signing an empty string is valid, but signature_text and committer_email
         # must be non-empty.
-        @signed_text && @signature_text.present? && @committer_email.present?
+        @signed_text && @signature_text.present? && committer_email.present?
       end
 
       # Verifies the signature using the public key embedded in the blob.
@@ -72,14 +68,23 @@ module Gitlab
         signature.verify(@signed_text)
       end
 
-      def committer
+      def calculate_verification_status
+        return :unknown_key unless signed_by_key
+        return :other_user unless committer?
+        return :unverified unless signed_by_user_email_verified?
+
+        :verified
+      end
+
+      def committer?
         # Lookup by email because users can push verified commits that were made
         # by someone else. For example: Doing a rebase.
-        strong_memoize(:committer) { User.find_by_any_email(@committer_email) }
+        committer = User.find_by_any_email(committer_email)
+        committer && signed_by_key.user == committer
       end
 
       def signed_by_user_email_verified?
-        signed_by_key.user.verified_emails.include?(@committer_email)
+        signed_by_key.user.verified_emails.include?(committer_email)
       end
 
       def signature
@@ -101,3 +106,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ssh::Signature.prepend_mod

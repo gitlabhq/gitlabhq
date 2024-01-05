@@ -43,14 +43,14 @@ configurations, especially the value of the concurrency limit, are static. There
 are some drawbacks to this:
 
 - It's tedious to maintain a sane value for the concurrency limit. Looking at
-this [production configuration](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/db11ef95859e42d656bb116c817402635e946a32/roles/gprd-base-stor-gitaly-common.json),
-each limit is heavily calibrated based on clues from different sources. When the
-overall scene changes, we need to tweak them again.
+  this [production configuration](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/blob/db11ef95859e42d656bb116c817402635e946a32/roles/gprd-base-stor-gitaly-common.json),
+  each limit is heavily calibrated based on clues from different sources. When the
+  overall scene changes, we need to tweak them again.
 - Static limits are not good for all usage patterns. It's not feasible to pick a
-fit-them-all value. If the limit is too low, big users will be affected. If the
-value is too loose, the protection effect is lost.
+  fit-them-all value. If the limit is too low, big users will be affected. If the
+  value is too loose, the protection effect is lost.
 - A request may be rejected even though the server is idle as the rate is not
-necessarily an indicator of the load induced on the server.
+  necessarily an indicator of the load induced on the server.
 
 To overcome all of those drawbacks while keeping the benefits of concurrency
 limiting, one promising solution is to make the concurrency limit adaptive to
@@ -78,18 +78,18 @@ occurs. There are various criteria for determining whether Gitaly is in trouble.
 In this proposal, we focus on two things:
 
 - Lack of resources, particularly memory and CPU, which are essential for
-handling Git processes.
+  handling Git processes.
 - Serious latency degradation.
 
 The proposed solution is heavily inspired by many materials about this subject
 shared by folks from other companies in the industry, especially the following:
 
 - TCP Congestion Control ([RFC-2581](https://www.rfc-editor.org/rfc/rfc2581), [RFC-5681](https://www.rfc-editor.org/rfc/rfc5681),
-[RFC-9293](https://www.rfc-editor.org/rfc/rfc9293.html#name-tcp-congestion-control), [Computer Networks: A Systems Approach](https://book.systemsapproach.org/congestion/tcpcc.html)).
+  [RFC-9293](https://www.rfc-editor.org/rfc/rfc9293.html#name-tcp-congestion-control), [Computer Networks: A Systems Approach](https://book.systemsapproach.org/congestion/tcpcc.html)).
 - Netflix adaptive concurrency limit ([blog post](https://tech.olx.com/load-shedding-with-nginx-using-adaptive-concurrency-control-part-1-e59c7da6a6df)
-and [implementation](https://github.com/Netflix/concurrency-limits))
+  and [implementation](https://github.com/Netflix/concurrency-limits))
 - Envoy Adaptive Concurrency
-([doc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/adaptive_concurrency_filter#config-http-filters-adaptive-concurrency))
+  ([doc](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/adaptive_concurrency_filter#config-http-filters-adaptive-concurrency))
 
 We cannot blindly apply a solution without careful consideration and expect it
 to function flawlessly. The suggested approach considers Gitaly's specific
@@ -116,12 +116,11 @@ process functioning but quickly reducing it when an issue occurs.
 During initialization, we configure the following parameters:
 
 - `initialLimit`: Concurrency limit to start with. This value is essentially
-equal to the current static concurrency limit.
+  equal to the current static concurrency limit.
 - `maxLimit`: Maximum concurrency limit.
 - `minLimit`: Minimum concurrency limit so that the process is considered as
-functioning. If it's equal to 0, it rejects all upcoming requests.
-- `backoffFactor`: how fast the limit decreases when a backoff event occurs (`0
-< backoff < 1`, default to `0.75`)
+  functioning. If it's equal to 0, it rejects all upcoming requests.
+- `backoffFactor`: how fast the limit decreases when a backoff event occurs (`0 < backoff < 1`, default to `0.75`)
 
 When the Gitaly process starts, it sets `limit = initialLimit`, in which `limit`
 is the maximum in-flight requests allowed at a time.
@@ -130,9 +129,9 @@ Periodically, maybe once per 15 seconds, the value of the `limit` is
 re-calibrated:
 
 - `limit = limit + 1` if there is no backoff event since the last
-calibration. The new limit cannot exceed `maxLimit`.
+  calibration. The new limit cannot exceed `maxLimit`.
 - `limit = limit * backoffFactor` otherwise. The new limit cannot be lower than
-`minLimit`.
+  `minLimit`.
 
 When a process can no longer handle requests or will not be able to handle them
 soon, it is referred to as a back-off event. Ideally, we would love to see the
@@ -151,16 +150,16 @@ The concurrency limit restricts the total number of in-flight requests (IFR) at
 a time.
 
 - When `IFR < limit`, Gitaly handles new requests without waiting. After an
-increment, Gitaly immediately handles the subsequent request in the queue, if
-any.
+  increment, Gitaly immediately handles the subsequent request in the queue, if
+  any.
 - When `IFR = limit`, it means the limit is reached. Subsequent requests are
-queued, waiting for their turn. If the queue length reaches a configured limit,
-Gitaly rejects new requests immediately. When a request stays in the queue long
-enough, it is also automatically dropped by Gitaly.
+  queued, waiting for their turn. If the queue length reaches a configured limit,
+  Gitaly rejects new requests immediately. When a request stays in the queue long
+  enough, it is also automatically dropped by Gitaly.
 - When `IRF > limit`, it's appropriately a consequence of backoff events. It
-means Gitaly handles more requests than the newly appointed limits. In addition
-to queueing upcoming requests similarly to the above case, Gitaly may start
-load-shedding in-flight requests if this situation is not resolved long enough.
+  means Gitaly handles more requests than the newly appointed limits. In addition
+  to queueing upcoming requests similarly to the above case, Gitaly may start
+  load-shedding in-flight requests if this situation is not resolved long enough.
 
 At several points in time we have discussed whether we want to change queueing
 semantics. Right now we admit queued processes from the head of the queue
@@ -181,16 +180,16 @@ Each system has its own set of signals, and in the case of Gitaly, there are two
 aspects to consider:
 
 - Lack of resources, particularly memory and CPU, which are essential for
-handling Git processes like `git-pack-objects(1)`. When these resources are limited
-or depleted, it doesn't make sense for Gitaly to accept more requests. Doing so
-would worsen the saturation, and Gitaly addresses this issue by applying cgroups
-extensively. The following section outlines how accounting can be carried out
-using cgroup.
+  handling Git processes like `git-pack-objects(1)`. When these resources are limited
+  or depleted, it doesn't make sense for Gitaly to accept more requests. Doing so
+  would worsen the saturation, and Gitaly addresses this issue by applying cgroups
+  extensively. The following section outlines how accounting can be carried out
+  using cgroup.
 - Serious latency degradation. Gitaly offers various RPCs for different purposes
-besides serving Git data that is hard to reason about latencies. A significant
-overall latency decline is an indication that Gitaly should not accept more
-requests. Another section below describes how to assert latency degradation
-reasonably.
+  besides serving Git data that is hard to reason about latencies. A significant
+  overall latency decline is an indication that Gitaly should not accept more
+  requests. Another section below describes how to assert latency degradation
+  reasonably.
 
 Apart from the above signals, we can consider adding more signals in the future
 to make the system smarter. Some examples are Go garbage collector statistics,

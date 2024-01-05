@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Session initializer for GitLab' do
   subject { Gitlab::Application.config }
 
+  before do
+    allow(subject).to receive_message_chain(:middleware, :insert_after)
+  end
+
   let(:load_session_store) do
     load Rails.root.join('config/initializers/session_store.rb')
   end

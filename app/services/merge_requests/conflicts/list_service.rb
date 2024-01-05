@@ -15,6 +15,10 @@ module MergeRequests
       def can_be_resolved_in_ui?
         return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
 
+        # #cannot_be_merged? is generally indicative of conflicts, and is set via
+        #   MergeRequests::MergeabilityCheckService. However, it can also indicate
+        #   that either #has_no_commits? or #branch_missing? are true.
+        #
         return @conflicts_can_be_resolved_in_ui = false unless merge_request.cannot_be_merged?
         return @conflicts_can_be_resolved_in_ui = false unless merge_request.has_complete_diff_refs?
         return @conflicts_can_be_resolved_in_ui = false if merge_request.branch_missing?

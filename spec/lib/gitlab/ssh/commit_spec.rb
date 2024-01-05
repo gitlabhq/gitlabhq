@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
     })
 
     allow(Gitlab::Ssh::Signature).to receive(:new)
-      .with(signature_text, signed_text, signer, commit.committer_email)
+      .with(signature_text, signed_text, signer, commit)
       .and_return(verifier)
   end
 

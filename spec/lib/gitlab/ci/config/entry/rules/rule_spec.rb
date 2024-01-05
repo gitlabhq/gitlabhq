@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'gitlab_chronic_duration'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
+RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeline_composition do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .metadata(metadata)
@@ -11,7 +11,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
   end
 
   let(:metadata) do
-    { allowed_when: %w[on_success on_failure always never manual delayed] }
+    {
+      allowed_when: %w[on_success on_failure always never manual delayed],
+      allowed_keys: %i[if changes exists when start_in allow_failure variables needs]
+    }
   end
 
   let(:entry) { factory.create! }
@@ -296,35 +299,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule do
         end
       end
 
-      context 'with a string passed in metadata but not allowed in the class' do
-        let(:metadata) { { allowed_when: %w[explode] } }
-
-        let(:config) do
-          { if: '$THIS == "that"', when: 'explode' }
-        end
-
-        it { is_expected.to be_a(described_class) }
-        it { is_expected.not_to be_valid }
-
-        it 'returns an error about invalid when:' do
-          expect(subject.errors).to include(/when unknown value: explode/)
-        end
-
-        context 'when composed' do
-          before do
-            subject.compose!
-          end
-
-          it { is_expected.not_to be_valid }
-
-          it 'returns an error about invalid when:' do
-            expect(subject.errors).to include(/when unknown value: explode/)
-          end
-        end
-      end
-
-      context 'with a string allowed in the class but not passed in metadata' do
-        let(:metadata) { { allowed_when: %w[always never] } }
+      context 'with an invalid when' do
+        let(:metadata) { { allowed_when: %w[always never], allowed_keys: %i[if when] } }
 
         let(:config) do
           { if: '$THIS == "that"', when: 'on_success' }

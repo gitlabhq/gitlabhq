@@ -50,31 +50,31 @@ To help you estimate the scope of future upgrades, see the efforts required for 
 Before any upgrade, consider all audiences and targets, ordered by how immediately they are affected by Ruby upgrades:
 
 1. **Developers.** We have many contributors to GitLab and related projects both inside and outside the company. Changing files such as `.ruby-version` affects everyone using tooling that interprets these files.
-The developers are affected as soon as they pull from the repository containing the merged changes.
+   The developers are affected as soon as they pull from the repository containing the merged changes.
 1. **GitLab CI/CD.** We heavily lean on CI/CD for code integration and testing. CI/CD jobs do not interpret files such as `.ruby-version`.
-Instead, they use the Ruby installed in the Docker container they execute in, which is defined in `.gitlab-ci.yml`.
-The container images used in these jobs are maintained in the [`gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images) repository.
-When we merge an update to an image, CI/CD jobs are affected as soon as the [image is built](https://gitlab.com/gitlab-org/gitlab-build-images/#pushing-a-rebuild-image).
+   Instead, they use the Ruby installed in the Docker container they execute in, which is defined in `.gitlab-ci.yml`.
+   The container images used in these jobs are maintained in the [`gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images) repository.
+   When we merge an update to an image, CI/CD jobs are affected as soon as the [image is built](https://gitlab.com/gitlab-org/gitlab-build-images/#pushing-a-rebuild-image).
 1. **GitLab SaaS**. GitLab.com is deployed from customized Helm charts that use Docker images from [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG).
-Just like CI/CD, `.ruby-version` is meaningless in this environment. Instead, those Docker images must be patched to upgrade Ruby.
-GitLab SaaS is affected with the next deployment.
+   Just like CI/CD, `.ruby-version` is meaningless in this environment. Instead, those Docker images must be patched to upgrade Ruby.
+   GitLab SaaS is affected with the next deployment.
 1. **Self-managed GitLab.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
-Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
-Self-managed customers are affected as soon as they upgrade to the release containing this change.
+   Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
+   Self-managed customers are affected as soon as they upgrade to the release containing this change.
 
 ## Ruby upgrade approach
 
 Timing all steps in a Ruby upgrade correctly is critical. As a general guideline, consider the following:
 
 - For smaller upgrades where production behavior is unlikely to change, aim to keep the version gap between
-repositories and production minimal. Coordinate with stakeholders to merge all changes closely together
-(within a day or two) to avoid drift. In this scenario the likely order is to upgrade developer tooling and
-environments first, production second.
+  repositories and production minimal. Coordinate with stakeholders to merge all changes closely together
+  (within a day or two) to avoid drift. In this scenario the likely order is to upgrade developer tooling and
+  environments first, production second.
 - For larger changes, the risk of going to production with a new Ruby is significant. In this case, try to get into a
-position where all known incompatibilities with the new Ruby version are already fixed, then work
-with production engineers to deploy the new Ruby to a subset of the GitLab production fleet. In this scenario
-the likely order is to update production first, developer tooling and environments second. This makes rollbacks
-easier in case of critical regressions in production.
+  position where all known incompatibilities with the new Ruby version are already fixed, then work
+  with production engineers to deploy the new Ruby to a subset of the GitLab production fleet. In this scenario
+  the likely order is to update production first, developer tooling and environments second. This makes rollbacks
+  easier in case of critical regressions in production.
 
 Either way, we found that from past experience the following approach works well, with some steps likely only
 necessary for minor and major upgrades. Note that some of these steps can happen in parallel or may have their
@@ -110,17 +110,17 @@ for a smoother transition by supporting both old and new Ruby versions for a per
 There are two places that require changes:
 
 1. **[GitLab Build Images](https://gitlab.com/gitlab-org/gitlab-build-images).** These are Docker images
-we use for runners and other Docker-based pre-production environments. The kind of change necessary
-depends on the scope.
+   we use for runners and other Docker-based pre-production environments. The kind of change necessary
+   depends on the scope.
    - For [patch level updates](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/418), it should suffice to increment the patch level of `RUBY_VERSION`.
-All projects building against the same minor release automatically download the new patch release.
+     All projects building against the same minor release automatically download the new patch release.
    - For [major and minor updates](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/320), create a new set of Docker images that can be used side-by-side with existing images during the upgrade process. **Important:** Make sure to copy over all Ruby patch files
-in the `/patches` directory to a new folder matching the Ruby version you upgrade to, or they aren't applied.
+     in the `/patches` directory to a new folder matching the Ruby version you upgrade to, or they aren't applied.
 1. **[GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).**
-Update GDK to add the new Ruby as an additional option for
-developers to choose from. This typically only requires it to be appended to `.tool-versions` so `asdf`
-users will benefit from this. Other users will have to install it manually
-([example](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2136).)
+   Update GDK to add the new Ruby as an additional option for
+   developers to choose from. This typically only requires it to be appended to `.tool-versions` so `asdf`
+   users will benefit from this. Other users will have to install it manually
+   ([example](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2136).)
 
 For larger version upgrades, consider working with [Quality Engineering](https://about.gitlab.com/handbook/engineering/quality/)
 to identify and set up a test plan.
@@ -265,16 +265,16 @@ For GitLab SaaS, GitLab team members can inspect these log events in Kibana
 During the upgrade process, consider the following recommendations:
 
 - **Front-load as many changes as possible.** Especially for minor and major releases, it is likely that application
-code will break or change. Any changes that are backward compatible should be merged into the main branch and
-released independently ahead of the Ruby version upgrade. This ensures that we move in small increments and
-get feedback from production environments early.
+  code will break or change. Any changes that are backward compatible should be merged into the main branch and
+  released independently ahead of the Ruby version upgrade. This ensures that we move in small increments and
+  get feedback from production environments early.
 - **Create an experimental branch for larger updates.** We generally try to avoid long-running topic branches,
-but for purposes of feedback and experimentation, it can be useful to have such a branch to get regular
-feedback from CI/CD when running a newer Ruby. This can be helpful when first assessing what problems
-we might run into, as [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50640) demonstrates.
-These experimental branches are not intended to be merged; they can be closed once all required changes have been broken out
-and merged back independently.
+  but for purposes of feedback and experimentation, it can be useful to have such a branch to get regular
+  feedback from CI/CD when running a newer Ruby. This can be helpful when first assessing what problems
+  we might run into, as [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50640) demonstrates.
+  These experimental branches are not intended to be merged; they can be closed once all required changes have been broken out
+  and merged back independently.
 - **Give yourself enough time to fix problems ahead of a milestone release.** GitLab moves fast.
-As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
-before release day. This gives us extra time to act if something breaks. If in doubt, it is better to
-postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).
+  As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
+  before release day. This gives us extra time to act if something breaks. If in doubt, it is better to
+  postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

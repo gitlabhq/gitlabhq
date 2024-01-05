@@ -180,32 +180,32 @@ sequenceDiagram
 1. The user requests the project archive from the UI.
 1. Workhorse forwards this request to Rails.
 1. If the user is authorized to download the archive, Rails replies with
-an HTTP header of `Gitlab-Workhorse-Send-Data` with a base64-encoded
-JSON payload prefaced with `git-archive`. This payload includes the
-`SendArchiveRequest` binary message, which is encoded again in base64.
+   an HTTP header of `Gitlab-Workhorse-Send-Data` with a base64-encoded
+   JSON payload prefaced with `git-archive`. This payload includes the
+   `SendArchiveRequest` binary message, which is encoded again in base64.
 1. Workhorse decodes the `Gitlab-Workhorse-Send-Data` payload. If the
-archive already exists in the archive cache, Workhorse sends that
-file. Otherwise, Workhorse sends the `SendArchiveRequest` to the
-appropriate Gitaly server.
+   archive already exists in the archive cache, Workhorse sends that
+   file. Otherwise, Workhorse sends the `SendArchiveRequest` to the
+   appropriate Gitaly server.
 1. The Gitaly server calls `git archive <ref>` to begin generating
-the Git archive on-the-fly. If the `include_lfs_blobs` flag is enabled,
-Gitaly enables a custom LFS smudge filter via the `-c
-filter.lfs.smudge=/path/to/gitaly-lfs-smudge` Git option.
+   the Git archive on-the-fly. If the `include_lfs_blobs` flag is enabled,
+   Gitaly enables a custom LFS smudge filter via the `-c
+   filter.lfs.smudge=/path/to/gitaly-lfs-smudge` Git option.
 1. When `git` identifies a possible LFS pointer using the
-`.gitattributes` file, `git` calls `gitaly-lfs-smudge` and provides the
-LFS pointer via the standard input. Gitaly provides `GL_PROJECT_PATH`
-and `GL_INTERNAL_CONFIG` as environment variables to enable lookup of
-the LFS object.
+   `.gitattributes` file, `git` calls `gitaly-lfs-smudge` and provides the
+   LFS pointer via the standard input. Gitaly provides `GL_PROJECT_PATH`
+   and `GL_INTERNAL_CONFIG` as environment variables to enable lookup of
+   the LFS object.
 1. If a valid LFS pointer is decoded, `gitaly-lfs-smudge` makes an
-internal API call to Workhorse to download the LFS object from GitLab.
+   internal API call to Workhorse to download the LFS object from GitLab.
 1. Workhorse forwards this request to Rails. If the LFS object exists
-and is associated with the project, Rails sends `ArchivePath` either
-with a path where the LFS object resides (for local disk) or a
-pre-signed URL (when object storage is enabled) via the
-`Gitlab-Workhorse-Send-Data` HTTP header with a payload prefaced with
-`send-url`.
+   and is associated with the project, Rails sends `ArchivePath` either
+   with a path where the LFS object resides (for local disk) or a
+   pre-signed URL (when object storage is enabled) via the
+   `Gitlab-Workhorse-Send-Data` HTTP header with a payload prefaced with
+   `send-url`.
 1. Workhorse retrieves the file and send it to the `gitaly-lfs-smudge`
-process, which writes the contents to the standard output.
+   process, which writes the contents to the standard output.
 1. `git` reads this output and sends it back to the Gitaly process.
 1. Gitaly sends the data back to Rails.
 1. The archive data is sent back to the client.

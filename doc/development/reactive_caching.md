@@ -255,14 +255,14 @@ self.reactive_cache_hard_limit = 5.megabytes
 #### `self.reactive_cache_work_type`
 
 - This is the type of work performed by the `calculate_reactive_cache` method. Based on this attribute,
-it's able to pick the right worker to process the caching job. Make sure to
-set it as `:external_dependency` if the work performs any external request
-(for example, Kubernetes, Sentry); otherwise set it to `:no_dependency`.
+  it's able to pick the right worker to process the caching job. Make sure to
+  set it as `:external_dependency` if the work performs any external request
+  (for example, Kubernetes, Sentry); otherwise set it to `:no_dependency`.
 
 #### `self.reactive_cache_worker_finder`
 
 - This is the method used by the background worker to find or generate the object on
-which `calculate_reactive_cache` can be called.
+  which `calculate_reactive_cache` can be called.
 - By default it uses the model primary key to find the object:
 
   ```ruby

@@ -167,6 +167,8 @@ RSpec.describe 'getting a tree in a project', feature_category: :source_code_man
   end
 
   context 'when the ref points to a SSH-signed commit' do
+    let_it_be(:project) { create(:project, :repository, :in_group) }
+
     let_it_be(:ref) { 'ssh-signed-commit' }
     let_it_be(:commit) { project.commit(ref) }
     let_it_be(:current_user) { create(:user, email: commit.committer_email).tap { |user| project.add_owner(user) } }

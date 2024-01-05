@@ -113,7 +113,7 @@ the following preparations into account.
 #### Preparation when adding migrations
 
 - Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes), and additionally ensure that the relevant version files under
-`db/schema_migrations` were added or removed.
+  `db/schema_migrations` were added or removed.
 - Ensure that the Database Dictionary is updated as [documented](database/database_dictionary.md).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.

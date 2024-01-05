@@ -2457,6 +2457,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     end
 
     context 'with ssh signed commit' do
+      let_it_be(:project) { create(:project, :repository, :public, :in_group) }
+
       let(:commit_id) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
       let!(:commit) { project.commit(commit_id) }
 

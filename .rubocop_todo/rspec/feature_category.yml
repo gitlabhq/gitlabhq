@@ -2933,8 +2933,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/root_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/rules/rule/changes_spec.rb'
-    - 'spec/lib/gitlab/ci/config/entry/rules/rule_spec.rb'
-    - 'spec/lib/gitlab/ci/config/entry/rules_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/service_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/services_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/stage_spec.rb'

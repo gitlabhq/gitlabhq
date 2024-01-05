@@ -1900,9 +1900,6 @@ msgstr ""
 msgid "A ready-to-go template for use with iOS Swift apps"
 msgstr ""
 
-msgid "A rebase is already in progress."
-msgstr ""
-
 msgid "A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
 msgstr ""
 
@@ -50182,12 +50179,6 @@ msgid "This may expose confidential information as the selected fork is in anoth
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
-msgstr ""
-
-msgid "This merge request branch is protected from force push."
-msgstr ""
-
-msgid "This merge request cannot be rebased while there are conflicts."
 msgstr ""
 
 msgid "This merge request does not have accessibility reports"
