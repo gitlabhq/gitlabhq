@@ -3,6 +3,7 @@ import {
   GlBadge,
   GlLoadingIcon,
   GlTable,
+  GlTooltipDirective,
   GlPagination,
   GlButton,
   GlModalDirective,
@@ -27,6 +28,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   i18n: {
     emptyGroupMessage: s__('Badges|This group has no badges. Add an existing badge or create one.'),
@@ -107,19 +109,26 @@ export default {
         :current-page="currentPage"
         stacked="md"
         show-empty
+        class="b-table-fixed"
         data-testid="badge-list"
       >
         <template #cell(name)="{ item }">
-          <label class="label-bold str-truncated mb-0">{{ item.name }}</label>
+          <label v-gl-tooltip class="label-bold str-truncated mb-0" :title="item.name">{{
+            item.name
+          }}</label>
           <gl-badge size="sm">{{ badgeKindText(item) }}</gl-badge>
         </template>
 
         <template #cell(badge)="{ item }">
-          <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
+          <div class="overflow-hidden">
+            <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
+          </div>
         </template>
 
         <template #cell(url)="{ item }">
-          {{ item.linkUrl }}
+          <span v-gl-tooltip :title="item.linkUrl" class="str-truncated">
+            {{ item.linkUrl }}
+          </span>
         </template>
 
         <template #cell(actions)="{ item }">

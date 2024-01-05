@@ -687,6 +687,8 @@
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
+- - security_scan_result_policies_sync_merge_request_approvals
+  - 1
 - - security_scan_result_policies_sync_project
   - 1
 - - security_scans

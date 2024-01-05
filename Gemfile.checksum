@@ -684,7 +684,7 @@
 {"name":"uniform_notifier","version":"1.16.0","platform":"ruby","checksum":"99b39ee4a0864e3b49f375b5e5803eb26d35ed6eb1719c96407573a87bc4dbb5"},
 {"name":"unleash","version":"3.2.2","platform":"ruby","checksum":"0f6e56498de920de66a01bceffb93933693ade646bb853fc70eb16bd1026b93b"},
 {"name":"unparser","version":"0.6.7","platform":"ruby","checksum":"ae42e73edfa273766e66c166368fb75ca5972cd8ec50c536253e0f6299a9dec8"},
-{"name":"uri","version":"0.12.2","platform":"ruby","checksum":"be79bd8017858c9fc36c78765c69e92b6a7e049ea6a83364909476ad1b4b4439"},
+{"name":"uri","version":"0.13.0","platform":"ruby","checksum":"26553c2a9399762e1e8bebd4444b4361c4b21298cf1c864b22eeabc9c4998f24"},
 {"name":"uri_template","version":"0.7.0","platform":"ruby","checksum":"312c8fe13700db86ac9d05ea997af3db03abdf50c65b1801d775bc7a695f185d"},
 {"name":"valid_email","version":"0.1.3","platform":"ruby","checksum":"b81452b51b64c4beb67913f68db52c20ecb4d73d45512f5b282ab4a3f4416570"},
 {"name":"validate_email","version":"0.1.6","platform":"ruby","checksum":"9dfe9016d527b17a8d3a6e95e4dc50a125400eef899d13d4cc2a254393f82ee4"},

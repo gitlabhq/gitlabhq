@@ -35,30 +35,32 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
       it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
 
-      [
-        '@my-scope/my-package',
-        '@my-scope/*my-package-with-wildcard-inbetween',
-        '@my-scope/*my-package-with-wildcard-start',
-        '@my-scope/my-*package-*with-wildcard-multiple-*',
-        '@my-scope/my-package-with_____underscore',
-        '@my-scope/my-package-with-regex-characters.+',
-        '@my-scope/my-package-with-wildcard-end*'
-      ].each do |package_name_pattern|
-        it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+      where(:package_name_pattern, :allowed) do
+        '@my-scope/my-package'                            | true
+        '@my-scope/*my-package-with-wildcard-inbetween'   | true
+        '@my-scope/*my-package-with-wildcard-start'       | true
+        '@my-scope/my-*package-*with-wildcard-multiple-*' | true
+        '@my-scope/my-package-with_____underscore'        | true
+        '@my-scope/my-package-with-regex-characters.+'    | true
+        '@my-scope/my-package-with-wildcard-end*'         | true
+
+        '@my-scope/my-package-with-percent-sign-%'        | false
+        '*@my-scope/my-package-with-wildcard-start'       | false
+        '@my-scope/my-package-with-backslash-\*'          | false
       end
 
-      [
-        '@my-scope/my-package-with-percent-sign-%',
-        '*@my-scope/my-package-with-wildcard-start',
-        '@my-scope/my-package-with-backslash-\*'
-      ].each do |package_name_pattern|
-        it {
-          is_expected.not_to(
-            allow_value(package_name_pattern)
-            .for(:package_name_pattern)
-            .with_message(_('should be a valid NPM package name with optional wildcard characters.'))
-          )
-        }
+      with_them do
+        if params[:allowed]
+          it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+        else
+          it {
+            is_expected.not_to(
+              allow_value(package_name_pattern)
+              .for(:package_name_pattern)
+              .with_message(_('should be a valid NPM package name with optional wildcard characters.'))
+            )
+          }
+        end
       end
     end
 

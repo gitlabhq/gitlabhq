@@ -40308,6 +40308,9 @@ msgstr ""
 msgid "Remote object has no absolute path."
 msgstr ""
 
+msgid "RemoteDevelopment|Workspaces"
+msgstr ""
+
 msgid "Remove"
 msgstr ""
 

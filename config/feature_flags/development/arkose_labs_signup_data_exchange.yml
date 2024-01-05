@@ -1,0 +1,8 @@
+---
+name: arkose_labs_signup_data_exchange
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139070
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435275
+milestone: '16.8'
+type: development
+group: group::anti-abuse
+default_enabled: false

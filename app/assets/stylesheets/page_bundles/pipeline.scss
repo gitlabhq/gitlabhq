@@ -130,6 +130,11 @@
 
 .gl-pipeline-job-width {
   width: 100%;
+  max-width: 400px;
+
+  .pipeline-graph-container & {
+    max-width: unset;
+  }
 }
 
 .gl-pipeline-job-width\! {

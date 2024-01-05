@@ -1,6 +1,7 @@
 ---
 stage: Create
 group: Editor Extensions
+description: Visual Studio Code, JetBrains, Neovim, GitLab CLI.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 

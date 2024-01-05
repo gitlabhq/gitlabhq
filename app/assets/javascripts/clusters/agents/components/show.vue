@@ -161,6 +161,8 @@ export default {
             </div>
           </div>
         </gl-tab>
+
+        <slot name="ee-workspaces-tab" :agent-name="agentName" :project-path="projectPath"></slot>
       </gl-tabs>
     </template>
 

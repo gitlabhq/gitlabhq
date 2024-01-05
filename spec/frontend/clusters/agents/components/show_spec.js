@@ -76,6 +76,7 @@ describe('ClusterAgentShow', () => {
   const findPaginationButtons = () => wrapper.findComponent(GlKeysetPagination);
   const findTokenCount = () => wrapper.findByTestId('cluster-agent-token-count').text();
   const findEESecurityTabSlot = () => wrapper.findByTestId('ee-security-tab');
+  const findEEWorkspacesTabSlot = () => wrapper.findByTestId('ee-workspaces-tab');
   const findActivity = () => wrapper.findComponent(ActivityEvents);
   const findIntegrationStatus = () => wrapper.findComponent(IntegrationStatus);
 
@@ -251,6 +252,25 @@ describe('ClusterAgentShow', () => {
       });
       await nextTick();
       expect(findEESecurityTabSlot().exists()).toBe(true);
+    });
+  });
+
+  describe('ee-workspaces-tab slot', () => {
+    it('does not display when a slot is not passed in', async () => {
+      createWrapperWithoutApollo({ clusterAgent: defaultClusterAgent });
+      await nextTick();
+      expect(findEEWorkspacesTabSlot().exists()).toBe(false);
+    });
+
+    it('does display when a slot is passed in', async () => {
+      createWrapperWithoutApollo({
+        clusterAgent: defaultClusterAgent,
+        slots: {
+          'ee-workspaces-tab': `<gl-tab data-testid="ee-workspaces-tab">Workspaces Tab!</gl-tab>`,
+        },
+      });
+      await nextTick();
+      expect(findEEWorkspacesTabSlot().exists()).toBe(true);
     });
   });
 });
