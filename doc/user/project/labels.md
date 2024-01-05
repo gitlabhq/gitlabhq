@@ -14,7 +14,7 @@ you're interested in.
 Labels are a key part of [issue boards](issue_board.md). With labels you can:
 
 - Categorize [epics](../group/epics/index.md), issues, and merge requests using colors and descriptive titles like
-`bug`, `feature request`, or `docs`.
+  `bug`, `feature request`, or `docs`.
 - Dynamically filter and manage [epics](../group/epics/index.md), issues, and merge requests.
 - Search lists of issues, merge requests, and epics, as well as issue boards.
 

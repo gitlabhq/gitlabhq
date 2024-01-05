@@ -195,6 +195,8 @@
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
+- - compliance_management_standards_gitlab_at_least_two_approvals_group
+  - 1
 - - compliance_management_standards_gitlab_base
   - 1
 - - compliance_management_standards_gitlab_group_base

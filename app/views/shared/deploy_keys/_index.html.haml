@@ -13,4 +13,9 @@
         .gl-new-card-add-form.gl-m-3.gl-display-none.js-toggle-content
           = render @deploy_keys.form_partial_path
 
-        #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }
+        #js-deploy-keys{ data: { project_id: @project.id,
+                        project_path: @project.full_path,
+                        enabled_endpoint: enabled_keys_project_deploy_keys_path(@project),
+                        available_project_endpoint: available_project_keys_project_deploy_keys_path(@project),
+                        available_public_endpoint: available_public_keys_project_deploy_keys_path(@project)
+          } }

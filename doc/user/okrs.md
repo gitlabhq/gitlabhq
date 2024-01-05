@@ -72,7 +72,7 @@ To view an objective:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
-for `Type = objective`.
+   for `Type = objective`.
 1. Select the title of an objective from the list.
 
 ## View a key result
@@ -82,7 +82,7 @@ To view a key result:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
-for `Type = key_result`.
+   for `Type = key_result`.
 1. Select the title of a key result from the list.
 
 Alternatively, you can access a key result from the **Child objectives and key results** section in

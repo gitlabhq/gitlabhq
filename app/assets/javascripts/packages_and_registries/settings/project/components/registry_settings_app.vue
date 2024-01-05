@@ -8,6 +8,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -18,7 +19,10 @@ export default {
       ),
     GlAlert,
     PackagesCleanupPolicy,
+    PackagesProtectionRules: () =>
+      import('~/packages_and_registries/settings/project/components/packages_protection_rules.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: [
     'showContainerRegistrySettings',
     'showPackageRegistrySettings',
@@ -31,6 +35,11 @@ export default {
     return {
       showAlert: false,
     };
+  },
+  computed: {
+    showProtectedPackagesSettings() {
+      return this.showPackageRegistrySettings && this.glFeatures.packagesProtectedPackages;
+    },
   },
   mounted() {
     this.checkAlert();
@@ -60,6 +69,7 @@ export default {
     >
       {{ $options.i18n.UPDATE_SETTINGS_SUCCESS_MESSAGE }}
     </gl-alert>
+    <packages-protection-rules v-if="showProtectedPackagesSettings" />
     <packages-cleanup-policy v-if="showPackageRegistrySettings" />
     <container-expiration-policy v-if="showContainerRegistrySettings" />
     <dependency-proxy-packages-settings v-if="showDependencyProxySettings" />

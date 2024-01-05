@@ -15,6 +15,8 @@ export const mapDeployKey = (deployKey) => ({
   __typename: 'LocalDeployKey',
 });
 
+const DEFAULT_PAGE_SIZE = 5;
+
 export const resolvers = (endpoints) => ({
   Project: {
     deployKeys(_, { scope, page }, { client }) {
@@ -25,19 +27,21 @@ export const resolvers = (endpoints) => ({
         endpoint = endpoints.enabledKeysEndpoint;
       }
 
-      return axios.get(endpoint, { params: { page } }).then(({ headers, data }) => {
-        const normalizedHeaders = normalizeHeaders(headers);
-        const pageInfo = {
-          ...parseIntPagination(normalizedHeaders),
-          __typename: 'LocalPageInfo',
-        };
-        client.writeQuery({
-          query: pageInfoQuery,
-          variables: { input: { page, scope } },
-          data: { pageInfo },
+      return axios
+        .get(endpoint, { params: { page, per_page: DEFAULT_PAGE_SIZE } })
+        .then(({ headers, data }) => {
+          const normalizedHeaders = normalizeHeaders(headers);
+          const pageInfo = {
+            ...parseIntPagination(normalizedHeaders),
+            __typename: 'LocalPageInfo',
+          };
+          client.writeQuery({
+            query: pageInfoQuery,
+            variables: { input: { page, scope } },
+            data: { pageInfo },
+          });
+          return data?.keys?.map(mapDeployKey) || [];
         });
-        return data?.keys?.map(mapDeployKey) || [];
-      });
     },
   },
   Mutation: {
@@ -48,6 +52,13 @@ export const resolvers = (endpoints) => ({
       });
     },
     currentScope(_, { scope }, { client }) {
+      const key = `${scope}Endpoint`;
+      const { [key]: endpoint } = endpoints;
+
+      if (!endpoint) {
+        throw new Error(`invalid deploy key scope selected: ${scope}`);
+      }
+
       client.writeQuery({
         query: currentPageQuery,
         data: { currentPage: 1 },

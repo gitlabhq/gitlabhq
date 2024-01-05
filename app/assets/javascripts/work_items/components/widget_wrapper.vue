@@ -57,28 +57,31 @@ export default {
 </script>
 
 <template>
-  <div :id="widgetName" class="gl-new-card" :aria-expanded="isOpenString">
+  <div :id="widgetName" class="gl-new-card">
     <div class="gl-new-card-header">
       <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">
-          <gl-link
-            :id="anchorLinkId"
-            class="gl-text-decoration-none"
-            :href="anchorLink"
-            aria-hidden="true"
-          />
+        <h2 class="gl-new-card-title">
+          <div aria-hidden="true">
+            <gl-link
+              :id="anchorLinkId"
+              class="gl-text-decoration-none gl-display-none"
+              :href="anchorLink"
+            />
+          </div>
           <slot name="header"></slot>
-        </h3>
+        </h2>
         <slot name="header-suffix"></slot>
       </div>
       <slot name="header-right"></slot>
       <div class="gl-new-card-toggle">
+        <!-- https://www.w3.org/TR/wai-aria-1.2/#aria-expanded -->
         <gl-button
           category="tertiary"
           size="small"
           :icon="toggleIcon"
           :aria-label="toggleLabel"
           data-testid="widget-toggle"
+          :aria-expanded="isOpenString"
           @click="toggle"
         />
       </div>

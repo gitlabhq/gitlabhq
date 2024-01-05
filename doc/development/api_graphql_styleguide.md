@@ -178,7 +178,7 @@ Breaking changes are:
   allowed so long as all scalar type fields of the object continue to serialize in the same way.
 - Raising the [complexity](#max-complexity) of a field or complexity multipliers in a resolver.
 - Changing a field from being _not_ nullable (`null: false`) to nullable (`null: true`), as
-discussed in [Nullable fields](#nullable-fields).
+  discussed in [Nullable fields](#nullable-fields).
 - Changing an argument from being optional (`required: false`) to being required (`required: true`).
 - Changing the [max page size](#page-size-limit) of a connection.
 - Lowering the global limits for query complexity and depth.
@@ -1515,8 +1515,8 @@ To find the parent object in your `Presenter` class:
    ```
 
 1. Declare your field's method in your Presenter class and have it accept the `parent` keyword argument.
-This argument contains the parent **GraphQL context**, so you have to access the parent object with
-`parent[:parent_object]` or whatever key you used in your `Resolver`:
+   This argument contains the parent **GraphQL context**, so you have to access the parent object with
+   `parent[:parent_object]` or whatever key you used in your `Resolver`:
 
    ```ruby
      # in ChildPresenter

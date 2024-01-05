@@ -12,6 +12,7 @@ module Projects
       urgency :low
 
       def show
+        push_frontend_feature_flag(:packages_protected_packages, project)
       end
 
       def cleanup_tags

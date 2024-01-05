@@ -997,7 +997,7 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
-for the changes to take effect.
+   for the changes to take effect.
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
@@ -1029,7 +1029,7 @@ To handle these queue groups on two nodes:
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
-for the changes to take effect.
+   for the changes to take effect.
 
 1. To set up the non-indexing Sidekiq process, on your non-indexing Sidekiq node, change the `/etc/gitlab/gitlab.rb` file to:
 
@@ -1052,7 +1052,7 @@ for the changes to take effect.
 
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
-for the changes to take effect.
+   for the changes to take effect.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
    ```shell

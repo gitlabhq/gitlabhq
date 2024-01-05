@@ -34601,6 +34601,12 @@ msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "PackageRegistry|Package name pattern"
+msgstr ""
+
+msgid "PackageRegistry|Package type"
+msgstr ""
+
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 
@@ -34625,6 +34631,9 @@ msgstr ""
 msgid "PackageRegistry|Project-level"
 msgstr ""
 
+msgid "PackageRegistry|Protected packages"
+msgstr ""
+
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."
 msgstr ""
 
@@ -34641,6 +34650,9 @@ msgid "PackageRegistry|Published to %{projectName}, %{date}"
 msgstr ""
 
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|Push protected up to access level"
 msgstr ""
 
 msgid "PackageRegistry|PyPI"
@@ -34746,6 +34758,9 @@ msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
+msgstr ""
+
+msgid "PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package."
 msgstr ""
 
 msgid "PackageRegistry|When a package with same name and version is uploaded to the registry, more assets are added to the package. To save storage space, keep only the most recent assets."

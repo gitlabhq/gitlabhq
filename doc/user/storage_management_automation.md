@@ -78,7 +78,7 @@ For more information, see the [GitLab CLI endpoint documentation](../editor_exte
 The storage management and cleanup automation methods described in this page use:
 
 - The [`python-gitlab`](https://python-gitlab.readthedocs.io/en/stable/) library, which provides
-a feature-rich programming interface.
+  a feature-rich programming interface.
 - The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project.
 
 For more information about use cases for the `python-gitlab` library,

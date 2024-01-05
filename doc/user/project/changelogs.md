@@ -15,7 +15,7 @@ commit author. Changelog formats [can be customized](#customize-the-changelog-ou
 Each section in the default changelog has a title containing the version
 number and release date, like this:
 
-````markdown
+```markdown
 ## 1.0.0 (2021-01-05)
 
 ### Features (4 changes)
@@ -24,7 +24,7 @@ number and release date, like this:
 - [Feature 2](gitlab-org/gitlab@456abc) ([merge request](gitlab-org/gitlab!456))
 - [Feature 3](gitlab-org/gitlab@234abc) by @steve
 - [Feature 4](gitlab-org/gitlab@456)
-````
+```
 
 The date format for sections can be customized, but the rest of the title cannot.
 When adding new sections, GitLab parses these titles to determine where to place
@@ -121,11 +121,11 @@ these variables:
   `### Features`, `### Bug fixes`, and `### Performance improvements`:
 
   ```yaml
-   ---
-   categories:
-     feature: Features
-     bug: Bug fixes
-     performance: Performance improvements
+  ---
+  categories:
+    feature: Features
+    bug: Bug fixes
+    performance: Performance improvements
   ```
 
 ### Custom templates

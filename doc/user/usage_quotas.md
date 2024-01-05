@@ -163,11 +163,11 @@ Storage limits are included in GitLab subscription terms but do not apply. At le
 GitLab will notify you of namespaces that exceed, or are close to exceeding, the storage limit.
 
 - In the command-line interface, a notification displays after each `git push`
-action when your namespace has reached between 95% and 100% of your namespace storage quota.
+  action when your namespace has reached between 95% and 100% of your namespace storage quota.
 - In the GitLab UI, a notification displays when your namespace has reached between
-75% and 100% of your namespace storage quota.
+  75% and 100% of your namespace storage quota.
 - GitLab sends an email to members with the Owner role to notify them when namespace
-storage usage is at 70%, 85%, 95%, and 100%.
+  storage usage is at 70%, 85%, 95%, and 100%.
 
 ## Manage storage usage
 

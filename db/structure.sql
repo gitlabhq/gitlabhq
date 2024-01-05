@@ -37651,7 +37651,7 @@ ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_4d6ba63ba5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_4e64972902 FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_4e64972902 FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_4e8b59e7a8 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;

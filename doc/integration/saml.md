@@ -666,10 +666,12 @@ IdPs, contact your provider's support.
 Prerequisites:
 
 - Make sure you have access to a
-[Google Workspace Super Admin account](https://support.google.com/a/answer/2405986#super_admin).
+  [Google Workspace Super Admin account](https://support.google.com/a/answer/2405986#super_admin).
+
+To set up a Google Workspace:
 
 1. Use the following information, and follow the instructions in
-[Set up your own custom SAML application in Google Workspace](https://support.google.com/a/answer/6087519?hl=en).
+   [Set up your own custom SAML application in Google Workspace](https://support.google.com/a/answer/6087519?hl=en).
 
    |                  | Typical value                                      | Description                                                                                   |
    |:-----------------|:---------------------------------------------------|:----------------------------------------------------------------------------------------------|

@@ -1,6 +1,5 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import eventHub from '../eventhub';
 
 export default {
   components: {
@@ -9,10 +8,6 @@ export default {
   props: {
     deployKey: {
       type: Object,
-      required: true,
-    },
-    type: {
-      type: String,
       required: true,
     },
     category: {
@@ -30,6 +25,10 @@ export default {
       required: false,
       default: '',
     },
+    mutation: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -39,10 +38,15 @@ export default {
   methods: {
     doAction() {
       this.isLoading = true;
-
-      eventHub.$emit(`${this.type}.key`, this.deployKey, () => {
-        this.isLoading = false;
-      });
+      this.$apollo
+        .mutate({
+          mutation: this.mutation,
+          variables: { id: this.deployKey.id },
+        })
+        .catch((error) => this.$emit('error', error))
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   },
 };
@@ -50,6 +54,7 @@ export default {
 
 <template>
   <gl-button
+    v-bind="$attrs"
     :category="category"
     :variant="variant"
     :icon="icon"

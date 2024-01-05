@@ -347,7 +347,7 @@ Items that are **not** exported include:
 ### Preparation
 
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
-sure these users exist before importing the desired groups.
+  sure these users exist before importing the desired groups.
 - Users must set a public email in the source GitLab instance that matches their confirmed primary email in the destination GitLab instance. Most users receive an email asking them to confirm their email address.
 
 ### Enable export for a group
@@ -407,11 +407,11 @@ Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50
 
 To help avoid abuse, by default, users are rate limited to:
 
-| Request Type     | Limit                                    |
-| ---------------- | ---------------------------------------- |
-| Export           | 6 groups per minute                |
-| Download export  | 1 download per group per minute  |
-| Import           | 6 groups per minute                |
+| Request Type    | Limit |
+|-----------------|-------|
+| Export          | 6 groups per minute |
+| Download export | 1 download per group per minute |
+| Import          | 6 groups per minute |
 
 ## Related topics
 
