@@ -2190,10 +2190,10 @@
     tslib "^2.3.1"
     uuid "^3.4.0"
 
-"@sourcegraph/code-host-integration@0.0.91":
-  version "0.0.91"
-  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.91.tgz#2d284ea2ea1023fb3cdaac9aa61a86322d6801ff"
-  integrity sha512-sC/q64XUDZWoxyAkzpxaw5u2BFNDiPp9K4PybTJFRW1e3VQwul2/iXcUvMf1RzQv4AkQWO8uLeHHG0wRGfCPcA==
+"@sourcegraph/code-host-integration@0.0.95":
+  version "0.0.95"
+  resolved "https://registry.yarnpkg.com/@sourcegraph/code-host-integration/-/code-host-integration-0.0.95.tgz#269f3606040b6e598de28a1bdd57a9ba7c430766"
+  integrity sha512-oMFI2k3KDqqrNEh8/1zwqCPAqV1xFtDmBVKA8U2R+upGLl60cSxWKqGA/8XBESEKb9EiOO9a3yATr/KfQGwAxA==
 
 "@testing-library/dom@^7.16.2":
   version "7.24.5"

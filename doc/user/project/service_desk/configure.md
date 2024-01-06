@@ -105,7 +105,7 @@ Instance administrators can add a header, footer or additional text to the GitLa
 them to all emails sent from GitLab. If you're using a custom `thank_you.md` or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
-For more information, see [System header and footer messages](../../../administration/appearance.md#system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
+For more information, see [System header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
 
 ## Use a custom template for Service Desk tickets
 
