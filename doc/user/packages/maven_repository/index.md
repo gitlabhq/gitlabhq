@@ -17,8 +17,6 @@ Supported clients:
 - `mvn`. Learn how to build a [Maven](../workflows/build_packages.md#maven) package.
 - `gradle`. Learn how to build a [Gradle](../workflows/build_packages.md#gradle) package.
 - `sbt`.
-  - `sbt` can only be used to [pull dependencies](#install-a-package).
-    See this [issue 408479](https://gitlab.com/gitlab-org/gitlab/-/issues/408479) for more details.
 
 ## Publish to the GitLab package registry
 

@@ -17,6 +17,12 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
 
         service.execute
       end
+
+      it_behaves_like 'does not record an onboarding progress action' do
+        subject do
+          service.execute
+        end
+      end
     end
 
     context 'with an existing project' do
@@ -62,6 +68,34 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :groups_and_
         expect(project.wiki.repository).to receive(:expire_method_caches).with(%i[size]).and_call_original
 
         service.execute
+      end
+    end
+
+    context 'with an existing project with project repository' do
+      let_it_be(:project) { create(:project) }
+
+      subject { service.execute }
+
+      context 'when the repository is empty' do
+        it_behaves_like 'does not record an onboarding progress action'
+      end
+
+      context 'when the repository has more than one commit or more than one branch' do
+        where(:commit_count, :branch_count) do
+          2 | 1
+          1 | 2
+          2 | 2
+        end
+
+        with_them do
+          before do
+            allow(project.repository).to receive_messages(commit_count: commit_count, branch_count: branch_count)
+          end
+
+          it_behaves_like 'records an onboarding progress action', :code_added do
+            let(:namespace) { project.namespace }
+          end
+        end
       end
     end
   end

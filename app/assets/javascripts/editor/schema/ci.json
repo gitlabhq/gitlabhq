@@ -735,6 +735,30 @@
                 }
               ]
             },
+            "gcp_secret_manager": {
+              "type": "object",
+              "markdownDescription": "Defines the secret version to be fetched from GCP Secret Manager. Name refers to the secret name in GCP secret manager. Version refers to the desired secret version (defaults to 'latest').",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "default": "version"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
             "azure_key_vault": {
               "type": "object",
               "properties": {
@@ -757,7 +781,7 @@
             },
             "token": {
               "type": "string",
-              "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
+              "description": "Specifies the JWT variable that should be used to authenticate with the secret provider."
             }
           },
           "anyOf": [
@@ -770,8 +794,18 @@
               "required": [
                 "azure_key_vault"
               ]
+            },
+            {
+              "required": [
+                "gcp_secret_manager"
+              ]
             }
           ],
+          "dependencies": {
+            "gcp_secret_manager": [
+              "token"
+            ]
+          },
           "additionalProperties": false
         }
       }

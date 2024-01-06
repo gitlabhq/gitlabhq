@@ -3,7 +3,6 @@
 module Onboarding
   class Completion
     include Gitlab::Utils::StrongMemoize
-    include Gitlab::Experiment::Dsl
 
     ACTION_PATHS = [
       :pipeline_created,
@@ -12,6 +11,7 @@ module Onboarding
       :code_owners_enabled,
       :issue_created,
       :git_write,
+      :code_added,
       :merge_request_created,
       :user_added,
       :license_scanning_run,
@@ -35,19 +35,10 @@ module Onboarding
     end
 
     def completed?(column)
-      if column == :code_added
-        repository.commit_count > 1 || repository.branch_count > 1
-      else
-        attributes[column].present?
-      end
+      attributes[column].present?
     end
 
     private
-
-    def repository
-      project.repository
-    end
-    strong_memoize_attr :repository
 
     def attributes
       onboarding_progress.attributes.symbolize_keys
@@ -60,8 +51,7 @@ module Onboarding
     strong_memoize_attr :onboarding_progress
 
     def action_columns
-      [:code_added] +
-        ACTION_PATHS.map { |action_key| ::Onboarding::Progress.column_name(action_key) }
+      ACTION_PATHS.map { |action_key| ::Onboarding::Progress.column_name(action_key) }
     end
     strong_memoize_attr :action_columns
 

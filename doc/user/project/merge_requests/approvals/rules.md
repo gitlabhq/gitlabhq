@@ -19,7 +19,7 @@ You can define approval rules:
 
 You can configure approval rules:
 
-- [At the instance level](../../../../administration/admin_area.md).
+- [At the instance level](../../../../administration/merge_requests_approvals.md).
 
 If you don't define a [default approval rule](#add-an-approval-rule),
 any user can approve a merge request. Even if you don't define a rule, you can still

@@ -1262,8 +1262,8 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (1.0.2)
-      rb_sys (~> 0.9)
+    prometheus-client-mmap (1.1.0)
+      rb_sys (~> 0.9.86)
     protocol (2.0.0)
       ruby_parser (~> 3.0)
     pry (0.14.2)
@@ -1279,7 +1279,7 @@ GEM
       tty-markdown
       tty-prompt
     public_suffix (5.0.0)
-    puma (6.4.0)
+    puma (6.4.1)
       nio4r (~> 2.0)
     pyu-ruby-sasl (0.0.3.3)
     raabro (1.4.0)
@@ -1344,7 +1344,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rb_sys (0.9.83)
+    rb_sys (0.9.86)
     rbtrace (0.4.14)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
@@ -2025,11 +2025,11 @@ DEPENDENCIES
   pg_query (~> 4.2.3)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
-  prometheus-client-mmap (~> 1.0, >= 1.0.2)
+  prometheus-client-mmap (~> 1.1)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.4)
-  puma (~> 6.4)
+  puma (~> 6.4.1)
   rack (~> 2.2.8)
   rack-attack (~> 6.7.0)
   rack-cors (~> 2.0.1)
@@ -2126,4 +2126,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.4.22
+   2.5.4

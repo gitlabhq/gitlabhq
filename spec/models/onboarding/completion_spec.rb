@@ -42,43 +42,19 @@ RSpec.describe Onboarding::Completion, feature_category: :onboarding do
   describe '#completed?' do
     subject(:completed?) { described_class.new(project).completed?(column) }
 
-    context 'when code_added' do
-      let(:column) { :code_added }
+    let(:column) { :code_added_at }
+    let(:completed_actions) { { code_added_at: code_added_at_timestamp } }
 
-      context 'when commit_count > 1' do
-        let(:project) { build(:project, :stubbed_commit_count, namespace: namespace) }
+    context 'when the action has been completed' do
+      let(:code_added_at_timestamp) { Time.current }
 
-        it { is_expected.to eq(true) }
-      end
-
-      context 'when branch_count > 1' do
-        let(:project) { build(:project, :stubbed_branch_count, namespace: namespace) }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'when empty repository' do
-        let(:project) { build(:project, namespace: namespace) }
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(true) }
     end
 
-    context 'when secure_dast_run' do
-      let(:column) { :secure_dast_run_at }
-      let(:completed_actions) { { secure_dast_run_at: secure_dast_run_at } }
+    context 'when the action has not been completed' do
+      let(:code_added_at_timestamp) { nil }
 
-      context 'when is completed' do
-        let(:secure_dast_run_at) { Time.current }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'when is not completed' do
-        let(:secure_dast_run_at) { nil }
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(false) }
     end
   end
 end
