@@ -89,7 +89,7 @@ spec:
       default: true
 ---
 
-"$[[ job-prefix ]]-scan-website":
+"$[[ inputs.job-prefix ]]-scan-website":
   stage: $[[ inputs.job-stage ]]
   script:
     - echo "scanning website -e $[[ inputs.environment ]] -c $[[ inputs.concurrency ]] -v $[[ inputs.version ]]"

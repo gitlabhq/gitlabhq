@@ -14,7 +14,7 @@ The instructions on this page guide you through:
 1. Onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/), the GitLab Dedicated portal.
 1. Configuring your GitLab Dedicated instance including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Area](../../administration/admin_area.md).
 
 Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 These environment settings cannot be changed by tenants.
@@ -83,10 +83,11 @@ In an event of a platform outage, degradation or a security event requiring urge
 emergency maintenance will be carried out per
 [the emergency change processes](https://about.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
 
-The emergency maintenance is initiated urgently when urgent actions need to be executed by GitLab
-on a Dedicated tenant instance.
-Communication with the customer will be provided on best effort basis prior to commencing the
-maintenance, and full communication will follow after the immediate action is carried out.
+The emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
+Dedicated tenant instance. Communication with the customer will be provided on best effort basis
+prior to commencing the maintenance, and full communication will follow after the immediate action
+is carried out. The GitLab Support Team will create a new ticket and send a message to the email
+addresses of the users listed in Switchboard during [onboarding](#onboarding-to-gitlab-dedicated-using-switchboard).
 
 For example, when a critical security process is initiated to address an S1 vulnerability in GitLab,
 emergency maintenance is carried out to upgrade GitLab to the non-vulnerable version and that
