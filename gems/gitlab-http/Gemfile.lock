@@ -13,7 +13,6 @@ PATH
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
-      nokogiri (>= 1.15)
       rake (~> 13.0)
 
 PATH
@@ -24,7 +23,6 @@ PATH
       concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
-      nokogiri (~> 1.15.4)
       railties (~> 7)
 
 GEM

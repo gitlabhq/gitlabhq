@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "actionview", ">= 6.1.7.2"
   spec.add_runtime_dependency "activesupport", ">= 6.1.7.2"
   spec.add_runtime_dependency "addressable", "~> 2.8"
-  spec.add_runtime_dependency "nokogiri", ">= 1.15"
   spec.add_runtime_dependency "rake", "~> 13.0"
 
   spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"

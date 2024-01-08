@@ -5,7 +5,6 @@ PATH
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
-      nokogiri (>= 1.15)
       rake (~> 13.0)
 
 GEM
