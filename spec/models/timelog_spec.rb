@@ -11,6 +11,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:issue).touch(true) }
   it { is_expected.to belong_to(:merge_request).touch(true) }
+  it { is_expected.to belong_to(:timelog_category).optional(true) }
 
   it { is_expected.to be_valid }
 

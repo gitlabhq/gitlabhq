@@ -208,6 +208,7 @@ class Project < ApplicationRecord
   has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_integration, class_name: 'Integrations::Datadog'
   has_one :container_registry_data_repair_detail, class_name: 'ContainerRegistry::DataRepairDetail'
+  has_one :diffblue_cover_integration, class_name: 'Integrations::DiffblueCover'
   has_one :discord_integration, class_name: 'Integrations::Discord'
   has_one :drone_ci_integration, class_name: 'Integrations::DroneCi'
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'

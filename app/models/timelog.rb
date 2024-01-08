@@ -20,6 +20,7 @@ class Timelog < ApplicationRecord
   belongs_to :project
   belongs_to :user
   belongs_to :note
+  belongs_to :timelog_category, optional: true, class_name: 'TimeTracking::TimelogCategory'
 
   scope :in_group, -> (group) do
     joins(:project).where(projects: { namespace: group.self_and_descendants })

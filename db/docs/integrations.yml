@@ -20,6 +20,7 @@ classes:
 - Integrations::Confluence
 - Integrations::CustomIssueTracker
 - Integrations::Datadog
+- Integrations::DiffblueCover
 - Integrations::Discord
 - Integrations::DroneCi
 - Integrations::EmailsOnPush

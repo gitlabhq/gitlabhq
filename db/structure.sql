@@ -24578,6 +24578,7 @@ CREATE TABLE timelogs (
     project_id integer,
     summary text,
     note_id bigint,
+    timelog_category_id bigint,
     CONSTRAINT check_271d321699 CHECK ((char_length(summary) <= 255))
 );
 
@@ -35448,6 +35449,8 @@ CREATE INDEX index_timelogs_on_project_id_and_spent_at ON timelogs USING btree (
 
 CREATE INDEX index_timelogs_on_spent_at ON timelogs USING btree (spent_at) WHERE (spent_at IS NOT NULL);
 
+CREATE INDEX index_timelogs_on_timelog_category_id ON timelogs USING btree (timelog_category_id);
+
 CREATE INDEX index_timelogs_on_user_id ON timelogs USING btree (user_id);
 
 CREATE INDEX index_todos_on_author_id ON todos USING btree (author_id);
@@ -39075,6 +39078,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_f10de8b524 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY timelogs
+    ADD CONSTRAINT fk_f12ef8db70 FOREIGN KEY (timelog_category_id) REFERENCES timelog_categories(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

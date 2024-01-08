@@ -17708,6 +17708,51 @@ msgstr ""
 msgid "Diff notes"
 msgstr ""
 
+msgid "DiffblueCover|Access token"
+msgstr ""
+
+msgid "DiffblueCover|Access token name used by Diffblue Cover in pipelines"
+msgstr ""
+
+msgid "DiffblueCover|Access token secret used by Diffblue Cover in pipelines"
+msgstr ""
+
+msgid "DiffblueCover|Automatically write comprehensive, human-like Java unit tests."
+msgstr ""
+
+msgid "DiffblueCover|Diffblue Cover is a reinforcement learning AI platform that automatically writes comprehensive, human-like Java unit tests. Integrate the power of Diffblue Cover into your CI/CD workflow for fully autonomous operation."
+msgstr ""
+
+msgid "DiffblueCover|Diffblue Cover license key"
+msgstr ""
+
+msgid "DiffblueCover|Enter your Diffblue Cover license key or visit %{diffblue_link} to obtain a free trial license."
+msgstr ""
+
+msgid "DiffblueCover|Integration details"
+msgstr ""
+
+msgid "DiffblueCover|Leave blank to use your current license key."
+msgstr ""
+
+msgid "DiffblueCover|Leave blank to use your current secret value."
+msgstr ""
+
+msgid "DiffblueCover|License key"
+msgstr ""
+
+msgid "DiffblueCover|My token name"
+msgstr ""
+
+msgid "DiffblueCover|Name"
+msgstr ""
+
+msgid "DiffblueCover|Secret"
+msgstr ""
+
+msgid "DiffblueCover|Try Diffblue Cover"
+msgstr ""
+
 msgid "Difference between start date and now"
 msgstr ""
 

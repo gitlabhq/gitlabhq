@@ -217,6 +217,7 @@ module API
               desc: 'Custom tags in Datadog. Specify one tag per line in the format: "key:value\nkey2:value2"'
             }
           ],
+          'diffblue-cover' => ::Integrations::DiffblueCover.api_fields,
           'discord' => [
             ::Integrations::Discord.api_fields,
             chat_notification_flags,
@@ -681,6 +682,7 @@ module API
           ::Integrations::Confluence,
           ::Integrations::CustomIssueTracker,
           ::Integrations::Datadog,
+          ::Integrations::DiffblueCover,
           ::Integrations::Discord,
           ::Integrations::DroneCi,
           ::Integrations::EmailsOnPush,

@@ -173,7 +173,7 @@ class ProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def by_full_paths(items)
-    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], use_includes: false) : items
+    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], preload_routes: false) : items
   end
 
   def union(items)

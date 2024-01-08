@@ -3290,6 +3290,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    context 'for the diffblue_cover integration' do
+      context 'when active' do
+        let_it_be(:diffblue_cover_integration) { create(:diffblue_cover_integration, active: true) }
+
+        let(:diffblue_cover_variables) do
+          [
+            { key: 'DIFFBLUE_LICENSE_KEY', value: diffblue_cover_integration.diffblue_license_key, masked: true, public: false },
+            { key: 'DIFFBLUE_ACCESS_TOKEN_NAME', value: diffblue_cover_integration.diffblue_access_token_name, masked: true, public: false },
+            { key: 'DIFFBLUE_ACCESS_TOKEN', value: diffblue_cover_integration.diffblue_access_token_secret, masked: true, public: false }
+          ]
+        end
+
+        it 'includes diffblue_cover variables' do
+          is_expected.to include(*diffblue_cover_variables)
+        end
+      end
+
+      context 'when inactive' do
+        let_it_be(:diffblue_cover_integration) { create(:diffblue_cover_integration, active: false) }
+
+        it 'does not include diffblue_cover variables' do
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_LICENSE_KEY' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_ACCESS_TOKEN_NAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_ACCESS_TOKEN' }).to be_nil
+        end
+      end
+    end
+
     context 'for the google_play integration' do
       before do
         allow(build.pipeline).to receive(:protected_ref?).and_return(pipeline_protected_ref)

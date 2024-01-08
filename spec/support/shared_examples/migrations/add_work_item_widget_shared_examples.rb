@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'migration that adds widget to work items definitions' do |widget_name:|
+RSpec.shared_examples 'migration that adds widget to work items definitions' do |widget_name:, work_item_types:|
   let(:migration) { described_class.new }
   let(:work_item_definitions) { table(:work_item_widget_definitions) }
-  let(:work_item_type_count) { described_class::WORK_ITEM_TYPES.size }
+  let(:work_item_type_count) { work_item_types.size }
 
   describe '#up' do
     it "creates widget definition in all types" do
@@ -14,7 +14,7 @@ RSpec.shared_examples 'migration that adds widget to work items definitions' do 
     end
 
     it 'logs a warning if the type is missing' do
-      type_name = described_class::WORK_ITEM_TYPES.first
+      type_name = work_item_types.first
 
       allow(described_class::WorkItemType).to receive(:find_by_name_and_namespace_id).and_call_original
       allow(described_class::WorkItemType).to receive(:find_by_name_and_namespace_id)

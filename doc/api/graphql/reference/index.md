@@ -31552,6 +31552,7 @@ State of a Sentry error.
 | <a id="servicetypeconfluence_service"></a>`CONFLUENCE_SERVICE` | ConfluenceService type. |
 | <a id="servicetypecustom_issue_tracker_service"></a>`CUSTOM_ISSUE_TRACKER_SERVICE` | CustomIssueTrackerService type. |
 | <a id="servicetypedatadog_service"></a>`DATADOG_SERVICE` | DatadogService type. |
+| <a id="servicetypediffblue_cover_service"></a>`DIFFBLUE_COVER_SERVICE` | DiffblueCoverService type. |
 | <a id="servicetypediscord_service"></a>`DISCORD_SERVICE` | DiscordService type. |
 | <a id="servicetypedrone_ci_service"></a>`DRONE_CI_SERVICE` | DroneCiService type. |
 | <a id="servicetypeemails_on_push_service"></a>`EMAILS_ON_PUSH_SERVICE` | EmailsOnPushService type. |

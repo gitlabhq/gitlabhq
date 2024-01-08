@@ -9,6 +9,8 @@ module TimeTracking
 
     belongs_to :namespace, foreign_key: 'namespace_id'
 
+    has_many :timelogs
+
     strip_attributes! :name
 
     validates :namespace, presence: true

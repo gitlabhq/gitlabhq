@@ -1,0 +1,20 @@
+---
+data_category: optional
+key_path: counts.projects_inheriting_diffblue_cover_active
+description: Count of active projects inheriting integrations for Diffblue Cover
+product_section: dev
+product_stage: manage
+product_group: integrations
+value_type: number
+status: active
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "16.8"

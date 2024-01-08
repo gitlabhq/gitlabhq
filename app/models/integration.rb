@@ -19,8 +19,8 @@ class Integration < ApplicationRecord
   self.inheritance_column = :type_new
 
   INTEGRATION_NAMES = %w[
-    asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker datadog discord
-    drone_ci emails_on_push ewm external_wiki hangouts_chat harbor irker jira
+    asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
+    datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki hangouts_chat harbor irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao

@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe TimeTracking::TimelogCategory, type: :model do
+RSpec.describe TimeTracking::TimelogCategory, feature_category: :team_planning do
   describe 'associations' do
     it { is_expected.to belong_to(:namespace).with_foreign_key('namespace_id') }
+    it { is_expected.to have_many(:timelogs) }
   end
 
   describe 'default values' do

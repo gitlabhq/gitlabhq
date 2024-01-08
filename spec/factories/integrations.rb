@@ -30,6 +30,14 @@ FactoryBot.define do
     api_key { 'secret' }
   end
 
+  factory :diffblue_cover_integration, class: 'Integrations::DiffblueCover' do
+    project
+    active { true }
+    diffblue_license_key { '1234-ABCD-DCBA-4321' }
+    diffblue_access_token_name { 'Diffblue CI' }
+    diffblue_access_token_secret { 'glpat-00112233445566778899' } # gitleaks:allow
+  end
+
   factory :emails_on_push_integration, class: 'Integrations::EmailsOnPush' do
     project
     type { 'Integrations::EmailsOnPush' }
