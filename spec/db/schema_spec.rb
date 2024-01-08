@@ -87,6 +87,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_request_diffs: %w[project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
+    namespace_descendants: %w[namespace_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
     notification_settings: %w[source_id],
     oauth_access_grants: %w[resource_owner_id application_id],

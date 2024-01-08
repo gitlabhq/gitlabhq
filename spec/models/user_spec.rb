@@ -626,38 +626,33 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe 'username' do
+    shared_examples 'username validations' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)
       end
 
-      it 'rejects denied names' do
-        user = build(:user, username: 'dashboard')
+      context 'when username is reserved' do
+        let(:username) { 'dashboard' }
 
-        expect(user).not_to be_valid
-        expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
+        it 'rejects denied names' do
+          expect(user).not_to be_valid
+          expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
+        end
       end
 
-      it 'allows child names' do
-        user = build(:user, username: 'avatar')
+      context 'when username is a child' do
+        let(:username) { 'avatar' }
 
-        expect(user).to be_valid
+        it 'allows child names' do
+          expect(user).to be_valid
+        end
       end
 
-      it 'allows wildcard names' do
-        user = build(:user, username: 'blob')
+      context 'when username is a wildcard' do
+        let(:username) { 'blob' }
 
-        expect(user).to be_valid
-      end
-
-      context 'when username is changed' do
-        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
-
-        it 'validates move_dir is allowed for the namespace' do
-          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
-          user.username = 'new_path'
-          expect(user).to be_invalid
-          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
+        it 'allows wildcard names' do
+          expect(user).to be_valid
         end
       end
 
@@ -666,25 +661,59 @@ RSpec.describe User, feature_category: :user_profile do
         let!(:other_user) { create(:user, username: username) }
 
         it 'is invalid' do
-          user = build(:user, username: username)
-
           expect(user).not_to be_valid
           expect(user.errors.full_messages).to eq(['Username has already been taken'])
         end
       end
 
-      it 'validates format' do
-        Mime::EXTENSION_LOOKUP.keys.each do |type|
-          user = build(:user, username: "test.#{type}")
+      Mime::EXTENSION_LOOKUP.keys.each do |type|
+        context 'with extension format' do
+          let(:username) { "test.#{type}" }
 
-          expect(user).not_to be_valid
-          expect(user.errors.full_messages).to include('Username ending with a reserved file extension is not allowed.')
-          expect(build(:user, username: "test#{type}")).to be_valid
+          it do
+            expect(user).not_to be_valid
+            expect(user.errors.full_messages).to include('Username ending with a reserved file extension is not allowed.')
+          end
+        end
+
+        context 'when suffixed by extension type' do
+          let(:username) { "test#{type}" }
+
+          it do
+            expect(user).to be_valid
+          end
         end
       end
+    end
 
-      it 'validates format on updated record' do
-        expect(create(:user).update(username: 'profile.html')).to be_falsey
+    context 'when creating user' do
+      let(:user) { build(:user, username: username) }
+
+      include_examples 'username validations'
+    end
+
+    context 'when updating user' do
+      let(:user) { create(:user) }
+
+      before do
+        user.username = username if defined?(username)
+      end
+
+      include_examples 'username validations'
+
+      context 'when personal project has container registry tags' do
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
+
+        before do
+          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
+        end
+
+        it 'validates move_dir is allowed for the namespace' do
+          user.username = 'new_path'
+
+          expect(user).to be_invalid
+          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
+        end
       end
     end
 

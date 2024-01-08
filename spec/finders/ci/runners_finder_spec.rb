@@ -660,12 +660,13 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           end
 
           context 'by creator' do
-            let_it_be(:runner_creator_1) { create(:ci_runner, creator_id: '1') }
+            let_it_be(:creator) { create(:user) }
+            let_it_be(:runner_with_creator) { create(:ci_runner, creator: creator) }
 
-            let(:extra_params) { { creator_id: '1' } }
+            let(:extra_params) { { creator_id: creator.id } }
 
             it 'returns correct runners' do
-              is_expected.to contain_exactly(runner_creator_1)
+              is_expected.to contain_exactly(runner_with_creator)
             end
           end
 

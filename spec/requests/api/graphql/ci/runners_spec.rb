@@ -165,6 +165,43 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           end
         end
       end
+
+      context 'when filtered by creator' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:runner_created_by_user) { create(:ci_runner, :project, creator: user) }
+
+        let(:query) do
+          %(
+            query {
+              runners(creatorId: "#{creator.to_global_id}") {
+                #{fields}
+              }
+            }
+          )
+        end
+
+        context 'when existing user id given' do
+          let(:creator) { user }
+
+          before do
+            create(:ci_runner, :project, creator: create(:user)) # Should not be returned
+          end
+
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) { runner_created_by_user }
+          end
+        end
+
+        context 'when non existent user id given' do
+          let(:creator) { User.new(id: non_existing_record_id) }
+
+          it 'does not return any runners' do
+            post_graphql(query, current_user: current_user)
+
+            expect(graphql_data_at(:runners, :nodes)).to be_empty
+          end
+        end
+      end
     end
   end
 

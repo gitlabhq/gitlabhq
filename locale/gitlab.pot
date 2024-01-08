@@ -1339,6 +1339,9 @@ msgstr ""
 msgid "%{user} user’s menu"
 msgstr ""
 
+msgid "%{value} is a reserved name"
+msgstr ""
+
 msgid "%{value} is not included in the list"
 msgstr ""
 

@@ -303,6 +303,10 @@ class User < MainClusterwide::ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
+  validates :username,
+    presence: true,
+    exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
+  validates :username, uniqueness: true, unless: :namespace
   validates :name, presence: true, length: { maximum: 255 }
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
@@ -313,7 +317,6 @@ class User < MainClusterwide::ApplicationRecord
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username, presence: true
   validate  :check_password_weakness, if: :encrypted_password_changed?
 
   validates :namespace, presence: true, unless: :optional_namespace?
@@ -1643,6 +1646,9 @@ class User < MainClusterwide::ApplicationRecord
       self.errors.add(:base, :username_exists_as_a_different_namespace)
     else
       namespace_path_errors.each do |msg|
+        # Already handled by username validation.
+        next if msg.ends_with?('is a reserved name')
+
         self.errors.add(:username, msg)
       end
     end

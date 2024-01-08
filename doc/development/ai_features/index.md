@@ -181,10 +181,9 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
     1. Ensure that the following environment variables are set in the `.env` file:
 
         ```shell
-        AUTH_BYPASS_EXTERNAL=true
-        ANTHROPIC_API_KEY="[REDACTED]"                            # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
-        PALM_TEXT_MODEL_NAME=text-bison
-        PALM_TEXT_PROJECT="[REDACTED]"
+        AIGW_AUTH__BYPASS_EXTERNAL=true
+        ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
+        AIGW_VERTEX_TEXT_MODEL__PROJECT="[REDACTED]"
         ```
 
     1. Run `poetry run ai_gateway`.
@@ -215,7 +214,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
     1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
 
         ```ruby
-        # Creating dummy token, and this will work as long as `AUTH_BYPASS_EXTERNAL=true` in AI Gateway.
+        # Creating dummy token, and this will work as long as `AIGW_AUTH__BYPASS_EXTERNAL=true` in AI Gateway.
         ::Ai::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
         ```
 
@@ -272,9 +271,9 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
     1. Additionally, ensure that the following environment variables are set in the `.env` file:
 
         ```shell
-        GITLAB_URL="http://gdk.test:3000/"
-        GITLAB_API_URL="http://gdk.test:3000/api/v4/"
-        AUTH_BYPASS_EXTERNAL=False
+        AIGW_GITLAB_URL="http://gdk.test:3000/"
+        AIGW_GITLAB_API_URL="http://gdk.test:3000/api/v4/"
+        AIGW_AUTH__BYPASS_EXTERNAL=False
         ```
 
     1. Restart AI Gateway.
@@ -290,7 +289,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 ### Use Customer Dot as OIDC provider in AI Gateway
 
 1. AI Gateway:
-    1. Ensure `CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
+    1. Ensure `AIGW_CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
     1. Restart
 
 ## Experimental REST API

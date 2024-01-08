@@ -24,7 +24,7 @@ const createComponent = (
 ) => {
   return mountExtended(GroupItem, {
     propsData,
-    components: { GroupFolder },
+    components: { GroupFolder, GroupItem },
     provide,
   });
 };
@@ -261,10 +261,9 @@ describe('GroupItemComponent', () => {
       });
 
       it.each`
-        attr           | value
-        ${'itemscope'} | ${'itemscope'}
-        ${'itemtype'}  | ${'https://schema.org/Organization'}
-        ${'itemprop'}  | ${'subOrganization'}
+        attr          | value
+        ${'itemtype'} | ${'https://schema.org/Organization'}
+        ${'itemprop'} | ${'subOrganization'}
       `('does set correct $attr', ({ attr, value } = {}) => {
         expect(wrapper.attributes(attr)).toBe(value);
       });
@@ -281,7 +280,7 @@ describe('GroupItemComponent', () => {
   });
 
   describe('visibility warning popover', () => {
-    const findPopover = () => extendedWrapper(wrapper.findComponent(GlPopover));
+    const findPopover = () => wrapper.findComponent(GlPopover);
 
     const itDoesNotRenderVisibilityWarningPopover = () => {
       it('does not render visibility warning popover', () => {
@@ -343,9 +342,10 @@ describe('GroupItemComponent', () => {
 
           if (isPopoverShown) {
             it('renders visibility warning popover with `Learn more` link', () => {
-              const popover = findPopover();
+              const popover = extendedWrapper(findPopover());
 
               expect(popover.exists()).toBe(true);
+
               expect(
                 popover.findByRole('link', { name: GroupItem.i18n.learnMore }).attributes('href'),
               ).toBe(

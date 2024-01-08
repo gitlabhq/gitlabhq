@@ -32,6 +32,8 @@ To create a new GitLab Dedicated environment for your organization, provide the 
 - Email addresses of the users who are responsible to complete the onboarding and create your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/).
 
 If you've been granted access to Switchboard, you receive an email invitation with temporary credentials to sign in.
+Your invitation to Switchboard is valid for seven days. If you are having issues accessing
+Switchboard, or if your invitation has expired, please [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 NOTE:
 The credentials for Switchboard are separate from any other GitLab credentials you may already have to sign in to a GitLab self-managed or GitLab.com instance.

@@ -27,7 +27,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_foreign_key) do
     [
       'p_catalog_resource_sync_events.project_id',
-      'zoekt_indices.namespace_id'
+      'zoekt_indices.namespace_id',
+      'namespace_descendants.namespace_id'
     ]
   end
 

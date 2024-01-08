@@ -2526,6 +2526,304 @@ CREATE TABLE gitlab_partitions_static.issue_search_data_63 (
     namespace_id bigint
 );
 
+CREATE TABLE namespace_descendants (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+)
+PARTITION BY HASH (namespace_id);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_00 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_01 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_02 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_03 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_04 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_05 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_06 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_07 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_08 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_09 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_10 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_11 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_12 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_13 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_14 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_15 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_16 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_17 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_18 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_19 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_20 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_21 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_22 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_23 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_24 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_25 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_26 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_27 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_28 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_29 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_30 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
+CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
+    namespace_id bigint NOT NULL,
+    self_and_descendant_group_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    all_project_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
+    outdated_at timestamp with time zone,
+    calculated_at timestamp with time zone
+);
+
 CREATE TABLE product_analytics_events_experimental (
     id bigint NOT NULL,
     project_id integer NOT NULL,
@@ -26223,6 +26521,70 @@ ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.iss
 
 ALTER TABLE ONLY issue_search_data ATTACH PARTITION gitlab_partitions_static.issue_search_data_63 FOR VALUES WITH (modulus 64, remainder 63);
 
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_00 FOR VALUES WITH (modulus 32, remainder 0);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_01 FOR VALUES WITH (modulus 32, remainder 1);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_02 FOR VALUES WITH (modulus 32, remainder 2);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_03 FOR VALUES WITH (modulus 32, remainder 3);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_04 FOR VALUES WITH (modulus 32, remainder 4);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_05 FOR VALUES WITH (modulus 32, remainder 5);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_06 FOR VALUES WITH (modulus 32, remainder 6);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_07 FOR VALUES WITH (modulus 32, remainder 7);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_08 FOR VALUES WITH (modulus 32, remainder 8);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_09 FOR VALUES WITH (modulus 32, remainder 9);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_10 FOR VALUES WITH (modulus 32, remainder 10);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_11 FOR VALUES WITH (modulus 32, remainder 11);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_12 FOR VALUES WITH (modulus 32, remainder 12);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_13 FOR VALUES WITH (modulus 32, remainder 13);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_14 FOR VALUES WITH (modulus 32, remainder 14);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_15 FOR VALUES WITH (modulus 32, remainder 15);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_16 FOR VALUES WITH (modulus 32, remainder 16);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_17 FOR VALUES WITH (modulus 32, remainder 17);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_18 FOR VALUES WITH (modulus 32, remainder 18);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_19 FOR VALUES WITH (modulus 32, remainder 19);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_20 FOR VALUES WITH (modulus 32, remainder 20);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_21 FOR VALUES WITH (modulus 32, remainder 21);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_22 FOR VALUES WITH (modulus 32, remainder 22);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_23 FOR VALUES WITH (modulus 32, remainder 23);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_24 FOR VALUES WITH (modulus 32, remainder 24);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_25 FOR VALUES WITH (modulus 32, remainder 25);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_26 FOR VALUES WITH (modulus 32, remainder 26);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_27 FOR VALUES WITH (modulus 32, remainder 27);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_28 FOR VALUES WITH (modulus 32, remainder 28);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_29 FOR VALUES WITH (modulus 32, remainder 29);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_30 FOR VALUES WITH (modulus 32, remainder 30);
+
+ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
+
 ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_00 FOR VALUES WITH (modulus 64, remainder 0);
 
 ALTER TABLE ONLY product_analytics_events_experimental ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_01 FOR VALUES WITH (modulus 64, remainder 1);
@@ -27955,6 +28317,105 @@ ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_62
 
 ALTER TABLE ONLY gitlab_partitions_static.issue_search_data_63
     ADD CONSTRAINT issue_search_data_63_pkey PRIMARY KEY (project_id, issue_id);
+
+ALTER TABLE ONLY namespace_descendants
+    ADD CONSTRAINT namespace_descendants_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_00
+    ADD CONSTRAINT namespace_descendants_00_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_01
+    ADD CONSTRAINT namespace_descendants_01_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_02
+    ADD CONSTRAINT namespace_descendants_02_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_03
+    ADD CONSTRAINT namespace_descendants_03_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_04
+    ADD CONSTRAINT namespace_descendants_04_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_05
+    ADD CONSTRAINT namespace_descendants_05_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_06
+    ADD CONSTRAINT namespace_descendants_06_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_07
+    ADD CONSTRAINT namespace_descendants_07_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_08
+    ADD CONSTRAINT namespace_descendants_08_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_09
+    ADD CONSTRAINT namespace_descendants_09_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_10
+    ADD CONSTRAINT namespace_descendants_10_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_11
+    ADD CONSTRAINT namespace_descendants_11_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_12
+    ADD CONSTRAINT namespace_descendants_12_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_13
+    ADD CONSTRAINT namespace_descendants_13_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_14
+    ADD CONSTRAINT namespace_descendants_14_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_15
+    ADD CONSTRAINT namespace_descendants_15_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_16
+    ADD CONSTRAINT namespace_descendants_16_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_17
+    ADD CONSTRAINT namespace_descendants_17_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_18
+    ADD CONSTRAINT namespace_descendants_18_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_19
+    ADD CONSTRAINT namespace_descendants_19_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_20
+    ADD CONSTRAINT namespace_descendants_20_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_21
+    ADD CONSTRAINT namespace_descendants_21_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_22
+    ADD CONSTRAINT namespace_descendants_22_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_23
+    ADD CONSTRAINT namespace_descendants_23_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_24
+    ADD CONSTRAINT namespace_descendants_24_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_25
+    ADD CONSTRAINT namespace_descendants_25_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_26
+    ADD CONSTRAINT namespace_descendants_26_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_27
+    ADD CONSTRAINT namespace_descendants_27_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_28
+    ADD CONSTRAINT namespace_descendants_28_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_29
+    ADD CONSTRAINT namespace_descendants_29_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_30
+    ADD CONSTRAINT namespace_descendants_30_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_31
+    ADD CONSTRAINT namespace_descendants_31_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_pkey PRIMARY KEY (id, project_id);
@@ -31336,6 +31797,72 @@ CREATE INDEX issue_search_data_62_search_vector_idx ON gitlab_partitions_static.
 CREATE INDEX issue_search_data_63_issue_id_idx ON gitlab_partitions_static.issue_search_data_63 USING btree (issue_id);
 
 CREATE INDEX issue_search_data_63_search_vector_idx ON gitlab_partitions_static.issue_search_data_63 USING gin (search_vector);
+
+CREATE INDEX index_on_namespace_descendants_outdated ON ONLY namespace_descendants USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_00_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_00 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_01_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_01 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_02_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_02 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_03_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_03 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_04_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_04 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_05_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_05 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_06_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_06 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_07_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_07 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_08_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_08 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_09_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_09 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_10_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_10 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_11_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_11 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_12_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_12 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_13_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_13 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_14_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_14 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_15_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_15 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_16_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_16 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_17_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_17 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_18_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_18 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_19_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_19 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_20_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_20 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_21_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_21 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_22_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_22 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_23_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_23 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_24_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_24 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_25_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_25 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_26_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_26 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_27_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_27 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_28_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_28 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_29_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_29 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_30_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_30 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE INDEX namespace_descendants_31_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_31 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
 
 CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY product_analytics_events_experimental USING btree (project_id, collector_tstamp);
 
@@ -36916,6 +37443,134 @@ ALTER INDEX index_issue_search_data_on_issue_id ATTACH PARTITION gitlab_partitio
 ALTER INDEX issue_search_data_pkey ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_pkey;
 
 ALTER INDEX index_issue_search_data_on_search_vector ATTACH PARTITION gitlab_partitions_static.issue_search_data_63_search_vector_idx;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_00_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_00_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_01_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_01_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_02_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_02_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_03_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_03_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_04_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_04_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_05_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_05_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_06_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_06_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_07_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_07_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_08_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_08_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_09_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_09_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_10_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_10_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_11_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_11_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_12_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_12_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_13_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_13_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_14_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_14_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_15_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_15_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_16_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_16_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_17_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_17_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_18_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_18_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_19_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_19_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_20_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_20_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_21_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_21_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_22_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_22_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_23_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_23_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_24_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_24_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_25_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_25_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_26_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_26_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_27_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_27_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_28_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_28_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_29_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_29_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_30_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_30_pkey;
+
+ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_namespace_id_idx;
+
+ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
 ALTER INDEX index_product_analytics_events_experimental_project_and_time ATTACH PARTITION gitlab_partitions_static.product_analytics_events_expe_project_id_collector_tstamp_idx10;
 
