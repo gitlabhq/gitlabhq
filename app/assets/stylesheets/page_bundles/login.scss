@@ -16,43 +16,8 @@
     top: 8px;
   }
 
-  .brand-holder {
-    font-size: 18px;
-    line-height: 1.5;
-
-    p {
-      font-size: 16px;
-      color: $login-brand-holder-color;
-    }
-
-    h3 {
-      font-size: 22px;
-    }
-
-    img {
-      max-width: 100%;
-      margin-bottom: 30px;
-    }
-
-    a {
-      font-weight: $gl-font-weight-bold;
-    }
-  }
-
-  p {
-    font-size: 13px;
-  }
-
-  .signin-text {
-    p {
-      margin-bottom: 0;
-      line-height: 1.5;
-    }
-  }
-
   .borderless {
-    .login-box,
-    .omniauth-container {
+    .login-box {
       box-shadow: none;
     }
   }
@@ -61,67 +26,6 @@
     > div {
       margin-left: auto;
       margin-right: auto;
-    }
-  }
-
-  .login-box,
-  .omniauth-container {
-    box-shadow: 0 0 0 1px $border-color;
-    border-radius: $border-radius;
-
-    .login-heading h3 {
-      font-weight: $gl-font-weight-normal;
-      line-height: 1.5;
-      margin: 0 0 10px;
-    }
-
-    .login-footer {
-      margin-top: 10px;
-
-      p:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    a.forgot {
-      float: right;
-      padding-top: 6px;
-    }
-
-    .nav .active a {
-      background: transparent;
-    }
-
-    // Styles the glowing border of focused input for username async validation
-    .login-body {
-      font-size: 13px;
-
-      .username .validation-success {
-        color: $green-600;
-      }
-
-      .username .validation-error {
-        color: $red-500;
-      }
-
-      .terms .gl-form-checkbox {
-        @include gl-reset-font-size;
-      }
-    }
-  }
-
-  .omniauth-container {
-    border-radius: $border-radius;
-    font-size: 13px;
-
-    p {
-      margin: 0;
-    }
-
-    form {
-      padding: 0;
-      border: 0;
-      background: none;
     }
   }
 

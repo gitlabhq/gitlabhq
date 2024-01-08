@@ -11,7 +11,7 @@ module CountHelper
 
   # This will approximate the fork count by checking all counting all fork network
   # memberships, and deducting 1 for each root of the fork network.
-  # This might be inacurate as the root of the fork network might have been deleted.
+  # This might be inaccurate as the root of the fork network might have been deleted.
   #
   # This makes querying this information a lot more efficient and it should be
   # accurate enough for the instance wide statistics

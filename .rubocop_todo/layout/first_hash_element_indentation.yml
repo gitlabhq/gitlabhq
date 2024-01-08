@@ -113,7 +113,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/services/ee/projects/unlink_fork_service_spec.rb'
     - 'ee/spec/services/external_status_checks/create_service_spec.rb'
     - 'ee/spec/services/external_status_checks/destroy_service_spec.rb'
-    - 'ee/spec/services/groups/create_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/iterations/create_service_spec.rb'
     - 'ee/spec/services/projects/create_service_spec.rb'

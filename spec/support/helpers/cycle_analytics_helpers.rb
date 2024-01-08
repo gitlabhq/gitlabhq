@@ -14,12 +14,14 @@ module CycleAnalyticsHelpers
     page.all('.gl-path-button').collect(&:text).map { |name_with_median| name_with_median.split("\n")[0] }
   end
 
-  def fill_in_custom_stage_fields
+  def fill_in_custom_stage_fields(stage_name = nil)
     index = page.all('[data-testid="value-stream-stage-fields"]').length
     last_stage = page.all('[data-testid="value-stream-stage-fields"]').last
 
+    stage_name = "Cool custom stage - name #{index}" if stage_name.blank?
+
     within last_stage do
-      find('[name*="custom-stage-name-"]').fill_in with: "Cool custom stage - name #{index}"
+      find('[name*="custom-stage-name-"]').fill_in with: stage_name
       select_dropdown_option_by_value "custom-stage-start-event-", 'Merge request created'
       select_dropdown_option_by_value "custom-stage-end-event-", 'Merge request merged'
     end

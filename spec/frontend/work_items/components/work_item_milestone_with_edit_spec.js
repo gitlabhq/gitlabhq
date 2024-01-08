@@ -1,11 +1,11 @@
-import { GlCollapsibleListbox, GlListboxItem, GlSkeletonLoader, GlFormGroup } from '@gitlab/ui';
-
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import WorkItemMilestone, { noMilestoneId } from '~/work_items/components/work_item_milestone.vue';
+import WorkItemMilestone from '~/work_items/components/work_item_milestone_with_edit.vue';
+import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -18,7 +18,7 @@ import {
   updateWorkItemMutationResponse,
 } from '../mock_data';
 
-describe('WorkItemMilestone component', () => {
+describe('WorkItemMilestoneWithEdit component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
@@ -26,13 +26,8 @@ describe('WorkItemMilestone component', () => {
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Task';
 
-  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findNoMilestoneDropdownItem = () => wrapper.findByTestId('listbox-item-no-milestone-id');
-  const findDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
-  const findDisabledTextSpan = () => wrapper.findByTestId('disabled-text');
-  const findInputGroup = () => wrapper.findComponent(GlFormGroup);
-  const findNoResultsText = () => wrapper.findByTestId('no-results-text');
+  const findSidebarDropdownWidget = () =>
+    wrapper.findComponent(WorkItemSidebarDropdownWidgetWithEdit);
 
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
   const successSearchWithNoMatchingMilestones = jest
@@ -42,16 +37,16 @@ describe('WorkItemMilestone component', () => {
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
 
-  const showDropdown = () => findDropdown().vm.$emit('shown');
-  const hideDropdown = () => findDropdown().vm.$emit('hide');
+  const showDropdown = () => findSidebarDropdownWidget().vm.$emit('dropdownShown');
 
   const createComponent = ({
+    mountFn = shallowMountExtended,
     canUpdate = true,
     milestone = mockMilestoneWidgetResponse,
     searchQueryHandler = successSearchQueryHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
   } = {}) => {
-    wrapper = shallowMountExtended(WorkItemMilestone, {
+    wrapper = mountFn(WorkItemMilestone, {
       apolloProvider: createMockApollo([
         [projectMilestonesQuery, searchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
@@ -63,56 +58,37 @@ describe('WorkItemMilestone component', () => {
         workItemId,
         workItemType,
       },
-      stubs: {
-        GlCollapsibleListbox,
-      },
     });
   };
 
   it('has "Milestone" label', () => {
     createComponent();
 
-    expect(findInputGroup().exists()).toBe(true);
-    expect(findInputGroup().attributes('label')).toBe(WorkItemMilestone.i18n.MILESTONE);
+    expect(findSidebarDropdownWidget().props('dropdownLabel')).toBe('Milestone');
   });
 
   describe('Default text with canUpdate false and milestone value', () => {
     describe.each`
       description             | milestone                      | value
-      ${'when no milestone'}  | ${null}                        | ${WorkItemMilestone.i18n.NONE}
+      ${'when no milestone'}  | ${null}                        | ${'None'}
       ${'when milestone set'} | ${mockMilestoneWidgetResponse} | ${mockMilestoneWidgetResponse.title}
     `('$description', ({ milestone, value }) => {
       it(`has a value of "${value}"`, () => {
-        createComponent({ canUpdate: false, milestone });
+        createComponent({ mountFn: mountExtended, canUpdate: false, milestone });
 
-        expect(findDisabledTextSpan().text()).toBe(value);
-        expect(findDropdown().exists()).toBe(false);
+        expect(findSidebarDropdownWidget().props('canUpdate')).toBe(false);
+        expect(wrapper.text()).toContain(value);
       });
     });
   });
 
-  describe('Default text value when canUpdate true and no milestone set', () => {
-    it(`has a value of "Add to milestone"`, () => {
-      createComponent({ canUpdate: true, milestone: null });
-
-      expect(findDropdown().props('toggleText')).toBe(WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER);
-    });
-  });
-
   describe('Dropdown search', () => {
-    it('has the search box', () => {
-      createComponent();
-
-      expect(findDropdown().props('searchable')).toBe(true);
-    });
-
     it('shows no matching results when no items', () => {
       createComponent({
         searchQueryHandler: successSearchWithNoMatchingMilestones,
       });
 
-      expect(findNoResultsText().text()).toBe(WorkItemMilestone.i18n.NO_MATCHING_RESULTS);
-      expect(findDropdownItems()).toHaveLength(1);
+      expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(0);
     });
   });
 
@@ -124,6 +100,9 @@ describe('WorkItemMilestone component', () => {
     it('calls successSearchQueryHandler with variables when dropdown is opened', async () => {
       showDropdown();
       await nextTick();
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+      await waitForPromises();
 
       expect(successSearchQueryHandler).toHaveBeenCalledWith({
         first: 20,
@@ -136,52 +115,54 @@ describe('WorkItemMilestone component', () => {
     it('shows the skeleton loader when the items are being fetched on click', async () => {
       showDropdown();
       await nextTick();
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
-      expect(findSkeletonLoader().exists()).toBe(true);
+      await nextTick();
+
+      expect(findSidebarDropdownWidget().props('loading')).toBe(true);
     });
 
     it('shows the milestones in dropdown when the items have finished fetching', async () => {
       showDropdown();
+      await nextTick();
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
       await waitForPromises();
 
-      expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findNoMilestoneDropdownItem().exists()).toBe(true);
-      expect(findDropdownItems()).toHaveLength(
-        projectMilestonesResponse.data.workspace.attributes.nodes.length + 1,
+      expect(findSidebarDropdownWidget().props('loading')).toBe(false);
+      expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
+        projectMilestonesResponse.data.workspace.attributes.nodes.length,
       );
     });
 
     it('changes the milestone to null when clicked on no milestone', async () => {
       showDropdown();
-      findDropdown().vm.$emit('select', noMilestoneId);
-
-      hideDropdown();
       await nextTick();
-      expect(findDropdown().props('loading')).toBe(true);
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+
+      await nextTick();
+      expect(findSidebarDropdownWidget().props('updateInProgress')).toBe(true);
 
       await waitForPromises();
-      expect(findDropdown().props()).toMatchObject({
-        loading: false,
-        toggleText: WorkItemMilestone.i18n.MILESTONE_PLACEHOLDER,
-        toggleClass: expect.arrayContaining(['gl-text-gray-500!']),
-      });
+      expect(findSidebarDropdownWidget().props('updateInProgress')).toBe(false);
+      expect(findSidebarDropdownWidget().props('itemValue')).toBe(null);
     });
 
     it('changes the milestone to the selected milestone', async () => {
-      const milestoneIndex = 1;
-      /** the index is -1 since no matching results is also a dropdown item */
-      const milestoneAtIndex =
-        projectMilestonesResponse.data.workspace.attributes.nodes[milestoneIndex - 1];
+      const milestoneAtIndex = projectMilestonesResponse.data.workspace.attributes.nodes[0];
 
       showDropdown();
+      await nextTick();
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
       await waitForPromises();
-      findDropdown().vm.$emit('select', milestoneAtIndex.id);
+      findSidebarDropdownWidget().vm.$emit('updateValue', milestoneAtIndex.id);
 
-      hideDropdown();
-      await waitForPromises();
+      await nextTick();
 
-      expect(findDropdown().props('toggleText')).toBe(milestoneAtIndex.title);
+      expect(findSidebarDropdownWidget().props('itemValue').title).toBe(milestoneAtIndex.title);
     });
   });
 
@@ -199,8 +180,7 @@ describe('WorkItemMilestone component', () => {
         });
 
         showDropdown();
-        findDropdown().vm.$emit('select', noMilestoneId);
-        hideDropdown();
+        findSidebarDropdownWidget().vm.$emit('updateValue', null);
 
         await waitForPromises();
 
@@ -215,8 +195,7 @@ describe('WorkItemMilestone component', () => {
       createComponent({ canUpdate: true });
 
       showDropdown();
-      findDropdown().vm.$emit('select', noMilestoneId);
-      hideDropdown();
+      findSidebarDropdownWidget().vm.$emit('updateValue', null);
 
       await waitForPromises();
 

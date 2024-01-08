@@ -74,6 +74,9 @@ RSpec.describe 'Merge request > User creates MR', feature_category: :code_review
 
       visit project_new_merge_request_path(source_project)
 
+      find('.js-source-branch').click
+      select_listbox_item('master')
+
       first('.js-target-project').click
       select_listbox_item(target_project.full_path)
 

@@ -13,9 +13,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
-WARNING:
-This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-
 This tutorial shows you how to:
 
 - Create a development environment outside of GitLab.

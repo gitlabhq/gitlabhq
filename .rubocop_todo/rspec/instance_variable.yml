@@ -24,7 +24,6 @@ RSpec/InstanceVariable:
     - 'ee/spec/services/ee/notification_service_spec.rb'
     - 'ee/spec/services/ee/users/create_service_spec.rb'
     - 'ee/spec/services/geo/metrics_update_service_spec.rb'
-    - 'ee/spec/services/groups/create_service_spec.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
     - 'ee/spec/services/projects/create_service_spec.rb'

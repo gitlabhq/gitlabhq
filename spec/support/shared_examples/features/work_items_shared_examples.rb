@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
+RSpec.shared_context 'with work_items_mvc_2' do |flag|
+  before do
+    stub_feature_flags(work_items_mvc_2: flag)
+
+    page.refresh
+    wait_for_all_requests
+  end
+end
+
 RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
   let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
 
   context 'when the work_items_mvc_2 FF is disabled' do
-    before do
-      stub_feature_flags(work_items_mvc_2: false)
-
-      page.refresh
-      wait_for_all_requests
-    end
+    include_context 'with work_items_mvc_2', false
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
@@ -24,17 +28,12 @@ RSpec.shared_examples 'work items title' do
   end
 
   context 'when the work_items_mvc_2 FF is enabled' do
-    before do
-      stub_feature_flags(work_items_mvc_2: true)
-
-      page.refresh
-      wait_for_all_requests
-    end
+    include_context 'with work_items_mvc_2', true
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
 
-      click_button 'Edit'
+      click_button 'Edit', match: :first
       find(title_with_edit_selector).set("Work item title")
       send_keys([:command, :enter])
       wait_for_requests
@@ -333,15 +332,10 @@ RSpec.shared_examples 'work items description' do
     [true, false].each do |work_items_mvc_2_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
       let(:edit_button) { work_items_mvc_2_flag ? 'Edit' : 'Edit description' }
 
-      before do
-        stub_feature_flags(work_items_mvc_2: work_items_mvc_2_flag)
-
-        page.refresh
-        wait_for_all_requests
-      end
+      include_context 'with work_items_mvc_2', work_items_mvc_2_flag
 
       it 'shows GFM autocomplete', :aggregate_failures do
-        click_button edit_button
+        click_button edit_button, match: :first
         fill_in _('Description'), with: "@#{user.username}"
 
         page.within('.atwho-container') do
@@ -350,7 +344,7 @@ RSpec.shared_examples 'work items description' do
       end
 
       it 'autocompletes available quick actions', :aggregate_failures do
-        click_button edit_button
+        click_button edit_button, match: :first
         fill_in _('Description'), with: '/'
 
         page.within('#at-view-commands') do
@@ -371,7 +365,7 @@ RSpec.shared_examples 'work items description' do
         end
 
         it 'shows conflict message when description changes', :aggregate_failures do
-          click_button edit_button
+          click_button edit_button, match: :first
 
           ::WorkItems::UpdateService.new(
             container: work_item.project,
@@ -411,17 +405,61 @@ RSpec.shared_examples 'work items invite members' do
 end
 
 RSpec.shared_examples 'work items milestone' do
-  it 'searches and sets or removes milestone for the work item' do
-    click_button s_('WorkItem|Add to milestone')
-    send_keys "\"#{milestone.title}\""
-    select_listbox_item(milestone.title, exact_text: true)
+  context 'on work_items_mvc_2 FF off' do
+    include_context 'with work_items_mvc_2', false
 
-    expect(page).to have_button(milestone.title)
+    it 'searches and sets or removes milestone for the work item' do
+      click_button s_('WorkItem|Add to milestone')
+      send_keys "\"#{milestone.title}\""
+      select_listbox_item(milestone.title, exact_text: true)
 
-    click_button milestone.title
-    select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
+      expect(page).to have_button(milestone.title)
 
-    expect(page).to have_button(s_('WorkItem|Add to milestone'))
+      click_button milestone.title
+      select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
+
+      expect(page).to have_button(s_('WorkItem|Add to milestone'))
+    end
+  end
+
+  context 'on work_items_mvc_2 FF on' do
+    let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
+
+    include_context 'with work_items_mvc_2', true
+
+    it 'passes axe automated accessibility testing in closed state' do
+      expect(page).to be_axe_clean.within(work_item_milestone_selector)
+    end
+
+    context 'when edit is clicked' do
+      it 'selects and updates the right milestone', :aggregate_failures do
+        find_and_click_edit(work_item_milestone_selector)
+
+        select_listbox_item(milestones[10].title)
+
+        wait_for_requests
+        within(work_item_milestone_selector) do
+          expect(page).to have_text(milestones[10].title)
+        end
+
+        find_and_click_edit(work_item_milestone_selector)
+
+        find_and_click_clear(work_item_milestone_selector)
+
+        expect(find(work_item_milestone_selector)).to have_content('None')
+      end
+
+      it 'searches and sets or removes milestone for the work item' do
+        find_and_click_edit(work_item_milestone_selector)
+        within(work_item_milestone_selector) do
+          send_keys "\"#{milestones[11].title}\""
+          wait_for_requests
+
+          select_listbox_item(milestones[11].title)
+          expect(page).to have_text(milestones[11].title)
+        end
+      end
+    end
   end
 end
 
@@ -603,12 +641,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  before do
-    stub_feature_flags(work_items_mvc_2: true)
-
-    page.refresh
-    wait_for_all_requests
-  end
+  include_context 'with work_items_mvc_2', true
 
   context 'for accessibility' do
     it 'has the work item iteration with edit' do

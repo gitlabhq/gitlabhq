@@ -16,8 +16,9 @@ if (mrNewCompareNode) {
   const sourceCompareEl = document.getElementById('js-source-project-dropdown');
   const compareEl = document.querySelector('.js-merge-request-new-compare');
   const targetBranch = Vue.observable({ name: '' });
-
   const currentSourceBranch = JSON.parse(sourceCompareEl.dataset.currentBranch);
+  const sourceBranch = Vue.observable(currentSourceBranch);
+
   // eslint-disable-next-line no-new
   new Vue({
     el: sourceCompareEl,
@@ -52,6 +53,9 @@ if (mrNewCompareNode) {
         if (targetBranchName) {
           targetBranch.name = targetBranchName;
         }
+
+        sourceBranch.value = branchName;
+        sourceBranch.text = branchName;
       },
     },
     render(h) {
@@ -102,9 +106,14 @@ if (mrNewCompareNode) {
 
         return currentTargetBranch;
       },
+      isDisabled() {
+        return !sourceBranch.value;
+      },
     },
     render(h) {
-      return h(CompareApp, { props: { currentBranch: this.currentBranch } });
+      return h(CompareApp, {
+        props: { currentBranch: this.currentBranch, disabled: this.isDisabled },
+      });
     },
   });
 } else {

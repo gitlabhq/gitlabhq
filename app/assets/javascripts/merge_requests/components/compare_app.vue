@@ -42,6 +42,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -120,6 +125,7 @@ export default {
           :default="currentBranch"
           :toggle-class="toggleClass.branch"
           :data-qa-compare-side="compareSide"
+          :disabled="disabled"
           data-testid="compare-dropdown"
           @selected="selectBranch"
         />

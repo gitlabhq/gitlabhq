@@ -85,6 +85,7 @@ The default value is:
 ```yaml
 remote_development:
   network_policy:
+    enabled: true
     egress:
       - allow: "0.0.0.0/0"
         except:

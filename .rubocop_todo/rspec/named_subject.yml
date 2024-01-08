@@ -3278,7 +3278,6 @@ RSpec/NamedSubject:
     - 'spec/services/gpg_keys/create_service_spec.rb'
     - 'spec/services/gpg_keys/destroy_service_spec.rb'
     - 'spec/services/groups/autocomplete_service_spec.rb'
-    - 'spec/services/groups/create_service_spec.rb'
     - 'spec/services/groups/deploy_tokens/revoke_service_spec.rb'
     - 'spec/services/groups/group_links/create_service_spec.rb'
     - 'spec/services/groups/group_links/destroy_service_spec.rb'

@@ -46,6 +46,11 @@ export default {
       required: false,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -131,6 +136,7 @@ export default {
       :toggle-text="current.text || dropdownHeader"
       :header-text="dropdownHeader"
       :searching="isLoading"
+      :disabled="disabled"
       searchable
       class="gl-w-full dropdown-target-project"
       :toggle-class="[

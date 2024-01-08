@@ -43,6 +43,9 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
 
+    find('.js-source-branch').click
+    select_listbox_item('master')
+
     first('.js-target-branch').click
     find('.gl-listbox-search-input').native.send_keys 'v1.1.0'
     select_listbox_item('v1.1.0')

@@ -44,7 +44,7 @@ module AppearancesHelper
   end
 
   def brand_image
-    image_tag(brand_image_path, alt: brand_title, class: 'gl-visibility-hidden gl-h-9 js-portrait-logo-detection')
+    image_tag(brand_image_path, alt: brand_title, class: 'gl-visibility-hidden gl-h-10 js-portrait-logo-detection')
   end
 
   def brand_image_path
