@@ -126,11 +126,10 @@ To do this:
 
 ## Download the code in a repository
 
-> Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-
 You can download the source code that's stored in a repository.
 
-1. Above the file list, select the download icon (**{download}**).
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Above the file list, select **Code**.
 1. From the options, select the files you want to download.
 
    - **Source code:**

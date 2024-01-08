@@ -215,3 +215,13 @@ Project.where(mirror: true).each do |project|
   project.save
 end
 ```
+
+## `The requested URL returned error: 301`
+
+When mirroring using the `http://` or `https://` protocols, be sure to specify the exact URL to the repository: `https://gitlab.example.com/group/project.git`
+
+HTTP redirects are not followed and omitting `.git` can result in a 301 error:
+
+```plaintext
+13:fetch remote: "fatal: unable to access 'https://gitlab.com/group/project': The requested URL returned error: 301\n": exit status 128.
+```

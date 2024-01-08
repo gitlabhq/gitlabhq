@@ -186,7 +186,6 @@ class Projects::CommitController < Projects::ApplicationController
     opts[:use_extra_viewer_as_main] = false
 
     @diffs = commit.diffs(opts)
-    @notes_count = commit.notes.count
 
     @environment = ::Environments::EnvironmentsByDeploymentsFinder.new(@project, current_user, commit: @commit, find_latest: true).execute.last
   end

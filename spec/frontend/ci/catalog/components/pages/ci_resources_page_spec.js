@@ -7,17 +7,25 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
 
 import CatalogHeader from '~/ci/catalog/components/list/catalog_header.vue';
-import CatalogSearch from '~/ci/catalog/components/list/catalog_search.vue';
 import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
+import CiResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
+import CatalogSearch from '~/ci/catalog/components/list/catalog_search.vue';
+import CatalogTabs from '~/ci/catalog/components/list/catalog_tabs.vue';
 import CatalogListSkeletonLoader from '~/ci/catalog/components/list/catalog_list_skeleton_loader.vue';
 import EmptyState from '~/ci/catalog/components/list/empty_state.vue';
+
 import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
+import { DEFAULT_SORT_VALUE, SCOPE } from '~/ci/catalog/constants';
 import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
-import ciResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
 
 import getCatalogResources from '~/ci/catalog/graphql/queries/get_ci_catalog_resources.query.graphql';
+import getCatalogResourcesCount from '~/ci/catalog/graphql/queries/get_ci_catalog_resources_count.query.graphql';
 
-import { emptyCatalogResponseBody, catalogResponseBody } from '../../mock';
+import {
+  emptyCatalogResponseBody,
+  catalogResponseBody,
+  catalogResourcesCountResponseBody,
+} from '../../mock';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -25,14 +33,23 @@ jest.mock('~/alert');
 describe('CiResourcesPage', () => {
   let wrapper;
   let catalogResourcesResponse;
+  let catalogResourcesCountResponse;
 
-  const defaultQueryVariables = { first: 20 };
+  const defaultQueryVariables = {
+    first: 20,
+    scope: SCOPE.all,
+    searchTerm: null,
+    sortValue: DEFAULT_SORT_VALUE,
+  };
 
   const createComponent = () => {
-    const handlers = [[getCatalogResources, catalogResourcesResponse]];
+    const handlers = [
+      [getCatalogResources, catalogResourcesResponse],
+      [getCatalogResourcesCount, catalogResourcesCountResponse],
+    ];
     const mockApollo = createMockApollo(handlers, resolvers, { cacheConfig, typeDefs });
 
-    wrapper = shallowMountExtended(ciResourcesPage, {
+    wrapper = shallowMountExtended(CiResourcesPage, {
       apolloProvider: mockApollo,
     });
 
@@ -41,12 +58,15 @@ describe('CiResourcesPage', () => {
 
   const findCatalogHeader = () => wrapper.findComponent(CatalogHeader);
   const findCatalogSearch = () => wrapper.findComponent(CatalogSearch);
+  const findCatalogTabs = () => wrapper.findComponent(CatalogTabs);
   const findCiResourcesList = () => wrapper.findComponent(CiResourcesList);
   const findLoadingState = () => wrapper.findComponent(CatalogListSkeletonLoader);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
 
   beforeEach(() => {
     catalogResourcesResponse = jest.fn();
+    catalogResourcesCountResponse = jest.fn();
+    catalogResourcesCountResponse.mockResolvedValue(catalogResourcesCountResponseBody);
   });
 
   describe('when initial queries are loading', () => {
@@ -83,23 +103,48 @@ describe('CiResourcesPage', () => {
         expect(findCatalogSearch().exists()).toBe(true);
       });
 
+      it('renders the tabs', () => {
+        expect(findCatalogTabs().exists()).toBe(true);
+      });
+
       it('does not render the list', () => {
         expect(findCiResourcesList().exists()).toBe(false);
       });
     });
 
     describe('and there are resources', () => {
-      const { nodes, pageInfo, count } = catalogResponseBody.data.ciCatalogResources;
+      const { nodes, pageInfo } = catalogResponseBody.data.ciCatalogResources;
 
       beforeEach(async () => {
         catalogResourcesResponse.mockResolvedValue(catalogResponseBody);
 
         await createComponent();
       });
+
       it('renders the resources list', () => {
         expect(findLoadingState().exists()).toBe(false);
         expect(findEmptyState().exists()).toBe(false);
         expect(findCiResourcesList().exists()).toBe(true);
+      });
+
+      it('renders the catalog tabs', () => {
+        expect(findCatalogTabs().exists()).toBe(true);
+      });
+
+      it('updates the scope after switching tabs', async () => {
+        await findCatalogTabs().vm.$emit('setScope', SCOPE.namespaces);
+
+        expect(catalogResourcesResponse).toHaveBeenCalledWith({
+          ...defaultQueryVariables,
+          scope: SCOPE.namespaces,
+        });
+
+        await findCatalogTabs().vm.$emit('setScope', SCOPE.all);
+
+        expect(catalogResourcesResponse).toHaveBeenCalledWith({
+          ...defaultQueryVariables,
+          scope: SCOPE.all,
+        });
       });
 
       it('passes down props to the resources list', () => {
@@ -107,7 +152,7 @@ describe('CiResourcesPage', () => {
           currentPage: 1,
           resources: nodes,
           pageInfo,
-          totalCount: count,
+          totalCount: 0,
         });
       });
 
@@ -145,6 +190,7 @@ describe('CiResourcesPage', () => {
           before: pageInfo.startCursor,
           last: 20,
           first: null,
+          scope: SCOPE.all,
         });
       }
     });
@@ -190,10 +236,12 @@ describe('CiResourcesPage', () => {
         beforeEach(async () => {
           catalogResourcesResponse.mockResolvedValue(emptyCatalogResponseBody);
           await createComponent();
-          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
         });
 
-        it('renders the empty state and passes down the search query', () => {
+        it('renders the empty state and passes down the search query', async () => {
+          await findCatalogSearch().vm.$emit('update-search-term', newSearch);
+          await waitForPromises();
+
           expect(findEmptyState().exists()).toBe(true);
           expect(findEmptyState().props().searchTerm).toBe(newSearch);
         });

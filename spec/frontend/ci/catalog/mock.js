@@ -10,8 +10,22 @@ export const emptyCatalogResponseBody = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 0,
       nodes: [],
+    },
+  },
+};
+
+export const catalogResourcesCountResponseBody = {
+  data: {
+    ciCatalogResources: {
+      all: {
+        count: 1,
+        __typename: 'CiCatalogResourceConnection',
+      },
+      namespaces: {
+        count: 7,
+        __typename: 'CiCatalogResourceConnection',
+      },
     },
   },
 };
@@ -28,7 +42,6 @@ export const catalogResponseBody = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 41,
       nodes: [
         {
           id: 'gid://gitlab/Ci::Catalog::Resource/129',
@@ -248,7 +261,6 @@ export const catalogSinglePageResponse = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 3,
       nodes: [
         {
           id: 'gid://gitlab/Ci::Catalog::Resource/132',

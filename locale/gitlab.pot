@@ -197,11 +197,6 @@ msgid_plural "%d comments"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d comment on this commit"
-msgid_plural "%d comments on this commit"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d commenter"
 msgid_plural "%d commenters"
 msgstr[0] ""
@@ -10449,6 +10444,9 @@ msgstr ""
 msgid "CiCatalogComponent|This tab displays auto-collected information about the components in the repository, but no information was found."
 msgstr ""
 
+msgid "CiCatalog|All"
+msgstr ""
+
 msgid "CiCatalog|Back to the CI/CD Catalog"
 msgstr ""
 
@@ -10530,6 +10528,9 @@ msgstr ""
 msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
 msgstr ""
 
+msgid "CiCatalog|There was an error fetching the CI/CD Catalog resource count."
+msgstr ""
+
 msgid "CiCatalog|This project is no longer a CI/CD Catalog resource."
 msgstr ""
 
@@ -10546,6 +10547,9 @@ msgid "CiCatalog|Unreleased"
 msgstr ""
 
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
+msgstr ""
+
+msgid "CiCatalog|Your resources"
 msgstr ""
 
 msgid "CiCdAnalytics|Date range: %{range}"
@@ -22979,6 +22983,9 @@ msgid "Go to your review requests"
 msgstr ""
 
 msgid "Go to your snippets"
+msgstr ""
+
+msgid "Google Artifact Registry"
 msgstr ""
 
 msgid "Google Cloud"

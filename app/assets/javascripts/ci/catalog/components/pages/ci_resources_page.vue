@@ -3,6 +3,7 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { ciCatalogResourcesItemsCount } from '~/ci/catalog/graphql/settings';
 import CatalogSearch from '../list/catalog_search.vue';
+import CatalogTabs from '../list/catalog_tabs.vue';
 import CiResourcesList from '../list/ci_resources_list.vue';
 import CatalogListSkeletonLoader from '../list/catalog_list_skeleton_loader.vue';
 import CatalogHeader from '../list/catalog_header.vue';
@@ -10,29 +11,60 @@ import EmptyState from '../list/empty_state.vue';
 import getCatalogResources from '../../graphql/queries/get_ci_catalog_resources.query.graphql';
 import getCurrentPage from '../../graphql/queries/client/get_current_page.query.graphql';
 import updateCurrentPageMutation from '../../graphql/mutations/client/update_current_page.mutation.graphql';
+import getCatalogResourcesCount from '../../graphql/queries/get_ci_catalog_resources_count.query.graphql';
+import { DEFAULT_SORT_VALUE, SCOPE } from '../../constants';
 
 export default {
+  i18n: {
+    fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog resources.'),
+    countFetchError: s__('CiCatalog|There was an error fetching the CI/CD Catalog resource count.'),
+  },
   components: {
     CatalogHeader,
     CatalogListSkeletonLoader,
     CatalogSearch,
+    CatalogTabs,
     CiResourcesList,
     EmptyState,
   },
   data() {
     return {
       catalogResources: [],
+      catalogResourcesCount: { all: 0, namespaces: 0 },
       currentPage: 1,
       pageInfo: {},
-      searchTerm: '',
-      totalCount: 0,
+      scope: SCOPE.all,
+      searchTerm: null,
+      sortValue: DEFAULT_SORT_VALUE,
     };
   },
   apollo: {
+    catalogResourcesCount: {
+      query: getCatalogResourcesCount,
+      variables() {
+        return {
+          searchTerm: this.searchTerm,
+        };
+      },
+      update({ namespaces, all }) {
+        return {
+          namespaces: namespaces.count,
+          all: all.count,
+        };
+      },
+      error(e) {
+        createAlert({
+          message: e.message || this.$options.i18n.countFetchError,
+        });
+      },
+    },
     catalogResources: {
       query: getCatalogResources,
       variables() {
         return {
+          scope: this.scope,
+          searchTerm: this.searchTerm,
+          sortValue: this.sortValue,
           first: ciCatalogResourcesItemsCount,
         };
       },
@@ -42,10 +74,9 @@ export default {
       result({ data }) {
         const { pageInfo } = data?.ciCatalogResources || {};
         this.pageInfo = pageInfo;
-        this.totalCount = data?.ciCatalogResources?.count || 0;
       },
       error(e) {
-        createAlert({ message: e.message || this.$options.i18n.fetchError, variant: 'danger' });
+        createAlert({ message: e.message || this.$options.i18n.fetchError });
       },
     },
     currentPage: {
@@ -62,11 +93,14 @@ export default {
     isLoading() {
       return this.$apollo.queries.catalogResources.loading;
     },
-    isSearching() {
-      return this.searchTerm?.length > 0;
+    isLoadingCounts() {
+      return this.$apollo.queries.catalogResourcesCount.loading;
     },
-    showEmptyState() {
-      return !this.hasResources && !this.isSearching;
+    namespacesCount() {
+      return this.catalogResourcesCount.namespaces;
+    },
+    currentTabTotalCount() {
+      return this.catalogResourcesCount[this.scope.toLowerCase()];
     },
   },
   methods: {
@@ -103,6 +137,11 @@ export default {
         createAlert({ message: e?.message || this.$options.i18n.fetchError, variant: 'danger' });
       }
     },
+    handleSetScope(scope) {
+      if (this.scope === scope) return;
+
+      this.scope = scope;
+    },
     updatePageCount(pageNumber) {
       this.$apollo.mutate({
         mutation: updateCurrentPageMutation,
@@ -120,30 +159,28 @@ export default {
     onUpdateSearchTerm(searchTerm) {
       this.searchTerm = !searchTerm.length ? null : searchTerm;
       this.resetPageCount();
-      this.$apollo.queries.catalogResources.refetch({
-        searchTerm: this.searchTerm,
-      });
     },
     onUpdateSorting(sortValue) {
+      this.sortValue = sortValue;
       this.resetPageCount();
-      this.$apollo.queries.catalogResources.refetch({
-        sortValue,
-      });
     },
     resetPageCount() {
       this.updatePageCount(1);
     },
-  },
-  i18n: {
-    fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog resources.'),
   },
 };
 </script>
 <template>
   <div>
     <catalog-header />
+    <catalog-tabs
+      :is-loading="isLoadingCounts"
+      :resource-counts="catalogResourcesCount"
+      class="gl-mb-3"
+      @setScope="handleSetScope"
+    />
     <catalog-search
-      class="gl-py-4 gl-border-b-1 gl-border-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid"
+      class="gl-py-2"
       @update-search-term="onUpdateSearchTerm"
       @update-sorting="onUpdateSorting"
     />
@@ -156,7 +193,7 @@ export default {
         :prev-text="__('Prev')"
         :next-text="__('Next')"
         :resources="catalogResources"
-        :total-count="totalCount"
+        :total-count="currentTabTotalCount"
         @onPrevPage="handlePrevPage"
         @onNextPage="handleNextPage"
       />

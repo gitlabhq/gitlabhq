@@ -1106,7 +1106,7 @@ GEM
       net-protocol
     net-ssh (7.2.0)
     netrc (0.11.0)
-    nio4r (2.5.8)
+    nio4r (2.7.0)
     no_proxy_fix (0.1.2)
     nokogiri (1.16.0)
       mini_portile2 (~> 2.8.2)

@@ -48,7 +48,7 @@ module Sidebars
         end
 
         def container_registry_menu_item
-          if !::Gitlab.config.registry.enabled || !can?(context.current_user, :read_container_image, context.project)
+          if container_registry_unavailable?
             return ::Sidebars::NilMenuItem.new(item_id: :container_registry)
           end
 
@@ -122,7 +122,14 @@ module Sidebars
           !::Gitlab.config.packages.enabled ||
             !can?(context.current_user, :read_package, context.project&.packages_policy_subject)
         end
+
+        def container_registry_unavailable?
+          !::Gitlab.config.registry.enabled ||
+            !can?(context.current_user, :read_container_image, context.project)
+        end
       end
     end
   end
 end
+
+Sidebars::Projects::Menus::PackagesRegistriesMenu.prepend_mod_with('Sidebars::Projects::Menus::PackagesRegistriesMenu')

@@ -76,6 +76,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_google_artifact_registry_nav
+    insert_after_sub_nav_item(
+      _('Container Registry'),
+      within: _('Deploy'),
+      new_sub_nav_item_name: _('Google Artifact Registry')
+    )
+  end
+
   def insert_dependency_proxy_nav
     insert_before_sub_nav_item(
       _('Kubernetes'),
