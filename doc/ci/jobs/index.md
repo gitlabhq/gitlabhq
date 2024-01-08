@@ -134,7 +134,7 @@ jobs. Select to expand them.
 
 ![Grouped pipelines](img/pipeline_grouped_jobs_v14_2.png)
 
-To create a group of jobs, in the [CI/CD pipeline configuration file](../yaml/index.md),
+To create a group of jobs, in the [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file),
 separate each job name with a number and one of the following:
 
 - A slash (`/`), for example, `slash-test 1/3`, `slash-test 2/3`, `slash-test 3/3`.

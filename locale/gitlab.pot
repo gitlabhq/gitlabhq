@@ -2106,6 +2106,9 @@ msgstr ""
 msgid "API Help"
 msgstr ""
 
+msgid "API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**."
+msgstr ""
+
 msgid "API key"
 msgstr ""
 
@@ -9554,16 +9557,16 @@ msgstr ""
 msgid "Campfire token"
 msgstr ""
 
+msgid "CampfireService|%{code_open}.campfirenow.com%{code_close} subdomain."
+msgstr ""
+
 msgid "CampfireService|API authentication token from Campfire."
 msgstr ""
 
-msgid "CampfireService|From the end of the room URL."
+msgid "CampfireService|ID portion of the Campfire room URL."
 msgstr ""
 
 msgid "CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}"
-msgstr ""
-
-msgid "CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain."
 msgstr ""
 
 msgid "Can be manually deployed to"
@@ -11998,9 +12001,6 @@ msgstr ""
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
 msgstr ""
 
-msgid "Code Suggestions"
-msgstr ""
-
 msgid "Code Suggestions add-on status"
 msgstr ""
 
@@ -12058,16 +12058,16 @@ msgstr ""
 msgid "CodeSuggestionsGAAlert| (Code Suggestions transitions to a paid feature on %{date}.)"
 msgstr ""
 
+msgid "CodeSuggestionsGAAlert|Code Suggestions is now part of Duo Pro. Free access is ending soon."
+msgstr ""
+
 msgid "CodeSuggestionsGAAlert|Contact Sales"
 msgstr ""
 
-msgid "CodeSuggestionsGAAlert|Continue accelerating your development with Code Suggestions. Starting February 15, 2024, a paid subscription will be required for access. Upgrade now to lock in the introductory price of $9 per user."
+msgid "CodeSuggestionsGAAlert|Continue accelerating your development with GitLab Duo Pro. Starting %{ga_date}, Code Suggestions will be part of Duo Pro, and a paid subscription will be required for access. Upgrade before %{promo_price_end_date} to lock in the introductory price of $9 per user. After this date, the price increases to $19 per user."
 msgstr ""
 
 msgid "CodeSuggestionsGAAlert|Dismiss Code Suggestions banner"
-msgstr ""
-
-msgid "CodeSuggestionsGAAlert|GitLab Duo Code Suggestions free access is ending soon"
 msgstr ""
 
 msgid "CodeSuggestionsGAAlert|Learn more"
@@ -12116,6 +12116,9 @@ msgid "CodeSuggestions|Introducing the Code Suggestions add-on"
 msgstr ""
 
 msgid "CodeSuggestions|Introducing the Code&nbsp;Suggestions add&#8209;on"
+msgstr ""
+
+msgid "CodeSuggestions|Manage seat assignments for Code Suggestions across your instance."
 msgstr ""
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
@@ -24539,6 +24542,9 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+msgid "ID portion of the Campfire room URL."
+msgstr ""
+
 msgid "ID:"
 msgstr ""
 
@@ -31199,6 +31205,12 @@ msgid "MlModelRegistry|CI Info"
 msgstr ""
 
 msgid "MlModelRegistry|Candidate not linked to a CI build"
+msgstr ""
+
+msgid "MlModelRegistry|Copied MLflow tracking URL to clipboard"
+msgstr ""
+
+msgid "MlModelRegistry|Copy MLflow tracking URL"
 msgstr ""
 
 msgid "MlModelRegistry|Create a model version"
@@ -55834,7 +55846,7 @@ msgstr ""
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
 msgstr ""
 
-msgid "Workspaces|Unable to load current Workspaces. Please try again or contact an administrator."
+msgid "Workspaces|Unable to load current workspaces. Please try again or contact an administrator."
 msgstr ""
 
 msgid "Workspaces|Unknown state"
@@ -57132,6 +57144,9 @@ msgid "[Redacted]"
 msgstr ""
 
 msgid "[Supports GitLab-flavored markdown, including quick actions]"
+msgstr ""
+
+msgid "`.campfirenow.com` subdomain when you're signed in."
 msgstr ""
 
 msgid "`end_time` should not exceed one month after `start_time`"

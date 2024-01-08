@@ -75,10 +75,6 @@ module PreferencesHelper
     user_application_theme == 'gl-dark'
   end
 
-  def user_application_theme_css_filename
-    @user_application_theme_css_filename ||= Gitlab::Themes.for_user(current_user).css_filename
-  end
-
   def user_theme_primary_color
     Gitlab::Themes.for_user(current_user).primary_color
   end

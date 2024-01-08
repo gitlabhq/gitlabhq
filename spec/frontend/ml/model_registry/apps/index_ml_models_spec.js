@@ -8,6 +8,7 @@ import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '~/ml/model_registry/constants'
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import EmptyState from '~/ml/model_registry/components/empty_state.vue';
+import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
 
 let wrapper;
@@ -33,6 +34,7 @@ const findTitleArea = () => wrapper.findComponent(TitleArea);
 const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
 const findBadge = () => wrapper.findComponent(GlBadge);
 const findCreateButton = () => findTitleArea().findComponent(GlButton);
+const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
 
 describe('ml/model_registry/apps/index_ml_models', () => {
   describe('empty state', () => {
@@ -48,6 +50,10 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
     it('does not show search bar', () => {
       expect(findSearchBar().exists()).toBe(false);
+    });
+
+    it('renders the extra actions button', () => {
+      expect(findActionsDropdown().exists()).toBe(true);
     });
   });
 

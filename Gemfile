@@ -225,7 +225,7 @@ gem 'asciidoctor-plantuml', '~> 0.0.16' # rubocop:todo Gemfile/MissingFeatureCat
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rouge', '~> 4.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'nokogiri', '~> 1.15', '>= 1.15.5' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Calendar rendering
 gem 'icalendar' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -268,7 +268,7 @@ gem 'rainbow', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ruby-progressbar', '~> 1.10' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '2.5.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 're2', '2.6.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 

@@ -14,7 +14,7 @@ Development guides that are specific to CI/CD are listed here:
   - [The CI schema guide](schema.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
-to learn how to update the [reference page](../../ci/yaml/index.md).
+to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/index.md).
 
 ## Examples of CI/CD usage
 

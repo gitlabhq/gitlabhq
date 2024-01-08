@@ -15,6 +15,9 @@ module Integrations
     field :token,
       type: :password,
       title: -> { _('Campfire token') },
+      description: -> do
+        _('API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**.')
+      end,
       help: -> { s_('CampfireService|API authentication token from Campfire.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
@@ -23,18 +26,22 @@ module Integrations
 
     field :subdomain,
       title: -> { _('Campfire subdomain (optional)') },
+      description: -> do
+        _("`.campfirenow.com` subdomain when you're signed in.")
+      end,
       placeholder: '',
       exposes_secrets: true,
       help: -> do
         format(ERB::Util.html_escape(
-          s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.')
+          s_('CampfireService|%{code_open}.campfirenow.com%{code_close} subdomain.')
         ), code_open: '<code>'.html_safe, code_close: '</code>'.html_safe)
       end
 
     field :room,
       title: -> { _('Campfire room ID (optional)') },
+      description: -> { _("ID portion of the Campfire room URL.") },
       placeholder: '123456',
-      help: -> { s_('CampfireService|From the end of the room URL.') }
+      help: -> { s_('CampfireService|ID portion of the Campfire room URL.') }
 
     def self.title
       'Campfire'

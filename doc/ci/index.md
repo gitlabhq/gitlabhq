@@ -37,8 +37,8 @@ In the `.gitlab-ci.yml` file, you can define:
 **Get started:**
 
 - [Create your first `.gitlab-ci.yml` file](quick_start/index.md).
-- [View all the possible keywords that you can use in the `.gitlab-ci.yml` file](yaml/index.md).
-  the configuration.
+- View all the possible keywords that you can use in the `.gitlab-ci.yml` file in
+  the [CI/CD YAML syntax reference](../index.md).
 - Use the [pipeline editor](pipeline_editor/index.md) to edit or [visualize](pipeline_editor/index.md#visualize-ci-configuration)
   your CI/CD configuration.
 

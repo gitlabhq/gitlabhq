@@ -166,7 +166,7 @@ In this example, milestones have been created and CI/CD for testing and setting 
 - 14:00: Push branch and create a merge request that contains the
   [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically).
   **Code** stage stops and **Test** and **Review** stages start.
-- GitLab CI/CD takes 5 minutes to run scripts defined in [`.gitlab-ci.yml`](../../../ci/yaml/index.md).
+- GitLab CI/CD takes 5 minutes to run scripts defined in the [`.gitlab-ci.yml` file](../../../ci/index.md#the-gitlab-ciyml-file).
 - 19:00: Merge the merge request. **Review** stage stops and **Staging** stage starts.
 - 19:30: Deployment to the `production` environment finishes. **Staging** stops.
 

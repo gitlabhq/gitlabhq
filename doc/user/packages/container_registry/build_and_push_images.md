@@ -46,7 +46,7 @@ You can configure your `.gitlab-ci.yml` file to build and push container images 
 
 ## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/yaml/index.md) to build and push container images to the
+You can use [GitLab CI/CD](../../../ci/index.md) to build and push container images to the
 Container Registry. You can use CI/CD to test, build, and deploy your project from the container
 image you created.
 

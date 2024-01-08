@@ -19,7 +19,6 @@
   = yield :prefetch_asset_tags
 
   - diffs_colors = user_diffs_colors
-  = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
   = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
   - if user_application_theme == 'gl-dark'

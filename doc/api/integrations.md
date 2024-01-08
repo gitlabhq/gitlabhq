@@ -303,9 +303,9 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | Campfire API token. To find it, sign in to Campfire and select **My info**.                 |
-| `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in.   |
-| `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
+| `token`       | string  | true     | API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**. |
+| `subdomain`   | string  | false    | `.campfirenow.com` subdomain when you're signed in. |
+| `room`        | string  | false    | ID portion of the Campfire room URL. |
 
 ### Disable Campfire
 

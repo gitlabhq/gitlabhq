@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -10,6 +10,7 @@ import * as i18n from '../translations';
 import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
 import SearchBar from '../components/search_bar.vue';
 import ModelRow from '../components/model_row.vue';
+import ActionsDropdown from '../components/actions_dropdown.vue';
 
 export default {
   name: 'IndexMlModels',
@@ -22,6 +23,15 @@ export default {
     GlBadge,
     EmptyState,
     GlButton,
+    ActionsDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  provide() {
+    return {
+      mlflowTrackingUrl: this.mlflowTrackingUrl,
+    };
   },
   props: {
     models: {
@@ -45,6 +55,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    mlflowTrackingUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -77,6 +92,8 @@ export default {
         <gl-button v-if="canWriteModelRegistry" :href="createModelPath">{{
           $options.i18n.CREATE_MODEL_LABEL
         }}</gl-button>
+
+        <actions-dropdown />
       </template>
     </title-area>
     <template v-if="hasModels">

@@ -22,7 +22,8 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 .super-sidebar {
   --super-sidebar-bg: #{$gray-10};
   --super-sidebar-border-color: #{$t-gray-a-08};
-  --super-sidebar-primary: #{$blue-500};
+  --super-sidebar-context-header-color: inherit;
+  --super-sidebar-active-indicator-color: #{$blue-500};
   --super-sidebar-notification-dot: #{$blue-500};
   --super-sidebar-user-bar-bg: #{$t-gray-a-04};
 
@@ -42,6 +43,8 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   --super-sidebar-nav-item-current-bg: #{$t-gray-a-08};
   --super-sidebar-nav-item-icon-color: #{$gray-500};
 
+  --super-sidebar-hr-mix-blend-mode: normal;
+
   .gl-dark & {
     --super-sidebar-border-color: #{$t-white-a-08};
     --super-sidebar-user-bar-bg: #{$t-white-a-04};
@@ -58,7 +61,148 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     --super-sidebar-nav-item-current-bg: #{$t-white-a-08};
     --super-sidebar-nav-item-icon-color: #{$gray-600};
   }
+}
 
+@mixin super-sidebar-theme(
+  $background,
+  $user-bar-background,
+  $user-bar-button-color,
+  $user-bar-button-icon-color,
+  $context-header,
+  $active-indicator,
+  $notification-dot,
+) {
+  .super-sidebar {
+    --super-sidebar-bg: #{$background};
+    --super-sidebar-user-bar-bg: #{$user-bar-background};
+    --super-sidebar-context-header-color: #{$context-header};
+    --super-sidebar-active-indicator-color: #{$active-indicator};
+    --super-sidebar-notification-dot: #{$notification-dot};
+
+    --super-sidebar-user-bar-button-bg: #{$t-white-a-16};
+    --super-sidebar-user-bar-button-color: #{$user-bar-button-color};
+    --super-sidebar-user-bar-button-border-color: #{$t-white-a-16};
+    --super-sidebar-user-bar-button-hover-bg: #{$t-white-a-24};
+    --super-sidebar-user-bar-button-hover-color: #{$white};
+    --super-sidebar-user-bar-button-active-bg: #{$t-white-a-36};
+
+    --super-sidebar-user-bar-button-icon-color: #{$user-bar-button-icon-color};
+    --super-sidebar-user-bar-button-icon-hover-color: #{$user-bar-button-icon-color};
+    --super-sidebar-user-bar-button-icon-mix-blend-mode: screen;
+
+    --super-sidebar-hr-mix-blend-mode: multiply;
+  }
+}
+
+.ui-blue {
+  @include super-sidebar-theme(
+    $background: $theme-blue-10,
+    $user-bar-background: $theme-blue-900,
+    $user-bar-button-color: $theme-blue-50,
+    $user-bar-button-icon-color: $theme-blue-100,
+    $context-header: $theme-blue-900,
+    $active-indicator: $theme-blue-900,
+    $notification-dot: $theme-blue-900,
+  );
+}
+
+.ui-gray {
+  @include super-sidebar-theme(
+    $background: $gray-10,
+    $user-bar-background: $gray-900,
+    $user-bar-button-color: $gray-50,
+    $user-bar-button-icon-color: $gray-100,
+    $context-header: $gray-900,
+    $active-indicator: $gray-900,
+    $notification-dot: $gray-900,
+  );
+}
+
+.ui-green {
+  @include super-sidebar-theme(
+    $background: $theme-green-10,
+    $user-bar-background: $theme-green-900,
+    $user-bar-button-color: $theme-green-50,
+    $user-bar-button-icon-color: $theme-green-100,
+    $context-header: $theme-green-900,
+    $active-indicator: $theme-green-900,
+    $notification-dot: $theme-green-900,
+  );
+}
+
+.ui-indigo {
+  @include super-sidebar-theme(
+    $background: $theme-indigo-10,
+    $user-bar-background: $theme-indigo-900,
+    $user-bar-button-color: $theme-indigo-50,
+    $user-bar-button-icon-color: $theme-indigo-100,
+    $context-header: $theme-indigo-900,
+    $active-indicator: $theme-indigo-900,
+    $notification-dot: $theme-indigo-900,
+  );
+}
+
+.ui-light-blue {
+  @include super-sidebar-theme(
+    $background: $theme-light-blue-10,
+    $user-bar-background: $theme-light-blue-700,
+    $user-bar-button-color: $theme-light-blue-50,
+    $user-bar-button-icon-color: $theme-light-blue-100,
+    $context-header: $theme-light-blue-900,
+    $active-indicator: $theme-light-blue-900,
+    $notification-dot: $theme-light-blue-900,
+  );
+}
+
+.ui-light-green {
+  @include super-sidebar-theme(
+    $background: $theme-green-10,
+    $user-bar-background: $theme-green-700,
+    $user-bar-button-color: $theme-green-50,
+    $user-bar-button-icon-color: $theme-green-100,
+    $context-header: $theme-green-900,
+    $active-indicator: $theme-green-900,
+    $notification-dot: $theme-green-900,
+  );
+}
+
+.ui-light-indigo {
+  @include super-sidebar-theme(
+    $background: $theme-indigo-10,
+    $user-bar-background: $theme-indigo-700,
+    $user-bar-button-color: $theme-indigo-50,
+    $user-bar-button-icon-color: $theme-indigo-100,
+    $context-header: $theme-indigo-900,
+    $active-indicator: $theme-indigo-900,
+    $notification-dot: $theme-indigo-900,
+  );
+}
+
+.ui-light-red {
+  @include super-sidebar-theme(
+    $background: $theme-light-red-10,
+    $user-bar-background: $theme-light-red-700,
+    $user-bar-button-color: $theme-light-red-50,
+    $user-bar-button-icon-color: $theme-light-red-100,
+    $context-header: $theme-light-red-900,
+    $active-indicator: $theme-light-red-900,
+    $notification-dot: $theme-light-red-900,
+  );
+}
+
+.ui-red {
+  @include super-sidebar-theme(
+    $background: $theme-red-10,
+    $user-bar-background: $theme-red-900,
+    $user-bar-button-color: $theme-red-50,
+    $user-bar-button-icon-color: $theme-red-100,
+    $context-header: $theme-red-900,
+    $active-indicator: $theme-red-900,
+    $notification-dot: $theme-red-900,
+  );
+}
+
+.super-sidebar {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -167,8 +311,12 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     color: var(--super-sidebar-nav-item-icon-color);
   }
 
+  hr {
+    mix-blend-mode: var(--super-sidebar-hr-mix-blend-mode);
+  }
+
   .active-indicator {
-    background-color: var(--super-sidebar-primary);
+    background-color: var(--super-sidebar-active-indicator-color);
   }
 
   .btn-with-notification {
@@ -198,6 +346,10 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     text-decoration: none;
     @include gl-text-contrast-light;
   }
+}
+
+.super-sidebar-context-header {
+  color: var(--super-sidebar-context-header-color);
 }
 
 .super-sidebar-overlay {

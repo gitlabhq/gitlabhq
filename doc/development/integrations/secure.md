@@ -7,16 +7,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Security scanner integration
 
 Integrating a security scanner into GitLab consists of providing end users
-with a [CI job definition](../../ci/yaml/index.md)
-they can add to their CI configuration files to scan their GitLab projects.
-This CI job should then output its results in a GitLab-specified format. These results are then
+with a [CI/CD job definition](../../ci/jobs/index.md)
+they can add to their CI/CD configuration files to scan their GitLab projects.
+This job should then output its results in a GitLab-specified format. These results are then
 automatically presented in various places in GitLab, such as the Pipeline view, merge request
 widget, and Security Dashboard.
 
 The scanning job is usually based on a [Docker image](https://docs.docker.com/)
 that contains the scanner and all its dependencies in a self-contained environment.
 
-This page documents requirements and guidelines for writing CI jobs that implement a security
+This page documents requirements and guidelines for writing CI/CD jobs that implement a security
 scanner, as well as requirements and guidelines for the Docker image.
 
 ## Job definition

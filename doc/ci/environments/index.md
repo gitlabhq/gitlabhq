@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Environments describe where code is deployed.
 
-Each time [GitLab CI/CD](../yaml/index.md) deploys a version of code to an environment,
+Each time [GitLab CI/CD](../index.md) deploys a version of code to an environment,
 a deployment is created.
 
 GitLab:
@@ -1039,7 +1039,7 @@ deploy:
 
 Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
 create an environment with a name `production/`, which is invalid in
-[the environment name constraint](../yaml/index.md).
+[the environment name constraint](../yaml/index.md#environmentname).
 
 To fix this, use one of the following solutions:
 

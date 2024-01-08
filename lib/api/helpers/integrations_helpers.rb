@@ -151,26 +151,7 @@ module API
               desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
             }
           ],
-          'campfire' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Campfire token'
-            },
-            {
-              required: false,
-              name: :subdomain,
-              type: String,
-              desc: 'Campfire subdomain'
-            },
-            {
-              required: false,
-              name: :room,
-              type: String,
-              desc: 'Campfire room'
-            }
-          ],
+          'campfire' => ::Integrations::Campfire.api_fields,
           'confluence' => ::Integrations::Confluence.api_fields,
           'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_fields,
           'datadog' => [

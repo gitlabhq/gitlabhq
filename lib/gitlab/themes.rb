@@ -10,22 +10,22 @@ module Gitlab
     APPLICATION_DEFAULT = 3
 
     # Struct class representing a single Theme
-    Theme = Struct.new(:id, :name, :css_class, :css_filename, :primary_color)
+    Theme = Struct.new(:id, :name, :css_class, :primary_color)
 
     # All available Themes
     def available_themes
       [
-        Theme.new(1, s_('NavigationTheme|Indigo'), 'ui-indigo', 'theme_indigo', '#222261'),
-        Theme.new(6, s_('NavigationTheme|Light Indigo'), 'ui-light-indigo', 'theme_light_indigo', '#41419f'),
-        Theme.new(4, s_('NavigationTheme|Blue'), 'ui-blue', 'theme_blue', '#0b2640'),
-        Theme.new(7, s_('NavigationTheme|Light Blue'), 'ui-light-blue', 'theme_light_blue', '#145aa1'),
-        Theme.new(5, s_('NavigationTheme|Green'), 'ui-green', 'theme_green', '#0e4328'),
-        Theme.new(8, s_('NavigationTheme|Light Green'), 'ui-light-green', 'theme_light_green', '#1b653f'),
-        Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', 'theme_red', '#580d02'),
-        Theme.new(10, s_('NavigationTheme|Light Red'), 'ui-light-red', 'theme_light_red', '#a02e1c'),
-        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', 'theme_gray', '#333238'),
-        Theme.new(3, s_('NavigationTheme|Light Gray'), 'ui-light-gray', 'theme_light_gray', '#ececef'),
-        Theme.new(11, s_('NavigationTheme|Dark Mode (alpha)'), 'gl-dark', nil, '#1f1e24')
+        Theme.new(1, s_('NavigationTheme|Indigo'), 'ui-indigo', '#222261'),
+        Theme.new(6, s_('NavigationTheme|Light Indigo'), 'ui-light-indigo', '#41419f'),
+        Theme.new(4, s_('NavigationTheme|Blue'), 'ui-blue', '#0b2640'),
+        Theme.new(7, s_('NavigationTheme|Light Blue'), 'ui-light-blue', '#145aa1'),
+        Theme.new(5, s_('NavigationTheme|Green'), 'ui-green', '#0e4328'),
+        Theme.new(8, s_('NavigationTheme|Light Green'), 'ui-light-green', '#1b653f'),
+        Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', '#580d02'),
+        Theme.new(10, s_('NavigationTheme|Light Red'), 'ui-light-red', '#a02e1c'),
+        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#333238'),
+        Theme.new(3, s_('NavigationTheme|Light Gray'), 'ui-light-gray', '#ececef'),
+        Theme.new(11, s_('NavigationTheme|Dark Mode (alpha)'), 'gl-dark', '#1f1e24')
       ]
     end
 

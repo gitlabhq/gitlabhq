@@ -75,7 +75,7 @@ The following features be are extended from standard Markdown:
 | [blockquotes](#blockquotes)           | [multi-line blockquotes](#multiline-blockquote)                                       |
 | [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting)         |
 | [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis) |
-| [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links)                                          |
+| [headings](#headings)                   | [linkable heading IDs](#heading-ids-and-links)                                          |
 | [images](#images)                     | [embedded videos](#videos) and [audio](#audio)                                        |
 | [line breaks](#line-breaks)           | [more line break control](#newlines)                                                  |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking)                                       |
@@ -87,18 +87,18 @@ This content should be as accessible as possible to your audience.
 The following list is not exhaustive, but it provides guidance for some of the GLFM styles to pay
 particular attention to:
 
-### Headings
+### Accessible headings
 
 Use heading formatting to create a logical heading structure.
 The structure of headings on a page should make sense, like a good table of contents.
 Ensure that there is only one `h1` element on a page, that heading levels are not skipped, and that they are nested correctly.
 
-### Tables
+### Accessible tables
 
 To keep tables accessible and scannable, tables should not have any empty cells.
 If there is no otherwise meaningful value for a cell, consider entering **N/A** for "not applicable" or **None**.
 
-### Images and videos
+### Accessible images and videos
 
 Describe the image or video in the `[alt text]`. Make the description accurate, succinct, and unique.
 Don't use `image of` or `video of` in the description. For more information, see [WebAim Alternative Text](https://webaim.org/techniques/alttext/).
@@ -1060,7 +1060,7 @@ These are used to force the Vale ReferenceLinks check to skip these examples.
 
  [^footnote-42]: This text is another footnote.
 
-### Headers
+### Headings
 
 ```markdown
 # H1
@@ -1081,46 +1081,46 @@ Alt-H2
 ------
 ```
 
-#### Header IDs and links
+#### Heading IDs and links
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#header-ids-and-links).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
 
-GitLab Flavored Markdown extends the standard Markdown standard so that all Markdown-rendered headers automatically
+GitLab Flavored Markdown extends the standard Markdown standard so that all Markdown-rendered headings automatically
 get IDs, which can be linked to, except in comments.
 
 On hover, a link to those IDs becomes visible to make it easier to copy the link to
-the header to use it somewhere else.
+the heading to use it somewhere else.
 
-The IDs are generated from the content of the header according to the following rules:
+The IDs are generated from the content of the heading according to the following rules:
 
 1. All text is converted to lowercase.
 1. All non-word text (such as punctuation or HTML) is removed.
 1. All spaces are converted to hyphens.
 1. Two or more hyphens in a row are converted to one.
-1. If a header with the same ID has already been generated, a unique
+1. If a heading with the same ID has already been generated, a unique
    incrementing number is appended, starting at 1.
 
 Example:
 
 ```markdown
-# This header has spaces in it
-## This header has a :thumbsup: in it
-# This header has Unicode in it: 한글
-## This header has spaces in it
-### This header has spaces in it
-## This header has 3.5 in it (and parentheses)
+# This heading has spaces in it
+## This heading has a :thumbsup: in it
+# This heading has Unicode in it: 한글
+## This heading has spaces in it
+### This heading has spaces in it
+## This heading has 3.5 in it (and parentheses)
 ```
 
 Would generate the following link IDs:
 
-1. `this-header-has-spaces-in-it`
-1. `this-header-has-a-in-it`
-1. `this-header-has-unicode-in-it-한글`
-1. `this-header-has-spaces-in-it-1`
-1. `this-header-has-spaces-in-it-2`
-1. `this-header-has-3-5-in-it-and-parentheses`
+1. `this-heading-has-spaces-in-it`
+1. `this-heading-has-a-in-it`
+1. `this-heading-has-unicode-in-it-한글`
+1. `this-heading-has-spaces-in-it-1`
+1. `this-heading-has-spaces-in-it-2`
+1. `this-heading-has-3-5-in-it-and-parentheses`
 
-Emoji processing happens before the header IDs are generated. The
+Emoji processing happens before the heading IDs are generated. The
 emoji is converted to an image, which is then removed from the ID.
 
 ### Horizontal Rule
@@ -1444,10 +1444,10 @@ Do not change it back to a markdown codeblock.
 - This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
-Using header ID anchors:
+Using heading ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
-- This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
+- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-features-permissions)
+- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
 
 Using references:
 
@@ -1467,10 +1467,10 @@ Some text to show that the reference links can follow later.
 - This line shows a [relative link to a file one directory higher](../index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
-Using header ID anchors:
+Using heading ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-members-permissions)
-- This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
+- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-members-permissions)
+- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
 
 Using references:
 

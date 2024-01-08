@@ -147,7 +147,7 @@ To add or update variables in the project settings:
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
-After you create a variable, you can use it in the [`.gitlab-ci.yml` configuration](../yaml/index.md)
+After you create a variable, you can use it in the pipeline configuration
 or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 ### For a group

@@ -71,7 +71,7 @@ To associate a cluster management project with your cluster:
 ### Configuring your pipeline
 
 After designating a project as the management project for the cluster,
-write a [`.gitlab-ci.yml`](../../ci/yaml/index.md) in that project. For example:
+add a [`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file) in that project. For example:
 
 ```yaml
 configure cluster:
@@ -99,7 +99,7 @@ to a management project:
 | Production  | `production`      |
 
 The environments set in the
-[`.gitlab-ci.yml`](../../ci/yaml/index.md) file deploy to the Development, Staging, and Production cluster.
+[`.gitlab-ci.yml` file](../../ci/index.md#the-gitlab-ciyml-file) deploy to the Development, Staging, and Production cluster.
 
 ```yaml
 stages:

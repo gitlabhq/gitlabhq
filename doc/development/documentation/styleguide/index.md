@@ -351,10 +351,10 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
 - [Write in Markdown](#markdown).
 - Insert an empty line for new paragraphs.
 - Insert an empty line between different markups (for example, after every
-  paragraph, header, list, and so on). Example:
+  paragraph, heading, list, and so on). Example:
 
   ```markdown
-  ## Header
+  ## Heading
 
   Paragraph.
 
@@ -692,9 +692,9 @@ Markdown tables naturally fall out of alignment over time, but still render corr
 on `docs.gitlab.com`. The technical writing team can realign cells the next time
 the page is refactored.
 
-### Table headings
+### Table headers
 
-Use sentence case for table headings. For example, `Keyword value` or `Project name`.
+Use sentence case for table headers. For example, `Keyword value` or `Project name`.
 
 ### Feature tables
 
@@ -1438,7 +1438,7 @@ NOTE:
 This is something to note.
 ```
 
-To display an alert box for multiple paragraphs, lists, or headers, use
+To display an alert box for multiple paragraphs, lists, or headings, use
 [blockquotes](#blockquotes) instead.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).

@@ -17,15 +17,13 @@ flexibility:
 - Create required [rules](rules.md) about the number and type of approvers before work can merge.
 - Specify a list of users who act as [code owners](../../codeowners/index.md) for specific files,
   and require their approval before work can merge.
+- For GitLab Premium and GitLab Ultimate, configure approvals
+  [for the entire instance](../../../../administration/merge_requests_approvals.md).
 
 You can configure merge request approvals on a per-project basis, and some approvals can be configured
 [on the group level](../../../group/manage.md#group-merge-request-approval-settings). Support for
 group-level settings for merge request approval rules is tracked in this
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/4367). Administrators of
-[GitLab Premium](https://about.gitlab.com/pricing/) and
-[GitLab Ultimate](https://about.gitlab.com/pricing/) self-managed GitLab instances
-can also configure approvals
-[for the entire instance](../../../../administration/merge_requests_approvals.md).
+[epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## How approvals work
 
@@ -48,6 +46,8 @@ You can also configure:
 - Merge request approval rules and settings through the GitLab UI or with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
+Approvals cannot be added after a merge request is merged.
+
 ## Approve a merge request
 
 When an [eligible approver](rules.md#eligible-approvers) visits an open merge request,
@@ -60,9 +60,8 @@ GitLab displays one of these buttons after the body of the merge request:
 
 Eligible approvers can also use the `/approve`
 [quick action](../../../project/quick_actions.md) when adding a comment to
-a merge request.  [In GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/292936),
-if a user approves a merge request and is shown in the reviewer list, a green check mark
-(**{check-circle-filled}**) displays next to their name.
+a merge request. Users in the reviewer list who have approved a merge request display
+a green check mark (**{check-circle-filled}**) next to their name.
 
 After a merge request receives the [number and type of approvals](rules.md) you configure, it can merge
 unless it's blocked for another reason. Merge requests can be blocked by other problems,
@@ -79,8 +78,6 @@ The only exceptions are changes to the [target branch](rules.md#approvals-for-pr
 of the rule.
 
 ## Optional approvals
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27426) in GitLab 13.2.
 
 GitLab allows all users with Developer or greater [permissions](../../../permissions.md)
 to approve merge requests. Approvals in GitLab Free are optional, and don't prevent

@@ -16,7 +16,7 @@ This document describes where and how the different types of variables can be us
 
 There are two places defined variables can be used. On the:
 
-1. GitLab side, in the [`.gitlab-ci.yml` file](../yaml/index.md).
+1. GitLab side, in the [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file).
 1. The GitLab Runner side, in `config.toml`.
 
 ### `.gitlab-ci.yml` file

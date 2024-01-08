@@ -502,5 +502,5 @@ Use a merge request to commit this pipeline configuration to the default branch.
 The file is simpler, but it should have the same behavior as the previous step.
 
 You've just created a full pipeline and streamlined it to be more efficient. Nice work!
-Now you can take this knowledge, learn about [the rest of the `.gitlab-ci.yml` keywords](../yaml/index.md),
-and build your own pipelines.
+Now you can take this knowledge, learn about the rest of the `.gitlab-ci.yml` keywords
+in the [CI/CD YAML syntax reference](../yaml/index.md), and build your own pipelines.

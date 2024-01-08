@@ -65,7 +65,8 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
           },
           'modelCount' => 5,
           'createModelPath' => "/#{project.full_path}/-/ml/models/new",
-          'canWriteModelRegistry' => true
+          'canWriteModelRegistry' => true,
+          'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/"
         })
       end
     end

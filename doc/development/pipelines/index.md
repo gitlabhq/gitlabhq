@@ -13,7 +13,7 @@ which itself includes files under
 for easier maintenance.
 
 We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/development/principles/#dogfooding)
-GitLab [CI/CD features and best-practices](../../ci/yaml/index.md)
+GitLab [CI/CD features and best-practices](../../ci/index.md)
 as much as possible.
 
 ## Predictive test jobs before a merge request is approved
