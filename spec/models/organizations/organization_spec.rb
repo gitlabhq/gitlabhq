@@ -204,6 +204,32 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '#owner?' do
+    let_it_be(:user) { create(:user) }
+
+    subject { organization.owner?(user) }
+
+    context 'when user is an owner' do
+      before do
+        create(:organization_user, :owner, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user is not an owner' do
+      before do
+        create(:organization_user, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when user is not an organization user' do
+      it { is_expected.to eq false }
+    end
+  end
+
   describe '#web_url' do
     it 'returns web url from `Gitlab::UrlBuilder`' do
       web_url = 'http://127.0.0.1:3000/-/organizations/default'

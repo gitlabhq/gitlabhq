@@ -277,7 +277,10 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
-      Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
+      <ul>
+        <li>Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.</li>
+        <li>Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated in GitLab 16.8</a>.</li>
+      </ul>
     </p>
   </li>
 </ol>

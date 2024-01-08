@@ -800,6 +800,22 @@ The table below lists the deprecated metrics and their respective replacements. 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### License Scanning support for sbt 1.0.X
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437591).
+</div>
+
+GitLab 17.0 removes License Scanning support for sbt 1.0.x.
+
+Users are advised to upgrade from sbt 1.0.x.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### List repository directories Rake task
 
 <div class="deprecation-notes">

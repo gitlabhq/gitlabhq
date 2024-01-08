@@ -54,6 +54,10 @@ module Organizations
       organization_users.exists?(user: user)
     end
 
+    def owner?(user)
+      organization_users.owners.exists?(user: user)
+    end
+
     def web_url(only_path: nil)
       Gitlab::UrlBuilder.build(self, only_path: only_path)
     end

@@ -1,0 +1,11 @@
+- title: "License Scanning support for sbt 1.0.X"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.8"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: Secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437591
+  body: |  # (required) Don't change this line.
+    GitLab 17.0 removes License Scanning support for sbt 1.0.x.
+
+    Users are advised to upgrade from sbt 1.0.x.
