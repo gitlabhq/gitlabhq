@@ -20,17 +20,9 @@ module Types
           field :released_at, Types::TimeType, null: true, description: 'Timestamp of when the version was released.',
             alpha: { milestone: '16.7' }
 
-          field :tag_name, GraphQL::Types::String, null: true, method: :name,
-            description: 'Deprecated in 16.8. Use name.',
-            alpha: { milestone: '16.7' }
-
           field :name, GraphQL::Types::String, null: true,
             description: 'Name that uniquely identifies the version within the catalog resource.',
             alpha: { milestone: '16.8' }
-
-          field :tag_path, GraphQL::Types::String, null: true, method: :path,
-            description: 'Deprecated in 16.8. Use path.',
-            alpha: { milestone: '16.7' }
 
           field :path, GraphQL::Types::String, null: true,
             description: 'Relative web path to the version.',

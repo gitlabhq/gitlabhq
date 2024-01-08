@@ -1019,9 +1019,9 @@ meaning that unique requests do not get written into the cache.
 If you:
 
 - Increase this number, your cache hit rate goes down and the
-cache uses less disk space.
+  cache uses less disk space.
 - Decrease this number, your cache hit
-rate goes up and the cache uses more disk space.
+  rate goes up and the cache uses more disk space.
 
 You should set `min_occurrences` to `1`. On GitLab.com,
 going from 0 to 1 saved us 50% cache disk space while barely affecting

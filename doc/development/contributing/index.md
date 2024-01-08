@@ -134,6 +134,14 @@ Lastly, keep the following in mind when submitting merge requests:
   be merged, as well as some guidance. The maintainers will be open to discussion about how to change
   the code so it can be approved and merged in the future.
 
+## Tips
+
+- [Small MRs are the main key to a great review](https://about.gitlab.com/blog/2021/03/18/iteration-and-code-review/).
+- Make sure to read our [merge request guidelines for contributors before you start for the first time](merge_request_workflow.md#merge-request-guidelines-for-contributors).
+- Automated testing is required. Take your time to understand the different [testing levels](../testing_guide/testing_levels.md#how-to-test-at-the-correct-level) and apply them accordingly.
+- Make sure to have a great description that includes steps to reproduce your implementation.
+- [Make sure to follow our commit message guidelines](merge_request_workflow.md#commit-messages-guidelines).
+
 ## Closing policy for issues and merge requests
 
 - For the criteria for closing issues, see [the Issue Triage handbook page](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#outdated-issues).

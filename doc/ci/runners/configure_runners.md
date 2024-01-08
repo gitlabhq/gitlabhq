@@ -903,18 +903,41 @@ variables:
 | `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
-## Artifact attestation
+## Artifact provenance metadata
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
 
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name) in the CI file. The file name, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
+Runners can generate and produce provenance metadata for all build artifacts.
 
-### Attestation format
+To enable artifact provenance data, set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment
+variable to `true`. You can set the variable as global or for individual jobs:
 
-The attestation metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [v0.1](https://github.com/in-toto/attestation/tree/v0.1.0/spec). The following fields are populated by default:
+```yaml
+variables:
+  RUNNER_GENERATE_ARTIFACTS_METADATA: "true"
+
+job1:
+  variables:
+    RUNNER_GENERATE_ARTIFACTS_METADATA: "true"
+```
+
+The metadata renders in a plain text `.json` file stored with the artifact. The
+file name is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
+[name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name)
+defined in the `.gitlab-ci.yml` file. If the name is not defined, the default file name is
+`artifacts-metadata.json`.
+
+### Provenance metadata format
+
+The provenance metadata is generated in the [in-toto attestation format](https://github.com/in-toto/attestation) for spec version [0.1](https://github.com/in-toto/attestation/tree/v0.1.0/spec).
+The runner also produces a statement that adheres to SLSA v0.2 by default.
+
+To opt-in to an SLSA v1.0 statement, set the `SLSA_PROVENANCE_SCHEMA_VERSION=v1` variable in the `.gitlab-ci.yml` file. The v0.2 statement is deprecated and is planned to be removed in the GitLab 17.0 and the v1.0 statement is planned to become the new default format.
+
+The following fields are populated by default:
 
 | Field  | Value  |
 | ------ | ------ |
@@ -938,7 +961,7 @@ The attestation metadata is generated in the [in-toto attestation format](https:
 | `metadata.completeness.environment` | Whether the builder's environment is reported. Always `true`. |
 | `metadata.completeness.materials` | Whether the build materials are reported. Always `false`. |
 
-An example of an attestation that the GitLab Runner might generate is as follows:
+An example of provenance metadata that the GitLab Runner might generate is as follows:
 
 ```yaml
 {

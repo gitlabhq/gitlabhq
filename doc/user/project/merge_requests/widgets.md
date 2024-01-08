@@ -73,3 +73,9 @@ If you have configured [License Compliance](../../compliance/license_scanning_of
 If you have configured [external status checks](status_checks.md) you can
 see the status of these checks in merge requests
 [in a specific widget](status_checks.md#status-checks-widget).
+
+## Application security scanning
+
+If you have enabled any application security scanning tools, the results are shown in the security
+scanning widget. For more information, see
+[security scanning output in merge request widget](../../application_security/index.md#merge-request).

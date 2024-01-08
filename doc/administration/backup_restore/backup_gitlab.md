@@ -136,13 +136,13 @@ For more information, see [Backup and restore Linux package (Omnibus) configurat
 :::TabTitle Docker
 
 - Back up the volume where the configuration files are stored. If you created
-the GitLab container according to the documentation, it should be in the
-`/srv/gitlab/config` directory.
+  the GitLab container according to the documentation, it should be in the
+  `/srv/gitlab/config` directory.
 
 :::TabTitle GitLab Helm chart
 
 - Follow the [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#back-up-the-secrets)
-instructions.
+  instructions.
 
 ::EndTabs
 

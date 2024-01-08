@@ -76,7 +76,7 @@ export default {
     {
       key: 'status',
       label: '',
-      tdClass: `${tableDataClass}`,
+      tdClass: `${tableDataClass} gl-text-center`,
     },
   ],
   statusFilters: {
@@ -181,6 +181,13 @@ export default {
     },
     showIntegratedDisabledAlert() {
       return !this.isAlertDismissed && this.showIntegratedTrackingDisabledAlert;
+    },
+    fields() {
+      if (this.integratedErrorTrackingEnabled) {
+        // user count is currently not supported for integrated error tracking https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2345
+        return this.$options.fields.filter((field) => field.key !== 'users');
+      }
+      return this.$options.fields;
     },
   },
   watch: {
@@ -417,7 +424,7 @@ export default {
         <gl-table
           class="error-list-table gl-mt-5"
           :items="errors"
-          :fields="$options.fields"
+          :fields="fields"
           :show-empty="true"
           fixed
           stacked="md"

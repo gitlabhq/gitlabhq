@@ -400,15 +400,13 @@ To manually rebuild a database index:
 ### Notes
 
 - Rebuilding database indexes is a disk-intensive task, so you should perform the
-task during off-peak hours. Running the task during peak hours can lead to
-_increased_ bloat, and can also cause certain queries to perform slowly.
-
+  task during off-peak hours. Running the task during peak hours can lead to
+  _increased_ bloat, and can also cause certain queries to perform slowly.
 - The task requires free disk space for the index being restored. The created
-indexes are appended with `_ccnew`. If the reindexing task fails, re-running the
-task cleans up the temporary indexes.
-
+  indexes are appended with `_ccnew`. If the reindexing task fails, re-running the
+  task cleans up the temporary indexes.
 - The time it takes for database index rebuilding to complete depends on the size
-of the target database. It can take between several hours and several days.
+  of the target database. It can take between several hours and several days.
 
 ## Dump the database schema
 

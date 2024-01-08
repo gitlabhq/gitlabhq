@@ -47,8 +47,8 @@ In a Route53 Hosted Zone, traffic policies can be used to set up a variety of
 routing configurations. To create a traffic policy:
 
 1. Go to the
-[Route53 dashboard](https://console.aws.amazon.com/route53/home) and select
-**Traffic policies**.
+   [Route53 dashboard](https://console.aws.amazon.com/route53/home) and select
+   **Traffic policies**.
 
 1. Select **Create traffic policy**.
 1. Fill in the **Policy Name** field with `Single Git Host` and select **Next**.

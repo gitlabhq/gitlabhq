@@ -169,4 +169,33 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier do
       end
     end
   end
+
+  describe '#two_factor_authentication_reason?' do
+    it 'returns false if two factor authentication is not required' do
+      allow(user).to receive(:require_two_factor_authentication?).and_return(false)
+
+      expect(subject.two_factor_authentication_reason).to be_falsey
+    end
+
+    it 'returns :global if two factor authentication is enabled globally' do
+      stub_application_setting require_two_factor_authentication: true
+
+      expect(subject.two_factor_authentication_reason).to eq(:global)
+    end
+
+    it 'returns :admin_2fa if the current user is an admin and two factor is enabled' do
+      stub_application_setting require_admin_two_factor_authentication: true
+
+      allow(user).to receive(:admin?).and_return(true)
+
+      expect(subject.two_factor_authentication_reason).to eq(:admin_2fa)
+    end
+
+    it 'returns :group if two factor authentication is enforced through a group setting' do
+      stub_application_setting require_two_factor_authentication: false
+      allow(user).to receive(:require_two_factor_authentication_from_group?).and_return(true)
+
+      expect(subject.two_factor_authentication_reason).to eq(:group)
+    end
+  end
 end

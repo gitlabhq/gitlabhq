@@ -1101,7 +1101,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 

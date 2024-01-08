@@ -124,6 +124,24 @@ Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Slack notifications integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435909).
+</div>
+
+As we're consolidating all Slack capabilities into the
+GitLab for Slack app, we've deprecated the Slack notifications
+integration.
+Use the GitLab for Slack app to manage notifications
+to your Slack workspace.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">
@@ -590,6 +608,20 @@ Because the new values provide a streamlined, comprehensive method to enable TLS
 The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
 are deprecated and will be removed from the GraphQL API. For installation instructions, you should use the
 [GitLab Runner documentation](https://docs.gitlab.com/runner/)
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### GitLab Runner provenance metadata SLSA v0.2 statement
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/36869).
+</div>
+
+Runners generate provenance metadata and currently defaults to generating statements that adhere to SLSA v0.2. Because SLSA v1.0 has been released and is now supported by GitLab, the v0.2 statement is now deprecated and removal is planned in GitLab 17.0. The SLSA v1.0 statement is planned to become the new default statement format in GitLab 17.0.
 
 </div>
 
@@ -1110,25 +1142,6 @@ This deprecation affects users compiling GitLab from source, who will need
 to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
 Omnibus, the Helm chart, and Operator will handle this configuration
 automatically from GitLab 16.0 onwards.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Slack notifications integration
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
-</div>
-
-As we're consolidating all Slack capabilities into the
-GitLab for Slack app, we're [deprecating the Slack notifications
-integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
-GitLab.com users can now use the GitLab for Slack app to manage notifications
-to their Slack workspace. For self-managed users of the Slack notifications integration,
-we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
 </div>
 

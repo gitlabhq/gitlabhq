@@ -249,7 +249,7 @@ outside world.
    ```
 
 1. If you haven't named your certificate and key `example.io.crt` and `example.io.key`,
-you must also add the full paths as shown below:
+   you must also add the full paths as shown below:
 
    ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
@@ -258,8 +258,8 @@ you must also add the full paths as shown below:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-[System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-to use the HTTPS protocol.
+   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+   to use the HTTPS protocol.
 
 WARNING:
 Multiple wildcards for one instance is not supported. Only one wildcard per instance can be assigned.
@@ -517,7 +517,7 @@ world. Custom domains and TLS are supported.
    If you don't have IPv6, you can omit the IPv6 address.
 
 1. If you haven't named your certificate `example.io.crt` and your key `example.io.key`,
-then you need to also add the full paths as shown below:
+   then you need to also add the full paths as shown below:
 
    ```ruby
    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
@@ -526,8 +526,8 @@ then you need to also add the full paths as shown below:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-[System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-to use the HTTPS protocol.
+   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+   to use the HTTPS protocol.
 
 ### Custom domain verification
 
@@ -1011,25 +1011,20 @@ Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
 Examples:
 
 - Increasing `gitlab_cache_expiry` allows items to exist in the cache longer.
-This setting might be useful if the communication between GitLab Pages and GitLab Rails
-is not stable.
-
+  This setting might be useful if the communication between GitLab Pages and GitLab Rails
+  is not stable.
 - Increasing `gitlab_cache_refresh` reduces the frequency at which GitLab Pages
-requests a domain's configuration from GitLab Rails. This setting might be useful
-GitLab Pages generates too many requests to GitLab API and content does not change frequently.
-
+  requests a domain's configuration from GitLab Rails. This setting might be useful
+  GitLab Pages generates too many requests to GitLab API and content does not change frequently.
 - Decreasing `gitlab_cache_cleanup` removes expired items from the cache more frequently,
-reducing the memory usage of your Pages node.
-
+  reducing the memory usage of your Pages node.
 - Decreasing `gitlab_retrieval_timeout` allows you to stop the request to GitLab Rails
-more quickly. Increasing it allows more time to receive a response from the API,
-useful in slow networking environments.
-
+  more quickly. Increasing it allows more time to receive a response from the API,
+  useful in slow networking environments.
 - Decreasing `gitlab_retrieval_interval` makes requests to the API more frequently,
-only when there is an error response from the API, for example a connection timeout.
-
+  only when there is an error response from the API, for example a connection timeout.
 - Decreasing `gitlab_retrieval_retries` reduces the number of times a domain's
-configuration is tried to be resolved automatically before reporting an error.
+  configuration is tried to be resolved automatically before reporting an error.
 
 ## Object storage settings
 

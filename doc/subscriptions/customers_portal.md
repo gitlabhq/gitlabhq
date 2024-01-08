@@ -16,7 +16,7 @@ If you made your purchase through an authorized reseller, you must contact them 
 
 ## Sign in to Customers Portal
 
-You can sign in to Customers Portal either with your GitLab.com account or your email and password (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
+You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
 
 NOTE:
 If you registered for Customers Portal with your GitLab.com account, sign in with this account.
@@ -157,11 +157,12 @@ method as the default:
 
 ## Link a GitLab.com account
 
-Follow this guideline if you have a legacy Customers Portal profile and use an email and password to log in.
+Follow this guideline if you have a legacy Customers Portal profile to log in.
 
 To link a GitLab.com account to your Customers Portal profile:
 
-1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in?legacy=true) using email and password.
+1. Trigger a one-time sign-in link to your email from the [Customers Portal](https://customers.gitlab.com/customers/sign_in?legacy=true).
+1. Locate the email and click on the one-time sign-in link to log into your Customers Portal account.
 1. Select **My profile > Profile settings**.
 1. Under **Your GitLab.com account**, select **Link account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
@@ -170,7 +171,7 @@ To link a GitLab.com account to your Customers Portal profile:
 
 Customers are required to use their GitLab.com account to register for a new Customers Portal profile.
 
-If you have a legacy Customers Portal profile that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using an email and password. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](#change-the-linked-account) to ensure continued access to the Customers Portal.
+If you have a legacy Customers Portal profile that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using a one-time sign-in link sent to your email. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](#change-the-linked-account) to ensure continued access to the Customers Portal.
 
 To change the GitLab.com account linked to your Customers Portal profile:
 

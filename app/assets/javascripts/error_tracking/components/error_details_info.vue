@@ -74,7 +74,9 @@ export default {
         </template>
       </gl-card>
 
+      <!-- user count is currently not supported for integrated error tracking https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2345 -->
       <gl-card
+        v-if="!error.integrated"
         :class="$options.CARD_CLASS"
         :body-class="$options.BODY_CLASS"
         :header-class="$options.HEADER_CLASS"

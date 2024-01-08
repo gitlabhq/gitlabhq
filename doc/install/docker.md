@@ -531,7 +531,7 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
    ```
 
 1. Create the container once again with the
-[previously specified](#install-gitlab-using-docker-engine) options:
+   [previously specified](#install-gitlab-using-docker-engine) options:
 
    ```shell
    sudo docker run --detach \

@@ -949,8 +949,8 @@ You can also appoint an authoritative name server by setting it in this format:
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
-`/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
-with Praefect service discovery address, such as `praefect.service.consul`.
+   `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
+   with Praefect service discovery address, such as `praefect.service.consul`.
 
    ```ruby
    git_data_dirs({

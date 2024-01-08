@@ -144,9 +144,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
   1. Add `gitlab_kas['enable'] = false` to `gitlab.rb`.
   1. If the server is already upgraded to 14.8, run `gitlab-ctl reconfigure`.
+
 - GitLab 14.8.0 includes a
-[background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
-that may remain stuck permanently in a **pending** state.
+  [background migration `PopulateTopicsNonPrivateProjectsCount`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79140)
+  that may remain stuck permanently in a **pending** state.
 
   To clean up this stuck job, run the following in the [GitLab Rails Console](../../administration/operations/rails_console.md):
 
@@ -305,8 +306,8 @@ that may remain stuck permanently in a **pending** state.
 ### Self-compiled installations
 
 - When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
-are using a self-compiled installation, update paths to these binaries in your [systemd unit files](../upgrading_from_source.md#configure-systemd-units)
-or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](../upgrading_from_source.md).
+  are using a self-compiled installation, update paths to these binaries in your [systemd unit files](../upgrading_from_source.md#configure-systemd-units)
+  or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](../upgrading_from_source.md).
 
 ### Geo installations **(PREMIUM SELF)**
 
@@ -363,8 +364,8 @@ or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [fo
   We recommend moving your databases from Aurora to RDS for PostgreSQL before
   upgrading. Refer to [Moving GitLab databases to a different PostgreSQL instance](../../administration/postgresql/moving.md).
 - GitLab 14.4.0 includes a
-[background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
-that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
+  [background migration `PopulateTopicsTotalProjectsCountCache`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71033)
+  that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
 
   To clean up this stuck job, run the following in the [GitLab Rails Console](../../administration/operations/rails_console.md):
 

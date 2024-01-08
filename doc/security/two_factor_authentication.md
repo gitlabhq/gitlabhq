@@ -49,6 +49,21 @@ Use the [application settings API](../api/settings.md) to modify the following s
 
 For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
+## Enforce 2FA for Administrator users **(FREE SELF)**
+
+Administrators can enforce 2FA for administrator users in a self-managed instance.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Sign-in restrictions** section:
+    - Select **Require administrators to enable 2FA**.
+    - In **Two-factor grace period**, enter a number of hours. If you want to
+      enforce 2FA on the next sign-in attempt, enter `0`.
+1. Select **Save changes**.
+
+NOTE:
+If you are using an external provider to sign in into GitLab, this setting will **not** enforce 2FA for users. 2FA should be enabled on that external provider.
+
 ## Enforce 2FA for all users in a group **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.

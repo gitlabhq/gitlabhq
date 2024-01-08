@@ -725,13 +725,13 @@ From the EC2 dashboard:
 1. We leave our **Health Check Grace Period** as the default `300` seconds. Select **Configure scaling policies**.
 1. Check **Use scaling policies to adjust the capacity of this group**.
 1. For this group we scale between 2 and 4 instances where one instance is added if CPU
-utilization is greater than 60% and one instance is removed if it falls
-to less than 45%.
+   utilization is greater than 60% and one instance is removed if it falls
+   to less than 45%.
 
 ![Auto scaling group policies](img/policies.png)
 
 1. Finally, configure notifications and tags as you see fit, review your changes, and create the
-auto scaling group.
+   auto scaling group.
 
 As the auto scaling group is created, you see your new instances spinning up in your EC2 dashboard. You also see the new instances added to your load balancer. After the instances pass the heath check, they are ready to start receiving traffic from the load balancer.
 

@@ -4296,6 +4296,9 @@ msgstr ""
 msgid "AdminUsers|user cap"
 msgstr ""
 
+msgid "Administrator users are required to enable Two-Factor Authentication for their account."
+msgstr ""
+
 msgid "Administrators"
 msgstr ""
 
@@ -18874,6 +18877,9 @@ msgid "Ends on"
 msgstr ""
 
 msgid "Ends: %{endsAt}"
+msgstr ""
+
+msgid "Enforce Two-Factor authentication for administrator users"
 msgstr ""
 
 msgid "Enforce two-factor authentication"
@@ -41167,6 +41173,9 @@ msgid "Requests per period"
 msgstr ""
 
 msgid "Require additional authentication for administrative tasks."
+msgstr ""
+
+msgid "Require administrators to enable 2FA"
 msgstr ""
 
 msgid "Require expiration date"

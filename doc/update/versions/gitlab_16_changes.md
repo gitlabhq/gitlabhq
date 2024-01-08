@@ -85,9 +85,33 @@ Specific information applies to Linux package installations:
     - All sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
     - All sites are running PostgreSQL 14: No special action is required.
 
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+
 ## 16.6.0
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
+
+### Geo installations
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.5.0
 
@@ -175,6 +199,17 @@ Specific information applies to installations using Geo:
   | 16.3   | All    | None   |
   | 16.4   | All    | None   |
   | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.4.0
 
@@ -314,6 +349,17 @@ Specific information applies to installations using Geo:
   | 16.3   | All    | None   |
   | 16.4   | All    | None   |
   | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.3.0
 

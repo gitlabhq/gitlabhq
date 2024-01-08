@@ -353,6 +353,7 @@ module ApplicationSettingsHelper
       :repository_checks_enabled,
       :repository_storages_weighted,
       :require_admin_approval_after_user_signup,
+      :require_admin_two_factor_authentication,
       :require_two_factor_authentication,
       :remember_me_enabled,
       :restricted_visibility_levels,

@@ -48,7 +48,7 @@ The following instructions enable `gitlab-sshd` on a different port than OpenSSH
    ```
 
 1. Optional. By default, Linux package installations generate SSH host keys for `gitlab-sshd` if
-they do not exist in `/var/opt/gitlab/gitlab-sshd`. If you wish to disable this automatic generation, add this line:
+   they do not exist in `/var/opt/gitlab/gitlab-sshd`. If you wish to disable this automatic generation, add this line:
 
    ```ruby
    gitlab_sshd['generate_host_keys'] = false

@@ -4,17 +4,18 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue analytics for groups **(PREMIUM ALL)**
+# Issue analytics **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
+> - Issue analytics for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
+> - Issue analytics for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in GitLab 12.9.
 
 Issue analytics is a bar graph which illustrates the number of issues created each month.
-The default time span is 13 months, which includes the current month, and the 12 months
-prior.
+The default time span is 13 months, which includes the current month, and the 12 months prior.
+Issue analytics is available for projects and groups.
 
 To access the chart:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Issue analytics**.
 
 You can also access the chart from the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) through the **New issues** drill-down report.

@@ -345,7 +345,7 @@ gitlab_rails['object_store']['connection'] = {
 If you use ADC, be sure that:
 
 - The service account that you use has the
-[`iam.serviceAccounts.signBlob` permission](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
+  [`iam.serviceAccounts.signBlob` permission](https://cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signBlob).
   Typically this is done by granting the `Service Account Token Creator` role to the service account.
 - Your virtual machines have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
 
@@ -897,28 +897,28 @@ When not proxying files, GitLab returns an
 This can result in some of the following problems:
 
 - If GitLab is using non-secure HTTP to access the object storage, clients may generate
-`https->http` downgrade errors and refuse to process the redirect. The solution to this
-is for GitLab to use HTTPS. LFS, for example, generates this error:
+  `https->http` downgrade errors and refuse to process the redirect. The solution to this
+  is for GitLab to use HTTPS. LFS, for example, generates this error:
 
-   ```plaintext
-   LFS: lfsapi/client: refusing insecure redirect, https->http
-   ```
+  ```plaintext
+  LFS: lfsapi/client: refusing insecure redirect, https->http
+  ```
 
 - Clients need to trust the certificate authority that issued the object storage
-certificate, or may return common TLS errors such as:
+  certificate, or may return common TLS errors such as:
 
-   ```plaintext
-   x509: certificate signed by unknown authority
-   ```
+  ```plaintext
+  x509: certificate signed by unknown authority
+  ```
 
 - Clients need network access to the object storage.
-Network firewalls could block access.
-Errors that might result
-if this access is not in place include:
+  Network firewalls could block access.
+  Errors that might result
+  if this access is not in place include:
 
-   ```plaintext
-   Received status code 403 from server: Forbidden
-   ```
+  ```plaintext
+  Received status code 403 from server: Forbidden
+  ```
 
 - Object storage buckets need to allow Cross-Origin Resource Sharing
   (CORS) access from the URL of the GitLab instance. Attempting to load

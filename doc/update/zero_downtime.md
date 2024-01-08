@@ -343,7 +343,7 @@ version), and then upgrade the original primary. For this, we must know
 the address of the current Redis primary.
 
 - If your application node is running GitLab 12.7.0 or later, you can use the
-following command to get address of current Redis primary
+  following command to get address of current Redis primary
 
   ```shell
   sudo gitlab-ctl get-redis-master
@@ -514,27 +514,27 @@ the update on the **primary** node:
 
 - Run post-deployment database migrations
 
-   ```shell
-   sudo gitlab-rake db:migrate
-   ```
+  ```shell
+  sudo gitlab-rake db:migrate
+  ```
 
 - After the update is finalized on the primary node, hot reload `puma` and
-restart `sidekiq` and `geo-logcursor` services on **all primary and secondary**
-nodes:
+  restart `sidekiq` and `geo-logcursor` services on **all primary and secondary**
+  nodes:
 
-   ```shell
-   sudo gitlab-ctl hup puma
-   sudo gitlab-ctl restart sidekiq
-   sudo gitlab-ctl restart geo-logcursor
-   ```
+  ```shell
+  sudo gitlab-ctl hup puma
+  sudo gitlab-ctl restart sidekiq
+  sudo gitlab-ctl restart geo-logcursor
+  ```
 
 After updating all nodes (both **primary** and all **secondaries**), check their status:
 
 - Verify Geo configuration and dependencies
 
-   ```shell
-   sudo gitlab-rake gitlab:geo:check
-   ```
+  ```shell
+  sudo gitlab-rake gitlab:geo:check
+  ```
 
 If you do not want to run zero downtime upgrades in the future, make
 sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert

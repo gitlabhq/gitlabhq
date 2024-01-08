@@ -15,8 +15,8 @@ This guide talks about how to read and use these system log files.
 Read more about the log system and using the logs:
 
 - [Customize logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
-including adjusting log retention, log forwarding,
-switching logs from JSON to plain text logging, and more.
+  including adjusting log retention, log forwarding,
+  switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](../logs/log_parsing.md).
 
 ## Log Levels

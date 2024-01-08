@@ -247,10 +247,8 @@ Security scan information appears in multiple locations and formats:
 
 ### Merge request **(FREE ALL)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4393) in GitLab Free 13.5.
-> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/273205) in 13.6.
-> - Report download dropdown list [added](https://gitlab.com/gitlab-org/gitlab/-/issues/273418) in 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249550) in GitLab 13.9.
+Output of all enabled application security tools is shown in a merge request widget. You can use
+this information to manage the risk of any issues identified in the source branch.
 
 #### All tiers
 

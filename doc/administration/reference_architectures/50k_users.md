@@ -1511,7 +1511,7 @@ Updates to example must be made at:
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
-the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
@@ -2290,7 +2290,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 

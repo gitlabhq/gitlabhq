@@ -3013,3 +3013,17 @@
       when: manual
     - <<: *if-merge-request-labels-run-all-rspec
       when: manual
+
+###############################
+# Observability Backend rules #
+###############################
+.observability-backend:rules:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: manual
+      allow_failure: true

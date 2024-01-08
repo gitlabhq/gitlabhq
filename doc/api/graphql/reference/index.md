@@ -15589,8 +15589,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. Relative web path to the version. |
 | <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. GitLab Flavored Markdown rendering of README.md. This field can only be resolved for one version in any single request. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Timestamp of when the version was released. |
-| <a id="cicatalogresourceversiontagname"></a>`tagName` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Deprecated in 16.8. Use name. |
-| <a id="cicatalogresourceversiontagpath"></a>`tagPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Deprecated in 16.8. Use path. |
 
 ### `CiConfig`
 
