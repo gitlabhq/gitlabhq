@@ -379,7 +379,9 @@ trigger_job:
 
 ::EndTabs
 
-### View multi-project pipelines in pipeline graphs **(PREMIUM ALL)**
+### View multi-project pipelines in pipeline graphs
+
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
