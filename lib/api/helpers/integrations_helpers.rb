@@ -7,35 +7,6 @@ module API
     # The data structures inside this model are returned using class methods,
     # allowing EE to extend them where necessary.
     module IntegrationsHelpers
-      def self.chat_notification_settings
-        [
-          {
-            required: true,
-            name: :webhook,
-            type: String,
-            desc: 'The chat webhook'
-          },
-          {
-            required: false,
-            name: :username,
-            type: String,
-            desc: 'The chat username'
-          },
-          {
-            required: false,
-            name: :channel,
-            type: String,
-            desc: 'The default chat channel'
-          },
-          {
-            required: false,
-            name: :branches_to_be_notified,
-            type: String,
-            desc: 'Branches for which notifications are to be sent'
-          }
-        ].freeze
-      end
-
       def self.chat_notification_flags
         [
           {
@@ -533,8 +504,7 @@ module API
           'youtrack' => ::Integrations::Youtrack.api_fields,
           'clickup' => ::Integrations::Clickup.api_fields,
           'slack' => [
-            chat_notification_settings,
-            chat_notification_flags,
+            ::Integrations::Slack.api_fields,
             chat_notification_channels
           ].flatten,
           'microsoft-teams' => [
@@ -553,8 +523,7 @@ module API
             chat_notification_flags
           ].flatten,
           'mattermost' => [
-            chat_notification_settings,
-            chat_notification_flags,
+            ::Integrations::Mattermost.api_fields,
             chat_notification_channels
           ].flatten,
           'teamcity' => [

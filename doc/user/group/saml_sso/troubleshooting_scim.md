@@ -111,6 +111,26 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
      the SCIM app.
   1. Use the same SCIM API to update the SCIM `extern_uid` for the user on GitLab.com.
 
+## The member's email address is not allowed for this group
+
+SCIM provisioning may fail with HTTP status `412` and the following error message:
+
+```plaintext
+The member's email address is not allowed for this group. Check with your administrator.
+```
+
+This error occurs when both of the following are true:
+
+- [Restrict group access by domain](../access_and_permissions.md) is configured
+  for the group.
+- The user account being provisioned has an email domain that is not allowed.
+
+To resolve this issue, you can do either of the following:
+
+- Add the user account's email domain to the list of allowed domains.
+- Disable the [Restrict group access by domain](../access_and_permissions.md)
+  feature by removing all domains.
+
 ## Search Rails logs for SCIM requests **(PREMIUM SAAS)**
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in

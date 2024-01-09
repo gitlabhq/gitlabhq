@@ -27,6 +27,7 @@ module Ci
       foreign_key: :commit_id,
       partition_foreign_key: :partition_id,
       inverse_of: :builds
+    belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },

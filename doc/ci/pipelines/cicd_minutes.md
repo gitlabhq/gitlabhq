@@ -322,7 +322,7 @@ Jobs on project runners are not affected by the compute quota.
 
 ### GitLab SaaS usage notifications
 
-On GitLab SaaS an email notification is sent to the namespace owners when:
+On GitLab SaaS an in-app banner is displayed and an email notification sent to the namespace owners when:
 
 - The remaining compute minutes is below 30% of the quota.
 - The remaining compute minutes is below 5% of the quota.

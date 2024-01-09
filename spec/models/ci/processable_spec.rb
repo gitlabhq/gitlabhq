@@ -83,7 +83,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       let(:ignore_accessors) do
         %i[type namespace lock_version target_url base_tags trace_sections
-           commit_id deployment erased_by_id project_id
+           commit_id deployment erased_by_id project_id project_mirror
            runner_id tag_taggings taggings tags trigger_request_id
            user_id auto_canceled_by_id retried failure_reason
            sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store

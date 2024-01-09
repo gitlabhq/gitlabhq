@@ -8666,6 +8666,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
 | <a id="mutationworkitemupdateawardemojiwidget"></a>`awardEmojiWidget` | [`WorkItemWidgetAwardEmojiUpdateInput`](#workitemwidgetawardemojiupdateinput) | Input for emoji reactions widget. |
 | <a id="mutationworkitemupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemupdatecolorwidget"></a>`colorWidget` | [`WorkItemWidgetColorInput`](#workitemwidgetcolorinput) | Input for color widget. |
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
@@ -34646,6 +34647,14 @@ Attributes for value stream stage.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetawardemojiupdateinputaction"></a>`action` | [`WorkItemAwardEmojiUpdateAction!`](#workitemawardemojiupdateaction) | Action for the update. |
 | <a id="workitemwidgetawardemojiupdateinputname"></a>`name` | [`String!`](#string) | Emoji name. |
+
+### `WorkItemWidgetColorInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcolorinputcolor"></a>`color` | [`Color!`](#color) | Color of the work item. |
 
 ### `WorkItemWidgetCurrentUserTodosInput`
 

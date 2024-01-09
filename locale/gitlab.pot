@@ -1265,6 +1265,12 @@ msgstr ""
 msgid "%{time} UTC"
 msgstr ""
 
+msgid "%{title} username."
+msgstr ""
+
+msgid "%{title} webhook (for example, `%{example}`)."
+msgstr ""
+
 msgid "%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)"
 msgstr ""
 
@@ -16267,6 +16273,9 @@ msgstr ""
 msgid "Default branch and protected branches"
 msgstr ""
 
+msgid "Default channel to use if no other channel is configured."
+msgstr ""
+
 msgid "Default description template for issues"
 msgstr ""
 
@@ -28317,6 +28326,12 @@ msgid "Labels can be applied to issues and merge requests. Star a label to make 
 msgstr ""
 
 msgid "Labels can be applied to issues, merge requests, and epics. Group labels are available for any project within the group."
+msgstr ""
+
+msgid "Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`."
+msgstr ""
+
+msgid "Labels to send notifications for. Leave blank to receive notifications for all events."
 msgstr ""
 
 msgid "Labels with no issues in this iteration:"

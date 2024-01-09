@@ -23321,7 +23321,8 @@ CREATE TABLE resource_weight_events (
     user_id bigint,
     issue_id bigint NOT NULL,
     weight integer,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    previous_weight integer
 );
 
 CREATE SEQUENCE resource_weight_events_id_seq

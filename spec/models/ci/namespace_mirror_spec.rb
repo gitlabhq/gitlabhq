@@ -21,6 +21,16 @@ RSpec.describe Ci::NamespaceMirror do
     )
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:namespace) }
+    it { is_expected.to have_many(:project_mirrors) }
+
+    it 'has a bidirectional relationship with project mirrors' do
+      expect(described_class.reflect_on_association(:project_mirrors).has_inverse?).to eq(:namespace_mirror)
+      expect(Ci::ProjectMirror.reflect_on_association(:namespace_mirror).has_inverse?).to eq(:project_mirrors)
+    end
+  end
+
   context 'scopes' do
     describe '.by_group_and_descendants' do
       let_it_be(:another_group) { create(:group) }

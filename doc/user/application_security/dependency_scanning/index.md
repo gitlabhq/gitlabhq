@@ -711,7 +711,10 @@ To enable dependency scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
+   content.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    ```yaml
    include:
@@ -720,14 +723,14 @@ To enable dependency scanning:
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
 
-   Continue if you see the message **Simulation completed successfully**. That indicates the file is
-   valid.
+   The message **Simulation completed successfully** confirms the file is valid.
 1. Select the **Edit** tab.
 1. Complete the fields. Do not use the default branch for the **Branch** field.
-1. Select **Commit changes**.
-1. Select **Code > Merge requests**.
-1. Select the merge request just created.
-1. Review the merge request, then select **Merge**.
+1. Select the **Start a new merge request with these changes** checkbox, then select **Commit
+   changes**.
+1. Complete the fields according to your standard workflow, then select **Create
+   merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
 Pipelines now include a dependency scanning job.
 

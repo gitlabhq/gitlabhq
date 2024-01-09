@@ -68,9 +68,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   describe 'associations' do
+    it { is_expected.to belong_to(:project_mirror) }
+
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
       expect(Project.reflect_on_association(:builds).has_inverse?).to eq(:project)
+    end
+
+    it 'has a bidirectional relationship with project mirror' do
+      expect(described_class.reflect_on_association(:project_mirror).has_inverse?).to eq(:builds)
+      expect(Ci::ProjectMirror.reflect_on_association(:builds).has_inverse?).to eq(:project_mirror)
     end
   end
 

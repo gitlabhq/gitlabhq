@@ -79,9 +79,7 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link :href="absoluteUserPreferencesPath">
-              {{ content }}
-            </gl-link>
+            <gl-link :href="absoluteUserPreferencesPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </span>

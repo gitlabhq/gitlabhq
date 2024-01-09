@@ -27,7 +27,7 @@ module Integrations
     end
 
     def self.webhook_help
-      'http://mattermost.example.com/hooks/'
+      'http://mattermost.example.com/hooks/...'
     end
 
     override :configurable_channels?

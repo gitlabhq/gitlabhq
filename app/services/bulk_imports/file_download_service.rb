@@ -71,7 +71,6 @@ module BulkImports
 
           unless @remote_content_validated
             validate_content_type
-            validate_content_length
 
             @remote_content_validated = true
           end

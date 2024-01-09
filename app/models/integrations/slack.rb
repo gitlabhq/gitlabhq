@@ -18,7 +18,7 @@ module Integrations
     end
 
     def self.webhook_help
-      'https://hooks.slack.com/services/…'
+      'https://hooks.slack.com/services/...'
     end
 
     private

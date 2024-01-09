@@ -11,7 +11,7 @@ module Gitlab
       UnsupportedAttachmentError = Class.new(StandardError)
 
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
-      DEFAULT_FILE_SIZE_LIMIT = 25.megabytes
+      DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
 
       attr_reader :file_url, :filename, :file_size_limit, :options
@@ -26,7 +26,6 @@ module Gitlab
       end
 
       def perform
-        validate_content_length
         validate_filepath
 
         download_url = get_assets_download_redirection_url
@@ -44,11 +43,6 @@ module Gitlab
 
       def raise_error(message)
         raise DownloadError, message
-      end
-
-      def response_headers
-        @response_headers ||=
-          Gitlab::HTTP.perform_request(Net::HTTP::Head, file_url, {}).headers
       end
 
       # Github /assets redirection link will redirect to aws which has its own authorization.
@@ -78,7 +72,19 @@ module Gitlab
 
       def download_from(url)
         file = File.open(filepath, 'wb')
-        Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) { |batch| file.write(batch) }
+
+        Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) do |chunk|
+          next if [301, 302, 303, 307, 308].include?(chunk.code)
+
+          raise DownloadError, "Error downloading file from #{url}. Error code: #{chunk.code}" if chunk.code != 200
+
+          file.write(chunk)
+          validate_size!(file.size)
+        rescue Gitlab::GithubImport::AttachmentsDownloader::DownloadError
+          delete
+          raise
+        end
+
         file
       end
 

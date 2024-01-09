@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_category: :portfolio_management do
+RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_management do
   let_it_be(:random_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -22,12 +22,10 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
     )
   end
 
-  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::Description) } }
-
   describe '#update' do
-    let(:service) { described_class.new(widget: widget, current_user: current_user) }
+    let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
 
-    subject(:before_update_callback) { service.before_update_callback(params: params) }
+    subject(:before_update_callback) { service.before_update }
 
     shared_examples 'sets work item description' do
       it 'correctly sets work item description value' do
@@ -59,7 +57,7 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
       context 'when user is a project reporter' do
         let(:current_user) { reporter }
 
-        before do
+        before_all do
           project.add_reporter(reporter)
         end
 
@@ -91,7 +89,7 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
         let(:params) { {} }
 
         before do
-          allow(service).to receive(:new_type_excludes_widget?).and_return(true)
+          allow(service).to receive(:excluded_in_new_type?).and_return(true)
           work_item.update!(description: 'test')
         end
 
@@ -108,7 +106,7 @@ RSpec.describe WorkItems::Widgets::DescriptionService::UpdateService, feature_ca
       context 'when user is a project guest' do
         let(:current_user) { guest }
 
-        before do
+        before_all do
           project.add_guest(guest)
         end
 

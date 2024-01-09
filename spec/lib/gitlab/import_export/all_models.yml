@@ -439,6 +439,7 @@ builds:
 - dast_scanner_profile
 - job_annotations
 - job_artifacts_annotations
+- project_mirror
 bridges:
 - user
 - pipeline

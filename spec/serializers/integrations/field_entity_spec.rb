@@ -123,7 +123,7 @@ RSpec.describe Integrations::FieldEntity, feature_category: :integrations do
           name: 'webhook',
           title: nil,
           placeholder: nil,
-          help: 'http://mattermost.example.com/hooks/',
+          help: 'http://mattermost.example.com/hooks/...',
           required: true,
           choices: nil,
           value: '************',

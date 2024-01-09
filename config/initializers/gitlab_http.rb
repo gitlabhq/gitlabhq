@@ -24,3 +24,11 @@ Gitlab::HTTP_V2.configure do |config|
     Gitlab::SilentMode.log_info(message: message, outbound_http_request_method: http_method)
   end
 end
+
+if Gitlab.config.gitlab['http_client']
+  pem = File.read(Gitlab.config.gitlab['http_client']['tls_client_cert_file'])
+  password = Gitlab.config.gitlab['http_client']['tls_client_cert_password']
+
+  Gitlab::HTTP_V2::Client.pem(pem, password)
+  Gitlab::LegacyHTTP.pem(pem, password)
+end

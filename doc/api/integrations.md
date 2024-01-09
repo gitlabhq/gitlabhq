@@ -478,7 +478,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/…`). |
+| `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/...`). |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
 | `confidential_issue_channel` | string | false | The webhook override to receive notifications for confidential issue events. |
@@ -710,12 +710,14 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | `https://hooks.slack.com/services/...`. |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
+| `webhook` | string | true | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
+| `username` | string | false | Slack notifications username. |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
 | `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
 | `alert_events` | boolean | false | Enable notifications for alert events. |
 | `commit_events` | boolean | false | Enable notifications for commit events. |
@@ -1047,12 +1049,14 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Mattermost webhook (for example, `http://mattermost_host/hooks/...`). |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
+| `webhook` | string | true | Mattermost notifications webhook (for example, `http://mattermost.example.com/hooks/...`). |
+| `username` | string | false | Mattermost notifications username. |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
