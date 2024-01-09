@@ -837,8 +837,6 @@ Rails/SaveBang:
   Include:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
-    - 'qa/spec/**/*.rb'
-    - 'qa/qa/specs/**/*.rb'
   Exclude:
   - spec/models/wiki_page/**/*
   - spec/models/wiki_page_spec.rb

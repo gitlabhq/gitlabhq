@@ -281,10 +281,7 @@ export default {
       return __('Merge');
     },
     showAutoMergeHelperText() {
-      return (
-        !(this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) &&
-        this.isAutoMergeAvailable
-      );
+      return this.isAutoMergeAvailable;
     },
     hasPipelineMustSucceedConflict() {
       return !this.hasCI && this.state.onlyAllowMergeIfPipelineSucceeds;

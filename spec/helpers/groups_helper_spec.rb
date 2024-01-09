@@ -490,6 +490,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           new_project_illustration: including('illustrations/project-create-new-sm'),
           empty_projects_illustration: including('illustrations/empty-state/empty-projects-md'),
           empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
+          empty_search_illustration: including('illustrations/empty-state/empty-search-md'),
           render_empty_state: 'true',
           can_create_subgroups: 'true',
           can_create_projects: 'true'

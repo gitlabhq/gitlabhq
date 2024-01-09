@@ -22,6 +22,7 @@ export default {
     GlLoadingIcon,
     GlEmptyState,
   },
+  inject: ['emptySearchIllustration'],
   props: {
     action: {
       type: String,
@@ -245,6 +246,7 @@ export default {
       <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />
       <gl-empty-state
         v-else-if="fromSearch"
+        :svg-path="emptySearchIllustration"
         :title="$options.i18n.searchEmptyState.title"
         :description="$options.i18n.searchEmptyState.description"
         data-testid="search-empty-state"

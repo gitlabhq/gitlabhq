@@ -61,39 +61,6 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
       end
     end
 
-    context 'with environments guidance experiment', :experiment do
-      before do
-        stub_experiments(in_product_guidance_environments_webide: :candidate)
-      end
-
-      context 'when project has no enviornments' do
-        it 'enables environment guidance' do
-          expect(helper.ide_data(project: project, fork_info: fork_info, params: params))
-            .to include('enable-environments-guidance' => 'true')
-        end
-
-        context 'and the callout has been dismissed' do
-          it 'disables environment guidance' do
-            callout = create(:callout, feature_name: :web_ide_ci_environments_guidance, user: user)
-            callout.update!(dismissed_at: Time.now - 1.week)
-            allow(helper).to receive(:current_user).and_return(User.find(user.id))
-
-            expect(helper.ide_data(project: project, fork_info: fork_info, params: params))
-              .to include('enable-environments-guidance' => 'false')
-          end
-        end
-      end
-
-      context 'when the project has environments' do
-        it 'disables environment guidance' do
-          create(:environment, project: project)
-
-          expect(helper.ide_data(project: project, fork_info: fork_info, params: params))
-            .to include('enable-environments-guidance' => 'false')
-        end
-      end
-    end
-
     context 'with vscode_web_ide=true' do
       let(:base_data) do
         {

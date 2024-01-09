@@ -58,6 +58,9 @@ describe('AppComponent', () => {
       mocks: {
         $toast,
       },
+      provide: {
+        emptySearchIllustration: '/assets/illustrations/empty-state/empty-search-md.svg',
+      },
     });
     vm = wrapper.vm;
   };

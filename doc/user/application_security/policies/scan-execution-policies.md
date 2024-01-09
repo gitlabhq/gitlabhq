@@ -337,10 +337,9 @@ These experimental features have limitations:
 > The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `compliance_pipeline_in_policies`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
+On GitLab.com, this feature is available.
 
 The pipeline execution policy action introduces a new scan action type into
 scan execution policies for creating and enforcing custom CI in your target

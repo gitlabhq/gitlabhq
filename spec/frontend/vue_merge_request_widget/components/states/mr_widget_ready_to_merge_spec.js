@@ -212,6 +212,19 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().text()).toBe('Set to auto-merge');
       expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
     });
+
+    it('should show merge help text when pipeline has failed and has an auto merge strategy', () => {
+      createComponent({
+        mr: {
+          pipeline: { status: 'FAILED' },
+          availableAutoMergeStrategies: MWPS_MERGE_STRATEGY,
+          hasCI: true,
+        },
+      });
+
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
+      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
+    });
   });
 
   describe('merge immediately dropdown', () => {

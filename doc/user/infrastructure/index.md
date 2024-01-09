@@ -5,7 +5,7 @@ description: Terraform and Kubernetes deployments.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure management **(FREE ALL)**
+# Manage your infrastructure **(FREE ALL)**
 
 With the rise of DevOps and SRE approaches, infrastructure management becomes codified,
 automatable, and software development best practices gain their place around infrastructure

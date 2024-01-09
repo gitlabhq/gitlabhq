@@ -1688,7 +1688,6 @@ RSpec/FeatureCategory:
     - 'spec/dependencies/omniauth_saml_spec.rb'
     - 'spec/docs_screenshots/container_registry_docs.rb'
     - 'spec/docs_screenshots/wiki_docs.rb'
-    - 'spec/experiments/in_product_guidance_environments_webide_experiment_spec.rb'
     - 'spec/features/admin/dashboard_spec.rb'
     - 'spec/features/groups/integrations/group_integrations_spec.rb'
     - 'spec/features/milestones/user_views_milestones_spec.rb'
