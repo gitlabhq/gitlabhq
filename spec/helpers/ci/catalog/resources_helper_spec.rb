@@ -36,18 +36,6 @@ RSpec.describe Ci::Catalog::ResourcesHelper, feature_category: :pipeline_composi
     end
   end
 
-  describe '#can_view_namespace_catalog?' do
-    subject { helper.can_view_namespace_catalog?(project) }
-
-    before do
-      stub_licensed_features(ci_namespace_catalog: false)
-    end
-
-    it 'user cannot view the Catalog in CE regardless of permissions' do
-      expect(subject).to be false
-    end
-  end
-
   describe '#js_ci_catalog_data' do
     let(:project) { build(:project, :repository) }
 

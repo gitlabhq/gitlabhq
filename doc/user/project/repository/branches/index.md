@@ -301,6 +301,8 @@ When you create a merge request, the workflow checks the name of the branch. If 
 branch name matches the workflow, the merge request targets the branch you specify. If the branch name does not match, the merge request targets the
 default branch of the project.
 
+Rules are processed on a "first-match" basis - if two rules match the same branch name, the top-most rule is applied.
+
 Prerequisites:
 
 - You must have at least the Maintainer role.

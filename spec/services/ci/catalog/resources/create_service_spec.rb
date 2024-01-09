@@ -8,10 +8,6 @@ RSpec.describe Ci::Catalog::Resources::CreateService, feature_category: :pipelin
 
   let(:service) { described_class.new(project, user) }
 
-  before do
-    stub_licensed_features(ci_namespace_catalog: true)
-  end
-
   describe '#execute' do
     context 'with an unauthorized user' do
       it 'raises an AccessDeniedError' do

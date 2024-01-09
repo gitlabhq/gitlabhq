@@ -20,7 +20,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_1_primary, identifier_1_cve],
       scanner: scanner_1,
-      severity: :low
+      severity: :low,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94610'
     )
   end
 
@@ -29,7 +30,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_1_primary, identifier_1_cve],
       scanner: scanner_1,
-      severity: :low
+      severity: :low,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94611'
     )
   end
 
@@ -39,7 +41,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       identifiers: [identifier_2_primary, identifier_2_cve],
       location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
       scanner: scanner_2,
-      severity: :medium
+      severity: :medium,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94614'
     )
   end
 
@@ -49,7 +52,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       identifiers: [identifier_2_primary, identifier_2_cve],
       location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
       scanner: scanner_2,
-      severity: :medium
+      severity: :medium,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94613'
     )
   end
 
@@ -59,7 +63,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       identifiers: [identifier_2_primary, identifier_2_cve],
       location: build(:ci_reports_security_locations_sast, start_line: 42, end_line: 44),
       scanner: scanner_2,
-      severity: :medium
+      severity: :medium,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94612'
     )
   end
 
@@ -68,7 +73,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_cwe],
       scanner: scanner_3,
-      severity: :high
+      severity: :high,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94615'
     )
   end
 
@@ -77,7 +83,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_cwe],
       scanner: scanner_1,
-      severity: :critical
+      severity: :critical,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94616'
     )
   end
 
@@ -86,7 +93,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_wasc],
       scanner: scanner_1,
-      severity: :medium
+      severity: :medium,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94617'
     )
   end
 
@@ -95,7 +103,8 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
       :ci_reports_security_finding,
       identifiers: [identifier_wasc],
       scanner: scanner_2,
-      severity: :critical
+      severity: :critical,
+      uuid: '61eb8e3e-3be1-4d6c-ba26-4e0dd4f94618'
     )
   end
 
@@ -226,9 +235,32 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
     let(:identifier_cve) { build(:ci_reports_security_identifier, external_id: 'CVE-2019-123', external_type: 'cve') }
     let(:identifier_semgrep) { build(:ci_reports_security_identifier, external_id: 'rules.bandit.B105', external_type: 'semgrep_id') }
 
-    let(:finding_id_1) { build(:ci_reports_security_finding, identifiers: [identifier_bandit, identifier_cve], scanner: bandit_scanner, report_type: :sast) }
-    let(:finding_id_2) { build(:ci_reports_security_finding, identifiers: [identifier_cve], scanner: semgrep_scanner, report_type: :sast) }
-    let(:finding_id_3) { build(:ci_reports_security_finding, identifiers: [identifier_semgrep], scanner: semgrep_scanner, report_type: :sast) }
+    let(:finding_id_1) do
+      build(
+        :ci_reports_security_finding,
+        identifiers: [identifier_bandit, identifier_cve],
+        scanner: bandit_scanner,
+        report_type: :sast,
+        uuid: '21ab978a-7052-5428-af0b-c7a4b3fe5020')
+    end
+
+    let(:finding_id_2) do
+      build(
+        :ci_reports_security_finding,
+        identifiers: [identifier_cve],
+        scanner: semgrep_scanner,
+        report_type: :sast,
+        uuid: '21ab978a-7052-5428-af0b-c7a4b3fe5021')
+    end
+
+    let(:finding_id_3) do
+      build(
+        :ci_reports_security_finding,
+        identifiers: [identifier_semgrep],
+        scanner: semgrep_scanner,
+        report_type: :sast,
+        uuid: '21ab978a-7052-5428-af0b-c7a4b3fe5022')
+    end
 
     let(:bandit_report) do
       build(:ci_reports_security_report,

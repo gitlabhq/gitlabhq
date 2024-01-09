@@ -6,6 +6,7 @@ import ReplicaSetsPage from '../pages/replica_sets_page.vue';
 import DaemonSetsPage from '../pages/daemon_sets_page.vue';
 import JobsPage from '../pages/jobs_page.vue';
 import CronJobsPage from '../pages/cron_jobs_page.vue';
+import ServicesPage from '../pages/services_page.vue';
 
 import {
   PODS_ROUTE_NAME,
@@ -22,6 +23,8 @@ import {
   JOBS_ROUTE_PATH,
   CRON_JOBS_ROUTE_NAME,
   CRON_JOBS_ROUTE_PATH,
+  SERVICES_ROUTE_NAME,
+  SERVICES_ROUTE_PATH,
 } from './constants';
 
 export default [
@@ -79,6 +82,14 @@ export default [
     component: CronJobsPage,
     meta: {
       title: s__('KubernetesDashboard|CronJobs'),
+    },
+  },
+  {
+    name: SERVICES_ROUTE_NAME,
+    path: SERVICES_ROUTE_PATH,
+    component: ServicesPage,
+    meta: {
+      title: s__('KubernetesDashboard|Services'),
     },
   },
 ];

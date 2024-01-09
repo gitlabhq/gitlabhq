@@ -32,7 +32,7 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
 
     context 'when user has permission' do
       before_all do
-        create(:organization_user, organization: organization, user: current_user)
+        create(:organization_user, :owner, organization: organization, user: current_user)
       end
 
       shared_examples 'updating an organization' do

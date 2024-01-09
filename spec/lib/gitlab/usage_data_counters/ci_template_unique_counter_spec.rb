@@ -50,18 +50,6 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_categ
       end
     end
 
-    context 'with implicit includes', :snowplow do
-      let(:config_source) { :auto_devops_source }
-
-      described_class.all_included_templates('Auto-DevOps.gitlab-ci.yml').each do |template_name|
-        context "for #{template_name}" do
-          let(:template_path) { Gitlab::Template::GitlabCiYmlTemplate.find(template_name.delete_suffix('.gitlab-ci.yml')).full_name }
-
-          include_examples 'tracks template'
-        end
-      end
-    end
-
     it 'expands short template names' do
       expect do
         described_class.track_unique_project_event(project: project, template: 'Dependency-Scanning.gitlab-ci.yml', config_source: :repository_source, user: user)

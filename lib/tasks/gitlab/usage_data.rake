@@ -48,39 +48,5 @@ namespace :gitlab do
       FileUtils.mkdir_p(path)
       File.write(File.join(path, 'sql_metrics_queries.json'), Gitlab::Json.pretty_generate(queries))
     end
-
-    # Events for templates included via YAML-less Auto-DevOps
-    def implicit_auto_devops_includes
-      Gitlab::UsageDataCounters::CiTemplateUniqueCounter
-        .all_included_templates('Auto-DevOps.gitlab-ci.yml')
-        .map { |template| implicit_auto_devops_event(template) }
-        .uniq
-        .sort_by { _1['name'] }
-    end
-
-    # Events for templates included in a .gitlab-ci.yml using include:template
-    def explicit_template_includes
-      Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/").each_with_object([]) do |template, result|
-        expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name(template)
-        next unless expanded_template_name # guard against templates unavailable on FOSS
-
-        event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :repository_source)
-
-        result << ci_template_event(event_name)
-      end
-    end
-
-    # rubocop:disable Gitlab/NoCodeCoverageComment
-    # :nocov: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/299453
-    def ci_template_event(event_name)
-      { 'name' => event_name }
-    end
-    # :nocov:
-    # rubocop:enable Gitlab/NoCodeCoverageComment
-
-    def implicit_auto_devops_event(expanded_template_name)
-      event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, :auto_devops_source)
-      ci_template_event(event_name)
-    end
   end
 end

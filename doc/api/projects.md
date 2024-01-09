@@ -1538,7 +1538,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `jobs_enabled`                                                    | boolean | No                             | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                                     | boolean | No                             | Enable LFS. |
 | `merge_method`                                                    | string  | No                             | Set the [merge method](#project-merge-method) used. |
-| `merge_pipelines_enabled`                                         | boolean | No                             | Enable or disable merge pipelines. |
+| `merge_pipelines_enabled`                                         | boolean | No                             | Enable or disable merged results pipelines. |
 | `merge_requests_access_level`                                     | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                          | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                                            | boolean | No                             | Enable or disable merge trains. |
@@ -1739,7 +1739,7 @@ Supported attributes:
 | `lfs_enabled`                                                     | boolean           | No       | Enable LFS. |
 | `merge_commit_template`                                           | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.)_ |
 | `merge_method`                                                    | string            | No       | Set the [merge method](#project-merge-method) used. |
-| `merge_pipelines_enabled`                                         | boolean           | No       | Enable or disable merge pipelines. |
+| `merge_pipelines_enabled`                                         | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_access_level`                                     | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                          | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_requests_template` **(PREMIUM ALL)**                       | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |

@@ -18948,6 +18948,7 @@ CREATE TABLE member_roles (
     archive_project boolean DEFAULT false NOT NULL,
     manage_group_access_tokens boolean DEFAULT false NOT NULL,
     remove_project boolean DEFAULT false NOT NULL,
+    admin_terraform_state boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
@@ -24978,6 +24979,8 @@ CREATE TABLE user_phone_number_validations (
     country text NOT NULL,
     phone_number text NOT NULL,
     telesign_reference_xid text,
+    sms_sent_at timestamp with time zone,
+    sms_send_count smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_193736da9f CHECK ((char_length(country) <= 3)),
     CONSTRAINT check_d2f31fc815 CHECK ((char_length(phone_number) <= 12)),
     CONSTRAINT check_d7af4d3eb5 CHECK ((char_length(telesign_reference_xid) <= 255))

@@ -4,6 +4,11 @@ module Users
   class PhoneNumberValidation < ApplicationRecord
     include IgnorableColumns
 
+    # SMS send attempts subsequent to the first one will have wait times of 1
+    # min, 3 min, 5 min after each one respectively. Wait time between the fifth
+    # attempt and so on will be 10 minutes.
+    SMS_SEND_WAIT_TIMES = [1.minute, 3.minutes, 5.minutes, 10.minutes].freeze
+
     self.primary_key = :user_id
     self.table_name = 'user_phone_number_validations'
 
@@ -61,6 +66,19 @@ module Users
 
     def validated?
       validated_at.present?
+    end
+
+    def sms_send_allowed_after
+      return unless Feature.enabled?(:sms_send_wait_time, user)
+
+      # first send is allowed anytime
+      return if sms_send_count < 1
+      return unless sms_sent_at
+
+      max_wait_time = SMS_SEND_WAIT_TIMES.last
+      wait_time = SMS_SEND_WAIT_TIMES.fetch(sms_send_count - 1, max_wait_time)
+
+      sms_sent_at + wait_time
     end
   end
 end

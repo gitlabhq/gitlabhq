@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const STATUS_RUNNING = 'Running';
 export const STATUS_PENDING = 'Pending';
@@ -53,3 +53,34 @@ export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
 
 export const STATUS_TRUE = 'True';
 export const STATUS_FALSE = 'False';
+
+export const SERVICES_TABLE_FIELDS = [
+  {
+    key: 'name',
+    label: __('Name'),
+  },
+  {
+    key: 'namespace',
+    label: __('Namespace'),
+  },
+  {
+    key: 'type',
+    label: __('Type'),
+  },
+  {
+    key: 'clusterIP',
+    label: s__('Environment|Cluster IP'),
+  },
+  {
+    key: 'externalIP',
+    label: s__('Environment|External IP'),
+  },
+  {
+    key: 'ports',
+    label: s__('Environment|Ports'),
+  },
+  {
+    key: 'age',
+    label: s__('Environment|Age'),
+  },
+];

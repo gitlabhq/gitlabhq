@@ -77,3 +77,14 @@ export function calculateCronJobStatus(item) {
   }
   return STATUS_READY;
 }
+
+export function generateServicePortsString(ports) {
+  if (!ports?.length) return '';
+
+  return ports
+    .map((port) => {
+      const nodePort = port.nodePort ? `:${port.nodePort}` : '';
+      return `${port.port}${nodePort}/${port.protocol}`;
+    })
+    .join(', ');
+}

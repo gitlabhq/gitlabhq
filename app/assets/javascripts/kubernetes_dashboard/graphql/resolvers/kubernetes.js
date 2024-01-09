@@ -1,4 +1,4 @@
-import { Configuration, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
+import { Configuration, CoreV1Api, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
 
 import {
   getK8sPods,
@@ -9,6 +9,7 @@ import {
   watchWorkloadItems,
   mapJobItem,
   mapCronJobItem,
+  mapServicesItems,
 } from '../helpers/resolver_helpers';
 import k8sDashboardPodsQuery from '../queries/k8s_dashboard_pods.query.graphql';
 import k8sDashboardDeploymentsQuery from '../queries/k8s_dashboard_deployments.query.graphql';
@@ -17,6 +18,7 @@ import k8sDashboardReplicaSetsQuery from '../queries/k8s_dashboard_replica_sets.
 import k8sDaemonSetsQuery from '../queries/k8s_dashboard_daemon_sets.query.graphql';
 import k8sJobsQuery from '../queries/k8s_dashboard_jobs.query.graphql';
 import k8sCronJobsQuery from '../queries/k8s_dashboard_cron_jobs.query.graphql';
+import k8sServicesQuery from '../queries/k8s_dashboard_services.query.graphql';
 
 export default {
   k8sPods(_, { configuration }, { client }) {
@@ -235,6 +237,42 @@ export default {
         const data = res?.items || [];
 
         return data.map(mapCronJobItem);
+      })
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      });
+  },
+
+  k8sServices(_, { configuration, namespace = '' }, { client }) {
+    const config = new Configuration(configuration);
+
+    const coreV1Api = new CoreV1Api(config);
+    const servicesApi = namespace
+      ? coreV1Api.listCoreV1NamespacedService({ namespace })
+      : coreV1Api.listCoreV1ServiceForAllNamespaces();
+    return servicesApi
+      .then((res) => {
+        const watchPath = buildWatchPath({
+          resource: 'services',
+          namespace,
+        });
+        watchWorkloadItems({
+          client,
+          query: k8sServicesQuery,
+          configuration,
+          namespace,
+          watchPath,
+          queryField: 'k8sServices',
+          mapFn: mapServicesItems,
+        });
+
+        const data = res?.items || [];
+
+        return data.map(mapServicesItems);
       })
       .catch(async (err) => {
         try {

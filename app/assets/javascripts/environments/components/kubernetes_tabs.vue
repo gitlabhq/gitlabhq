@@ -1,9 +1,12 @@
 <script>
 import { GlTabs, GlTab, GlLoadingIcon, GlBadge, GlTable, GlPagination } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import {
+  getAge,
+  generateServicePortsString,
+} from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
 import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
-import { generateServicePortsString } from '../helpers/k8s_integration_helper';
 import { SERVICES_LIMIT_PER_PAGE } from '../constants';
 import KubernetesSummary from './kubernetes_summary.vue';
 
@@ -82,6 +85,14 @@ export default {
         ? null
         : nextPage;
     },
+    servicesFields() {
+      return SERVICES_TABLE_FIELDS.map((field) => {
+        return {
+          ...field,
+          thClass: tableHeadingClasses,
+        };
+      });
+    },
   },
   i18n: {
     servicesTitle: s__('Environment|Services'),
@@ -94,43 +105,6 @@ export default {
     ports: s__('Environment|Ports'),
     age: s__('Environment|Age'),
   },
-  servicesFields: [
-    {
-      key: 'name',
-      label: __('Name'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'namespace',
-      label: __('Namespace'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'type',
-      label: __('Type'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'clusterIP',
-      label: s__('Environment|Cluster IP'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'externalIP',
-      label: s__('Environment|External IP'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'ports',
-      label: s__('Environment|Ports'),
-      thClass: tableHeadingClasses,
-    },
-    {
-      key: 'age',
-      label: s__('Environment|Age'),
-      thClass: tableHeadingClasses,
-    },
-  ],
   SERVICES_LIMIT_PER_PAGE,
 };
 </script>
@@ -154,7 +128,7 @@ export default {
 
       <gl-table
         v-else
-        :fields="$options.servicesFields"
+        :fields="servicesFields"
         :items="servicesItems"
         :per-page="$options.SERVICES_LIMIT_PER_PAGE"
         :current-page="currentPage"

@@ -1986,7 +1986,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/features/trials/saas/creation_with_one_existing_namespace_flow_spec.rb'
     - 'ee/spec/finders/audit_event_finder_spec.rb'
     - 'ee/spec/finders/ee/group_members_finder_spec.rb'
-    - 'ee/spec/frontend/fixtures/ci_catalog_resources.rb'
     - 'ee/spec/helpers/analytics/analytics_dashboards_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
     - 'ee/spec/helpers/ee/releases_helper_spec.rb'

@@ -8,6 +8,7 @@ import k8sReplicaSetsQuery from './queries/k8s_dashboard_replica_sets.query.grap
 import k8sDaemonSetsQuery from './queries/k8s_dashboard_daemon_sets.query.graphql';
 import k8sJobsQuery from './queries/k8s_dashboard_jobs.query.graphql';
 import k8sCronJobsQuery from './queries/k8s_dashboard_cron_jobs.query.graphql';
+import k8sServicesQuery from './queries/k8s_dashboard_services.query.graphql';
 import { resolvers } from './resolvers';
 
 export const apolloProvider = () => {
@@ -106,6 +107,19 @@ export const apolloProvider = () => {
       },
       spec: {
         suspend: null,
+      },
+    },
+  });
+
+  cache.writeQuery({
+    query: k8sServicesQuery,
+    data: {
+      metadata,
+      spec: {
+        type: null,
+        clusterIP: null,
+        externalIP: null,
+        ports: null,
       },
     },
   });

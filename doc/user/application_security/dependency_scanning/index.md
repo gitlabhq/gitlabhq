@@ -894,17 +894,15 @@ you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
 
-#### FIPS-enabled images
+### FIPS-enabled images
 
-> Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
+> - Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
+> - Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the Gemnasium images. You can therefore replace standard images with FIPS-enabled images.
-
-Gemnasium scanning jobs automatically use FIPS-enabled image when FIPS mode is enabled in the GitLab instance.
-([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.)
-
-To manually switch to FIPS-enabled images, set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
+versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
+scanning jobs automatically use the FIPS-enabled images. To manually switch to FIPS-enabled images,
+set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 

@@ -202,3 +202,10 @@ To see what polyfills are being used:
 ### 9. Why is my page broken in dark mode?
 
 See [dark mode docs](dark_mode.md)
+
+### 10. How to render GitLab-flavored Markdown?
+
+If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/index.md), then there are two things that you require:
+
+- Pass the GLFM content with the `v-safe-html` directive to a `div` HTML element inside your Vue component
+- Add the `md` class to the root div, which will apply the appropriate CSS styling

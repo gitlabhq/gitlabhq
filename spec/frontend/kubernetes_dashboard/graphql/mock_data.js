@@ -513,3 +513,87 @@ export const mockCronJobsTableItems = [
 ];
 
 export const k8sCronJobsMock = [readyCronJob, suspendedCronJob, failedCronJob];
+
+export const k8sServicesMock = [
+  {
+    metadata: {
+      name: 'my-first-service',
+      namespace: 'default',
+      creationTimestamp: '2023-07-31T11:50:17Z',
+      labels: {},
+      annotations: {},
+    },
+    spec: {
+      ports: [
+        {
+          name: 'https',
+          protocol: 'TCP',
+          port: 443,
+          targetPort: 8443,
+        },
+      ],
+      clusterIP: '10.96.0.1',
+      externalIP: '-',
+      type: 'ClusterIP',
+    },
+  },
+  {
+    metadata: {
+      name: 'my-second-service',
+      namespace: 'default',
+      creationTimestamp: '2023-11-21T11:50:59Z',
+      labels: {},
+      annotations: {},
+    },
+    spec: {
+      ports: [
+        {
+          name: 'http',
+          protocol: 'TCP',
+          appProtocol: 'http',
+          port: 80,
+          targetPort: 'http',
+          nodePort: 31989,
+        },
+        {
+          name: 'https',
+          protocol: 'TCP',
+          appProtocol: 'https',
+          port: 443,
+          targetPort: 'https',
+          nodePort: 32679,
+        },
+      ],
+      clusterIP: '10.105.219.238',
+      externalIP: '-',
+      type: 'NodePort',
+    },
+  },
+];
+
+export const mockServicesTableItems = [
+  {
+    name: 'my-first-service',
+    namespace: 'default',
+    type: 'ClusterIP',
+    clusterIP: '10.96.0.1',
+    externalIP: '-',
+    ports: '443/TCP',
+    age: '114d',
+    labels: {},
+    annotations: {},
+    kind: 'Service',
+  },
+  {
+    name: 'my-second-service',
+    namespace: 'default',
+    type: 'NodePort',
+    clusterIP: '10.105.219.238',
+    externalIP: '-',
+    ports: '80:31989/TCP, 443:32679/TCP',
+    age: '1d',
+    labels: {},
+    annotations: {},
+    kind: 'Service',
+  },
+];

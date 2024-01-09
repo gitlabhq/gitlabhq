@@ -48,6 +48,7 @@ Matches use:
 | The `nightly` and `canary` pipelines | `only: { pipeline: [:nightly, :canary] }` | ["nightly scheduled pipeline"](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules) and ["canary"](https://gitlab.com/gitlab-org/quality/canary) |
 | The `ee:instance` job | `only: { job: 'ee:instance' }` | The `ee:instance` job in any pipeline |
 | Any `quarantine` job | `only: { job: '.*quarantine' }` | Any job ending in `quarantine` in any pipeline |
+| Local development environment | `only: :local` | Any environment where `Runtime::Env.running_in_ci?` is false |
 | Any run where condition evaluates to a truthy value | `only: { condition: -> { ENV['TEST_ENV'] == 'true' } }` | Any run where `TEST_ENV` is set to true
 
 ```ruby

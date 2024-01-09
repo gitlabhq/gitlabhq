@@ -19,6 +19,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Archive project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) in GitLab 16.7.
 > - [Delete project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) in GitLab 16.8.
 > - [Manage group access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) in GitLab 16.8.
+> - [Admin terraform state introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member` and `manage_project_access_tokens`.
@@ -46,6 +47,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].group_id`                      | integer | The ID of the group that the member role belongs to. |
 | `[].base_access_level`             | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
 | `[].admin_merge_request`           | boolean | Permission to admin project merge requests and enables the ability to `download_code`. |
+| `[].admin_terraform_state`         | boolean | Permission to admin project terraform state. |
 | `[].admin_vulnerability`           | boolean | Permission to admin project vulnerabilities. |
 | `[].read_code`                     | boolean | Permission to read project code. |
 | `[].read_dependency`               | boolean | Permission to read project dependencies. |
@@ -73,6 +75,7 @@ Example response:
     "group_id": 84,
     "base_access_level": 10,
     "admin_merge_request": false,
+    "admin_terraform_state": false,
     "admin_vulnerability": false,
     "read_code": true,
     "read_dependency": false,
@@ -88,8 +91,9 @@ Example response:
     "description: "Custom guest that read and admin security entities",
     "group_id": 84,
     "base_access_level": 10,
-    "admin_merge_request": false,
     "admin_vulnerability": true,
+    "admin_merge_request": false,
+    "admin_terraform_state": false,
     "read_code": false,
     "read_dependency": true,
     "read_vulnerability": true,
@@ -120,6 +124,7 @@ To add a member role to a group, the group must be at root-level (have no parent
 | `description`  | string         | no       | The description of the member role. |
 | `base_access_level` | integer   | yes      | Base access level for configured role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
 | `admin_merge_request` | boolean | no       | Permission to admin project merge requests. |
+| `admin_terraform_state` | boolean | no       | Permission to admin project terraform state. |
 | `admin_vulnerability` | boolean | no       | Permission to admin project vulnerabilities. |
 | `read_code`           | boolean | no       | Permission to read project code. |
 | `read_dependency`     | boolean | no       | Permission to read project dependencies. |
@@ -135,6 +140,7 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following att
 | `group_id`               | integer | The ID of the group that the member role belongs to. |
 | `base_access_level`      | integer | Base access level for member role. |
 | `admin_merge_request`    | boolean | Permission to admin project merge requests. |
+| `admin_terraform_state`    | boolean | Permission to admin project terraform state. |
 | `admin_vulnerability`    | boolean | Permission to admin project vulnerabilities. |
 | `read_code`              | boolean | Permission to read project code. |
 | `read_dependency`        | boolean | Permission to read project dependencies. |

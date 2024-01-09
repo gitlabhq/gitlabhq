@@ -67,13 +67,13 @@ RSpec.describe 'getting organization information', feature_category: :cell do
       it 'returns correct organization user fields' do
         request_organization
 
-        organization_user_node = graphql_data_at(:organization, :organizationUsers, :nodes).first
+        organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
           "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
           "id" => organization_user.to_global_id.to_s,
           "user" => { "id" => user.to_global_id.to_s }
         }
-        expect(organization_user_node).to match(expected_attributes)
+        expect(organization_user_nodes).to include(expected_attributes)
       end
 
       it 'avoids N+1 queries for all the fields' do

@@ -32,8 +32,19 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
   end
 
   context 'when the user is part of the organization' do
-    before do
-      create :organization_user, organization: organization, user: current_user
+    before_all do
+      create(:organization_user, organization: organization, user: current_user)
+    end
+
+    it { is_expected.to be_disallowed(:admin_organization) }
+    it { is_expected.to be_allowed(:create_group) }
+    it { is_expected.to be_allowed(:read_organization) }
+    it { is_expected.to be_allowed(:read_organization_user) }
+  end
+
+  context 'when the user is an owner of the organization' do
+    before_all do
+      create(:organization_user, :owner, organization: organization, user: current_user)
     end
 
     it { is_expected.to be_allowed(:admin_organization) }

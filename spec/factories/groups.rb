@@ -18,6 +18,10 @@ FactoryBot.define do
       create(:namespace_settings, namespace: group) unless group.namespace_settings
     end
 
+    trait :with_organization do
+      association :organization
+    end
+
     trait :public do
       visibility_level { Gitlab::VisibilityLevel::PUBLIC }
     end

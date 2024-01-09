@@ -40,11 +40,12 @@ default:
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
   CREATE_RAILS_SLOW_TEST_ISSUES: "true"
+  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
 
-.default-merge-request-slow-tests-variables: &default-merge-request-slow-tests-variables
+.default-merge-request-variables: &default-merge-request-variables
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
+  CREATE_RAILS_FLAKY_TEST_ISSUES: "true"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -104,8 +105,7 @@ workflow:
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: *default-ruby-variables
-        <<: *default-merge-request-slow-tests-variables
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
     # For the scheduled pipelines, we set specific variables.
@@ -122,7 +122,7 @@ workflow:
       variables:
         <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
-    # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
+    # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
@@ -183,7 +183,7 @@ variables:
   CI_FETCH_REPO_GIT_STRATEGY: "none"
   DEBIAN_VERSION: "bullseye"
   UBI_VERSION: "8.6"
-  CHROME_VERSION: "113"
+  CHROME_VERSION: "119"
   DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
   GO_VERSION: "1.20"

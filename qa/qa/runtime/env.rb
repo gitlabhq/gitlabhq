@@ -8,7 +8,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :personal_access_token, :admin_personal_access_token
+      attr_writer :personal_access_token, :admin_personal_access_token, :gitlab_url
       attr_accessor :dry_run
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES

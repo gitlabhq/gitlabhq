@@ -12,7 +12,8 @@ List the current statistics of the GitLab instance. You have to be an
 administrator to perform this action.
 
 NOTE:
-These statistics are approximate.
+These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data
+when [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16) and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads) strategies are used for calculations.
 
 ```plaintext
 GET /application/statistics

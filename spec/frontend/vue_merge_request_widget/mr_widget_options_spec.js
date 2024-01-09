@@ -264,7 +264,7 @@ describe('MrWidgetOptions', () => {
           expect(findMergePipelineForkAlert().exists()).toBe(false);
         });
 
-        it('hides the alert when merge pipelines are not enabled', async () => {
+        it('hides the alert when merged results pipelines are not enabled', async () => {
           createComponent({
             updatedMrData: {
               source_project_id: 1,
@@ -275,7 +275,7 @@ describe('MrWidgetOptions', () => {
           expect(findMergePipelineForkAlert().exists()).toBe(false);
         });
 
-        it('shows the alert when merge pipelines are enabled and the source project and target project are different', async () => {
+        it('shows the alert when merged results pipelines are enabled and the source project and target project are different', async () => {
           createComponent({
             updatedMrData: {
               source_project_id: 1,

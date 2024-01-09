@@ -34,6 +34,7 @@ module QA
 
           options.each do |option|
             opts[:domain] = production_domain(uri_tld) if option == :production
+            return run_locally? if option == :local
 
             next unless option.is_a?(Hash)
 
@@ -56,6 +57,10 @@ module QA
         alias_method :dot_com?, :context_matches?
 
         private
+
+        def run_locally?
+          !Runtime::Env.running_in_ci?
+        end
 
         def evaluate_pipeline_context(pipeline)
           return true if Runtime::Env.ci_project_name.blank?

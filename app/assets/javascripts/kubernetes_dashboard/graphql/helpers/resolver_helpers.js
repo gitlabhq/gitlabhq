@@ -62,6 +62,24 @@ export const mapJobItem = (item) => {
   };
 };
 
+export const mapServicesItems = (item) => {
+  const { type, clusterIP, externalIP, ports } = item.spec;
+
+  return {
+    metadata: {
+      ...item.metadata,
+      annotations: item.metadata?.annotations || {},
+      labels: item.metadata?.labels || {},
+    },
+    spec: {
+      type,
+      clusterIP: clusterIP || '-',
+      externalIP: externalIP || '-',
+      ports,
+    },
+  };
+};
+
 export const mapCronJobItem = (item) => {
   const metadata = {
     ...item.metadata,

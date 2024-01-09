@@ -193,7 +193,6 @@ RSpec/NamedSubject:
     - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/auth_helper_spec.rb'
     - 'ee/spec/helpers/ee/branches_helper_spec.rb'
-    - 'ee/spec/helpers/ee/ci/catalog/resources_helper_spec.rb'
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/emails_helper_spec.rb'
     - 'ee/spec/helpers/ee/environments_helper_spec.rb'

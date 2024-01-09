@@ -10516,9 +10516,6 @@ msgstr ""
 msgid "CiCatalog|Remove project from the CI/CD Catalog?"
 msgstr ""
 
-msgid "CiCatalog|Repositories of pipeline components available in this namespace."
-msgstr ""
-
 msgid "CiCatalog|Search must be at least 3 characters"
 msgstr ""
 
@@ -16716,6 +16713,9 @@ msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. 
 msgstr ""
 
 msgid "Dependencies|Toggle vulnerability list"
+msgstr ""
+
+msgid "Dependencies|Unknown path"
 msgstr ""
 
 msgid "Dependencies|Unsupported file(s) detected"
@@ -24692,6 +24692,9 @@ msgstr ""
 msgid "IdentityVerification|Didn't receive a code? %{codeLinkStart}Send a new code%{codeLinkEnd} or %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}"
 msgstr ""
 
+msgid "IdentityVerification|Didn't receive a code? Send a new code in %{timer} or %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}"
+msgstr ""
+
 msgid "IdentityVerification|Email update is only offered once."
 msgstr ""
 
@@ -24759,6 +24762,9 @@ msgid "IdentityVerification|Send a new code"
 msgstr ""
 
 msgid "IdentityVerification|Send code"
+msgstr ""
+
+msgid "IdentityVerification|Send code in %{timer}"
 msgstr ""
 
 msgid "IdentityVerification|Something went wrong. Please try again."
@@ -28210,6 +28216,12 @@ msgid "KubernetesDashboard|ReplicaSets"
 msgstr ""
 
 msgid "KubernetesDashboard|Running"
+msgstr ""
+
+msgid "KubernetesDashboard|Service"
+msgstr ""
+
+msgid "KubernetesDashboard|Services"
 msgstr ""
 
 msgid "KubernetesDashboard|StatefulSet"
@@ -35815,9 +35827,6 @@ msgid "Pipelines|By revoking a trigger you will break any processes making use o
 msgstr ""
 
 msgid "Pipelines|CI lint"
-msgstr ""
-
-msgid "Pipelines|CI/CD Catalog"
 msgstr ""
 
 msgid "Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})"
@@ -56332,10 +56341,10 @@ msgstr ""
 msgid "You do not belong to any projects yet."
 msgstr ""
 
-msgid "You do not have access to AI features."
+msgid "You do not have access to any projects for creating incidents."
 msgstr ""
 
-msgid "You do not have access to any projects for creating incidents."
+msgid "You do not have access to chat feature."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"

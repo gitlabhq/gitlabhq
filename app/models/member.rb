@@ -288,6 +288,14 @@ class Member < ApplicationRecord
     refresh_member_authorized_projects
   end
 
+  after_create if: :update_organization_user? do
+    Organizations::OrganizationUser.upsert(
+      { organization_id: source.organization_id, user_id: user_id, access_level: :default },
+      unique_by: [:organization_id, :user_id],
+      on_duplicate: :skip # Do not change access_level, could make :owner :default
+    )
+  end
+
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
 
   class << self
@@ -655,6 +663,12 @@ class Member < ApplicationRecord
 
   def project_bot?
     user&.project_bot?
+  end
+
+  def update_organization_user?
+    return false unless Feature.enabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
+
+    !invite? && source.organization.present?
   end
 
   def log_invitation_token_cleanup

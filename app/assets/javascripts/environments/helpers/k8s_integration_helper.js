@@ -13,17 +13,6 @@ import {
 } from '~/kubernetes_dashboard/constants';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
 
-export function generateServicePortsString(ports) {
-  if (!ports?.length) return '';
-
-  return ports
-    .map((port) => {
-      const nodePort = port.nodePort ? `:${port.nodePort}` : '';
-      return `${port.port}${nodePort}/${port.protocol}`;
-    })
-    .join(', ');
-}
-
 export function getDeploymentsStatuses(items) {
   const failed = [];
   const ready = [];

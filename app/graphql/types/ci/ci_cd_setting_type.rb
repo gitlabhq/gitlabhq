@@ -27,7 +27,7 @@ module Types
       field :merge_pipelines_enabled,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Whether merge pipelines are enabled.',
+        description: 'Whether merged results pipelines are enabled.',
         method: :merge_pipelines_enabled?
       field :project,
         Types::ProjectType,

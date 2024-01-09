@@ -33,6 +33,11 @@ export default {
       type: Array,
       required: true,
     },
+    fields: {
+      type: Array,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -59,7 +64,7 @@ export default {
   </gl-alert>
   <div v-else>
     <workload-stats :stats="stats" />
-    <workload-table :items="items" @select-item="onItemSelect" />
+    <workload-table :items="items" :fields="fields" @select-item="onItemSelect" />
 
     <gl-drawer
       :open="showDetailsDrawer"

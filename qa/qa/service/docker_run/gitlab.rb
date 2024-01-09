@@ -4,10 +4,20 @@ module QA
   module Service
     module DockerRun
       class Gitlab < Base
-        def initialize(name:, omnibus_config: '', image: '')
+        attr_reader :external_url, :name
+
+        # @param [String] name
+        # @param [String] omnibus_config
+        # @param [String] image
+        # @param [String] ports Docker-formatted port exposition
+        # @see ports https://docs.docker.com/engine/reference/commandline/run/#publish
+        # @param [String] external_url
+        def initialize(name:, omnibus_config: '', image: '', ports: '80:80', external_url: Runtime::Env.gitlab_url)
           @image = image
           @name = name
           @omnibus_configuration = omnibus_config
+          @ports = ports
+          @external_url = external_url
           super()
         end
 
@@ -24,7 +34,7 @@ module QA
             docker run -d --rm
             --network #{network}
             --hostname #{host_name}
-            --publish 80:80
+            --publish #{@ports}
             #{RUBY_PLATFORM.include?('arm64') ? '--platform linux/amd64' : ''}
             --env GITLAB_OMNIBUS_CONFIG="#{@omnibus_configuration}"
             --name #{@name}

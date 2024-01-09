@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resiliency do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user) }
   let_it_be(:banned_user) { create(:user, :banned) }
 
@@ -248,6 +250,45 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
       let(:ref_id) { 'does-not-exist' }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.sms_send_allowed_after' do
+    let_it_be(:record) { create(:phone_number_validation, sms_send_count: 0) }
+
+    subject(:result) { record.sms_send_allowed_after }
+
+    context 'when there are no attempts yet' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when sms_send_wait_time feature flag is disabled' do
+      let_it_be(:record) { create(:phone_number_validation, sms_send_count: 1) }
+
+      before do
+        stub_feature_flags(sms_send_wait_time: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    where(:attempt_number, :expected_delay) do
+      2 | 1.minute
+      3 | 3.minutes
+      4 | 5.minutes
+      5 | 10.minutes
+      6 | 10.minutes
+    end
+
+    with_them do
+      it 'returns the correct delayed timestamp value' do
+        freeze_time do
+          record.update!(sms_send_count: attempt_number - 1, sms_sent_at: Time.current)
+
+          expected_result = Time.current + expected_delay
+          expect(result).to eq expected_result
+        end
+      end
     end
   end
 end

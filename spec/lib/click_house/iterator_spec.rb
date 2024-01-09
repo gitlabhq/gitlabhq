@@ -29,6 +29,16 @@ RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database d
     expect(collect_ids_with_batch_size(15)).to match_array(expected_values)
   end
 
+  context 'when min value is given' do
+    let(:iterator) { described_class.new(query_builder: query_builder, connection: connection, min_value: 5) }
+
+    it 'iterates from the given min value' do
+      expected_values = (5..10).to_a
+
+      expect(collect_ids_with_batch_size(5)).to match_array(expected_values)
+    end
+  end
+
   context 'when there are no records for the given query' do
     let(:query_builder) do
       ClickHouse::QueryBuilder

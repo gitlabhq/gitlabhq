@@ -5,6 +5,7 @@ import {
   calculateDaemonSetStatus,
   calculateJobStatus,
   calculateCronJobStatus,
+  generateServicePortsString,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -138,6 +139,35 @@ describe('k8s_integration_helper', () => {
       ${'there are some suspend in the spec'}                            | ${suspended} | ${'Suspended'}
     `('returns status as $expected when $condition', ({ item, expected }) => {
       expect(calculateCronJobStatus(item)).toBe(expected);
+    });
+  });
+
+  describe('generateServicePortsString', () => {
+    const port = '8080';
+    const protocol = 'TCP';
+    const nodePort = '31732';
+
+    it('returns empty string if no ports provided', () => {
+      expect(generateServicePortsString([])).toBe('');
+    });
+
+    it('returns port and protocol when provided', () => {
+      expect(generateServicePortsString([{ port, protocol }])).toBe(`${port}/${protocol}`);
+    });
+
+    it('returns port, protocol and nodePort when provided', () => {
+      expect(generateServicePortsString([{ port, protocol, nodePort }])).toBe(
+        `${port}:${nodePort}/${protocol}`,
+      );
+    });
+
+    it('returns joined strings of ports if multiple are provided', () => {
+      expect(
+        generateServicePortsString([
+          { port, protocol },
+          { port, protocol, nodePort },
+        ]),
+      ).toBe(`${port}/${protocol}, ${port}:${nodePort}/${protocol}`);
     });
   });
 });

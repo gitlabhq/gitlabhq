@@ -30,21 +30,6 @@ module Gitlab::UsageDataCounters
         Gitlab::Template::GitlabCiYmlTemplate.find(template_name.chomp('.gitlab-ci.yml'))&.full_name
       end
 
-      def all_included_templates(template_name)
-        expanded_template_name = expand_template_name(template_name)
-        results = [expanded_template_name].tap do |result|
-          template = Gitlab::Template::GitlabCiYmlTemplate.find(template_name.chomp('.gitlab-ci.yml'))
-          data = Gitlab::Ci::Config::Yaml::Loader.new(template.content).load.content
-          [data[:include]].compact.flatten.each do |ci_include|
-            if ci_include_template = ci_include[:template]
-              result.concat(all_included_templates(ci_include_template))
-            end
-          end
-        end
-
-        results.uniq.sort_by { _1['name'] }
-      end
-
       private
 
       def template_to_event_name(template)
