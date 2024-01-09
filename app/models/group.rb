@@ -446,7 +446,9 @@ class Group < Namespace
   end
 
   def owned_by?(user)
-    all_owner_members.exists?(user: user)
+    return false unless user
+
+    all_owner_members.non_invite.exists?(user: user)
   end
 
   def add_members(users, access_level, current_user: nil, expires_at: nil)
@@ -608,7 +610,9 @@ class Group < Namespace
   # Only for direct and not requested members with higher access level than MIMIMAL_ACCESS
   # It returns true for non-active users
   def has_user?(user)
-    group_members.exists?(user: user)
+    return false unless user
+
+    group_members.non_invite.exists?(user: user)
   end
 
   def direct_members

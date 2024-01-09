@@ -12,5 +12,6 @@ RSpec.describe Projects::ProjectTopic do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:topic) }
+    it { is_expected.to validate_uniqueness_of(:topic_id).scoped_to(:project_id) }
   end
 end

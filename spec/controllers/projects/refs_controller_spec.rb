@@ -78,6 +78,23 @@ RSpec.describe Projects::RefsController, feature_category: :source_code_manageme
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    context 'with an invalid path parameter' do
+      it 'returns 400 bad request' do
+        params = {
+          destination: 'graphs_commits',
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: 'master',
+          ref_type: nil,
+          path: '*'
+        }
+
+        get :switch, params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
   end
 
   describe 'GET #logs_tree' do

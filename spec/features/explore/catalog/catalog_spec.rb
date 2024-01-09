@@ -5,39 +5,24 @@ require 'spec_helper'
 RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
   let_it_be(:namespace) { create(:group) }
   let_it_be(:user) { create(:user) }
+  let_it_be(:public_projects_with_components) do
+    create_list(
+      :project,
+      3,
+      :catalog_resource_with_components,
+      :public,
+      description: 'A simple component',
+      namespace: namespace
+    )
+  end
 
   before_all do
-    namespace.add_developer(user)
+    public_projects_with_components.map do |current_project|
+      create(:ci_catalog_resource, :published, project: current_project)
+    end
   end
 
-  before do
-    sign_in(user)
-  end
-
-  describe 'GET explore/catalog' do
-    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-
-    let_it_be(:ci_resource_projects) do
-      create_list(
-        :project,
-        3,
-        :repository,
-        description: 'A simple component',
-        namespace: namespace
-      )
-    end
-
-    let_it_be(:ci_catalog_resources) do
-      ci_resource_projects.map do |current_project|
-        create(:ci_catalog_resource, :published, project: current_project)
-      end
-    end
-
-    before do
-      visit explore_catalog_index_path
-      wait_for_requests
-    end
-
+  shared_examples 'basic page viewing' do
     it 'shows CI Catalog title and description', :aggregate_failures do
       expect(page).to have_content('CI/CD Catalog')
       expect(page).to have_content(
@@ -49,8 +34,94 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
       expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
     end
 
+    it 'renders resource details', :aggregate_failures do
+      within_testid('catalog-resource-item', match: :first) do
+        expect(page).to have_content(public_projects_with_components[2].name)
+        expect(page).to have_content(public_projects_with_components[2].description)
+        expect(page).to have_content(namespace.name)
+      end
+    end
+  end
+
+  shared_examples 'navigates to the details page' do
+    context 'when clicking on a resource' do
+      before do
+        find_by_testid('ci-resource-link', match: :first).click
+      end
+
+      it 'navigates to the details page' do
+        expect(page).to have_content('Go to the project')
+      end
+    end
+  end
+
+  context 'when unauthenticated' do
+    before do
+      visit explore_catalog_index_path
+    end
+
+    it_behaves_like 'basic page viewing'
+    it_behaves_like 'navigates to the details page'
+  end
+
+  context 'when authenticated' do
+    before do
+      sign_in(user)
+      visit explore_catalog_index_path
+    end
+
+    it_behaves_like 'basic page viewing'
+    it_behaves_like 'navigates to the details page'
+  end
+
+  context 'for private catalog resources' do
+    let_it_be(:private_project) do
+      create(
+        :project,
+        :catalog_resource_with_components,
+        description: 'Our private project',
+        namespace: namespace
+      )
+    end
+
+    let_it_be(:catalog_resource) { create(:ci_catalog_resource, :published, project: private_project) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:browsing_user) { create(:user) }
+
+    context 'when browsing as a developer + member' do
+      before_all do
+        namespace.add_developer(developer)
+      end
+
+      before do
+        sign_in(developer)
+        visit explore_catalog_index_path
+      end
+
+      it 'shows the catalog resource' do
+        expect(page).to have_content(private_project.name)
+      end
+    end
+
+    context 'when browsing as a non-member of the project' do
+      before do
+        sign_in(browsing_user)
+        visit explore_catalog_index_path
+      end
+
+      it 'does not show the catalog resource' do
+        expect(page).not_to have_content(private_project.name)
+      end
+    end
+  end
+
+  describe 'Search and sorting' do
+    before do
+      visit explore_catalog_index_path
+    end
+
     context 'when searching for a resource' do
-      let(:project_name) { ci_resource_projects[0].name }
+      let(:project_name) { public_projects_with_components[0].name }
 
       before do
         find('input[data-testid="catalog-search-bar"]').send_keys project_name
@@ -70,8 +141,12 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
       context 'with the creation date option' do
         it 'sorts resources from last to first by default' do
           expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
-          expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(ci_resource_projects[2].name)
-          expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(ci_resource_projects[0].name)
+          expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(
+            public_projects_with_components[2].name
+          )
+          expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(
+            public_projects_with_components[0].name
+          )
         end
 
         context 'when changing the sort direction' do
@@ -82,55 +157,14 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
 
           it 'sorts resources from first to last' do
             expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
-            expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(ci_resource_projects[0].name)
-            expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(ci_resource_projects[2].name)
+            expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(
+              public_projects_with_components[0].name
+            )
+            expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(
+              public_projects_with_components[2].name
+            )
           end
         end
-      end
-    end
-
-    context 'for a single CI/CD catalog resource' do
-      it 'renders resource details', :aggregate_failures do
-        within_testid('catalog-resource-item', match: :first) do
-          expect(page).to have_content(ci_resource_projects[2].name)
-          expect(page).to have_content(ci_resource_projects[2].description)
-          expect(page).to have_content(namespace.name)
-        end
-      end
-
-      context 'when clicked' do
-        before do
-          find_by_testid('ci-resource-link', match: :first).click
-        end
-
-        it 'navigates to the details page' do
-          expect(page).to have_content('Go to the project')
-        end
-      end
-    end
-  end
-
-  describe 'GET explore/catalog/:id' do
-    let_it_be(:project) { create(:project, :repository, namespace: namespace) }
-
-    before do
-      visit explore_catalog_path(new_ci_resource)
-    end
-
-    context 'when the resource is published' do
-      let(:new_ci_resource) { create(:ci_catalog_resource, :published, project: project) }
-
-      it 'navigates to the details page' do
-        expect(page).to have_content('Go to the project')
-      end
-    end
-
-    context 'when the resource is not published' do
-      let(:new_ci_resource) { create(:ci_catalog_resource, project: project, state: :draft) }
-
-      it 'returns a 404' do
-        expect(page).to have_title('Not Found')
-        expect(page).to have_content('Page Not Found')
       end
     end
   end

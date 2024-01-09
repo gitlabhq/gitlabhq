@@ -295,12 +295,12 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
 
-rspec clickhouse:
+rspec unit clickhouse:
   extends:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:clickhouse-changes
 
-rspec-ee clickhouse:
+rspec-ee unit clickhouse:
   extends:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:ee-only-clickhouse-changes
@@ -355,7 +355,7 @@ rspec:artifact-collector unit:
     - .rails:rules:ee-and-foss-unit
   needs:
     - rspec unit pg14  # 32 jobs
-    - job: rspec clickhouse  # 1 job
+    - job: rspec unit clickhouse  # 1 job
       optional: true
 
 rspec:artifact-collector system:
@@ -459,7 +459,7 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg14  # 2 jobs
       optional: true
-    - job: rspec-ee clickhouse  # 1 job
+    - job: rspec-ee unit clickhouse  # 1 job
       optional: true
     - job: rspec-ee integration pg14  # 7 jobs
       optional: true

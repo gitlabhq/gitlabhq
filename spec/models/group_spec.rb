@@ -1603,6 +1603,27 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#owned_by?' do
+    let!(:invited_group_member) { create(:group_member, :owner, :invited, group: group) }
+
+    before do
+      @members = setup_group_members(group)
+    end
+
+    it 'returns true for owner' do
+      expect(group.owned_by?(@members[:owner])).to eq(true)
+    end
+
+    it 'returns false for developer' do
+      expect(group.owned_by?(@members[:developer])).to eq(false)
+    end
+
+    it 'returns false when nil is passed' do
+      expect(invited_group_member.user).to eq(nil)
+      expect(group.owned_by?(invited_group_member.user)).to eq(false)
+    end
+  end
+
   def setup_group_members(group)
     members = {
       owner: create(:user),
@@ -1647,6 +1668,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:user) { create(:user) }
     let_it_be(:user2) { create(:user) }
+    let_it_be(:invited_group_member) { create(:group_member, :owner, :invited, group: group) }
 
     subject { group.has_user?(user) }
 
@@ -1678,6 +1700,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it 'returns false' do
         expect(subject).to be_falsey
+      end
+    end
+
+    context 'when the user is an invited member' do
+      it 'returns false when nil is passed' do
+        expect(invited_group_member.user).to eq(nil)
+        expect(group.has_user?(invited_group_member.user)).to be_falsey
       end
     end
   end

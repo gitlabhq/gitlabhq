@@ -52,7 +52,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
 
       describe 'RSpec hooks' do
         it 'ensures that tables are empty' do
-          results = ClickHouse::Client.select('SELECT * FROM events', :main)
+          results = ClickHouse::Client.select('SELECT * FROM FINAL events', :main)
           expect(results).to be_empty
         end
 
@@ -66,7 +66,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
               :main)
           end
 
-          results = ClickHouse::Client.select('SELECT id, path, created_at FROM events ORDER BY id', :main)
+          results = ClickHouse::Client.select('SELECT id, path, created_at FROM events FINAL ORDER BY id', :main)
 
           expect(results).to match([
             { 'id' => 10, 'path' => '1/2/', 'created_at' => be_within(0.1.seconds).of(time) },
@@ -87,7 +87,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
 
         ClickHouse::Client.execute(insert_query, :main)
 
-        results = ClickHouse::Client.select('SELECT * FROM events ORDER BY id', :main)
+        results = ClickHouse::Client.select('SELECT * FROM events FINAL ORDER BY id', :main)
         expect(results.size).to eq(3)
 
         last = results.last
@@ -106,7 +106,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
         ClickHouse::Client.execute(delete_query, :main)
 
         select_query = ClickHouse::Client::Query.new(
-          raw_query: 'SELECT * FROM events WHERE id = {id:UInt64}',
+          raw_query: 'SELECT * FROM events FINAL WHERE id = {id:UInt64}',
           placeholders: { id: event3.id }
         )
 

@@ -346,6 +346,7 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     let_it_be(:project) { create(:project, namespace: group) }
     let_it_be(:user) { create(:user) }
     let_it_be(:user2) { create(:user) }
+    let_it_be(:invited_project_member) { create(:project_member, :owner, :invited, project: project) }
 
     subject { project.team.has_user?(user) }
 
@@ -372,6 +373,13 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       end
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when the user is an invited member' do
+      it 'returns false when nil is passed' do
+        expect(invited_project_member.user).to eq(nil)
+        expect(project.team.has_user?(invited_project_member.user)).to be_falsey
+      end
     end
   end
 

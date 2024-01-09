@@ -1144,6 +1144,23 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         it_behaves_like 'feature update success'
       end
     end
+
+    context 'project topics' do
+      context 'on updates with topics of the same name (case insensitive)' do
+        it 'returns 200, with alert about update failing' do
+          put :update, params: {
+            namespace_id: project.namespace,
+            id: project.path,
+            project: {
+              topics: 'smoketest, SMOKETEST'
+            }
+          }
+
+          expect(response).to be_successful
+          expect(flash[:alert]).to eq('Project could not be updated!')
+        end
+      end
+    end
   end
 
   describe '#transfer', :enable_admin_mode do

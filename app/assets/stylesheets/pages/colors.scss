@@ -29,3 +29,52 @@
 .danger-title {
   color: var(--red-500, $red-500);
 }
+
+.suggest-colors {
+  padding-top: 3px;
+
+  a {
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+
+    &:focus,
+    &:focus:active {
+      position: relative;
+      z-index: 1;
+      @include gl-focus;
+    }
+  }
+
+  &.suggest-colors-dropdown {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    a {
+      border-radius: 0;
+      width: (100% / 7);
+      margin-right: 0;
+      margin-bottom: -5px;
+
+      &:first-of-type {
+        border-top-left-radius: $gl-border-radius-base;
+      }
+
+      &:nth-of-type(7) {
+        border-top-right-radius: $gl-border-radius-base;
+      }
+      
+      &:nth-last-child(7) {
+        border-bottom-left-radius: $gl-border-radius-base;
+      }
+
+      &:last-of-type {
+        border-bottom-right-radius: $gl-border-radius-base;
+      }
+    }
+  }
+}

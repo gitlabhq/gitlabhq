@@ -6,7 +6,6 @@ module API
 
     before do
       require_pages_config_enabled!
-      authenticated_with_can_read_all_resources!
     end
 
     params do
@@ -24,11 +23,29 @@ module API
         tags %w[pages]
       end
       delete ':id/pages' do
+        authenticated_with_can_read_all_resources!
         authorize! :remove_pages, user_project
 
         ::Pages::DeleteService.new(user_project, current_user).execute
 
         no_content!
+      end
+
+      desc 'Get pages settings' do
+        detail 'Get pages URL and other settings. This feature was introduced in Gitlab 16.8'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[pages]
+      end
+      get ':id/pages' do
+        authorize! :read_pages, user_project
+
+        break not_found! unless user_project.pages_enabled?
+
+        present ::Pages::ProjectSettings.new(user_project), with: Entities::Pages::ProjectSettings
       end
     end
   end

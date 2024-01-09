@@ -42,7 +42,7 @@ class Projects::RefsController < Projects::ApplicationController
         redirect_to new_path
       end
     end
-  rescue Gitlab::PathTraversal::PathTraversalAttackError
+  rescue Gitlab::PathTraversal::PathTraversalAttackError, ActionController::UrlGenerationError
     head :bad_request
   end
 

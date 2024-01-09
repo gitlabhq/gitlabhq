@@ -174,7 +174,9 @@ class ProjectTeam
 
   # Only for direct and not invited members
   def has_user?(user)
-    project.project_members.exists?(user: user)
+    return false unless user
+
+    project.project_members.non_invite.exists?(user: user)
   end
 
   def human_max_access(user_id)
