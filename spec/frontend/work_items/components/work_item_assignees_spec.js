@@ -103,6 +103,9 @@ describe('WorkItemAssignees component', () => {
       },
       attachTo: document.body,
       apolloProvider,
+      stubs: {
+        GlEmoji: { template: '<div/>' },
+      },
     });
   };
 

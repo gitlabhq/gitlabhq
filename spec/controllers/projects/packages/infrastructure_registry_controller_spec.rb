@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Packages::InfrastructureRegistryController do
+RSpec.describe Projects::Packages::InfrastructureRegistryController, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
 

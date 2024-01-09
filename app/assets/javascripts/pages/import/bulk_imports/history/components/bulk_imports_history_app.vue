@@ -1,6 +1,5 @@
 <script>
 import {
-  GlButton,
   GlEmptyState,
   GlIcon,
   GlLink,
@@ -22,7 +21,6 @@ import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
@@ -43,7 +41,6 @@ const tableCell = (config) => ({
 
 export default {
   components: {
-    GlButton,
     GlEmptyState,
     GlIcon,
     GlLink,
@@ -58,8 +55,6 @@ export default {
   directives: {
     GlTooltip,
   },
-
-  mixins: [glFeatureFlagMixin()],
 
   inject: ['realtimeChangesPath'],
 
@@ -105,10 +100,6 @@ export default {
       return this.historyItems
         .filter((item) => isImporting(item.status))
         .map((item) => item.bulk_import_id);
-    },
-
-    showDetailsLink() {
-      return this.glFeatures.bulkImportDetailsPage;
     },
 
     paginationConfigCopy() {
@@ -265,7 +256,7 @@ export default {
         <template #cell(created_at)="{ value }">
           <time-ago :time="value" />
         </template>
-        <template #cell(status)="{ value, item, toggleDetails, detailsShowing }">
+        <template #cell(status)="{ value, item }">
           <div
             class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-flex-start gl-justify-content-space-between gl-gap-3"
           >
@@ -273,19 +264,9 @@ export default {
               :id="item.bulk_import_id"
               :entity-id="item.id"
               :has-failures="item.has_failures"
-              :show-details-link="showDetailsLink"
               :status="value"
             />
-            <gl-button
-              v-if="!showDetailsLink && item.failures.length"
-              :selected="detailsShowing"
-              @click="toggleDetails"
-              >{{ __('Details') }}</gl-button
-            >
           </div>
-        </template>
-        <template #row-details="{ item }">
-          <pre><code>{{ item.failures }}</code></pre>
         </template>
       </gl-table-lite>
       <pagination-bar

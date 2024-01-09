@@ -23994,7 +23994,7 @@ Returns [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding).
 
 ##### `Pipeline.securityReportFindings`
 
-Vulnerability findings reported on the pipeline.
+Vulnerability findings reported on the pipeline. By default all the states except dismissed are included in the response.
 
 Returns [`PipelineSecurityReportFindingConnection`](#pipelinesecurityreportfindingconnection).
 

@@ -303,27 +303,11 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
       describe 'GET details' do
         subject(:request) { get :details }
 
-        context 'when bulk_import_details_page feature flag is enabled' do
-          before do
-            stub_feature_flags(bulk_import_details_page: true)
-            request
-          end
+        it 'responds with a 200 and shows the template', :aggregate_failures do
+          request
 
-          it 'responds with a 200 and shows the template', :aggregate_failures do
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:details)
-          end
-        end
-
-        context 'when bulk_import_details_page feature flag is disabled' do
-          before do
-            stub_feature_flags(bulk_import_details_page: false)
-            request
-          end
-
-          it 'responds with a 404' do
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:details)
         end
       end
 

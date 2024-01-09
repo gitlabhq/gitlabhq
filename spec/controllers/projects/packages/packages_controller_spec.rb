@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Packages::PackagesController do
+RSpec.describe Projects::Packages::PackagesController, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :public) }
 
   let(:page) { :index }

@@ -37,6 +37,7 @@ export default {
       :id="htmlId"
       v-gl-tooltip.viewport="warningMessage"
       data-name="warning"
+      data-testid="warning"
       class="gl-ml-2"
     />
   </span>

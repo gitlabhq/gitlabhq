@@ -248,7 +248,8 @@ To view group import history:
 
 ## Review results of the import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+> - Feature flag `bulk_import_details_page` removed in GitLab 16.8.
 
 To review the results of an import:
 

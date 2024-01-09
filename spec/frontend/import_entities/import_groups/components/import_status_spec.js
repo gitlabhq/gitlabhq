@@ -88,7 +88,6 @@ describe('Group import status component', () => {
           id: 2,
           entityId: 11,
           hasFailures: true,
-          showDetailsLink: true,
           status: STATUSES.FINISHED,
         },
       });
