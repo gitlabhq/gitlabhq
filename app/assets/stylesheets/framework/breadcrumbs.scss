@@ -11,11 +11,3 @@
     vertical-align: sub;
   }
 }
-
-.breadcrumb-item-text {
-  text-decoration: inherit;
-
-  @include media-breakpoint-down(xs) {
-    @include str-truncated(128px);
-  }
-}

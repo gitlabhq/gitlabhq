@@ -244,7 +244,7 @@ created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/g
 the worker name itself, for example, `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
 flags can be found in [deferring Sidekiq jobs](#deferring-sidekiq-jobs).
 
-### [Deprecated]`development` type
+### (Deprecated) `development` type
 
 The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`, and `beta` feature flag types.
 

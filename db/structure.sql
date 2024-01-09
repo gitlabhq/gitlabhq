@@ -25201,7 +25201,6 @@ ALTER SEQUENCE vs_code_settings_id_seq OWNED BY vs_code_settings.id;
 
 CREATE TABLE vulnerabilities (
     id bigint NOT NULL,
-    epic_id bigint,
     project_id bigint NOT NULL,
     author_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -26014,12 +26013,12 @@ CREATE TABLE workspaces (
     config_version integer DEFAULT 1 NOT NULL,
     force_include_all_resources boolean DEFAULT true NOT NULL,
     url_prefix text,
-    url_domain text,
     url_query_string text,
-    CONSTRAINT check_03c5d442fd CHECK ((char_length(url_domain) <= 256)),
+    dns_zone text,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
+    CONSTRAINT check_67c4c93554 CHECK ((char_length(dns_zone) <= 256)),
     CONSTRAINT check_77d1a2ff50 CHECK ((char_length(processed_devfile) <= 65535)),
     CONSTRAINT check_8a0ab61b6b CHECK ((char_length(url_query_string) <= 256)),
     CONSTRAINT check_8e363ee3ad CHECK ((char_length(devfile_ref) <= 256)),
@@ -34529,13 +34528,9 @@ CREATE INDEX index_packages_debian_group_component_files_on_component_id ON pack
 
 CREATE INDEX index_packages_debian_group_distributions_on_creator_id ON packages_debian_group_distributions USING btree (creator_id);
 
-CREATE INDEX index_packages_debian_group_distributions_on_group_id ON packages_debian_group_distributions USING btree (group_id);
-
 CREATE INDEX index_packages_debian_project_component_files_on_component_id ON packages_debian_project_component_files USING btree (component_id);
 
 CREATE INDEX index_packages_debian_project_distributions_on_creator_id ON packages_debian_project_distributions USING btree (creator_id);
-
-CREATE INDEX index_packages_debian_project_distributions_on_project_id ON packages_debian_project_distributions USING btree (project_id);
 
 CREATE INDEX index_packages_debian_publications_on_distribution_id ON packages_debian_publications USING btree (distribution_id);
 
@@ -34612,8 +34607,6 @@ CREATE INDEX index_packages_project_id_name_partial_for_nuget ON packages_packag
 CREATE INDEX index_packages_rpm_metadata_on_package_id ON packages_rpm_metadata USING btree (package_id);
 
 CREATE INDEX index_packages_rpm_repository_files_on_project_id_and_file_name ON packages_rpm_repository_files USING btree (project_id, file_name);
-
-CREATE INDEX index_packages_tags_on_package_id ON packages_tags USING btree (package_id);
 
 CREATE INDEX index_packages_tags_on_package_id_and_updated_at ON packages_tags USING btree (package_id, updated_at DESC);
 
@@ -35684,8 +35677,6 @@ CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON vulnerabilities USING b
 CREATE INDEX index_vulnerabilities_on_detected_at_and_id ON vulnerabilities USING btree (id, detected_at);
 
 CREATE INDEX index_vulnerabilities_on_dismissed_by_id ON vulnerabilities USING btree (dismissed_by_id);
-
-CREATE INDEX index_vulnerabilities_on_epic_id ON vulnerabilities USING btree (epic_id);
 
 CREATE INDEX index_vulnerabilities_on_finding_id ON vulnerabilities USING btree (finding_id);
 
@@ -38097,9 +38088,6 @@ ALTER TABLE ONLY project_statistics
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT fk_1d30bb4987 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerabilities
-    ADD CONSTRAINT fk_1d37cddf91 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

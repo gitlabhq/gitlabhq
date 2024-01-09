@@ -37,16 +37,16 @@ These integrations have to do with using GitLab to build application workloads a
 
 [12/28/2023 AWS Release Announcement for Self-Managed / Dedicated](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)
 
-**AWS CodeStar Connections** - enables SCM connections to multiple AWS Services. [Configure GitLab](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-gitlab.html). [Supported Providers](https://docs.aws.amazon.com/dtconsole/latest/userguide/supported-versions-connections.html). [Supported AWS Services](https://docs.aws.amazon.com/dtconsole/latest/userguide/integrations-connections.html) - each one may have to make updates to support GitLab, so here is the subset that support GitLab. This works with GitLab.com SaaS, GitLab Self-Managed and GitLab Dedicated. AWS CodeStar connections are not available in all AWS regions - the exclusion list is [documented here](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodestarConnectionSource.html). [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
+**AWS CodeStar Connections** - enables SCM connections to multiple AWS Services. [Configure GitLab](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create-gitlab.html). [Supported Providers](https://docs.aws.amazon.com/dtconsole/latest/userguide/supported-versions-connections.html). [Supported AWS Services](https://docs.aws.amazon.com/dtconsole/latest/userguide/integrations-connections.html) - each one may have to make updates to support GitLab, so here is the subset that support GitLab. This works with GitLab.com SaaS, GitLab Self-Managed and GitLab Dedicated. AWS CodeStar connections are not available in all AWS regions - the exclusion list is [documented here](https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodestarConnectionSource.html). ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 [Video Explanation of AWS CodeStar Connection Integration for AWS (1 min)](https://youtu.be/f7qTSa_bNig)
 
 AWS Services that are supported directly by a CodeStar Connection in an AWS account:
 
-- **Amazon CodeWhisperer Customization Capability** [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] [can connect to a GitLab repository](https://aws.amazon.com/blogs/aws/new-customization-capability-in-amazon-codewhisperer-generates-even-better-suggestions-preview/). `[AWS Built]`
-- **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
-- **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
-- **AWS Glue Notebook Jobs** directly inherit CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
+- **Amazon CodeWhisperer Customization Capability** ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) [can connect to a GitLab repository](https://aws.amazon.com/blogs/aws/new-customization-capability-in-amazon-codewhisperer-generates-even-better-suggestions-preview/). `[AWS Built]`
+- **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **AWS Glue Notebook Jobs** directly inherit CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
 
@@ -59,8 +59,8 @@ Documentation and References:
 
 AWS Services that are supported by an AWS CodePipeline integration:
 
-- **AWS CodeBuild Integration** - through CodePipeline support. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
-- **Amazon SageMaker MLOps Projects** are created via CodePipeline ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
+- **AWS CodeBuild Integration** - through CodePipeline support. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **Amazon SageMaker MLOps Projects** are created via CodePipeline ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
 
@@ -75,12 +75,12 @@ Documentation and References:
 
 #### Custom GitLab Integration in AWS Services
 
-- **Amazon SageMaker Notebooks** [allow Git repositories to be specified by the Git clone URL](https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-resource.html) and configuration of a secret - so GitLab is configurable. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Configuration]`
+- **Amazon SageMaker Notebooks** [allow Git repositories to be specified by the Git clone URL](https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-resource.html) and configuration of a secret - so GitLab is configurable. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Configuration]`
 - **AWS Amplify** - [uses a Git integration mechanism designed by the AWS Amplify team](https://docs.aws.amazon.com/amplify/latest/userguide/getting-started.html). `[AWS Built]`
 
 #### Other SCM Integration Options
 
-- [GitLab Push Mirroring to CodeCommit](../../../user/project/repository/mirror/push.md#set-up-a-push-mirror-from-gitlab-to-aws-codecommit) Workaround enables GitLab repositories to leverage CodePipeline SCM Triggers. GitLab can already leverage S3 and Container Triggers for CodePipeline. This work around enabled CodePipeline capabilities since it was documented. [06/06/2020] `[GitLab Configuration]`
+- [GitLab Push Mirroring to CodeCommit](../../../user/project/repository/mirror/push.md#set-up-a-push-mirror-from-gitlab-to-aws-codecommit) Workaround enables GitLab repositories to leverage CodePipeline SCM Triggers. GitLab can already leverage S3 and Container Triggers for CodePipeline. This work around enabled CodePipeline capabilities since it was documented. (06/06/2020) `[GitLab Configuration]`
 
 See [CD and Operations Integrations](#cd-and-operations-integrations) below for Continuous Deployment (CD) specific integrations that are also available.
 
@@ -88,12 +88,12 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 
 - **Direct CI Integrations That Use Keys, IAM or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
 - **Amazon CodeGuru Reviewer CI workflows using GitLab CI** - can be done, not yet documented.`[AWS Solution]` `[CI Solution]`
-- [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html) [[06/13/2022](https://aws.amazon.com/about-aws/whats-new/2023/06/amazon-codeguru-security-available-preview/)]  `[AWS Solution]` `[CI Solution]`
+- [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html) ([06/13/2022](https://aws.amazon.com/about-aws/whats-new/2023/06/amazon-codeguru-security-available-preview/)) `[AWS Solution]` `[CI Solution]`
 
 ### CD and Operations Integrations
 
-- **AWS CodeDeploy Integration** - through CodePipeline support dicussed above in SCM integrations. This capability allows GitLab to interface with [this list of advanced deployment subsystems in AWS](https://docs.aws.amazon.com/codepipeline/latest/userguide/integrations-action-type.html#integrations-deploy). [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
-- **AWS SAM Pipelines** - [pipelines support for GitLab](https://aws.amazon.com/about-aws/whats-new/2021/07/simplify-ci-cd-configuration-serverless-applications-your-favorite-ci-cd-system-public-preview). [7/31/2021]
+- **AWS CodeDeploy Integration** - through CodePipeline support discussed above in SCM integrations. This capability allows GitLab to interface with [this list of advanced deployment subsystems in AWS](https://docs.aws.amazon.com/codepipeline/latest/userguide/integrations-action-type.html#integrations-deploy). ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **AWS SAM Pipelines** - [pipelines support for GitLab](https://aws.amazon.com/about-aws/whats-new/2021/07/simplify-ci-cd-configuration-serverless-applications-your-favorite-ci-cd-system-public-preview). (7/31/2021)
 - [Integrate EKS clusters for application deployment](../../../user/infrastructure/clusters/connect/new_eks_cluster.md). `[GitLab Built]`
 - [GitLab pushing a build Artifact to a CodePipeline monitored S3 location](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`
 - [GitLab Pushing a container to a CodePipeline monitored AWS ECR](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`

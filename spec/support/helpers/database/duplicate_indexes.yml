@@ -105,19 +105,6 @@ ml_models:
 p_ci_runner_machine_builds:
   index_p_ci_runner_machine_builds_on_runner_machine_id:
     - index_ci_runner_machine_builds_on_runner_machine_id
-packages_debian_group_distributions:
-  uniq_pkgs_debian_group_distributions_group_id_and_codename:
-    - index_packages_debian_group_distributions_on_group_id
-  uniq_pkgs_debian_group_distributions_group_id_and_suite:
-    - index_packages_debian_group_distributions_on_group_id
-packages_debian_project_distributions:
-  uniq_pkgs_debian_project_distributions_project_id_and_codename:
-    - index_packages_debian_project_distributions_on_project_id
-  uniq_pkgs_debian_project_distributions_project_id_and_suite:
-    - index_packages_debian_project_distributions_on_project_id
-packages_tags:
-  index_packages_tags_on_package_id_and_updated_at:
-    - index_packages_tags_on_package_id
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
     - index_pages_domains_on_project_id

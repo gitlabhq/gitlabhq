@@ -142,5 +142,9 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
     context 'when changing dates' do
       it_behaves_like 'system note for issuable date changes'
     end
+
+    context 'when setting an estimae' do
+      it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate', false
+    end
   end
 end

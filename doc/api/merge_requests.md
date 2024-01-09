@@ -2014,7 +2014,9 @@ This API returns specific HTTP status codes:
 | HTTP Status | Message                                    | Reason |
 |-------------|--------------------------------------------|--------|
 | `202`       | *(no message)* | Successfully enqueued. |
-| `403`       | <ul><li>`Source branch does not exist`</li><li>`Cannot push to source branch`</li><li>`Source branch is protected from force push`</li></ul> | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Cannot push to source branch` | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Source branch does not exist` | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Source branch is protected from force push` | You don't have permission to push to the merge request's source branch. |
 | `409`       | `Failed to enqueue the rebase operation` | A long-lived transaction might have blocked your request. |
 
 If the request is enqueued successfully, the response contains:

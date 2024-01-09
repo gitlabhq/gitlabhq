@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
   it 'shows public project page' do
     visit project_path(public_project)
 
-    page.within '.breadcrumbs .breadcrumb-item-text' do
+    page.within '.breadcrumbs .js-breadcrumb-item-text' do
       expect(page).to have_content(public_project.name)
     end
   end

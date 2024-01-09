@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, feature_category: :team_planning do
+RSpec.describe WorkItems::Callbacks::CurrentUserTodos, feature_category: :team_planning do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:current_user) { reporter }
@@ -25,16 +25,16 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
     create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: create(:user))
   end
 
-  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Widgets::CurrentUserTodos) } }
+  let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Callbacks::CurrentUserTodos) } }
 
   before_all do
     project.add_reporter(reporter)
   end
 
   describe '#before_update_in_transaction' do
-    subject do
-      described_class.new(widget: widget, current_user: current_user)
-        .before_update_in_transaction(params: params)
+    subject(:service) do
+      described_class.new(issuable: work_item, current_user: current_user, params: params)
+        .before_update
     end
 
     context 'when adding a todo' do
@@ -44,7 +44,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
         let(:current_user) { create(:user) }
 
         it 'does add a todo' do
-          expect { subject }.not_to change { Todo.count }
+          expect { service }.not_to change { Todo.count }
         end
       end
 
@@ -52,7 +52,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
         let(:params) { { action: "add" } }
 
         it 'creates a new todo for the user and the work item' do
-          expect { subject }.to change { current_user.todos.count }.by(1)
+          expect { service }.to change { current_user.todos.count }.by(1)
 
           todo = current_user.todos.last
 
@@ -69,7 +69,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
         let(:current_user) { create(:user) }
 
         it 'does not change todo status' do
-          subject
+          service
 
           expect(pending_todo1.reload).to be_pending
           expect(pending_todo2.reload).to be_pending
@@ -80,7 +80,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
 
       context 'when resolving all todos of the work item', :aggregate_failures do
         it 'resolves todos of the user for the work item' do
-          subject
+          service
 
           expect(pending_todo1.reload).to be_done
           expect(pending_todo2.reload).to be_done
@@ -93,7 +93,7 @@ RSpec.describe WorkItems::Widgets::CurrentUserTodosService::UpdateService, featu
         let(:params) { { action: "mark_as_done", todo_id: pending_todo1.id } }
 
         it 'resolves todos of the user for the work item' do
-          subject
+          service
 
           expect(pending_todo1.reload).to be_done
           expect(pending_todo2.reload).to be_pending

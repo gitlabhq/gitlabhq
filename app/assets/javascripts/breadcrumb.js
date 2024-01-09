@@ -34,7 +34,7 @@ export default () => {
       $('li.expander').remove();
 
       // set focus on first breadcrumb item
-      $('.breadcrumb-item-text').first().focus();
+      $('.js-breadcrumb-item-text').first().focus();
     });
   }
 };

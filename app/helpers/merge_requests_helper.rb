@@ -275,7 +275,10 @@ module MergeRequestsHelper
 
   def merge_request_header(project, merge_request)
     link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
-    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    copy_action_description = _('Copy branch name')
+    copy_action_shortcut = 'b'
+    copy_button_title = "#{copy_action_description} <kbd class='flat ml-1'>#{copy_action_shortcut}</kbd>"
+    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
