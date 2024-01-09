@@ -521,7 +521,7 @@ Returns [`Iteration`](#iteration).
 
 ### `Query.jobs`
 
-All jobs on this GitLab instance.
+All jobs on this GitLab instance. Returns an empty result for users without administrator access.
 
 Returns [`CiJobConnection`](#cijobconnection).
 

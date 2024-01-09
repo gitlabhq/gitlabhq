@@ -86,7 +86,8 @@ module Types
     field :jobs,
           ::Types::Ci::JobType.connection_type,
           null: true,
-          description: 'All jobs on this GitLab instance.',
+          description: 'All jobs on this GitLab instance.' \
+                       ' Returns an empty result for users without administrator access.',
           resolver: ::Resolvers::Ci::AllJobsResolver
     field :merge_request, Types::MergeRequestType,
           null: true,
