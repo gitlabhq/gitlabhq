@@ -3212,7 +3212,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'keeps quick actions' do
         content_result, explanations = service.explain(content, issue, keep_actions: true)
 
-        expect(content_result).to eq("\n/close")
+        expect(content_result).to eq("<p>/close</p>")
         expect(explanations).to eq(['Closes this issue.'])
       end
 

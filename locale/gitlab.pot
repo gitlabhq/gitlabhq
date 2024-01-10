@@ -27390,6 +27390,9 @@ msgstr ""
 msgid "JiraRequest|The credentials for accessing Jira are not valid. Check your %{docs_link_start}Jira integration credentials%{docs_link_end} and try again."
 msgstr ""
 
+msgid "JiraRequest|Unable to connect to the Jira URL. Please verify your %{config_link_start}Jira integration URL%{config_link_end} and attempt the connection again."
+msgstr ""
+
 msgid "JiraService| on branch %{branch_link}"
 msgstr ""
 

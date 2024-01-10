@@ -649,6 +649,9 @@ export const link = {
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
 
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (href.startsWith('data:') || href.startsWith('blob:')) return '';
+
     if (linkType(sourceMarkdown) === LINK_MARKDOWN) {
       return '[';
     }
@@ -667,6 +670,9 @@ export const link = {
     }
 
     const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
+
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (href.startsWith('data:') || href.startsWith('blob:')) return '';
 
     if (isReference) {
       return `][${state.esc(canonicalSrc || href || '')}]`;

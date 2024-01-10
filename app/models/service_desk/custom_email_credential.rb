@@ -61,12 +61,13 @@ module ServiceDesk
 
     def validate_smtp_address
       # Addressable::URI always needs a scheme otherwise it interprets the host as the path
-      Gitlab::UrlBlocker.validate!("smtp://#{smtp_address}",
+      Gitlab::HTTP_V2::UrlBlocker.validate!("smtp://#{smtp_address}",
         schemes: %w[smtp],
         ascii_only: true,
         enforce_sanitization: true,
         allow_localhost: false,
-        allow_local_network: !::Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- self-managed may also use local network
+        allow_local_network: !::Gitlab.com?, # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- self-managed may also use local network
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       )
     rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
       errors.add(:smtp_address, e)

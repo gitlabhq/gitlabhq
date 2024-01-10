@@ -6,6 +6,8 @@ import {
   SYNC_STATUS_BADGES,
   STATUS_TRUE,
   STATUS_FALSE,
+  STATUS_UNKNOWN,
+  REASON_PROGRESSING,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '../constants';
@@ -115,6 +117,15 @@ export default {
         return condition.status === STATUS_TRUE && condition.type === 'Stalled';
       });
     },
+    fluxAnyReconcilingWithBadConfig() {
+      return this.fluxCRD.find((condition) => {
+        return (
+          condition.status === STATUS_UNKNOWN &&
+          condition.type === 'Ready' &&
+          condition.reason === REASON_PROGRESSING
+        );
+      });
+    },
     fluxAnyReconciling() {
       return this.fluxCRD.find((condition) => {
         return condition.status === STATUS_TRUE && condition.type === 'Reconciling';
@@ -142,6 +153,12 @@ export default {
       }
       if (this.fluxAnyStalled) {
         return { ...SYNC_STATUS_BADGES.stalled, popoverText: this.fluxAnyStalled.message };
+      }
+      if (this.fluxAnyReconcilingWithBadConfig) {
+        return {
+          ...SYNC_STATUS_BADGES.reconciling,
+          popoverText: this.fluxAnyReconcilingWithBadConfig.message,
+        };
       }
       if (this.fluxAnyReconciling) {
         return SYNC_STATUS_BADGES.reconciling;

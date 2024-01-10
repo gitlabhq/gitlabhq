@@ -25,7 +25,7 @@ module Gitlab
             description: 'List of evaluable Rules to determine Pipeline status.',
             metadata: {
               allowed_when: %w[always never].freeze,
-              allowed_keys: %i[if changes exists when start_in allow_failure variables needs].freeze
+              allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel].freeze
             }
 
           entry :auto_cancel, Entry::AutoCancel,

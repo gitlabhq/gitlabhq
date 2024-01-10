@@ -229,7 +229,7 @@ For more information, see [Remote development](../remote_development/index.md).
 
 ## Related topics
 
-- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#web-ide)
+- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 

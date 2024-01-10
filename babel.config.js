@@ -14,15 +14,15 @@ let presets = [
 
 // include stage 3 proposals
 const plugins = [
-  '@babel/plugin-proposal-class-properties',
-  '@babel/plugin-proposal-json-strings',
-  '@babel/plugin-proposal-private-methods',
+  '@babel/plugin-transform-class-properties',
+  '@babel/plugin-transform-json-strings',
+  '@babel/plugin-transform-private-methods',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/229146
   '@babel/plugin-transform-arrow-functions',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
-  '@babel/plugin-proposal-optional-chaining',
+  '@babel/plugin-transform-optional-chaining',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
-  '@babel/plugin-proposal-nullish-coalescing-operator',
+  '@babel/plugin-transform-nullish-coalescing-operator',
   'lodash',
 ];
 

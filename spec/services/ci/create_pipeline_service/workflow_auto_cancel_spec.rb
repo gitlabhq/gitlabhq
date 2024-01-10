@@ -60,6 +60,48 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           'workflow:auto_cancel on new commit must be one of: conservative, interruptible, none')
       end
     end
+
+    context 'when using with workflow:rules' do
+      let(:config) do
+        <<~YAML
+          workflow:
+            auto_cancel:
+              on_new_commit: interruptible
+            rules:
+              - if: $VAR123 == "valid value"
+                auto_cancel:
+                  on_new_commit: none
+              - when: always
+
+          test1:
+            script: exit 0
+        YAML
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      context 'when the rule matches' do
+        before do
+          create(:ci_variable, project: project, key: 'VAR123', value: 'valid value')
+        end
+
+        it 'creates a pipeline with on_new_commit' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.errors).to be_empty
+          expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('none')
+        end
+      end
+
+      context 'when the rule does not match' do
+        it 'creates a pipeline with on_new_commit' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.errors).to be_empty
+          expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+        end
+      end
+    end
   end
 
   describe 'on_job_failure' do
@@ -163,6 +205,48 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         expect(pipeline).to be_persisted
         expect(pipeline.errors.full_messages).to include(
           'workflow:auto_cancel on job failure must be one of: none, all')
+      end
+    end
+
+    context 'when using with workflow:rules' do
+      let(:config) do
+        <<~YAML
+          workflow:
+            auto_cancel:
+              on_job_failure: none
+            rules:
+              - if: $VAR123 == "valid value"
+                auto_cancel:
+                  on_job_failure: all
+              - when: always
+
+          test1:
+            script: exit 0
+        YAML
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      context 'when the rule matches' do
+        before do
+          create(:ci_variable, project: project, key: 'VAR123', value: 'valid value')
+        end
+
+        it 'creates a pipeline with on_job_failure' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.errors).to be_empty
+          expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
+        end
+      end
+
+      context 'when the rule does not match' do
+        it 'creates a pipeline with on_job_failure' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.errors).to be_empty
+          expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+        end
       end
     end
   end

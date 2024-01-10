@@ -65,10 +65,12 @@ module Ci
           end
 
           def extract_metadata(blob)
+            component_name = components_project.extract_component_name(blob.path)
+
             {
-              name: components_project.extract_component_name(blob.path),
+              name: component_name,
               inputs: components_project.extract_inputs(blob.data),
-              path: blob.path
+              path: "#{Settings.gitlab.host}/#{project.full_path}/#{component_name}@#{release.tag}"
             }
           end
 

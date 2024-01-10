@@ -27,6 +27,9 @@ module Gitlab
             metadata: { allowed_needs: %i[job] },
             inherit: false
 
+          entry :auto_cancel, Entry::AutoCancel,
+            description: 'Auto-cancel configuration for the pipeline.'
+
           validations do
             validates :config, presence: true
             validates :config, type: { with: Hash }
@@ -60,7 +63,8 @@ module Gitlab
             config.merge(
               changes: (changes_value if changes_defined?),
               variables: (variables_value if variables_defined?),
-              needs: (needs_value if needs_defined?)
+              needs: (needs_value if needs_defined?),
+              auto_cancel: (auto_cancel_value if auto_cancel_defined?)
             ).compact
           end
 

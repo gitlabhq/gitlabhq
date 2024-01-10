@@ -174,6 +174,8 @@ export const apolloProvider = (endpoint) => {
   cache.writeQuery({
     query: fluxKustomizationStatusQuery,
     data: {
+      message: '',
+      reason: '',
       status: '',
       type: '',
     },
@@ -181,6 +183,8 @@ export const apolloProvider = (endpoint) => {
   cache.writeQuery({
     query: fluxHelmReleaseStatusQuery,
     data: {
+      message: '',
+      reason: '',
       status: '',
       type: '',
     },

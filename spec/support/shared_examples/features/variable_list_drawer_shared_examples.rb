@@ -99,7 +99,7 @@ RSpec.shared_examples 'variable list drawer' do
     toggle_protected
     toggle_masked
     toggle_expanded
-    click_button('Edit variable')
+    find_by_testid('ci-variable-confirm-button').click
 
     wait_for_requests
 

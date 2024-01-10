@@ -142,9 +142,11 @@ module Gitlab
             output = "`/#{matched_text[:cmd]}#{" " + matched_text[:arg] if matched_text[:arg]}`"
             output += "\n" if matched_text[0].include?("\n")
           elsif keep_actions
-            # requires an additional newline so that when rendered, it appears
-            # on its own line, rather than all on the same line
-            output = "\n#{matched_text[0]}\n"
+            # put the command in a new paragraph, but without introducing newlines
+            # so that each command is in its own line, while also preserving sourcemaps
+            # of the content that follows.
+            output = ActionController::Base.helpers.simple_format(matched_text[0].chomp)
+            output += "\n" if matched_text[0].ends_with?("\n")
           end
         end
 

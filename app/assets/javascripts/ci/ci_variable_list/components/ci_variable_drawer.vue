@@ -45,6 +45,7 @@ export const i18n = {
   defaultScope: __('All (default)'),
   deleteVariable: s__('CiVariables|Delete variable'),
   editVariable: s__('CiVariables|Edit variable'),
+  saveVariable: __('Save changes'),
   environments: __('Environments'),
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
@@ -258,8 +259,11 @@ export default {
 
       return validationIssuesText.trim();
     },
-    modalActionText() {
+    modalTitle() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
+    },
+    modalActionText() {
+      return this.isEditing ? this.$options.i18n.saveVariable : this.$options.i18n.addVariable;
     },
     removeVariableMessage() {
       return sprintf(this.$options.i18n.modalDeleteMessage, { key: this.variable.key });
@@ -358,7 +362,7 @@ export default {
       @close="close"
     >
       <template #title>
-        <h2 class="gl-m-0">{{ modalActionText }}</h2>
+        <h2 class="gl-m-0">{{ modalTitle }}</h2>
       </template>
       <gl-form-group
         :label="$options.i18n.type"

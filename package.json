@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@babel/core": "^7.18.5",
-    "@babel/preset-env": "^7.18.2",
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.7",
     "@cubejs-client/core": "^0.34.37",
     "@cubejs-client/vue": "^0.34.37",
     "@floating-ui/dom": "^1.2.9",

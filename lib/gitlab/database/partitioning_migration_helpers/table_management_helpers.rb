@@ -368,7 +368,7 @@ module Gitlab
         end
 
         def make_partitioned_table_name(table)
-          tmp_table_name("#{table}_part")
+          tmp_table_name(table)
         end
 
         def make_archived_table_name(table)

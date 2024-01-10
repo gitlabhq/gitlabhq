@@ -261,9 +261,17 @@ from:
 - The **Artifacts** page. On the right of the job, select **Browse** (**{folder-open}**).
 
 If [GitLab Pages](../../administration/pages/index.md) is enabled in the project, you can preview
-HTML files in the artifacts directly in your browser. If the project is internal or private, you must
-enable [GitLab Pages access control](../../administration/pages/index.md#access-control) to preview
-HTML files.
+some artifacts file extensions directly in your browser. If the project is internal or private, you must enable [GitLab Pages access control](../../administration/pages/index.md#access-control) to enable the preview.
+
+The following extensions are supported:
+
+| File extension | GitLab.com | Linux package with built-in NGINX |
+|----------|---------------------|--------------|
+|  `.html`   | **{check-circle}** Yes | **{check-circle}** Yes |
+|  `.json`   | **{check-circle}** Yes | **{check-circle}** Yes |
+|  `.xml`   | **{check-circle}** Yes | **{check-circle}** Yes |
+|  `.txt` | **{dotted-circle}** No | **{check-circle}** Yes |
+| `.log` | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ### From a URL
 

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
   let(:metadata) do
     {
       allowed_when: %w[on_success on_failure always never manual delayed],
-      allowed_keys: %i[if changes exists when start_in allow_failure variables needs]
+      allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel]
     }
   end
 
@@ -341,6 +341,23 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
           expect(subject.errors).to include(/variables config should be a hash/)
         end
       end
+
+      context 'with an invalid auto_cancel' do
+        let(:config) do
+          { if: '$THIS == "that"', auto_cancel: { on_new_commit: 'xyz' } }
+        end
+
+        before do
+          subject.compose!
+        end
+
+        it { is_expected.not_to be_valid }
+
+        it 'returns an error' do
+          expect(subject.errors).to include(
+            'auto_cancel on new commit must be one of: conservative, interruptible, none')
+        end
+      end
     end
 
     context 'allow_failure: validation' do
@@ -418,6 +435,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
 
     context 'when using a exists: clause' do
       let(:config) { { exists: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
+
+      it { is_expected.to eq(config) }
+    end
+
+    context 'when it has auto_cancel' do
+      let(:config) { { if: '$THIS || $THAT', auto_cancel: { on_new_commit: 'interruptible' } } }
 
       it { is_expected.to eq(config) }
     end

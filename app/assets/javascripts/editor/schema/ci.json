@@ -154,6 +154,9 @@
                   "always",
                   "never"
                 ]
+              },
+              "auto_cancel": {
+                "$ref": "#/definitions/workflowAutoCancel"
               }
             },
             "additionalProperties": false

@@ -90,6 +90,41 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
           end
         end
       end
+
+      context 'when rules has auto_cancel' do
+        let(:workflow_hash) { { rules: [{ if: '$VAR', auto_cancel: { on_new_commit: 'interruptible' } }] } }
+
+        describe '#valid?' do
+          it 'is valid' do
+            expect(config).to be_valid
+          end
+
+          it 'attaches no errors' do
+            expect(config.errors).to be_empty
+          end
+        end
+
+        describe '#value' do
+          it 'returns the config' do
+            expect(config.value).to eq(workflow_hash)
+          end
+        end
+
+        context 'when auto_cancel has an invalid value' do
+          let(:workflow_hash) { { rules: [{ if: '$VAR', auto_cancel: { on_new_commit: 'xyz' } }] } }
+
+          describe '#valid?' do
+            it 'is invalid' do
+              expect(config).not_to be_valid
+            end
+
+            it 'returns error' do
+              expect(config.errors).to include(
+                'rules:rule:auto_cancel on new commit must be one of: conservative, interruptible, none')
+            end
+          end
+        end
+      end
     end
   end
 

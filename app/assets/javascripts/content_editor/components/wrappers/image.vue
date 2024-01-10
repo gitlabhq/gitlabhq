@@ -1,5 +1,6 @@
 <script>
 import { NodeViewWrapper } from '@tiptap/vue-2';
+import { uploadingStates } from '../../services/upload_helpers';
 
 export default {
   name: 'ImageWrapper',
@@ -29,6 +30,12 @@ export default {
     return {
       dragData: {},
     };
+  },
+  computed: {
+    isStaleUploadedImage() {
+      const { uploading } = this.node.attrs;
+      return uploading && uploadingStates[uploading];
+    },
   },
   mounted() {
     document.addEventListener('mousemove', this.onDrag);
@@ -80,7 +87,11 @@ export default {
 };
 </script>
 <template>
-  <node-view-wrapper as="span" class="gl-relative gl-display-inline-block">
+  <node-view-wrapper
+    v-if="!isStaleUploadedImage"
+    as="span"
+    class="gl-relative gl-display-inline-block"
+  >
     <span
       v-for="handle in $options.resizeHandles"
       v-show="selected"

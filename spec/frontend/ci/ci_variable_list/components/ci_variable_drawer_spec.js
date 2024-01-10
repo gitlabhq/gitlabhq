@@ -513,7 +513,7 @@ describe('CI Variable Drawer', () => {
 
       it('title and confirm button renders the correct text', () => {
         expect(findTitle().text()).toBe('Edit variable');
-        expect(findConfirmBtn().text()).toBe('Edit variable');
+        expect(findConfirmBtn().text()).toBe('Save changes');
       });
 
       it('dispatches the edit-variable event', async () => {

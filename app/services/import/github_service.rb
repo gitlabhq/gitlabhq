@@ -87,11 +87,12 @@ module Import
     end
 
     def blocked_url?
-      Gitlab::UrlBlocker.blocked_url?(
+      Gitlab::HTTP_V2::UrlBlocker.blocked_url?(
         url,
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w[http https]
+        schemes: %w[http https],
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       )
     end
 

@@ -6,7 +6,6 @@ export default Playable.extend({
     return {
       ...this.parent?.(),
       mediaType: 'video',
-      extraElementAttrs: { width: '400' },
     };
   },
 });

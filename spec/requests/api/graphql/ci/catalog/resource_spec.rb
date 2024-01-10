@@ -81,7 +81,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                   nodes {
                     id
                     name
-                    path
+                    includePath
                     inputs {
                       name
                       default
@@ -126,7 +126,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           a_graphql_entity_for(
             components.first,
             name: components.first.name,
-            path: components.first.path,
+            include_path: components.first.path,
             inputs: [
               a_graphql_entity_for(
                 name: 'tags',
@@ -148,7 +148,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           a_graphql_entity_for(
             components.last,
             name: components.last.name,
-            path: components.last.path
+            include_path: components.last.path
           )
         )
       end

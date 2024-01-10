@@ -1,4 +1,6 @@
 import { Node } from '@tiptap/core';
+import { VueNodeViewRenderer } from '@tiptap/vue-2';
+import PlayableWrapper from '../components/wrappers/playable.vue';
 
 const queryPlayableElement = (element, mediaType) => element.querySelector(mediaType);
 
@@ -58,7 +60,6 @@ export default Node.create({
           controls: true,
           'data-setup': '{}',
           'data-title': node.attrs.alt,
-          ...this.extraElementAttrs,
         },
       ],
       [
@@ -67,5 +68,9 @@ export default Node.create({
         node.attrs.title || node.attrs.alt || '',
       ],
     ];
+  },
+
+  addNodeView() {
+    return VueNodeViewRenderer(PlayableWrapper);
   },
 });

@@ -15562,9 +15562,9 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcecomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. ID of the component. |
+| <a id="cicatalogresourcecomponentincludepath"></a>`includePath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Path used to include the component. |
 | <a id="cicatalogresourcecomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Inputs for the component. |
 | <a id="cicatalogresourcecomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Name of the component. |
-| <a id="cicatalogresourcecomponentpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Path used to include the component. |
 
 ### `CiCatalogResourceComponentInput`
 

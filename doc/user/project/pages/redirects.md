@@ -128,6 +128,7 @@ or `https://`) to either:
 
 - The `to` path only.
 - The `from` and `to` paths.
+
 The supported [HTTP status codes](#http-status-codes) are `301` and `302`:
 
 ```plaintext

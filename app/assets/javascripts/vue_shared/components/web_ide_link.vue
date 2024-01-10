@@ -11,6 +11,7 @@ import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
+import { GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -197,6 +198,9 @@ export default {
         ...handleOptions,
       };
     },
+    webIdeActionShortcutKey() {
+      return GO_TO_PROJECT_WEBIDE.defaultKeys[0];
+    },
     webIdeActionText() {
       if (this.webIdeText) {
         return this.webIdeText;
@@ -234,6 +238,7 @@ export default {
         key: KEY_WEB_IDE,
         text: this.webIdeActionText,
         secondaryText: this.$options.i18n.webIdeText,
+        shortcut: this.webIdeActionShortcutKey,
         tracking: {
           action: TRACKING_ACTION_NAME,
           label: 'web_ide',
@@ -357,9 +362,14 @@ export default {
         >
           <template #list-item>
             <div class="gl-display-flex gl-flex-direction-column">
-              <span data-testid="action-primary-text" class="gl-font-weight-bold gl-mb-2">{{
-                action.text
-              }}</span>
+              <span
+                class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
+              >
+                <span data-testid="action-primary-text" class="gl-font-weight-bold">{{
+                  action.text
+                }}</span>
+                <kbd v-if="action.shortcut" class="flat">{{ action.shortcut }}</kbd>
+              </span>
               <span data-testid="action-secondary-text" class="gl-font-sm gl-text-secondary">
                 {{ action.secondaryText }}
               </span>

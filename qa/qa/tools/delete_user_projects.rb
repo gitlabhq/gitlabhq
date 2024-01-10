@@ -32,8 +32,7 @@ module QA
 
         @delete_before = Date.parse(delete_before)
         @dry_run = dry_run
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
-          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
+        @api_client = set_api_client(ENV['GITLAB_QA_ACCESS_TOKEN'])
       end
 
       # @example
@@ -55,24 +54,37 @@ module QA
         return 'No users found. Skipping project delete.' if user_ids.empty?
 
         user_ids.each do |user_id|
-          delete_user_projects(user_id)
+          qa_username = fetch_qa_username(user_id)
+
+          api_client = if qa_username == "gitlab-qa-user1" && ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
+                         set_api_client(ENV['GITLAB_QA_USER1_ACCESS_TOKEN'])
+                       elsif qa_username == "gitlab-qa-user2" && ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
+                         set_api_client(ENV['GITLAB_QA_USER2_ACCESS_TOKEN'])
+                       else
+                         @api_client
+                       end
+
+          delete_user_projects(qa_username, user_id, api_client)
         end
       end
 
       private
 
-      def delete_user_projects(user_id)
-        logger.info("Running project delete for user #{user_id} on #{ENV['GITLAB_ADDRESS']}...")
+      def delete_user_projects(qa_username, user_id, api_client)
+        logger.info("Running project delete for user #{qa_username} (#{user_id}) on #{ENV['GITLAB_ADDRESS']}...")
 
-        projects_head_response = head Runtime::API::Request.new(@api_client, "/users/#{user_id}/projects",
+        projects_head_response = head Runtime::API::Request.new(api_client, "/users/#{user_id}/projects",
           per_page: "100").url
         total_project_pages = projects_head_response.headers[:x_total_pages]
+        total_projects = projects_head_response.headers[:x_total]
 
-        logger.info("Total project pages: #{total_project_pages}")
+        logger.info("Total projects: #{total_projects}")
+        return logger.info("\nDone") if total_projects.to_i == 0
 
         project_ids = fetch_project_ids(total_project_pages, user_id)
+        logger.info("Total projects created before #{@delete_before}: #{project_ids.size}")
 
-        delete_projects(project_ids, @api_client, @dry_run) unless project_ids.empty?
+        delete_projects(project_ids, api_client, @dry_run) unless project_ids.empty?
         logger.info("\nDone")
       end
 
@@ -124,6 +136,17 @@ module QA
         end
 
         user_ids.uniq
+      end
+
+      def fetch_qa_username(user_id)
+        response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
+        parsed_response = JSON.parse(response.body)
+        parsed_response["username"]
+      end
+
+      def set_api_client(token)
+        Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
+          personal_access_token: token)
       end
     end
   end

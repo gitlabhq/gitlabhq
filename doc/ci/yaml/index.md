@@ -699,6 +699,52 @@ When the branch is something else:
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
     exact variables you want to forward to the downstream pipeline.
 
+#### `workflow:rules:auto_cancel`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or
+for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `workflow:rules:auto_cancel` to configure the behavior of
+the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
+
+**Possible inputs**:
+
+- `on_new_commit`: [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
+
+**Example of `workflow:rules:auto_cancel`**:
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == 'true'
+      auto_cancel:
+        on_new_commit: none
+    - when: always                  # Run the pipeline in other cases
+
+test-job1:
+  script: sleep 10
+  interruptible: false
+
+test-job2:
+  script: sleep 10
+  interruptible: true
+```
+
+In this example, [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
+is set to `interruptible` for all jobs by default. But if a pipeline runs for a protected branch,
+the rule overrides the default with `on_new_commit: none`. For example, if a pipeline
+is running for:
+
+- A non-protected branch and a new commit is pushed, `test-job1` continues to run and `test-job2` is canceled.
+- A protected branch and a new commit is pushed, both `test-job1` and `test-job2` continue to run.
+
 ## Header keywords
 
 Some keywords must be defined in a header section of a YAML configuration file.

@@ -516,6 +516,32 @@ module Gitlab
             })
           end
         end
+
+        context 'with rules and auto_cancel' do
+          let(:config) do
+            <<-YML
+              workflow:
+                rules:
+                  - if: $VAR == "value"
+                    auto_cancel:
+                      on_new_commit: none
+                      on_job_failure: none
+
+              hello:
+                script: echo world
+            YML
+          end
+
+          it 'parses workflow_rules' do
+            expect(subject.workflow_rules).to contain_exactly({
+              if: '$VAR == "value"',
+              auto_cancel: {
+                on_new_commit: 'none',
+                on_job_failure: 'none'
+              }
+            })
+          end
+        end
       end
 
       describe '#warnings' do

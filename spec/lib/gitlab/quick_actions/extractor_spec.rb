@@ -185,21 +185,21 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       context 'at the start of content' do
         it_behaves_like 'command with a single argument' do
           let(:original_msg) { "/assign @joe\nworld" }
-          let(:final_msg) { "\n/assign @joe\n\nworld" }
+          let(:final_msg) { "<p>/assign @joe</p>\nworld" }
         end
       end
 
       context 'in the middle of content' do
         it_behaves_like 'command with a single argument' do
           let(:original_msg) { "hello\n/assign @joe\nworld" }
-          let(:final_msg) { "hello\n\n/assign @joe\n\nworld" }
+          let(:final_msg) { "hello\n<p>/assign @joe</p>\nworld" }
         end
       end
 
       context 'at the end of content' do
         it_behaves_like 'command with a single argument' do
           let(:original_msg) { "hello\n/assign @joe" }
-          let(:final_msg) { "hello\n\n/assign @joe" }
+          let(:final_msg) { "hello\n<p>/assign @joe</p>" }
         end
       end
     end
@@ -282,7 +282,7 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       msg, commands = extractor.extract_commands(msg)
 
       expect(commands).to match_array [['reopen'], ['substitution', 'wow this is a thing.']]
-      expect(msg).to eq "hello\nworld\n\n/reopen\n\nfoo"
+      expect(msg).to eq "hello\nworld\n<p>/reopen</p>\nfoo"
     end
 
     it 'extracts multiple commands' do
