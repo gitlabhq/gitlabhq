@@ -390,7 +390,7 @@
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
       alias: rediscluster # configure connections in config/redis.yml
     - name: redis:6.2-alpine
-    - name: clickhouse/clickhouse-server:23-alpine
+    - name: clickhouse/clickhouse-server:23.11.3.23-alpine
       alias: clickhouse
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
