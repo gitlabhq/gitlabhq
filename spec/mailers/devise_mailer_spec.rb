@@ -103,10 +103,10 @@ RSpec.describe DeviseMailer do
 
   describe '#reset_password_instructions' do
     let_it_be(:user) { create(:user) }
-    let(:params) { {} }
+    let(:opts) { {} }
 
     subject do
-      described_class.reset_password_instructions(user, 'faketoken', params)
+      described_class.reset_password_instructions(user, 'faketoken', opts)
     end
 
     it_behaves_like 'an email sent from GitLab'
@@ -139,9 +139,9 @@ RSpec.describe DeviseMailer do
       is_expected.to have_header 'X-Mailgun-Suppressions-Bypass', 'true'
     end
 
-    context 'with email in params' do
+    context 'with email in opts' do
       let(:email) { 'example@example.com' }
-      let(:params) { { to: email } }
+      let(:opts) { { to: email } }
 
       it 'is sent to the specified email' do
         is_expected.to deliver_to email
