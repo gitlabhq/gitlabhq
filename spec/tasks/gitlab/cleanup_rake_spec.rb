@@ -383,4 +383,88 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
       end
     end
   end
+
+  describe 'cleanup:orphan_job_artifact_final_objects' do
+    subject(:rake_task) { run_rake_task('gitlab:cleanup:orphan_job_artifact_final_objects', provider) }
+
+    before do
+      stub_artifacts_object_storage
+    end
+
+    shared_examples_for 'running the cleaner' do
+      it 'runs the task without errors' do
+        expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+          .to receive(:new)
+          .with(
+            dry_run: true,
+            force_restart: false,
+            provider: provider,
+            logger: anything
+          )
+          .and_call_original
+
+        expect { rake_task }.not_to raise_error
+      end
+
+      context 'with FORCE_RESTART defined' do
+        before do
+          stub_env('FORCE_RESTART', '1')
+        end
+
+        it 'passes force_restart correctly' do
+          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+            .to receive(:new)
+            .with(
+              dry_run: true,
+              force_restart: true,
+              provider: provider,
+              logger: anything
+            )
+            .and_call_original
+
+          expect { rake_task }.not_to raise_error
+        end
+      end
+
+      context 'with DRY_RUN set to false' do
+        before do
+          stub_env('DRY_RUN', 'false')
+        end
+
+        it 'passes dry_run correctly' do
+          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+            .to receive(:new)
+            .with(
+              dry_run: false,
+              force_restart: false,
+              provider: provider,
+              logger: anything
+            )
+            .and_call_original
+
+          expect { rake_task }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when provider is not specified' do
+      let(:provider) { nil }
+
+      it_behaves_like 'running the cleaner'
+    end
+
+    context 'when provider is specified' do
+      let(:provider) { 'aws' }
+
+      it_behaves_like 'running the cleaner'
+    end
+
+    context 'when unsupported provider is given' do
+      let(:provider) { 'somethingelse' }
+
+      it 'exits with error' do
+        expect { rake_task }.to raise_error(SystemExit)
+      end
+    end
+  end
 end

@@ -876,27 +876,27 @@ POST /projects/:id/merge_requests/:merge_request_iid/discussions
 
 Parameters for all comments:
 
-| Attribute                                | Type           | Required | Description |
-| ---------------------------------------- | -------------- | -------- | ----------- |
-| `body`                                   | string         | yes      | The content of the thread. |
-| `id`                                     | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `merge_request_iid`                      | integer        | yes      | The IID of a merge request. |
-| `position[base_sha]`                     | string         | yes      | Base commit SHA in the source branch. |
-| `position[head_sha]`                     | string         | yes      | SHA referencing HEAD of this merge request. |
-| `position[start_sha]`                    | string         | yes      | SHA referencing commit in target branch. |
+| Attribute                                | Type           | Required                             | Description |
+| ---------------------------------------- | -------------- |--------------------------------------| ----------- |
+| `body`                                   | string         | yes                                  | The content of the thread. |
+| `id`                                     | integer/string | yes                                  | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid`                      | integer        | yes                                  | The IID of a merge request. |
+| `position[base_sha]`                     | string         | yes (if `position*` is supplied)     | Base commit SHA in the source branch. |
+| `position[head_sha]`                     | string         | yes (if `position*` is supplied)     | SHA referencing HEAD of this merge request. |
+| `position[start_sha]`                    | string         | yes (if `position*` is supplied)     | SHA referencing commit in target branch. |
 | `position[new_path]`                     | string         | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`                     | string         | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string         | yes      | Type of the position reference. Allowed values: `text` or `image`. |
-| `commit_id`                              | string         | no       | SHA referencing commit to start this thread on. |
-| `created_at`                             | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
-| `position`                               | hash           | no       | Position when creating a diff note. |
-| `position[new_line]`                     | integer        | no       | For `text` diff notes, the line number after change. |
-| `position[old_line]`                     | integer        | no       | For `text` diff notes, the line number before change. |
-| `position[line_range]`                   | hash           | no       | Line range for a multi-line diff note. |
-| `position[width]`                        | integer        | no       | For `image` diff notes, width of the image. |
-| `position[height]`                       | integer        | no       | For `image` diff notes, height of the image. |
-| `position[x]`                            | float          | no       | For `image` diff notes, X coordinate. |
-| `position[y]`                            | float          | no       | For `image` diff notes, Y coordinate. |
+| `position[position_type]`                | string         | yes (if position* is supplied)       | Type of the position reference. Allowed values: `text` or `image`. |
+| `commit_id`                              | string         | no                                   | SHA referencing commit to start this thread on. |
+| `created_at`                             | string         | no                                   | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| `position`                               | hash           | no                                   | Position when creating a diff note. |
+| `position[new_line]`                     | integer        | no                                   | For `text` diff notes, the line number after change. |
+| `position[old_line]`                     | integer        | no                                   | For `text` diff notes, the line number before change. |
+| `position[line_range]`                   | hash           | no                                   | Line range for a multi-line diff note. |
+| `position[width]`                        | integer        | no                                   | For `image` diff notes, width of the image. |
+| `position[height]`                       | integer        | no                                   | For `image` diff notes, height of the image. |
+| `position[x]`                            | float          | no                                   | For `image` diff notes, X coordinate. |
+| `position[y]`                            | float          | no                                   | For `image` diff notes, Y coordinate. |
 
 #### Create a new thread on the overview page
 
@@ -1287,17 +1287,17 @@ POST /projects/:id/repository/commits/:commit_id/discussions
 
 Parameters:
 
-| Attribute                 | Type           | Required | Description |
-| ------------------------- | -------------- | -------- | ----------- |
-| `body`                    | string         | yes      | The content of the thread. |
-| `commit_id`               | string         | yes      | The SHA of a commit. |
-| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `position[base_sha]`      | string         | yes      | SHA of the parent commit. |
-| `position[head_sha]`      | string         | yes      | The SHA of this commit. Same as `commit_id`. |
-| `position[start_sha]`     | string         | yes      | SHA of the parent commit. |
-| `position[position_type]` | string         | yes      | Type of the position reference. Allowed values: `text` or `image`. |
-| `created_at`              | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
-| `position`                | hash           | no       | Position when creating a diff note. |
+| Attribute                 | Type           | Required                         | Description |
+| ------------------------- | -------------- |----------------------------------| ----------- |
+| `body`                    | string         | yes                              | The content of the thread. |
+| `commit_id`               | string         | yes                              | The SHA of a commit. |
+| `id`                      | integer/string | yes                              | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `position[base_sha]`      | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
+| `position[head_sha]`      | string         | yes (if `position*` is supplied) | The SHA of this commit. Same as `commit_id`. |
+| `position[start_sha]`     | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
+| `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text` or `image`. |
+| `created_at`              | string         | no                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| `position`                | hash           | no                               | Position when creating a diff note. |
 
 | `position[new_path]`      | string         | no       | File path after change. |
 | `position[new_line]`      | integer        | no       | Line number after change. |

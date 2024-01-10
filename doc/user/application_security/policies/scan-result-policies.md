@@ -362,6 +362,78 @@ We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/
 - Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 
+## Experimental features **(EXPERIMENT)**
+
+### Security policy scopes
+
+> The `policy_scope` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+named `security_policies_policy_scope`.
+On GitLab.com, this feature is not available.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+#### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+#### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `object` |  `ids` | List of IDs of the compliance frameworks in scope of enforcement, in an `ids` array. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an `ids` array. |
+
+#### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+scan_result_policy:
+- name: critical vulnerability CS approvals
+  description: critical severity level only for container scanning
+  enabled: true
+  rules:
+  - type: scan_finding
+    branches:
+    - main
+    scanners:
+    - container_scanning
+    vulnerabilities_allowed: 1
+    severity_levels:
+    - critical
+    vulnerability_states:
+    - newly_detected
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    user_approvers:
+    - adalberto.dare
+  policy_scope:
+    compliance_frameworks:
+      ids:
+      - 2
+      - 11
+    projects:
+      including:
+        ids:
+        - 24
+        - 27
+```
+
 ## Troubleshooting
 
 ### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**

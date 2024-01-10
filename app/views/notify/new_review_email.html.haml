@@ -2,24 +2,41 @@
   = content_for :head do
     = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
-%table{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;margin:0 auto;border-collapse:separate;border-spacing:0;" }
-  %tbody
-    %tr
-      %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;overflow:hidden;" }
-        %table{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;border-collapse:separate;border-spacing:0;" }
-          %tbody
-            %tr
-              %td{ style: "color:#333333;border-bottom:1px solid #ededed;font-weight:bold;line-height:1.4;padding: 20px 0;" }
-                - mr_link = link_to(@merge_request.to_reference(@project), project_merge_request_url(@project, @merge_request))
-                - mr_author_link = link_to(@author_name, user_url(@author))
-                = _('Merge request %{mr_link} was reviewed by %{mr_author}').html_safe % { mr_link: mr_link, mr_author: mr_author_link }
-            %tr
-              %td{ style: "overflow:hidden;line-height:1.4;display:grid;" }
-                - @notes.each do |note|
-                  -# Get preloaded note discussion
-                  - discussion = @discussions[note.discussion_id] if note.part_of_discussion?
-                  -# Preload project for discussions first note
-                  - discussion.first_note.project = @project if discussion&.first_note
-                  - target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}")
-                  = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:1px solid #ededed; padding-bottom: 1em;", include_stylesheet_link: false, discussion: discussion, author: @author
-                = render_if_exists 'notify/review_summary'
+- if Feature.enabled?(:enhanced_review_email, @project, type: :gitlab_com_derisk)
+  %div{ style: "color:#333333;border-bottom:8px solid #ededed;font-weight:bold;line-height:1.4;padding: 20px 0;" }
+    - mr_link = link_to(@merge_request.to_reference(@project), project_merge_request_url(@project, @merge_request))
+    - mr_author_link = link_to(@author_name, user_url(@author))
+    = _('Merge request %{mr_link} was reviewed by %{mr_author}').html_safe % { mr_link: mr_link, mr_author: mr_author_link }
+
+  - @notes.each do |note|
+    -# Get preloaded note discussion
+    - discussion = @discussions[note.discussion_id] if note.part_of_discussion?
+    -# Preload project for discussions first note
+    - discussion.first_note.project = @project if discussion&.first_note
+    - target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}")
+    = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:4px solid #ededed; padding-bottom: 1em;", include_stylesheet_link: false, discussion: discussion, author: @author
+  = render_if_exists 'notify/review_summary'
+
+- else
+
+  %table{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;margin:0 auto;border-collapse:separate;border-spacing:0;" }
+    %tbody
+      %tr
+        %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;overflow:hidden;" }
+          %table{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;border-collapse:separate;border-spacing:0;" }
+            %tbody
+              %tr
+                %td{ style: "color:#333333;border-bottom:1px solid #ededed;font-weight:bold;line-height:1.4;padding: 20px 0;" }
+                  - mr_link = link_to(@merge_request.to_reference(@project), project_merge_request_url(@project, @merge_request))
+                  - mr_author_link = link_to(@author_name, user_url(@author))
+                  = _('Merge request %{mr_link} was reviewed by %{mr_author}').html_safe % { mr_link: mr_link, mr_author: mr_author_link }
+              %tr
+                %td{ style: "overflow:hidden;line-height:1.4;display:grid;" }
+                  - @notes.each do |note|
+                    -# Get preloaded note discussion
+                    - discussion = @discussions[note.discussion_id] if note.part_of_discussion?
+                    -# Preload project for discussions first note
+                    - discussion.first_note.project = @project if discussion&.first_note
+                    - target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}")
+                    = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:1px solid #ededed; padding-bottom: 1em;", include_stylesheet_link: false, discussion: discussion, author: @author
+                  = render_if_exists 'notify/review_summary'

@@ -204,6 +204,7 @@ RSpec.configure do |config|
   config.include LabelsHelper, type: :feature
   config.include UnlockPipelinesHelpers, :unlock_pipelines
   config.include UserWithNamespaceShim
+  config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 

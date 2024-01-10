@@ -2652,6 +2652,18 @@
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
+.reports:rules:x-ray:
+  rules:
+    - <<: *if-default-branch-refs
+      changes: *dependency-patterns
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/reports.gitlab-ci.yml"]
+      when: manual
+    - when: never
+
 ################
 # Review rules #
 ################

@@ -12,16 +12,16 @@ module Gitlab
             short_name: _('SAST'),
             description: _('Analyze your source code for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index',
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index',
               anchor: 'configuration'),
             type: 'sast'
           },
           sast_iac: {
             name: _('Infrastructure as Code (IaC) Scanning'),
-            short_name: _('ciReport|SAST IaC'),
+            short_name: s_('ciReport|SAST IaC'),
             description: _('Analyze your infrastructure as code configuration files for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/iac_scanning/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/iac_scanning/index',
               anchor: 'configuration'),
             type: 'sast_iac'
@@ -36,16 +36,16 @@ module Gitlab
             secondary: {
               type: 'dast_profiles',
               name: _('DAST profiles'),
-              description: _('SecurityConfiguration|Manage profiles for use by DAST scans.'),
-              configuration_text: _('SecurityConfiguration|Manage profiles')
+              description: s_('SecurityConfiguration|Manage profiles for use by DAST scans.'),
+              configuration_text: s_('SecurityConfiguration|Manage profiles')
             },
             name: _('Dynamic Application Security Testing (DAST)'),
-            short_name: _('ciReport|DAST'),
-            description: _('ciReport|Analyze a deployed version of your web application for known vulnerabilities by ' \
-                           'examining it from the outside in. DAST works by simulating external attacks ' \
-                           'on your application while it is running.'),
+            short_name: s_('ciReport|DAST'),
+            description: s_('ciReport|Analyze a deployed version of your web application for known ' \
+                            'vulnerabilities by examining it from the outside in. DAST works ' \
+                            'by simulating external attacks on your application while it is running.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index',
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index',
               anchor: 'enable-automatic-dast-run'),
             type: 'dast',
             anchor: 'dast'
@@ -55,7 +55,7 @@ module Gitlab
             description: _('Analyze your dependencies for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/dependency_scanning/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/dependency_scanning/index', anchor: 'configuration'),
             type: 'dependency_scanning',
             anchor: 'dependency-scanning'
@@ -65,7 +65,7 @@ module Gitlab
             description: _('Check your Docker images for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/container_scanning/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/container_scanning/index', anchor: 'configuration'),
             type: 'container_scanning'
           },
@@ -74,7 +74,7 @@ module Gitlab
             description: _('Analyze your source code and git history for secrets.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/index', anchor: 'configuration'),
             type: 'secret_detection'
           },
@@ -90,40 +90,40 @@ module Gitlab
             description: _('Find bugs in your code with coverage-guided fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/coverage_fuzzing/index'),
-            config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/coverage_fuzzing/index', anchor: 'enable-coverage-guided-fuzz-testing'),
             type: 'coverage_fuzzing',
             secondary: {
               type: 'corpus_management',
               name: _('Corpus Management'),
-              description: _('SecurityConfiguration|Manage corpus files used as seed ' \
-                             'inputs with coverage-guided fuzzing.'),
-              configuration_text: _('SecurityConfiguration|Manage corpus')
+              description: s_('SecurityConfiguration|Manage corpus files used as seed ' \
+                              'inputs with coverage-guided fuzzing.'),
+              configuration_text: s_('SecurityConfiguration|Manage corpus')
             }
           },
           breach_and_attack_simulation: {
             anchor: 'bas',
             badge: {
               always_display: true,
-              text: _('SecurityConfiguration|Incubating feature'),
-              tooltip_text: _('SecurityConfiguration|Breach and Attack Simulation is an incubating ' \
-                              'feature extending existing security testing by simulating adversary activity.'),
+              text: s_('SecurityConfiguration|Incubating feature'),
+              tooltip_text: s_('SecurityConfiguration|Breach and Attack Simulation is an incubating ' \
+                               'feature extending existing security testing by simulating adversary activity.'),
               variant: 'info'
             },
-            description: _('SecurityConfiguration|Simulate breach and attack scenarios against your ' \
-                           'running application by attempting to detect and exploit known vulnerabilities.'),
-            name: _('SecurityConfiguration|Breach and Attack Simulation (BAS)'),
+            description: s_('SecurityConfiguration|Simulate breach and attack scenarios against your ' \
+                            'running application by attempting to detect and exploit known vulnerabilities.'),
+            name: s_('SecurityConfiguration|Breach and Attack Simulation (BAS)'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/breach_and_attack_simulation/index'),
             secondary: {
-              config_help_path: Gitlab::Routing.url_helpers.help_page_path(
+              configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
                 'user/application_security/breach_and_attack_simulation/index',
                 anchor: 'extend-dynamic-application-security-testing-dast'),
-              description: _('SecurityConfiguration|Enable incubating Breach and Attack Simulation focused ' \
-                             'features such as callback attacks in your DAST scans.'),
-              name: _('SecurityConfiguration|Out-of-Band Application Security Testing (OAST)')
+              description: s_('SecurityConfiguration|Enable incubating Breach and Attack Simulation focused ' \
+                              'features such as callback attacks in your DAST scans.'),
+              name: s_('SecurityConfiguration|Out-of-Band Application Security Testing (OAST)')
             },
-            short_name: _('SecurityConfiguration|BAS'),
+            short_name: s_('SecurityConfiguration|BAS'),
             type: 'breach_and_attack_simulation'
           }
         }.freeze

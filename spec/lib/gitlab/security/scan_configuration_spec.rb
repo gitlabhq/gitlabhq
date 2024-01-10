@@ -97,13 +97,13 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
          short_name: "SAST",
          description: "Analyze your source code for known vulnerabilities.",
          help_path: "/help/user/application_security/sast/index",
-         config_help_path: "/help/user/application_security/sast/index#configuration",
+         configuration_help_path: "/help/user/application_security/sast/index#configuration",
          type: "sast" }
       :sast_iac | { name: "Infrastructure as Code (IaC) Scanning",
-        short_name: "ciReport|SAST IaC",
+        short_name: "SAST IaC",
         description: "Analyze your infrastructure as code configuration files for known vulnerabilities.",
         help_path: "/help/user/application_security/iac_scanning/index",
-        config_help_path: "/help/user/application_security/iac_scanning/index#configuration",
+        configuration_help_path: "/help/user/application_security/iac_scanning/index#configuration",
         type: "sast_iac" }
       :dast | {
         badge: { text: "Available on demand",
@@ -113,34 +113,34 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         secondary: {
           type: "dast_profiles",
           name: "DAST profiles",
-          description: "SecurityConfiguration|Manage profiles for use by DAST scans.",
-          configuration_text: "SecurityConfiguration|Manage profiles"
+          description: "Manage profiles for use by DAST scans.",
+          configuration_text: "Manage profiles"
         },
         name: "Dynamic Application Security Testing (DAST)",
-        short_name: "ciReport|DAST",
-        description: "ciReport|Analyze a deployed version of your web application for known " \
+        short_name: "DAST",
+        description: "Analyze a deployed version of your web application for known " \
                      "vulnerabilities by examining it from the outside in. DAST works by simulating " \
                      "external attacks on your application while it is running.",
         help_path: "/help/user/application_security/dast/index",
-        config_help_path: "/help/user/application_security/dast/index#enable-automatic-dast-run",
+        configuration_help_path: "/help/user/application_security/dast/index#enable-automatic-dast-run",
         type: "dast",
         anchor: "dast"
       }
       :dependency_scanning | { name: "Dependency Scanning",
         description: "Analyze your dependencies for known vulnerabilities.",
         help_path: "/help/user/application_security/dependency_scanning/index",
-        config_help_path: "/help/user/application_security/dependency_scanning/index#configuration",
+        configuration_help_path: "/help/user/application_security/dependency_scanning/index#configuration",
         type: "dependency_scanning",
         anchor: "dependency-scanning" }
       :container_scanning | { name: "Container Scanning",
         description: "Check your Docker images for known vulnerabilities.",
         help_path: "/help/user/application_security/container_scanning/index",
-        config_help_path: "/help/user/application_security/container_scanning/index#configuration",
+        configuration_help_path: "/help/user/application_security/container_scanning/index#configuration",
         type: "container_scanning" }
       :secret_detection | { name: "Secret Detection",
         description: "Analyze your source code and git history for secrets.",
         help_path: "/help/user/application_security/secret_detection/index",
-        config_help_path: "/help/user/application_security/secret_detection/index#configuration",
+        configuration_help_path: "/help/user/application_security/secret_detection/index#configuration",
         type: "secret_detection" }
       :api_fuzzing | { name: "API Fuzzing",
         description: "Find bugs in your code with API fuzzing.",
@@ -149,32 +149,33 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
       :coverage_fuzzing | { name: "Coverage Fuzzing",
         description: "Find bugs in your code with coverage-guided fuzzing.",
         help_path: "/help/user/application_security/coverage_fuzzing/index",
-        config_help_path: "/help/user/application_security/coverage_fuzzing/index#enable-coverage-guided-fuzz-testing",
+        configuration_help_path: \
+          "/help/user/application_security/coverage_fuzzing/index#enable-coverage-guided-fuzz-testing",
         type: "coverage_fuzzing",
         secondary: { type: "corpus_management",
                      name: "Corpus Management",
-                     description: "SecurityConfiguration|Manage corpus files used as " \
+                     description: "Manage corpus files used as " \
                                   "seed inputs with coverage-guided fuzzing.",
-                     configuration_text: "SecurityConfiguration|Manage corpus" } }
+                     configuration_text: "Manage corpus" } }
       :breach_and_attack_simulation | { anchor: "bas",
         badge: { always_display: true,
-                 text: "SecurityConfiguration|Incubating feature",
-                 tooltip_text: "SecurityConfiguration|Breach and Attack Simulation is an incubating feature " \
+                 text: "Incubating feature",
+                 tooltip_text: "Breach and Attack Simulation is an incubating feature " \
                                "extending existing security " \
                                "testing by simulating adversary activity.",
                  variant: "info" },
-        description: "SecurityConfiguration|Simulate breach and attack scenarios against your running " \
+        description: "Simulate breach and attack scenarios against your running " \
                      "application by attempting to detect " \
                      "and exploit known vulnerabilities.",
-        name: "SecurityConfiguration|Breach and Attack Simulation (BAS)",
+        name: "Breach and Attack Simulation (BAS)",
         help_path: "/help/user/application_security/breach_and_attack_simulation/index",
-        secondary: { config_help_path: "/help/user/application_security/breach_and_attack_simulation/" \
-                                       "index#extend-dynamic-application-security-testing-dast",
-                     description: "SecurityConfiguration|Enable incubating Breach and " \
+        secondary: { configuration_help_path: "/help/user/application_security/breach_and_attack_simulation/" \
+                                              "index#extend-dynamic-application-security-testing-dast",
+                     description: "Enable incubating Breach and " \
                                   "Attack Simulation focused features " \
                                   "such as callback attacks in your DAST scans.",
-                     name: "SecurityConfiguration|Out-of-Band Application Security Testing (OAST)" },
-        short_name: "SecurityConfiguration|BAS",
+                     name: "Out-of-Band Application Security Testing (OAST)" },
+        short_name: "BAS",
         type: "breach_and_attack_simulation" }
       :invalid | {}
     end
