@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 module API
   class NpmProjectPackages < ::API::Base
+    ERROR_REASON_TO_HTTP_STATUS_MAPPTING = {
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER => 400,
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_LEASE_TAKEN => 400,
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_EXISTS => 403,
+      ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_PROTECTED => 403
+    }.freeze
+
     helpers ::API::Helpers::Packages::Npm
 
     feature_category :package_registry
@@ -13,6 +20,10 @@ module API
     helpers do
       def endpoint_scope
         :project
+      end
+
+      def error_reason_to_http_status(reason)
+        ERROR_REASON_TO_HTTP_STATUS_MAPPTING.fetch(reason, 400)
       end
     end
 
@@ -74,12 +85,13 @@ module API
         else
           authorize_create_package!(project)
 
-          created_package = ::Packages::Npm::CreatePackageService
+          service_response = ::Packages::Npm::CreatePackageService
             .new(project, current_user, params.merge(build: current_authenticated_job)).execute
 
-          if created_package[:status] == :error
-            render_structured_api_error!({ message: created_package[:message], error: created_package[:message] }, created_package[:http_status])
+          if service_response.error?
+            render_structured_api_error!({ message: service_response.message, error: service_response.message }, error_reason_to_http_status(service_response.reason))
           else
+            created_package = service_response[:package]
             enqueue_sync_metadata_cache_worker(project, created_package.name)
             track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
             created_package

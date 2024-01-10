@@ -169,7 +169,7 @@ For example, you see in `GroupPolicy` that there is an ability called
 than adding a row to the `member_roles` table for each ability, consider
 renaming them to `read_security_dashboard` and adding `read_security_dashboard`
 to the `member_roles` table. This is more expected because it means that
-enabling `read_security_dashboard` on the parent group will enable the custom
+enabling `read_security_dashboard` on the parent group will enable the custom role.
 For example, `GroupPolicy` has an ability called `read_group_security_dashboard` and `ProjectPolicy` has an ability
 called `read_project_security_dashboard`. If you would like to make both customizable, rather than adding a row to the
 `member_roles` table for each ability, consider renaming them to `read_security_dashboard` and adding
@@ -185,7 +185,9 @@ To add a new ability to a custom role:
 - Generate YAML file by running `./ee/bin/custom-ability` generator
 - Add a new column to `member_roles` table, either manually or by running `custom_roles:code`  generator, eg. by running `rails generate gitlab:custom_roles:code --ability new_ability_name`. The ability parameter is case sensitive and has to exactly match the permission name from the YAML file.
 - Add the ability to the respective Policy for example in [this change in merge request 114734](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734/diffs#diff-content-edcbe28bdecbd848d4d9efdc5b5e9bddd2a7299e).
-- Update the specs. Don't forget to add a spec to `ee/spec/requests/custom_roles` - the spec template file was generated if you used the code generator
+- Update the specs. Don't forget to add a spec to `ee/spec/requests/custom_roles` - the spec template file was pre-generated if you used the code generator
+- Compile the documentation by running `bundle exec rake gitlab:custom_roles:compile_docs`
+- Update the GraphQL documentation by running `bundle exec rake gitlab:graphql:compile_docs`
 
 Examples of merge requests adding new abilities to custom roles:
 
@@ -193,9 +195,15 @@ Examples of merge requests adding new abilities to custom roles:
 - [Read vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114734)
 - [Admin vulnerability](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534)
 
-The above merge request don't use YAML files and code generators. Some of the changes are not needed anymore. We will update the documentation once we have a permission implemented using the generators.
+The above merge requests don't use YAML files and code generators. Some of the changes are not needed anymore. We will update the documentation once we have a permission implemented using the generators.
 
-You should make sure a new custom roles ability is under a feature flag.
+If you have any concerns, put the new ability behind a feature flag.
+
+#### Documenting handling the feature flag
+
+- When you introduce a new custom ability under a feature flag, add the `feature_flag` attribute to the appropriate ability YAML file.
+- When you enable the ability by default, add the `feature_flag_enabled_milestone` and `feature_flag_enabled_mr` attributes to the appropriate ability YAML file and regenerate the documentation.
+- You do not have to include these attributes in the YAML file if the feature flag is enabled by default in the same release as the ability is introduced.
 
 ## Custom abilities definition
 

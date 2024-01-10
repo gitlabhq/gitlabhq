@@ -12,6 +12,7 @@ module MergeRequests
 
         notify_reviewer(merge_request, user)
         trigger_merge_request_reviewers_updated(merge_request)
+        create_system_note(merge_request, user)
 
         success
       else
@@ -24,6 +25,10 @@ module MergeRequests
     def notify_reviewer(merge_request, reviewer)
       notification_service.async.review_requested_of_merge_request(merge_request, current_user, reviewer)
       todo_service.create_request_review_todo(merge_request, current_user, reviewer)
+    end
+
+    def create_system_note(merge_request, user)
+      ::SystemNoteService.request_review(merge_request, merge_request.project, current_user, user)
     end
   end
 end

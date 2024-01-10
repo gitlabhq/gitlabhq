@@ -90,39 +90,7 @@ However, it has the following limitations:
   always runs as a process alongside other GitLab components on any given node. For Service Ping, none of the node data would therefore
   appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.
 
-## Service Ping Payload drop
-
-### Symptoms
-
-You will be alerted by the [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) and their [Monte Carlo alerting](https://about.gitlab.com/handbook/business-technology/data-team/platform/monte-carlo/).
-
-### Locating the problem
-
-First you need to identify at which stage in Service Ping data pipeline the drop is occurring.
-
-Start at [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489) on Sisense.
-
-You can use [this query](https://gitlab.com/gitlab-org/gitlab/-/issues/347298#note_836685350) as an example, to start detecting when the drop started.
-
-### Troubleshoot the GitLab application layer
-
-We conducted an investigation into an unexpected drop in Service ping Payload events volume.
-GitLab team members can view more information in this confidential issue:
-`https://gitlab.com/gitlab-data/analytics/-/issues/11071`
-
-### Troubleshoot VersionApp layer
-
-Check if the [export jobs](https://gitlab.com/gitlab-org/gitlab-services/version.gitlab.com/-/tree/main/#data-export-using-pipeline-schedules) are successful.
-
-Check [Service Ping errors](https://app.periscopedata.com/app/gitlab/968489?widget=14609989&udv=0) in the [Service Ping Health Dashboard](https://app.periscopedata.com/app/gitlab/968489).
-
-### Troubleshoot Google Storage layer
-
-Check if the files are present in [Google Storage](https://console.cloud.google.com/storage/browser/cloudsql-gs-production-efd5e8-cloudsql-exports;tab=objects?project=gs-production-efd5e8&prefix=&forceOnObjectsSortingFiltering=false).
-
-### Troubleshoot the data warehouse layer
-
-Reach out to the [Data team](https://about.gitlab.com/handbook/business-technology/data-team/) to ask about current state of data warehouse. On their handbook page there is a [section with contact details](https://about.gitlab.com/handbook/business-technology/data-team/#how-to-connect-with-us).
+## Troubleshooting
 
 ### Cannot disable Service Ping with the configuration file
 

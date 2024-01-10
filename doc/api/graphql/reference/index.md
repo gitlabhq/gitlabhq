@@ -30857,11 +30857,11 @@ Member role permission.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows to admin group members. |
-| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows to approve merge requests. |
+| <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows admin of group members. |
+| <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Allows to admin terraform state. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Allows admin access to the vulnerability reports. |
-| <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows to archive projects. |
+| <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
 | <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Allows manage access to the group access tokens. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Allows manage access to the project access tokens. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |

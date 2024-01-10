@@ -133,7 +133,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/iterations/delete_service_spec.rb'
     - 'ee/spec/services/iterations/roll_over_issues_service_spec.rb'
     - 'ee/spec/services/projects/alerting/notify_service_spec.rb'
-    - 'ee/spec/services/projects/create_service_spec.rb'
     - 'ee/spec/services/projects/destroy_service_spec.rb'
     - 'ee/spec/services/projects/hashed_storage/migrate_attachments_service_spec.rb'
     - 'ee/spec/services/projects/transfer_service_spec.rb'

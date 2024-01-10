@@ -45,6 +45,10 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_reviewers(old_reviewers)
   end
 
+  def request_review(issuable, project, author, user)
+    ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).request_review(user)
+  end
+
   def change_issuable_contacts(issuable, project, author, added_count, removed_count)
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_contacts(added_count, removed_count)
   end

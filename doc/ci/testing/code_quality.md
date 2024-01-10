@@ -220,7 +220,7 @@ To configure the Code Quality job:
 1. Declare a job with the same name as the Code Quality job, after the template's inclusion.
 1. Specify additional keys in the job's stanza.
 
-For an example, see [Download output in JSON format](#download-output-in-json-format).
+For an example, see [Download output in HTML format](#output-in-only-html-format).
 
 ## Available CI/CD variables
 
@@ -243,41 +243,19 @@ Code Quality can be customized by defining available CI/CD variables:
 
 ## Output
 
-Code Quality creates a file named `gl-code-quality-report.json`. The content of this file is
-processed internally and the results shown in the UI. To see the raw results, you can
-configure the Code Quality job to allow download of this file. Format options are JSON format, HTML
-format, or both. Use the HTML format to view the report in a more human-readable
-format. For example, you could publish the HTML format file on GitLab Pages for even easier
+Code Quality outputs a report containing details of issues found. The content of this report is
+processed internally and the results shown in the UI. The report is also output as a job artifact of
+the `code_quality` job, named `gl-code-quality-report.json`. You can optionally output the report in
+HTML format. For example, you could publish the HTML format file on GitLab Pages for even easier
 reviewing.
 
-### Download output in JSON format
+### Output in JSON and HTML format
 
-To be able to download the Code Quality report in JSON format, declare the
-`gl-code-quality-report.json` file as an artifact of the `code_quality` job:
+To output the Code Quality report in JSON and HTML format, you create an additional job. This requires
+Code Quality to be run twice, once each for file format.
 
-```yaml
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
-code_quality:
-  artifacts:
-    paths: [gl-code-quality-report.json]
-```
-
-The full JSON file is available as a
-[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
-
-### Download output in JSON and HTML format
-
-> HTML report format [introduced](https://gitlab.com/gitlab-org/ci-cd/codequality/-/issues/10) in GitLab 13.6.
-
-NOTE:
-To create the HTML format file, the Code Quality job must be run twice, once for each format.
-In this configuration, the JSON format file is created but it is only processed internally.
-
-To be able to download the Code Quality report in both JSON and HTML format, add another job to your
-template by using `extends: code_quality`:
+To output the Code Quality report in HTML format, add another job to your template by using
+`extends: code_quality`:
 
 ```yaml
 include:
@@ -291,18 +269,17 @@ code_quality_html:
     paths: [gl-code-quality-report.html]
 ```
 
-Both the JSON and HTML files are available as
-[downloadable artifacts](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
+Both the JSON and HTML files are output as job artifacts. The HTML file is contained in the
+`artifacts.zip` job artifact.
 
-### Download output in only HTML format
+### Output in only HTML format
 
-To download the Code Quality report in _only_ an HTML format file, set `REPORT_FORMAT` to `html` in
-the existing job.
+To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
+the default definition of the `code_quality` job.
 
 NOTE:
-This does not create a JSON format file, so Code Quality results are not shown in the
-merge request widget, pipeline report, or changes view.
+This does not create a JSON format file, so Code Quality results are not shown in the merge request
+widget, pipeline report, or changes view.
 
 ```yaml
 include:
@@ -315,9 +292,7 @@ code_quality:
     paths: [gl-code-quality-report.html]
 ```
 
-The HTML file is available as a
-[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
+The HTML file is output as a job artifact.
 
 ## Use Code Quality with merge request pipelines
 

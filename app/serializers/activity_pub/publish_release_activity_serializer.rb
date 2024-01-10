@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActivityPub
-  class ReleasesOutboxSerializer < CollectionSerializer
+  class PublishReleaseActivitySerializer < ActivitySerializer
     entity ReleaseEntity
   end
 end

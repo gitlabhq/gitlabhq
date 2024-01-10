@@ -25,7 +25,13 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     let(:version_data) { params.dig('versions', version) }
     let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
 
+    shared_examples 'valid service response' do
+      it { is_expected.to be_success }
+    end
+
     shared_examples 'valid package' do
+      let(:package) { subject[:package] }
+
       it 'creates a package' do
         expect { subject }
           .to change { Packages::Package.count }.by(1)
@@ -34,21 +40,27 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
           .and change { Packages::Npm::Metadatum.count }.by(1)
       end
 
-      it_behaves_like 'assigns the package creator' do
-        let(:package) { subject }
+      it_behaves_like 'assigns the package creator'
+
+      it 'returns a valid package' do
+        subject
+
+        expect(package).to be_valid
+          .and have_attributes name: package_name, version: version
+        expect(package.npm_metadatum.package_json).to eq(version_data)
       end
-
-      it { is_expected.to be_valid }
-      it { is_expected.to have_attributes name: package_name, version: version }
-
-      it { expect(subject.npm_metadatum.package_json).to eq(version_data) }
 
       context 'with build info' do
         let_it_be(:job) { create(:ci_build, user: user) }
         let(:params) { super().merge(build: job) }
 
-        it_behaves_like 'assigns build to package'
-        it_behaves_like 'assigns status to package'
+        it_behaves_like 'assigns build to package' do
+          subject { super().payload.fetch(:package) }
+        end
+
+        it_behaves_like 'assigns status to package' do
+          subject { super().payload.fetch(:package) }
+        end
 
         it 'creates a package file build info' do
           expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
@@ -154,31 +166,35 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
               .and change { Packages::Package.npm.count }.by(1)
               .and change { Packages::Tag.count }.by(1)
               .and change { Packages::Npm::Metadatum.count }.by(1)
-            expect(subject.npm_metadatum.package_json[field]).to be_blank
+            expect(package.npm_metadatum.package_json[field]).to be_blank
           end
         end
       end
     end
 
     context 'scoped package' do
+      it_behaves_like 'valid service response'
       it_behaves_like 'valid package'
     end
 
     context 'when user is no project member' do
       let_it_be(:user) { create(:user) }
 
+      it_behaves_like 'valid service response'
       it_behaves_like 'valid package'
     end
 
     context 'scoped package not following the naming convention' do
       let(:package_name) { '@any-scope/package' }
 
+      it_behaves_like 'valid service response'
       it_behaves_like 'valid package'
     end
 
     context 'unscoped package' do
       let(:package_name) { 'unscoped-package' }
 
+      it_behaves_like 'valid service response'
       it_behaves_like 'valid package'
     end
 
@@ -186,8 +202,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:package_name) { "@#{namespace.path}/my_package" }
       let!(:existing_package) { create(:npm_package, project: project, name: package_name, version: '1.0.1') }
 
-      it { expect(subject[:http_status]).to eq 403 }
-      it { expect(subject[:message]).to be 'Package already exists.' }
+      it { is_expected.to be_error }
+      it { is_expected.to have_attributes message: 'Package already exists.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_EXISTS }
 
       context 'marked as pending_destruction' do
         before do
@@ -208,10 +224,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:max_file_size) { 5.bytes }
 
       shared_examples_for 'max file size validation failure' do
-        it 'returns a 400 error', :aggregate_failures do
-          expect(subject[:http_status]).to eq 400
-          expect(subject[:message]).to be 'File is too large.'
-        end
+        it { is_expected.to be_error }
+        it { is_expected.to have_attributes message: 'File is too large.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
       end
 
       before do
@@ -271,8 +285,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'with empty versions' do
       let(:params) { super().merge!({ versions: {} }) }
 
-      it { expect(subject[:http_status]).to eq 400 }
-      it { expect(subject[:message]).to eq 'Version is empty.' }
+      it { is_expected.to be_error }
+      it { is_expected.to have_attributes message: 'Version is empty.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
     end
 
     context 'with invalid versions' do
@@ -294,8 +308,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'with empty attachment data' do
       let(:params) { super().merge({ _attachments: { "#{package_name}-#{version}.tgz" => { data: '' } } }) }
 
-      it { expect(subject[:http_status]).to eq 400 }
-      it { expect(subject[:message]).to eq 'Attachment data is empty.' }
+      it { is_expected.to be_error }
+      it { is_expected.to have_attributes message: 'Attachment data is empty.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
     end
 
     it 'obtains a lease to create a new package' do
@@ -309,8 +323,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
       end
 
-      it { expect(subject[:http_status]).to eq 400 }
-      it { expect(subject[:message]).to eq 'Could not obtain package lease. Please try again.' }
+      it { is_expected.to be_error }
+      it { is_expected.to have_attributes message: 'Could not obtain package lease. Please try again.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_LEASE_TAKEN }
     end
 
     context 'when feature flag :packages_protected_packages disabled' do
@@ -355,7 +369,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:service) { described_class.new(project, current_user, params) }
 
       shared_examples 'protected package' do
-        it { is_expected.to include http_status: 403, message: 'Package protected.' }
+        it { is_expected.to be_error }
+        it { is_expected.to have_attributes message: 'Package protected.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_PROTECTED }
 
         it 'does not create any npm-related package records' do
           expect { subject }

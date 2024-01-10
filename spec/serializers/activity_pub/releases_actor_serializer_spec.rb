@@ -7,7 +7,7 @@ RSpec.describe ActivityPub::ReleasesActorSerializer, feature_category: :groups_a
   let(:releases) { build_stubbed_list(:release, 3, project: project) }
 
   context 'when there is a single object provided' do
-    subject { described_class.new.represent(project, outbox: '/outbox') }
+    subject { described_class.new.represent(project, outbox: '/outbox', inbox: '/inbox') }
 
     it 'serializes the actor attributes' do
       expect(subject).to include(:id, :type, :preferredUsername, :name, :content, :context)

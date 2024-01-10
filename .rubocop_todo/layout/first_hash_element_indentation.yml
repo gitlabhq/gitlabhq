@@ -115,7 +115,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/services/external_status_checks/destroy_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/iterations/create_service_spec.rb'
-    - 'ee/spec/services/projects/create_service_spec.rb'
     - 'ee/spec/services/projects/disable_deploy_key_service_spec.rb'
     - 'ee/spec/services/projects/enable_deploy_key_service_spec.rb'
     - 'ee/spec/services/projects/group_links/create_service_spec.rb'
