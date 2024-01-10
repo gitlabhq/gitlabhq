@@ -29,7 +29,6 @@ module QA
 
         view 'app/assets/javascripts/projects/new/components/new_project_url_select.vue' do
           element 'select-namespace-dropdown'
-          element 'select-namespace-dropdown-search-field'
         end
 
         view 'app/assets/javascripts/vue_shared/new_namespace/components/welcome.vue' do
@@ -53,8 +52,8 @@ module QA
           return if find_element('select-namespace-dropdown').text.end_with?(namespace)
 
           click_element 'select-namespace-dropdown'
-          fill_element 'select-namespace-dropdown-search-field', namespace
-          select_item(namespace, css: '.gl-dropdown-item')
+          fill_element '.gl-listbox-search-input', namespace
+          select_item(namespace, css: '.gl-new-dropdown-item')
         end
 
         def click_import_project

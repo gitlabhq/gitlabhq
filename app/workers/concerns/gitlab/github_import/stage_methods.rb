@@ -85,7 +85,7 @@ module Gitlab
         RefreshImportJidWorker.perform_in_the_future(project.id, jid)
 
         import(client, project)
-      rescue RateLimitError
+      rescue RateLimitError, UserFinder::FailedToObtainLockError
         self.class.perform_in(client.rate_limit_resets_in, project.id)
       end
 

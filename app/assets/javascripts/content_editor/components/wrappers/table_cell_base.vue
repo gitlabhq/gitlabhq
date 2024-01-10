@@ -7,7 +7,7 @@ import { __, n__ } from '~/locale';
 const TABLE_CELL_HEADER = 'th';
 const TABLE_CELL_BODY = 'td';
 
-function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1 }) {
+function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1, align = 'left' }) {
   const totalRows = selectedRect?.map.height;
   const totalCols = selectedRect?.map.width;
   const isTableBodyCell = cellType === TABLE_CELL_BODY;
@@ -20,7 +20,19 @@ function getDropdownItems({ selectedRect, cellType, rowspan = 1, colspan = 1 }) 
   const showDeleteRowOption = totalRows > selectedRows + 1 && isTableBodyCell;
   const showDeleteColumnOption = totalCols > selectedCols;
 
+  const isTableBodyHeader = cellType === TABLE_CELL_HEADER;
+  const showAlignLeftOption = isTableBodyHeader && (align === 'center' || align === 'right');
+  const showAlignCenterOption = isTableBodyHeader && align !== 'center';
+  const showAlignRightOption = isTableBodyHeader && align !== 'right';
+
   return [
+    {
+      items: [
+        showAlignLeftOption && { text: __('Align column left'), value: 'alignColumnLeft' },
+        showAlignCenterOption && { text: __('Align column center'), value: 'alignColumnCenter' },
+        showAlignRightOption && { text: __('Align column right'), value: 'alignColumnRight' },
+      ].filter(Boolean),
+    },
     {
       items: [
         { text: __('Insert column before'), value: 'addColumnBefore' },
@@ -93,6 +105,7 @@ export default {
         cellType: this.cellType,
         rowspan: this.node.attrs.rowspan,
         colspan: this.node.attrs.colspan,
+        align: this.node.attrs.align,
       });
     },
   },
@@ -129,7 +142,7 @@ export default {
 
     runCommand({ value: command }) {
       this.hideDropdown();
-      this.editor.chain()[command]().run();
+      this.editor.chain()[command](this.getPos()).run();
     },
 
     hideDropdown() {
@@ -143,6 +156,7 @@ export default {
     :as="cellType"
     :rowspan="node.attrs.rowspan || 1"
     :colspan="node.attrs.colspan || 1"
+    :align="node.attrs.align || 'left'"
     dir="auto"
     class="gl-m-0! gl-p-0! gl-relative"
     @click="hideDropdown"
@@ -168,6 +182,10 @@ export default {
         @action="runCommand"
       />
     </span>
-    <node-view-content as="div" class="gl-p-5 gl-min-w-10" />
+    <node-view-content
+      as="div"
+      class="gl-p-5 gl-min-w-10"
+      :style="{ 'text-align': node.attrs.align || 'left' }"
+    />
   </node-view-wrapper>
 </template>

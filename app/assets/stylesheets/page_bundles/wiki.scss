@@ -101,7 +101,7 @@
   }
 
   .active > .wiki-list {
-    background-color: $gray-50;
+    background-color: var(--gray-50, $gray-50);
   }
 
   .wiki-list {
@@ -110,7 +110,7 @@
     @include gl-rounded-base;
 
     &:hover {
-      background: $gray-50;
+      background: var(--gray-50, $gray-50);
 
       .wiki-list-create-child-button {
         display: block;

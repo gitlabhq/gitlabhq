@@ -100,6 +100,15 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
 
       expect(worker.try_import(10, 20)).to eq(false)
     end
+
+    it 'returns false when the import fails due to the FailedToObtainLockError' do
+      expect(worker)
+        .to receive(:import)
+        .with(10, 20)
+        .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+
+      expect(worker.try_import(10, 20)).to eq(false)
+    end
   end
 
   describe '#notify_waiter' do

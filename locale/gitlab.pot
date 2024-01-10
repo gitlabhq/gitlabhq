@@ -4342,13 +4342,13 @@ msgstr ""
 msgid "Admin|CI/CD"
 msgstr ""
 
-msgid "Admin|Code Suggestions"
-msgstr ""
-
 msgid "Admin|Credentials"
 msgstr ""
 
 msgid "Admin|Deploy Keys"
+msgstr ""
+
+msgid "Admin|Duo Pro"
 msgstr ""
 
 msgid "Admin|Geo"
@@ -4820,6 +4820,15 @@ msgid "AlertsIntegrations|The test alert should now be visible in your alerts li
 msgstr ""
 
 msgid "Algorithm"
+msgstr ""
+
+msgid "Align column center"
+msgstr ""
+
+msgid "Align column left"
+msgstr ""
+
+msgid "Align column right"
 msgstr ""
 
 msgid "All"
@@ -12071,7 +12080,7 @@ msgstr ""
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 
-msgid "CodeSuggestions|A user can be assigned a Code Suggestion seat only once each billable month."
+msgid "CodeSuggestions|A user can be assigned a Duo Pro seat only once each billable month."
 msgstr ""
 
 msgid "CodeSuggestions|Code Suggestions"
@@ -12080,19 +12089,22 @@ msgstr ""
 msgid "CodeSuggestions|Code Suggestions add-on"
 msgstr ""
 
-msgid "CodeSuggestions|Code Suggestions seats used"
+msgid "CodeSuggestions|Duo Pro"
 msgstr ""
 
-msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
+msgid "CodeSuggestions|Duo Pro add-on"
 msgstr ""
 
-msgid "CodeSuggestions|Introducing the Code Suggestions add-on"
+msgid "CodeSuggestions|Duo Pro seats used"
 msgstr ""
 
-msgid "CodeSuggestions|Introducing the Code&nbsp;Suggestions add&#8209;on"
+msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Duo Pro%{linkEnd} offers features that use generative AI to suggest code."
 msgstr ""
 
-msgid "CodeSuggestions|Manage seat assignments for Code Suggestions across your instance."
+msgid "CodeSuggestions|Introducing Duo Pro"
+msgstr ""
+
+msgid "CodeSuggestions|Manage seat assignments for Duo Pro across your instance."
 msgstr ""
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
@@ -23537,6 +23549,9 @@ msgstr ""
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}. Increasing the user cap does not automatically approve pending users."
 msgstr ""
 
+msgid "GroupSettings|An experiment is a feature that is in the process of being developed. It is not production-ready. We encourage users to try experimental features and provide feedback. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GroupSettings|Analytics"
 msgstr ""
 
@@ -26923,6 +26938,9 @@ msgid "It seems like the Dependency Scanning job ran successfully, but no depend
 msgstr ""
 
 msgid "It seems that there is currently no available data for code coverage"
+msgstr ""
+
+msgid "It seems your question relates to GitLab documentation. Unfortunately, this feature is not yet available in this GitLab instance. Your feedback is welcome."
 msgstr ""
 
 msgid "It's you"
@@ -38843,6 +38861,11 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
+msgid "ProjectsNew|%d group or namespace found"
+msgid_plural "ProjectsNew|%d groups or namespaces found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
@@ -45691,6 +45714,9 @@ msgid "Settings|Security Policy Scopes"
 msgstr ""
 
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
+msgstr ""
+
+msgid "Settings|What is experiment?"
 msgstr ""
 
 msgid "Severity"
@@ -52544,9 +52570,6 @@ msgstr ""
 msgid "UsageQuota|Buy storage"
 msgstr ""
 
-msgid "UsageQuota|Code Suggestions"
-msgstr ""
-
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
@@ -52566,6 +52589,9 @@ msgid "UsageQuota|Container Registry"
 msgstr ""
 
 msgid "UsageQuota|Dependency proxy"
+msgstr ""
+
+msgid "UsageQuota|Duo Pro"
 msgstr ""
 
 msgid "UsageQuota|Filter charts by year"

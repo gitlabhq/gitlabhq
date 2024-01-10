@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
+  include ListboxHelpers
+
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
   end
@@ -311,7 +313,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
         it 'does not select the user namespace' do
           click_on 'Pick a group or namespace'
-          expect(page).to have_button user.username
+          expect_listbox_item(user.username)
         end
       end
 
@@ -359,28 +361,28 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
         it 'enables the correct visibility options' do
           click_button public_group.full_path
-          click_button user.username
+          select_listbox_item user.username
 
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
 
           click_button user.username
-          click_button public_group.full_path
+          select_listbox_item public_group.full_path
 
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
 
           click_button public_group.full_path
-          click_button internal_group.full_path
+          select_listbox_item internal_group.full_path
 
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
 
           click_button internal_group.full_path
-          click_button private_group.full_path
+          select_listbox_item private_group.full_path
 
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
           expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
@@ -467,7 +469,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           )
 
           click_on 'Pick a group or namespace'
-          click_on user.username
+          select_listbox_item user.username
           click_on 'Create project'
 
           expect(page).to have_css('#import-project-pane.active')

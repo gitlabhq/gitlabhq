@@ -1295,10 +1295,12 @@ module Gitlab
                 name: ruby:2.7
                 docker:
                   platform: linux/amd64
+                  user: dave
               services:
                 - name: postgres:11.9
                   docker:
                     platform: linux/amd64
+                    user: john
             YAML
           end
 
@@ -1313,9 +1315,9 @@ module Gitlab
               options: {
                 script: ["exit 0"],
                 image: { name: "ruby:2.7",
-                         executor_opts: { docker: { platform: 'linux/amd64' } } },
+                         executor_opts: { docker: { platform: 'linux/amd64', user: 'dave' } } },
                 services: [{ name: "postgres:11.9",
-                             executor_opts: { docker: { platform: 'linux/amd64' } } }]
+                             executor_opts: { docker: { platform: 'linux/amd64', user: 'john' } } }]
               },
               allow_failure: false,
               when: "on_success",

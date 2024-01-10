@@ -2947,7 +2947,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -3011,7 +3012,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -3229,7 +3231,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -3881,7 +3884,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5244,7 +5248,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5263,7 +5268,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5287,7 +5293,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5306,7 +5313,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5344,7 +5352,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5363,7 +5372,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5387,7 +5397,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5406,7 +5417,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5444,7 +5456,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5468,7 +5481,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5505,7 +5519,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5556,7 +5571,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5575,7 +5591,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5599,7 +5616,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5618,7 +5636,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5673,7 +5692,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5692,7 +5712,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5716,7 +5737,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5735,7 +5757,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5759,7 +5782,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5778,7 +5802,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5834,7 +5859,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5853,7 +5879,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5877,7 +5904,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5896,7 +5924,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5914,7 +5943,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5933,7 +5963,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5971,7 +6002,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -5990,7 +6022,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -20562,7 +20595,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": false
+              "checked": false,
+              "inapplicable": false
             },
             "content": [
               {
@@ -20596,7 +20630,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -21270,7 +21305,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -21292,7 +21328,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -21314,7 +21351,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -23006,7 +23044,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -23023,7 +23062,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {
@@ -23040,7 +23080,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": false
+              "checked": false,
+              "inapplicable": false
             },
             "content": [
               {
@@ -23111,7 +23152,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23130,7 +23172,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23154,7 +23197,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23178,7 +23222,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23211,7 +23256,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23235,7 +23281,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23775,7 +23822,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23794,7 +23842,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23818,7 +23867,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23865,7 +23915,8 @@
                 "attrs": {
                   "colspan": 1,
                   "rowspan": 1,
-                  "colwidth": null
+                  "colwidth": null,
+                  "align": "left"
                 },
                 "content": [
                   {
@@ -23913,7 +23964,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": false
+              "checked": false,
+              "inapplicable": false
             },
             "content": [
               {
@@ -23930,7 +23982,8 @@
           {
             "type": "taskItem",
             "attrs": {
-              "checked": true
+              "checked": true,
+              "inapplicable": false
             },
             "content": [
               {

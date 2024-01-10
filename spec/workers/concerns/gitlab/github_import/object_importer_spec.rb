@@ -269,6 +269,33 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         expect(import_failures.first.external_identifiers).to eq(github_identifiers.with_indifferent_access)
       end
     end
+
+    context 'when FailedToObtainLockError is raised' do
+      let(:exception) { Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError.new }
+
+      before do
+        expect(importer_class).to receive(:new)
+          .with(instance_of(MockRepresentation), project, client)
+          .and_return(importer_instance)
+
+        expect(importer_instance).to receive(:execute).and_raise(exception)
+      end
+
+      it 'logs the error and raises an exception' do
+        expect(Gitlab::GithubImport::Logger).to receive(:warn).with(
+          {
+            external_identifiers: github_identifiers,
+            message: 'Failed to obtaing lock for user finder. Retrying later.',
+            project_id: project.id,
+            importer: 'klass_name'
+          }
+        )
+
+        expect do
+          worker.import(project, client, { 'number' => 10, 'github_id' => 1 })
+        end.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+      end
+    end
   end
 
   describe '#increment_object_counter?' do

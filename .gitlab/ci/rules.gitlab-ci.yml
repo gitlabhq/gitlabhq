@@ -870,6 +870,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_BUILD_QA_IMAGE == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-review-app
@@ -913,8 +914,7 @@
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
     - <<: *if-default-branch-schedule-nightly
       variables:
@@ -974,6 +974,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
@@ -1197,6 +1198,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-review-app
@@ -1226,7 +1228,7 @@
 
 .frontend:rules:compile-test-assets:
   rules:
-    - if: '$ENABLE_RSPEC == "true"'
+    - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
@@ -1250,7 +1252,12 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - if: '$ENABLE_JEST == "true"'
+    - if: '$ENABLE_JEST_INTEGRATION == "true"'
+    - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
+    - if: '$ENABLE_ESLINT == "true"'
+    - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
+    - if: '$ENABLE_GRAPHQL_SCHEMA_DUMP == "true"'
+    - if: '$ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
@@ -1477,11 +1484,13 @@
 
 .qa:rules:internal:
   rules:
+    - if: '$ENABLE_QA_INTERNAL == "true"'
     - <<: *if-default-refs
       changes: *qa-patterns
 
-.qa:rules:ee-and-foss:
+.qa:rules:selectors:
   rules:
+    - if: '$ENABLE_QA_SELECTORS == "true"'
     - <<: *if-default-refs
       changes: *code-qa-patterns
 
@@ -2424,6 +2433,7 @@
 
 .static-analysis:rules:static-analysis:
   rules:
+    - if: '$ENABLE_STATIC_ANALYSIS == "true"'
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs

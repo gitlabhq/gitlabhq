@@ -906,130 +906,38 @@ set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
-## Reports JSON format
+## Output
 
-The dependency scanning tool emits a JSON report file. For more information, see the
-[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
+Dependency Scanning produces the following output:
 
-Here's an example dependency scanning report:
+- **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
+- **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
+  lock or build file detected.
 
-```json
-{
-  "version": "2.0",
-  "vulnerabilities": [
-    {
-      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
-      "category": "dependency_scanning",
-      "name": "Regular Expression Denial of Service",
-      "message": "Regular Expression Denial of Service in debug",
-      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
-      "severity": "Unknown",
-      "solution": "Upgrade to latest versions.",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "debug"
-          },
-          "version": "1.0.5"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://nodesecurity.io/advisories/534"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/issues/501"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/pull/504"
-        }
-      ]
-    },
-    {
-      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-      "category": "dependency_scanning",
-      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
-      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
-      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
-      "severity": "Unknown",
-      "solution": "Upgrade to fixed version.\r\n",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "saml2-js"
-          },
-          "version": "1.5.0"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
-          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
-          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
-        },
-        {
-          "type": "cve",
-          "name": "CVE-2017-11429",
-          "value": "CVE-2017-11429",
-          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
-        },
-        {
-          "url": "https://github.com/Clever/saml2/issues/127"
-        },
-        {
-          "url": "https://www.kb.cert.org/vuls/id/475445"
-        }
-      ]
-    }
-  ],
-  "remediations": [
-    {
-      "fixes": [
-        {
-          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-        }
-      ],
-      "summary": "Upgrade saml2-js",
-      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
-    }
-  ]
-}
-```
+### Dependency scanning report
+
+Dependency scanning outputs a report containing details of all vulnerabilities. The report is
+processed internally and the results are shown in the UI. The report is also output as an artifact
+of the dependency scanning job, named `gl-dependency-scanning-report.json`.
+
+For more details of the dependency scanning report, see:
+
+- [Example dependency scanning report](#example-vulnerability-report).
+- [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Generally available in GitLab 15.7.
 
-In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
-each supported lock or build file it detects. These CycloneDX SBOMs are named
-`gl-sbom-<package-type>-<package-manager>.cdx.json`, and are saved in the same directory
-as the detected lock or build files.
+Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
+for each supported lock or build file it detects.
+
+The CycloneDX SBOMs are:
+
+- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
+- Available as job artifacts of the dependency scanning job.
+- Saved in the same directory as the detected lock or build files.
 
 For example, if your project has the following structure:
 
@@ -1063,12 +971,16 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
     └── gl-sbom-go-go.cdx.json
 ```
 
-You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
+#### Merging multiple CycloneDX SBOMs
 
-### Merging multiple CycloneDX SBOMs
+You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM. GitLab uses
+[CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store) to store
+implementation-specific details in the metadata of each CycloneDX SBOM, such as the location of
+build and lock files. If multiple CycloneDX SBOMs are merged together, this information is removed
+from the resulting merged file.
 
-You can use a CI/CD job to merge multiple CycloneDX SBOMs into a single SBOM.
-For example:
+For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
+merged, and the resulting file validated.
 
 ```yaml
 stages:
@@ -1109,11 +1021,6 @@ merge cyclonedx sboms:
     paths:
       - gl-sbom-all.cdx.json
 ```
-
-GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
-to store implementation-specific details in the metadata of each CycloneDX SBOM,
-such as the location of build and lock files. If multiple CycloneDX SBOMs are merged together,
-this information is removed from the resulting merged file.
 
 ## Versioning and release process
 
@@ -1332,3 +1239,114 @@ environment variable due to a possible exploit documented by [CVE-2018-20225](ht
 intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
 requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
 version number).
+
+## Example vulnerability report
+
+The following is an example vulnerability report output by dependency scanning:
+
+```json
+{
+  "version": "2.0",
+  "vulnerabilities": [
+    {
+      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
+      "category": "dependency_scanning",
+      "name": "Regular Expression Denial of Service",
+      "message": "Regular Expression Denial of Service in debug",
+      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest versions.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nodesecurity.io/advisories/534"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/issues/501"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/pull/504"
+        }
+      ]
+    },
+    {
+      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+      "category": "dependency_scanning",
+      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "severity": "Unknown",
+      "solution": "Upgrade to fixed version.\r\n",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
+          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
+          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "value": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
+        },
+        {
+          "url": "https://github.com/Clever/saml2/issues/127"
+        },
+        {
+          "url": "https://www.kb.cert.org/vuls/id/475445"
+        }
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "fixes": [
+        {
+          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+        }
+      ],
+      "summary": "Upgrade saml2-js",
+      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
+    }
+  ]
+}
+```

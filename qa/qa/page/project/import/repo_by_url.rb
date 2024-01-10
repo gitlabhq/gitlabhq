@@ -7,7 +7,6 @@ module QA
         class RepoByURL < Page::Base
           view 'app/assets/javascripts/projects/new/components/new_project_url_select.vue' do
             element 'select-namespace-dropdown'
-            element 'select-namespace-dropdown-search-field'
           end
 
           view 'app/views/projects/_new_project_fields.html.haml' do
@@ -40,7 +39,7 @@ module QA
           def choose_namespace(namespace)
             retry_on_exception do
               click_element 'select-namespace-dropdown'
-              fill_element 'select-namespace-dropdown-search-field', namespace
+              fill_element '.gl-listbox-search-input', namespace
               click_button namespace
             end
           end

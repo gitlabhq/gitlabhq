@@ -26,6 +26,17 @@ invalid_image_platform:
     docker:
       platform: ["arm64"] # The expected value is a string, not an array
 
+invalid_image_user:
+  image:
+    name: alpine:latest
+    docker:
+      user: ["dave"] # The expected value is a string, not an array
+
+empty_image_user:
+  image:
+    name: alpine:latest
+    docker:
+      user: ""
 invalid_image_executor_opts:
   image:
     name: alpine:latest

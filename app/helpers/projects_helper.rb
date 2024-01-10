@@ -797,7 +797,7 @@ module ProjectsHelper
 
   def build_namespace_breadcrumb_link(project)
     if project.group
-      group_title(project.group, nil, nil)
+      group_title(project.group)
     else
       owner = project.namespace.owner
       name = simple_sanitize(owner.name)

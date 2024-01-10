@@ -37,7 +37,7 @@ module GroupsHelper
     group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
-  def group_title(group, name = nil, url = nil)
+  def group_title(group)
     @has_group_title = true
     full_title = []
 
@@ -55,11 +55,6 @@ module GroupsHelper
 
     full_title << breadcrumb_list_item(group_title_link(group))
     push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group))
-
-    if name
-      full_title << ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path js-breadcrumb-item-text')
-      push_to_schema_breadcrumb(simple_sanitize(name), url)
-    end
 
     full_title.join.html_safe
   end

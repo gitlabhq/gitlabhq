@@ -21,13 +21,25 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
     let(:jobs) do
       [
         'rspec fast_spec_helper',
-        'rspec unit',
-        'rspec integration',
-        'rspec system',
-        'rspec migration',
-        'rspec background-migration',
+        'rspec unit pg14',
+        'rspec integration pg14',
+        'rspec system pg14',
+        'rspec migration pg14',
+        'rspec background-migration pg14',
+        'rspec-all frontend_fixture',
+        'build-assets-image',
+        'build-qa-image',
+        'compile-production-assets',
+        'compile-storybook',
+        'compile-test-assets',
+        'eslint',
+        'generate-apollo-graphql-schema',
+        'graphql-schema-dump',
         'jest',
-        'jest-integration'
+        'jest-integration',
+        'qa:internal',
+        'qa:selectors',
+        'static-analysis'
       ]
     end
 
@@ -56,8 +68,20 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_RSPEC_SYSTEM: 'true',
         ENABLE_RSPEC_MIGRATION: 'true',
         ENABLE_RSPEC_BACKGROUND_MIGRATION: 'true',
+        ENABLE_RSPEC_FRONTEND_FIXTURE: 'true',
+        ENABLE_BUILD_ASSETS_IMAGE: 'true',
+        ENABLE_BUILD_QA_IMAGE: 'true',
+        ENABLE_COMPILE_PRODUCTION_ASSETS: 'true',
+        ENABLE_COMPILE_STORYBOOK: 'true',
+        ENABLE_COMPILE_TEST_ASSETS: 'true',
+        ENABLE_ESLINT: 'true',
+        ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
+        ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
         ENABLE_JEST: 'true',
-        ENABLE_JEST_INTEGRATION: 'true'
+        ENABLE_JEST_INTEGRATION: 'true',
+        ENABLE_QA_INTERNAL: 'true',
+        ENABLE_QA_SELECTORS: 'true',
+        ENABLE_STATIC_ANALYSIS: 'true'
       })
     end
   end
@@ -76,9 +100,53 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_RSPEC_SYSTEM=true
         ENABLE_RSPEC_MIGRATION=true
         ENABLE_RSPEC_BACKGROUND_MIGRATION=true
+        ENABLE_RSPEC_FRONTEND_FIXTURE=true
+        ENABLE_BUILD_ASSETS_IMAGE=true
+        ENABLE_BUILD_QA_IMAGE=true
+        ENABLE_COMPILE_PRODUCTION_ASSETS=true
+        ENABLE_COMPILE_STORYBOOK=true
+        ENABLE_COMPILE_TEST_ASSETS=true
+        ENABLE_ESLINT=true
+        ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true
+        ENABLE_GRAPHQL_SCHEMA_DUMP=true
         ENABLE_JEST=true
         ENABLE_JEST_INTEGRATION=true
+        ENABLE_QA_INTERNAL=true
+        ENABLE_QA_SELECTORS=true
+        ENABLE_STATIC_ANALYSIS=true
       ENV
+    end
+  end
+
+  describe '.gitlab/ci/rules.gitlab-ci.yml' do
+    include_context 'when there are all jobs'
+
+    let(:rules_yaml) do
+      File.read(File.expand_path('../../../.gitlab/ci/rules.gitlab-ci.yml', __dir__))
+    end
+
+    it 'uses all the ENABLE variables' do
+      generate.variables.each_key do |variable|
+        next unless variable.start_with?('ENABLE_')
+
+        expect(rules_yaml).to include("- if: '$#{variable} == \"true\"'")
+      end
+    end
+  end
+
+  describe '.gitlab/ci/as-if-foss.gitlab-ci.yml' do
+    include_context 'when there are all jobs'
+
+    let(:ci_yaml) do
+      File.read(File.expand_path('../../../.gitlab/ci/as-if-foss.gitlab-ci.yml', __dir__))
+    end
+
+    it 'uses all the ENABLE variables' do
+      generate.variables.each_key do |variable|
+        next unless variable.start_with?('ENABLE_')
+
+        expect(ci_yaml).to include("#{variable}: $#{variable}")
+      end
     end
   end
 end

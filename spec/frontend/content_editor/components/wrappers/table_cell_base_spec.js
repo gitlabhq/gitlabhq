@@ -149,6 +149,10 @@ describe('content/components/wrappers/table_cell_base', () => {
       },
     );
 
+    it('does not show alignment options for table cells', () => {
+      expect(findDropdown().text()).not.toContain('Align');
+    });
+
     describe("when current row is the table's header", () => {
       beforeEach(async () => {
         // Remove 2 rows condition
@@ -178,6 +182,44 @@ describe('content/components/wrappers/table_cell_base', () => {
         expect(findDropdown().text()).not.toContain('Delete row');
       });
     });
+
+    describe.each`
+      currentAlignment | visibleOptions         | newAlignment | command
+      ${'left'}        | ${['center', 'right']} | ${'center'}  | ${'alignColumnCenter'}
+      ${'center'}      | ${['left', 'right']}   | ${'right'}   | ${'alignColumnRight'}
+      ${'right'}       | ${['left', 'center']}  | ${'left'}    | ${'alignColumnLeft'}
+    `(
+      'when align=$currentAlignment',
+      ({ currentAlignment, visibleOptions, newAlignment, command }) => {
+        beforeEach(async () => {
+          Object.assign(node.attrs, { align: currentAlignment });
+
+          createWrapper({ cellType: 'th' });
+
+          await nextTick();
+        });
+
+        visibleOptions.forEach((alignment) => {
+          it(`shows "Align column ${alignment}" option`, () => {
+            expect(findDropdown().text()).toContain(`Align column ${alignment}`);
+          });
+        });
+
+        it(`does not show "Align column ${currentAlignment}" option`, () => {
+          expect(findDropdown().text()).not.toContain(`Align column ${currentAlignment}`);
+        });
+
+        it('allows changing alignment', async () => {
+          const mocks = mockChainedCommands(editor, [command, 'run']);
+
+          await wrapper
+            .findByRole('button', { name: `Align column ${newAlignment}` })
+            .trigger('click');
+
+          expect(mocks[command]).toHaveBeenCalled();
+        });
+      },
+    );
 
     describe.each`
       attrs             | rect

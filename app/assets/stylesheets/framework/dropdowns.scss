@@ -937,3 +937,17 @@
     width: 100%;
   }
 }
+
+.group-namespace-dropdown .gl-new-dropdown-custom-toggle {
+  display: flex;
+  flex: auto;
+
+  .gl-button-text {
+    display: flex;
+    @include gl-w-full;
+  }
+}
+
+.group-namespace-dropdown .gl-new-dropdown-item-text-wrapper {
+  word-break: break-word;
+}

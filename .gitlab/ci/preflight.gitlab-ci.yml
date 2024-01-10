@@ -70,7 +70,7 @@ no-jh-check:
 qa:selectors:
   extends:
     - .qa-preflight-job
-    - .qa:rules:ee-and-foss
+    - .qa:rules:selectors
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
 

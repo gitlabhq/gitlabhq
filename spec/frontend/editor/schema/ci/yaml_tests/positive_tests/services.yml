@@ -36,3 +36,18 @@ services_platform_string:
     - name: mysql:5.7
       docker:
         platform: arm64
+
+services_with_docker_user:
+  script: echo "Specifying platform."
+  services:
+    - name: mysql:5.7
+      docker:
+        user: ubuntu
+
+services_with_docker_multiple_options:
+  script: echo "Specifying platform."
+  services:
+    - name: mysql:5.7
+      docker:
+        platform: linux/arm64
+        user: ubuntu

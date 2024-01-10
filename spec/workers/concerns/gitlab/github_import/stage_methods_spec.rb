@@ -174,6 +174,19 @@ RSpec.describe Gitlab::GithubImport::StageMethods, feature_category: :importers 
 
       worker.try_import(client, project)
     end
+
+    it 'reschedules the worker if FailedToObtainLockError was raised' do
+      error = Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+      client = double(:client, rate_limit_resets_in: 10)
+
+      expect(Gitlab::GithubImport::RefreshImportJidWorker).to receive(:perform_in_the_future).with(project.id, 'jid')
+
+      expect(worker).to receive(:import).with(client, project).and_raise(error)
+
+      expect(worker.class).to receive(:perform_in).with(10, project.id)
+
+      worker.try_import(client, project)
+    end
   end
 
   describe '#find_project' do

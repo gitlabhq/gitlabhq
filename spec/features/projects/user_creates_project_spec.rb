@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User creates a project', :js, feature_category: :groups_and_projects do
+  include ListboxHelpers
+
   let(:user) { create(:user) }
 
   before do
@@ -110,7 +112,7 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
       fill_in :project_path, with: 'a-subgroup-project'
 
       click_on 'Pick a group or namespace'
-      click_button subgroup.full_path
+      select_listbox_item subgroup.full_path
 
       click_button('Create project')
 

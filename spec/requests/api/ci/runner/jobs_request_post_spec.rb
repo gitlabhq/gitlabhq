@@ -932,7 +932,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 name: 'ruby',
                 executor_opts: {
                   docker: {
-                    platform: 'amd64'
+                    platform: 'amd64',
+                    user: 'dave'
                   }
                 }
               }
@@ -948,7 +949,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'image' => { 'name' => 'ruby',
                            'executor_opts' => {
                              'docker' => {
-                               'platform' => 'amd64'
+                               'platform' => 'amd64',
+                               'user' => 'dave'
                              }
                            },
                            'pull_policy' => nil,

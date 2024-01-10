@@ -528,6 +528,12 @@
                   "type": "string",
                   "minLength": 1,
                   "description": "Image architecture to pull."
+                },
+                "user": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "description": "Username or UID to use for the container."
                 }
               }
             },
@@ -603,6 +609,12 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Image architecture to pull."
+                  },
+                  "user": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Username or UID to use for the container."
                   }
                 }
               },

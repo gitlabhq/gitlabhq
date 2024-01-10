@@ -61,6 +61,10 @@ module Gitlab
       rescue ActiveRecord::RecordInvalid, NotRetriableError, NoMethodError => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
+      rescue UserFinder::FailedToObtainLockError
+        warn(project.id, message: 'Failed to obtaing lock for user finder. Retrying later.')
+
+        raise
       rescue StandardError => e
         track_and_raise_exception(project, e)
       end
@@ -90,6 +94,10 @@ module Gitlab
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))
+      end
+
+      def warn(project_id, extra = {})
+        Logger.warn(log_attributes(project_id, extra))
       end
 
       def log_attributes(project_id, extra = {})

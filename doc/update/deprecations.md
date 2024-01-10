@@ -227,6 +227,20 @@ Because Cloud Native Buildpacks do not support automatic testing, the Auto Test 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Block usage of ref and sha together in `GET /projects/:id/ci/lint`
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430322).
+</div>
+
+Due to a problem with ambiguity, we've deprecated the use of both `ref` and `sha` in the same API call to `GET /projects/:id/ci/lint`. Make sure your API calls to this endpoint use only `ref` or `sha`, but not both. In GitLab 17.0, using them in the same call will no longer be possible to ensure the correct ref or SHA is linted.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Breaking change to the Maven repository group permissions
 
 <div class="deprecation-notes">

@@ -1,13 +1,12 @@
 import {
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownSectionHeader,
+  GlCollapsibleListbox,
+  GlListboxItem,
   GlTruncate,
   GlSearchBoxByType,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -99,16 +98,17 @@ describe('NewProjectUrlSelect component', () => {
   };
 
   const findButtonLabel = () => wrapper.findComponent(GlButton);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSelectedPath = () => wrapper.findComponent(GlTruncate);
   const findHiddenNamespaceInput = () => wrapper.find(`[name="${defaultProvide.inputName}`);
+  const findAllListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const findToggleButton = () => findDropdown().findComponent(GlButton);
 
   const findHiddenSelectedNamespaceInput = () =>
     wrapper.find('[name="project[selected_namespace_id]"]');
 
   const clickDropdownItem = async () => {
-    wrapper.findComponent(GlDropdownItem).vm.$emit('click');
-    await nextTick();
+    await findAllListboxItems().at(0).trigger('click');
   };
 
   const showDropdown = async () => {
@@ -135,7 +135,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown without the class', () => {
-      expect(findDropdown().props('toggleClass')).not.toContain('gl-text-gray-500!');
+      expect(findToggleButton().classes()).not.toContain('gl-text-gray-500!');
     });
 
     it('renders a hidden input with the given namespace id', () => {
@@ -165,7 +165,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a dropdown with the class', () => {
-      expect(findDropdown().props('toggleClass')).toContain('gl-text-gray-500!');
+      expect(findToggleButton().classes()).toContain('gl-text-gray-500!');
     });
 
     it("renders a hidden input with the user's namespace id", () => {
@@ -179,28 +179,22 @@ describe('NewProjectUrlSelect component', () => {
     });
   });
 
-  it('focuses on the input when the dropdown is opened', async () => {
-    wrapper = mountComponent();
-
-    await showDropdown();
-
-    expect(focusInputSpy).toHaveBeenCalledTimes(1);
-  });
-
   it('renders expected dropdown items', async () => {
     wrapper = mountComponent({ mountFn: mount });
 
     await showDropdown();
 
-    const listItems = wrapper.findAll('li');
+    const { fullPath: text, id: value } = data.currentUser.namespace;
+    const userOptions = [{ text, value }];
+    const groupOptions = data.currentUser.groups.nodes.map((node) => ({
+      text: node.fullPath,
+      value: node.id,
+    }));
 
-    expect(listItems).toHaveLength(6);
-    expect(listItems.at(0).findComponent(GlDropdownSectionHeader).text()).toBe('Groups');
-    expect(listItems.at(1).text()).toBe(data.currentUser.groups.nodes[0].fullPath);
-    expect(listItems.at(2).text()).toBe(data.currentUser.groups.nodes[1].fullPath);
-    expect(listItems.at(3).text()).toBe(data.currentUser.groups.nodes[2].fullPath);
-    expect(listItems.at(4).findComponent(GlDropdownSectionHeader).text()).toBe('Users');
-    expect(listItems.at(5).text()).toBe(data.currentUser.namespace.fullPath);
+    expect(findDropdown().props('items')).toEqual([
+      { text: 'Groups', options: groupOptions },
+      { text: 'Users', options: userOptions },
+    ]);
   });
 
   it('does not render users section when user namespace id is not provided', async () => {
@@ -211,8 +205,12 @@ describe('NewProjectUrlSelect component', () => {
 
     await showDropdown();
 
-    expect(wrapper.findAllComponents(GlDropdownSectionHeader)).toHaveLength(1);
-    expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(0).text()).toBe('Groups');
+    const groupOptions = data.currentUser.groups.nodes.map((node) => ({
+      text: node.fullPath,
+      value: node.id,
+    }));
+
+    expect(findDropdown().props('items')).toEqual([{ text: 'Groups', options: groupOptions }]);
   });
 
   describe('query fetching', () => {
@@ -248,12 +246,15 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('filters the dropdown items to the selected group and children', () => {
-      const listItems = wrapper.findAll('li');
+      const filteredgroupOptions = data.currentUser.groups.nodes.filter((group) =>
+        group.fullPath.startsWith(fullPath),
+      );
+      const groupOptions = filteredgroupOptions.map((node) => ({
+        text: node.fullPath,
+        value: node.id,
+      }));
 
-      expect(listItems).toHaveLength(3);
-      expect(listItems.at(0).findComponent(GlDropdownSectionHeader).text()).toBe('Groups');
-      expect(listItems.at(1).text()).toBe(data.currentUser.groups.nodes[1].fullPath);
-      expect(listItems.at(2).text()).toBe(data.currentUser.groups.nodes[2].fullPath);
+      expect(findDropdown().props('items')).toEqual([{ text: 'Groups', options: groupOptions }]);
     });
 
     it('sets the selection to the group', () => {
@@ -278,7 +279,7 @@ describe('NewProjectUrlSelect component', () => {
     wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mount });
     await waitForPromises();
 
-    expect(wrapper.find('li').text()).toBe('No matches found');
+    expect(wrapper.find('[data-testid="listbox-no-results-text"]').text()).toBe('No matches found');
   });
 
   it('emits `update-visibility` event to update the visibility radio options', async () => {
