@@ -1,11 +1,12 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlForm, GlFormGroup, GlFormInput, GlAlert } from '@gitlab/ui';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import Api from '~/api';
 import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
 import updateSavedReplyMutation from '../queries/update_saved_reply.mutation.graphql';
 
@@ -16,7 +17,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlAlert,
-    MarkdownField,
+    MarkdownEditor,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -45,6 +46,14 @@ export default {
         name: this.name,
         content: this.content,
       },
+      formFieldProps: {
+        id: 'comment-template-content',
+        name: 'comment-template-content',
+        'aria-label': __('Content'),
+        placeholder: __('Write comment template content here…'),
+        'data-testid': 'comment-template-content-input',
+        class: 'note-textarea js-gfm-input js-autosize markdown-area',
+      },
     };
   },
   computed: {
@@ -60,6 +69,9 @@ export default {
     },
     isValid() {
       return this.isNameValid && this.isContentValid;
+    },
+    markdownPath() {
+      return Api.buildUrl(Api.markdownPath);
     },
   },
   methods: {
@@ -116,7 +128,6 @@ export default {
         });
     },
   },
-  restrictedToolbarItems: ['full-screen'],
   markdownDocsPath: helpPagePath('user/markdown'),
 };
 </script>
@@ -156,30 +167,19 @@ export default {
       data-testid="comment-template-content-form-group"
       class="gl-lg-max-w-80p"
     >
-      <markdown-field
-        :enable-preview="false"
+      <markdown-editor
+        v-model="updateCommentTemplate.content"
+        class="js-no-autosize"
         :is-submitting="saving"
-        :add-spacing-classes="false"
-        :textarea-value="updateCommentTemplate.content"
+        :disable-attachments="true"
+        :render-markdown-path="markdownPath"
         :markdown-docs-path="$options.markdownDocsPath"
+        :form-field-props="formFieldProps"
         :restricted-tool-bar-items="$options.restrictedToolbarItems"
         :force-autosize="false"
-        class="js-no-autosize gl-border-gray-400!"
-      >
-        <template #textarea>
-          <textarea
-            v-model="updateCommentTemplate.content"
-            dir="auto"
-            class="note-textarea js-gfm-input js-autosize markdown-area"
-            data-supports-quick-actions="false"
-            :aria-label="__('Content')"
-            :placeholder="__('Write comment template content here…')"
-            data-testid="comment-template-content-input"
-            @keydown.meta.enter="onSubmit"
-            @keydown.ctrl.enter="onSubmit"
-          ></textarea>
-        </template>
-      </markdown-field>
+        @keydown.meta.enter="onSubmit"
+        @keydown.ctrl.enter="onSubmit"
+      />
     </gl-form-group>
     <gl-button
       variant="confirm"

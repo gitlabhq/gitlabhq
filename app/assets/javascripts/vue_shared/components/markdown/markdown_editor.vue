@@ -55,7 +55,7 @@ export default {
     uploadsPath: {
       type: String,
       required: false,
-      default: () => window.uploads_path,
+      default: () => window.uploads_path || '',
     },
     enableContentEditor: {
       type: Boolean,
@@ -192,7 +192,7 @@ export default {
         { render_quick_actions: this.supportsQuickActions },
         joinPaths(window.location.origin, this.renderMarkdownPath),
       );
-      return axios.post(url, { text: markdown }).then(({ data }) => data.body);
+      return axios.post(url, { text: markdown }).then(({ data }) => data.body || data.html);
     },
     onEditingModeChange(editingMode) {
       this.editingMode = editingMode;

@@ -696,11 +696,11 @@ Get the GitHub integration settings for a project.
 GET /projects/:id/integrations/github
 ```
 
-## GitLab for Slack app
+## Slack notifications
 
-### Set up the GitLab for Slack app
+### Set up Slack notifications
 
-Set up the GitLab for Slack app for a project.
+Set up Slack notifications for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/slack
@@ -745,17 +745,17 @@ Parameters:
 | `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
 
-### Disable the GitLab for Slack app
+### Disable Slack notifications
 
-Disable the GitLab for Slack app for a project. Integration settings are reset.
+Disable Slack notifications for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/slack
 ```
 
-### Get the GitLab for Slack app settings
+### Get Slack notifications settings
 
-Get the GitLab for Slack app settings for a project.
+Get the Slack notifications settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/slack

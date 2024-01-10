@@ -105,6 +105,7 @@ module Tooling
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => [:database, :backend],
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
+        [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\A\+\s+(\w*\.)?(update_all|upsert|upsert_all|delete_all|destroy_all)(\(.*\))?\s*\z}] => [:database, :backend],
 
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 

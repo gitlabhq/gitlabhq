@@ -135,6 +135,18 @@ describe('Comment templates form component', () => {
 
       expect(findSubmitBtn().props('loading')).toBe(false);
     });
+
+    it('shows markdown preview button', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.text()).toContain('Preview');
+    });
+
+    it('allows switching to rich text editor', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.text()).toContain('Switch to rich text editing');
+    });
   });
 
   describe('updates saved reply', () => {

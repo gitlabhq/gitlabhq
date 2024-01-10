@@ -3217,6 +3217,11 @@ class Project < ApplicationRecord
     false
   end
 
+  # Overridden in EE
+  def on_demand_dast_available?
+    false
+  end
+
   private
 
   # overridden in EE

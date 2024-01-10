@@ -9006,6 +9006,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to eq(false) }
   end
 
+  describe '#on_demand_dast_available?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:on_demand_dast_available?) { project.on_demand_dast_available? }
+
+    it { is_expected.to be_falsy }
+  end
+
   private
 
   def finish_job(export_job)

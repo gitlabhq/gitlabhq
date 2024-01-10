@@ -74,7 +74,6 @@ RSpec.describe IssuableCollections do
           assignee_username: 'user1',
           author_id: '2',
           author_username: 'user2',
-          authorized_only: 'yes',
           confidential: true,
           due_date: '2017-01-01',
           group_id: '3',
