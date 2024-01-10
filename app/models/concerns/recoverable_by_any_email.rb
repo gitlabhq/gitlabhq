@@ -1,39 +1,34 @@
 # frozen_string_literal: true
 
-# Concern that overrides the Devise methods
-# to send reset password instructions to any verified user email
+# Concern that overrides the Devise methods to allow reset password instructions
+# to be sent to any users' confirmed secondary emails.
+# See https://github.com/heartcombo/devise/blob/main/lib/devise/models/recoverable.rb
 module RecoverableByAnyEmail
   extend ActiveSupport::Concern
 
   class_methods do
     def send_reset_password_instructions(attributes = {})
-      email = attributes.delete(:email)
-      super unless email
+      return super unless attributes[:email]
 
-      recoverable = by_email_with_errors(email)
-      recoverable.send_reset_password_instructions if recoverable&.persisted?
+      email = Email.confirmed.find_by(email: attributes[:email].to_s)
+      return super unless email
+
+      recoverable = email.user
+
+      recoverable.send_reset_password_instructions(to: email.email)
       recoverable
-    end
-
-    private
-
-    def by_email_with_errors(email)
-      record = find_by_any_email(email, confirmed: true) || new
-      record.errors.add(:email, :invalid) unless record.persisted?
-      record
     end
   end
 
-  def send_reset_password_instructions
+  def send_reset_password_instructions(opts = {})
     token = set_reset_password_token
-    opts = { to: verified_emails(include_private_email: false) }
 
     send_reset_password_instructions_notification(token, opts)
 
     token
   end
 
-  private
+  protected
 
   def send_reset_password_instructions_notification(token, opts = {})
     send_devise_notification(:reset_password_instructions, token, opts)
