@@ -76,4 +76,19 @@ RSpec.describe Gitlab::SlashCommands::Presenters::Access do
       end
     end
   end
+
+  describe '#confirm' do
+    let(:url) { 'https://example.com/api' }
+
+    subject { described_class.new.confirm(url) }
+
+    it { is_expected.to be_a(Hash) }
+
+    it 'tells the user to confirm the request' do
+      expect(subject[:response_type]).to be(:ephemeral)
+      expect(subject[:text]).to match(
+        "Please confirm the request by accessing <#{url}|this link> through a web browser"
+      )
+    end
+  end
 end
