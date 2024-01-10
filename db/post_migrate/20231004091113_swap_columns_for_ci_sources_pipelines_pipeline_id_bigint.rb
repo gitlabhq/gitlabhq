@@ -36,6 +36,8 @@ class SwapColumnsForCiSourcesPipelinesPipelineIdBigint < Gitlab::Database::Migra
   private
 
   def swap
+    ensure_indexes_exist
+
     with_lock_retries(raise_on_exhaustion: true) do
       # Lock the tables involved.
       execute "LOCK TABLE #{TARGET_TABLE_NAME}, #{TABLE_NAME} IN ACCESS EXCLUSIVE MODE"
@@ -73,5 +75,15 @@ class SwapColumnsForCiSourcesPipelinesPipelineIdBigint < Gitlab::Database::Migra
         execute "ALTER INDEX #{temp_index_name} RENAME TO #{bigint_index_name}"
       end
     end
+  end
+
+  def ensure_indexes_exist
+    unless index_exists?(TABLE_NAME, :pipeline_id, name: :index_ci_sources_pipelines_on_pipeline_id)
+      add_concurrent_index(TABLE_NAME, :pipeline_id, name: :index_ci_sources_pipelines_on_pipeline_id)
+    end
+
+    return if index_exists?(TABLE_NAME, :source_pipeline_id, name: :index_ci_sources_pipelines_on_source_pipeline_id)
+
+    add_concurrent_index(TABLE_NAME, :source_pipeline_id, name: :index_ci_sources_pipelines_on_source_pipeline_id)
   end
 end
