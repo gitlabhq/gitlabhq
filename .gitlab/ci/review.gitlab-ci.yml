@@ -97,6 +97,7 @@ start-review-app-pipeline:
       - DEBIAN_VERSION
       - DOCKER_VERSION
       - CHROME_VERSION
+      - BUNDLER_VERSION
 
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.

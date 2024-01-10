@@ -31548,259 +31548,259 @@ CREATE INDEX issue_search_data_00_issue_id_idx ON gitlab_partitions_static.issue
 
 CREATE INDEX index_issue_search_data_on_search_vector ON ONLY issue_search_data USING gin (search_vector);
 
-CREATE INDEX issue_search_data_00_search_vector_idx ON gitlab_partitions_static.issue_search_data_00 USING gin (search_vector);
+CREATE INDEX issue_search_data_00_search_vector_idx ON gitlab_partitions_static.issue_search_data_00 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_01_issue_id_idx ON gitlab_partitions_static.issue_search_data_01 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_01_search_vector_idx ON gitlab_partitions_static.issue_search_data_01 USING gin (search_vector);
+CREATE INDEX issue_search_data_01_search_vector_idx ON gitlab_partitions_static.issue_search_data_01 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_02_issue_id_idx ON gitlab_partitions_static.issue_search_data_02 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_02_search_vector_idx ON gitlab_partitions_static.issue_search_data_02 USING gin (search_vector);
+CREATE INDEX issue_search_data_02_search_vector_idx ON gitlab_partitions_static.issue_search_data_02 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_03_issue_id_idx ON gitlab_partitions_static.issue_search_data_03 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_03_search_vector_idx ON gitlab_partitions_static.issue_search_data_03 USING gin (search_vector);
+CREATE INDEX issue_search_data_03_search_vector_idx ON gitlab_partitions_static.issue_search_data_03 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_04_issue_id_idx ON gitlab_partitions_static.issue_search_data_04 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_04_search_vector_idx ON gitlab_partitions_static.issue_search_data_04 USING gin (search_vector);
+CREATE INDEX issue_search_data_04_search_vector_idx ON gitlab_partitions_static.issue_search_data_04 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_05_issue_id_idx ON gitlab_partitions_static.issue_search_data_05 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_05_search_vector_idx ON gitlab_partitions_static.issue_search_data_05 USING gin (search_vector);
+CREATE INDEX issue_search_data_05_search_vector_idx ON gitlab_partitions_static.issue_search_data_05 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_06_issue_id_idx ON gitlab_partitions_static.issue_search_data_06 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_06_search_vector_idx ON gitlab_partitions_static.issue_search_data_06 USING gin (search_vector);
+CREATE INDEX issue_search_data_06_search_vector_idx ON gitlab_partitions_static.issue_search_data_06 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_07_issue_id_idx ON gitlab_partitions_static.issue_search_data_07 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_07_search_vector_idx ON gitlab_partitions_static.issue_search_data_07 USING gin (search_vector);
+CREATE INDEX issue_search_data_07_search_vector_idx ON gitlab_partitions_static.issue_search_data_07 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_08_issue_id_idx ON gitlab_partitions_static.issue_search_data_08 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_08_search_vector_idx ON gitlab_partitions_static.issue_search_data_08 USING gin (search_vector);
+CREATE INDEX issue_search_data_08_search_vector_idx ON gitlab_partitions_static.issue_search_data_08 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_09_issue_id_idx ON gitlab_partitions_static.issue_search_data_09 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_09_search_vector_idx ON gitlab_partitions_static.issue_search_data_09 USING gin (search_vector);
+CREATE INDEX issue_search_data_09_search_vector_idx ON gitlab_partitions_static.issue_search_data_09 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_10_issue_id_idx ON gitlab_partitions_static.issue_search_data_10 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_10_search_vector_idx ON gitlab_partitions_static.issue_search_data_10 USING gin (search_vector);
+CREATE INDEX issue_search_data_10_search_vector_idx ON gitlab_partitions_static.issue_search_data_10 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_11_issue_id_idx ON gitlab_partitions_static.issue_search_data_11 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_11_search_vector_idx ON gitlab_partitions_static.issue_search_data_11 USING gin (search_vector);
+CREATE INDEX issue_search_data_11_search_vector_idx ON gitlab_partitions_static.issue_search_data_11 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_12_issue_id_idx ON gitlab_partitions_static.issue_search_data_12 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_12_search_vector_idx ON gitlab_partitions_static.issue_search_data_12 USING gin (search_vector);
+CREATE INDEX issue_search_data_12_search_vector_idx ON gitlab_partitions_static.issue_search_data_12 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_13_issue_id_idx ON gitlab_partitions_static.issue_search_data_13 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_13_search_vector_idx ON gitlab_partitions_static.issue_search_data_13 USING gin (search_vector);
+CREATE INDEX issue_search_data_13_search_vector_idx ON gitlab_partitions_static.issue_search_data_13 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_14_issue_id_idx ON gitlab_partitions_static.issue_search_data_14 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_14_search_vector_idx ON gitlab_partitions_static.issue_search_data_14 USING gin (search_vector);
+CREATE INDEX issue_search_data_14_search_vector_idx ON gitlab_partitions_static.issue_search_data_14 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_15_issue_id_idx ON gitlab_partitions_static.issue_search_data_15 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_15_search_vector_idx ON gitlab_partitions_static.issue_search_data_15 USING gin (search_vector);
+CREATE INDEX issue_search_data_15_search_vector_idx ON gitlab_partitions_static.issue_search_data_15 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_16_issue_id_idx ON gitlab_partitions_static.issue_search_data_16 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_16_search_vector_idx ON gitlab_partitions_static.issue_search_data_16 USING gin (search_vector);
+CREATE INDEX issue_search_data_16_search_vector_idx ON gitlab_partitions_static.issue_search_data_16 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_17_issue_id_idx ON gitlab_partitions_static.issue_search_data_17 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_17_search_vector_idx ON gitlab_partitions_static.issue_search_data_17 USING gin (search_vector);
+CREATE INDEX issue_search_data_17_search_vector_idx ON gitlab_partitions_static.issue_search_data_17 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_18_issue_id_idx ON gitlab_partitions_static.issue_search_data_18 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_18_search_vector_idx ON gitlab_partitions_static.issue_search_data_18 USING gin (search_vector);
+CREATE INDEX issue_search_data_18_search_vector_idx ON gitlab_partitions_static.issue_search_data_18 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_19_issue_id_idx ON gitlab_partitions_static.issue_search_data_19 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_19_search_vector_idx ON gitlab_partitions_static.issue_search_data_19 USING gin (search_vector);
+CREATE INDEX issue_search_data_19_search_vector_idx ON gitlab_partitions_static.issue_search_data_19 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_20_issue_id_idx ON gitlab_partitions_static.issue_search_data_20 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_20_search_vector_idx ON gitlab_partitions_static.issue_search_data_20 USING gin (search_vector);
+CREATE INDEX issue_search_data_20_search_vector_idx ON gitlab_partitions_static.issue_search_data_20 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_21_issue_id_idx ON gitlab_partitions_static.issue_search_data_21 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_21_search_vector_idx ON gitlab_partitions_static.issue_search_data_21 USING gin (search_vector);
+CREATE INDEX issue_search_data_21_search_vector_idx ON gitlab_partitions_static.issue_search_data_21 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_22_issue_id_idx ON gitlab_partitions_static.issue_search_data_22 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_22_search_vector_idx ON gitlab_partitions_static.issue_search_data_22 USING gin (search_vector);
+CREATE INDEX issue_search_data_22_search_vector_idx ON gitlab_partitions_static.issue_search_data_22 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_23_issue_id_idx ON gitlab_partitions_static.issue_search_data_23 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_23_search_vector_idx ON gitlab_partitions_static.issue_search_data_23 USING gin (search_vector);
+CREATE INDEX issue_search_data_23_search_vector_idx ON gitlab_partitions_static.issue_search_data_23 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_24_issue_id_idx ON gitlab_partitions_static.issue_search_data_24 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_24_search_vector_idx ON gitlab_partitions_static.issue_search_data_24 USING gin (search_vector);
+CREATE INDEX issue_search_data_24_search_vector_idx ON gitlab_partitions_static.issue_search_data_24 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_25_issue_id_idx ON gitlab_partitions_static.issue_search_data_25 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_25_search_vector_idx ON gitlab_partitions_static.issue_search_data_25 USING gin (search_vector);
+CREATE INDEX issue_search_data_25_search_vector_idx ON gitlab_partitions_static.issue_search_data_25 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_26_issue_id_idx ON gitlab_partitions_static.issue_search_data_26 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_26_search_vector_idx ON gitlab_partitions_static.issue_search_data_26 USING gin (search_vector);
+CREATE INDEX issue_search_data_26_search_vector_idx ON gitlab_partitions_static.issue_search_data_26 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_27_issue_id_idx ON gitlab_partitions_static.issue_search_data_27 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_27_search_vector_idx ON gitlab_partitions_static.issue_search_data_27 USING gin (search_vector);
+CREATE INDEX issue_search_data_27_search_vector_idx ON gitlab_partitions_static.issue_search_data_27 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_28_issue_id_idx ON gitlab_partitions_static.issue_search_data_28 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_28_search_vector_idx ON gitlab_partitions_static.issue_search_data_28 USING gin (search_vector);
+CREATE INDEX issue_search_data_28_search_vector_idx ON gitlab_partitions_static.issue_search_data_28 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_29_issue_id_idx ON gitlab_partitions_static.issue_search_data_29 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_29_search_vector_idx ON gitlab_partitions_static.issue_search_data_29 USING gin (search_vector);
+CREATE INDEX issue_search_data_29_search_vector_idx ON gitlab_partitions_static.issue_search_data_29 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_30_issue_id_idx ON gitlab_partitions_static.issue_search_data_30 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_30_search_vector_idx ON gitlab_partitions_static.issue_search_data_30 USING gin (search_vector);
+CREATE INDEX issue_search_data_30_search_vector_idx ON gitlab_partitions_static.issue_search_data_30 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_31_issue_id_idx ON gitlab_partitions_static.issue_search_data_31 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_31_search_vector_idx ON gitlab_partitions_static.issue_search_data_31 USING gin (search_vector);
+CREATE INDEX issue_search_data_31_search_vector_idx ON gitlab_partitions_static.issue_search_data_31 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_32_issue_id_idx ON gitlab_partitions_static.issue_search_data_32 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_32_search_vector_idx ON gitlab_partitions_static.issue_search_data_32 USING gin (search_vector);
+CREATE INDEX issue_search_data_32_search_vector_idx ON gitlab_partitions_static.issue_search_data_32 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_33_issue_id_idx ON gitlab_partitions_static.issue_search_data_33 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_33_search_vector_idx ON gitlab_partitions_static.issue_search_data_33 USING gin (search_vector);
+CREATE INDEX issue_search_data_33_search_vector_idx ON gitlab_partitions_static.issue_search_data_33 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_34_issue_id_idx ON gitlab_partitions_static.issue_search_data_34 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_34_search_vector_idx ON gitlab_partitions_static.issue_search_data_34 USING gin (search_vector);
+CREATE INDEX issue_search_data_34_search_vector_idx ON gitlab_partitions_static.issue_search_data_34 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_35_issue_id_idx ON gitlab_partitions_static.issue_search_data_35 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_35_search_vector_idx ON gitlab_partitions_static.issue_search_data_35 USING gin (search_vector);
+CREATE INDEX issue_search_data_35_search_vector_idx ON gitlab_partitions_static.issue_search_data_35 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_36_issue_id_idx ON gitlab_partitions_static.issue_search_data_36 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_36_search_vector_idx ON gitlab_partitions_static.issue_search_data_36 USING gin (search_vector);
+CREATE INDEX issue_search_data_36_search_vector_idx ON gitlab_partitions_static.issue_search_data_36 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_37_issue_id_idx ON gitlab_partitions_static.issue_search_data_37 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_37_search_vector_idx ON gitlab_partitions_static.issue_search_data_37 USING gin (search_vector);
+CREATE INDEX issue_search_data_37_search_vector_idx ON gitlab_partitions_static.issue_search_data_37 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_38_issue_id_idx ON gitlab_partitions_static.issue_search_data_38 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_38_search_vector_idx ON gitlab_partitions_static.issue_search_data_38 USING gin (search_vector);
+CREATE INDEX issue_search_data_38_search_vector_idx ON gitlab_partitions_static.issue_search_data_38 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_39_issue_id_idx ON gitlab_partitions_static.issue_search_data_39 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_39_search_vector_idx ON gitlab_partitions_static.issue_search_data_39 USING gin (search_vector);
+CREATE INDEX issue_search_data_39_search_vector_idx ON gitlab_partitions_static.issue_search_data_39 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_40_issue_id_idx ON gitlab_partitions_static.issue_search_data_40 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_40_search_vector_idx ON gitlab_partitions_static.issue_search_data_40 USING gin (search_vector);
+CREATE INDEX issue_search_data_40_search_vector_idx ON gitlab_partitions_static.issue_search_data_40 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_41_issue_id_idx ON gitlab_partitions_static.issue_search_data_41 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_41_search_vector_idx ON gitlab_partitions_static.issue_search_data_41 USING gin (search_vector);
+CREATE INDEX issue_search_data_41_search_vector_idx ON gitlab_partitions_static.issue_search_data_41 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_42_issue_id_idx ON gitlab_partitions_static.issue_search_data_42 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_42_search_vector_idx ON gitlab_partitions_static.issue_search_data_42 USING gin (search_vector);
+CREATE INDEX issue_search_data_42_search_vector_idx ON gitlab_partitions_static.issue_search_data_42 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_43_issue_id_idx ON gitlab_partitions_static.issue_search_data_43 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_43_search_vector_idx ON gitlab_partitions_static.issue_search_data_43 USING gin (search_vector);
+CREATE INDEX issue_search_data_43_search_vector_idx ON gitlab_partitions_static.issue_search_data_43 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_44_issue_id_idx ON gitlab_partitions_static.issue_search_data_44 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_44_search_vector_idx ON gitlab_partitions_static.issue_search_data_44 USING gin (search_vector);
+CREATE INDEX issue_search_data_44_search_vector_idx ON gitlab_partitions_static.issue_search_data_44 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_45_issue_id_idx ON gitlab_partitions_static.issue_search_data_45 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_45_search_vector_idx ON gitlab_partitions_static.issue_search_data_45 USING gin (search_vector);
+CREATE INDEX issue_search_data_45_search_vector_idx ON gitlab_partitions_static.issue_search_data_45 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_46_issue_id_idx ON gitlab_partitions_static.issue_search_data_46 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_46_search_vector_idx ON gitlab_partitions_static.issue_search_data_46 USING gin (search_vector);
+CREATE INDEX issue_search_data_46_search_vector_idx ON gitlab_partitions_static.issue_search_data_46 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_47_issue_id_idx ON gitlab_partitions_static.issue_search_data_47 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_47_search_vector_idx ON gitlab_partitions_static.issue_search_data_47 USING gin (search_vector);
+CREATE INDEX issue_search_data_47_search_vector_idx ON gitlab_partitions_static.issue_search_data_47 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_48_issue_id_idx ON gitlab_partitions_static.issue_search_data_48 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_48_search_vector_idx ON gitlab_partitions_static.issue_search_data_48 USING gin (search_vector);
+CREATE INDEX issue_search_data_48_search_vector_idx ON gitlab_partitions_static.issue_search_data_48 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_49_issue_id_idx ON gitlab_partitions_static.issue_search_data_49 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_49_search_vector_idx ON gitlab_partitions_static.issue_search_data_49 USING gin (search_vector);
+CREATE INDEX issue_search_data_49_search_vector_idx ON gitlab_partitions_static.issue_search_data_49 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_50_issue_id_idx ON gitlab_partitions_static.issue_search_data_50 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_50_search_vector_idx ON gitlab_partitions_static.issue_search_data_50 USING gin (search_vector);
+CREATE INDEX issue_search_data_50_search_vector_idx ON gitlab_partitions_static.issue_search_data_50 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_51_issue_id_idx ON gitlab_partitions_static.issue_search_data_51 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_51_search_vector_idx ON gitlab_partitions_static.issue_search_data_51 USING gin (search_vector);
+CREATE INDEX issue_search_data_51_search_vector_idx ON gitlab_partitions_static.issue_search_data_51 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_52_issue_id_idx ON gitlab_partitions_static.issue_search_data_52 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_52_search_vector_idx ON gitlab_partitions_static.issue_search_data_52 USING gin (search_vector);
+CREATE INDEX issue_search_data_52_search_vector_idx ON gitlab_partitions_static.issue_search_data_52 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_53_issue_id_idx ON gitlab_partitions_static.issue_search_data_53 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_53_search_vector_idx ON gitlab_partitions_static.issue_search_data_53 USING gin (search_vector);
+CREATE INDEX issue_search_data_53_search_vector_idx ON gitlab_partitions_static.issue_search_data_53 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_54_issue_id_idx ON gitlab_partitions_static.issue_search_data_54 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_54_search_vector_idx ON gitlab_partitions_static.issue_search_data_54 USING gin (search_vector);
+CREATE INDEX issue_search_data_54_search_vector_idx ON gitlab_partitions_static.issue_search_data_54 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_55_issue_id_idx ON gitlab_partitions_static.issue_search_data_55 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_55_search_vector_idx ON gitlab_partitions_static.issue_search_data_55 USING gin (search_vector);
+CREATE INDEX issue_search_data_55_search_vector_idx ON gitlab_partitions_static.issue_search_data_55 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_56_issue_id_idx ON gitlab_partitions_static.issue_search_data_56 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_56_search_vector_idx ON gitlab_partitions_static.issue_search_data_56 USING gin (search_vector);
+CREATE INDEX issue_search_data_56_search_vector_idx ON gitlab_partitions_static.issue_search_data_56 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_57_issue_id_idx ON gitlab_partitions_static.issue_search_data_57 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_57_search_vector_idx ON gitlab_partitions_static.issue_search_data_57 USING gin (search_vector);
+CREATE INDEX issue_search_data_57_search_vector_idx ON gitlab_partitions_static.issue_search_data_57 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_58_issue_id_idx ON gitlab_partitions_static.issue_search_data_58 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_58_search_vector_idx ON gitlab_partitions_static.issue_search_data_58 USING gin (search_vector);
+CREATE INDEX issue_search_data_58_search_vector_idx ON gitlab_partitions_static.issue_search_data_58 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_59_issue_id_idx ON gitlab_partitions_static.issue_search_data_59 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_59_search_vector_idx ON gitlab_partitions_static.issue_search_data_59 USING gin (search_vector);
+CREATE INDEX issue_search_data_59_search_vector_idx ON gitlab_partitions_static.issue_search_data_59 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_60_issue_id_idx ON gitlab_partitions_static.issue_search_data_60 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_60_search_vector_idx ON gitlab_partitions_static.issue_search_data_60 USING gin (search_vector);
+CREATE INDEX issue_search_data_60_search_vector_idx ON gitlab_partitions_static.issue_search_data_60 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_61_issue_id_idx ON gitlab_partitions_static.issue_search_data_61 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_61_search_vector_idx ON gitlab_partitions_static.issue_search_data_61 USING gin (search_vector);
+CREATE INDEX issue_search_data_61_search_vector_idx ON gitlab_partitions_static.issue_search_data_61 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_62_issue_id_idx ON gitlab_partitions_static.issue_search_data_62 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_62_search_vector_idx ON gitlab_partitions_static.issue_search_data_62 USING gin (search_vector);
+CREATE INDEX issue_search_data_62_search_vector_idx ON gitlab_partitions_static.issue_search_data_62 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX issue_search_data_63_issue_id_idx ON gitlab_partitions_static.issue_search_data_63 USING btree (issue_id);
 
-CREATE INDEX issue_search_data_63_search_vector_idx ON gitlab_partitions_static.issue_search_data_63 USING gin (search_vector);
+CREATE INDEX issue_search_data_63_search_vector_idx ON gitlab_partitions_static.issue_search_data_63 USING gin (search_vector) WITH (fastupdate='false');
 
 CREATE INDEX index_on_namespace_descendants_outdated ON ONLY namespace_descendants USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
 
@@ -35159,6 +35159,8 @@ CREATE INDEX index_sbom_component_versions_on_component_id ON sbom_component_ver
 CREATE UNIQUE INDEX index_sbom_component_versions_on_component_id_and_version ON sbom_component_versions USING btree (component_id, version);
 
 CREATE UNIQUE INDEX index_sbom_components_on_component_type_name_and_purl_type ON sbom_components USING btree (name, purl_type, component_type);
+
+CREATE INDEX index_sbom_occurr_on_project_id_and_component_version_id_and_id ON sbom_occurrences USING btree (project_id, component_version_id, id);
 
 CREATE INDEX index_sbom_occurrences_for_input_file_path_search ON sbom_occurrences USING btree (project_id, component_id, input_file_path);
 

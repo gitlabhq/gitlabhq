@@ -29,7 +29,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
     it 'correctly exposes `user`', :aggregate_failures do
       user_hash = entity_hash[:user]
 
-      expect(user_hash.keys).to match_array([
+      expect(user_hash.keys).to include(
         :name,
         :username,
         :avatar_url,
@@ -38,7 +38,6 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :last_activity_on,
         :path,
         :admin_path,
-        :plan,
         :verification_state,
         :past_closed_reports,
         :similar_open_reports,
@@ -47,7 +46,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :snippets_count,
         :groups_count,
         :notes_count
-      ])
+      )
 
       expect(user_hash[:verification_state].keys).to match_array([
         :email,
@@ -126,23 +125,6 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :avatar_url,
         :path
       ])
-    end
-
-    describe 'users plan' do
-      it 'does not include the plan' do
-        expect(entity_hash[:user][:plan]).to be_nil
-      end
-
-      context 'when on .com', :saas, if: Gitlab.ee? do
-        before do
-          stub_ee_application_setting(should_check_namespace_plan: true)
-          create(:gitlab_subscription, :bronze, namespace: user.namespace)
-        end
-
-        it 'includes the plan' do
-          expect(entity_hash[:user][:plan]).to eq('Bronze')
-        end
-      end
     end
   end
 end

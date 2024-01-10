@@ -17,12 +17,6 @@ module Admin
         admin_user_path(report.user)
       end
 
-      expose :plan do |report|
-        if Gitlab::CurrentSettings.current_application_settings.try(:should_check_namespace_plan?)
-          report.user.namespace&.actual_plan&.title
-        end
-      end
-
       expose :verification_state do
         expose :email do |report|
           report.user.confirmed?
@@ -91,3 +85,5 @@ module Admin
     end
   end
 end
+
+Admin::AbuseReportDetailsEntity.prepend_mod_with('Admin::AbuseReportDetailsEntity')

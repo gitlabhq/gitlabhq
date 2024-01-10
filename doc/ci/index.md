@@ -21,7 +21,7 @@ If you're new to GitLab CI/CD, start by reviewing some of the commonly used term
 
 To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project
 which contains the configuration for your CI/CD pipeline. This file follows the YAML format
-and has its own special syntax.
+and has its own syntax.
 
 You can name this file anything you want, but `.gitlab-ci.yml` is the most common name.
 
@@ -38,7 +38,7 @@ In the `.gitlab-ci.yml` file, you can define:
 
 - [Create your first `.gitlab-ci.yml` file](quick_start/index.md).
 - View all the possible keywords that you can use in the `.gitlab-ci.yml` file in
-  the [CI/CD YAML syntax reference](../index.md).
+  the [CI/CD YAML syntax reference](../ci/yaml/index.md).
 - Use the [pipeline editor](pipeline_editor/index.md) to edit or [visualize](pipeline_editor/index.md#visualize-ci-configuration)
   your CI/CD configuration.
 

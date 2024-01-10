@@ -37026,6 +37026,9 @@ msgstr ""
 msgid "ProductAnalytics|Get started with product analytics"
 msgstr ""
 
+msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
+msgstr ""
+
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
@@ -37132,6 +37135,9 @@ msgid "ProductAnalytics|Something went wrong while loading product analytics usa
 msgstr ""
 
 msgid "ProductAnalytics|Store, query, and visualize quantitative data to get insights into user value."
+msgstr ""
+
+msgid "ProductAnalytics|Tell us what you think!"
 msgstr ""
 
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."

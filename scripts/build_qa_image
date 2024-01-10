@@ -87,6 +87,7 @@ docker buildx build \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
   --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
+  --build-arg=BUNDLER_VERSION="${BUNDLER_VERSION}" \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET}" \
   --file="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --push \

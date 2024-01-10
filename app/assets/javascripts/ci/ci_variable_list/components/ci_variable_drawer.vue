@@ -496,8 +496,8 @@ export default {
           v-model="variable.value"
           :spellcheck="false"
           class="gl-border-none gl-font-monospace!"
-          rows="3"
-          max-rows="10"
+          rows="5"
+          :no-resize="false"
           data-testid="ci-variable-value"
         />
         <p

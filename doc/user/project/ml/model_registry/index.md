@@ -29,13 +29,14 @@ at least the [Reporter role](../../../permissions.md#roles) to modify or delete 
 
 ## Exploring models, model versions and model candidates
 
-Model registry can be accessed on `https/<your-project>-/ml/models`.
+To access the model registry, from the left sidebar, select **Deploy > Model registry**.
 
 ## Creating machine learning models and model versions
 
 Models and model versions can be created using the [MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
-See [MLflow client compatibility](../experiment_tracking/mlflow_client.md#model-registry) on how to
-create and manage models and model versions.
+For more information about how to create and manage models and model versions, see [MLflow client compatibility](../experiment_tracking/mlflow_client.md#model-registry).
+You can also create models directly on GitLab by selecting **Create Model**
+on the Model registry page.
 
 ## Upload files, log metrics, log parameters to a model version
 

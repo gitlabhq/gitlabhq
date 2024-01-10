@@ -113,6 +113,10 @@ describe('CI Variable Drawer', () => {
         helpPagePath('ci/variables/index', { anchor: 'define-a-cicd-variable-in-the-ui' }),
       );
     });
+
+    it('value field is resizable', () => {
+      expect(findValueField().props('noResize')).toBe(false);
+    });
   });
 
   describe('validations', () => {

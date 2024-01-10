@@ -39,6 +39,9 @@ To use MLflow client compatibility from a local environment:
 
 1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
+In the model registry, you can copy the tracking URI from the overflow menu in the top right
+by selecting the vertical ellipsis (**{ellipsis_v}**).
+
 ## Model experiments
 
 When running the training code, MLflow client can be used to create experiments, runs,
@@ -141,11 +144,22 @@ description = 'Model version description'
 model_version = client.create_model_version(model_name, source="", description=description)
 ```
 
+If the version parameter is not passed, it will be auto-incremented from the latest uploaded
+version. You can set the version by passing a tag during model version creation. The version
+must follow [SemVer](https://semver.org/) format.
+
+```python
+client = MlflowClient()
+model_name = '<your_model_name>'
+version = '<your_version>'
+tags = { "gitlab.version" = version }
+client.create_model)version(model_name, version, description=description, tags=tags)
+```
+
 **Notes**
 
 - Argument `run_id` is ignored. Every model version behaves as a Candidate/Run. Creating a mode version from a run is not yet supported.
 - Argument `source` is ignored. GitLab will create a package location for the model version files.
-- Argument `tags` is ignored.
 - Argument `run_link` is ignored.
 - Argument `await_creation_for` is ignored.
 

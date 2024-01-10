@@ -18725,6 +18725,7 @@ Check permissions for the current user on an epic.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epicpermissionsadminepic"></a>`adminEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_epic` on this resource. |
+| <a id="epicpermissionsadminepicrelation"></a>`adminEpicRelation` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_epic_relation` on this resource. |
 | <a id="epicpermissionsawardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
 | <a id="epicpermissionscreateepic"></a>`createEpic` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_epic` on this resource. |
 | <a id="epicpermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
@@ -21131,6 +21132,7 @@ Check permissions for the current user on a issue.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
+| <a id="issuepermissionsadminissuerelation"></a>`adminIssueRelation` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue_relation` on this resource. |
 | <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
 | <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
@@ -31796,6 +31798,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
 | <a id="usercalloutfeaturenameenumpreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
+| <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_quality_summary_feedback"></a>`PROJECT_QUALITY_SUMMARY_FEEDBACK` | Callout feature name for project_quality_summary_feedback. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_alert_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for project_repository_limit_alert_alert_threshold. |

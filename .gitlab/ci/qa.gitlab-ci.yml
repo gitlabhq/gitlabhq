@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   extends:
     - .default-retry
     - .qa-cache
@@ -27,6 +27,7 @@
     variables:
       - CHROME_VERSION
       - RUBY_VERSION
+      - BUNDLER_VERSION
       - DOCKER_VERSION
       - DEBIAN_VERSION
       - REGISTRY_GROUP

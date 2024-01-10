@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
+import { v4 as uuidv4 } from 'uuid';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -39,6 +40,11 @@ export default {
     AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
+  provide() {
+    return {
+      summarizeClientSubscriptionId: uuidv4(),
+    };
+  },
   props: {
     noteableData: {
       type: Object,
