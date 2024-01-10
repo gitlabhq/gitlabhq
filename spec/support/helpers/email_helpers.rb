@@ -14,6 +14,18 @@ module EmailHelpers
     ActiveJob::Base.queue_adapter.enqueued_jobs.clear
   end
 
+  def expect_only_one_email_to_be_sent(subject:, to:)
+    count_of_sent_emails = ActionMailer::Base.deliveries.count
+    expect(count_of_sent_emails).to eq(1), "Expected only one email to be sent, but #{count_of_sent_emails} emails were sent instead"
+
+    return unless count_of_sent_emails == 1
+
+    message = ActionMailer::Base.deliveries.first
+
+    expect(message.subject).to eq(subject), "Expected '#{subject}' email to be sent, but '#{message.subject}' email was sent instead"
+    expect(message.to).to match_array(to), "Expected the email to be sent to #{to}, but it was sent to #{message.to} instead"
+  end
+
   def should_only_email(*users, kind: :to)
     recipients = email_recipients(kind: kind)
 

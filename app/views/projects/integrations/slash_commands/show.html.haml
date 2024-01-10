@@ -1,0 +1,30 @@
+- breadcrumb_title s_('Integrations|Base slash commands')
+- page_title s_('Integrations|Base slash commands')
+- integration_name = params[:integration].titleize
+%main{ role: 'main' }
+  .gl-max-w-80.gl-mx-auto.gl-mt-6
+    = render Pajamas::CardComponent.new do |c|
+      - c.with_header do
+        %h4.gl-m-0= sprintf(s_('Integrations|Authorize %{integration_name} (%{user}) to use your account?'), { user: current_user.username, integration_name: integration_name })
+      - c.with_body do
+        %p
+          = sprintf(s_('Integrations|An application called %{integration_name} is requesting access to your GitLab account.'), { integration_name: integration_name })
+        %p
+          = _('This application will be able to:')
+          %ul
+            %li= s_('SlackIntegration|Perform deployments.')
+            %li= s_('SlackIntegration|Run ChatOps jobs.')
+        %h4.gl-mb-0
+          = @error
+      - c.with_footer do
+        .gl-display-flex
+          - if @error.nil?
+            = form_tag confirm_project_integrations_slash_commands_path(@project), method: :post do
+              = hidden_field_tag :command_id, params[:command_id]
+              = hidden_field_tag :response_url, params[:response_url]
+              = hidden_field_tag :integration, params[:integration]
+              = hidden_field_tag :redirect_url, @redirect_url
+              = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger) do
+                = _('Authorize')
+          = render Pajamas::ButtonComponent.new(variant: :confirm, href: @redirect_url, button_options: { class: 'gl-ml-3' }) do
+            = s_('Integrations|Go back to your workspace')
