@@ -17,6 +17,14 @@ RSpec.describe 'User searches for users', :js, :clean_gitlab_redis_rate_limiting
     end
   end
 
+  it 'shows scopes when there is no search term' do
+    submit_dashboard_search('')
+
+    within_testid('search-filter') do
+      expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+    end
+  end
+
   context 'when on the dashboard' do
     it 'finds the user' do
       visit dashboard_projects_path

@@ -74,7 +74,7 @@ describe('Comment templates form component', () => {
         name: 'Test',
       });
       expect(trackingSpy).toHaveBeenCalledWith(
-        expect.any(String),
+        undefined,
         'i_code_review_saved_replies_create',
         expect.any(Object),
       );

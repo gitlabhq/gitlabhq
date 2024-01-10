@@ -31,8 +31,6 @@ export const REFERRER_TTL = 24 * 60 * 60 * 1000;
 
 export const GOOGLE_ANALYTICS_ID_COOKIE_NAME = '_ga';
 
-export const GITLAB_INTERNAL_EVENT_CATEGORY = 'InternalEventTracking';
-
 export const SERVICE_PING_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1';
 
 export const SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT =

@@ -4253,6 +4253,34 @@ job:
       vault: production/db/password@ops  # Translates to secret: `ops/data/production/db`, field: `password`
 ```
 
+#### `secrets:gcp_secret_manager`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab 16.8 and GitLab Runner 16.8.
+
+Use `secrets:gcp_secret_manager` to specify secrets provided by [GCP Secret Manager](https://cloud.google.com/security/products/secret-manager).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `name`: Name of the secret.
+- `version`: Version of the secret.
+
+**Example of `secrets:gcp_secret_manager`**:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      gcp_secret_manager:
+        name: 'test'
+        version: 2
+```
+
+**Related topics**:
+
+- [Use GCP Secret Manager secrets in GitLab CI/CD](../secrets/gcp_secret_manager.md).
+
 #### `secrets:azure_key_vault`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.

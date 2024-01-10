@@ -74,6 +74,20 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
         it_behaves_like 'code highlight' do
           subject { page }
         end
+
+        context 'no search term' do
+          before do
+            submit_dashboard_search('dashboard_search')
+            # fill_in('dashboard_search', with: '')
+            # find('.gl-search-box-by-click-search-button').click
+          end
+
+          it 'shows scopes' do
+            page.within('[data-testid="search-filter"]') do
+              expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+            end
+          end
+        end
       end
 
       it 'search multiple words with refs switching' do

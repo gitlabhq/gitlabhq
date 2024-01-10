@@ -20,6 +20,14 @@ RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_lim
   include_examples 'top right search form'
   include_examples 'search timeouts', 'milestones'
 
+  it 'shows scopes when there is no search term' do
+    submit_dashboard_search('')
+
+    page.within('[data-testid="search-filter"]') do
+      expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+    end
+  end
+
   it 'finds a milestone' do
     submit_dashboard_search(milestone1.title)
     select_search_scope('Milestones')

@@ -3,13 +3,6 @@
 module SessionsHelper
   include Gitlab::Utils::StrongMemoize
 
-  def recently_confirmed_com?
-    strong_memoize(:recently_confirmed_com) do
-      ::Gitlab.com? &&
-        !!flash[:notice]&.include?(t(:confirmed, scope: [:devise, :confirmations]))
-    end
-  end
-
   def unconfirmed_email?
     flash[:alert] == t(:unconfirmed, scope: [:devise, :failure])
   end

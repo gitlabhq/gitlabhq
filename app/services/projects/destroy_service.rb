@@ -159,6 +159,7 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
       destroy_ci_records!
+      destroy_deployments!
       destroy_mr_diff_relations!
 
       destroy_merge_request_diffs!
@@ -251,6 +252,12 @@ module Projects
         message: 'leftover commit statuses',
         orphaned_commit_status_count: deleted_count
       )
+    end
+
+    def destroy_deployments!
+      project.deployments.each_batch(of: BATCH_SIZE) do |deployments|
+        deployments.fast_destroy_all
+      end
     end
 
     # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.

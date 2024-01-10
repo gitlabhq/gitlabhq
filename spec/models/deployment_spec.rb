@@ -56,6 +56,8 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       let(:scope_attrs) { { project: project } }
       let(:usage) { :deployments }
     end
+
+    it { is_expected.to include_module(EachBatch) }
   end
 
   describe '.stoppable' do

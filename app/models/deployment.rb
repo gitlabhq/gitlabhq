@@ -9,6 +9,7 @@ class Deployment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
   include IgnorableColumns
+  include EachBatch
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)

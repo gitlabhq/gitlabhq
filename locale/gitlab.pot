@@ -1934,6 +1934,12 @@ msgstr ""
 msgid "AIAgents|Create agent"
 msgstr ""
 
+msgid "AIAgents|New AI Agent"
+msgstr ""
+
+msgid "AIAgents|New agent"
+msgstr ""
+
 msgid "AIPoweredSM|AI-powered features"
 msgstr ""
 

@@ -103,6 +103,14 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
         end
       end
     end
+
+    it 'shows scopes when there is no search term' do
+      search_for_issue('')
+
+      page.within('[data-testid="search-filter"]') do
+        expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+      end
+    end
   end
 
   context 'when signed out' do
