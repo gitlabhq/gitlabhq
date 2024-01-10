@@ -2,10 +2,7 @@
 
 module Ai
   class ServiceAccessToken < ApplicationRecord
-    include IgnorableColumns
     self.table_name = 'service_access_tokens'
-
-    ignore_column :category, remove_with: '16.8', remove_after: '2024-01-22'
 
     scope :expired, -> { where('expires_at < :now', now: Time.current) }
     scope :active, -> { where('expires_at > :now', now: Time.current) }

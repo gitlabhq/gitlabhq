@@ -45,6 +45,19 @@ module Gitlab
           changes << :code if note['body'].match?(/added \d+ commit/)
         end
 
+        resource_label_events = get_merge_request_resource_label_events(target_project_id: target_project_id, iid: iid)
+
+        resource_label_events.each do |event|
+          next if event["user"]["id"] == current_user_id
+
+          # Labels are routinely added by both humans and bots, so addition events aren't cause for concern.
+          # However, if labels have been removed it may mean housekeeper added an incorrect label, and we shouldn't
+          # re-add them.
+          #
+          # TODO: Inspect the actual labels housekeeper wants to add, and add if they haven't previously been removed.
+          changes << :labels if event["action"] == "remove"
+        end
+
         changes.to_a
       end
 
@@ -52,11 +65,13 @@ module Gitlab
         source_project_id:,
         title:,
         description:,
+        labels:,
         source_branch:,
         target_branch:,
         target_project_id:,
         update_title:,
-        update_description:
+        update_description:,
+        update_labels:
       )
         existing_iid = get_existing_merge_request(
           source_project_id: source_project_id,
@@ -70,15 +85,18 @@ module Gitlab
             existing_iid: existing_iid,
             title: title,
             description: description,
+            labels: labels,
             target_project_id: target_project_id,
             update_title: update_title,
-            update_description: update_description
+            update_description: update_description,
+            update_labels: update_labels
           )
         else
           create_merge_request(
             source_project_id: source_project_id,
             title: title,
             description: description,
+            labels: labels,
             source_branch: source_branch,
             target_branch: target_branch,
             target_project_id: target_project_id
@@ -102,6 +120,25 @@ module Gitlab
         unless (200..299).cover?(response.code)
           raise Error,
             "Failed to get merge request notes with response code: #{response.code} and body:\n#{response.body}"
+        end
+
+        JSON.parse(response.body)
+      end
+
+      def get_merge_request_resource_label_events(target_project_id:, iid:)
+        response = HTTParty.get(
+          "#{@base_uri}/projects/#{target_project_id}/merge_requests/#{iid}/resource_label_events",
+          query: {
+            per_page: 100
+          },
+          headers: {
+            "Private-Token" => @token
+          }
+        )
+
+        unless (200..299).cover?(response.code)
+          raise Error,
+            "Failed to get merge request label events with response code: #{response.code} and body:\n#{response.body}"
         end
 
         JSON.parse(response.body)
@@ -158,6 +195,7 @@ module Gitlab
         source_project_id:,
         title:,
         description:,
+        labels:,
         source_branch:,
         target_branch:,
         target_project_id:
@@ -165,6 +203,7 @@ module Gitlab
         response = HTTParty.post("#{@base_uri}/projects/#{source_project_id}/merge_requests", body: {
           title: title,
           description: description,
+          labels: Array(labels).join(','),
           source_branch: source_branch,
           target_branch: target_branch,
           target_project_id: target_project_id
@@ -184,14 +223,17 @@ module Gitlab
         existing_iid:,
         title:,
         description:,
+        labels:,
         target_project_id:,
         update_title:,
-        update_description:
+        update_description:,
+        update_labels:
       )
         body = {}
 
         body[:title] = title if update_title
         body[:description] = description if update_description
+        body[:add_labels] = Array(labels).join(',') if update_labels
 
         return if body.empty?
 

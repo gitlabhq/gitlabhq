@@ -5,6 +5,7 @@ module API
     module Mlflow
       module ApiHelpers
         OUTER_QUOTES_REGEXP = /^("|')|("|')?$/
+        GITLAB_TAG_PREFIX = 'gitlab.'
 
         def check_api_read!
           not_found! unless can?(current_user, :read_model_experiments, user_project)
@@ -111,6 +112,27 @@ module API
           filter.gsub!(OUTER_QUOTES_REGEXP, '') unless filter.blank?
 
           { name: filter }
+        end
+
+        def gitlab_tags
+          return unless params[:tags].present?
+
+          tags = params[:tags]
+          gitlab_params = {}
+
+          tags.each do |tag|
+            key, value = tag.values_at(:key, :value)
+
+            gitlab_params[key.delete_prefix(GITLAB_TAG_PREFIX)] = value if key&.starts_with?(GITLAB_TAG_PREFIX)
+          end
+
+          gitlab_params
+        end
+
+        def custom_version
+          return unless gitlab_tags
+
+          gitlab_tags['version']
         end
 
         def find_experiment!(iid, name)

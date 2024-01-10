@@ -71,4 +71,56 @@ RSpec.describe API::Ml::Mlflow::ApiHelpers, feature_category: :mlops do
       end
     end
   end
+
+  describe '#gitlab_tags' do
+    describe 'when tags param is not supplied' do
+      let(:params) { {} }
+
+      it 'returns nil' do
+        expect(gitlab_tags).to be nil
+      end
+    end
+
+    describe 'when tags param is supplied' do
+      let(:params) { { tags: input } }
+
+      using RSpec::Parameterized::TableSyntax
+
+      subject { gitlab_tags }
+
+      where(:input, :output) do
+        []                                                                  | nil
+        [{}]                                                                | {}
+        [{ key: 'foo', value: 'bar' }]                                      | {}
+        [{ key: "gitlab.version", value: "1.2.3" }]                         | { "version" => "1.2.3" }
+        [{ key: "foo", value: "bar" }, { key: "gitlab.foo", value: "baz" }] | { "foo" => "baz" }
+      end
+      with_them do
+        it 'is correct' do
+          is_expected.to eq(output)
+        end
+      end
+    end
+  end
+
+  describe '#custom_version' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { custom_version }
+
+    where(:input, :output) do
+      []                                                                | nil
+      [{}]                                                              | nil
+      [{ key: 'foo', value: 'bar' }] | nil
+      [{ key: "gitlab.version", value: "1.2.3" }] | "1.2.3"
+      [{ key: "foo", value: "bar" }, { key: "gitlab.foo", value: "baz" }] | nil
+    end
+    with_them do
+      let(:params) { { tags: input } }
+
+      it 'is correct' do
+        is_expected.to eq(output)
+      end
+    end
+  end
 end

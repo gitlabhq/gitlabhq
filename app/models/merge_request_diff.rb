@@ -446,6 +446,8 @@ class MergeRequestDiff < ApplicationRecord
           )
         end
 
+        diff_options[:generated_files] = comparison.generated_files if diff_options[:collapse_generated]
+
         Gitlab::Metrics.measure(:diffs_comparison) do
           comparison.diffs(diff_options)
         end

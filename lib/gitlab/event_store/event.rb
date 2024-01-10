@@ -60,8 +60,12 @@ module Gitlab
           raise Gitlab::EventStore::InvalidEvent, "Event data must be a Hash"
         end
 
-        unless JSONSchemer.schema(schema).valid?(data.deep_stringify_keys)
-          raise Gitlab::EventStore::InvalidEvent, "Data for event #{self.class} does not match the defined schema: #{schema}"
+        errors = JSONSchemer.schema(schema).validate(data.deep_stringify_keys).map do |error|
+          JSONSchemer::Errors.pretty(error)
+        end
+
+        unless errors.empty?
+          raise Gitlab::EventStore::InvalidEvent, "Data for event #{self.class} does not match the defined schema: #{errors.inspect}"
         end
       end
 

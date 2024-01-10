@@ -30,6 +30,8 @@ module Gitlab
       # Minimum cumulative size of the blobs required to spawn and
       # run the scan within a new subprocess.
       MIN_CHUNK_SIZE_PER_PROC_BYTES = 2_097_152 # 2MiB
+      # Whether to run scan in subprocesses or not. Default is true.
+      RUN_IN_SUBPROCESS = true
 
       # Initializes the instance with logger along with following operations:
       # 1. Parse ruleset for the given +ruleset_path+(default: +RULESET_FILE_PATH+). Raises +RulesetParseError+
@@ -74,7 +76,7 @@ module Gitlab
         blobs,
         timeout: DEFAULT_SCAN_TIMEOUT_SECS,
         blob_timeout: DEFAULT_BLOB_TIMEOUT_SECS,
-        subprocess: true
+        subprocess: RUN_IN_SUBPROCESS
       )
         return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(blobs)
 

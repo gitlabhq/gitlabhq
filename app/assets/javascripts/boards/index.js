@@ -3,7 +3,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
-import store from '~/boards/stores';
 import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   NavigationType,
@@ -37,7 +36,6 @@ function mountBoardApp(el) {
   new Vue({
     el,
     name: 'BoardAppRoot',
-    store,
     apolloProvider,
     provide: {
       initialBoardId: fullBoardId(boardId),

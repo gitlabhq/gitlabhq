@@ -12,7 +12,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       %w[the identifier for the first change],
       "The title of MR1",
       "The description of the MR",
-      ['change1.txt', 'change2.txt']
+      ['change1.txt', 'change2.txt'],
+      ['example-label']
     )
   end
 
@@ -21,7 +22,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       %w[the identifier for the second change],
       "The title of MR2",
       "The description of the MR",
-      ['change1.txt', 'change2.txt']
+      ['change1.txt', 'change2.txt'],
+      ['example-label']
     )
   end
 
@@ -30,7 +32,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       %w[the identifier for the third change],
       "The title of MR3",
       "The description of the MR",
-      ['change1.txt', 'change2.txt']
+      ['change1.txt', 'change2.txt'],
+      ['example-label']
     )
   end
 
@@ -98,22 +101,26 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           source_project_id: '123',
           title: 'The title of MR1',
           description: 'The description of the MR',
+          labels: ['example-label'],
           source_branch: 'the-identifier-for-the-first-change',
           target_branch: 'master',
           target_project_id: '456',
           update_title: true,
-          update_description: true
+          update_description: true,
+          update_labels: true
         )
       expect(gitlab_client).to receive(:create_or_update_merge_request)
         .with(
           source_project_id: '123',
           title: 'The title of MR2',
           description: 'The description of the MR',
+          labels: ['example-label'],
           source_branch: 'the-identifier-for-the-second-change',
           target_branch: 'master',
           target_project_id: '456',
           update_title: true,
-          update_description: true
+          update_description: true,
+          update_labels: true
         )
 
       described_class.new(max_mrs: 2, keeps: [fake_keep]).run
@@ -151,22 +158,26 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             source_project_id: '123',
             title: 'The title of MR1',
             description: 'The description of the MR',
+            labels: ['example-label'],
             source_branch: 'the-identifier-for-the-first-change',
             target_branch: 'master',
             target_project_id: '456',
             update_title: true,
-            update_description: false
+            update_description: false,
+            update_labels: true
           )
         expect(gitlab_client).to receive(:create_or_update_merge_request)
           .with(
             source_project_id: '123',
             title: 'The title of MR2',
             description: 'The description of the MR',
+            labels: ['example-label'],
             source_branch: 'the-identifier-for-the-second-change',
             target_branch: 'master',
             target_project_id: '456',
             update_title: false,
-            update_description: false
+            update_description: false,
+            update_labels: true
           )
 
         described_class.new(max_mrs: 2, keeps: [fake_keep]).run

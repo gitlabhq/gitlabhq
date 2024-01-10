@@ -510,6 +510,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
       end
 
+      shared_examples_for 'perform generated files check' do
+        context 'when collapse_generated option is given' do
+          let(:diff_options) do
+            super().merge(collapse_generated: true)
+          end
+
+          it 'checks generated files' do
+            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+            expect(diffs.diff_files.first.generated?).to be false
+          end
+        end
+
+        context 'when collapse_generated option is not given' do
+          it 'does not check generated files' do
+            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+            expect(diffs.diff_files.first.generated?).to be nil
+          end
+        end
+      end
+
       context 'when no persisted files available' do
         before do
           diff_with_commits.clean!
@@ -523,6 +545,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it_behaves_like 'fetching full diffs'
+          it_behaves_like 'perform generated files check'
         end
       end
 
@@ -561,6 +584,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           let(:diff_options) do
             { ignore_whitespace_change: true }
           end
+
+          it_behaves_like 'perform generated files check'
 
           it 'returns pagination data from MergeRequestDiffBatch' do
             diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)

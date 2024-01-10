@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import searchUsersQuery from '~/graphql_shared/queries/project_autocomplete_users.query.graphql';
@@ -38,6 +39,8 @@ const waitForSearch = async () => {
   await nextTick();
   await waitForPromises();
 };
+
+const focusInput = jest.fn();
 
 Vue.use(VueApollo);
 
@@ -100,6 +103,11 @@ describe('User select dropdown', () => {
             hide: hideDropdownMock,
           },
         },
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: {
+            focusInput,
+          },
+        }),
       },
     });
   };
@@ -408,6 +416,43 @@ describe('User select dropdown', () => {
 
       expect(findUnselectedParticipants()).toHaveLength(0);
       expect(findEmptySearchResults().exists()).toBe(true);
+    });
+
+    it('clears search term and focuses search field after selecting a user', async () => {
+      createComponent({
+        searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
+      });
+      await waitForPromises();
+
+      findSearchField().vm.$emit('input', 'roo');
+      await waitForSearch();
+
+      findUnselectedParticipants().at(0).trigger('click');
+      await nextTick();
+
+      expect(findSearchField().props('value')).toBe('');
+      expect(focusInput).toHaveBeenCalled();
+    });
+
+    it('clears search term and focuses search field after unselecting a user', async () => {
+      createComponent({
+        props: {
+          value: [searchAutocompleteQueryResponse.data.workspace.users[0]],
+        },
+        searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
+      });
+      await waitForPromises();
+
+      expect(findSelectedParticipants()).toHaveLength(1);
+
+      findSearchField().vm.$emit('input', 'roo');
+      await waitForSearch();
+
+      findSelectedParticipants().at(0).trigger('click');
+      await nextTick();
+
+      expect(findSearchField().props('value')).toBe('');
+      expect(focusInput).toHaveBeenCalled();
     });
   });
 

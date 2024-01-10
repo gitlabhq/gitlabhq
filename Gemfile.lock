@@ -694,6 +694,8 @@ GEM
       fog-core (= 2.1.0)
       fog-json (~> 1.2.0)
       mime-types
+    gitlab-glfm-markdown (0.0.10)
+      rb_sys (~> 0.9.86)
     gitlab-labkit (0.34.0)
       actionpack (>= 5.0.0, < 8.0.0)
       activesupport (>= 5.0.0, < 8.0.0)
@@ -1277,7 +1279,7 @@ GEM
       tty-markdown
       tty-prompt
     public_suffix (5.0.0)
-    puma (6.4.1)
+    puma (6.4.0)
       nio4r (~> 2.0)
     pyu-ruby-sasl (0.0.3.3)
     raabro (1.4.0)
@@ -1891,6 +1893,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 4.6.0)
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 1.8.0)
+  gitlab-glfm-markdown (~> 0.0.10)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-labkit (~> 0.34.0)
@@ -2027,7 +2030,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.4)
-  puma (~> 6.4.1)
+  puma (= 6.4.0)
   rack (~> 2.2.8)
   rack-attack (~> 6.7.0)
   rack-cors (~> 2.0.1)

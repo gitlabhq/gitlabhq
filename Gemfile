@@ -210,10 +210,10 @@ gem 'faraday_middleware-aws-sigv4', '~>0.3.0' # rubocop:todo Gemfile/MissingFeat
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 2.14.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'deckar01-task_list', '2.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'html-pipeline', '~> 2.14.3', feature_category: :team_planning
+gem 'deckar01-task_list', '2.3.3', feature_category: :team_planning
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'commonmarker', '~> 0.23.10' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'commonmarker', '~> 0.23.10', feature_category: :team_planning
 gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'RedCloth', '~> 4.3.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'org-ruby', '~> 0.9.12' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -226,6 +226,7 @@ gem 'asciidoctor-kroki', '~> 0.8.0', require: false # rubocop:todo Gemfile/Missi
 gem 'rouge', '~> 4.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'gitlab-glfm-markdown', '~> 0.0.10', feature_category: :team_planning
 
 # Calendar rendering
 gem 'icalendar' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -240,7 +241,7 @@ gem 'rack', '~> 2.2.8' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :puma do
-  gem 'puma', '~> 6.4.1', require: false, feature_category: :shared
+  gem 'puma', '= 6.4.0', require: false, feature_category: :shared
   gem 'sd_notify', '~> 0.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 end
 

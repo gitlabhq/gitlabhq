@@ -59,10 +59,12 @@ module Keeps
         This MR makes a new file #{file_name}
         MARKDOWN
 
+        labels = %w(type::feature)
+
         changed_files = [file_name]
 
         yield(::Gitlab::Housekeeper::Change.new(
-          identifiers, title, description, changed_files
+          identifiers, title, description, changed_files, labels
         ))
       end
     end

@@ -63,6 +63,28 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       [irrelevant_note1, not_a_system_note]
     end
 
+    let(:added_label_event) do
+      {
+        id: 274504558,
+        user: { id: 18645100 },
+        label: { id: 2492649, name: "good label" },
+        action: "add"
+      }
+    end
+
+    let(:removed_label_event) do
+      {
+        id: 274504558,
+        user: { id: 18645100 },
+        label: { id: 2492649, name: "bad label" },
+        action: "remove"
+      }
+    end
+
+    let(:resource_label_events) do
+      [added_label_event]
+    end
+
     subject(:non_housekeeper_changes) do
       client.non_housekeeper_changes(
         source_project_id: 123,
@@ -99,6 +121,15 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           }
         )
           .to_return(status: 200, body: notes.to_json)
+
+      # Get the label changes for the merge request
+      stub_request(:get, "https://gitlab.com/api/v4/projects/456/merge_requests/8765/resource_label_events?per_page=100")
+        .with(
+          headers: {
+            'Private-Token' => 'the-api-token'
+          }
+        )
+        .to_return(status: 200, body: resource_label_events.to_json)
     end
 
     it 'does not match irrelevant notes' do
@@ -110,10 +141,15 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         [not_a_system_note, updated_title_note, updated_description_note, added_commit_note]
       end
 
-      it 'returns :title, :description, :code' do
+      let(:resource_label_events) do
+        [removed_label_event]
+      end
+
+      it 'returns :title, :description, :code, :labels' do
         expect(non_housekeeper_changes).to include(:title)
         expect(non_housekeeper_changes).to include(:description)
         expect(non_housekeeper_changes).to include(:code)
+        expect(non_housekeeper_changes).to include(:labels)
       end
     end
 
@@ -122,10 +158,11 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         [not_a_system_note, updated_title_note]
       end
 
-      it 'returns :title, :description, :code' do
+      it 'returns :title' do
         expect(non_housekeeper_changes).to include(:title)
         expect(non_housekeeper_changes).not_to include(:description)
         expect(non_housekeeper_changes).not_to include(:code)
+        expect(non_housekeeper_changes).not_to include(:labels)
       end
     end
 
@@ -134,10 +171,28 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         [not_a_system_note, updated_description_note]
       end
 
-      it 'returns :title, :description, :code' do
+      it 'returns :description' do
         expect(non_housekeeper_changes).not_to include(:title)
         expect(non_housekeeper_changes).to include(:description)
         expect(non_housekeeper_changes).not_to include(:code)
+        expect(non_housekeeper_changes).not_to include(:labels)
+      end
+    end
+
+    context 'when labels change' do
+      let(:notes) do
+        [not_a_system_note]
+      end
+
+      let(:resource_label_events) do
+        [added_label_event, removed_label_event]
+      end
+
+      it 'returns :labels' do
+        expect(non_housekeeper_changes).not_to include(:title)
+        expect(non_housekeeper_changes).not_to include(:description)
+        expect(non_housekeeper_changes).not_to include(:code)
+        expect(non_housekeeper_changes).to include(:labels)
       end
     end
 
@@ -153,12 +208,14 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       {
         source_project_id: 123,
         title: 'A new merge request!',
+        labels: %w[label-1 label-2],
         description: 'This merge request is pretty good.',
         source_branch: 'the-source-branch',
         target_branch: 'the-target-branch',
         target_project_id: 456,
         update_title: true,
-        update_description: true
+        update_description: true,
+        update_labels: true
       }
     end
 
@@ -181,6 +238,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           body: {
             title: "A new merge request!",
             description: "This merge request is pretty good.",
+            labels: "label-1,label-2",
             source_branch: "the-source-branch",
             target_branch: "the-target-branch",
             target_project_id: 456
@@ -206,7 +264,8 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           .with(
             body: {
               title: "A new merge request!",
-              description: "This merge request is pretty good."
+              description: "This merge request is pretty good.",
+              add_labels: "label-1,label-2"
             }.to_json,
             headers: {
               'Content-Type' => 'application/json',
@@ -233,7 +292,8 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
             .with(
               body: {
-                description: "This merge request is pretty good."
+                description: "This merge request is pretty good.",
+                add_labels: "label-1,label-2"
               }.to_json,
               headers: {
                 'Content-Type' => 'application/json',
@@ -251,7 +311,8 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
             .with(
               body: {
-                title: "A new merge request!"
+                title: "A new merge request!",
+                add_labels: "label-1,label-2"
               }.to_json,
               headers: {
                 'Content-Type' => 'application/json',
@@ -264,9 +325,29 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         end
       end
 
+      context 'when update_labels: false' do
+        it 'does not update the labels' do
+          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+            .with(
+              body: {
+                title: "A new merge request!",
+                description: "This merge request is pretty good."
+              }.to_json,
+              headers: {
+                'Content-Type' => 'application/json',
+                'Private-Token' => 'the-api-token'
+              }
+            ).to_return(status: 200, body: "")
+
+          client.create_or_update_merge_request(**params.merge(update_labels: false))
+          expect(stub).to have_been_requested
+        end
+      end
+
       context 'when there is nothing to update' do
         it 'does not make a request' do
-          client.create_or_update_merge_request(**params.merge(update_description: false, update_title: false))
+          client.create_or_update_merge_request(**params.merge(update_description: false, update_title: false,
+            update_labels: false))
         end
       end
     end

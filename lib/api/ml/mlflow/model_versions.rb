@@ -35,7 +35,8 @@ module API
               {
                 model_name: params[:name],
                 description: params[:description],
-                metadata: params[:tags]
+                metadata: params[:tags],
+                version: custom_version
               }
             ).execute,
               with: Entities::Ml::Mlflow::ModelVersion,

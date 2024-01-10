@@ -263,7 +263,8 @@ were introduced by the changes made in the merge request.
 
 ### Merge request changes view **(ULTIMATE ALL)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
+> - Enabled by default in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`.

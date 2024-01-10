@@ -224,7 +224,7 @@ the application might be fetching this secret from a different file. Your Gitaly
 If that setting is missing, GitLab defaults to using `.gitlab_shell_secret` under
 `/opt/gitlab/embedded/service/gitlab-rails/.gitlab_shell_secret`.
 
-### Repository pushes fail
+### Repository pushes fail with `401 Unauthorized` and `JWT::VerificationError`
 
 When attempting `git push`, you can see:
 
@@ -240,7 +240,7 @@ When attempting `git push`, you can see:
   }
   ```
 
-This error occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
+This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
 
 From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
 You should follow the [recommendations on upgrading external Gitaly](../../update/plan_your_upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab

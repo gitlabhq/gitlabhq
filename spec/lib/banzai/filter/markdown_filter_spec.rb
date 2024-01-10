@@ -8,18 +8,30 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
 
   describe 'markdown engine from context' do
     it 'finds the correct engine' do
-      expect(described_class.render_engine(:common_mark)).to eq Banzai::Filter::MarkdownEngines::CommonMark
+      expect(described_class.new('foo', { markdown_engine: :common_mark }).render_engine)
+        .to eq Banzai::Filter::MarkdownEngines::CommonMark
     end
 
-    it 'defaults to the DEFAULT_ENGINE' do
-      default_engine = Banzai::Filter::MarkdownFilter::DEFAULT_ENGINE.to_s.classify
-      default = "Banzai::Filter::MarkdownEngines::#{default_engine}".constantize
+    it 'defaults to the RUST_ENGINE' do
+      default_engine = Banzai::Filter::MarkdownFilter::RUST_ENGINE.to_s.classify
+      engine = "Banzai::Filter::MarkdownEngines::#{default_engine}".constantize
 
-      expect(described_class.render_engine(nil)).to eq default
+      expect(described_class.new('foo', {}).render_engine).to eq engine
+    end
+
+    context 'when :markdown_rust feature flag is turned off' do
+      it 'defaults to the RUBY_ENGINE' do
+        stub_feature_flags(markdown_rust: false)
+
+        ruby_engine = Banzai::Filter::MarkdownFilter::RUBY_ENGINE.to_s.classify
+        engine = "Banzai::Filter::MarkdownEngines::#{ruby_engine}".constantize
+
+        expect(described_class.new('foo', {}).render_engine).to eq engine
+      end
     end
 
     it 'raise error for unrecognized engines' do
-      expect { described_class.render_engine(:foo_bar) }.to raise_error(NameError)
+      expect { described_class.new('foo', { markdown_engine: :foo_bar }).render_engine }.to raise_error(NameError)
     end
   end
 

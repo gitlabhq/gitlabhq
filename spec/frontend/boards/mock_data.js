@@ -1,6 +1,5 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
-import { ListType } from '~/boards/constants';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -68,19 +67,6 @@ export const mockGroupBoardResponse = {
       __typename: 'Group',
     },
   },
-};
-
-export const mockBoardConfig = {
-  milestoneId: 'gid://gitlab/Milestone/114',
-  milestoneTitle: '14.9',
-  iterationId: 'gid://gitlab/Iteration/124',
-  iterationTitle: 'Iteration 9',
-  iterationCadenceId: 'gid://gitlab/Iteration::Cadence/134',
-  assigneeId: 'gid://gitlab/User/1',
-  assigneeUsername: 'admin',
-  labels: [{ id: 'gid://gitlab/Label/32', title: 'Deliverable' }],
-  labelIds: ['gid://gitlab/Label/32'],
-  weight: 2,
 };
 
 export const boardObj = {
@@ -238,17 +224,6 @@ export const mockMilestone = {
   due_date: '2019-12-31',
 };
 
-export const mockMilestones = [
-  {
-    id: 'gid://gitlab/Milestone/1',
-    title: 'Milestone 1',
-  },
-  {
-    id: 'gid://gitlab/Milestone/2',
-    title: 'Milestone 2',
-  },
-];
-
 export const assignees = [
   {
     id: 'gid://gitlab/User/2',
@@ -403,14 +378,6 @@ export const mockEpic = {
     openedIssues: 0,
     __typename: 'EpicDescendantWeights',
   },
-};
-
-export const mockActiveIssue = {
-  ...mockIssue,
-  id: 'gid://gitlab/Issue/436',
-  iid: '27',
-  subscribed: false,
-  emailsDisabled: false,
 };
 
 export const mockIssue2 = {
@@ -588,11 +555,6 @@ export const mockLists = [mockList, mockLabelList];
 
 export const mockListsById = keyBy(mockLists, 'id');
 
-export const mockIssuesByListId = {
-  'gid://gitlab/List/1': [mockIssue.id, mockIssue3.id, mockIssue4.id],
-  'gid://gitlab/List/2': mockIssues.map(({ id }) => id),
-};
-
 export const participants = [
   {
     id: '1',
@@ -633,20 +595,7 @@ export const mockGroupProject2 = {
   archived: false,
 };
 
-export const mockArchivedGroupProject = {
-  id: 2,
-  name: 'Archived Project',
-  nameWithNamespace: 'Awesome Group / Archived Project',
-  fullPath: 'awesome-group/archived-project',
-  archived: true,
-};
-
 export const mockGroupProjects = [mockGroupProject1, mockGroupProject2];
-
-export const mockActiveGroupProjects = [
-  { ...mockGroupProject1, archived: false },
-  { ...mockGroupProject2, archived: false },
-];
 
 export const mockIssueGroupPath = 'gitlab-org';
 export const mockIssueProjectPath = `${mockIssueGroupPath}/gitlab-test`;
@@ -776,33 +725,6 @@ export const mockMoveIssueParams = {
   toListId: 'gid://gitlab/List/2',
   moveBeforeId: undefined,
   moveAfterId: undefined,
-};
-
-export const mockMoveState = {
-  boardLists: {
-    'gid://gitlab/List/1': {
-      listType: ListType.backlog,
-    },
-    'gid://gitlab/List/2': {
-      listType: ListType.closed,
-    },
-  },
-  boardItems: {
-    [mockMoveIssueParams.itemId]: { foo: 'bar' },
-  },
-  boardItemsByListId: {
-    [mockMoveIssueParams.fromListId]: [mockMoveIssueParams.itemId],
-    [mockMoveIssueParams.toListId]: [],
-  },
-};
-
-export const mockMoveData = {
-  reordering: false,
-  shouldClone: false,
-  itemNotInToList: true,
-  originalIndex: 0,
-  originalIssue: { foo: 'bar' },
-  ...mockMoveIssueParams,
 };
 
 export const mockEmojiToken = {

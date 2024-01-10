@@ -8357,12 +8357,6 @@ msgstr[1] ""
 msgid "Boards|An error occurred while creating the %{issuableType}. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while creating the epic. Please try again."
-msgstr ""
-
-msgid "Boards|An error occurred while creating the issue. Please try again."
-msgstr ""
-
 msgid "Boards|An error occurred while creating the list. Please try again."
 msgstr ""
 
@@ -8381,9 +8375,6 @@ msgstr ""
 msgid "Boards|An error occurred while fetching boards. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while fetching child groups. Please try again."
-msgstr ""
-
 msgid "Boards|An error occurred while fetching epics. Please try again."
 msgstr ""
 
@@ -8393,16 +8384,10 @@ msgstr ""
 msgid "Boards|An error occurred while fetching groups. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while fetching issues. Please reload the page."
-msgstr ""
-
 msgid "Boards|An error occurred while fetching issues. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching iterations. Please try again."
-msgstr ""
-
-msgid "Boards|An error occurred while fetching labels. Please reload the page."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching labels. Please try again."
@@ -8417,19 +8402,7 @@ msgstr ""
 msgid "Boards|An error occurred while fetching recent boards. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while fetching the board epics. Please reload the page."
-msgstr ""
-
-msgid "Boards|An error occurred while fetching the board issues. Please reload the page."
-msgstr ""
-
 msgid "Boards|An error occurred while fetching the board lists. Please reload the page."
-msgstr ""
-
-msgid "Boards|An error occurred while fetching the board swimlanes. Please reload the page."
-msgstr ""
-
-msgid "Boards|An error occurred while fetching the board. Please reload the page."
 msgstr ""
 
 msgid "Boards|An error occurred while fetching unassigned issues. Please try again."
@@ -8438,13 +8411,7 @@ msgstr ""
 msgid "Boards|An error occurred while fetching users. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while generating lists. Please reload the page."
-msgstr ""
-
 msgid "Boards|An error occurred while moving the %{issuableType}. Please try again."
-msgstr ""
-
-msgid "Boards|An error occurred while moving the epic. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while moving the issue. Please try again."
@@ -8453,13 +8420,7 @@ msgstr ""
 msgid "Boards|An error occurred while moving the list. Please try again."
 msgstr ""
 
-msgid "Boards|An error occurred while removing the list. Please try again."
-msgstr ""
-
 msgid "Boards|An error occurred while selecting the card. Please try again."
-msgstr ""
-
-msgid "Boards|An error occurred while updating the board list. Please try again."
 msgstr ""
 
 msgid "Boards|An error occurred while updating the list. Please try again."
@@ -12122,13 +12083,7 @@ msgstr ""
 msgid "CodeSuggestions|Code Suggestions seats used"
 msgstr ""
 
-msgid "CodeSuggestions|Enable Code Suggestions"
-msgstr ""
-
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
-msgstr ""
-
-msgid "CodeSuggestions|Get code suggestions as you write code in your IDE. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "CodeSuggestions|Introducing the Code Suggestions add-on"
@@ -12144,9 +12099,6 @@ msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
 msgstr ""
 
 msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions uses third-party AI services."
-msgstr ""
-
-msgid "CodeSuggestions|Subject to the %{terms_link_start}Testing Terms of Use%{link_end}. Code Suggestions uses third-party AI services.%{br}To start receiving Code Suggestions after enabling this feature, you must install and configure a %{ide_extension_link_start}supported IDE editor extension%{link_end}."
 msgstr ""
 
 msgid "CodeownersValidation|An error occurred while loading the validation errors. Please try again later."
@@ -20571,9 +20523,6 @@ msgstr ""
 msgid "Failed to load Roadmap"
 msgstr ""
 
-msgid "Failed to load assignees."
-msgstr ""
-
 msgid "Failed to load assignees. Please try again."
 msgstr ""
 
@@ -20601,16 +20550,7 @@ msgstr ""
 msgid "Failed to load groups."
 msgstr ""
 
-msgid "Failed to load iteration cadences."
-msgstr ""
-
-msgid "Failed to load iterations."
-msgstr ""
-
 msgid "Failed to load labels. Please try again."
-msgstr ""
-
-msgid "Failed to load milestones."
 msgstr ""
 
 msgid "Failed to load milestones. Please try again."
@@ -24060,6 +24000,9 @@ msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
+msgstr ""
+
+msgid "Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors."
 msgstr ""
 
 msgid "Guest"

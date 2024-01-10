@@ -194,8 +194,6 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
     let_it_be(:child_project_member) { create(:user).tap { |u| project.add_maintainer(u) } }
 
     before do
-      stub_feature_flags(apollo_boards: false)
-
       group.add_maintainer(user)
       sign_in(user)
     end

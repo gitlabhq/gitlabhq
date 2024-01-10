@@ -6,7 +6,7 @@ class Compare
   include Gitlab::Utils::StrongMemoize
   include ActsAsPaginatedDiff
 
-  delegate :same, :head, :base, to: :@compare
+  delegate :same, :head, :base, :generated_files, to: :@compare
 
   attr_reader :project
 

@@ -14,4 +14,10 @@ RSpec.describe Banzai::Filter::MarkdownEngines::Base, feature_category: :team_pl
 
     expect(engine.send(:sourcepos_disabled?)).to be_truthy
   end
+
+  it 'accepts a nil context' do
+    engine = described_class.new(nil)
+
+    expect(engine.context).to eq({})
+  end
 end

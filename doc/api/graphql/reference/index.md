@@ -1019,6 +1019,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="queryvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="queryvulnerabilitiesowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="queryvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="queryvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
@@ -20308,6 +20309,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="groupvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="groupvulnerabilitiesowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="groupvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="groupvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
@@ -20363,6 +20365,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="groupvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
 | <a id="groupvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="groupvulnerabilityseveritiescountowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="groupvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="groupvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="groupvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
@@ -20939,6 +20942,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
@@ -25726,6 +25730,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="projectvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="projectvulnerabilitiesowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="projectvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="projectvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
@@ -25768,6 +25773,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="projectvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
 | <a id="projectvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
+| <a id="projectvulnerabilityseveritiescountowasptop10"></a>`owaspTop10` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. |
 | <a id="projectvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
 | <a id="projectvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="projectvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
@@ -31990,6 +31996,33 @@ The type of the issue link related to a vulnerability.
 | ----- | ----------- |
 | <a id="vulnerabilityissuelinktypecreated"></a>`CREATED` | Issue is created for the vulnerability. |
 | <a id="vulnerabilityissuelinktyperelated"></a>`RELATED` | Has a related issue. |
+
+### `VulnerabilityOwaspTop10`
+
+OwaspTop10 category of the vulnerability.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityowasptop10a10_2017"></a>`A10_2017` | A10:2017-Insufficient Logging & Monitoring, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a10_2021"></a>`A10_2021` | A10:2021-Server-Side Request Forgery, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a1_2017"></a>`A1_2017` | A1:2017-Injection, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a1_2021"></a>`A1_2021` | A1:2021-Broken Access Control, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a2_2017"></a>`A2_2017` | A2:2017-Broken Authentication, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a2_2021"></a>`A2_2021` | A2:2021-Cryptographic Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a3_2017"></a>`A3_2017` | A3:2017-Sensitive Data Exposure, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a3_2021"></a>`A3_2021` | A3:2021-Injection, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a4_2017"></a>`A4_2017` | A4:2017-XML External Entities (XXE), OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a4_2021"></a>`A4_2021` | A4:2021-Insecure Design, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a5_2017"></a>`A5_2017` | A5:2017-Broken Access Control, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a5_2021"></a>`A5_2021` | A5:2021-Security Misconfiguration, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a6_2017"></a>`A6_2017` | A6:2017-Security Misconfiguration, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a6_2021"></a>`A6_2021` | A6:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a7_2017"></a>`A7_2017` | A7:2017-Cross-Site Scripting (XSS), OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a7_2021"></a>`A7_2021` | A7:2021-Identification and Authentication Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a8_2017"></a>`A8_2017` | A8:2017-Insecure Deserialization, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a8_2021"></a>`A8_2021` | A8:2021-Software and Data Integrity Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a9_2017"></a>`A9_2017` | A9:2017-Using Components with Known Vulnerabilities, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a9_2021"></a>`A9_2021` | A9:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
 
 ### `VulnerabilityReportType`
 

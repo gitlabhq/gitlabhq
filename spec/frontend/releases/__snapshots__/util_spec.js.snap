@@ -165,7 +165,9 @@ Object {
         dir="auto"
       >
         Best. Release.
-        <strong>
+        <strong
+          data-sourcepos="1:16-1:24"
+        >
           Ever.
         </strong>
         <gl-emoji
@@ -400,7 +402,9 @@ Object {
       dir="auto"
     >
       Best. Release.
-      <strong>
+      <strong
+        data-sourcepos="1:16-1:24"
+      >
         Ever.
       </strong>
       <gl-emoji

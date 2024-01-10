@@ -133,6 +133,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
       end
 
       it 'returns html from markdown' do
+        stub_commonmark_sourcepos_disabled
         sign_in(user)
         gitlab_request
 

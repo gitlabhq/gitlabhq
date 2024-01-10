@@ -77,10 +77,12 @@ export default {
     },
     activeGroupProjects() {
       return (
-        this.projects?.nodes?.map((project) => ({
-          value: project.id,
-          text: project.nameWithNamespace,
-        })) || []
+        this.projects?.nodes
+          ?.filter((p) => !p.archived)
+          .map((project) => ({
+            value: project.id,
+            text: project.nameWithNamespace,
+          })) || []
       );
     },
     selectedProjectName() {

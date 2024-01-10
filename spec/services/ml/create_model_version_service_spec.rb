@@ -107,4 +107,28 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
       end
     end
   end
+
+  context 'when a version string is supplied during creation' do
+    let(:params) { { version: '1.2.3' } }
+
+    it 'creates a package' do
+      expect { service }.to change { Ml::ModelVersion.count }.by(1).and change {
+                                                                          Packages::MlModel::Package.count
+                                                                        }.by(1)
+      expect(model.reload.latest_version.version).to eq('1.2.3')
+      expect(model.latest_version.package.version).to eq('1.2.3')
+    end
+  end
+
+  context 'when a nil version string is supplied during creation' do
+    let(:params) { { version: nil } }
+
+    it 'creates a package' do
+      expect { service }.to change { Ml::ModelVersion.count }.by(1).and change {
+                                                                          Packages::MlModel::Package.count
+                                                                        }.by(1)
+      expect(model.reload.latest_version.version).to eq('1.0.0')
+      expect(model.latest_version.package.version).to eq('1.0.0')
+    end
+  end
 end
