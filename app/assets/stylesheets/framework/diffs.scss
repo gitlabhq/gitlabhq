@@ -944,3 +944,12 @@ table.code {
     left: -2px !important;
   }
 }
+
+.diff-file.pinned-file .file-title {
+  background-color: $blue-50;
+  border-color: $blue-200;
+}
+
+.diff-file.pinned-file .diff-content {
+  border-color: $blue-200;
+}

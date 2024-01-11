@@ -197,6 +197,8 @@ RSpec.describe Gitlab::RspecFlaky::Listener, :aggregate_failures do
   end
 
   describe '#dump_summary' do
+    subject { listener.dump_summary(nil) }
+
     let(:listener) { described_class.new(suite_flaky_example_report.to_json) }
     let(:new_flaky_rspec_example) { double(new_example_attrs.merge(attempts: 2)) }
     let(:already_flaky_rspec_example) { double(already_flaky_example_attrs.merge(attempts: 2)) }
@@ -205,6 +207,39 @@ RSpec.describe Gitlab::RspecFlaky::Listener, :aggregate_failures do
 
     before do
       allow(Kernel).to receive(:warn)
+    end
+
+    context 'when not flaky tests were found' do
+      it 'prints a message in the console' do
+        allow(Kernel).to receive(:warn).and_call_original
+
+        expect { subject }.to output(
+          %r{0 known flaky example\(s\) detected\. Writing this to rspec/flaky/report\.json}
+        ).to_stderr
+      end
+    end
+
+    context 'when existing flaky tests were found' do
+      before do
+        listener.example_passed(notification_already_flaky_rspec_example)
+      end
+
+      it 'does write them in the correct report' do
+        report = double
+
+        expect(Gitlab::RspecFlaky::Report).to receive(:new).with(listener.flaky_examples).and_return(report)
+        expect(report).to receive(:write).with(Gitlab::RspecFlaky::Config.flaky_examples_report_path)
+
+        subject
+      end
+
+      it 'prints a message in the console' do
+        allow(Kernel).to receive(:warn).and_call_original
+
+        expect { subject }.to output(
+          %r{1 known flaky example\(s\) detected\. Writing this to rspec/flaky/report\.json}
+        ).to_stderr
+      end
     end
 
     context 'when a report file path is set by FLAKY_RSPEC_REPORT_PATH' do
@@ -222,7 +257,7 @@ RSpec.describe Gitlab::RspecFlaky::Listener, :aggregate_failures do
           .to receive(:new).with(listener.__send__(:new_flaky_examples)).and_return(report2)
         expect(report2).to receive(:write).with(Gitlab::RspecFlaky::Config.new_flaky_examples_report_path)
 
-        listener.dump_summary(nil)
+        subject
       end
     end
   end

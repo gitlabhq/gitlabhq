@@ -47,6 +47,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_request_changes, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
+    push_frontend_feature_flag(:pinned_file, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -449,6 +450,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
+    if params[:pin] && Feature.enabled?(:pinned_file)
+      @pinned_file_url = diff_by_file_hash_namespace_project_merge_request_path(
+        format: 'json',
+        id: merge_request.iid,
+        namespace_id: project&.namespace.to_param,
+        project_id: project&.path,
+        file_hash: params[:pin]
+      )
+    end
 
     if merge_request.diffs_batch_cache_with_max_age?
       @diffs_batch_cache_key = @merge_request.merge_head_diff&.patch_id_sha

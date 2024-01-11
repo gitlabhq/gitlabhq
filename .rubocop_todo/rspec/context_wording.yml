@@ -2385,7 +2385,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/tags_spec.rb'
     - 'spec/requests/api/task_completion_status_spec.rb'
     - 'spec/requests/api/templates_spec.rb'
-    - 'spec/requests/api/terraform/modules/v1/packages_spec.rb'
     - 'spec/requests/api/terraform/state_spec.rb'
     - 'spec/requests/api/terraform/state_version_spec.rb'
     - 'spec/requests/api/todos_spec.rb'

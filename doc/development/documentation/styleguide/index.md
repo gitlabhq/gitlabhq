@@ -243,7 +243,7 @@ by default.
 Capitalize names of:
 
 - GitLab [product tiers](https://about.gitlab.com/pricing/). For example,
-  GitLab Free and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
+  GitLab Free and GitLab Ultimate.
 - Third-party organizations, software, and products. For example, Prometheus,
   Kubernetes, Git, and The Linux Foundation.
 - Methods or methodologies. For example, Continuous Integration,

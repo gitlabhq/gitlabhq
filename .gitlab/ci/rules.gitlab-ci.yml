@@ -3002,6 +3002,23 @@
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss-cross-project
 
+.as-if-foss:rules:start-as-if-foss:allow-failure:manual:
+  rules:
+    - if: '$AS_IF_FOSS_TOKEN == null'
+      when: never
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss-cross-project
+      when: manual
+      allow_failure: true
+
+.as-if-foss:rules:start-as-if-foss:allow-failure:
+  rules:
+    - if: '$AS_IF_FOSS_TOKEN == null'
+      when: never
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss-cross-project
+      allow_failure: true
+
 ##################
 # as-if-jh rules #
 ##################

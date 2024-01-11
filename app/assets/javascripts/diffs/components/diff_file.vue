@@ -17,6 +17,7 @@ import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 
+import { fileContentsId } from '~/diffs/components/diff_row_utils';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -110,7 +111,10 @@ export default {
       'canMerge',
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
-    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled']),
+    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'pinnedFile']),
+    isPinnedFile() {
+      return this.file === this.pinnedFile;
+    },
     viewBlobHref() {
       return escape(this.file.view_path);
     },
@@ -206,6 +210,9 @@ export default {
     diffFileHash() {
       return this.file.file_hash;
     },
+    fileId() {
+      return fileContentsId(this.file);
+    },
   },
   watch: {
     'file.id': {
@@ -293,7 +300,7 @@ export default {
     },
     handleToggle({ viaUserInteraction = false } = {}) {
       const collapsingNow = !this.isCollapsed;
-      const contentElement = this.$el.querySelector(`#diff-content-${this.file.file_hash}`);
+      const contentElement = this.$el.querySelector(`#${fileContentsId(this.file)}`);
 
       this.setFileCollapsedByUser({
         filePath: this.file.file_path,
@@ -386,6 +393,7 @@ export default {
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
+      'pinned-file': isPinnedFile,
     }"
     :data-path="file.new_path"
     class="diff-file file-holder gl-border-none gl-mb-0! gl-pb-5"
@@ -400,6 +408,7 @@ export default {
       :add-merge-request-buttons="true"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
+      :pinned="isPinnedFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
       :class="hasBodyClasses.header"
       @toggleFile="handleToggle({ viaUserInteraction: true })"
@@ -428,7 +437,7 @@ export default {
     </div>
     <template v-else>
       <div
-        :id="`diff-content-${file.file_hash}`"
+        :id="fileId"
         :class="hasBodyClasses.contentByHash"
         class="diff-content"
         data-testid="content-area"

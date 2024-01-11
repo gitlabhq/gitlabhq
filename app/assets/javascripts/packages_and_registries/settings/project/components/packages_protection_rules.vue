@@ -40,6 +40,9 @@ export default {
     totalItems() {
       return this.packageProtectionRules.length;
     },
+    isLoadingPackageProtectionRules() {
+      return this.$apollo.queries.packageProtectionRules.loading;
+    },
   },
   apollo: {
     packageProtectionRules: {
@@ -99,6 +102,7 @@ export default {
             show-empty
             stacked="md"
             class="mb-3"
+            :busy="isLoadingPackageProtectionRules"
           >
             <template #table-busy>
               <gl-loading-icon size="sm" class="gl-my-5" />

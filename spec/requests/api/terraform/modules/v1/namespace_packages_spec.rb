@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package_registry do
+RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category: :package_registry do
   include_context 'for terraform modules api setup'
   using RSpec::Parameterized::TableSyntax
 
@@ -10,17 +10,19 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
     let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/versions") }
     let(:headers) { { 'Authorization' => "Bearer #{tokens[:job_token]}" } }
 
-    subject { get(url, headers: headers) }
+    subject(:get_versions) { get(url, headers: headers) }
 
     context 'with a conflicting package name' do
-      let!(:conflicting_package) { create(:terraform_module_package, project: project, name: "conflict-#{package.name}", version: '2.0.0') }
+      let!(:conflicting_package) do
+        create(:terraform_module_package, project: project, name: "conflict-#{package.name}", version: '2.0.0')
+      end
 
       before do
         group.add_developer(user)
       end
 
       it 'returns only one version' do
-        subject
+        get_versions
 
         expect(json_response['modules'][0]['versions'].size).to eq(1)
         expect(json_response['modules'][0]['versions'][0]['version']).to eq('1.0.0')
@@ -77,14 +79,14 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download' do
-    context 'empty registry' do
+    context 'with empty registry' do
       let(:url) { api("/packages/terraform/modules/v1/#{group.path}/module-2/system/download") }
       let(:headers) { {} }
 
-      subject { get(url, headers: headers) }
+      subject(:get_download) { get(url, headers: headers) }
 
       it 'returns not found when there is no module' do
-        subject
+        get_download
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -150,14 +152,14 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system' do
-    context 'empty registry' do
+    context 'with empty registry' do
       let(:url) { api("/packages/terraform/modules/v1/#{group.path}/non-existent/system") }
       let(:headers) { { 'Authorization' => "Bearer #{tokens[:personal_access_token]}" } }
 
-      subject { get(url, headers: headers) }
+      subject(:get_module) { get(url, headers: headers) }
 
       it 'returns not found when there is no module' do
-        subject
+        get_module
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -221,16 +223,16 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
     let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}") }
     let(:headers) { {} }
 
-    subject { get(url, headers: headers) }
+    subject(:get_module_version) { get(url, headers: headers) }
 
-    context 'not found' do
+    context 'when not found' do
       let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/2.0.0") }
       let(:headers) { { 'Authorization' => "Bearer #{tokens[:job_token]}" } }
 
       subject { get(url, headers: headers) }
 
       it 'returns not found when the specified version is not present in the registry' do
-        subject
+        get_module_version
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -343,7 +345,10 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/file' do
-    let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}/file?token=#{token}") }
+    let(:url) do
+      api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/#{package.version}/file?token=#{token}")
+    end
+
     let(:tokens) do
       {
         personal_access_token: ::Gitlab::JWTToken.new.tap { |jwt| jwt['token'] = personal_access_token.id }.encoded,
@@ -352,7 +357,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
       }
     end
 
-    subject { get(url, headers: headers) }
+    subject(:get_file) { get(url, headers: headers) }
 
     context 'with valid namespace' do
       where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
@@ -414,8 +419,15 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
     end
 
     context 'with package file pending destruction' do
-      let_it_be(:package) { create(:package, package_type: :terraform_module, project: project, name: "module-555/pending-destruction", version: '1.0.0') }
-      let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, :xml, package: package) }
+      let_it_be(:package) do
+        create(:package, package_type: :terraform_module, project: project, name: "module-555/pending-destruction",
+          version: '1.0.0')
+      end
+
+      let_it_be(:package_file_pending_destruction) do
+        create(:package_file, :pending_destruction, :xml, package: package)
+      end
+
       let_it_be(:package_file) { create(:package_file, :terraform_module, package: package) }
 
       let(:token) { tokens[:personal_access_token] }
@@ -426,7 +438,7 @@ RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package
       end
 
       it 'does not return them' do
-        subject
+        get_file
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)

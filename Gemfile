@@ -512,7 +512,7 @@ group :test do
   gem 'test-prof', '~> 1.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'rspec_junit_formatter' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'guard-rspec' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'axe-core-rspec' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'axe-core-rspec', '~> 4.8.0', feature_category: :tooling
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false # rubocop:todo Gemfile/MissingFeatureCategory

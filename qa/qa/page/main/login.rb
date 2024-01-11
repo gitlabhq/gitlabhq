@@ -211,8 +211,7 @@ module QA
 
         def redirect_to_login_page(address)
           Menu.perform(&:sign_out_if_signed_in)
-          desired_host = URI(Runtime::Scenario.send("#{address}_address")).host
-          Runtime::Browser.visit(address, Page::Main::Login) if desired_host != current_host
+          Runtime::Browser.visit(address, Page::Main::Login)
         end
 
         private

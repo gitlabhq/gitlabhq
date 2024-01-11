@@ -54,7 +54,6 @@ import {
 } from '../constants';
 import {
   DISCUSSION_SINGLE_DIFF_FAILED,
-  LOAD_SINGLE_DIFF_FAILED,
   BUILDING_YOUR_MR,
   SOMETHING_WENT_WRONG,
   ERROR_LOADING_FULL_DIFF,
@@ -210,7 +209,7 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
   }
 };
 
-export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
+export const fetchDiffFilesBatch = ({ commit, state, dispatch }, pinnedFileLoading = false) => {
   let perPage = state.viewDiffsFileByFile ? 1 : state.perPage;
   let increaseAmount = 1.4;
   const startPage = 0;
@@ -224,8 +223,10 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
   let totalLoaded = 0;
   let scrolledVirtualScroller = hash === '';
 
-  commit(types.SET_BATCH_LOADING_STATE, 'loading');
-  commit(types.SET_RETRIEVING_BATCHES, true);
+  if (!pinnedFileLoading) {
+    commit(types.SET_BATCH_LOADING_STATE, 'loading');
+    commit(types.SET_RETRIEVING_BATCHES, true);
+  }
   eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
 
   const getBatch = (page = startPage) =>
@@ -237,7 +238,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffFiles });
         commit(types.SET_BATCH_LOADING_STATE, 'loaded');
 
-        if (!scrolledVirtualScroller) {
+        if (!scrolledVirtualScroller && !pinnedFileLoading) {
           const index = state.diffFiles.findIndex(
             (f) =>
               f.file_hash === hash || f[INLINE_DIFF_LINES_KEY].find((l) => l.line_code === hash),
@@ -301,9 +302,10 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
 
         return null;
       })
-      .catch(() => {
+      .catch((error) => {
         commit(types.SET_RETRIEVING_BATCHES, false);
         commit(types.SET_BATCH_LOADING_STATE, 'error');
+        throw error;
       });
 
   return getBatch();
@@ -384,7 +386,11 @@ export const fetchCoverageFiles = ({ commit, state }) => {
   coveragePoll.makeRequest();
 };
 
-export const setHighlightedRow = ({ commit }, lineCode) => {
+export const setHighlightedRow = ({ commit }, { lineCode, event }) => {
+  if (event && event.target.href) {
+    event.preventDefault();
+    window.history.replaceState(null, undefined, event.target.href);
+  }
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);
@@ -657,6 +663,8 @@ export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
   } else {
     if (!state.treeEntries[path]) return;
 
+    dispatch('unpinFile');
+
     const { fileHash } = state.treeEntries[path];
 
     commit(types.SET_CURRENT_DIFF_FILE, fileHash);
@@ -667,11 +675,7 @@ export const goToFile = ({ state, commit, dispatch, getters }, { path }) => {
     scrollToElement('.diff-files-holder', { duration: 0 });
 
     if (!getters.isTreePathLoaded(path)) {
-      dispatch('fetchFileByFile').catch(() => {
-        createAlert({
-          message: LOAD_SINGLE_DIFF_FAILED,
-        });
-      });
+      dispatch('fetchFileByFile');
     }
   }
 };
@@ -995,6 +999,8 @@ export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, n
 };
 
 export const navigateToDiffFileIndex = ({ state, getters, commit, dispatch }, index) => {
+  dispatch('unpinFile');
+
   const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
@@ -1055,3 +1061,50 @@ export const toggleFileCommentForm = ({ state, commit }, filePath) => {
 
 export const addDraftToFile = ({ commit }, { filePath, draft }) =>
   commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });
+
+export const fetchPinnedFile = ({ state, commit }, pinnedFileUrl) => {
+  const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
+
+  commit(types.SET_BATCH_LOADING_STATE, 'loading');
+  commit(types.SET_RETRIEVING_BATCHES, true);
+
+  return axios
+    .get(pinnedFileUrl)
+    .then(({ data: diffData }) => {
+      const [{ file_hash }] = diffData.diff_files;
+
+      // we must store pinned file in the `diffs`, otherwise collapsing and commenting on a file won't work
+      // once the same file arrives in a file batch we must only update its' position
+      // we also must not update file's position since it's loaded out of order
+      commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffData.diff_files, updatePosition: false });
+      commit(types.SET_PINNED_FILE_HASH, file_hash);
+
+      if (!isNoteLink && !state.currentDiffFileId) {
+        commit(types.SET_CURRENT_DIFF_FILE, file_hash);
+      }
+
+      commit(types.SET_BATCH_LOADING_STATE, 'loaded');
+
+      setTimeout(() => {
+        handleLocationHash();
+      });
+
+      eventHub.$emit('diffFilesModified');
+    })
+    .catch((error) => {
+      commit(types.SET_BATCH_LOADING_STATE, 'error');
+      throw error;
+    })
+    .finally(() => {
+      commit(types.SET_RETRIEVING_BATCHES, false);
+    });
+};
+
+export const unpinFile = ({ getters, commit }) => {
+  if (!getters.pinnedFile) return;
+  commit(types.SET_PINNED_FILE_HASH, null);
+  const newUrl = new URL(window.location);
+  newUrl.searchParams.delete('pin');
+  newUrl.hash = '';
+  window.history.replaceState(null, undefined, newUrl);
+};

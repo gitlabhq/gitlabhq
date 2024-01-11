@@ -155,3 +155,26 @@ To troubleshoot this error, verify that:
   parent-child pipeline hierarchy.
 - The `pipeline` and `job` combination exists and resolves to an existing pipeline.
 - `dependency-job` has run and finished successfully.
+
+## Jobs show `UnlockPipelinesInQueueWorker` after an upgrade
+
+Jobs might stall and show an error that states `UnlockPipelinesInQueueWorker`.
+
+This issue occurs after an upgrade.
+
+The workaround is to enable the `ci_unlock_pipelines_extra_low` feature flag.
+To toggle feature flags, you must be an administrator.
+
+On GitLab SaaS:
+
+- Run the following [ChatOps](../chatops/index.md) command:
+
+  ```ruby
+  /chatops run feature set ci_unlock_pipelines_extra_low true
+  ```
+
+On GitLab self-managed:
+
+- [Enable the feature flag](../../administration/feature_flags.md) named `ci_unlock_pipelines_extra_low`.
+
+For more information see the comment in [merge request 140318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140318#note_1718600424).

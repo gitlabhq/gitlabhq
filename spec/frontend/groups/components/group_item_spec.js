@@ -11,6 +11,8 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
+  GROUP_VISIBILITY_TYPE,
+  PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -113,6 +115,51 @@ describe('GroupItemComponent', () => {
 
         expect(wrapper.vm.isGroup).toBe(false);
         wrapper.destroy();
+      });
+    });
+
+    describe('visibilityTooltip', () => {
+      describe('if item represents group', () => {
+        it.each`
+          visibilityLevel                     | visibilityTooltip
+          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
+          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
+          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
+        `(
+          'should return corresponding text when visibility level is $visibilityLevel',
+          ({ visibilityLevel, visibilityTooltip }) => {
+            const group = { ...mockParentGroupItem };
+
+            group.type = 'group';
+            group.visibility = visibilityLevel;
+            wrapper = createComponent({ group });
+
+            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
+            wrapper.destroy();
+          },
+        );
+      });
+
+      describe('if item represents project', () => {
+        it.each`
+          visibilityLevel                     | visibilityTooltip
+          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
+          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
+          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
+        `(
+          'should return corresponding text when visibility level is $visibilityLevel',
+          ({ visibilityLevel, visibilityTooltip }) => {
+            const group = { ...mockParentGroupItem };
+
+            group.type = 'project';
+            group.lastActivityAt = '2017-04-09T18:40:39.101Z';
+            group.visibility = visibilityLevel;
+            wrapper = createComponent({ group });
+
+            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
+            wrapper.destroy();
+          },
+        );
       });
     });
   });

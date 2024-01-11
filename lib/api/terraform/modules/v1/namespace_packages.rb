@@ -4,7 +4,7 @@ module API
   module Terraform
     module Modules
       module V1
-        class Packages < ::API::Base
+        class NamespacePackages < ::API::Base
           include ::API::Helpers::Authentication
           helpers ::API::Helpers::PackagesHelpers
           helpers ::API::Helpers::Packages::BasicAuthHelpers
@@ -29,8 +29,10 @@ module API
           end
 
           helpers do
+            include ::Gitlab::Utils::StrongMemoize
+
             params :module_name do
-              requires :module_name, type: String, desc: "", regexp: API::NO_SLASH_URL_PART_REGEX
+              requires :module_name, type: String, desc: '', regexp: API::NO_SLASH_URL_PART_REGEX
               requires :module_system, type: String, regexp: API::NO_SLASH_URL_PART_REGEX
             end
 
@@ -39,10 +41,9 @@ module API
             end
 
             def module_namespace
-              strong_memoize(:module_namespace) do
-                find_namespace(params[:module_namespace])
-              end
+              find_namespace(params[:module_namespace])
             end
+            strong_memoize_attr :module_namespace
 
             def finder_params
               {
@@ -55,26 +56,23 @@ module API
             end
 
             def packages
-              strong_memoize(:packages) do
-                ::Packages::GroupPackagesFinder.new(
-                  current_user,
-                  module_namespace,
-                  finder_params
-                ).execute
-              end
+              ::Packages::GroupPackagesFinder.new(
+                current_user,
+                module_namespace,
+                finder_params
+              ).execute
             end
+            strong_memoize_attr :packages
 
             def package
-              strong_memoize(:package) do
-                packages.first
-              end
+              packages.first
             end
+            strong_memoize_attr :package
 
             def package_file
-              strong_memoize(:package_file) do
-                package.installable_package_files.first
-              end
+              package.installable_package_files.first
             end
+            strong_memoize_attr :package_file
           end
 
           params do
@@ -82,7 +80,8 @@ module API
             includes :module_name
           end
 
-          namespace 'packages/terraform/modules/v1/:module_namespace/:module_name/:module_system', requirements: TERRAFORM_MODULE_REQUIREMENTS do
+          namespace 'packages/terraform/modules/v1/:module_namespace/:module_name/:module_system',
+            requirements: TERRAFORM_MODULE_REQUIREMENTS do
             authenticate_with do |accept|
               accept.token_types(:personal_access_token, :deploy_token, :job_token)
                     .sent_through(:http_bearer_token)
@@ -118,7 +117,9 @@ module API
             get 'download' do
               latest_version = packages.order_version.last&.version
 
-              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_version.nil?
+              if latest_version.nil?
+                render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found)
+              end
 
               download_path = api_v4_packages_terraform_modules_v1_module_version_download_path(
                 {
@@ -145,7 +146,9 @@ module API
             get do
               latest_package = packages.order_version.last
 
-              render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found) if latest_package&.version.nil?
+              if latest_package&.version.nil?
+                render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found)
+              end
 
               presenter = ::Terraform::ModuleVersionPresenter.new(latest_package, params[:module_system])
               present presenter, with: ::API::Entities::Terraform::ModuleVersion
@@ -181,13 +184,18 @@ module API
                   jwt_token = Gitlab::TerraformRegistryToken.from_token(token_from_namespace_inheritable).encoded
                 end
 
-                header 'X-Terraform-Get', module_file_path.sub(%r{module_version/file$}, "#{params[:module_version]}/file?token=#{jwt_token}&archive=tgz")
+                header 'X-Terraform-Get',
+                  module_file_path.sub(
+                    %r{module_version/file$},
+                    "#{params[:module_version]}/file?token=#{jwt_token}&archive=tgz"
+                  )
                 status :no_content
               end
 
               namespace 'file' do
                 authenticate_with do |accept|
-                  accept.token_types(:deploy_token_from_jwt, :job_token_from_jwt, :personal_access_token_from_jwt).sent_through(:token_param)
+                  accept.token_types(:deploy_token_from_jwt, :job_token_from_jwt, :personal_access_token_from_jwt)
+                        .sent_through(:token_param)
                 end
 
                 desc 'Download specific version of a module' do
@@ -200,9 +208,14 @@ module API
                   tags %w[terraform_registry]
                 end
                 get do
-                  track_package_event('pull_package', :terraform_module, project: package.project, namespace: module_namespace)
+                  track_package_event(
+                    'pull_package',
+                    :terraform_module,
+                    project: package.project,
+                    namespace: module_namespace
+                  )
 
-                  present_carrierwave_file!(package_file.file)
+                  present_package_file!(package_file)
                 end
               end
 

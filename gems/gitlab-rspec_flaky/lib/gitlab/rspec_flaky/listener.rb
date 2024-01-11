@@ -36,6 +36,10 @@ module Gitlab
       end
 
       def dump_summary(_)
+        rails_logger_warn(
+          "\n#{flaky_examples.count} known flaky example(s) detected. " \
+          "Writing this to #{Config.flaky_examples_report_path}.\n"
+        )
         Report.new(flaky_examples).write(Config.flaky_examples_report_path)
 
         return unless new_flaky_examples.any?

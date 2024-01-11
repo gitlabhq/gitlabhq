@@ -35,8 +35,7 @@ describe('RunnerTypeBadge', () => {
       expect(findBadge().classes().sort()).toEqual(
         [
           ...classes,
-          'gl-border',
-          'gl-display-inline-block',
+          'gl-inset-border-1-gray-400',
           'gl-max-w-full',
           'gl-text-truncate',
           'gl-bg-transparent!',

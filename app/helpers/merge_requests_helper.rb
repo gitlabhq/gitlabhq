@@ -204,7 +204,8 @@ module MergeRequestsHelper
       is_forked: project.forked?.to_s,
       new_comment_template_path: profile_comment_templates_path,
       iid: merge_request.iid,
-      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE
+      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE,
+      pinned_file_url: @pinned_file_url
     }
   end
 

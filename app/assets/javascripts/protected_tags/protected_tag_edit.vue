@@ -107,6 +107,7 @@ export default {
     :access-levels-data="accessLevelsData"
     :preselected-items="selected"
     :search-enabled="searchEnabled"
+    groups-with-project-access
     :block="true"
     @hidden="updatePermissions"
   />

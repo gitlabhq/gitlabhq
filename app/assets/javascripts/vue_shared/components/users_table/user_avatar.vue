@@ -1,5 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlBadge, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { truncate } from '~/lib/utils/text_utility';
 import { USER_AVATAR_SIZE, LENGTH_OF_USER_NOTE_TOOLTIP } from './constants';
 
@@ -12,6 +13,7 @@ export default {
     GlBadge,
     GlIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     user: {
       type: Object,
@@ -65,7 +67,12 @@ export default {
         <div v-if="user.note" class="gl-text-gray-500 gl-p-1">
           <gl-icon v-gl-tooltip="userNoteShort" name="document" />
         </div>
-        <div v-for="(badge, idx) in user.badges" :key="idx" class="gl-p-1">
+        <div
+          v-for="(badge, idx) in user.badges"
+          :key="idx"
+          class="gl-p-1"
+          :class="{ 'gl-pb-0': glFeatures.simplifiedBadges }"
+        >
           <gl-badge class="gl-display-flex!" size="sm" :variant="badge.variant">{{
             badge.text
           }}</gl-badge>

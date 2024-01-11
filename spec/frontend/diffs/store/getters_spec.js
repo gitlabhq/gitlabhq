@@ -1,6 +1,7 @@
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import * as getters from '~/diffs/store/getters';
 import state from '~/diffs/store/modules/diff_state';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import discussion from '../mock_data/diff_discussions';
 
 describe('Diffs Module Getters', () => {
@@ -494,5 +495,36 @@ describe('Diffs Module Getters', () => {
         );
       },
     );
+  });
+
+  describe('diffFiles', () => {
+    it('proxies diffFiles state', () => {
+      const diffFiles = [getDiffFileMock()];
+      expect(getters.diffFiles({ diffFiles }, {})).toBe(diffFiles);
+    });
+
+    it('pins the file', () => {
+      const pinnedFile = getDiffFileMock();
+      const regularFile = getDiffFileMock();
+      const diffFiles = [regularFile, pinnedFile];
+      expect(getters.diffFiles({ diffFiles }, { pinnedFile })).toStrictEqual([
+        pinnedFile,
+        regularFile,
+      ]);
+    });
+  });
+
+  describe('pinnedFile', () => {
+    it('returns pinnedFile', () => {
+      const pinnedFile = getDiffFileMock();
+      const diffFiles = [pinnedFile];
+      expect(getters.pinnedFile({ diffFiles, pinnedFileHash: pinnedFile.file_hash }, {})).toBe(
+        pinnedFile,
+      );
+    });
+
+    it('returns null if no pinned file is set', () => {
+      expect(getters.pinnedFile({}, {})).toBe(null);
+    });
   });
 });

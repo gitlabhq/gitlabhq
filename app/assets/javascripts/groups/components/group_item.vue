@@ -20,6 +20,7 @@ import {
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
   VISIBILITY_TYPE_ICON,
   GROUP_VISIBILITY_TYPE,
+  PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { ITEM_TYPE, ACTIVE_TAB_SHARED } from '../constants';
 
@@ -105,7 +106,8 @@ export default {
       return VISIBILITY_TYPE_ICON[this.group.visibility];
     },
     visibilityTooltip() {
-      return GROUP_VISIBILITY_TYPE[this.group.visibility];
+      if (this.isGroup) return GROUP_VISIBILITY_TYPE[this.group.visibility];
+      return PROJECT_VISIBILITY_TYPE[this.group.visibility];
     },
     microdata() {
       return this.group.microdata || {};

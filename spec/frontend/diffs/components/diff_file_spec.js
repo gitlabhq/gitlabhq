@@ -29,6 +29,7 @@ import createNotesStore from '~/notes/stores/modules';
 import diffsModule from '~/diffs/store/modules';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import { SET_PINNED_FILE_HASH } from '~/diffs/store/mutation_types';
 import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -90,49 +91,6 @@ function markFileToBeRendered(store, index = 0) {
   });
 }
 
-function createComponent({ file, first = false, last = false, options = {}, props = {} }) {
-  const diffs = diffsModule();
-  diffs.actions = {
-    ...diffs.actions,
-    prefetchFileNeighbors: prefetchFileNeighborsMock,
-    saveDiffDiscussion: saveDiffDiscussionMock,
-  };
-
-  diffs.getters = {
-    ...diffs.getters,
-    diffCompareDropdownTargetVersions: () => [],
-    diffCompareDropdownSourceVersions: () => [],
-  };
-
-  const store = new Vuex.Store({
-    ...createNotesStore(),
-    modules: { diffs },
-  });
-
-  store.state.diffs = {
-    mergeRequestDiff: diffsMockData[0],
-    diffFiles: [file],
-  };
-
-  const wrapper = shallowMountExtended(DiffFileComponent, {
-    store,
-    propsData: {
-      file,
-      canCurrentUserFork: false,
-      viewDiffsFileByFile: false,
-      isFirstFile: first,
-      isLastFile: last,
-      ...props,
-    },
-    ...options,
-  });
-
-  return {
-    wrapper,
-    store,
-  };
-}
-
 const findDiffHeader = (wrapper) => wrapper.findComponent(DiffFileHeaderComponent);
 const findDiffContentArea = (wrapper) => wrapper.findByTestId('content-area');
 const findLoader = (wrapper) => wrapper.findByTestId('loader-icon');
@@ -159,15 +117,58 @@ const triggerSaveDraftNote = (wrapper, note, parent, error) =>
   findNoteForm(wrapper).vm.$emit('handleFormUpdateAddToReview', note, false, parent, error);
 
 describe('DiffFile', () => {
-  let readableFile;
   let wrapper;
   let store;
   let axiosMock;
 
+  function createComponent({
+    file = getReadableFile(),
+    first = false,
+    last = false,
+    options = {},
+    props = {},
+  } = {}) {
+    const diffs = diffsModule();
+    diffs.actions = {
+      ...diffs.actions,
+      prefetchFileNeighbors: prefetchFileNeighborsMock,
+      saveDiffDiscussion: saveDiffDiscussionMock,
+    };
+
+    diffs.getters = {
+      ...diffs.getters,
+      diffCompareDropdownTargetVersions: () => [],
+      diffCompareDropdownSourceVersions: () => [],
+    };
+
+    store = new Vuex.Store({
+      ...createNotesStore(),
+      modules: { diffs },
+    });
+
+    store.state.diffs = {
+      ...store.state.diffs,
+      mergeRequestDiff: diffsMockData[0],
+      diffFiles: [file],
+    };
+
+    wrapper = shallowMountExtended(DiffFileComponent, {
+      store,
+      propsData: {
+        file,
+        canCurrentUserFork: false,
+        viewDiffsFileByFile: false,
+        isFirstFile: first,
+        isLastFile: last,
+        ...props,
+      },
+      ...options,
+    });
+  }
+
   beforeEach(() => {
-    readableFile = getReadableFile();
     axiosMock = new MockAdapter(axios);
-    ({ wrapper, store } = createComponent({ file: readableFile }));
+    createComponent();
   });
 
   afterEach(() => {
@@ -186,7 +187,6 @@ describe('DiffFile', () => {
     `('$description', ({ fileByFile }) => {
       createComponent({
         props: { viewDiffsFileByFile: fileByFile },
-        file: readableFile,
       });
 
       if (fileByFile) {
@@ -217,11 +217,11 @@ describe('DiffFile', () => {
             forceHasDiff({ store, ...file });
           }
 
-          ({ wrapper, store } = createComponent({
+          createComponent({
             file: store.state.diffs.diffFiles[0],
             first,
             last,
-          }));
+          });
 
           await nextTick();
 
@@ -233,14 +233,13 @@ describe('DiffFile', () => {
       );
 
       it('emits the "first file shown" and "files end" events when in File-by-File mode', async () => {
-        ({ wrapper, store } = createComponent({
-          file: getReadableFile(),
+        createComponent({
           first: false,
           last: false,
           props: {
             viewDiffsFileByFile: true,
           },
-        }));
+        });
 
         await nextTick();
 
@@ -253,11 +252,11 @@ describe('DiffFile', () => {
     describe('after loading the diff', () => {
       it('indicates that it loaded the file', async () => {
         forceHasDiff({ store, inlineLines: [], parallelLines: [], readableText: true });
-        ({ wrapper, store } = createComponent({
+        createComponent({
           file: store.state.diffs.diffFiles[0],
           first: true,
           last: true,
-        }));
+        });
 
         jest.spyOn(wrapper.vm, 'loadCollapsedDiff').mockResolvedValue(getReadableFile());
         jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
@@ -314,11 +313,11 @@ describe('DiffFile', () => {
       `('should be $bool when { userIsLoggedIn: $loggedIn }', ({ loggedIn, bool }) => {
         setLoggedIn(loggedIn);
 
-        ({ wrapper } = createComponent({
+        createComponent({
           props: {
             file: store.state.diffs.diffFiles[0],
           },
-        }));
+        });
 
         expect(wrapper.vm.showLocalFileReviews).toBe(bool);
       });
@@ -556,7 +555,7 @@ describe('DiffFile', () => {
 
     describe('general (other) collapsed', () => {
       it('should be expandable for unreadable files', async () => {
-        ({ wrapper, store } = createComponent({ file: getUnreadableFile() }));
+        createComponent({ file: getUnreadableFile() });
         makeFileAutomaticallyCollapsed(store);
 
         await nextTick();
@@ -622,7 +621,7 @@ describe('DiffFile', () => {
         renderIt: true,
       };
 
-      ({ wrapper, store } = createComponent({ file }));
+      createComponent({ file });
 
       expect(wrapper.findByTestId('conflictsAlert').exists()).toBe(false);
     });
@@ -634,7 +633,7 @@ describe('DiffFile', () => {
         renderIt: true,
       };
 
-      ({ wrapper, store } = createComponent({ file }));
+      createComponent({ file });
 
       expect(wrapper.findByTestId('conflictsAlert').exists()).toBe(true);
     });
@@ -656,9 +655,9 @@ describe('DiffFile', () => {
           ...extraProps,
         };
 
-        ({ wrapper, store } = createComponent({
+        createComponent({
           file,
-        }));
+        });
 
         expect(wrapper.findByTestId('file-discussions').exists()).toEqual(exists);
       },
@@ -676,9 +675,9 @@ describe('DiffFile', () => {
           hasCommentForm,
         };
 
-        ({ wrapper, store } = createComponent({
+        createComponent({
           file,
-        }));
+        });
 
         expect(findNoteForm(wrapper).exists()).toEqual(exists);
       },
@@ -694,9 +693,9 @@ describe('DiffFile', () => {
         discussions,
       };
 
-      ({ wrapper, store } = createComponent({
+      createComponent({
         file,
-      }));
+      });
 
       expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(exists);
     });
@@ -712,10 +711,10 @@ describe('DiffFile', () => {
       const errorCallback = jest.fn();
 
       beforeEach(() => {
-        ({ wrapper, store } = createComponent({
+        createComponent({
           file,
           options: { provide: { glFeatures: { commentOnFiles: true } } },
-        }));
+        });
       });
 
       it('calls saveDiffDiscussionMock', () => {
@@ -771,10 +770,10 @@ describe('DiffFile', () => {
       const errorCallback = jest.fn();
 
       beforeEach(async () => {
-        ({ wrapper, store } = createComponent({
+        createComponent({
           file,
           options: { provide: { glFeatures: { commentOnFiles: true } } },
-        }));
+        });
 
         triggerSaveDraftNote(wrapper, note, parentElement, errorCallback);
 
@@ -789,6 +788,15 @@ describe('DiffFile', () => {
           errorCallback,
         );
       });
+    });
+  });
+
+  describe('pinned file', () => {
+    it('passes down pinned prop', async () => {
+      createComponent();
+      store.commit(`diffs/${SET_PINNED_FILE_HASH}`, getReadableFile().file_hash);
+      await nextTick();
+      expect(wrapper.findComponent(DiffFileHeaderComponent).props('pinned')).toBe(true);
     });
   });
 });

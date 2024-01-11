@@ -7,6 +7,9 @@ import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import DiffFileRow from '~/diffs/components//diff_file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { SET_PINNED_FILE_HASH, SET_TREE_DATA, SET_DIFF_FILES } from '~/diffs/store/mutation_types';
+import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
+import { sortTree } from '~/ide/stores/utils';
 
 describe('Diffs tree list component', () => {
   let wrapper;
@@ -58,6 +61,14 @@ describe('Diffs tree list component', () => {
 
   const setupFilesInState = () => {
     const treeEntries = {
+      app: {
+        key: 'app',
+        path: 'app',
+        name: 'app',
+        type: 'tree',
+        tree: [],
+        opened: true,
+      },
       'index.js': {
         addedLines: 0,
         changed: true,
@@ -71,6 +82,8 @@ describe('Diffs tree list component', () => {
         type: 'blob',
         parentPath: 'app',
         tree: [],
+        file_path: 'app/index.js',
+        file_hash: 'app-index',
       },
       'test.rb': {
         addedLines: 0,
@@ -85,20 +98,39 @@ describe('Diffs tree list component', () => {
         type: 'blob',
         parentPath: 'app',
         tree: [],
+        file_path: 'app/test.rb',
+        file_hash: 'app-test',
       },
-      app: {
-        key: 'app',
-        path: 'app',
-        name: 'app',
-        type: 'tree',
+      LICENSE: {
+        addedLines: 0,
+        changed: true,
+        deleted: false,
+        fileHash: 'LICENSE',
+        key: 'LICENSE',
+        name: 'LICENSE',
+        path: 'LICENSE',
+        removedLines: 0,
+        tempFile: true,
+        type: 'blob',
+        parentPath: '/',
         tree: [],
+        file_path: 'LICENSE',
+        file_hash: 'LICENSE',
       },
     };
 
     Object.assign(store.state.diffs, {
       treeEntries,
-      tree: [treeEntries['index.js'], treeEntries.app],
+      tree: [
+        treeEntries.LICENSE,
+        {
+          ...treeEntries.app,
+          tree: [treeEntries['index.js'], treeEntries['test.rb']],
+        },
+      ],
     });
+
+    return treeEntries;
   };
 
   describe('default', () => {
@@ -149,7 +181,7 @@ describe('Diffs tree list component', () => {
     });
 
     it('renders tree', () => {
-      expect(getScroller().props('items')).toHaveLength(2);
+      expect(getScroller().props('items')).toHaveLength(4);
     });
 
     it('hides file stats', () => {
@@ -169,7 +201,7 @@ describe('Diffs tree list component', () => {
       store.state.diffs.renderTreeList = false;
 
       await nextTick();
-      expect(getScroller().props('items')).toHaveLength(3);
+      expect(getScroller().props('items')).toHaveLength(5);
     });
   });
 
@@ -186,6 +218,61 @@ describe('Diffs tree list component', () => {
 
       await nextTick();
       expect(getFileRow().props('viewedFiles')).toBe(viewedDiffFileIds);
+    });
+  });
+
+  describe('pinned file', () => {
+    const filePaths = [
+      ['nested-1.rb', 'folder/sub-folder/'],
+      ['nested-2.rb', 'folder/sub-folder/'],
+      ['nested-3.rb', 'folder/sub-folder/'],
+      ['1.rb', 'folder/'],
+      ['2.rb', 'folder/'],
+      ['3.rb', 'folder/'],
+      ['single.rb', 'folder-single/'],
+      ['root-first.rb'],
+      ['root-last.rb'],
+    ];
+
+    const pinFile = (fileHash) => {
+      store.commit(`diffs/${SET_PINNED_FILE_HASH}`, fileHash);
+    };
+
+    const setupFiles = (diffFiles) => {
+      const { treeEntries, tree } = generateTreeList(diffFiles);
+      store.commit(`diffs/${SET_DIFF_FILES}`, diffFiles);
+      store.commit(`diffs/${SET_TREE_DATA}`, {
+        treeEntries,
+        tree: sortTree(tree),
+      });
+    };
+
+    const createFile = (name, path = '') => ({
+      file_hash: name,
+      path: `${path}${name}`,
+      new_path: `${path}${name}`,
+      file_path: `${path}${name}`,
+    });
+
+    beforeEach(() => {
+      createComponent();
+      setupFiles(filePaths.map(([name, path]) => createFile(name, path)));
+    });
+
+    describe('files in folders', () => {
+      it.each(filePaths.map((path) => path[0]))('pins %s file', async (pinnedFile) => {
+        pinFile(pinnedFile);
+        await nextTick();
+        const items = getScroller().props('items');
+        expect(
+          items.map(
+            (item) =>
+              `${'─'.repeat(item.level * 2)}${item.type === 'tree' ? '📁' : ''}${
+                item.name || item.path
+              }`,
+          ),
+        ).toMatchSnapshot();
+      });
     });
   });
 });

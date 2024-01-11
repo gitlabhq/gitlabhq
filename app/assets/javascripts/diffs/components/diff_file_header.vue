@@ -22,6 +22,7 @@ import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
+import { fileContentsId, pinnedFileHref } from '~/diffs/components/diff_row_utils';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
@@ -102,6 +103,11 @@ export default {
       required: false,
       default: false,
     },
+    pinned: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   idState() {
     return {
@@ -113,9 +119,8 @@ export default {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapGetters(['getNoteableData']),
     diffContentIDSelector() {
-      return `#diff-content-${this.diffFile.file_hash}`;
+      return `${pinnedFileHref(this.diffFile)}#${fileContentsId(this.diffFile)}`;
     },
-
     titleLink() {
       if (this.diffFile.submodule) {
         return this.diffFile.submodule_tree_url || this.diffFile.submodule_link;
@@ -222,6 +227,7 @@ export default {
       'setFileForcedOpen',
       'setGenerateTestFilePath',
       'toggleFileCommentForm',
+      'unpinFile',
     ]),
     handleToggleFile() {
       this.setFileForcedOpen({
@@ -295,7 +301,19 @@ export default {
   >
     <div class="file-header-content">
       <gl-button
-        v-if="collapsible"
+        v-if="pinned"
+        v-gl-tooltip.hover.focus
+        :title="__('Unpin the file')"
+        :aria-label="__('Unpin the file')"
+        icon="thumbtack"
+        size="small"
+        class="btn-icon gl-mr-2"
+        category="tertiary"
+        data-testid="unpin-button"
+        @click="unpinFile"
+      />
+      <gl-button
+        v-else-if="collapsible"
         ref="collapseButton"
         class="gl-mr-2"
         category="tertiary"
@@ -305,10 +323,10 @@ export default {
         @click.stop="handleToggleFile"
       />
       <a
-        ref="titleWrapper"
         :v-once="!viewDiffsFileByFile"
         class="gl-mr-2 gl-text-decoration-none! gl-word-break-all"
         :href="titleLink"
+        data-testid="file-title"
         @click="handleFileNameClick"
       >
         <span v-if="isFileRenamed">
@@ -354,7 +372,7 @@ export default {
       <small
         v-if="isModeChanged"
         ref="fileMode"
-        v-gl-tooltip.hover
+        v-gl-tooltip.hover.focus
         class="mr-1"
         :title="$options.i18n.fileModeTooltip"
       >
@@ -377,7 +395,7 @@ export default {
       />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
-        v-gl-tooltip.hover
+        v-gl-tooltip.hover.focus
         data-testid="fileReviewCheckbox"
         class="gl-mr-5 gl-mb-n3 gl-display-flex gl-align-items-center"
         :title="$options.i18n.fileReviewTooltip"
@@ -388,7 +406,7 @@ export default {
       </gl-form-checkbox>
       <gl-button
         v-if="showCommentButton"
-        v-gl-tooltip.hover
+        v-gl-tooltip.hover.focus
         :title="__('Comment on this file')"
         :aria-label="__('Comment on this file')"
         icon="comment"
@@ -402,7 +420,7 @@ export default {
         <gl-button
           v-if="diffFile.external_url"
           ref="externalLink"
-          v-gl-tooltip.hover
+          v-gl-tooltip.hover.focus
           :href="diffFile.external_url"
           :title="externalUrlLabel"
           :aria-label="externalUrlLabel"

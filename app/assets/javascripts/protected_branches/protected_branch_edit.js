@@ -97,6 +97,7 @@ export default class ProtectedBranchEdit {
       block: true,
       accessLevel,
       accessLevelsData,
+      groupsWithProjectAccess: true,
       testId,
     });
 

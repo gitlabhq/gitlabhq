@@ -2971,7 +2971,6 @@ RSpec/NamedSubject:
     - 'spec/requests/api/releases_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
     - 'spec/requests/api/snippets_spec.rb'
-    - 'spec/requests/api/terraform/modules/v1/packages_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/health_controller_spec.rb'
     - 'spec/requests/ide_controller_spec.rb'

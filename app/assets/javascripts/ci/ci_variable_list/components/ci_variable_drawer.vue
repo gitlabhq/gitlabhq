@@ -518,9 +518,15 @@ export default {
       >
         {{ $options.i18n.variableReferenceDescription }}
       </gl-alert>
-      <div class="gl-display-flex gl-justify-content-end">
-        <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
-          >{{ $options.i18n.cancel }}
+      <div class="gl-display-flex">
+        <gl-button
+          category="primary"
+          class="gl-mr-3"
+          variant="confirm"
+          :disabled="!canSubmit"
+          data-testid="ci-variable-confirm-button"
+          @click="submit"
+          >{{ modalActionText }}
         </gl-button>
         <gl-button
           v-if="isEditing"
@@ -531,13 +537,8 @@ export default {
           data-testid="ci-variable-delete-button"
           >{{ $options.i18n.deleteVariable }}</gl-button
         >
-        <gl-button
-          category="primary"
-          variant="confirm"
-          :disabled="!canSubmit"
-          data-testid="ci-variable-confirm-button"
-          @click="submit"
-          >{{ modalActionText }}
+        <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
+          >{{ $options.i18n.cancel }}
         </gl-button>
       </div>
     </gl-drawer>

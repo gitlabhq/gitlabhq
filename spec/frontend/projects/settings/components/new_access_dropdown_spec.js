@@ -74,20 +74,14 @@ describe('Access Level Dropdown', () => {
   const createComponent = ({
     accessLevelsData = mockAccessLevelsData,
     accessLevel = ACCESS_LEVELS.PUSH,
-    hasLicense,
-    label,
-    disabled,
-    preselectedItems,
     stubs = {},
+    ...optionalProps
   } = {}) => {
     wrapper = shallowMountExtended(AccessDropdown, {
       propsData: {
         accessLevelsData,
         accessLevel,
-        hasLicense,
-        label,
-        disabled,
-        preselectedItems,
+        ...optionalProps,
       },
       stubs: {
         GlSprintf,
@@ -114,8 +108,17 @@ describe('Access Level Dropdown', () => {
     it('should make an api call for users, groups && deployKeys when user has a license', () => {
       createComponent();
       expect(getUsers).toHaveBeenCalled();
-      expect(getGroups).toHaveBeenCalled();
+      expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: false });
       expect(getDeployKeys).toHaveBeenCalled();
+    });
+
+    describe('withProjectAccess', () => {
+      it('should make an api call for users, groups && deployKeys when user has a license', () => {
+        createComponent({ groupsWithProjectAccess: true });
+        expect(getUsers).toHaveBeenCalled();
+        expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: true });
+        expect(getDeployKeys).toHaveBeenCalled();
+      });
     });
 
     it('should make an api call for deployKeys but not for users or groups when user does not have a license', () => {
@@ -132,7 +135,7 @@ describe('Access Level Dropdown', () => {
       findSearchBox().vm.$emit('input', query);
       await nextTick();
       expect(getUsers).toHaveBeenCalledWith(query);
-      expect(getGroups).toHaveBeenCalled();
+      expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: false });
       expect(getDeployKeys).toHaveBeenCalledWith(query);
     });
   });

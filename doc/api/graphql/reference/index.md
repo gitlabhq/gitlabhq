@@ -17235,8 +17235,8 @@ Represents a product analytics dashboard visualization.
 | <a id="customizablepermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
 | <a id="customizablepermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
 | <a id="customizablepermissionname"></a>`name` | [`String!`](#string) | Localized name of the permission. |
-| <a id="customizablepermissionrequirement"></a>`requirement` | [`String`](#string) | Requirement of the permission. |
-| <a id="customizablepermissionvalue"></a>`value` | [`String!`](#string) | Value of the permission. |
+| <a id="customizablepermissionrequirement"></a>`requirement` | [`MemberRolePermission`](#memberrolepermission) | Requirement of the permission. |
+| <a id="customizablepermissionvalue"></a>`value` | [`MemberRolePermission!`](#memberrolepermission) | Value of the permission. |
 
 ### `DastPreScanVerification`
 
@@ -21487,7 +21487,7 @@ Represents a member role.
 | ---- | ---- | ----------- |
 | <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Base access level for the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
-| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`[MemberRolePermission!]`](#memberrolepermission) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
+| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection`](#customizablepermissionconnection) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
 | <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.7. This feature is an Experiment. It can be changed or removed at any time. Total number of members with the custom role. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |

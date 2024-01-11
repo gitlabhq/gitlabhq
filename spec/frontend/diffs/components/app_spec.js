@@ -31,6 +31,9 @@ import * as urlUtils from '~/lib/utils/url_utility';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
+import waitForPromises from 'helpers/wait_for_promises';
+import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -38,6 +41,8 @@ const mergeRequestDiff = { version_index: 1 };
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
 const COMMIT_URL = `${TEST_HOST}/COMMIT/OLD`;
 const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
+const ENDPOINT_BATCH_URL = `${TEST_HOST}/diff/endpointBatch`;
+const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -77,8 +82,8 @@ describe('diffs/components/app', () => {
 
     store.dispatch('diffs/setBaseConfig', {
       endpoint: TEST_ENDPOINT,
-      endpointMetadata: `${TEST_HOST}/diff/endpointMetadata`,
-      endpointBatch: `${TEST_HOST}/diff/endpointBatch`,
+      endpointMetadata: ENDPOINT_METADATA_URL,
+      endpointBatch: ENDPOINT_BATCH_URL,
       endpointDiffForPath: TEST_ENDPOINT,
       projectPath: 'namespace/project',
       dismissEndpoint: '',
@@ -126,7 +131,7 @@ describe('diffs/components/app', () => {
       const fetchResolver = () => {
         store.state.diffs.retrievingBatches = false;
         store.state.notes.doneFetchingBatchDiscussions = true;
-        store.state.notes.discussions = 'test';
+        store.state.notes.discussions = [];
         return Promise.resolve({ real_size: 100 });
       };
       jest.spyOn(window, 'requestIdleCallback').mockImplementation((fn) => fn());
@@ -859,6 +864,34 @@ describe('diffs/components/app', () => {
       eventHub.$emit('doneLoadingBatches');
 
       expect(loadSpy).not.toHaveBeenCalledWith({ file: store.state.diffs.diffFiles[0] });
+    });
+  });
+
+  describe('pinned file', () => {
+    const pinnedFileUrl = 'http://localhost.test/pinned-file';
+    let pinnedFile;
+
+    beforeEach(() => {
+      pinnedFile = getDiffFileMock();
+      mock.onGet(pinnedFileUrl).reply(HTTP_STATUS_OK, { diff_files: [pinnedFile] });
+      mock
+        .onGet(new RegExp(ENDPOINT_BATCH_URL))
+        .reply(HTTP_STATUS_OK, { diff_files: [], pagination: {} });
+      mock.onGet(new RegExp(ENDPOINT_METADATA_URL)).reply(HTTP_STATUS_OK, diffMetadata);
+
+      createComponent({ shouldShow: true, pinnedFileUrl });
+    });
+
+    it('fetches and displays pinned file', async () => {
+      await waitForPromises();
+
+      expect(wrapper.findComponent({ name: 'DynamicScroller' }).props('items')[0].file_hash).toBe(
+        pinnedFile.file_hash,
+      );
+    });
+
+    it('shows a spinner during loading', () => {
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
   });
 });

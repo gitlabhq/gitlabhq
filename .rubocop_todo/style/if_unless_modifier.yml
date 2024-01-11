@@ -683,7 +683,6 @@ Style/IfUnlessModifier:
     - 'lib/api/settings.rb'
     - 'lib/api/snippets.rb'
     - 'lib/api/tags.rb'
-    - 'lib/api/terraform/modules/v1/packages.rb'
     - 'lib/api/users.rb'
     - 'lib/backup/gitaly_backup.rb'
     - 'lib/backup/manager.rb'

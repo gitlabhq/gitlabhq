@@ -11,7 +11,7 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   EVT_MR_PREPARED,
 } from '~/diffs/constants';
-import { LOAD_SINGLE_DIFF_FAILED, BUILDING_YOUR_MR, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
+import { BUILDING_YOUR_MR, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
@@ -28,6 +28,8 @@ import {
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import eventHub from '~/notes/event_hub';
 import diffsEventHub from '~/diffs/event_hub';
+import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
 jest.mock('~/alert');
@@ -36,6 +38,8 @@ jest.mock('~/lib/utils/secret_detection', () => ({
   confirmSensitiveAction: jest.fn(() => Promise.resolve(false)),
   containsSensitiveToken: jest.requireActual('~/lib/utils/secret_detection').containsSensitiveToken,
 }));
+
+const endpointDiffForPath = '/diffs/set/endpoint/path';
 
 describe('DiffsStoreActions', () => {
   let mock;
@@ -78,7 +82,6 @@ describe('DiffsStoreActions', () => {
       const endpoint = '/diffs/set/endpoint';
       const endpointMetadata = '/diffs/set/endpoint/metadata';
       const endpointBatch = '/diffs/set/endpoint/batch';
-      const endpointDiffForPath = '/diffs/set/endpoint/path';
       const endpointCoverage = '/diffs/set/coverage_reports';
       const projectPath = '/root/project';
       const dismissEndpoint = '/-/user_callouts';
@@ -181,7 +184,6 @@ describe('DiffsStoreActions', () => {
         w: '1',
         view: 'inline',
       };
-      const endpointDiffForPath = '/diffs/set/endpoint/path';
       const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
       const treeEntry = {
         fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818',
@@ -350,7 +352,6 @@ describe('DiffsStoreActions', () => {
         w: '1',
         view: 'inline',
       };
-      const endpointDiffForPath = '/diffs/set/endpoint/path';
       const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
       const treeEntry = {
         fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818',
@@ -490,8 +491,8 @@ describe('DiffsStoreActions', () => {
   describe('fetchDiffFilesBatch', () => {
     it('should fetch batch diff files', () => {
       const endpointBatch = '/fetch/diffs_batch';
-      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { total_pages: 7 } };
-      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: { total_pages: 7 } };
+      const res1 = { diff_files: [{ file_hash: 'test' }], pagination: { total_pages: 2 } };
+      const res2 = { diff_files: [{ file_hash: 'test2' }], pagination: { total_pages: 2 } };
       mock
         .onGet(
           mergeUrlParams(
@@ -520,7 +521,7 @@ describe('DiffsStoreActions', () => {
 
       return testAction(
         diffActions.fetchDiffFilesBatch,
-        {},
+        undefined,
         { endpointBatch, diffViewType: 'inline', diffFiles: [], perPage: 5 },
         [
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
@@ -532,7 +533,6 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_BATCH_LOADING_STATE, payload: 'loaded' },
           { type: types.SET_CURRENT_DIFF_FILE, payload: 'test2' },
           { type: types.SET_RETRIEVING_BATCHES, payload: false },
-          { type: types.SET_BATCH_LOADING_STATE, payload: 'error' },
         ],
         [],
       );
@@ -690,7 +690,7 @@ describe('DiffsStoreActions', () => {
 
   describe('setHighlightedRow', () => {
     it('should mark currently selected diff and set lineHash and fileHash of highlightedRow', () => {
-      return testAction(diffActions.setHighlightedRow, 'ABC_123', {}, [
+      return testAction(diffActions.setHighlightedRow, { lineCode: 'ABC_123' }, {}, [
         { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
         { type: types.SET_CURRENT_DIFF_FILE, payload: 'ABC' },
       ]);
@@ -1310,14 +1310,17 @@ describe('DiffsStoreActions', () => {
         diffActions.goToFile({ state, dispatch, getters, commit }, file);
 
         expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, fileHash);
-        expect(dispatch).toHaveBeenCalledTimes(0);
+        expect(dispatch).not.toHaveBeenCalledWith('fetchFileByFile');
       });
 
       describe('when the tree entry has not been loaded', () => {
         it('updates location hash', () => {
           diffActions.goToFile({ state, commit, getters, dispatch }, file);
 
-          expect(document.location.hash).toBe('#test');
+          expect(historyPushState).toHaveBeenCalledWith(new URL(`${TEST_HOST}#test`), {
+            skipScrolling: true,
+          });
+          expect(scrollToElement).toHaveBeenCalledWith('.diff-files-holder', { duration: 0 });
         });
 
         it('loads the file and then scrolls to it', async () => {
@@ -1333,21 +1336,12 @@ describe('DiffsStoreActions', () => {
           expect(commonUtils.scrollToElement).toHaveBeenCalledWith('.diff-files-holder', {
             duration: 0,
           });
-          expect(dispatch).toHaveBeenCalledTimes(1);
+          expect(dispatch).toHaveBeenCalledWith('fetchFileByFile');
         });
 
-        it('shows an alert when there was an error fetching the file', async () => {
-          dispatch = jest.fn().mockRejectedValue();
-
+        it('unpins the file', () => {
           diffActions.goToFile({ state, commit, getters, dispatch }, file);
-
-          // Wait for the fetchFileByFile dispatch to return, to trigger the catch
-          await waitForPromises();
-
-          expect(createAlert).toHaveBeenCalledTimes(1);
-          expect(createAlert).toHaveBeenCalledWith({
-            message: expect.stringMatching(LOAD_SINGLE_DIFF_FAILED),
-          });
+          expect(dispatch).toHaveBeenCalledWith('unpinFile');
         });
       });
     });
@@ -1969,7 +1963,7 @@ describe('DiffsStoreActions', () => {
         0,
         { flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
-        [],
+        [{ type: 'unpinFile' }],
       );
     });
 
@@ -1979,7 +1973,7 @@ describe('DiffsStoreActions', () => {
         0,
         { viewDiffsFileByFile: true, flatBlobsList: [{ fileHash: '123' }] },
         [{ type: types.SET_CURRENT_DIFF_FILE, payload: '123' }],
-        [{ type: 'fetchFileByFile' }],
+        [{ type: 'unpinFile' }, { type: 'fetchFileByFile' }],
       );
     });
   });
@@ -2118,6 +2112,86 @@ describe('DiffsStoreActions', () => {
         [{ type: types.ADD_DRAFT_TO_FILE, payload: { filePath: 'path', draft: 'draft' } }],
         [],
       );
+    });
+  });
+
+  describe('fetchPinnedFile', () => {
+    it('fetches pinned file', async () => {
+      const pinnedFileHref = `${TEST_HOST}/pinned-file`;
+      const pinnedFile = getDiffFileMock();
+      const diffFiles = [pinnedFile];
+      const hubSpy = jest.spyOn(diffsEventHub, '$emit');
+      mock.onGet(new RegExp(pinnedFileHref)).reply(HTTP_STATUS_OK, { diff_files: diffFiles });
+
+      await testAction(
+        diffActions.fetchPinnedFile,
+        pinnedFileHref,
+        {},
+        [
+          { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
+          { type: types.SET_RETRIEVING_BATCHES, payload: true },
+          {
+            type: types.SET_DIFF_DATA_BATCH,
+            payload: { diff_files: diffFiles, updatePosition: false },
+          },
+          { type: types.SET_PINNED_FILE_HASH, payload: pinnedFile.file_hash },
+          { type: types.SET_CURRENT_DIFF_FILE, payload: pinnedFile.file_hash },
+          { type: types.SET_BATCH_LOADING_STATE, payload: 'loaded' },
+          { type: types.SET_RETRIEVING_BATCHES, payload: false },
+        ],
+        [],
+      );
+
+      jest.runAllTimers();
+      expect(hubSpy).toHaveBeenCalledWith('diffFilesModified');
+      expect(handleLocationHash).toHaveBeenCalled();
+    });
+
+    it('handles load error', async () => {
+      const pinnedFileHref = `${TEST_HOST}/pinned-file`;
+      const hubSpy = jest.spyOn(diffsEventHub, '$emit');
+      mock.onGet(new RegExp(pinnedFileHref)).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+      try {
+        await testAction(
+          diffActions.fetchPinnedFile,
+          pinnedFileHref,
+          {},
+          [
+            { type: types.SET_BATCH_LOADING_STATE, payload: 'loading' },
+            { type: types.SET_RETRIEVING_BATCHES, payload: true },
+            { type: types.SET_BATCH_LOADING_STATE, payload: 'error' },
+            { type: types.SET_RETRIEVING_BATCHES, payload: false },
+          ],
+          [],
+        );
+      } catch (error) {
+        expect(error.response.status).toBe(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      }
+
+      jest.runAllTimers();
+      expect(hubSpy).not.toHaveBeenCalledWith('diffFilesModified');
+      expect(handleLocationHash).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('unpinFile', () => {
+    it('unpins pinned file', () => {
+      const pinnedFile = getDiffFileMock();
+      setWindowLocation(`${TEST_HOST}/?pin=${pinnedFile.file_hash}#${pinnedFile.file_hash}_10_10`);
+      testAction(
+        diffActions.unpinFile,
+        undefined,
+        { pinnedFile },
+        [{ type: types.SET_PINNED_FILE_HASH, payload: null }],
+        [],
+      );
+      expect(window.location.hash).toBe('');
+      expect(window.location.search).toBe('');
+    });
+
+    it('does nothing when no pinned file present', () => {
+      testAction(diffActions.unpinFile, undefined, {}, [], []);
     });
   });
 });

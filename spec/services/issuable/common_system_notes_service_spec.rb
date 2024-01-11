@@ -43,7 +43,7 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
     it_behaves_like 'system note creation', { description: 'New description' }, 'changed the description'
     it_behaves_like 'system note creation', { discussion_locked: true }, 'locked the discussion in this issue'
-    it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate'
+    it_behaves_like 'system note creation', { time_estimate: 5 }, 'added time estimate of 5s'
 
     context 'when new label is added' do
       let(:label) { create(:label, project: project) }
@@ -144,7 +144,7 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
     end
 
     context 'when setting an estimae' do
-      it_behaves_like 'system note creation', { time_estimate: 5 }, 'changed time estimate', false
+      it_behaves_like 'system note creation', { time_estimate: 5 }, 'added time estimate of 5s', false
     end
   end
 end

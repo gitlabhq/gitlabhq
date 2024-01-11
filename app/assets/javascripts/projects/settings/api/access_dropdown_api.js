@@ -25,10 +25,11 @@ export const getUsers = (query, states) => {
   });
 };
 
-export const getGroups = () => {
+export const getGroups = ({ withProjectAccess = false }) => {
   return axios.get(buildUrl(gon.relative_url_root || '', GROUPS_PATH), {
     params: {
       project_id: gon.current_project_id,
+      with_project_access: withProjectAccess,
     },
   });
 };

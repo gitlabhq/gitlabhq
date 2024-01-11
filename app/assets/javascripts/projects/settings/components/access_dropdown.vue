@@ -94,6 +94,11 @@ export default {
       required: false,
       default: true,
     },
+    groupsWithProjectAccess: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -229,7 +234,9 @@ export default {
         Promise.all([
           getDeployKeys(this.query),
           getUsers(this.query),
-          this.groups.length ? Promise.resolve({ data: this.groups }) : getGroups(),
+          this.groups.length
+            ? Promise.resolve({ data: this.groups })
+            : getGroups({ withProjectAccess: this.groupsWithProjectAccess }),
         ])
           .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
             this.consolidateData(deployKeysResponse.data, usersResponse.data, groupsResponse.data);

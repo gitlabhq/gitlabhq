@@ -50,6 +50,53 @@ It is encouraged to fill out as many of `user`, `namespace` and `project` as pos
 
 If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
 
+#### Controller and API helpers
+
+There is a helper module `ProductAnalyticsTracking` for controllers you can use to track internal events for particular controller actions by calling `#track_internal_event`:
+
+```ruby
+class Projects::PipelinesController < Projects::ApplicationController
+  include ProductAnalyticsTracking
+
+  track_internal_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
+
+  def charts
+    ...
+  end
+
+  private
+
+  def should_track_ci_cd_pipelines?
+    params[:chart].blank? || params[:chart] == 'pipelines'
+  end
+end
+```
+
+You need to add these two methods to the controller body, so that the helper can get the current project and namespace for the event:
+
+```ruby
+  private
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
+  end
+```
+
+Also, there is an API helper:
+
+```ruby
+track_event(
+  event_name,
+  user: current_user,
+  namespace_id: namespace_id,
+  project_id: project_id
+)
+```
+
 ### Frontend tracking
 
 Any frontend tracking call automatically passes the values `user.id`, `namespace.id`, and `project.id` from the current context of the page.

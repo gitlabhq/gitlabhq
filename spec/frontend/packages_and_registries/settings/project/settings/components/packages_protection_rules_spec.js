@@ -1,4 +1,4 @@
-import { GlTable } from '@gitlab/ui';
+import { GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -21,6 +21,7 @@ describe('Packages protection rules project settings', () => {
   };
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findTable = () => wrapper.findComponent(GlTable);
+  const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTableRows = () => findTable().find('tbody').findAll('tr');
 
   const mountComponent = (mountFn = shallowMount, provide = defaultProvidedValues, config) => {
@@ -56,25 +57,41 @@ describe('Packages protection rules project settings', () => {
     expect(findTable().exists()).toBe(true);
   });
 
-  it('renders table with container registry protection rules', async () => {
-    createComponent({ mountFn: mount });
+  describe('table package protection rules', () => {
+    it('renders table with packages protection rules', async () => {
+      createComponent({ mountFn: mount });
 
-    await waitForPromises();
+      await waitForPromises();
 
-    expect(findTable().exists()).toBe(true);
+      expect(findTable().exists()).toBe(true);
 
-    packagesProtectionRulesData.forEach((protectionRule, i) => {
-      expect(findTableRows().at(i).text()).toContain(protectionRule.packageNamePattern);
-      expect(findTableRows().at(i).text()).toContain(protectionRule.packageType);
-      expect(findTableRows().at(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
+      packagesProtectionRulesData.forEach((protectionRule, i) => {
+        expect(findTableRows().at(i).text()).toContain(protectionRule.packageNamePattern);
+        expect(findTableRows().at(i).text()).toContain(protectionRule.packageType);
+        expect(findTableRows().at(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
+      });
     });
-  });
 
-  it('renders table with pagination', async () => {
-    createComponent();
+    it('displays table in busy state and shows loading icon inside table', async () => {
+      createComponent({ mountFn: mount });
 
-    await waitForPromises();
+      expect(findTableLoadingIcon().exists()).toBe(true);
+      expect(findTableLoadingIcon().attributes('aria-label')).toBe('Loading');
 
-    expect(findTable().exists()).toBe(true);
+      expect(findTable().attributes('aria-busy')).toBe('true');
+
+      await waitForPromises();
+
+      expect(findTableLoadingIcon().exists()).toBe(false);
+      expect(findTable().attributes('aria-busy')).toBe('false');
+    });
+
+    it('renders table', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findTable().exists()).toBe(true);
+    });
   });
 });

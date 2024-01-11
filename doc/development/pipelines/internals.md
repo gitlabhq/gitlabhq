@@ -435,6 +435,8 @@ For this scenario, you have to:
     - `scripts/merge-simplecov`
     - `spec/simplecov_env_core.rb`
     - `spec/simplecov_env.rb`
+  - `prepare-as-if-foss-env` for:
+    - `scripts/setup/generate-as-if-foss-env.rb`
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).
 

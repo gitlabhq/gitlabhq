@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
-    ...mapGetters('diffs', ['allBlobs']),
+    ...mapGetters('diffs', ['allBlobs', 'pinnedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
@@ -71,20 +71,58 @@ export default {
     // out: [{ path: 'a', tree: [{ path: 'b' }] }, { path: 'b' }, { path: 'c' }]
     flatFilteredTreeList() {
       const result = [];
-      const createFlatten = (level) => (item) => {
+      const createFlatten = (level, hidden) => (item) => {
         result.push({
           ...item,
+          hidden,
           level: item.isHeader ? 0 : level,
           key: item.key || item.path,
         });
-        if (item.opened || item.isHeader) {
-          item.tree.forEach(createFlatten(level + 1));
-        }
+        const isHidden = hidden || (item.type === 'tree' && !item.opened);
+        item.tree.forEach(createFlatten(level + 1, isHidden));
       };
 
       this.filteredTreeList.forEach(createFlatten(0));
 
       return result;
+    },
+    flatListWithPinnedFile() {
+      const result = [...this.flatFilteredTreeList];
+      const pinnedIndex = result.findIndex((item) => item.path === this.pinnedFile.file_path);
+      const [pinnedItem] = result.splice(pinnedIndex, 1);
+
+      if (pinnedItem.parentPath === '/')
+        return [{ ...pinnedItem, level: 0, pinned: true, hidden: false }, ...result];
+
+      // remove detached folder from the tree
+      const next = result[pinnedIndex];
+      const prev = result[pinnedIndex - 1];
+      const hasContainingFolder =
+        prev && prev.type === 'tree' && prev.level === pinnedItem.level - 1;
+      const hasSibling = next && next.type !== 'tree' && next.level === pinnedItem.level;
+      if (hasContainingFolder && !hasSibling) {
+        // folder tree is always condensed so we only need to remove the parent folder
+        result.splice(pinnedIndex - 1, 1);
+      }
+
+      return [
+        {
+          level: 0,
+          key: 'pinned-path',
+          isHeader: true,
+          opened: true,
+          path: pinnedItem.parentPath,
+          type: 'tree',
+          hidden: false,
+        },
+        { ...pinnedItem, level: 1, pinned: true, hidden: false },
+        ...result,
+      ];
+    },
+    treeList() {
+      const list = this.pinnedFile ? this.flatListWithPinnedFile : this.flatFilteredTreeList;
+      if (this.search) return list;
+      return list.filter((item) => !item.hidden);
     },
   },
   methods: {
@@ -125,13 +163,13 @@ export default {
         </button>
       </div>
     </div>
-    <tree-list-height class="gl-flex-grow-1 gl-min-h-0" :items-count="flatFilteredTreeList.length">
+    <tree-list-height class="gl-flex-grow-1 gl-min-h-0" :items-count="treeList.length">
       <template #default="{ scrollerHeight, rowHeight }">
         <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
           <recycle-scroller
-            v-if="flatFilteredTreeList.length"
+            v-if="treeList.length"
             :style="{ height: `${scrollerHeight}px` }"
-            :items="flatFilteredTreeList"
+            :items="treeList"
             :item-size="rowHeight"
             :buffer="100"
             key-field="key"

@@ -224,13 +224,19 @@ For the best experience, the version of the agent installed in your cluster shou
 
 ### Update the agent version
 
+NOTE:
+Instead of using `--reuse-values`, you should specify all needed values.
+If you use `--reuse-values`, you might miss new defaults or use deprecated values.
+To retrieve previous `--set` arguments, use `helm get values <release name>`.
+You can save the values to a file with `helm get values gitlab-agent > agent.yaml`, and pass the file to Helm with `-f`:
+`helm upgrade gitlab-agent gitlab/gitlab-agent -f agent.yaml`. This safely replaces the behavior of `--reuse-values`.
+
 To update the agent to the latest version, you can run:
 
 ```shell
 helm repo update
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   --namespace gitlab-agent \
-  --reuse-values
 ```
 
 To set a specific version, you can override the `image.tag` value. For example, to install version `v14.9.1`, run:
@@ -238,7 +244,6 @@ To set a specific version, you can override the `image.tag` value. For example, 
 ```shell
 helm upgrade gitlab-agent gitlab/gitlab-agent \
   --namespace gitlab-agent \
-  --reuse-values \
   --set image.tag=v14.9.1
 ```
 

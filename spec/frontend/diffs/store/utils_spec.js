@@ -476,6 +476,17 @@ describe('DiffsStoreUtils', () => {
         expect(updatedFilesList).toEqual([mock, fakeNewFile]);
       });
 
+      it('updates diff position', () => {
+        const priorFiles = [mock, { ...mock, file_hash: 'foo', file_path: 'foo' }];
+        const updatedFilesList = utils.prepareDiffData({
+          diff: { diff_files: [mock] },
+          priorFiles,
+          updatePosition: true,
+        });
+
+        expect(updatedFilesList[1].file_hash).toEqual(mock.file_hash);
+      });
+
       it('completes an existing split diff without overwriting existing diffs', () => {
         // The current state has a file that has only loaded inline lines
         const priorFiles = [{ ...mock }];

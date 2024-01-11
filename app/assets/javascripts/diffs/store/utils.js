@@ -395,9 +395,15 @@ function finalizeDiffFile(file) {
   return file;
 }
 
-function deduplicateFilesList(files) {
+function deduplicateFilesList(files, updatePosition) {
   const dedupedFiles = files.reduce((newList, file) => {
     const id = diffFileUniqueId(file);
+    if (updatePosition && id in newList) {
+      // Object.values preserves key order but doesn't update order when writing to the same key
+      // In order to update position of the item we have to delete it first and then add it back
+      // eslint-disable-next-line no-param-reassign
+      delete newList[id];
+    }
 
     return {
       ...newList,
@@ -408,14 +414,20 @@ function deduplicateFilesList(files) {
   return Object.values(dedupedFiles);
 }
 
-export function prepareDiffData({ diff, priorFiles = [], meta = false }) {
-  const cleanedFiles = (diff.diff_files || [])
-    .map((file, index, allFiles) => prepareRawDiffFile({ file, allFiles, meta, index }))
-    .map(ensureBasicDiffFileLines)
-    .map(prepareDiffFileLines)
-    .map((file) => finalizeDiffFile(file));
+export function prepareDiffData({ diff, priorFiles = [], meta = false, updatePosition = false }) {
+  const transformersChain = [
+    (file, index, allFiles) => prepareRawDiffFile({ file, index, allFiles, meta }),
+    ensureBasicDiffFileLines,
+    prepareDiffFileLines,
+    finalizeDiffFile,
+  ];
+  const cleanedFiles = (diff.diff_files || []).map((file, index, allFiles) => {
+    return transformersChain.reduce((fileResult, transformer) => {
+      return transformer(fileResult, index, allFiles);
+    }, file);
+  });
 
-  return deduplicateFilesList([...priorFiles, ...cleanedFiles]);
+  return deduplicateFilesList([...priorFiles, ...cleanedFiles], updatePosition);
 }
 
 export function getDiffPositionByLineCode(diffFiles) {

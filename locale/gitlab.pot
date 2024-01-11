@@ -14031,6 +14031,9 @@ msgstr ""
 msgid "Converts work item to %{type}. Widgets not supported in new type are removed."
 msgstr ""
 
+msgid "Cookie Preferences"
+msgstr ""
+
 msgid "Cookie domain"
 msgstr ""
 
@@ -14350,6 +14353,9 @@ msgid "Could not upload your designs as one or more files uploaded are not suppo
 msgstr ""
 
 msgid "Couldn't assign policy to project or group"
+msgstr ""
+
+msgid "Couldn't fetch the pinned file."
 msgstr ""
 
 msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
@@ -52373,6 +52379,9 @@ msgid "Unlocking discussion"
 msgstr ""
 
 msgid "Unlocks the discussion."
+msgstr ""
+
+msgid "Unpin the file"
 msgstr ""
 
 msgid "Unreachable"
