@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.6 (2024-01-11)
+
+### Fixed (1 change)
+
+- [Add missing ci_sources_pipelines indexes for self-host](gitlab-org/security/gitlab@bcc8c8f2b4c3fec3288cba0d3e69d22ebc519dfb) ([merge request](gitlab-org/security/gitlab!3811))
+
+### Security (4 changes)
+
+- [Consider older commits when resetting codeowner approvals](gitlab-org/security/gitlab@6a7a49ba29793e1a3454f56dee47b584938c6c46) ([merge request](gitlab-org/security/gitlab!3766))
+- [Password reset followups](gitlab-org/security/gitlab@0043a2acd829accf42e8bb61dbf5aaa2a2bb3e22) ([merge request](gitlab-org/security/gitlab!3779))
+- [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@d8293ba365c85465f5fe02ac2edc6d22714a9946) ([merge request](gitlab-org/security/gitlab!3758))
+- [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@59391fdf8a15807c28e68136279e348bd29d572a) ([merge request](gitlab-org/security/gitlab!3761))
+
 ## 16.5.5 (2023-12-23)
 
 ### Security (1 change)
