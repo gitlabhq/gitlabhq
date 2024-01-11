@@ -8,7 +8,6 @@ end
 
 require_relative '../config/bundler_setup'
 
-ENV['GITLAB_ENV'] = 'test'
 ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
 
 require './spec/deprecation_warnings'
