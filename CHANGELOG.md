@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.4.5 (2024-01-11)
+
+### Security (2 changes)
+
+- [Fix clickouse-server version in CI](gitlab-org/security/gitlab@71878185c35a1025d00eebc6dea54688fb93b585) ([merge request](gitlab-org/security/gitlab!3808))
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@394e91005d4a7b3df36be077aecf8a36acdee0f3) ([merge request](gitlab-org/security/gitlab!3795))
+
 ## 16.4.4 (2023-12-13)
 
 ### Security (8 changes)
