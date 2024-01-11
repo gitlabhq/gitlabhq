@@ -17,6 +17,30 @@
     },
     "block_branch_modification": {
       "type": "boolean"
+    },
+    "block_group_branch_modification": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "exceptions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        }
+      ]
     }
   }
 }

@@ -19,6 +19,14 @@ class BulkImports::Failure < ApplicationRecord
     super(::Projects::ImportErrorFilter.filter_message(message).truncate(255))
   end
 
+  def source_title=(title)
+    super(title&.truncate(255, omission: ''))
+  end
+
+  def source_url=(url)
+    super(url&.truncate(255, omission: ''))
+  end
+
   private
 
   def pipeline_relation

@@ -8,6 +8,7 @@ module Gitlab
     module HLLRedisCounter
       KEY_EXPIRY_LENGTH = 6.weeks
       REDIS_SLOT = 'hll_counters'
+      KEY_OVERRIDES_PATH = Rails.root.join('lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml')
 
       EventError = Class.new(StandardError)
       UnknownEvent = Class.new(EventError)
@@ -22,6 +23,7 @@ module Gitlab
         include Gitlab::Utils::UsageData
         include Gitlab::Usage::TimeFrame
         include Gitlab::Usage::TimeSeriesStorable
+        include Gitlab::Utils::StrongMemoize
 
         # Track unique events
         #
@@ -105,13 +107,23 @@ module Gitlab
         end
 
         def redis_key(event, time)
-          raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
-
-          key = "{#{REDIS_SLOT}}_#{event[:name]}"
+          key = redis_key_base(event[:name])
 
           year_week = time.strftime('%G-%V')
-          "#{key}-#{year_week}"
+          "{#{REDIS_SLOT}}_#{key}-#{year_week}"
         end
+
+        def redis_key_base(event_name)
+          raise UnknownEvent, "Unknown event #{event_name}" unless known_events_names.include?(event_name.to_s)
+
+          key_overrides.fetch(event_name, event_name)
+        end
+
+        def key_overrides
+          YAML.safe_load(File.read(KEY_OVERRIDES_PATH))
+        end
+
+        strong_memoize_attr :key_overrides
       end
     end
   end

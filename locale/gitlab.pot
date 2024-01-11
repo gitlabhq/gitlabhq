@@ -5613,6 +5613,9 @@ msgstr ""
 msgid "Analytics|Custom events"
 msgstr ""
 
+msgid "Analytics|DORA performers score for %{namespaceName} group"
+msgstr ""
+
 msgid "Analytics|Dashboard description"
 msgstr ""
 
@@ -15394,6 +15397,9 @@ msgstr ""
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
+msgid "DORA4Metrics|DORA performers score"
+msgstr ""
+
 msgid "DORA4Metrics|Date"
 msgstr ""
 
@@ -15418,7 +15424,10 @@ msgstr ""
 msgid "DORA4Metrics|Failed to generate forecast. Try again later. If the problem persists, consider %{linkStart}creating an issue%{linkEnd}."
 msgstr ""
 
-msgid "DORA4Metrics|Failed to load DORA performance scores for Namespace: %{fullPath}"
+msgid "DORA4Metrics|Failed to load DORA performance scores for Group: %{fullPath}"
+msgstr ""
+
+msgid "DORA4Metrics|Failed to load Group: %{fullPath}"
 msgstr ""
 
 msgid "DORA4Metrics|Failed to load YAML config from Project: %{fullPath}"
@@ -15519,7 +15528,7 @@ msgstr ""
 msgid "DORA4Metrics|Month to date"
 msgstr ""
 
-msgid "DORA4Metrics|No data available for Namespace: %{fullPath}"
+msgid "DORA4Metrics|No data available for Group: %{fullPath}"
 msgstr ""
 
 msgid "DORA4Metrics|No incidents during this period"
@@ -15579,9 +15588,6 @@ msgstr ""
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
 msgstr ""
 
-msgid "DORA4Metrics|This visualization is not supported for project namespaces."
-msgstr ""
-
 msgid "DORA4Metrics|Time to Restore Service"
 msgstr ""
 
@@ -15618,10 +15624,7 @@ msgstr ""
 msgid "DORA4Metrics|Took more than 7 days to restore service when a service incident or a defect that impacts users occurs."
 msgstr ""
 
-msgid "DORA4Metrics|Total projects (%{count}) with DORA performers score for %{groupName} group"
-msgstr ""
-
-msgid "DORA4Metrics|Total projects with DORA performers score"
+msgid "DORA4Metrics|Total projects (%{count}) with DORA metrics"
 msgstr ""
 
 msgid "DORA4Metrics|Value Streams Dashboard"

@@ -34,6 +34,28 @@ to the left of the user avatar shows the general age of the commit. The newest
 commits have a dark blue bar. As the age of the commit increases, the bar color
 changes to light gray.
 
+### View blame directly in the file view
+<!--
+When feature flags `graphql_git_blame`, `blob_blame_info` and `highlight_js_worker` are removed,
+delete this section and update the steps in "View blame for a file".
+-->
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `graphql_git_blame`, `blob_blame_info` and `highlight_js_worker`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `blob_blame_info`.
+On GitLab.com, this feature is available.
+
+When this feature is enabled, you can additionally view blame for a file directly from the file page.
+
+To do so:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Repository**.
+1. Select the file you want to review.
+1. In the file header, select **Blame**, and go to the line you want to see.
+
 ### Blame previous commit
 
 To see earlier revisions of a specific line:

@@ -58,4 +58,20 @@ RSpec.describe BulkImports::Failure, type: :model, feature_category: :importers 
       expect(failure.exception_message.size).to eq(255)
     end
   end
+
+  describe '#source_title=' do
+    it 'truncates title to 255 characters' do
+      failure = described_class.new
+      failure.source_title = 'A' * 1000
+      expect(failure.source_title.size).to eq(255)
+    end
+  end
+
+  describe '#source_url=' do
+    it 'truncates url to 255 characters' do
+      failure = described_class.new
+      failure.source_url = 'A' * 1000
+      expect(failure.source_url.size).to eq(255)
+    end
+  end
 end
