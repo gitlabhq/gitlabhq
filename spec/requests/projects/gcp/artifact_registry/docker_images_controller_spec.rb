@@ -14,7 +14,7 @@ RSpec.describe Projects::Gcp::ArtifactRegistry::DockerImagesController, feature_
   describe '#index' do
     let(:service_response) { ServiceResponse.success(payload: dummy_client_payload) }
     let(:service_double) do
-      instance_double('Integrations::GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService')
+      instance_double('GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService')
     end
 
     subject(:get_index_page) do
@@ -30,7 +30,7 @@ RSpec.describe Projects::Gcp::ArtifactRegistry::DockerImagesController, feature_
     end
 
     before do
-      allow_next_instance_of(Integrations::GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService) do |service|
+      allow_next_instance_of(GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService) do |service|
         allow(service).to receive(:execute).and_return(service_response)
       end
     end

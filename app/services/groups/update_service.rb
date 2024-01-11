@@ -29,6 +29,8 @@ module Groups
 
       handle_namespace_settings
 
+      handle_hierarchy_cache_update
+
       group.assign_attributes(params)
 
       begin
@@ -45,6 +47,28 @@ module Groups
     end
 
     private
+
+    def handle_hierarchy_cache_update
+      return unless params.key?(:enable_namespace_descendants_cache)
+
+      enabled = Gitlab::Utils.to_boolean(params.delete(:enable_namespace_descendants_cache))
+
+      return unless Feature.enabled?(:group_hierarchy_optimization, group, type: :beta)
+
+      if enabled
+        return if group.namespace_descendants
+
+        params[:namespace_descendants_attributes] = {
+          traversal_ids: group.traversal_ids,
+          all_project_ids: [],
+          self_and_descendant_group_ids: []
+        }
+      else
+        return unless group.namespace_descendants
+
+        params[:namespace_descendants_attributes] = { id: group.id, _destroy: true }
+      end
+    end
 
     def valid_path_change?
       return true unless group.packages_feature_enabled?

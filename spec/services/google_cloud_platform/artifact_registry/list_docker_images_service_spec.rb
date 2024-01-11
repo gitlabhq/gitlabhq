@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Integrations::GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService, feature_category: :container_registry do
+RSpec.describe GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService, feature_category: :container_registry do
   let_it_be(:project) { create(:project, :private) }
 
   let(:user) { project.owner }

@@ -305,7 +305,8 @@ class GroupsController < Groups::ApplicationController
       :prevent_sharing_groups_outside_hierarchy,
       :setup_for_company,
       :jobs_to_be_done,
-      :crm_enabled
+      :crm_enabled,
+      :enable_namespace_descendants_cache
     ] + [group_feature_attributes: group_feature_attributes]
   end
 

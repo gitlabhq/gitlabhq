@@ -289,7 +289,6 @@ In this example:
 - For every pipeline executed on branches that match the `release/*` wildcard (for example, branch
   `release/v1.2.1`)
   - DAST scans run with `Scanner Profile A` and `Site Profile B`.
-  - A `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 - DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
   and `Site Profile D`.
 - Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
@@ -398,6 +397,8 @@ scan_execution_policy:
         script:
           - echo "Hello World"
 ```
+
+In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 
 ### Security policy scopes
 

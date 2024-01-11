@@ -276,6 +276,51 @@ OS:           Windows 10 10.0 amd64
 
 1. Enter a project name or press <kbd>Enter</kbd> to use the directory name as project name.
 
+## sbt
+
+### Install sbt
+
+Install sbt to create new sbt projects.
+
+To install sbt for your development environment:
+
+1. Follow the instructions at [scala-sbt.org](https://www.scala-sbt.org/1.x/docs/Setup.html).
+
+1. From your terminal, verify you can use sbt:
+
+   ```shell
+   sbt --version
+   ```
+
+The output is similar to:
+
+```plaintext
+[warn] Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? (default: r)
+sbt script version: 1.9.8
+```
+
+### Create a Scala project
+
+1. Open your terminal and create a directory to store the project.
+1. From the new directory, initialize a new project:
+
+   ```shell
+   sbt new scala/scala-seed.g8
+   ```
+
+   The output is:
+
+   ```plaintext
+   Minimum Scala build.
+
+   name [My Something Project]: hello
+
+   Template applied in ./hello
+   ```
+
+1. Enter a project name or press <kbd>Enter</kbd> to use the directory name as project name.
+1. Open the `build.sbt` file and edit it as described in the [sbt documentation](https://www.scala-sbt.org/1.x/docs/Publishing.html) to publish your project to the package registry.
+
 ## npm
 
 ### Install npm

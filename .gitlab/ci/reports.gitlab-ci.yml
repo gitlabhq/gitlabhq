@@ -138,3 +138,22 @@ xray_scan:
     # this line saves xray_scan job output in raw form for inspection for testing purposes
     paths:
       - "$OUTPUT_DIR/*/*.json"
+
+pajamas_adoption:
+  extends:
+    - .default-retry
+    - .reports:rules:pajamas_adoption
+  allow_failure: true
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/frontend/pajamas-adoption-scanner:latest
+  stage: lint
+  needs: []
+  script:
+    - EE_APP=$(test -d ee/app/ && echo 'ee/app/' || true)
+    - scan_gitlab_code_quality app/ $EE_APP
+  artifacts:
+    name: pajamas-adoption
+    paths:
+      - gl-code-quality-report.json
+      - pas-findings.json
+    reports:
+      codequality: gl-code-quality-report.json

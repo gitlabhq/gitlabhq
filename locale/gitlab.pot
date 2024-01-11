@@ -23573,6 +23573,9 @@ msgstr ""
 msgid "GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}"
 msgstr ""
 
+msgid "GroupSettings|Building the cache is asynchronous, happens in a background job. The cache invalidation is synchronous with strong consistency guarantees."
+msgstr ""
+
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again."
 msgstr ""
 
@@ -23613,6 +23616,9 @@ msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within thi
 msgstr ""
 
 msgid "GroupSettings|Email notifications are disabled"
+msgstr ""
+
+msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
 msgstr ""
 
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
@@ -33318,6 +33324,12 @@ msgstr ""
 msgid "OKRs|An update is due on: %{update_due_date}"
 msgstr ""
 
+msgid "OWASP Top 10 2017"
+msgstr ""
+
+msgid "OWASP Top 10 2021"
+msgstr ""
+
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
@@ -34255,6 +34267,66 @@ msgstr ""
 msgid "Overwrite diverged branches"
 msgstr ""
 
+msgid "Owasp|A10:2017 Insufficient Logging & Monitoring"
+msgstr ""
+
+msgid "Owasp|A10:2021 Server-Side Request Forgery"
+msgstr ""
+
+msgid "Owasp|A1:2017 Injection"
+msgstr ""
+
+msgid "Owasp|A1:2021 Broken Access Control"
+msgstr ""
+
+msgid "Owasp|A2:2017 Broken Authentication"
+msgstr ""
+
+msgid "Owasp|A2:2021 Cryptographic Failures"
+msgstr ""
+
+msgid "Owasp|A3:2017 Sensitive Data Exposure"
+msgstr ""
+
+msgid "Owasp|A3:2021 Injection"
+msgstr ""
+
+msgid "Owasp|A4:2017 XML External Entities (XXE)"
+msgstr ""
+
+msgid "Owasp|A4:2021 Insecure Design"
+msgstr ""
+
+msgid "Owasp|A5:2017 Broken Access Control"
+msgstr ""
+
+msgid "Owasp|A5:2021 Security Misconfiguration"
+msgstr ""
+
+msgid "Owasp|A6:2017 Security Misconfiguration"
+msgstr ""
+
+msgid "Owasp|A6:2021 Vulnerable and Outdated Components"
+msgstr ""
+
+msgid "Owasp|A7:2017 Cross-Site Scripting (XSS)"
+msgstr ""
+
+msgid "Owasp|A7:2021 Identification and Authentication Failures"
+msgstr ""
+
+msgid "Owasp|A8:2017 Insecure Deserialization"
+msgstr ""
+
+msgid "Owasp|A8:2021 Software and Data Integrity Failures"
+msgstr ""
+
+msgid "Owasp|A9:2017 Using Components with Known Vulnerabilities"
+msgstr ""
+
+msgid "Owasp|A9:2021 Security Logging and Monitoring Failures"
+msgstr ""
+
 msgid "Owned by %{image_tag}"
 msgstr ""
 
@@ -35128,6 +35200,9 @@ msgid "Perform code reviews and enhance collaboration with merge requests."
 msgstr ""
 
 msgid "Perform common operations on GitLab project"
+msgstr ""
+
+msgid "Performance"
 msgstr ""
 
 msgid "Performance optimization"
@@ -37260,7 +37335,7 @@ msgstr ""
 msgid "Profile failed to delete"
 msgstr ""
 
-msgid "Profile image guideline"
+msgid "Profile image guidelines"
 msgstr ""
 
 msgid "Profile page:"
@@ -49831,6 +49906,9 @@ msgid "These examples show common methods of triggering a pipeline with a pipeli
 msgstr ""
 
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
+msgstr ""
+
+msgid "These guidelines for public avatars are displayed on the user settings page."
 msgstr ""
 
 msgid "These runners are shared across projects in this group."

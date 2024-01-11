@@ -56,6 +56,9 @@ class Namespace < ApplicationRecord
 
   has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
 
+  has_one :namespace_descendants, class_name: 'Namespaces::Descendants'
+  accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
+
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
   has_many :pending_builds, class_name: 'Ci::PendingBuild'

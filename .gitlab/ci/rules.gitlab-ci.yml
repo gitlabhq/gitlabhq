@@ -2674,6 +2674,19 @@
       when: manual
     - when: never
 
+.reports:rules:pajamas_adoption:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request
+      changes:
+        - '{,ee/}app/**/*.{js,vue,rb,haml}'
+    - <<: *if-default-refs
+
 ################
 # Review rules #
 ################

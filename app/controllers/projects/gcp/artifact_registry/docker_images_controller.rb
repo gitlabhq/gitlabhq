@@ -25,7 +25,7 @@ module Projects
         private
 
         def service
-          ::Integrations::GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService.new(
+          ::GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService.new(
             project: @project,
             current_user: current_user,
             params: {

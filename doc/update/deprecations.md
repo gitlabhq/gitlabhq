@@ -846,6 +846,25 @@ The table below lists the deprecated metrics and their respective replacements. 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### License List is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/436100).
+</div>
+
+Today in GitLab you can see a list of all of the licenses your project and the components that
+use that license on the License List.  As of 16.8, the License List
+is deprecated and scheduled to be removed in 17.0 as a breaking change.
+With the release of the [Group Dependency List](https://docs.gitlab.com/ee/user/application_security/dependency_list/)
+and the ability to filter by license on the project and group Dependency List, you can now
+access all of the licenses your project or group is using on the Dependency List.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### License Scanning support for sbt 1.0.X
 
 <div class="deprecation-notes">

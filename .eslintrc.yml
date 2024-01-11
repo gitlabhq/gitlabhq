@@ -144,6 +144,8 @@ rules:
     - error
     - escape:
         methods: 'sanitize'
+  # This rule will be enabled later.
+  unicorn/no-array-callback-reference: off
 overrides:
   - files:
       - '{,ee/,jh/}spec/frontend*/**/*'

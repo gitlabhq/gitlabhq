@@ -452,6 +452,35 @@ gradle publish
 
 Go to your project's **Packages and registries** page and view the published packages.
 
+:::TabTitle `sbt`
+
+Configure the `publishTo` setting in your `build.sbt` file:
+
+```scala
+publishTo := Some("gitlab" at "<endpoint url>")
+```
+
+Ensure the credentials are referenced correctly. See the [`sbt` documentation](https://www.scala-sbt.org/1.x/docs/Publishing.html#Credentials) for more information.
+
+To publish a package using `sbt`:
+
+```shell
+sbt publish
+```
+
+If the deploy is successful, the build success message is displayed:
+
+```shell
+[success] Total time: 1 s, completed Jan 28, 2020 12:08:57 PM
+```
+
+Check the success message to ensure the package was published to the
+correct location:
+
+```shell
+[info]  published my-project_2.12 to https://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/my-project_2.12/0.1.1-SNAPSHOT/my-project_2.12-0.1.1-SNAPSHOT.pom
+```
+
 ::EndTabs
 
 ## Install a package
