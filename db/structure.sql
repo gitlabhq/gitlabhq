@@ -23495,6 +23495,7 @@ CREATE TABLE sbom_occurrences (
     vulnerabilities jsonb DEFAULT '[]'::jsonb,
     highest_severity smallint,
     vulnerability_count integer DEFAULT 0 NOT NULL,
+    source_package_id bigint,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_bd1367d4c1 CHECK ((char_length(input_file_path) <= 255))
@@ -23525,6 +23526,22 @@ CREATE SEQUENCE sbom_occurrences_vulnerabilities_id_seq
     CACHE 1;
 
 ALTER SEQUENCE sbom_occurrences_vulnerabilities_id_seq OWNED BY sbom_occurrences_vulnerabilities.id;
+
+CREATE TABLE sbom_source_packages (
+    id bigint NOT NULL,
+    name text NOT NULL,
+    purl_type smallint NOT NULL,
+    CONSTRAINT check_8fba79abed CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE sbom_source_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_source_packages_id_seq OWNED BY sbom_source_packages.id;
 
 CREATE TABLE sbom_sources (
     id bigint NOT NULL,
@@ -27687,6 +27704,8 @@ ALTER TABLE ONLY sbom_occurrences ALTER COLUMN id SET DEFAULT nextval('sbom_occu
 
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities ALTER COLUMN id SET DEFAULT nextval('sbom_occurrences_vulnerabilities_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_source_packages ALTER COLUMN id SET DEFAULT nextval('sbom_source_packages_id_seq'::regclass);
+
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
 ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
@@ -30335,6 +30354,9 @@ ALTER TABLE ONLY sbom_occurrences
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT sbom_occurrences_vulnerabilities_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY sbom_source_packages
+    ADD CONSTRAINT sbom_source_packages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
 
@@ -32305,6 +32327,8 @@ CREATE INDEX idx_repository_states_on_wiki_failure_partial ON project_repository
 CREATE INDEX idx_repository_states_outdated_checksums ON project_repository_states USING btree (project_id) WHERE (((repository_verification_checksum IS NULL) AND (last_repository_verification_failure IS NULL)) OR ((wiki_verification_checksum IS NULL) AND (last_wiki_verification_failure IS NULL)));
 
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
+
+CREATE UNIQUE INDEX idx_sbom_source_packages_on_name_and_purl_type ON sbom_source_packages USING btree (name, purl_type);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans USING btree (build_id, scan_type);
 
@@ -35187,6 +35211,8 @@ CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree
 CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btree (uuid);
 
 CREATE INDEX index_sbom_occurrences_vulnerabilities_on_vulnerability_id ON sbom_occurrences_vulnerabilities USING btree (vulnerability_id);
+
+CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occurrences USING btree (source_package_id, id);
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
@@ -38733,6 +38759,9 @@ ALTER TABLE ONLY fork_network_members
 
 ALTER TABLE ONLY work_item_colors
     ADD CONSTRAINT fk_b15b0912d0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY sbom_occurrences
+    ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_b1de915a15 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

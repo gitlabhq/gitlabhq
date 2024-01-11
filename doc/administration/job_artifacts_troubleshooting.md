@@ -272,8 +272,11 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 WARNING:
 These commands remove data permanently from database and storage. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-If you need to manually remove job artifacts associated with multiple jobs while
-**retaining their job logs**, this can be done from the [Rails console](operations/rails_console.md):
+You can manually remove job artifacts associated with multiple completed jobs while
+**retaining their job logs** from the [Rails console](operations/rails_console.md).
+A completed job is any job with the status of success, failed, canceled, or skipped.
+
+To delete jobs completed before a specific date:
 
 1. Select jobs to be deleted:
 
@@ -326,8 +329,11 @@ If you need to manually remove job artifacts associated with multiple jobs while
 WARNING:
 These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-If you need to manually remove **all** job artifacts associated with multiple jobs,
-**including job logs**, this can be done from the [Rails console](operations/rails_console.md):
+You can manually remove job artifacts associated with multiple completed jobs while
+**retaining their job logs** from the [Rails console](operations/rails_console.md).
+A completed job is any job with the status of success, failed, canceled, or skipped.
+
+To delete jobs completed before a specific date:
 
 1. Select the jobs to be deleted:
 

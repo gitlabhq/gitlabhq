@@ -1,0 +1,10 @@
+---
+table_name: sbom_source_packages
+classes:
+- Sbom::SourcePackage
+feature_categories:
+- dependency_management
+description: Tracks Source Package of an SBOM Occurrence
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140539
+milestone: '16.8'
+gitlab_schema: gitlab_main
