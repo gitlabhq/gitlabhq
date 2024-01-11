@@ -3126,7 +3126,7 @@ Style/InlineDisableAnnotation:
     - 'spec/services/ci/pipeline_schedules/calculate_next_run_service_spec.rb'
     - 'spec/services/draft_notes/destroy_service_spec.rb'
     - 'spec/services/event_create_service_spec.rb'
-    - 'spec/services/google_cloud/enable_cloudsql_service_spec.rb'
+    - 'spec/services/cloud_seed/google_cloud/enable_cloudsql_service_spec.rb'
     - 'spec/services/import/gitlab_projects/file_acquisition_strategies/remote_file_spec.rb'
     - 'spec/services/merge_requests/create_service_spec.rb'
     - 'spec/services/merge_requests/delete_non_latest_diffs_service_spec.rb'

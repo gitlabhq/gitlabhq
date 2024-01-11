@@ -245,7 +245,7 @@ Style/IfUnlessModifier:
     - 'app/services/environments/canary_ingress/update_service.rb'
     - 'app/services/environments/reset_auto_stop_service.rb'
     - 'app/services/git/process_ref_changes_service.rb'
-    - 'app/services/google_cloud/generate_pipeline_service.rb'
+    - 'app/services/cloud_seed/google_cloud/generate_pipeline_service.rb'
     - 'app/services/groups/create_service.rb'
     - 'app/services/groups/transfer_service.rb'
     - 'app/services/groups/update_statistics_service.rb'

@@ -54,6 +54,25 @@ RSpec.shared_examples 'inherited access level as a member of entity' do
       expect { non_member.update!(access_level: Gitlab::Access::GUEST) }
         .to change { non_member.reload.access_level }
     end
+
+    context 'when access request to entity is pending' do
+      before do
+        parent_entity.members.where(user: user).update!(requested_at: Time.current)
+      end
+
+      it 'is allowed to be a reporter of the entity' do
+        entity.add_reporter(user)
+
+        expect(member.access_level).to eq(Gitlab::Access::REPORTER)
+      end
+
+      it 'is allowed to change to be a guest of the entity' do
+        entity.add_maintainer(user)
+
+        expect { member.update!(access_level: Gitlab::Access::GUEST) }
+          .to change { member.reload.access_level }.from(Gitlab::Access::MAINTAINER).to(Gitlab::Access::GUEST)
+      end
+    end
   end
 end
 
@@ -63,10 +82,9 @@ RSpec.shared_examples '#valid_level_roles' do |entity_name|
   let(:entity) { create(entity_name) } # rubocop:disable Rails/SaveBang
   let(:entity_member) { create("#{entity_name}_member", :developer, source: entity, user: member_user) }
   let(:presenter) { described_class.new(entity_member, current_user: member_user) }
+  let(:all_permissible_roles) { entity_member.class.permissible_access_level_roles(member_user, entity) }
 
   context 'when no parent member is present' do
-    let(:all_permissible_roles) { entity_member.class.permissible_access_level_roles(member_user, entity) }
-
     it 'returns all permissible roles' do
       expect(presenter.valid_level_roles).to eq(all_permissible_roles)
     end
@@ -79,6 +97,16 @@ RSpec.shared_examples '#valid_level_roles' do |entity_name|
 
     it 'returns higher roles when a parent member is present' do
       expect(presenter.valid_level_roles).to eq(expected_roles)
+    end
+
+    context 'when access request to parent is pending' do
+      before do
+        group.members.with_user(member_user).update!(requested_at: Time.current)
+      end
+
+      it 'returns all permissible roles' do
+        expect(presenter.valid_level_roles).to eq(all_permissible_roles)
+      end
     end
   end
 end

@@ -2511,9 +2511,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
 
     context 'when the user is not a member of any group in the hierarchy' do
-      it 'returns nil' do
-        expect(highest_group_member).to be_nil
+      it { is_expected.to be_nil }
+    end
+
+    context 'when access request to group is pending' do
+      before do
+        create(:group_member, requested_at: Time.current.utc, source: nested_group, user: user)
       end
+
+      it { is_expected.to be_nil }
     end
 
     context 'when the user is only a member of one group in the hierarchy' do

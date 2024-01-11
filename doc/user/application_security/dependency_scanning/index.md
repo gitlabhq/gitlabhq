@@ -806,7 +806,7 @@ The following variables allow configuration of global dependency scanning settin
 
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
-| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority). |
+| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
@@ -871,9 +871,26 @@ If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or [contributing to the code](../../../development/index.md) to enable it to be used.
 
-### Using a custom SSL CA certificate authority
+### Custom TLS certificate authority
 
-You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+Dependency Scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
+default shipped with the analyzer container image.
+
+Support for custom certificate authorities was introduced in the following versions.
+
+| Analyzer           | Version                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------|
+| `gemnasium`        | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0)        |
+| `gemnasium-maven`  | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0)  |
+| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
+
+#### Using a custom TLS certificate authority
+
+To use a custom TLS certificate authority, assign the
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
+to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
+
+For example, to configure the certificate in the `.gitlab-ci.yml` file:
 
 ```yaml
 variables:
@@ -884,8 +901,6 @@ variables:
       jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
       -----END CERTIFICATE-----
 ```
-
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 ### Using private Maven repositories
 
@@ -1072,16 +1087,6 @@ with new definitions, and you may be able to make occasional updates on your own
 For details on saving and transporting Docker images as a file, see the Docker documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
-
-#### Support for Custom Certificate Authorities
-
-Support for custom certificate authorities was introduced in the following versions.
-
-| Analyzer | Version |
-| -------- | ------- |
-| `gemnasium` | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0) |
-| `gemnasium-maven` | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0) |
-| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
 
 ### Set dependency scanning CI/CD job variables to use local dependency scanning analyzers
 

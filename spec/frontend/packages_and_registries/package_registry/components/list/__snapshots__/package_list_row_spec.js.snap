@@ -28,19 +28,15 @@ exports[`packages_list_row renders 1`] = `
           <div
             class="gl-align-items-center gl-display-flex gl-min-w-0 gl-mr-3"
           >
-            <router-link-stub
-              ariacurrentvalue="page"
+            <a
               class="gl-min-w-0 gl-text-body"
               data-testid="details-link"
-              event="click"
-              tag="a"
-              to="[object Object]"
             >
               <gl-truncate-stub
                 position="end"
                 text="@gitlab-org/package-15"
               />
-            </router-link-stub>
+            </a>
           </div>
         </div>
         <div

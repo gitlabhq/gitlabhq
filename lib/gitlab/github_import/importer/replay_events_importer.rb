@@ -40,9 +40,9 @@ module Gitlab
           events.each do |event|
             case event.event
             when 'review_requested'
-              reviewers[event.requested_reviewer.login] = event.requested_reviewer.to_hash
+              reviewers[event.requested_reviewer.login] = event.requested_reviewer.to_hash if event.requested_reviewer
             when 'review_request_removed'
-              reviewers[event.requested_reviewer.login] = nil
+              reviewers[event.requested_reviewer.login] = nil if event.requested_reviewer
             end
           end
 

@@ -496,7 +496,10 @@ class Member < ApplicationRecord
     strong_memoize(:highest_group_member) do
       next unless user_id && source&.ancestors&.any?
 
-      GroupMember.where(source: source.ancestors, user_id: user_id).order(:access_level).last
+      GroupMember
+        .where(source: source.ancestors, user_id: user_id)
+        .non_request
+        .order(:access_level).last
     end
   end
 

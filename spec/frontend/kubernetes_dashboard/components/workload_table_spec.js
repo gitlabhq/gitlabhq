@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
-import { TABLE_HEADING_CLASSES, PAGE_SIZE } from '~/kubernetes_dashboard/constants';
+import { PAGE_SIZE } from '~/kubernetes_dashboard/constants';
 import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -26,25 +26,24 @@ describe('Workload table component', () => {
       {
         key: 'name',
         label: 'Name',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
+        tdClass: 'gl-md-w-half gl-lg-w-40p gl-word-break-word',
       },
       {
         key: 'status',
         label: 'Status',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
+        tdClass: 'gl-md-w-15',
       },
       {
         key: 'namespace',
         label: 'Namespace',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
+        tdClass: 'gl-md-w-30p gl-lg-w-40p gl-word-break-word',
       },
       {
         key: 'age',
         label: 'Age',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
       },
     ];
@@ -57,13 +56,11 @@ describe('Workload table component', () => {
       {
         key: 'field-1',
         label: 'Field-1',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
       },
       {
         key: 'field-2',
         label: 'Field-2',
-        thClass: TABLE_HEADING_CLASSES,
         sortable: true,
       },
     ];

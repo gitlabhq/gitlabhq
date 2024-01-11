@@ -61,6 +61,10 @@ The following customer problems should be solved when addressing this question. 
 
 #### Which runners have failures in the past hour?
 
+## CI Insights
+
+CI Insights is a page that would mostly expose data on pipelines and jobs duration, with a multitude of different filters, search and dynamic graphs. To read more on this, see [this related sub-section](ci_insights.md).
+
 ## Implementation
 
 The current implementation plan is based on a

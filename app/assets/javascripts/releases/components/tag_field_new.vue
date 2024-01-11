@@ -43,6 +43,9 @@ export default {
       return this.newTagName ? this.$options.i18n.createTag : this.$options.i18n.typeNew;
     },
   },
+  mounted() {
+    this.newTagName = this.release?.tagName || '';
+  },
   methods: {
     ...mapActions('editNew', [
       'setSearching',

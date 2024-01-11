@@ -23,6 +23,7 @@ module Ci
         Ci::RunnerManagerBuild
         Ci::PipelineArtifact
         Ci::PipelineChatData
+        Ci::PipelineConfig
         Ci::PipelineMetadata
         Ci::PipelineVariable
         Ci::Sources::Pipeline

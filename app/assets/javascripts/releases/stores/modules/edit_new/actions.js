@@ -3,6 +3,7 @@ import { getTag } from '~/rest_api';
 import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import AccessorUtilities from '~/lib/utils/accessor';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
 import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
@@ -245,7 +246,7 @@ export const updateRelease = async ({ commit, dispatch, state, getters }) => {
   }
 };
 
-export const fetchTagNotes = ({ commit, state }, tagName) => {
+export const fetchTagNotes = ({ commit, state, dispatch }, tagName) => {
   commit(types.REQUEST_TAG_NOTES);
 
   return getTag(state.projectId, tagName)
@@ -253,11 +254,15 @@ export const fetchTagNotes = ({ commit, state }, tagName) => {
       commit(types.RECEIVE_TAG_NOTES_SUCCESS, data);
     })
     .catch((error) => {
+      if (error?.response?.status === HTTP_STATUS_NOT_FOUND) {
+        commit(types.RECEIVE_TAG_NOTES_SUCCESS, {});
+        return Promise.all([dispatch('setNewTag'), dispatch('setCreating')]);
+      }
       createAlert({
         message: s__('Release|Unable to fetch the tag notes.'),
       });
 
-      commit(types.RECEIVE_TAG_NOTES_ERROR, error);
+      return commit(types.RECEIVE_TAG_NOTES_ERROR, error);
     });
 };
 
@@ -326,7 +331,7 @@ export const clearDraftRelease = ({ getters }) => {
   }
 };
 
-export const loadDraftRelease = ({ commit, getters, state }) => {
+export const loadDraftRelease = ({ commit, getters, state, dispatch }) => {
   try {
     const release = window.localStorage.getItem(getters.localStorageKey);
     const createFrom = window.localStorage.getItem(getters.localStorageCreateFromKey);
@@ -340,6 +345,10 @@ export const loadDraftRelease = ({ commit, getters, state }) => {
           : state.originalReleasedAt,
       });
       commit(types.UPDATE_CREATE_FROM, JSON.parse(createFrom));
+
+      if (parsedRelease.tagName) {
+        dispatch('fetchTagNotes', parsedRelease.tagName);
+      }
     } else {
       commit(types.INITIALIZE_EMPTY_RELEASE);
     }

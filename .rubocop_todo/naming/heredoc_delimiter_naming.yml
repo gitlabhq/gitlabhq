@@ -105,7 +105,7 @@ Naming/HeredocDelimiterNaming:
     - 'spec/services/ci/create_web_ide_terminal_service_spec.rb'
     - 'spec/services/ci/parse_dotenv_artifact_service_spec.rb'
     - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
-    - 'spec/services/google_cloud/generate_pipeline_service_spec.rb'
+    - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'
     - 'spec/services/task_list_toggle_service_spec.rb'
     - 'spec/support/helpers/repo_helpers.rb'
     - 'spec/support/helpers/seed_repo.rb'

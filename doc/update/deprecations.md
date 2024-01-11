@@ -1180,6 +1180,25 @@ automatically from GitLab 16.0 onwards.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Support for setting custom schema for backup is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435210).
+</div>
+
+You could configure GitLab to use a custom schema for backup, by setting
+`gitlab_rails['backup_pg_schema'] = '<schema_name>'` in `/etc/gitlab/gitlab.rb` for Linux package installations,
+or by editing `config/gitlab.yml` for self-compiled installations.
+
+While the configuration setting was available, it had no effect and did not serve the purpose it was intended.
+This configuration setting will be removed in GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### The GitHub importer Rake task
 
 <div class="deprecation-notes">

@@ -116,10 +116,11 @@ When this field is changed, it can affect all open merge requests depending on t
 
 > - Requiring re-authentication by using SAML authentication for GitLab.com groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
 > - Requiring re-authentication by using SAML authentication for self-managed instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431415) in GitLab 16.7 [with a flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
+> - [Enabled `ff_require_saml_auth_to_approve` by default](https://gitlab.com/gitlab-org/gitlab/-/issues/431714) in GitLab 16.8 for GitLab.com and self-managed instances.
 
 FLAG:
-On self-managed GitLab, by default requiring re-authentication by using SAML authentication is not available. To make it available, an administrator can
-[enable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com, this feature is not available.
+On self-managed GitLab, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
+[disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com, this feature is available.
 
 You can force potential approvers to first authenticate with either:
 

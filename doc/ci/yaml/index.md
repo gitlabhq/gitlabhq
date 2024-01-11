@@ -807,12 +807,12 @@ scan-website:
 
 Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
 
-Use `default: null` to have no default value.
+Use `default: ''` to have no default value.
 
 **Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: A string representing the default value, or `null`.
+**Possible inputs**: A string representing the default value, or `''`.
 
 **Example of `spec:inputs:default`**:
 
@@ -823,7 +823,7 @@ spec:
     user:
       default: 'test-user'
     flags:
-      default: null
+      default: ''
 ---
 
 # The pipeline configuration would follow...

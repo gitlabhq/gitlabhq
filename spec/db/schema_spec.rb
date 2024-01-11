@@ -50,6 +50,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_artifacts: %w[partition_id],
     ci_pipeline_chat_data: %w[partition_id],
+    ci_pipelines_config: %w[partition_id],
     ci_pipeline_metadata: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],

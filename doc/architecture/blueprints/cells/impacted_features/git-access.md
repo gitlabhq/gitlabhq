@@ -6,12 +6,10 @@ description: 'Cells: Git Access'
 
 <!-- vale gitlab.FutureTense = NO -->
 
-This document is a work-in-progress and represents a very early state of the
-Cells design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Cells, and we intend to
-contrast this with alternatives before deciding which approach to implement.
-This documentation will be kept even if we decide not to implement this so that
-we can document the reasons for not choosing this approach.
+This document is a work-in-progress and represents a very early state of the Cells design.
+Significant aspects are not documented, though we expect to add them in the future.
+This is one possible architecture for Cells, and we intend to contrast this with alternatives before deciding which approach to implement.
+This documentation will be kept even if we decide not to implement this so that we can document the reasons for not choosing this approach.
 
 # Cells: Git Access
 
@@ -146,11 +144,34 @@ Where:
 Supporting Git repositories if a Cell can access only its own repositories does not appear to be complex.
 The one major complication is supporting snippets, but this likely falls in the same category as for the approach to support a user's Personal Namespace.
 
-## 4.1. Pros
+### 4.1. Pros
 
 1. The API used for supporting HTTPS/SSH and Hooks are well defined and can easily be made routable.
 
-## 4.2. Cons
+### 4.2. Cons
 
 1. The sharing of repositories objects is limited to the given Cell and Gitaly node.
 1. Cross-Cells forks are likely impossible to be supported (discover: How this works today across different Gitaly node).
+
+## 5. Forking and object pools
+
+One of the biggest struggles that needs to be addressed with the Cells architecture is how to handle forking. At present, Gitaly utilizes object pools to provide deduplication of fork storage. If forks are not created on the same storage node as the upstream repository that is being forked, we end up with significant storage inefficiencies as we will effectively have two complete copies of the repository and we will not be able to utilize object pools to improve performance.
+
+The storage nodes from one Cell cannot talk to the storage nodes of another Cell, making forking across Cells impossible. Therefore, it will be necessary to ensure that forked repositories end up in the same Cell (and on the same Gitaly nodes) as their upstream parent repository. This will also enable Gitaly to continue to utilize object pools to provide storage and performance efficiency.
+
+### 5.1. How this works today
+
+**Single Gitaly storage node**
+
+Currently, for a GitLab instance backed with a single Gitaly storage node, forking works just fine.
+Any forks must reside on the same storage node as there is only one, and therefore object deduplication (and object pools) all function as expected.
+
+**Sharded Gitaly storage**
+
+A sharded Gitaly storage is when multiple Gitaly storage nodes are attached to a single instance, and repositories are assigned based on a priority weighting between the nodes.
+
+Since Gitaly knows how to do cross-storage fetches, forking across shards works without issue.
+
+**Gitaly Cluster**
+
+For Gitaly cluster, we recently resolved [the issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5094) of object pools not being created on the same storage nodes as the parent repository. This enables forking to work correctly from an efficiency perspective (can share an object pool) and from an object deduplication perspective (Git can properly deduplicate storage).

@@ -170,13 +170,11 @@ export const releaseDeleteMutationVariables = (state) => ({
   },
 });
 
-export const formattedReleaseNotes = ({
-  includeTagNotes,
-  release: { description, tagMessage },
-  tagNotes,
-  showCreateFrom,
-}) => {
-  const notes = showCreateFrom ? tagMessage : tagNotes;
+export const formattedReleaseNotes = (
+  { includeTagNotes, release: { description, tagMessage }, tagNotes },
+  { isNewTag },
+) => {
+  const notes = isNewTag ? tagMessage : tagNotes;
   return includeTagNotes && notes
     ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${notes}\n`
     : description;

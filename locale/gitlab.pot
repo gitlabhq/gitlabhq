@@ -1940,6 +1940,9 @@ msgstr ""
 msgid "AIAgents|New agent"
 msgstr ""
 
+msgid "AIAgent|AI Agent: %{agentId}"
+msgstr ""
+
 msgid "AIPoweredSM|AI-powered features"
 msgstr ""
 
@@ -4472,6 +4475,12 @@ msgid "After you enable the integration, the following protected variables are c
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
+msgstr ""
+
+msgid "AiAgents|AI Agents"
+msgstr ""
+
+msgid "AiAgents|AI agent"
 msgstr ""
 
 msgid "Akismet"
@@ -51578,7 +51587,19 @@ msgid_plural "Tracing|%{count} spans"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Tracing|%{ms} ms"
+msgid "Tracing|%{h}h"
+msgstr ""
+
+msgid "Tracing|%{ms}ms"
+msgstr ""
+
+msgid "Tracing|%{m}m"
+msgstr ""
+
+msgid "Tracing|%{s}s"
+msgstr ""
+
+msgid "Tracing|0ms"
 msgstr ""
 
 msgid "Tracing|Attribute"

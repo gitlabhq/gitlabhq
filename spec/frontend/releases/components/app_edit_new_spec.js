@@ -319,6 +319,25 @@ describe('Release edit/new component', () => {
         expect(actions.saveRelease).not.toHaveBeenCalled();
       });
     });
+
+    describe('when tag notes are loading', () => {
+      beforeEach(async () => {
+        await factory({
+          store: {
+            modules: {
+              editNew: {
+                state: {
+                  isFetchingTagNotes: true,
+                },
+              },
+            },
+          },
+        });
+      });
+      it('renders the submit button as disabled', () => {
+        expect(findSubmitButton().attributes('disabled')).toBeDefined();
+      });
+    });
   });
 
   describe('delete', () => {

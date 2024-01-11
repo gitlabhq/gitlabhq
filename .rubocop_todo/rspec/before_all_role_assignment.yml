@@ -1402,7 +1402,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/environments/schedule_to_delete_review_apps_service_spec.rb'
     - 'spec/services/files/base_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'
-    - 'spec/services/google_cloud/generate_pipeline_service_spec.rb'
+    - 'spec/services/cloud_seed/google_cloud/generate_pipeline_service_spec.rb'
     - 'spec/services/groups/auto_devops_service_spec.rb'
     - 'spec/services/groups/autocomplete_service_spec.rb'
     - 'spec/services/groups/group_links/create_service_spec.rb'

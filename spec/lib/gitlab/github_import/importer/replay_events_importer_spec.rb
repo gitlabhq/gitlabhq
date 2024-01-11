@@ -16,37 +16,39 @@ RSpec.describe Gitlab::GithubImport::Importer::ReplayEventsImporter, feature_cat
     )
   end
 
-  let(:importer) { described_class.new(representation, project, client) }
+  let(:events) do
+    [
+      {
+        requested_reviewer: { id: 1, login: 'user1' },
+        event: 'review_requested'
+      },
+      {
+        requested_reviewer: { id: 1, login: 'user1' },
+        event: 'review_request_removed'
+      },
+      {
+        requested_reviewer: { id: 2, login: 'user2' },
+        event: 'review_requested'
+      },
+      {
+        requested_reviewer: { id: 2, login: 'user2' },
+        event: 'review_request_removed'
+      },
+      {
+        requested_reviewer: { id: 2, login: 'user2' },
+        event: 'review_requested'
+      },
+      {
+        requested_reviewer: { id: 3, login: 'user3' },
+        event: 'review_requested'
+      }
+    ]
+  end
+
+  subject(:importer) { described_class.new(representation, project, client) }
 
   describe '#execute' do
     before do
-      events = [
-        {
-          requested_reviewer: { id: 1, login: 'user1' },
-          event: 'review_requested'
-        },
-        {
-          requested_reviewer: { id: 1, login: 'user1' },
-          event: 'review_request_removed'
-        },
-        {
-          requested_reviewer: { id: 2, login: 'user2' },
-          event: 'review_requested'
-        },
-        {
-          requested_reviewer: { id: 2, login: 'user2' },
-          event: 'review_request_removed'
-        },
-        {
-          requested_reviewer: { id: 2, login: 'user2' },
-          event: 'review_requested'
-        },
-        {
-          requested_reviewer: { id: 3, login: 'user3' },
-          event: 'review_requested'
-        }
-      ]
-
       representations = events.map { |e| Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(e) }
 
       allow_next_instance_of(Gitlab::GithubImport::EventsCache) do |events_cache|
@@ -74,6 +76,35 @@ RSpec.describe Gitlab::GithubImport::Importer::ReplayEventsImporter, feature_cat
         end
 
         importer.execute
+      end
+
+      context 'when reviewer is a team' do
+        let(:events) do
+          [
+            {
+              event: 'review_requested',
+              requested_team: { name: 'backend-team' }
+            },
+            {
+              event: 'review_requested',
+              requested_team: { name: 'frontend-team' }
+            },
+            {
+              event: 'review_request_removed',
+              requested_team: { name: 'frontend-team' }
+            }
+          ]
+        end
+
+        it 'ignores the events and do not assign the reviewers' do
+          expect(Gitlab::GithubImport::Representation::PullRequests::ReviewRequests).to receive(:from_json_hash).with(
+            merge_request_id: association.id,
+            merge_request_iid: association.iid,
+            users: []
+          ).and_call_original
+
+          importer.execute
+        end
       end
     end
 

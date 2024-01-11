@@ -14,7 +14,7 @@ module Projects
           cloudsqlPostgresUrl: new_project_google_cloud_database_path(project, :postgres),
           cloudsqlMysqlUrl: new_project_google_cloud_database_path(project, :mysql),
           cloudsqlSqlserverUrl: new_project_google_cloud_database_path(project, :sqlserver),
-          cloudsqlInstances: ::GoogleCloud::GetCloudsqlInstancesService.new(project).execute,
+          cloudsqlInstances: ::CloudSeed::GoogleCloud::GetCloudsqlInstancesService.new(project).execute,
           emptyIllustrationUrl:
             ActionController::Base.helpers.image_path('illustrations/empty-state/empty-pipeline-md.svg')
         }
@@ -46,7 +46,7 @@ module Projects
       end
 
       def create
-        enable_response = ::GoogleCloud::EnableCloudsqlService
+        enable_response = ::CloudSeed::GoogleCloud::EnableCloudsqlService
                             .new(project, current_user, enable_service_params)
                             .execute
 
@@ -54,7 +54,7 @@ module Projects
           track_event(:error_enable_cloudsql_services)
           flash[:alert] = error_message(enable_response[:message])
         else
-          create_response = ::GoogleCloud::CreateCloudsqlInstanceService
+          create_response = ::CloudSeed::GoogleCloud::CreateCloudsqlInstanceService
                               .new(project, current_user, create_service_params)
                               .execute
 

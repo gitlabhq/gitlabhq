@@ -110,7 +110,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
 
     context 'when enable service fails' do
       before do
-        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
+        allow_next_instance_of(CloudSeed::GoogleCloud::EnableCloudRunService) do |service|
           allow(service)
             .to receive(:execute)
             .and_return(
@@ -146,7 +146,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
       before do
         mock_gcp_error = Google::Apis::ClientError.new('some_error')
 
-        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |service|
+        allow_next_instance_of(CloudSeed::GoogleCloud::EnableCloudRunService) do |service|
           allow(service).to receive(:execute).and_raise(mock_gcp_error)
         end
       end
@@ -173,14 +173,14 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
 
     context 'GCP_PROJECT_IDs are defined' do
       before do
-        allow_next_instance_of(GoogleCloud::EnableCloudRunService) do |enable_cloud_run_service|
+        allow_next_instance_of(CloudSeed::GoogleCloud::EnableCloudRunService) do |enable_cloud_run_service|
           allow(enable_cloud_run_service).to receive(:execute).and_return({ status: :success })
         end
       end
 
       context 'when generate pipeline service fails' do
         before do
-          allow_next_instance_of(GoogleCloud::GeneratePipelineService) do |generate_pipeline_service|
+          allow_next_instance_of(CloudSeed::GoogleCloud::GeneratePipelineService) do |generate_pipeline_service|
             allow(generate_pipeline_service).to receive(:execute).and_return({ status: :error })
           end
         end
@@ -206,7 +206,7 @@ RSpec.describe Projects::GoogleCloud::DeploymentsController, feature_category: :
       end
 
       it 'redirects to create merge request form' do
-        allow_next_instance_of(GoogleCloud::GeneratePipelineService) do |service|
+        allow_next_instance_of(CloudSeed::GoogleCloud::GeneratePipelineService) do |service|
           allow(service).to receive(:execute).and_return({ status: :success })
         end
 

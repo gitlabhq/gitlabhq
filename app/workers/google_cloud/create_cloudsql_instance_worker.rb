@@ -13,7 +13,7 @@ module GoogleCloud
       project = Project.find(project_id)
       params = params.with_indifferent_access
 
-      response = ::GoogleCloud::SetupCloudsqlInstanceService.new(project, user, params).execute
+      response = ::CloudSeed::GoogleCloud::SetupCloudsqlInstanceService.new(project, user, params).execute
 
       if response[:status] == :error
         raise "Error SetupCloudsqlInstanceService: #{response.to_json}"

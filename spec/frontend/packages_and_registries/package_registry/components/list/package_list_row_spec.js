@@ -1,6 +1,7 @@
 import { GlFormCheckbox, GlSprintf, GlTruncate } from '@gitlab/ui';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { RouterLinkStub } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
@@ -58,6 +59,7 @@ describe('packages_list_row', () => {
         ListItem,
         GlSprintf,
         TimeagoTooltip,
+        RouterLink: RouterLinkStub,
       },
       propsData: {
         packageEntity,

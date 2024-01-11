@@ -11,7 +11,7 @@ module GoogleCloud
     idempotent!
 
     def perform
-      GoogleCloud::FetchGoogleIpListService.new.execute
+      CloudSeed::GoogleCloud::FetchGoogleIpListService.new.execute
     end
   end
 end

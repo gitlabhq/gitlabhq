@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlAlert, GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import WorkloadStats from './workload_stats.vue';
 import WorkloadTable from './workload_table.vue';
 import WorkloadDetails from './workload_details.vue';
@@ -36,7 +37,7 @@ export default {
     fields: {
       type: Array,
       required: false,
-      default: null,
+      default: undefined,
     },
   },
   data() {
@@ -44,6 +45,11 @@ export default {
       showDetailsDrawer: false,
       selectedItem: {},
     };
+  },
+  computed: {
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
+    },
   },
   methods: {
     closeDetailsDrawer() {
@@ -68,12 +74,14 @@ export default {
 
     <gl-drawer
       :open="showDetailsDrawer"
-      header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
+      :header-height="getDrawerHeaderHeight"
       :z-index="$options.DRAWER_Z_INDEX"
       @close="closeDetailsDrawer"
     >
       <template #title>
-        <h4 class="gl-font-weight-bold gl-font-size-h2 gl-m-0">{{ selectedItem.name }}</h4>
+        <h4 class="gl-font-weight-bold gl-font-size-h2 gl-m-0 gl-word-break-word">
+          {{ selectedItem.name }}
+        </h4>
       </template>
       <template #default>
         <workload-details :item="selectedItem" />

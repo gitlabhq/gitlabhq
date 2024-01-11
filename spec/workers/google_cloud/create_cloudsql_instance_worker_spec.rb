@@ -23,15 +23,15 @@ RSpec.describe GoogleCloud::CreateCloudsqlInstanceWorker, feature_category: :sha
       described_class.new.perform(user_id, project_id, worker_options)
     end
 
-    it 'calls GoogleCloud::SetupCloudsqlInstanceService' do
-      allow_next_instance_of(GoogleCloud::SetupCloudsqlInstanceService) do |service|
+    it 'calls CloudSeed::GoogleCloud::SetupCloudsqlInstanceService' do
+      allow_next_instance_of(CloudSeed::GoogleCloud::SetupCloudsqlInstanceService) do |service|
         expect(service).to receive(:execute).and_return({ status: :success })
       end
 
       subject
     end
 
-    context 'when GoogleCloud::SetupCloudsqlInstanceService fails' do
+    context 'when CloudSeed::GoogleCloud::SetupCloudsqlInstanceService fails' do
       subject do
         user_id = random_user.id
         project_id = project.id
@@ -39,7 +39,7 @@ RSpec.describe GoogleCloud::CreateCloudsqlInstanceWorker, feature_category: :sha
       end
 
       it 'raises error' do
-        allow_next_instance_of(GoogleCloud::SetupCloudsqlInstanceService) do |service|
+        allow_next_instance_of(CloudSeed::GoogleCloud::SetupCloudsqlInstanceService) do |service|
           expect(service).to receive(:execute).and_return({ status: :error })
         end
 

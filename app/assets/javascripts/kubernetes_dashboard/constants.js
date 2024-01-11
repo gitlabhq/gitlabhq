@@ -30,20 +30,21 @@ export const WORKLOAD_STATUS_BADGE_VARIANTS = {
 
 export const PAGE_SIZE = 20;
 
-export const TABLE_HEADING_CLASSES = 'gl-bg-gray-50! gl-font-weight-bold gl-white-space-nowrap';
-
 export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
   {
     key: 'name',
     label: s__('KubernetesDashboard|Name'),
+    tdClass: 'gl-md-w-half gl-lg-w-40p gl-word-break-word',
   },
   {
     key: 'status',
     label: s__('KubernetesDashboard|Status'),
+    tdClass: 'gl-md-w-15',
   },
   {
     key: 'namespace',
     label: s__('KubernetesDashboard|Namespace'),
+    tdClass: 'gl-md-w-30p gl-lg-w-40p gl-word-break-word',
   },
   {
     key: 'age',

@@ -50,7 +50,7 @@ export default {
 <template>
   <ul class="gl-list-style-none">
     <workload-details-item :label="$options.i18n.name">
-      {{ item.name }}
+      <span class="gl-word-break-word"> {{ item.name }}</span>
     </workload-details-item>
     <workload-details-item :label="$options.i18n.kind">
       {{ item.kind }}

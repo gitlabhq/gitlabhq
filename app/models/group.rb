@@ -707,7 +707,11 @@ class Group < Namespace
   end
 
   def highest_group_member(user)
-    GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
+    GroupMember
+      .where(source_id: self_and_ancestors_ids, user_id: user.id)
+      .non_request
+      .order(:access_level)
+      .last
   end
 
   def bots

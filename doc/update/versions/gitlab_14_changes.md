@@ -805,7 +805,7 @@ Long running batched background database migrations:
   Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
   ```
 
-  See how to [resolve this error](../background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+  See how to [resolve this error](../background_migrations_troubleshooting.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
 
 Other issues:
 

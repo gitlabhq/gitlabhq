@@ -5,7 +5,7 @@ Lint/SymbolConversion:
     - 'app/helpers/breadcrumbs_helper.rb'
     - 'app/helpers/environments_helper.rb'
     - 'app/helpers/tooling/visual_review_helper.rb'
-    - 'app/services/google_cloud/create_cloudsql_instance_service.rb'
+    - 'app/services/cloud_seed/google_cloud/create_cloudsql_instance_service.rb'
     - 'config/puma.rb'
     - 'ee/app/components/billing/plan_component.rb'
     - 'ee/app/controllers/projects/security/scanned_resources_controller.rb'
