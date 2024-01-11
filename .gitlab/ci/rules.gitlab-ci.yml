@@ -92,6 +92,9 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
+.if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
+
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
@@ -950,6 +953,7 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-merge-request-labels-run-cs-evaluation
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -1683,6 +1687,27 @@
 .qa:rules:e2e-schedule-blocking:
   rules:
     - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+
+.qa:rules:code-suggestions-eval-base:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-cs-evaluation
+
+.qa:rules:code-suggestions-eval:
+  rules:
+    - !reference [".qa:rules:code-suggestions-eval-base", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+
+.qa:rules:code-suggestions-eval-results:
+  rules:
+    - !reference [".qa:rules:code-suggestions-eval-base", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
 
 # Note: If any changes are made to this rule, the following should also be updated:
 # 1) .qa:rules:manual-omnibus-and-follow-up-e2e

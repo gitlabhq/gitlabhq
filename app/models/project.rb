@@ -751,6 +751,7 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :with_name, -> (name) { where(name: name) }
   scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }

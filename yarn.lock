@@ -1283,10 +1283,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/eslint-plugin@19.3.0":
-  version "19.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.3.0.tgz#146ff28bd3817634261b2705838eeaec415b6ca4"
-  integrity sha512-rWxmLRnJDymlc/AF9/UPQyVnjZeu6bNrhElD9nw0WDndSpWVTPR5RWoEcmmBE4OhG5M7Foe+fVVd3q5zhZU0HQ==
+"@gitlab/eslint-plugin@19.4.0":
+  version "19.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.4.0.tgz#cffabc4a41a3e15491eaee87f282fef05d244b87"
+  integrity sha512-hFchl6UdzoOTFFiTx8myoJxe5SZ43LeC/+Er9tmIZ8HX3OZ6SFHTHaz61g2g4vvcwVHDMaAd5ncB6RCshlgv2A==
   dependencies:
     eslint-config-airbnb-base "^15.0.0"
     eslint-config-prettier "^6.10.0"
@@ -1321,10 +1321,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.74.0.tgz#b6b41be65b9e70378c0cef0435f96edd5467e759"
   integrity sha512-eHoywPSLrYb+I/IYGapei2Tum5vLtgWkFxN0fxmUUAnBnxFSA+67aheI33kQVV3WjANuZGkglfPBX3QAmN8BLA==
 
-"@gitlab/ui@^72.5.0":
-  version "72.5.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-72.5.0.tgz#ceb658391d171fac9a74089e01337a569fe15815"
-  integrity sha512-UTEJUMzIt/jRDUmKL4yHBORFpNISffJn2beYIlP1LcYsY3J2ehOh1JaMQtnukgcEL3kIk0ijnTCjygN5Djatmw==
+"@gitlab/ui@^72.5.1":
+  version "72.5.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-72.5.1.tgz#8f0ea0cabaa4be41dbf5f78b18f635117ebd41de"
+  integrity sha512-KhagcFu6RXDCweybecwBbx3Q3DvO26hkRj32jFsGA8H4TJ/5VLZC8Gwct7+IrtuYWijprzRKoAaoeXkrCcBdbw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     bootstrap-vue "2.23.1"

@@ -1337,6 +1337,20 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `after_script` keyword will run for cancelled jobs
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437789).
+</div>
+
+The [`after_script`](https://docs.gitlab.com/ee/ci/yaml/#after_script) CI/CD keyword is used to run additional commands after the main `script` section of a job. This is often used for cleaning up environments or other resources that were used by the job. For many users, the fact that the `after_script` commands do not run if a job is cancelled was unexpected and undesired. In 17.0, the keyword will be updated to also run commands after job cancellation. Make sure that your CI/CD configuration that uses the `after_script` keyword is able to handle running for cancelled jobs as well.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `metric` filter and `value` field for DORA API
 
 <div class="deprecation-notes">

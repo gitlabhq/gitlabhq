@@ -219,8 +219,8 @@ module AtomicInternalId
     ::AtomicInternalId.scope_usage(self.class)
   end
 
-  def self.scope_usage(including_class)
-    including_class.table_name.to_sym
+  def self.scope_usage(klass)
+    klass.respond_to?(:internal_id_scope_usage) ? klass.internal_id_scope_usage : klass.table_name.to_sym
   end
 
   def self.project_init(klass, column_name = :iid)

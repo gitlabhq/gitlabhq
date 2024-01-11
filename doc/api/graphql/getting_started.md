@@ -285,10 +285,9 @@ in `CI_JOB_TOKEN` scoping behavior.
 
 ```graphql
 mutation DisableCI_JOB_TOKENscope {
-  projectCiCdSettingsUpdate(input:{fullPath: "<namespace>/<project-name>", inboundJobTokenScopeEnabled: false, jobTokenScopeEnabled: false}) {
+  projectCiCdSettingsUpdate(input:{fullPath: "<namespace>/<project-name>", inboundJobTokenScopeEnabled: false}) {
     ciCdSettings {
       inboundJobTokenScopeEnabled
-      jobTokenScopeEnabled
     }
     errors
   }
