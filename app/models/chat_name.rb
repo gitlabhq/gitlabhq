@@ -11,6 +11,13 @@ class ChatName < ApplicationRecord
 
   validates :chat_id, uniqueness: { scope: :team_id }
 
+  attr_encrypted :token,
+    mode: :per_attribute_iv,
+    algorithm: 'aes-256-gcm',
+    key: Settings.attr_encrypted_db_key_base_32,
+    encode: false,
+    encode_iv: false
+
   # Updates the "last_used_timestamp" but only if it wasn't already updated
   # recently.
   #
