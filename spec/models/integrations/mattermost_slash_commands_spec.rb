@@ -125,5 +125,39 @@ RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integra
         end
       end
     end
+
+    describe '#redirect_url' do
+      let(:url) { 'http://www.mattermost.com/hooks' }
+
+      subject { integration.redirect_url('team', 'channel', url) }
+
+      it { is_expected.to eq("http://www.mattermost.com/team/channels/channel") }
+
+      context 'with invalid URL scheme' do
+        let(:url) { 'javascript://www.mattermost.com/hooks' }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'with unsafe URL' do
+        let(:url) { "https://replaceme.com/'><script>alert(document.cookie)</script>" }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    describe '#confirmation_url' do
+      let(:params) do
+        {
+          team_domain: 'gitlab',
+          channel_name: 'test-channel',
+          response_url: 'http://mattermost.gitlab.com/hooks/commands/my123command'
+        }
+      end
+
+      subject { integration.confirmation_url('command-id', params) }
+
+      it { is_expected.to be_present }
+    end
   end
 end

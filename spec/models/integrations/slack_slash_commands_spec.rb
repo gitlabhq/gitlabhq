@@ -40,4 +40,27 @@ RSpec.describe Integrations::SlackSlashCommands, feature_category: :integrations
       end
     end
   end
+
+  describe '#redirect_url' do
+    let(:integration) { build(:slack_slash_commands_integration) }
+
+    subject { integration.redirect_url('team', 'channel', 'www.example.com') }
+
+    it { is_expected.to eq('slack://channel?team=team&id=channel') }
+  end
+
+  describe '#confirmation_url' do
+    let(:integration) { build(:slack_slash_commands_integration) }
+    let(:params) do
+      {
+        team_id: 'T123456',
+        channel_id: 'C654321',
+        response_url: 'https://hooks.slack.com/services/T123456/C654321'
+      }
+    end
+
+    subject { integration.confirmation_url('command-id', params) }
+
+    it { is_expected.to be_present }
+  end
 end

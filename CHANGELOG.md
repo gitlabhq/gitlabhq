@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.6.4 (2024-01-10)
+
+### Fixed (1 change)
+
+- [Add missing ci_sources_pipelines indexes for self-host](gitlab-org/security/gitlab@3c1411f3e5843e0d52315237b8fcc7d33c7dff2e) ([merge request](gitlab-org/security/gitlab!3810))
+
+### Security (5 changes)
+
+- [Consider older commits when resetting codeowner approvals](gitlab-org/security/gitlab@950b435ea484bcff31bd549d11738ff54fe21ccf) ([merge request](gitlab-org/security/gitlab!3765))
+- [Password reset followups](gitlab-org/security/gitlab@db6b903bac7435dc2484bb4b97715d05a81d45c6) ([merge request](gitlab-org/security/gitlab!3778))
+- [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@0db0cb8673d406e0f464fd9f6b95e46c3b4f9695) ([merge request](gitlab-org/security/gitlab!3757))
+- [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@9d9a33b8201ccd5734ec56b149841193f4611741) ([merge request](gitlab-org/security/gitlab!3760))
+- [Sync security with canonical for 16.6 stable branch](gitlab-org/security/gitlab@e1ec9524344f469375e40145e78d3068462bed05) ([merge request](gitlab-org/security/gitlab!3782))
+
+## 16.6.3 (2023-12-23)
+
+### Fixed (1 change)
+
+- [Fix the index_name in IndexrepairService](gitlab-org/security/gitlab@a4171ada62adcee6b5c721bf2b6a3ef8235c83c5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139540)) **GitLab Enterprise Edition**
+
+### Security (1 change)
+
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@c1c628c9223282b1982ed648d48c305619b509b3) ([merge request](gitlab-org/security/gitlab!3773))
+
 ## 16.6.2 (2023-12-13)
 
 ### Fixed (1 change)

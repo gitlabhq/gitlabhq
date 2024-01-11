@@ -439,6 +439,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :integrations do
           resource :shimo, only: [:show]
+          resource :slash_commands, only: [:show] do
+            post :confirm
+          end
         end
 
         get :planning_hierarchy
