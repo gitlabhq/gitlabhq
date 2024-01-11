@@ -39896,13 +39896,13 @@ msgid_plural "Requires %{count} approvals from %{names}."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Requires a verified GitLab email address."
-msgstr ""
-
 msgid "Requires you to deploy or set up cloud-hosted Sentry."
 msgstr ""
 
 msgid "Requires your primary GitLab email address."
+msgstr ""
+
+msgid "Requires your primary or verified secondary GitLab email address."
 msgstr ""
 
 msgid "Resend"
