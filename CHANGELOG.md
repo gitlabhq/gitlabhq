@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.2 (2024-01-10)
+
+### Fixed (1 change)
+
+- [Add missing ci_sources_pipelines indexes for self-host](gitlab-org/security/gitlab@1e0c4e44228a3ec8013b70e5ef33ac3184f6cb4c) ([merge request](gitlab-org/security/gitlab!3809))
+
+### Changed (1 change)
+
+- [Enable Apollo Boards by default](gitlab-org/security/gitlab@dc1e1e8368fce9ca8c407d439877980e0426b356) ([merge request](gitlab-org/security/gitlab!3809))
+
+### Security (4 changes)
+
+- [Consider older commits when resetting codeowner approvals](gitlab-org/security/gitlab@d20f815258ac8f7195a04aeab760645993354485) ([merge request](gitlab-org/security/gitlab!3764))
+- [Password reset followups](gitlab-org/security/gitlab@48154de65e174b93d70bc561c7a0c8b0815d367f) ([merge request](gitlab-org/security/gitlab!3777))
+- [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@f972a67468aa2da9530188930da2fb5225eb1aad) ([merge request](gitlab-org/security/gitlab!3763))
+- [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@ca7e81b8ce6c2140820c9ce21aa75af1967a2fb5) ([merge request](gitlab-org/security/gitlab!3759))
+
+## 16.7.1 (2023-12-23)
+
+### Security (1 change)
+
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@5b046650cfd9ffe7454a4e74d6217d22bcd7e2e1) ([merge request](gitlab-org/security/gitlab!3772))
+
 ## 16.7.0 (2023-12-20)
 
 ### Added (199 changes)

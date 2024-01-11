@@ -6127,4 +6127,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#previous_diff' do
+    let(:merge_request) { create(:merge_request, :skip_diff_creation) }
+
+    subject { merge_request.previous_diff }
+
+    context 'when there is are no merge_request_diffs' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is one merge request_diff' do
+      let(:merge_request) { create(:merge_request) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there are multiple merge_request_diffs' do
+      let(:oldest_merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+      let(:second_to_last_merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+      let(:most_recent_merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+      before do
+        oldest_merge_request_diff
+        second_to_last_merge_request_diff
+        most_recent_merge_request_diff
+      end
+
+      it { is_expected.to eq(second_to_last_merge_request_diff) }
+    end
+  end
 end
