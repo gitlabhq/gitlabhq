@@ -82,7 +82,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
   context 'with valid new variable parameters' do
     let(:variables_attributes) do
       [
-        variable_attributes.merge(secret_value: 'other_value'),
+        variable_attributes.merge(secret_value: 'other_value', description: 'other_description'),
         new_variable_attributes
       ]
     end
@@ -94,6 +94,7 @@ RSpec.shared_examples 'PATCH #update updates variables' do
 
       variable.reload
       expect(variable.value).to eq('other_value')
+      expect(variable.description).to eq('other_description')
       expect(variable.raw?).not_to be(old_raw)
     end
 

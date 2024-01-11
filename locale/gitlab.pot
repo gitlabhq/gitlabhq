@@ -8081,13 +8081,13 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list."
 msgstr ""
 
-msgid "Billing|An error occurred while loading details for the Code Suggestions add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgid "Billing|An error occurred while loading details for the Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|An error occurred while loading pending members list"
 msgstr ""
 
-msgid "Billing|An error occurred while loading users of the Code Suggestions add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgid "Billing|An error occurred while loading users of the Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|An error occurred while removing a billable member."
@@ -8105,10 +8105,10 @@ msgstr ""
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
-msgid "Billing|Error assigning Code Suggestions add-on"
+msgid "Billing|Error assigning Duo Pro add-on"
 msgstr ""
 
-msgid "Billing|Error un-assigning Code Suggestions add-on"
+msgid "Billing|Error un-assigning Duo Pro add-on"
 msgstr ""
 
 msgid "Billing|Explore paid plans"
@@ -8173,7 +8173,7 @@ msgstr ""
 msgid "Billing|You can upgrade to a paid tier to get access to more features."
 msgstr ""
 
-msgid "Billing|You have assigned all available Code Suggestions add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
+msgid "Billing|You have assigned all available Duo Pro add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
 msgstr ""
 
 msgid "Billing|Your group recently changed to use the Free plan. %{over_limit_message} You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
@@ -12284,6 +12284,12 @@ msgid "Commands did not apply"
 msgstr ""
 
 msgid "Comment"
+msgstr ""
+
+msgid "Comment & close %{workItemType}"
+msgstr ""
+
+msgid "Comment & reopen %{workItemType}"
 msgstr ""
 
 msgid "Comment '%{label}' position"

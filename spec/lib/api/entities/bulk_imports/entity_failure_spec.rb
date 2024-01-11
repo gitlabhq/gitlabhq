@@ -19,16 +19,24 @@ RSpec.describe API::Entities::BulkImports::EntityFailure, feature_category: :imp
   end
 
   describe 'exception message' do
-    it 'truncates exception message to 72 characters' do
-      failure.update!(exception_message: 'a' * 100)
+    it 'truncates exception message to 255 characters' do
+      failure.update!(exception_message: 'a' * 500)
 
-      expect(subject[:exception_message].length).to eq(72)
+      expect(subject[:exception_message].length).to eq(255)
     end
 
     it 'removes paths from the message' do
       failure.update!(exception_message: 'Test /foo/bar')
 
       expect(subject[:exception_message]).to eq('Test [FILTERED]')
+    end
+
+    it 'removes long paths without clipping the message' do
+      exception_message = "Test #{'/abc' * 300} #{'a' * 500}"
+      failure.update!(exception_message: exception_message)
+      filtered_message = "Test [FILTERED] #{'a' * 500}"
+
+      expect(subject[:exception_message]).to eq(filtered_message.truncate(255))
     end
   end
 end

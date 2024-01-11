@@ -75,7 +75,7 @@ module BulkImports
 
       ::GlobalID.parse(response.dig(*entity_query.data_path, 'id')).model_id
     rescue StandardError => e
-      log_exception(e, message: 'Failed to fetch source entity id')
+      log_warning(e, message: 'Failed to fetch source entity id')
 
       nil
     end
@@ -92,14 +92,21 @@ module BulkImports
       @logger ||= Logger.build.with_entity(entity)
     end
 
-    def log_exception(exception, payload)
+    def build_payload(exception, payload)
       Gitlab::ExceptionLogFormatter.format!(exception, payload)
+      structured_payload(payload)
+    end
 
-      logger.error(structured_payload(payload))
+    def log_warning(exception, payload)
+      logger.warn(build_payload(exception, payload))
+    end
+
+    def log_error(exception, payload)
+      logger.error(build_payload(exception, payload))
     end
 
     def log_and_fail(exception)
-      log_exception(exception, message: "Request to export #{entity.source_type} failed")
+      log_error(exception, message: "Request to export #{entity.source_type} failed")
 
       BulkImports::Failure.create(failure_attributes(exception))
 
@@ -107,7 +114,7 @@ module BulkImports
     end
 
     def export_url
-      entity.export_relations_url_path(batched: Feature.enabled?(:bulk_imports_batched_import_export))
+      entity.export_relations_url_path
     end
   end
 end

@@ -31,11 +31,27 @@ To view the runner fleet dashboard:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Runners**.
-1. Click **Fleet dashboard**.
+1. Select **Fleet dashboard**.
 
 Most of the dashboard works without any additional actions, with the
 exception of **Wait time to pick a job** chart and features proposed in [epic 11183](https://gitlab.com/groups/gitlab-org/-/epics/11183).
 These features require [setting up an additional infrastructure](#enable-more-ci-analytics-features-with-clickhouse).
+
+## Export compute minutes used by instance runners
+
+Prerequisites:
+
+- You must be an administrator.
+
+To analyze runner usage, you can export a CSV file that contains the number of jobs and executed runner minutes. The
+CSV file shows the runner type and job status for each project. The CSV is sent to your email when the export is completed.
+
+To export compute minutes used by instance runners:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Runners**.
+1. Select **Fleet dashboard**.
+1. Select **Export CSV**.
 
 ## Enable more CI analytics features with ClickHouse **(ULTIMATE EXPERIMENT)**
 

@@ -208,6 +208,20 @@ describe('Work item comment form component', () => {
         ['Something went wrong while updating the task. Please try again.'],
       ]);
     });
+
+    it('emits `submitForm` event on closing of work item', async () => {
+      createComponent({
+        isNewDiscussion: true,
+      });
+
+      findWorkItemToggleStateButton().vm.$emit('submit-comment');
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('submitForm')).toEqual([
+        [{ commentText: draftComment, isNoteInternal: false }],
+      ]);
+    });
   });
 
   describe('internal note', () => {
@@ -238,6 +252,17 @@ describe('Work item comment form component', () => {
         await nextTick();
 
         expect(findConfirmButton().text()).toBe(WorkItemCommentForm.i18n.addInternalNote);
+      });
+
+      it('emits `submitForm` event on closing of work item', async () => {
+        findInternalNoteCheckbox().vm.$emit('input', true);
+        findWorkItemToggleStateButton().vm.$emit('submit-comment');
+
+        await waitForPromises();
+
+        expect(wrapper.emitted('submitForm')).toEqual([
+          [{ commentText: draftComment, isNoteInternal: true }],
+        ]);
       });
     });
   });

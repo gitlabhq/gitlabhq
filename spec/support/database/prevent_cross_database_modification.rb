@@ -68,4 +68,11 @@ RSpec.configure do |config|
 
     ::ApplicationRecord.gitlab_transactions_stack.clear
   end
+
+  config.before(:suite) do
+    ActiveSupport::Notifications.subscribe("factory_bot.run_factory") do |_name, _start, _finish, _id, payload|
+      strategy = payload[:strategy]
+      Thread.current[:factory_bot_objects] -= 1 if strategy == :create
+    end
+  end
 end

@@ -1904,6 +1904,15 @@ Updates to example must be made at:
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
@@ -2050,7 +2059,16 @@ On each node perform the following:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
+
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the

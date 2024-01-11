@@ -5,6 +5,7 @@ module Ci
     expose :id
     expose :key
     expose :value
+    expose :description
     expose :variable_type
 
     expose :protected?, as: :protected

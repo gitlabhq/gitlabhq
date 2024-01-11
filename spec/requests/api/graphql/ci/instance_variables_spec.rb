@@ -12,6 +12,7 @@ RSpec.describe 'Query.ciVariables', feature_category: :secrets_management do
           nodes {
             id
             key
+            description
             value
             variableType
             protected
@@ -36,6 +37,7 @@ RSpec.describe 'Query.ciVariables', feature_category: :secrets_management do
       expect(graphql_data.dig('ciVariables', 'nodes')).to contain_exactly({
         'id' => variable.to_global_id.to_s,
         'key' => 'TEST_VAR',
+        'description' => nil,
         'value' => 'test',
         'variableType' => 'ENV_VAR',
         'masked' => false,

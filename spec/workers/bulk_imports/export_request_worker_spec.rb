@@ -62,7 +62,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
           context 'when something goes wrong during source id fetch' do
             let(:entity_source_id) { 'invalid' }
 
-            it 'logs the error & requests relations export using full path url' do
+            it 'logs the exception as a warning & requests relations export using full path url' do
               allow(BulkImports::EntityWorker).to receive(:perform_async)
 
               expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
@@ -74,7 +74,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
               expect_next_instance_of(BulkImports::Logger) do |logger|
                 expect(logger).to receive(:with_entity).with(entity).and_call_original
 
-                expect(logger).to receive(:error).with(
+                expect(logger).to receive(:warn).with(
                   a_hash_including(
                     'exception.backtrace' => anything,
                     'exception.class' => 'NoMethodError',
@@ -122,20 +122,6 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
         end
 
         described_class.new.perform(entity.id)
-      end
-
-      context 'when bulk_imports_batched_import_export feature flag is disabled' do
-        it 'requests relation export without batched param' do
-          stub_feature_flags(bulk_imports_batched_import_export: false)
-
-          expected_url = "/projects/#{entity.source_xid}/export_relations"
-
-          expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
-            expect(client).to receive(:post).with(expected_url)
-          end
-
-          described_class.new.perform(entity.id)
-        end
       end
     end
   end

@@ -21,7 +21,9 @@ module Ci
         Ci::PendingBuild
         Ci::RunningBuild
         Ci::RunnerManagerBuild
+        Ci::PipelineArtifact
         Ci::PipelineChatData
+        Ci::PipelineMetadata
         Ci::PipelineVariable
         Ci::Sources::Pipeline
         Ci::Stage

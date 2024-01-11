@@ -2,6 +2,9 @@
 
 module Ci
   class PipelineMetadata < Ci::ApplicationRecord
+    include Ci::Partitionable
+    include Importable
+
     self.primary_key = :pipeline_id
 
     enum auto_cancel_on_new_commit: {
@@ -21,5 +24,7 @@ module Ci
     validates :pipeline, presence: true
     validates :project, presence: true
     validates :name, length: { minimum: 1, maximum: 255 }, allow_nil: true
+
+    partitionable scope: :pipeline
   end
 end

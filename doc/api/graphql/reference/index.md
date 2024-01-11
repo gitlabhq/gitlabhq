@@ -15750,6 +15750,7 @@ CI/CD variables for a GitLab instance.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="ciinstancevariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="ciinstancevariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
 | <a id="ciinstancevariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="ciinstancevariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
@@ -16853,6 +16854,7 @@ The currently authenticated GitLab user.
 | <a id="currentusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="currentuserduochatavailable"></a>`duoChatAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. User access to AI chat feature. |
 | <a id="currentuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="currentuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
@@ -20817,6 +20819,7 @@ CI/CD variables a project inherites from its parent group and ancestors.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="inheritedcivariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="inheritedcivariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
 | <a id="inheritedcivariablegroupcicdsettingspath"></a>`groupCiCdSettingsPath` | [`String`](#string) | Indicates the path to the CI/CD settings of the group the variable belongs to. |
 | <a id="inheritedcivariablegroupname"></a>`groupName` | [`String`](#string) | Indicates group the variable belongs to. |

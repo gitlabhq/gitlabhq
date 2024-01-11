@@ -32,6 +32,7 @@ describe('Work Item State toggle button component', () => {
     canUpdate = true,
     workItemState = STATE_OPEN,
     workItemType = 'Task',
+    hasComment = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemStateToggle, {
       apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
@@ -40,6 +41,7 @@ describe('Work Item State toggle button component', () => {
         workItemState,
         workItemType,
         canUpdate,
+        hasComment,
       },
     });
   };
@@ -57,6 +59,23 @@ describe('Work Item State toggle button component', () => {
       'is "$buttonText" when "$workItemType" state is "$workItemState"',
       ({ workItemState, workItemType, buttonText }) => {
         createComponent({ workItemState, workItemType });
+
+        expect(findStateToggleButton().text()).toBe(buttonText);
+      },
+    );
+
+    it.each`
+      workItemState   | workItemType    | buttonText
+      ${STATE_OPEN}   | ${'Task'}       | ${'Comment & close task'}
+      ${STATE_CLOSED} | ${'Task'}       | ${'Comment & reopen task'}
+      ${STATE_OPEN}   | ${'Objective'}  | ${'Comment & close objective'}
+      ${STATE_CLOSED} | ${'Objective'}  | ${'Comment & reopen objective'}
+      ${STATE_OPEN}   | ${'Key result'} | ${'Comment & close key result'}
+      ${STATE_CLOSED} | ${'Key result'} | ${'Comment & reopen key result'}
+    `(
+      'is "$buttonText" when "$workItemType" state is "$workItemState" and hasComment is true',
+      ({ workItemState, workItemType, buttonText }) => {
+        createComponent({ workItemState, workItemType, hasComment: true });
 
         expect(findStateToggleButton().text()).toBe(buttonText);
       },
@@ -90,6 +109,15 @@ describe('Work Item State toggle button component', () => {
           stateEvent: STATE_EVENT_REOPEN,
         },
       });
+    });
+
+    it('emits `submit-comment` when hasComment is true', async () => {
+      createComponent({ hasComment: true });
+
+      findStateToggleButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(wrapper.emitted('submit-comment')).toBeDefined();
     });
 
     it('emits an error message when the mutation was unsuccessful', async () => {

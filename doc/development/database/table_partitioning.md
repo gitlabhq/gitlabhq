@@ -632,3 +632,73 @@ class AsyncPrepareTableConstraintsForListPartitioning < Gitlab::Database::Migrat
   end
 end
 ```
+
+### Step 7 - Re-point foreign keys to parent table
+
+The tables that reference the initial partition must be updated to point to the
+parent table now. Without this change, the records from those tables
+will not be able to locate the rows in the next partitions because they will look
+for them in the initial partition.
+
+Steps:
+
+- Add the foreign key to the partitioned table and validate it asynchronously,
+  [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230524135543_replace_ci_build_pending_states_foreign_key.rb).
+- Validate it synchronously after the asynchronously validation was completed on GitLab.com,
+  [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230530140456_validate_fk_ci_build_pending_states_p_ci_builds.rb).
+- Remove the old foreign key and rename the new one to the old name,
+  [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230615083713_replace_old_fk_ci_build_pending_states_to_builds.rb#L9).
+
+### Step 8 - Ensure ID uniqueness across partitions
+
+All uniqueness constraints must include the partitioning key, so we can have
+duplicate IDs across partitions. To solve this we enforce that only the database
+can set the ID values and use a sequence to generate them because sequences are
+guaranteed to generate unique values.
+
+For example:
+
+```ruby
+class EnsureIdUniquenessForPCiBuilds < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::PartitioningMigrationHelpers::UniquenessHelpers
+
+  enable_lock_retries!
+
+  TABLE_NAME = :p_ci_builds
+  FUNCTION_NAME = :assign_p_ci_builds_id_value
+
+  def up
+    ensure_unique_id(TABLE_NAME)
+  end
+
+  def down
+    execute(<<~SQL.squish)
+      ALTER TABLE #{TABLE_NAME}
+        ALTER COLUMN id SET DEFAULT nextval('ci_builds_id_seq'::regclass);
+
+      DROP FUNCTION IF EXISTS #{FUNCTION_NAME} CASCADE;
+    SQL
+  end
+```
+
+### Step 9 - Analyze the partitioned table and create new partitions
+
+The autovacuum daemon does not process partitioned tables. It is necessary to
+periodically run a manual `ANALYZE` to keep the statistics of the table hierarchy
+up to date.
+
+Models that implement `Ci::Partitionable` with `partitioned: true` option are
+analyzed by default on a weekly basis. To enable this and create new partitions
+you need to register the model in the [PostgreSQL initializer](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f0e3f1bcd2ffc220768bbc373364151775ca8e/config/initializers/postgres_partitioning.rb).
+
+### Step 10 - Update the application to use the partitioned table
+
+Now that the parent table is ready, we can update the application to use it:
+
+```ruby
+class Model < ApplicationRecord
+  self.table_name = :partitioned_table
+end
+```
+
+Depending on the model, it might be safer to use a [change management issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16387).

@@ -103,14 +103,14 @@ module ClickHouse
 
     def delete_records_from_click_house(ids)
       query = ClickHouse::Client::Query.new(
-        raw_query: "DELETE FROM events WHERE author_id IN ({author_ids:Array(UInt64)})",
+        raw_query: "ALTER TABLE events DELETE WHERE author_id IN ({author_ids:Array(UInt64)})",
         placeholders: { author_ids: ids.to_json }
       )
 
       connection.execute(query)
 
       query = ClickHouse::Client::Query.new(
-        raw_query: "DELETE FROM event_authors WHERE author_id IN ({author_ids:Array(UInt64)})",
+        raw_query: "ALTER TABLE event_authors DELETE WHERE author_id IN ({author_ids:Array(UInt64)})",
         placeholders: { author_ids: ids.to_json }
       )
 

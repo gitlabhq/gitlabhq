@@ -11,6 +11,12 @@
     "id": {
       "type": "integer"
     },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "key": {
       "type": "string"
     },

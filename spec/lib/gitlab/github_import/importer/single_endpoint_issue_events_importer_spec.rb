@@ -208,6 +208,38 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
       end
     end
 
+    describe 'increment object counter' do
+      it 'increments counter' do
+        expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, :issue_event, :fetched)
+
+        subject.each_object_to_import { |event| event }
+      end
+
+      context 'when event should increment a mapped fetched counter' do
+        before do
+          stub_const('Gitlab::GithubImport::Importer::IssueEventImporter::EVENT_COUNTER_MAP', {
+            'closed' => 'custom_type'
+          })
+        end
+
+        it 'increments the mapped fetched counter' do
+          expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, 'custom_type', :fetched)
+
+          subject.each_object_to_import { |event| event }
+        end
+
+        context 'when extended_events is disabled' do
+          let(:extended_events) { false }
+
+          it 'increments the issue_event fetched counter' do
+            expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, :issue_event, :fetched)
+
+            subject.each_object_to_import { |event| event }
+          end
+        end
+      end
+    end
+
     describe 'save events' do
       shared_examples 'saves event' do
         it 'saves event' do

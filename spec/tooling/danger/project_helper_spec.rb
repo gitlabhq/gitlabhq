@@ -252,6 +252,8 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
         [:backend, :analytics_instrumentation]            | '+ foo_count(User.active)'                     | ['lib/gitlab/usage_data.rb']
         [:backend]                                        | '+ count(User.active)'                         | ['user.rb']
         [:database, :backend]                             | '+ User.upsert({ name: "blah" })'              | ['app/foo/bar.rb']
+        [:database, :backend]                             | '+ User.upsert('                               | ['app/foo/bar.rb']
+        [:database, :backend]                             | '+ Organizations::OrganizationUser.upsert({'   | ['app/foo/bar.rb']
         [:database, :backend]                             | '+ upsert({ name: "blah" })'                   | ['app/foo/bar.rb']
         [:database, :backend]                             | '+ .upsert({ name: "blah" })'                  | ['app/foo/bar.rb']
         [:database, :backend]                             | '+ .delete_all'                                | ['app/foo/bar.rb']

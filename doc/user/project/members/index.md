@@ -59,6 +59,7 @@ Prerequisites:
 
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
+- If [sign-up is disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
 
 To add a user to a project:
 

@@ -27,6 +27,12 @@ module Gitlab
           reviewed
         ].freeze
 
+        EVENT_COUNTER_MAP = {
+          'commented' => 'note',
+          'reviewed' => 'pull_request_review',
+          'merged' => 'pull_request_merged_by'
+        }.freeze
+
         # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.

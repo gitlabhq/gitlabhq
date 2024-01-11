@@ -53,9 +53,7 @@ module Gitlab
 
         importer_class.new(object, project, client).execute
 
-        if increment_object_counter?(object)
-          Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
-        end
+        increment_object_counter(object, project) if increment_object_counter?(object)
 
         info(project.id, message: 'importer finished')
       rescue ActiveRecord::RecordInvalid, NotRetriableError, NoMethodError => e
@@ -71,6 +69,10 @@ module Gitlab
 
       def increment_object_counter?(_object)
         true
+      end
+
+      def increment_object_counter(_object, project)
+        Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
       end
 
       def object_type

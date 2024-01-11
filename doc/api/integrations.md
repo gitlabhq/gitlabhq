@@ -696,71 +696,6 @@ Get the GitHub integration settings for a project.
 GET /projects/:id/integrations/github
 ```
 
-## Slack notifications
-
-### Set up Slack notifications
-
-Set up Slack notifications for a project.
-
-```plaintext
-PUT /projects/:id/integrations/slack
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
-| `username` | string | false | Slack notifications username. |
-| `channel` | string | false | Default channel to use if no other channel is configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
-| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
-| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
-| `alert_events` | boolean | false | Enable notifications for alert events. |
-| `commit_events` | boolean | false | Enable notifications for commit events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
-| `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `job_events` | boolean | false | Enable notifications for job events. |
-| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable Slack notifications
-
-Disable Slack notifications for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/slack
-```
-
-### Get Slack notifications settings
-
-Get the Slack notifications settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/slack
-```
-
 ## Google Chat
 
 ### Set up Google Chat
@@ -1421,6 +1356,71 @@ Get the Redmine integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/redmine
+```
+
+## Slack notifications
+
+### Set up Slack notifications
+
+Set up Slack notifications for a project.
+
+```plaintext
+PUT /projects/:id/integrations/slack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
+| `username` | string | false | Slack notifications username. |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
+| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
+| `alert_events` | boolean | false | Enable notifications for alert events. |
+| `commit_events` | boolean | false | Enable notifications for commit events. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
+| `deployment_events` | boolean | false | Enable notifications for deployment events. |
+| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
+| `incidents_events` | boolean | false | Enable notifications for incident events. |
+| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `job_events` | boolean | false | Enable notifications for job events. |
+| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Slack notifications
+
+Disable Slack notifications for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/slack
+```
+
+### Get Slack notifications settings
+
+Get the Slack notifications settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/slack
 ```
 
 ## Slack slash commands

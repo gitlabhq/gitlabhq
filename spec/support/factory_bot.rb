@@ -4,13 +4,14 @@ FactoryBot.define do
   after(:build) do |object, _|
     next unless object.respond_to?(:factory_bot_built=)
 
+    # This will help the PreventCrossDatabaseModification to temporarily
+    # allow the object table when it's saved later.
     object.factory_bot_built = true
   end
 
-  before(:create) do |object, _|
-    next unless object.respond_to?(:factory_bot_built=)
-
-    object.factory_bot_built = false
+  before(:create) do |_object, _|
+    Thread.current[:factory_bot_objects] ||= 0
+    Thread.current[:factory_bot_objects] += 1
   end
 end
 

@@ -7,13 +7,14 @@ RSpec.describe GitlabSchema.types['InheritedCiVariable'], feature_category: :sec
     expect(described_class).to have_graphql_fields(
       :id,
       :key,
-      :raw,
-      :variable_type,
+      :description,
       :environment_scope,
+      :group_name,
+      :group_ci_cd_settings_path,
       :masked,
       :protected,
-      :group_name,
-      :group_ci_cd_settings_path
+      :raw,
+      :variable_type
     ).at_least
   end
 end

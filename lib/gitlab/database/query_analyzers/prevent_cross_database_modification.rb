@@ -86,7 +86,7 @@ module Gitlab
           end
 
           return unless self.in_transaction?
-          return if in_factory_bot_create?
+          return if Thread.current[:factory_bot_objects] && Thread.current[:factory_bot_objects] > 0
 
           # PgQuery might fail in some cases due to limited nesting:
           # https://github.com/pganalyze/pg_query/issues/209
@@ -191,20 +191,6 @@ module Gitlab
 
         def self.in_transaction?
           context[:transaction_depth_by_db].values.any?(&:positive?)
-        end
-
-        # We ignore execution in the #create method from FactoryBot
-        # because it is not representative of real code we run in
-        # production. There are far too many false positives caused
-        # by instantiating objects in different `gitlab_schema` in a
-        # FactoryBot `create`.
-        def self.in_factory_bot_create?
-          Rails.env.test? && caller_locations.any? do |l|
-            l.path.end_with?('lib/factory_bot/evaluation.rb') && l.label == 'create' ||
-              l.path.end_with?('lib/factory_bot/strategy/create.rb') ||
-              l.path.end_with?('lib/factory_bot/strategy/build.rb') ||
-              l.path.end_with?('shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb') && l.label == 'create_existing_record'
-          end
         end
       end
     end

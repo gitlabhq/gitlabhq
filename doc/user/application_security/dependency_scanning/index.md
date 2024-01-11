@@ -308,21 +308,21 @@ the project first.
 When a supported dependency file is detected, all dependencies, including transitive dependencies
 are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
-### Dependency analyzers
+### Analyzers
 
-Dependency Scanning supports the following official analyzers:
+Dependency Scanning supports the following official
+[Gemnasium-based](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers:
 
 - `gemnasium`
 - `gemnasium-maven`
 - `gemnasium-python`
 
-Each of these supported Gemnasium-based Dependency Scanning analyzers exist in the following project:
-
-- [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-
-The analyzers are published as Docker images, which Dependency Scanning uses
-to launch dedicated containers for each analysis. You can also integrate a custom
+The analyzers are published as Docker images, which Dependency Scanning uses to launch dedicated
+containers for each analysis. You can also integrate a custom
 [security scanner](../../../development/integrations/secure.md).
+
+Each analyzer is updated as new versions of Gemnasium are released. For more information, see the
+analyzer [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
 
 ### How analyzers obtain dependency information
 
@@ -807,7 +807,7 @@ The following variables allow configuration of global dependency scanning settin
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority). |
-| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning analyzers](#dependency-analyzers). |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
@@ -1021,10 +1021,6 @@ merge cyclonedx sboms:
     paths:
       - gl-sbom-all.cdx.json
 ```
-
-## Versioning and release process
-
-Check the [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
 
 ## Contributing to the vulnerability database
 

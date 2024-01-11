@@ -6,7 +6,7 @@ module API
       class EntityFailure < Grape::Entity
         expose :relation, documentation: { type: 'string', example: 'label' }
         expose :exception_message, documentation: { type: 'string', example: 'error message' } do |failure|
-          ::Projects::ImportErrorFilter.filter_message(failure.exception_message.truncate(72))
+          ::Projects::ImportErrorFilter.filter_message(failure.exception_message).truncate(255)
         end
         expose :exception_class, documentation: { type: 'string', example: 'Exception' }
         expose :correlation_id_value, documentation: { type: 'string', example: 'dfcf583058ed4508e4c7c617bd7f0edd' }

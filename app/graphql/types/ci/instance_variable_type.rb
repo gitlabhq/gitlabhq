@@ -13,6 +13,10 @@ module Types
             null: false,
             description: 'ID of the variable.'
 
+      field :description, GraphQL::Types::String,
+            null: true,
+            description: 'Description of the variable.'
+
       field :environment_scope, GraphQL::Types::String,
             null: true,
             deprecated: {

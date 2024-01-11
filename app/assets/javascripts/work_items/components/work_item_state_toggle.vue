@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    hasComment: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -49,9 +54,15 @@ export default {
       return this.workItemState === STATE_OPEN;
     },
     toggleWorkItemStateText() {
-      const baseText = this.isWorkItemOpen
+      let baseText = this.isWorkItemOpen
         ? __('Close %{workItemType}')
         : __('Reopen %{workItemType}');
+
+      if (this.hasComment) {
+        baseText = this.isWorkItemOpen
+          ? __('Comment & close %{workItemType}')
+          : __('Comment & reopen %{workItemType}');
+      }
       return sprintfWorkItem(baseText, this.workItemType);
     },
     tracking() {
@@ -94,6 +105,10 @@ export default {
         const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
         this.$emit('error', msg);
         Sentry.captureException(error);
+      }
+
+      if (this.hasComment) {
+        this.$emit('submit-comment');
       }
 
       this.updateInProgress = false;

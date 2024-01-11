@@ -34,7 +34,7 @@ module Gitlab
 
           cache_event(parent_record, associated)
 
-          Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+          increment_object_counter(associated[:event])
 
           pull_request = parent_record.is_a? MergeRequest
           associated[:issue] = { number: parent_record.iid, pull_request: pull_request }
@@ -64,6 +64,12 @@ module Gitlab
 
         def object_type
           :issue_event
+        end
+
+        def increment_object_counter(event_name)
+          counter_type = importer_class::EVENT_COUNTER_MAP[event_name] if import_settings.extended_events?
+          counter_type ||= object_type
+          Gitlab::GithubImport::ObjectCounter.increment(project, counter_type, :fetched)
         end
 
         def collection_method

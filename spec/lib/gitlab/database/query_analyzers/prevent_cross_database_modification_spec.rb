@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     end
   end
 
-  context 'when uniquiness validation is tested', type: :model do
+  context 'when uniqueness validation is tested', type: :model do
     subject { build(:ci_variable) }
 
     it 'does not raise exceptions' do

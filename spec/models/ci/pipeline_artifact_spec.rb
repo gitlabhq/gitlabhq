@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifact, type: :model do
+RSpec.describe Ci::PipelineArtifact, type: :model, feature_category: :build_artifacts do
   let(:coverage_report) { create(:ci_pipeline_artifact, :with_coverage_report) }
 
   describe 'associations' do
@@ -307,6 +307,21 @@ RSpec.describe Ci::PipelineArtifact, type: :model do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }
       let!(:model) { create(:ci_pipeline_artifact, project: parent) }
+    end
+  end
+
+  describe 'partitioning', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:pipeline_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns the same partition id as the one that pipeline has' do
+      expect(pipeline_artifact.partition_id).to eq(ci_testing_partition_id)
     end
   end
 end
