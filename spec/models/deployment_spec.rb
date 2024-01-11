@@ -1539,6 +1539,18 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         expect(project.commit(deployment.ref_path)).not_to be_nil
       end
     end
+
+    it 'does not trigger N+1 queries' do
+      project = create(:project, :repository)
+      environment = create(:environment, project: project)
+      create(:deployment, environment: environment, project: project)
+
+      control = ActiveRecord::QueryRecorder.new { project.deployments.fast_destroy_all }
+
+      create_list(:deployment, 2, environment: environment, project: project)
+
+      expect { project.deployments.fast_destroy_all }.not_to exceed_query_limit(control)
+    end
   end
 
   describe '#update_merge_request_metrics!' do

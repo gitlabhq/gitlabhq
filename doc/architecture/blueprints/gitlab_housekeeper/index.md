@@ -14,7 +14,8 @@ participating-stages: []
 
 ## Summary
 
-This blueprint documents the philosophy behind the "GitLab Housekeeper" gem
+This blueprint documents the philosophy behind the
+["GitLab Housekeeper" gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper)
 which was introduced in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139492> and has already
 been used to create many merge requests.

@@ -351,11 +351,11 @@ enforced by the policy.
 
 #### `ci_configuration_path` object
 
-| Field     | Type                | Description |
-|-----------|---------------------|-------------|
-| `project` | `string`            | A project namespace path. |
-| `file`    | `string`            | The file name of the CI/CD YAML file. |
-| `ref`     | `string` (optional) | The branch name, tag name, or commit SHA. |
+| Field     | Type                | Required | Description |
+|-----------|---------------------|----------|-------------|
+| `project` | `string`            | true     | A project namespace path. |
+| `file`    | `string`            | true     | The file name of the CI/CD YAML file. |
+| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
 
 #### `scan` action type
 

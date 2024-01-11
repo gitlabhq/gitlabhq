@@ -282,17 +282,25 @@ The merge request security widget displays only a subset of the vulnerabilities 
 
 From the merge request security widget, select **Expand** to unfold the widget, displaying any new and no longer detected (removed) findings by scan type.
 
-For each security report type, the widget displays the first 25 added and 25 fixed findings, sorted by severity. To see all
-findings, select **View full report** to go directly to the **Security** tab in the latest branch pipeline.
+For each security report type, the widget displays the first 25 added and 25 fixed findings, sorted by severity.
+This is determined by comparing the security reports from the source branch and target branch pipelines.
+
+As an example, consider two pipelines with these scan results:
+
+- The source branch pipeline detects two vulnerabilities identified as `V1` and `V2`.
+- The target branch pipeline detects two vulnerabilities identified as `V1` and `V3`.
+- `V2` will show on the merge request widget as "added".
+- `V3` will show on the merge request widget as "fixed".
+- `V1` exists on both branches and is not shown on the merge request widget.
+
+To see all findings on the source branch of the merge request, select **View full report** to go directly to the **Security** tab in the latest source branch pipeline.
 
 ![Security scanning results in a merge request](img/mr_security_scanning_results_v14_3.png)
 
 ### Pipeline security tab
 
-A pipeline's security tab lists all findings in the current branch. It includes findings introduced
-by this branch and vulnerabilities already present in the base branch. These results likely do not
-match the findings displayed in the Merge Request security widget, as those do not include the
-existing vulnerabilities. For more information see
+A pipeline's security tab lists all findings from the security reports in the pipeline's
+job artifacts. For more information see
 [Vulnerabilities in a pipeline](vulnerability_report/pipeline.md).
 
 ### Security dashboard

@@ -219,6 +219,13 @@ module Gitlab
         "gitlab:github_import:user_finder:#{project.id}"
       end
 
+      # Retrieves the email associated with the given username from the cache.
+      #
+      # The return value can be an email, an empty string, or nil.
+      #
+      # If an empty string is returned, it indicates that the user's email was fetched but not set on GitHub.
+      # If nil is returned, it indicates that the user's email wasn't fetched or the cache has expired.
+      # If an email is returned, it means the user has a public email set, and it has been successfully cached.
       def read_email_from_cache(username)
         Gitlab::Cache::Import::Caching.read(email_cache_key(username))
       end
@@ -238,7 +245,7 @@ module Gitlab
           if retried
             email = read_email_from_cache(username)
 
-            next email if email
+            next email if email.present?
           end
 
           log(EMAIL_API_CALL_LOGGING_MESSAGE[etag.present?], username: username)
@@ -249,6 +256,11 @@ module Gitlab
         end
       end
 
+      # Caches the email associated to the username
+      #
+      # An empty email is cached when the user email isn't set on GitHub.
+      # This is done to prevent UserFinder from fetching the user's email again when the user's email isn't set on
+      # GitHub
       def cache_email!(username, email)
         return unless email
 
@@ -256,6 +268,8 @@ module Gitlab
       end
 
       def cache_etag!(username)
+        return unless client.octokit.last_response
+
         etag = client.octokit.last_response.headers[:etag]
         Gitlab::Cache::Import::Caching.write(etag_cache_key(username), etag)
       end

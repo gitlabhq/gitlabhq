@@ -461,6 +461,30 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
 
           it_behaves_like 'a user resource not found on GitHub'
         end
+
+        context 'if the cached etag is nil' do
+          context 'when lock was executed by another process and an email was fetched' do
+            it 'does not fetch user detail' do
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return(email)
+              expect(finder).to receive(:in_lock).and_yield(true)
+              expect(client).not_to receive(:user)
+
+              email_for_github_username
+            end
+          end
+
+          context 'when lock was executed by another process and an email in cache is still blank' do
+            it 'fetch user detail' do
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:in_lock).and_yield(true)
+              expect(client).to receive(:user).with(username, { headers: {} }).and_return({ email: email }).once
+
+              email_for_github_username
+            end
+          end
+        end
       end
 
       context 'if the email has been checked for the project' do

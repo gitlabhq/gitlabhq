@@ -203,7 +203,7 @@ gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-model', '~> 7.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'elasticsearch-api',   '7.13.3' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'aws-sdk-core', '~> 3.190.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'aws-sdk-core', '~> 3.190.2' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-cloudformation', '~> 1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-s3', '~> 1.142.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -436,7 +436,7 @@ group :development, :test do
 
   gem 'gitlab-styles', '~> 11.0.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'haml_lint', '~> 0.52', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'haml_lint', '~> 0.53', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'bundler-audit', '~> 0.9.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
   # Benchmarking & profiling
