@@ -42,7 +42,17 @@ To use Code Suggestions:
 
 1. Author your code. As you type, suggestions are displayed.
    Code Suggestions provide code snippets or complete the current line, depending on the cursor position.
-1. Describe the requirements in natural language. Be concise and specific. Code Suggestions generates functions and code snippets as appropriate.
+1. Describe the requirements in natural language. Code Suggestions generates functions and code snippets based on the context provided. To get the best results from code generation:
+   - Be as specific as possible while remaining concise. State the outcome you want to generate (for example, a function) and provide details on what you want to achieve. Add additional information, such as the framework or library you want to use when applicable.
+     For example, to create a Python web service with some specific requirements, you might write something similar to the following:
+     
+     ```plaintext
+     # Create a web service using Tornado that allows a user to log in, run a security scan, and review the scan results.
+     # Each action (log in, run a scan, and review results) should be its own resource in the web service
+     ...
+     ```
+
+   - Add a space or go to a new line after each comment. This tells the code generator that you have completed your instructions.
 1. To accept a suggestion, press <kbd>Tab</kbd>.
 1. To ignore a suggestion, keep typing as you usually would.
 1. To explicitly reject a suggestion, press <kbd>Esc</kbd>.

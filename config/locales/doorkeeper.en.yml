@@ -79,6 +79,7 @@ en:
       create_runner: Grants create access to the runners
       k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
       ai_features: Access to API endpoints needed for GitLab Duo features
+      read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
     scope_desc:
       api:
         Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
@@ -114,6 +115,8 @@ en:
         Grants create access to the runners.
       k8s_proxy:
         Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      read_service_ping:
+        Grant access to download Service Ping payload via API when authenticated as an admin user
     group_access_token_scope_desc:
       api:
         Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.

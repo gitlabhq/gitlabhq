@@ -43,10 +43,13 @@ module Gitlab
     WRITE_OBSERVABILITY_SCOPE = :write_observability
     OBSERVABILITY_SCOPES = [READ_OBSERVABILITY_SCOPE, WRITE_OBSERVABILITY_SCOPE].freeze
 
+    # Scopes for Monitor access
+    READ_SERVICE_PING_SCOPE = :read_service_ping
+
     # Scopes used for GitLab as admin
     SUDO_SCOPE = :sudo
     ADMIN_MODE_SCOPE = :admin_mode
-    ADMIN_SCOPES = [SUDO_SCOPE, ADMIN_MODE_SCOPE].freeze
+    ADMIN_SCOPES = [SUDO_SCOPE, ADMIN_MODE_SCOPE, READ_SERVICE_PING_SCOPE].freeze
 
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [API_SCOPE].freeze

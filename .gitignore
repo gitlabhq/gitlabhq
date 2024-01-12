@@ -110,7 +110,6 @@ tags.temp
 jest-snapshot-test-match.json
 jest-test-report.json
 jest-snapshot-test-report.json
-/go.work.sum
 
 # Vite Ruby
 /public/vite*

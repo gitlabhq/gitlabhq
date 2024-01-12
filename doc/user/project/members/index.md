@@ -157,6 +157,7 @@ To add a group to a project:
 
 The invited group is displayed on the **Groups** tab.
 Private groups are masked from unauthorized users.
+With the feature flag `allow_members_to_see_invited_groups_in_access_dropdowns` enabled, private groups are displayed in project settings for protected branches, protected tags, and protected environments.
 The members of the invited group are not displayed on the **Members** tab.
 The **Members** tab shows:
 
