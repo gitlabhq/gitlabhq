@@ -35811,6 +35811,9 @@ msgstr ""
 msgid "PipelineSubscriptions|Add new"
 msgstr ""
 
+msgid "PipelineSubscriptions|An error occurred while deleting this pipeline subscription."
+msgstr ""
+
 msgid "PipelineSubscriptions|An error occurred while fetching downstream pipeline subscriptions."
 msgstr ""
 
@@ -35824,6 +35827,12 @@ msgid "PipelineSubscriptions|No project subscribes to the pipelines in this proj
 msgstr ""
 
 msgid "PipelineSubscriptions|Subscribed to this project"
+msgstr ""
+
+msgid "PipelineSubscriptions|Subscription for this project will be removed. Do you want to continue?"
+msgstr ""
+
+msgid "PipelineSubscriptions|Subscription successfully deleted."
 msgstr ""
 
 msgid "PipelineSubscriptions|Subscriptions"
