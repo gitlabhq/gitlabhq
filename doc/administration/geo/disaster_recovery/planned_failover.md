@@ -75,12 +75,6 @@ site:
 
 ## Preflight checks
 
-NOTE:
-In GitLab 13.7 and earlier, if you have a data type with zero items to sync,
-this command reports `ERROR - Replication is not up-to-date` even if
-replication is actually up-to-date. This bug was fixed in GitLab 13.8 and
-later.
-
 Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process goes smoothly:
 
 ```shell

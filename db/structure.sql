@@ -11677,6 +11677,45 @@ CREATE SEQUENCE agent_user_access_project_authorizations_id_seq
 
 ALTER SEQUENCE agent_user_access_project_authorizations_id_seq OWNED BY agent_user_access_project_authorizations.id;
 
+CREATE TABLE ai_agent_versions (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    prompt text NOT NULL,
+    model text NOT NULL,
+    CONSTRAINT check_8cda7448e9 CHECK ((char_length(model) <= 255)),
+    CONSTRAINT check_d7a4fc9834 CHECK ((char_length(prompt) <= 5000))
+);
+
+CREATE SEQUENCE ai_agent_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_agent_versions_id_seq OWNED BY ai_agent_versions.id;
+
+CREATE TABLE ai_agents (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_67934c8e85 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_agents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
+
 CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -26771,6 +26810,10 @@ ALTER TABLE ONLY agent_user_access_group_authorizations ALTER COLUMN id SET DEFA
 
 ALTER TABLE ONLY agent_user_access_project_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_user_access_project_authorizations_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent_versions_id_seq'::regclass);
+
+ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
+
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_metric_images ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_metric_images_id_seq'::regclass);
@@ -28680,6 +28723,12 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT agent_user_access_project_authorizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_agent_versions
+    ADD CONSTRAINT ai_agent_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_agents
+    ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT alert_management_alert_assignees_pkey PRIMARY KEY (id);
@@ -32447,6 +32496,12 @@ CREATE UNIQUE INDEX index_agent_user_access_on_agent_id_and_project_id ON agent_
 CREATE INDEX index_agent_user_access_on_group_id ON agent_user_access_group_authorizations USING btree (group_id);
 
 CREATE INDEX index_agent_user_access_on_project_id ON agent_user_access_project_authorizations USING btree (project_id);
+
+CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btree (agent_id);
+
+CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
+
+CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
 
 CREATE INDEX index_alert_assignees_on_alert_id ON alert_management_alert_assignees USING btree (alert_id);
 
@@ -38450,6 +38505,9 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ai_agent_versions
+    ADD CONSTRAINT fk_6c2f682587 FOREIGN KEY (agent_id) REFERENCES ai_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_6c95e61a6e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -39431,6 +39489,9 @@ ALTER TABLE ONLY work_item_types
 ALTER TABLE ONLY user_statuses
     ADD CONSTRAINT fk_rails_2178592333 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_agent_versions
+    ADD CONSTRAINT fk_rails_2205f8ca20 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY users_ops_dashboard_projects
     ADD CONSTRAINT fk_rails_220a0562db FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -39553,6 +39614,9 @@ ALTER TABLE ONLY zoom_meetings
 
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT fk_rails_32f7bf5aad FOREIGN KEY (project_id) REFERENCES projects(id);
+
+ALTER TABLE ONLY ai_agents
+    ADD CONSTRAINT fk_rails_3328b05449 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_alert_metric_images
     ADD CONSTRAINT fk_rails_338e55b408 FOREIGN KEY (alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;

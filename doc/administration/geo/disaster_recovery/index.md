@@ -71,12 +71,6 @@ must disable the **primary** site.
 
 ### Step 3. Promoting a **secondary** site
 
-WARNING:
-In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
-secondary is paused fails. Do not pause replication before promoting a
-secondary. If the secondary site is paused, be sure to resume before promoting.
-This issue has been fixed in GitLab 13.4 and later.
-
 Note the following when promoting a secondary:
 
 - If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), the promotion
@@ -90,7 +84,7 @@ Note the following when promoting a secondary:
   [troubleshooting advice](../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 - You should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 
-#### Promoting a **secondary** site running on a single node running GitLab 14.5 and later
+#### Promoting a **secondary** site running on a single node
 
 1. SSH in to your **secondary** site and execute:
 
@@ -110,63 +104,7 @@ Note the following when promoting a secondary:
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-#### Promoting a **secondary** site running on a single node running GitLab 14.4 and earlier
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-1. SSH in to your **secondary** site and login as root:
-
-   ```shell
-   sudo -i
-   ```
-
-1. If you're using GitLab 13.5 and later, skip this step. If not, edit
-   `/etc/gitlab/gitlab.rb` and remove any of the following lines that
-   might be present:
-
-   ```ruby
-   geo_secondary_role['enable'] = true
-   roles ['geo_secondary_role']
-   ```
-
-1. Promote the **secondary** site to the **primary** site:
-
-   - To promote the secondary site to primary along with [preflight checks](planned_failover.md#preflight-checks):
-
-     ```shell
-     gitlab-ctl promote-to-primary-node
-     ```
-
-   - If you have already run the preflight checks separately or don't want to run them,
-     you can skip them with:
-
-     ```shell
-     gitlab-ctl promote-to-primary-node --skip-preflight-checks
-     ```
-
-     NOTE:
-     In GitLab 13.7 and earlier, if you have a data type with zero items to sync
-     and don't skip the preflight checks, promoting the secondary reports
-     `ERROR - Replication is not up-to-date` even if replication is actually
-     up-to-date. If replication and verification output
-     shows that it is complete, you can skip the preflight checks to make the
-     command complete promotion. This bug was fixed in GitLab 13.8 and later.
-
-   - To promote the secondary site to primary **without any further confirmation**,
-     even when preflight checks fail:
-
-     ```shell
-     gitlab-ctl promote-to-primary-node --force
-     ```
-
-1. Verify you can connect to the newly-promoted **primary** site using the URL used
-   previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-#### Promoting a **secondary** site with multiple nodes running GitLab 14.5 and later
+#### Promoting a **secondary** site with multiple nodes
 
 1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
@@ -200,49 +138,7 @@ Use `gitlab-ctl geo promote` instead.
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-#### Promoting a **secondary** site with multiple nodes running GitLab 14.4 and earlier
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
-conjunction with multiple nodes, as it can only perform changes on
-a **secondary** with only a single node. Instead, you must
-do this manually.
-
-1. SSH in to the database node in the **secondary** site and trigger PostgreSQL to
-   promote to read-write:
-
-   ```shell
-   sudo gitlab-ctl promote-db
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on every node in the **secondary** site to
-   reflect its new status as **primary** by removing any of the following
-   lines that might be present:
-
-   ```ruby
-   geo_secondary_role['enable'] = true
-   roles ['geo_secondary_role']
-   ```
-
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
-   on each machine so the changes take effect.
-
-1. Promote the **secondary** to **primary**. SSH into a single application
-   server and execute:
-
-   ```shell
-   sudo gitlab-rake geo:set_secondary_as_primary
-   ```
-
-1. Verify you can connect to the newly-promoted **primary** using the URL used
-   previously for the **secondary**.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-#### Promoting a **secondary** site with a Patroni standby cluster running GitLab 14.5 and later
+#### Promoting a **secondary** site with a Patroni standby cluster
 
 1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
@@ -276,54 +172,7 @@ do this manually.
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-#### Promoting a **secondary** site with a Patroni standby cluster running GitLab 14.4 and earlier
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
-conjunction with a Patroni standby cluster, as it can only perform changes on
-a **secondary** with only a single node. Instead, you must do this manually.
-
-1. SSH in to the Standby Leader database node in the **secondary** site and trigger PostgreSQL to
-   promote to read-write:
-
-   ```shell
-   sudo gitlab-ctl promote-db
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on every application and Sidekiq nodes in the secondary to reflect its new status as primary by removing any of the following lines that might be present:
-
-   ```ruby
-   geo_secondary_role['enable'] = true
-   roles ['geo_secondary_role']
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on every Patroni node in the secondary to disable the standby cluster:
-
-   ```ruby
-   patroni['standby_cluster']['enable'] = false
-   ```
-
-1. Reconfigure GitLab on each machine for the changes to take effect:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Promote the **secondary** to **primary**. SSH into a single application server and execute:
-
-   ```shell
-   sudo gitlab-rake geo:set_secondary_as_primary
-   ```
-
-1. Verify you can connect to the newly-promoted **primary** using the URL used
-   previously for the **secondary**.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-#### Promoting a **secondary** site with an external PostgreSQL database running GitLab 14.5 and later
+#### Promoting a **secondary** site with an external PostgreSQL database
 
 The `gitlab-ctl geo promote` command can be used in conjunction with an external PostgreSQL database.
 In this case, you must first manually promote the replica database associated
@@ -386,68 +235,6 @@ with the **secondary** site:
 
 1. Verify you can connect to the newly-promoted **primary** site using the URL used
    previously for the **secondary** site.
-1. If successful, the **secondary** site is now promoted to the **primary** site.
-
-#### Promoting a **secondary** site with an external PostgreSQL database running GitLab 14.4 and earlier
-
-WARNING:
-The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
-deprecated in GitLab 14.5 and later, and [removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
-Use `gitlab-ctl geo promote` instead.
-
-The `gitlab-ctl promote-to-primary-node` command cannot be used in conjunction with
-an external PostgreSQL database, as it can only perform changes on a **secondary**
-node with GitLab and the database on the same machine. As a result, a manual process is
-required:
-
-1. Promote the replica database associated with the **secondary** site. This
-   sets the database to read-write. The instructions vary depending on where your database is hosted:
-   - [Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html#USER_ReadRepl.Promote)
-   - [Azure PostgreSQL](https://learn.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal#stop-replication)
-   - [Google Cloud SQL](https://cloud.google.com/sql/docs/mysql/replication/manage-replicas#promote-replica)
-   - For other external PostgreSQL databases, save the following script in your
-     secondary site, for example `/tmp/geo_promote.sh`, and modify the connection
-     parameters to match your environment. Then, execute it to promote the replica:
-
-     ```shell
-     #!/bin/bash
-
-     PG_SUPERUSER=postgres
-
-     # The path to your pg_ctl binary. You may need to adjust this path to match
-     # your PostgreSQL installation
-     PG_CTL_BINARY=/usr/lib/postgresql/10/bin/pg_ctl
-
-     # The path to your PostgreSQL data directory. You may need to adjust this
-     # path to match your PostgreSQL installation. You can also run
-     # `SHOW data_directory;` from PostgreSQL to find your data directory
-     PG_DATA_DIRECTORY=/etc/postgresql/10/main
-
-     # Promote the PostgreSQL database and allow read/write operations
-     sudo -u $PG_SUPERUSER $PG_CTL_BINARY -D $PG_DATA_DIRECTORY promote
-     ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on every node in the **secondary** site to
-   reflect its new status as **primary** by removing any of the following
-   lines that might be present:
-
-   ```ruby
-   geo_secondary_role['enable'] = true
-   roles ['geo_secondary_role']
-   ```
-
-   After making these changes [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
-   on each node so the changes take effect.
-
-1. Promote the **secondary** to **primary**. SSH into a single secondary application
-   node and execute:
-
-   ```shell
-   sudo gitlab-rake geo:set_secondary_as_primary
-   ```
-
-1. Verify you can connect to the newly-promoted **primary** using the URL used
-   previously for the **secondary**.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
 ### Step 4. (Optional) Updating the primary domain DNS record
@@ -627,12 +414,6 @@ When updating a cloud-native Geo deployment, the process for updating any node t
 
 The following sections assume you are using the `gitlab` namespace. If you used a different namespace when setting up your cluster, you should also replace `--namespace gitlab` with your namespace.
 
-WARNING:
-In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
-secondary is paused fails. Do not pause replication before promoting a
-secondary. If the site is paused, be sure to resume before promoting. This
-issue has been fixed in GitLab 13.4 and later.
-
 ### Step 1. Permanently disable the **primary** cluster
 
 WARNING:
@@ -671,10 +452,6 @@ If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused is lost.
 
-::Tabs
-
-:::TabTitle For GitLab 14.5 and later
-
 1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
    package, SSH into the node and run one of the following commands:
 
@@ -708,46 +485,6 @@ Data that was created on the primary while the secondary was paused is lost.
    | Name | Default value | Description |
    | ---- | ------------- | ------- |
    | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/index.md) before promotion (GitLab 16.4 and later) |
-
-:::TabTitle For GitLab 14.4 and earlier
-
-1. SSH in to the database node in the **secondary** site and trigger PostgreSQL to
-   promote to read-write:
-
-   ```shell
-   sudo gitlab-ctl promote-db
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` on the database node in the **secondary** site to
-   reflect its new status as **primary** by removing any lines that enabled the
-   `geo_secondary_role`:
-
-   NOTE:
-   Depending on your architecture, these steps need to run on any GitLab node that is external to the **secondary** Kubernetes cluster.
-
-   ```ruby
-   ## In pre-11.5 documentation, the role was enabled as follows. Remove this line.
-   geo_secondary_role['enable'] = true
-
-   ## In 11.5+ documentation, the role was enabled as follows. Remove this line.
-   roles ['geo_secondary_role']
-   ```
-
-   After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on the database node.
-
-1. Find the task runner pod:
-
-   ```shell
-   kubectl --namespace gitlab get pods -lapp=task-runner
-   ```
-
-1. Promote the secondary:
-
-   ```shell
-   kubectl --namespace gitlab exec -ti gitlab-geo-task-runner-XXX -- gitlab-rake geo:set_secondary_as_primary
-   ```
-
-::EndTabs
 
 ### Step 3. Promote the **secondary** cluster
 
