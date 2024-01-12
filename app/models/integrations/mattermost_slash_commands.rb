@@ -4,6 +4,8 @@ module Integrations
   class MattermostSlashCommands < BaseSlashCommands
     include Ci::TriggersHelper
 
+    MATTERMOST_URL = '%{ORIGIN}/%{TEAM}/channels/%{CHANNEL}'
+
     field :token,
       type: :password,
       description: -> { _('The Mattermost token.') },
@@ -41,6 +43,21 @@ module Integrations
       [::Mattermost::Team.new(current_user).all, nil]
     rescue ::Mattermost::Error => e
       [[], e.message]
+    end
+
+    def redirect_url(team, channel, url)
+      return if Gitlab::UrlBlocker.blocked_url?(url, schemes: %w[http https], enforce_sanitization: true)
+
+      origin = Addressable::URI.parse(url).origin
+      format(MATTERMOST_URL, ORIGIN: origin, TEAM: team, CHANNEL: channel)
+    end
+
+    def confirmation_url(command_id, params)
+      team, channel, response_url = params.values_at(:team_domain, :channel_name, :response_url)
+
+      Rails.application.routes.url_helpers.project_integrations_slash_commands_url(
+        project, command_id: command_id, integration: to_param, team: team, channel: channel, response_url: response_url
+      )
     end
 
     private

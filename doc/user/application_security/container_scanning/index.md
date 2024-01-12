@@ -379,6 +379,9 @@ The following options are available:
 | [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:6` |
 | Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:6` |
 
+WARNING:
+Do not use the `:latest` tag when selecting the scanner image.
+
 ### Setting the default branch image
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5.

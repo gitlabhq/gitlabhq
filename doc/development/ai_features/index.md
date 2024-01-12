@@ -187,7 +187,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
         ```
 
     1. Run `poetry run ai_gateway`.
-    1. Visit [OpenAPI playground](`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
+    1. Visit [OpenAPI playground](http://0.0.0.0:5052/docs), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
        If something went wrong, check `modelgateway_debug.log` if it contains error information.
 1. Setup GitLab Development Kit (GDK):
     1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).

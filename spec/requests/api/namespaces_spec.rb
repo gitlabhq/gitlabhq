@@ -109,6 +109,19 @@ RSpec.describe API::Namespaces, :aggregate_failures, feature_category: :groups_a
           expect(json_response.map { |resource| resource['id'] }).to match_array([user.namespace_id, group2.id])
         end
       end
+
+      context 'with top_level_only param' do
+        it 'returns only top level groups' do
+          group1.add_owner(user)
+          group2.add_owner(user)
+
+          get api("/namespaces?top_level_only=true", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response.map { |resource| resource['id'] }).to match_array([user.namespace_id, group1.id])
+        end
+      end
     end
   end
 

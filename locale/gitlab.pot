@@ -25988,6 +25988,9 @@ msgstr ""
 msgid "Integrations|All projects inheriting these settings will also be reset."
 msgstr ""
 
+msgid "Integrations|An application called %{integration_name} is requesting access to your GitLab account."
+msgstr ""
+
 msgid "Integrations|An application called %{integration_name} is requesting access to your GitLab account. This application was created by GitLab Inc."
 msgstr ""
 
@@ -25998,6 +26001,9 @@ msgid "Integrations|An event will be triggered when one of the following items h
 msgstr ""
 
 msgid "Integrations|Authorize %{integration_name} (%{user}) to use your account?"
+msgstr ""
+
+msgid "Integrations|Base slash commands"
 msgstr ""
 
 msgid "Integrations|Branches for which notifications are to be sent"
@@ -26072,6 +26078,9 @@ msgstr ""
 msgid "Integrations|GitLab for Slack app must be reinstalled to enable notifications"
 msgstr ""
 
+msgid "Integrations|Go back to your workspace"
+msgstr ""
+
 msgid "Integrations|Group-level integration management"
 msgstr ""
 
@@ -26142,6 +26151,12 @@ msgid "Integrations|Send notifications about project events to a Unify Circuit c
 msgstr ""
 
 msgid "Integrations|Standard"
+msgstr ""
+
+msgid "Integrations|The slash command request is invalid."
+msgstr ""
+
+msgid "Integrations|The slash command verification request has expired. Please run the command again."
 msgstr ""
 
 msgid "Integrations|There are no projects using custom settings"
@@ -36426,6 +36441,9 @@ msgstr ""
 msgid "Please complete your profile with email address"
 msgstr ""
 
+msgid "Please confirm the request by accessing %{url} through a web browser."
+msgstr ""
+
 msgid "Please confirm your email address"
 msgstr ""
 
@@ -41359,13 +41377,13 @@ msgid_plural "Requires %{count} approvals from %{names}."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Requires a verified GitLab email address."
-msgstr ""
-
 msgid "Requires you to deploy or set up cloud-hosted Sentry."
 msgstr ""
 
 msgid "Requires your primary GitLab email address. If you want to confirm a secondary email address, go to %{emails_link_start}Emails%{emails_link_end}"
+msgstr ""
+
+msgid "Requires your primary or verified secondary GitLab email address."
 msgstr ""
 
 msgid "Resend"
@@ -51108,6 +51126,9 @@ msgstr ""
 msgid "To ensure no loss of access to personal content, only use this account for matters related to %{group_name}."
 msgstr ""
 
+msgid "To ensure the highest security standards, we verify the source of all slash commands."
+msgstr ""
+
 msgid "To find the state of this project's repository at the time of any of these versions, check out %{link_start}the tags%{link_end}"
 msgstr ""
 
@@ -52637,6 +52658,9 @@ msgid "Uploading..."
 msgstr ""
 
 msgid "Uploading: %{progress}"
+msgstr ""
+
+msgid "Upon successful validation, you're granted access to slash commands."
 msgstr ""
 
 msgid "Upstream"
@@ -56841,6 +56865,9 @@ msgid "You've successfully purchased the %{plan} plan subscription for 1 user an
 msgid_plural "You've successfully purchased the %{plan} plan subscription for %{quantity} users and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "You've successfully verified! You now have access to slash commands. Thanks for helping ensure security!"
+msgstr ""
 
 msgid "YouTube"
 msgstr ""

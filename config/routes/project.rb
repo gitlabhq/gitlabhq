@@ -444,6 +444,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
+        namespace :integrations do
+          resource :slash_commands, only: [:show] do
+            post :confirm
+          end
+        end
+
         get :planning_hierarchy
 
         resources :badges, only: [] do

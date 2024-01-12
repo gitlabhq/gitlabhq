@@ -16855,6 +16855,7 @@ The currently authenticated GitLab user.
 | <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="currentuserduochatavailable"></a>`duoChatAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. User access to AI chat feature. |
+| <a id="currentuserduocodesuggestionsavailable"></a>`duoCodeSuggestionsAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.8. This feature is an Experiment. It can be changed or removed at any time. User access to code suggestions feature. |
 | <a id="currentuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="currentuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |

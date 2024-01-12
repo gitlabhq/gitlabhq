@@ -1159,6 +1159,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def previous_diff
+    merge_request_diffs.order(id: :desc).offset(1).take
+  end
+
   def version_params_for(diff_refs)
     if diff = merge_request_diff_for(diff_refs)
       { diff_id: diff.id }

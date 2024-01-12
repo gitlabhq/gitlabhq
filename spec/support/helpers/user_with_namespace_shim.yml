@@ -43,6 +43,7 @@
 - ee/spec/features/issues/user_sees_empty_state_spec.rb
 - ee/spec/features/issues/user_uses_quick_actions_spec.rb
 - ee/spec/features/issues/user_views_issues_spec.rb
+- ee/spec/features/merge_request/code_owner_approvals_reset_after_merging_to_source_branch_spec.rb
 - ee/spec/features/merge_request/draft_comments_spec.rb
 - ee/spec/features/merge_request/user_approves_with_password_spec.rb
 - ee/spec/features/merge_request/user_approves_with_saml_auth_spec.rb

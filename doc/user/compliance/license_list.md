@@ -4,9 +4,13 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License list **(ULTIMATE ALL)**
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in GitLab 12.7.
+# License list (deprecated) **(ULTIMATE ALL)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/436100) in GitLab 16.8
+and is planned for removal in 17.0. Use the [Dependency List](../application_security/dependency_list/index.md) instead.
 
 The License list allows you to see your project's licenses and key
 details about them.
@@ -32,3 +36,5 @@ The licenses are displayed, where:
 - **Policy Violation:** The license has a [license policy](license_approval_policies.md) marked as **Deny**.
 
 ![License List](img/license_list_v13_0.png)
+
+<!--- end_remove -->

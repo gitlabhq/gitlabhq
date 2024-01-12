@@ -34,6 +34,7 @@ module API
       params do
         optional :search, type: String, desc: 'Returns a list of namespaces the user is authorized to view based on the search criteria'
         optional :owned_only, type: Boolean, desc: 'In GitLab 14.2 and later, returns a list of owned namespaces only'
+        optional :top_level_only, type: Boolean, default: false, desc: 'Only include top level namespaces'
 
         use :pagination
         use :optional_list_params_ee
@@ -42,6 +43,8 @@ module API
         owned_only = params[:owned_only] == true
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
+
+        namespaces = namespaces.top_most if params[:top_level_only]
 
         namespaces = namespaces.without_project_namespaces.include_route
 
