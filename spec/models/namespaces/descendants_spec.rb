@@ -40,4 +40,29 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
       )
     end
   end
+
+  describe '.expire_for' do
+    it 'sets the outdated_at column for the given namespace ids' do
+      freeze_time do
+        expire_time = Time.current
+
+        group1 = create(:group).tap do |g|
+          create(:namespace_descendants, namespace: g).reload.update!(outdated_at: nil)
+        end
+        group2 = create(:group, parent: group1).tap { |g| create(:namespace_descendants, namespace: g) }
+        group3 = create(:group, parent: group1)
+
+        group4 = create(:group).tap do |g|
+          create(:namespace_descendants, namespace: g).reload.update!(outdated_at: nil)
+        end
+
+        described_class.expire_for([group1.id, group2.id, group3.id])
+
+        expect(group1.namespace_descendants.outdated_at).to eq(expire_time)
+        expect(group2.namespace_descendants.outdated_at).to eq(expire_time)
+        expect(group3.namespace_descendants).to be_nil
+        expect(group4.namespace_descendants.outdated_at).to be_nil
+      end
+    end
+  end
 end

@@ -12,6 +12,7 @@ class Namespace < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
+  include Namespaces::Traversal::Cached
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings

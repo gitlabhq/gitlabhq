@@ -1393,6 +1393,31 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationaiactionrequestid"></a>`requestId` | [`String`](#string) | ID of the request. |
 
+### `Mutation.aiAgentCreate`
+
+WARNING:
+**Introduced** in 16.8.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `AiAgentCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentcreatename"></a>`name` | [`String!`](#string) | Name of the agent. |
+| <a id="mutationaiagentcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the agent belongs. |
+| <a id="mutationaiagentcreateprompt"></a>`prompt` | [`String!`](#string) | Prompt for the agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentcreateagent"></a>`agent` | [`AiAgent`](#aiagent) | Agent after mutation. |
+| <a id="mutationaiagentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.alertSetAssignees`
 
 Input type: `AlertSetAssigneesInput`
@@ -14411,6 +14436,43 @@ Information about a connected Agent.
 | <a id="agentmetadatapodname"></a>`podName` | [`String`](#string) | Name of the pod running the Agent. |
 | <a id="agentmetadatapodnamespace"></a>`podNamespace` | [`String`](#string) | Namespace of the pod running the Agent. |
 | <a id="agentmetadataversion"></a>`version` | [`String`](#string) | Agent version tag. |
+
+### `AiAgent`
+
+An AI agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiagent_links"></a>`_links` | [`AiAgentLinks!`](#aiagentlinks) | Map of links to perform actions on the agent. |
+| <a id="aiagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aiagentid"></a>`id` | [`ID!`](#id) | ID of the agent. |
+| <a id="aiagentname"></a>`name` | [`String!`](#string) | Name of the agent. |
+| <a id="aiagentversions"></a>`versions` | [`[AiAgentVersion!]`](#aiagentversion) | Versions of the agent. |
+
+### `AiAgentLinks`
+
+Represents links to perform actions on the agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiagentlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the agent. |
+
+### `AiAgentVersion`
+
+Version of an AI Agent.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiagentversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the agent version was created. |
+| <a id="aiagentversionid"></a>`id` | [`ID!`](#id) | ID of the agent version. |
+| <a id="aiagentversionmodel"></a>`model` | [`String!`](#string) | Model of the agent. |
+| <a id="aiagentversionprompt"></a>`prompt` | [`String!`](#string) | Prompt of the agent. |
 
 ### `AiMessage`
 

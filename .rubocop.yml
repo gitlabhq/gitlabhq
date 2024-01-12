@@ -375,6 +375,9 @@ Rails/HasManyOrHasOneDependent:
 Rails/CreateTableWithTimestamps:
   Enabled: false
 
+Rails/AvoidTimeComparison:
+  Enabled: true
+
 # GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:

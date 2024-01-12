@@ -6,6 +6,7 @@ import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import { assigneesQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarAssigneesRealtime from './assignees_realtime.vue';
@@ -156,6 +157,12 @@ export default {
     issuableAuthor() {
       return this.issuable?.author;
     },
+    assigneeShortcutDescription() {
+      return ISSUE_MR_CHANGE_ASSIGNEE.description;
+    },
+    assigneeShortcutKey() {
+      return ISSUE_MR_CHANGE_ASSIGNEE.defaultKeys[0];
+    },
   },
   watch: {
     iid(_, oldIid) {
@@ -246,6 +253,9 @@ export default {
       :loading="isSettingAssignees"
       :initial-loading="isAssigneesLoading"
       :title="assigneeText"
+      :edit-tooltip="`${assigneeShortcutDescription} <kbd class='flat ml-1' aria-hidden=true>${assigneeShortcutKey}</kbd>`"
+      :edit-aria-label="assigneeShortcutDescription"
+      :edit-keyshortcuts="assigneeShortcutKey"
       :is-dirty="isDirty"
       @open="showDropdown"
       @close="saveAssignees"

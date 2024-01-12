@@ -7,6 +7,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
 
 import { __ } from '~/locale';
+import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import { issuableLabelsQueries } from '../../../queries/constants';
 import SidebarEditableItem from '../../sidebar_editable_item.vue';
 import { DEBOUNCE_DROPDOWN_DELAY, VARIANT_SIDEBAR } from './constants';
@@ -158,6 +159,12 @@ export default {
     },
     isLockOnMergeSupported() {
       return this.issuableSupportsLockOnMerge || this.issuable?.supportsLockOnMerge;
+    },
+    labelShortcutDescription() {
+      return ISSUABLE_CHANGE_LABEL.description;
+    },
+    labelShortcutKey() {
+      return ISSUABLE_CHANGE_LABEL.defaultKeys[0];
     },
   },
   apollo: {
@@ -375,6 +382,9 @@ export default {
       <sidebar-editable-item
         ref="editable"
         :title="__('Labels')"
+        :edit-tooltip="`${labelShortcutDescription} <kbd class='flat ml-1' aria-hidden=true>${labelShortcutKey}</kbd>`"
+        :edit-aria-label="labelShortcutDescription"
+        :edit-keyshortcuts="labelShortcutKey"
         :loading="isLoading"
         :can-edit="allowLabelEdit"
         @open="oldIid = null"
