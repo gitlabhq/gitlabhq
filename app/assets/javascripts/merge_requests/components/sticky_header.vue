@@ -70,6 +70,7 @@ export default {
     title: { default: '' },
     tabs: { default: () => [] },
     isFluidLayout: { default: false },
+    blocksMerge: { default: false },
   },
   data() {
     return {
@@ -226,7 +227,7 @@ export default {
             </li>
           </ul>
           <div class="gl-display-none gl-lg-display-flex gl-align-items-center gl-ml-auto">
-            <discussion-counter blocks-merge hide-options />
+            <discussion-counter :blocks-merge="blocksMerge" hide-options />
             <div
               v-if="isSignedIn"
               :class="{ 'gl-display-flex gl-gap-3': isNotificationsTodosButtons }"
