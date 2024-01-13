@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.3 (2024-01-13)
+
+### Fixed (1 change)
+
+- [Make chat_names table migration idempotent](gitlab-org/gitlab@1757965f503f2f0eb144731a982d4f83519e61d9) ([merge request](gitlab-org/gitlab!141704))
+
 ## 16.7.2 (2024-01-10)
 
 ### Fixed (1 change)
@@ -922,6 +928,10 @@ entry.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.5 (2024-01-13)
+
+No changes.
+
 ## 16.6.4 (2024-01-10)
 
 ### Fixed (1 change)
@@ -1520,6 +1530,12 @@ entry.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.7 (2024-01-13)
+
+### Fixed (1 change)
+
+- [Make chat_names table migration idempotent](gitlab-org/gitlab@1a2ac58037d06717b9a27f5b2a6a9e5ec887d374) ([merge request](gitlab-org/gitlab!141706))
 
 ## 16.5.6 (2024-01-11)
 
