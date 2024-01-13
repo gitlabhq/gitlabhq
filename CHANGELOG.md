@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.3 (2024-01-13)
+
+### Fixed (1 change)
+
+- [Make chat_names table migration idempotent](gitlab-org/gitlab@1757965f503f2f0eb144731a982d4f83519e61d9) ([merge request](gitlab-org/gitlab!141704))
+
 ## 16.7.2 (2024-01-10)
 
 ### Fixed (1 change)
