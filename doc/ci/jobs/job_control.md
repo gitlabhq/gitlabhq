@@ -1218,3 +1218,49 @@ a branch that has an open merge request associated with it.
 To [prevent duplicate pipelines](#avoid-duplicate-pipelines), use
 [`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
+
+### `This GitLab CI configuration is invalid` for variable expressions
+
+You might receive one of several `This GitLab CI configuration is invalid` errors
+when working with [CI/CD variable expressions](#cicd-variable-expressions).
+These syntax errors can be caused by incorrect usage of quote characters.
+
+In variable expressions, strings should be quoted, while variables should not be quoted.
+For example:
+
+```yaml
+variables:
+  ENVIRONMENT: production
+
+job:
+  script: echo
+  rules:
+    - if: $ENVIRONMENT == "production"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
+In this example, both `if:` clauses are valid because the `production` string is quoted,
+and the CI/CD variables are unquoted.
+
+On the other hand, these `if:` clauses are all invalid:
+
+```yaml
+variables:
+  ENVIRONMENT: production
+
+job:
+  script: echo
+  rules:       # These rules all cause YAML syntax errors:
+    - if: ${ENVIRONMENT} == "production"
+    - if: "$ENVIRONMENT" == "production"
+    - if: $ENVIRONMENT == production
+    - if: "production" == "production"
+```
+
+In this example:
+
+- `if: ${ENVIRONMENT} == "production"` is invalid, because `${ENVIRONMENT}` is not valid
+  formatting for CI/CD variables in `if:`.
+- `if: "$ENVIRONMENT" == "production"` is invalid, because the variable is quoted.
+- `if: $ENVIRONMENT == production` is invalid, because the string is not quoted.
+- `if: "production" == "production"` is invalid, because there is no CI/CD variable to compare.
