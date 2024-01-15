@@ -5,13 +5,13 @@ import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
   const findFormAction = (selector) => {
-    return $(`#oauth-container .js-oauth-login${selector}`).parent('form').attr('action');
+    return $(`.js-oauth-login ${selector}`).parent('form').attr('action');
   };
 
   beforeEach(() => {
     setHTMLFixture(htmlOauthRememberMe);
 
-    new OAuthRememberMe({ container: $('#oauth-container') }).bindEvents();
+    new OAuthRememberMe({ container: $('.js-oauth-login') }).bindEvents();
   });
 
   afterEach(() => {
@@ -19,7 +19,7 @@ describe('OAuthRememberMe', () => {
   });
 
   it('adds and removes the "remember_me" query parameter from all OAuth login buttons', () => {
-    $('#oauth-container #remember_me_omniauth').click();
+    $('.js-oauth-login #remember_me_omniauth').click();
 
     expect(findFormAction('.twitter')).toBe('http://example.com/?remember_me=1');
     expect(findFormAction('.github')).toBe('http://example.com/?remember_me=1');
@@ -27,7 +27,7 @@ describe('OAuthRememberMe', () => {
       'http://example.com/?redirect_fragment=L1&remember_me=1',
     );
 
-    $('#oauth-container #remember_me_omniauth').click();
+    $('.js-oauth-login #remember_me_omniauth').click();
 
     expect(findFormAction('.twitter')).toBe('http://example.com/');
     expect(findFormAction('.github')).toBe('http://example.com/');

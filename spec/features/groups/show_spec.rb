@@ -81,6 +81,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
           expect(find('.group-row:nth-child(1) .namespace-title > a')).to have_content(project2.title)
           expect(find('.group-row:nth-child(2) .namespace-title > a')).to have_content(project1.title)
           expect(find('.group-row:nth-child(3) .namespace-title > a')).to have_content(project3.title)
+          expect(page).to have_selector('button[data-testid="base-dropdown-toggle"]', text: 'Stars')
         end
       end
     end

@@ -30,7 +30,7 @@ module Gitlab
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
           group_testing_hook: { threshold: 5, interval: 1.minute },
-          member_delete: { threshold: 60, interval: 1.minute },
+          members_delete: { threshold: -> { application_settings.members_delete_limit }, interval: 1.minute },
           profile_add_new_email: { threshold: 5, interval: 1.minute },
           web_hook_calls: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },

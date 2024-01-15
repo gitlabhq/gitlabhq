@@ -450,6 +450,7 @@ module ApplicationSettingsHelper
       :issues_create_limit,
       :notes_create_limit,
       :notes_create_limit_allowlist_raw,
+      :members_delete_limit,
       :raw_blob_request_limit,
       :project_import_limit,
       :project_export_limit,

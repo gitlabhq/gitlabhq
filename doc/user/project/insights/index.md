@@ -4,27 +4,28 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights for projects **(ULTIMATE ALL)**
+# Insights **(ULTIMATE ALL)**
 
-Configure project insights to explore data such as:
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
+
+Configure insights for your projects and groups to explore data such as:
 
 - Issues created and closed during a specified period.
 - Average time for merge requests to be merged.
 - Triage hygiene.
 
-Insights are also available for [groups](../../group/insights/index.md).
+You can also create custom Insights reports that are relevant for your group.
 
 ## View project insights
 
 Prerequisites:
 
-- You must have:
-  - Access to a project to view information about its merge requests and issues.
-  - Permission to view confidential merge requests and issues in the project.
+- For project insights, you must have access to the project and permission to view information about its merge requests and issues.
+- For group insights, you must have permission to view the group.
 
-To view project insights:
+To view insights for a project or group:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Insights**.
 1. To view a report, select the **Select report** dropdown list.
 
@@ -35,23 +36,61 @@ You can direct users to a specific report in Insights by using the deep-linked U
 To create a deep link, append the report key to the end of the Insights report URL.
 For example, a GitLab report with the key `bugsCharts` has the deep link URL `https://gitlab.com/gitlab-org/gitlab/insights/#/bugsCharts`.
 
+## Interact with Insights charts
+
+You can interact with the insights charts to view details about your group's activity.
+
+### Display different reports
+
+To display one of the available reports on the insights page, from the **Select report** dropdown list,
+select the report you want to display.
+
+### View bar chart annotations
+
+To view annotations, hover over each bar in the chart.
+
+### Zoom in on chart
+
+Insights display data from the last 90 days. You can zoom in to display data only from a subset of the 90-day range.
+
+To do this, select the pause icons (**{status-paused}**) and slide them along the horizontal axis:
+
+- To change the start date, slide the left pause icon to the left or right.
+- To change the end date, slide the right pause icon to the left or right.
+
+### Exclude dimensions from charts
+
+By default, insights display all available dimensions on the chart.
+
+To exclude a dimension, from the legend below the chart, select the name of the dimension.
+
+### Drill down on charts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+
+You can drill down into the data of the **Bugs created per month by priority** and **Bugs created per month by severity** charts from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+
+To view a drill-down report of the data for a specific priority or severity in a month:
+
+- On the chart, select the bar stack you want to drill down on.
+
 ## Configure project insights
 
 Prerequisites:
 
 - Depending on your project configuration, you must have at least the Developer role.
 
-Project insights are configured with the [`.gitlab/insights.yml`](#insights-configuration-file) file in the project. If a project doesn't have a configuration file, it uses the [group configuration](../../group/insights/index.md#configure-group-insights).
+Project insights are configured with the [`.gitlab/insights.yml`](#insights-configuration-file) file in the project. If a project doesn't have a configuration file, it uses the [group configuration](#configure-group-insights).
 
 The `.gitlab/insights.yml` file is a YAML file where you define:
 
 - The structure and order of charts in a report.
 - The style of charts displayed in the report of your project or group.
 
-To configure project insights, either:
+To configure project insights, create a file `.gitlab/insights.yml` either:
 
-- Create a `.gitlab/insights.yml` file locally in the root directory of your project, and push your changes.
-- Create a `.gitlab/insights.yml` file in the UI:
+- Locally, in the root directory of your project, and push your changes.
+- From the UI:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Above the file list, select the branch you want to commit to, select the plus icon, then select **New file**.
   1. In the **File name** text box, enter `.gitlab/insights.yml`.
@@ -59,7 +98,21 @@ To configure project insights, either:
   1. Select **Commit changes**.
 
 After you create the configuration file, you can also
-[use it for the project's group](../../group/insights/index.md#configure-group-insights).
+use it for the project's group.
+
+## Configure group insights
+
+GitLab reads insights from the
+[default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+
+To configure group insights:
+
+1. In a project that belongs to your group, [create a `.gitlab/insights.yml` file](#configure-project-insights).
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics** and find the **Insights** section.
+1. Select the project that contains your `.gitlab/insights.yml` configuration file.
+1. Select **Save changes**.
 
 ## Insights configuration file
 
@@ -403,7 +456,7 @@ Use `query.environment_tiers` to define an array of environments to include the 
 
 Use `projects` to limit where issuables are queried from:
 
-- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-group-insights), use `projects` to define the projects from which to query issuables. By default, all projects under the group are used.
+- If `.gitlab/insights.yml` is used for a group's insights, use `projects` to define the projects from which to query issuables. By default, all projects under the group are used.
 - If `.gitlab/insights.yml` is used for a project's insights, specifying other projects does not yield results. By default, the project is used.
 
 #### `projects.only`

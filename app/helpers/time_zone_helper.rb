@@ -33,6 +33,19 @@ module TimeZoneHelper
     end
   end
 
+  # The identifiers in `timezone_data` are not unique. Some cities (e.g. London and Edinburgh) have
+  # the same `identifier` value (e.g. "Europe/London").
+  # This method merges such entries into one, joining the city names.
+  # This unique list is better suited for selectboxes etc.
+  def timezone_data_with_unique_identifiers(format: :short)
+    timezone_data(format: format)
+      .group_by { |entry| entry[:identifier] }
+      .map do |_identifier, entries|
+        names = entries.map { |entry| entry[:name] }.sort.join(', ') # rubocop:disable Rails/Pluck -- Not a ActiveRecord object
+        entries.first.merge({ name: names })
+      end
+  end
+
   def local_timezone_instance(timezone)
     return Time.zone if timezone.blank?
 

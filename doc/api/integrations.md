@@ -462,6 +462,40 @@ Get the Datadog integration settings for a project.
 GET /projects/:id/integrations/datadog
 ```
 
+## Diffblue Cover
+
+### Set up Diffblue Cover
+
+Set up the Diffblue Cover integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/diffblue-cover
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `diffblue_license_key` | string | true | Diffblue Cover license key. |
+| `diffblue_access_token_name` | string | true | Access token name used by Diffblue Cover in pipelines. |
+| `diffblue_access_token_secret` | string  | true | Access token secret used by Diffblue Cover in pipelines. |
+
+### Disable Diffblue Cover
+
+Disable the Diffblue Cover integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/diffblue-cover
+```
+
+### Get Diffblue Cover settings
+
+Get the Diffblue Cover integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/diffblue-cover
+```
+
 ## Discord Notifications
 
 ### Set up Discord Notifications

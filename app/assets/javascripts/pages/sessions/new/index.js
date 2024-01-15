@@ -16,7 +16,7 @@ new SigninTabsMemoizer(); // eslint-disable-line no-new
 new NoEmojiValidator(); // eslint-disable-line no-new
 
 new OAuthRememberMe({
-  container: $('.omniauth-container'),
+  container: $('.js-oauth-login'),
 }).bindEvents();
 
 // Save the URL fragment from the current window location. This will be present if the user was

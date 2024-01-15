@@ -137,6 +137,7 @@ module ApplicationSettingImplementation
         mirror_available: true,
         notes_create_limit: 300,
         notes_create_limit_allowlist: [],
+        members_delete_limit: 60,
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,

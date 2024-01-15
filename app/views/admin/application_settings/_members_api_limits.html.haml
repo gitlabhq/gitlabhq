@@ -1,0 +1,21 @@
+%section.settings.as-members-api-limits.no-animate#js-members-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Members API rate limit')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = _('Limit the number of project or group members a user can delete per minute through API requests.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_members_api'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-members-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          = f.label :members_delete_limit, _('Maximum requests per minute per group / project'), class: 'label-bold'
+          = f.number_field :members_delete_limit, min: 0, class: 'form-control gl-form-input'
+          .form-text.gl-text-gray-600
+            = _("Set to 0 to disable the limit.")
+
+      = f.submit _('Save changes'), pajamas_button: true

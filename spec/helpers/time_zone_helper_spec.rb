@@ -93,6 +93,29 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
     end
   end
 
+  describe '#timezone_data_with_unique_identifiers' do
+    subject { helper.timezone_data_with_unique_identifiers }
+
+    before do
+      allow(helper).to receive(:timezone_data).and_return([
+        { identifier: 'Europe/London', name: 'London' },
+        { identifier: 'Europe/London', name: 'Edinburgh' },
+        { identifier: 'Europe/Berlin', name: 'Berlin' },
+        { identifier: 'Europe/London', name: 'Hogwarts' }
+
+      ])
+    end
+
+    let(:expected) do
+      [
+        { identifier: 'Europe/London', name: 'Edinburgh, Hogwarts, London' },
+        { identifier: 'Europe/Berlin', name: 'Berlin' }
+      ]
+    end
+
+    it { is_expected.to eq(expected) }
+  end
+
   describe '#local_time' do
     let_it_be(:timezone) { 'America/Los_Angeles' }
 

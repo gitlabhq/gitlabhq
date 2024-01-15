@@ -9,26 +9,23 @@
 
 = render_if_exists "layouts/google_tag_manager_body"
 
-#signin-container
+.js-non-oauth-login
   - if any_form_based_providers_enabled?
     = render 'devise/shared/tabs_ldap', render_signup_link: false
   .tab-content
     - if password_authentication_enabled_for_web? || ldap_sign_in_enabled? || crowd_enabled?
       = render 'devise/shared/signin_box'
-
-  -# Show a message if none of the mechanisms above are enabled
-  - if !password_authentication_enabled_for_web? && !ldap_sign_in_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
-    %div
-      = _('No authentication methods configured.')
-
-  - if Gitlab::CurrentSettings.current_application_settings.terms
-    %p.gl-px-5
-      = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
-      link_end: '</a>'.html_safe }
-
-  - if allow_signup?
-    %p.gl-mt-3.gl-text-center
-      = _("Don't have an account yet?")
-      = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { testid: 'register-link' }
-  - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
-    = render 'devise/shared/omniauth_box'
+-# Show a message if none of the mechanisms above are enabled
+- if !password_authentication_enabled_for_web? && !ldap_sign_in_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
+  %div
+    = _('No authentication methods configured.')
+- if Gitlab::CurrentSettings.current_application_settings.terms
+  %p.gl-px-5
+    = html_escape(s_("SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}.")) % { link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>".html_safe,
+    link_end: '</a>'.html_safe }
+- if allow_signup?
+  %p.gl-mt-3.gl-text-center
+    = _("Don't have an account yet?")
+    = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { testid: 'register-link' }
+- if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
+  = render 'devise/shared/omniauth_box'

@@ -52,6 +52,23 @@ For deprecation reviewers (Technical Writers only):
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Atlassian Crowd OmniAuth provider
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.3</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
+</div>
+
+The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
+next major release, GitLab 18.0. This gem sees very little use and its
+[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
+[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner registration token in Runner Operator
 
 <div class="deprecation-notes">
@@ -191,23 +208,6 @@ From GitLab 18.0 and later, the methods to register runners introduced by the ne
 <div class="milestone-wrapper" data-milestone="17.0">
 
 ## GitLab 17.0
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Atlassian Crowd OmniAuth provider
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.3</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
-</div>
-
-The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
-next major release, GitLab 16.0. This gem sees very little use and its
-[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
-[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
-
-</div>
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 

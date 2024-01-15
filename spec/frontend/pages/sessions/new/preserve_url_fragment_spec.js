@@ -5,7 +5,7 @@ import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
   const findFormAction = (selector) => {
-    return $(`.omniauth-container ${selector}`).parent('form').attr('action');
+    return $(`.js-oauth-login ${selector}`).parent('form').attr('action');
   };
 
   beforeEach(() => {
@@ -44,9 +44,7 @@ describe('preserve_url_fragment', () => {
     });
 
     it('when "remember-me" is present', () => {
-      $('.js-oauth-login')
-        .parent('form')
-        .attr('action', (i, href) => `${href}?remember_me=1`);
+      $('.js-oauth-login form').attr('action', (i, href) => `${href}?remember_me=1`);
 
       preserveUrlFragment('#L65');
 

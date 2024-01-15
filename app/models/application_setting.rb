@@ -579,6 +579,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :max_import_size,
       :max_pages_custom_domains_per_project,
       :max_terraform_state_size_bytes,
+      :members_delete_limit,
       :notes_create_limit,
       :package_registry_cleanup_policies_worker_capacity,
       :packages_cleanup_package_file_worker_capacity,
@@ -593,6 +594,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :terminal_max_session_time,
       :users_get_by_id_limit
   end
+
+  jsonb_accessor :rate_limits,
+    members_delete_limit: [:integer, { default: 60 }]
+
+  validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :search_rate_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },

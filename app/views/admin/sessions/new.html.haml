@@ -4,7 +4,7 @@
 .row.gl-mt-5.justify-content-center
   .col-md-5
     .login-page
-      #signin-container.borderless
+      .borderless
         - if any_form_based_providers_enabled?
           = render 'devise/shared/tabs_ldap', show_password_form: allow_admin_mode_password_authentication_for_web?, render_signup_link: false
         .tab-content

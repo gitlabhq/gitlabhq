@@ -110,6 +110,7 @@ export default {
       :no-results-text="$options.translations.noResultsText"
       :selected="tzValue"
       block
+      fluid-width
       searchable
       @search="setSearchTerm"
       @select="selectTimezone"

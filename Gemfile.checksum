@@ -492,7 +492,7 @@
 {"name":"rails","version":"7.0.8","platform":"ruby","checksum":"8e43af921acf766fb429126f020ec90c3b25809631f8fbdff95c3553828d5867"},
 {"name":"rails-controller-testing","version":"1.0.5","platform":"ruby","checksum":"741448db59366073e86fc965ba403f881c636b79a2c39a48d0486f2607182e94"},
 {"name":"rails-dom-testing","version":"2.0.3","platform":"ruby","checksum":"b140c4f39f6e609c8113137b9a60dfc2ecb89864e496f87f23a68b3b8f12d8d1"},
-{"name":"rails-html-sanitizer","version":"1.5.0","platform":"ruby","checksum":"bf326075e8a968cd882c30b15a4c9100059be3af2356093dc68324ec3bd9ea79"},
+{"name":"rails-html-sanitizer","version":"1.6.0","platform":"ruby","checksum":"86e9f19d2e6748890dcc2633c8945ca45baa08a1df9d8c215ce17b3b0afaa4de"},
 {"name":"rails-i18n","version":"7.0.3","platform":"ruby","checksum":"e3158e98c5332d129fd5131f171ac575eb30dbb8919b21595382b08850cf2bd3"},
 {"name":"railties","version":"7.0.8","platform":"ruby","checksum":"12325c3933efd33f8ead640197dec3b8c27c8d45607dd68b7b925896bf09cc69"},
 {"name":"rainbow","version":"3.1.1","platform":"ruby","checksum":"039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a"},

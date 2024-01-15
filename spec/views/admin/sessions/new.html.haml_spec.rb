@@ -45,7 +45,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
       expect(rendered).not_to have_content _('No authentication methods configured.')
       expect(rendered).to have_css('.omniauth-divider')
       expect(rendered).to have_content(_('or sign in with'))
-      expect(rendered).to have_css('.omniauth-container')
+      expect(rendered).to have_css('.js-oauth-login')
     end
   end
 

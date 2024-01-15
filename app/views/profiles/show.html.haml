@@ -66,7 +66,7 @@
           %h4.gl-my-0= s_("Profiles|Time settings")
       %p.gl-text-secondary= s_("Profiles|Set your local time zone.")
       = f.label :user_timezone, _("Time zone")
-      .js-timezone-dropdown{ data: { timezone_data: timezone_data.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
+      .js-timezone-dropdown{ data: { timezone_data: timezone_data_with_unique_identifiers.to_json, initial_value: @user.timezone, name: 'user[timezone]' } }
 
     .settings-section.js-search-settings-section.gl-border-t.gl-pt-6
       .settings-sticky-header

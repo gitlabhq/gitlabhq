@@ -28,6 +28,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
     it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
+    it { expect(setting.members_delete_limit).to eq(60) }
   end
 
   describe 'validations' do
@@ -57,6 +58,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         }
       }
     end
+
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -225,6 +228,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           max_import_size
           max_pages_custom_domains_per_project
           max_terraform_state_size_bytes
+          members_delete_limit
+          notes_create_limit
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
           pipeline_limit_per_project_user_sha
@@ -237,7 +242,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           sidekiq_job_limiter_limit_bytes
           terminal_max_session_time
           users_get_by_id_limit
-          notes_create_limit
         ]
       end
 

@@ -6,7 +6,7 @@ module Integrations
       section: SECTION_TYPE_CONNECTION,
       type: :password,
       title: -> { s_('DiffblueCover|License key') },
-      description: -> { s_('DiffblueCover|Diffblue Cover license key') },
+      description: -> { s_('DiffblueCover|Diffblue Cover license key.') },
       non_empty_password_title: -> { s_('DiffblueCover|License key') },
       non_empty_password_help: -> {
         s_(
@@ -21,7 +21,7 @@ module Integrations
         format(
           s_(
             'DiffblueCover|Enter your Diffblue Cover license key or ' \
-            'visit %{diffblue_link} to obtain a free trial license.'
+            'go to %{diffblue_link} to obtain a free trial license.'
           ),
           diffblue_link: diffblue_link
         )
@@ -30,7 +30,7 @@ module Integrations
     field :diffblue_access_token_name,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('DiffblueCover|Name') },
-      description: -> { s_('DiffblueCover|Access token name used by Diffblue Cover in pipelines') },
+      description: -> { s_('DiffblueCover|Access token name used by Diffblue Cover in pipelines.') },
       required: true,
       placeholder: -> { s_('DiffblueCover|My token name') }
 
@@ -38,7 +38,7 @@ module Integrations
       section: SECTION_TYPE_CONFIGURATION,
       type: :password,
       title: -> { s_('DiffblueCover|Secret') },
-      description: -> { s_('DiffblueCover|Access token secret used by Diffblue Cover in pipelines') },
+      description: -> { s_('DiffblueCover|Access token secret used by Diffblue Cover in pipelines.') },
       non_empty_password_title: -> { s_('DiffblueCover|Secret') },
       non_empty_password_help: -> { s_('DiffblueCover|Leave blank to use your current secret value.') },
       required: true,
@@ -82,8 +82,8 @@ module Integrations
           title: s_('DiffblueCover|Integration details'),
           description:
             s_(
-              'DiffblueCover|Diffblue Cover is a reinforcement learning AI platform that automatically ' \
-              'writes comprehensive, human-like Java unit tests. Integrate the power of Diffblue ' \
+              'DiffblueCover|Diffblue Cover is a generative AI platform that automatically ' \
+              'writes comprehensive, human-like Java unit tests. Integrate Diffblue ' \
               'Cover into your CI/CD workflow for fully autonomous operation.'
             )
         },
@@ -91,9 +91,9 @@ module Integrations
           type: SECTION_TYPE_CONFIGURATION,
           title: s_('DiffblueCover|Access token'),
           description:
-            'A GitLab access token is required in allow Diffblue Cover to access your project. ' \
-            'Use a GitLab access token with a <code>Developer</code> role, plus ' \
-            '<code>api</code> and <code>write_repository</code> scopes.'
+            'You must have a GitLab access token for Diffblue Cover to access your project. ' \
+            'Use a GitLab access token with at least the Developer role and ' \
+            'the <code>api</code> and <code>write_repository</code> permissions.'
         }
       ]
     end

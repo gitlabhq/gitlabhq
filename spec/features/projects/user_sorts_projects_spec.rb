@@ -10,6 +10,10 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
   let_it_be(:group_member) { create(:group_member, :maintainer, user: user, group: group) }
   let_it_be(:project) { create(:project, :public, group: group) }
 
+  def find_dropdown_toggle
+    find('button[data-testid=base-dropdown-toggle]')
+  end
+
   shared_examples_for "sort order persists across all views" do |project_paths_label, group_paths_label|
     it "is set on the dashboard_projects_path" do
       visit(dashboard_projects_path)
@@ -27,7 +31,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       visit(group_canonical_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
-        expect(find('.gl-dropdown-toggle')).to have_content(group_paths_label)
+        expect(find_dropdown_toggle).to have_content(group_paths_label)
       end
     end
 
@@ -35,7 +39,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       visit(details_group_path(group))
 
       within '[data-testid=group_sort_by_dropdown]' do
-        expect(find('.gl-dropdown-toggle')).to have_content(group_paths_label)
+        expect(find_dropdown_toggle).to have_content(group_paths_label)
       end
     end
   end
@@ -67,8 +71,8 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       sign_in(user)
       visit(group_canonical_path(group))
       within '[data-testid=group_sort_by_dropdown]' do
-        find('button.gl-dropdown-toggle').click
-        first(:button, 'Created').click
+        find_dropdown_toggle.click
+        find('li', text: 'Created').click
         wait_for_requests
       end
     end
@@ -81,8 +85,8 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       sign_in(user)
       visit(details_group_path(group))
       within '[data-testid=group_sort_by_dropdown]' do
-        find('button.gl-dropdown-toggle').click
-        first(:button, 'Updated').click
+        find_dropdown_toggle.click
+        find('li', text: 'Updated').click
         wait_for_requests
       end
     end
