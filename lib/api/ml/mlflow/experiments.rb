@@ -47,6 +47,42 @@ module API
             present response, with: Entities::Ml::Mlflow::ListExperiment
           end
 
+          desc 'Search experiments' do
+            success Entities::Ml::Mlflow::ListExperiment
+            detail 'https://www.mlflow.org/docs/latest/rest-api.html#list-experiments'
+          end
+          params do
+            optional :max_results,
+              type: Integer,
+              desc: 'Maximum number of experiments to fetch in a page. Default is 200, maximum is 1000.',
+              default: 200
+            optional :order_by,
+              type: String,
+              desc: 'Order criteria. Can be by a column of the experiment (created_at, name).',
+              default: 'created_at DESC'
+            optional :page_token,
+              type: String,
+              desc: 'Token for pagination'
+            optional :filter,
+              type: String,
+              desc: 'This parameter is ignored'
+          end
+          post 'search', urgency: :low do
+            max_results = [params[:max_results], 1000].min
+
+            finder_params = model_order_params(params)
+
+            finder = ::Projects::Ml::ExperimentFinder.new(user_project, finder_params)
+            paginator = finder.execute.keyset_paginate(cursor: params[:page_token], per_page: max_results)
+
+            result = {
+              experiments: paginator.records,
+              next_page_token: paginator.cursor_for_next_page
+            }
+
+            present result, with: Entities::Ml::Mlflow::SearchExperiments
+          end
+
           desc 'Create experiment' do
             success Entities::Ml::Mlflow::NewExperiment
             detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#create-experiment'

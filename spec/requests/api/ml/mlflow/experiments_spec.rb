@@ -207,4 +207,81 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
   end
+
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/search' do
+    let_it_be(:experiment_b) do
+      create(:ml_experiments, project: project, name: "#{experiment.name}_2")
+    end
+
+    let_it_be(:experiment_c) do
+      create(:ml_experiments, project: project, name: "#{experiment.name}_1")
+    end
+
+    let(:order_by) { nil }
+    let(:default_params) do
+      {
+        'max_results' => 2,
+        'order_by' => order_by
+      }
+    end
+
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/experiments/search" }
+    let(:request) { post api(route), params: default_params.merge(**params), headers: headers }
+
+    it 'returns all the models', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      is_expected.to match_response_schema('ml/search_experiments')
+      expect(json_response["experiments"].count).to be(2)
+    end
+
+    describe 'pagination and ordering' do
+      RSpec.shared_examples 'a paginated search experiments request with order' do
+        it 'paginates respecting the provided order by' do
+          first_page_experiments = json_response['experiments']
+          expect(first_page_experiments.size).to eq(2)
+
+          expect(first_page_experiments[0]['experiment_id'].to_i).to eq(expected_order[0].iid)
+          expect(first_page_experiments[1]['experiment_id'].to_i).to eq(expected_order[1].iid)
+
+          params = default_params.merge(page_token: json_response['next_page_token'])
+
+          post api(route), params: params, headers: headers
+
+          second_page_response = Gitlab::Json.parse(response.body)
+          second_page_experiments = second_page_response['experiments']
+
+          expect(second_page_response['next_page_token']).to be_nil
+          expect(second_page_experiments.size).to eq(1)
+          expect(second_page_experiments[0]['experiment_id'].to_i).to eq(expected_order[2].iid)
+        end
+      end
+
+      let(:default_order) { [experiment_c, experiment_b, experiment] }
+
+      context 'when ordering is not provided' do
+        let(:expected_order) { default_order }
+
+        it_behaves_like 'a paginated search experiments request with order'
+      end
+
+      context 'when order by column is provided', 'and column exists' do
+        let(:order_by) { 'name ASC'  }
+        let(:expected_order) { [experiment, experiment_c, experiment_b] }
+
+        it_behaves_like 'a paginated search experiments request with order'
+      end
+
+      context 'when order by column is provided', 'and column does not exist' do
+        let(:order_by) { 'something DESC' }
+        let(:expected_order) { default_order }
+
+        it_behaves_like 'a paginated search experiments request with order'
+      end
+    end
+
+    describe 'Error States' do
+      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
+    end
+  end
 end

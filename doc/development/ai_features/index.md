@@ -97,11 +97,11 @@ In order to obtain a GCP service key for local development, follow the steps bel
 
 - Create a sandbox GCP project by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group GCP project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
 - If you are using an individual GCP project, you may also need to enable the Vertex AI API:
-    1. Visit [welcome page](https://console.cloud.google.com/welcome), choose your project (e.g. jdoe-5d23dpe).
-    1. Go to **APIs & Services > Enabled APIs & services**.
-    1. Select **+ Enable APIs and Services**.
-    1. Search for `Vertex AI API`.
-    1. Select **Vertex AI API**, then select **Enable**.
+  1. Visit [welcome page](https://console.cloud.google.com/welcome), choose your project (e.g. jdoe-5d23dpe).
+  1. Go to **APIs & Services > Enabled APIs & services**.
+  1. Select **+ Enable APIs and Services**.
+  1. Search for `Vertex AI API`.
+  1. Select **Vertex AI API**, then select **Enable**.
 - Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
 - Authenticate locally with GCP using the [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
 - Open the Rails console. Update the settings to:
@@ -176,121 +176,121 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 
 ### Setup
 
-1. Setup AI Gateway:
-    1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-    1. Ensure that the following environment variables are set in the `.env` file:
+1. Set up AI Gateway:
+   1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
+   1. Ensure that the following environment variables are set in the `.env` file:
 
-        ```shell
-        AIGW_AUTH__BYPASS_EXTERNAL=true
-        ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
-        AIGW_VERTEX_TEXT_MODEL__PROJECT="[REDACTED]"
-        ```
+      ```shell
+      AIGW_AUTH__BYPASS_EXTERNAL=true
+      ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
+      AIGW_VERTEX_TEXT_MODEL__PROJECT="[REDACTED]"
+      ```
 
-    1. Run `poetry run ai_gateway`.
-    1. Visit [OpenAPI playground](http://0.0.0.0:5052/docs), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
-       If something went wrong, check `modelgateway_debug.log` if it contains error information.
+   1. Run `poetry run ai_gateway`.
+   1. Visit OpenAPI playground (`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
+      If something went wrong, check `modelgateway_debug.log` if it contains error information.
 1. Setup GitLab Development Kit (GDK):
-    1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).
-    1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#set-up-gdktest-hostname).
-    1. [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) (e.g. Ultimate).
-    1. Export these environment variables in the same terminal session with `gdk start`:
+   1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).
+   1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#set-up-gdktest-hostname).
+   1. [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) (e.g. Ultimate).
+   1. Export these environment variables in the same terminal session with `gdk start`:
 
-        ```shell
-        export CODE_SUGGESTIONS_BASE_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance
-        export LLM_DEBUG=1                                   # Enable debug logging
-        ```
+      ```shell
+      export CODE_SUGGESTIONS_BASE_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance
+      export LLM_DEBUG=1                                   # Enable debug logging
+      ```
 
-        Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.
-    1. Enable the following feature flags via `gdk rails console`:
+      Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.
+   1. Enable the following feature flags via `gdk rails console`:
 
-        ```ruby
-        # NOTE: This feature flag name might be changed. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140352.
-        ::Feature.enable(:ai_global_switch)
+      ```ruby
+      # NOTE: This feature flag name might be changed. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140352.
+      ::Feature.enable(:ai_global_switch)
 
-        # This is to request to AI Gateway instead of built-in Anthropic client. See https://gitlab.com/gitlab-org/gitlab/-/issues/433213 for more info.
-        ::Feature.enable(:gitlab_duo_chat_requests_to_ai_gateway)
-        ```
+      # This is to request to AI Gateway instead of built-in Anthropic client. See https://gitlab.com/gitlab-org/gitlab/-/issues/433213 for more info.
+      ::Feature.enable(:gitlab_duo_chat_requests_to_ai_gateway)
+      ```
 
-    1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
+   1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
 
-        ```ruby
-        # Creating dummy token, and this will work as long as `AIGW_AUTH__BYPASS_EXTERNAL=true` in AI Gateway.
-        ::Ai::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
-        ```
+      ```ruby
+      # Creating dummy token, and this will work as long as `AIGW_AUTH__BYPASS_EXTERNAL=true` in AI Gateway.
+      ::Ai::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
+      ```
 
-    1. Ensure GitLab-Rails can talk to the AI Gateway. Run `gdk rails console` and execute:
+   1. Ensure GitLab-Rails can talk to the AI Gateway. Run `gdk rails console` and execute:
 
-        ```ruby
-        user = User.first
-        Gitlab::Llm::AiGateway::Client.new(user).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
-        ```
+      ```ruby
+      user = User.first
+      Gitlab::Llm::AiGateway::Client.new(user).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
+      ```
 
 #### Verify the setup with GraphQL
 
 1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 1. Execute the `aiAction` mutation. Here is an example:
 
-    ```graphql
-    mutation {
-      aiAction(
-        input: {
-          chat: {
-            resourceId: "gid://gitlab/User/1",
-            content: "Hello"
-          }
-        }
-      ){
-        requestId
-        errors
-      }
-    }
-    ```
+   ```graphql
+   mutation {
+     aiAction(
+       input: {
+         chat: {
+           resourceId: "gid://gitlab/User/1",
+           content: "Hello"
+         }
+       }
+     ){
+       requestId
+       errors
+     }
+   }
+   ```
 
 1. (GitLab Duo Chat only) Execute the following query to fetch the response:
 
-    ```graphql
-    query {
-      aiMessages {
-        nodes {
-          requestId
-          content
-          role
-          timestamp
-          chunkId
-          errors
-        }
-      }
-    }
-    ```
+   ```graphql
+   query {
+     aiMessages {
+       nodes {
+         requestId
+         content
+         role
+         timestamp
+         chunkId
+         errors
+       }
+     }
+   }
+   ```
 
-    If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
+   If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
 
 ### Use GitLab as OIDC provider in AI Gateway
 
 1. Reconfigure AI Gateway:
-    1. Additionally, ensure that the following environment variables are set in the `.env` file:
+   1. Additionally, ensure that the following environment variables are set in the `.env` file:
 
-        ```shell
-        AIGW_GITLAB_URL="http://gdk.test:3000/"
-        AIGW_GITLAB_API_URL="http://gdk.test:3000/api/v4/"
-        AIGW_AUTH__BYPASS_EXTERNAL=False
-        ```
+      ```shell
+      AIGW_GITLAB_URL="http://gdk.test:3000/"
+      AIGW_GITLAB_API_URL="http://gdk.test:3000/api/v4/"
+      AIGW_AUTH__BYPASS_EXTERNAL=False
+      ```
 
-    1. Restart AI Gateway.
+   1. Restart AI Gateway.
 1. Reconfigure GitLab Development Kit (GDK):
-    1. Additionally, export the following environment variables:
+   1. Additionally, export the following environment variables:
 
-        ```shell
-        export GITLAB_SIMULATE_SAAS=1                                 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
-        ```
+      ```shell
+      export GITLAB_SIMULATE_SAAS=1                                 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
+      ```
 
-    1. Restart GDK.
+   1. Restart GDK.
 
 ### Use Customer Dot as OIDC provider in AI Gateway
 
 1. AI Gateway:
-    1. Ensure `AIGW_CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
-    1. Restart
+   1. Ensure `AIGW_CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
+   1. Restart
 
 ## Experimental REST API
 
@@ -336,7 +336,7 @@ As an example, assume we want to build an "explain code" action. To do this, we 
 
 ```graphql
 mutation {
-  aiAction(input: {explainCode: {resourceId: "gid://gitlab/MergeRequest/52", code: "foo() { console.log()" }}) {
+  aiAction(input: {explainCode: {resourceId: "gid://gitlab/MergeRequest/52", code: "foo() { console.log() }" }}) {
     clientMutationId
   }
 }
