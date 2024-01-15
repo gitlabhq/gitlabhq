@@ -1,5 +1,5 @@
+import SwaggerClient from 'swagger-client';
 import { setAttributes } from '~/lib/utils/dom_utils';
-import axios from '~/lib/utils/axios_utils';
 import {
   getBaseURL,
   relativePathToAbsolute,
@@ -42,11 +42,11 @@ export default async (el = document.getElementById('js-openapi-viewer')) => {
   const wrapperEl = el;
   const sandboxEl = createSandbox();
 
-  const { data } = await axios.get(wrapperEl.dataset.endpoint);
+  const { spec } = await SwaggerClient.resolve({ url: wrapperEl.dataset.endpoint });
 
   wrapperEl.appendChild(sandboxEl);
 
   sandboxEl.addEventListener('load', () => {
-    sandboxEl.contentWindow.postMessage(data, '*');
+    if (spec) sandboxEl.contentWindow.postMessage(JSON.stringify(spec), '*');
   });
 };

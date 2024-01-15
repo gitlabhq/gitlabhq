@@ -1,24 +1,25 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import SwaggerClient from 'swagger-client';
 import { TEST_HOST } from 'helpers/test_constants';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import renderOpenApi from '~/blob/openapi';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('OpenAPI blob viewer', () => {
   const id = 'js-openapi-viewer';
   const mockEndpoint = 'some/endpoint';
-  let mock;
 
   beforeEach(() => {
+    jest.spyOn(SwaggerClient, 'resolve').mockReturnValue(Promise.resolve({ spec: 'some spec' }));
     setHTMLFixture(`<div id="${id}" data-endpoint="${mockEndpoint}"></div>`);
-    mock = new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK);
   });
 
   afterEach(() => {
     resetHTMLFixture();
-    mock.restore();
+  });
+
+  it('bundles the spec file', async () => {
+    await renderOpenApi();
+    expect(SwaggerClient.resolve).toHaveBeenCalledWith({ url: mockEndpoint });
   });
 
   describe('without config options', () => {
