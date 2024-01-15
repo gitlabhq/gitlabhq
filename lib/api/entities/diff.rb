@@ -16,6 +16,7 @@ module API
       expose :new_file?, as: :new_file, documentation: { type: 'boolean' }
       expose :renamed_file?, as: :renamed_file, documentation: { type: 'boolean' }
       expose :deleted_file?, as: :deleted_file, documentation: { type: 'boolean' }
+      expose :generated?, as: :generated_file, documentation: { type: 'boolean' }
     end
   end
 end

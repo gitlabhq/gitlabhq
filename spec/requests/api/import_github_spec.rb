@@ -20,11 +20,18 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
     }
   end
 
+  let(:headers) do
+    {
+      'x-oauth-scopes' => 'read:org'
+    }
+  end
+
   let(:client) { double('client', user: provider_user, repository: provider_repo) }
 
   before do
     Grape::Endpoint.before_each do |endpoint|
       allow(endpoint).to receive(:client).and_return(client)
+      allow(client).to receive_message_chain(:octokit, :last_response, :headers).and_return(headers)
     end
   end
 

@@ -1107,6 +1107,8 @@ Example response:
 
 ## List merge request diffs
 
+> `generated_file` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+
 List diffs of the files changed in a merge request.
 
 ```plaintext
@@ -1136,6 +1138,7 @@ following response attributes:
 | `new_file`     | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |
+| `generated_file` | boolean | Indicates if the file is marked as generated. |
 
 Example request:
 
@@ -1156,7 +1159,8 @@ Example response:
     "diff": "@@ -1 +1 @@\ -Title\ +README",
     "new_file": false,
     "renamed_file": false,
-    "deleted_file": false
+    "deleted_file": false,
+    "generated_file": false
   },
   {
     "old_path": "VERSION",
@@ -1166,7 +1170,8 @@ Example response:
     "diff": "@@\ -1.9.7\ +1.9.8",
     "new_file": false,
     "renamed_file": false,
-    "deleted_file": false
+    "deleted_file": false,
+    "generated_file": false
   }
 ]
 ```

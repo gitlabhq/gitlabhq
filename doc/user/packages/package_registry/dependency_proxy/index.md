@@ -7,12 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Dependency proxy for packages **(PREMIUM ALL BETA)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
-> - This feature is in [Beta](../../../../policy/experiment-beta-support.md).
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
 
 The GitLab dependency proxy for packages is a local proxy for frequently pulled packages.
 It is implemented as a pull-through cache that works at the project level.

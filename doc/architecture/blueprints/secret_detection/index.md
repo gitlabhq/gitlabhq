@@ -35,8 +35,8 @@ See [target types](#target-types) for scan target priorities.
 
 ### Non-Goals
 
-Initial proposal is limited to detection and alerting across platform, with rejection only
-during [preceive Git interactions and browser-based detection](#iterations).
+Phase1 is limited to detection and alerting across platform, with rejection only
+during [prereceive Git interactions and browser-based detection](#iterations).
 
 Secret revocation and rotation is also beyond the scope of this new capability.
 
@@ -86,19 +86,46 @@ Targets out of scope for the initial phases include:
 
 The existing Secret Detection configuration covers 100+ rules across a variety
 of platforms. To reduce total cost of execution and likelihood of false positives
-the dedicated service targets only well-defined tokens. A well-defined token is
-defined as a token with a precise definition, most often a fixed substring prefix (or
-suffix) and fixed length.
+the dedicated service targets only well-defined, low-FP tokens.
 
 Token types to identify in order of importance:
 
 1. Well-defined GitLab tokens (including Personal Access Tokens and Pipeline Trigger Tokens)
 1. Verified Partner tokens (including AWS)
-1. Well-defined third party tokens
+1. Well-defined low-FP third party tokens
 1. Remainder tokens currently included in Secret Detection analyzer configuration
+
+A well-defined token is a token with a precise definition, most often a fixed
+substring prefix (or suffix) and fixed length.
+
+For GitLab and partner tokens, we have good domain understanding of our own tokens
+and by collaborating with partners verified the accuracy of their provided patterns.
+
+An observed low-FP token relies on user reports and dismissal reports. With delivery of
+[this data issue](https://gitlab.com/gitlab-data/product-analytics/-/issues/1225)
+we will have aggregates on FP-rates but primarily this is user-reported data, at present.
 
 In order to minimize false positives, there are no plans to introduce or alert on high-entropy,
 arbitrary strings; i.e. patterns such as `3lsjkw3a22`.
+
+#### Uniformity of rule configuration
+
+Rule pattern configuration should remain centralized in the `secrets` analyzer's packaged `gitleaks.toml`
+configuration, vendored to the monolith for Phase 1, and checksum-checked to ensure it matches the
+specific release version to avoid drift. Each token can be filtered by `tags` to form both high-confidence
+and blocking groupings. For example:
+
+```ruby
+prereceive_blocking_rules = toml.load_file('gitleaks.toml')['rules'].select do |r|
+  r.tags.include?('gitlab_blocking_p1') &&
+    r.tags.include?('gitlab_blocking')
+end
+```
+
+### Auditability
+
+A critical aspect of both secret detection and [suppression](#detection-suppression) is administrative visibility.
+With each phase we must include audit capabilities (events or logging) to enable event discovery.
 
 ## Proposal
 
@@ -142,17 +169,15 @@ In expansion phases we must explore chunking or alternative strategies like the 
 
 ## Design and implementation details
 
+The detection capability relies on a multiphase rollout, from an experimental component implemented directly in the monolith to a standalone service capable of scanning text blobs generically.
+
 The implementation of the secret scanning service is highly dependent on the outcomes of our benchmarking
 and capacity planning against both GitLab.com and our
 [Reference Architectures](../../../administration/reference_architectures/index.md).
 As the scanning capability must be an on-by-default component of both our SaaS and self-managed
-instances [the PoC](#iterations), the deployment characteristics must be considered to determine whether
-this is a standalone component or executed as a subprocess of the existing Sidekiq worker fleet
-(similar to the implementation of our Elasticsearch indexing service).
-
-Similarly, the scan target volume will require a robust and scalable enqueueing system to limit resource consumption.
-
-The detection capability relies on a multiphase rollout, from an experimental component implemented directly in the monolith to a standalone service capable of scanning text blobs generically.
+instances, [each iteration's](#iterations) deployment characteristic defines whether
+the service will act as a standalone component, or executed as a subprocess of the Rails architecture
+(as mirrors the implementation of our Elasticsearch indexing service).
 
 See [technical discovery](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
 for further background exploration.
@@ -177,13 +202,17 @@ for pre-filtering and `re2` for regex detections. See [spike issue](https://gitl
 Notable alternatives include high-performance regex engines such as [Hyperscan](https://github.com/intel/hyperscan) or it's portable fork [Vectorscan](https://github.com/VectorCamp/vectorscan).
 These systems may be worth exploring in the future if our performance characteristics show a need to grow beyond the existing stack, however the team's velocity in building an independently scalable and generic scanning engine was prioritized, see [ADR 001](decisions/001_use_ruby_push_check_approach_within_monolith.md) for more on the implementation language considerations.
 
+### Organization-level Controls
+
+Configuration and workflows should be oriented around [Organizations](../organization/index.md). Detection controls and governance patterns should support configuration across multiple projects and groups in a uniform way that emphasizes shared allowlists, organization-wide policies (i.e. disablement of push option bypass), and auditability.
+
+Each phase documents the paradigm used as we iterate from Instance-level to Organization-level controls.
+
 ### Phase 1 - Ruby pushcheck pre-receive integration
 
 The critical paths as outlined under [goals above](#goals) cover two major object
 types: Git text blobs (corresponding to push events) and arbitrary text blobs. In Phase 1,
 we focus entirely on Git text blobs.
-
-This phase will be considered "Experimental" with limited availability for customer opt-in, through instance level application settings.
 
 The detection flow for push events relies on subscribing to the PreReceive hook
 to scan commit data using the [PushCheck interface](https://gitlab.com/gitlab-org/gitlab/blob/3f1653f5706cd0e7bbd60ed7155010c0a32c681d/lib/gitlab/checks/push_check.rb). This `SecretScanningService`
@@ -192,6 +221,10 @@ the commit contents, and rejects the push when a secret is detected.
 See [Push event detection flow](#push-event-detection-flow) for sequence.
 
 In the case of a push detection, the commit is rejected inline and error returned to the end user.
+
+#### Configuration
+
+This phase will be considered "Experimental" with limited availability for customer opt-in, through instance level application settings.
 
 #### High-Level Architecture
 
@@ -260,7 +293,7 @@ sequenceDiagram
 
 The critical paths as outlined under [goals above](#goals) cover two major object
 types: Git text blobs (corresponding to push events) and arbitrary text blobs. In Phase 2,
-we focus entirely on Git text blobs.
+we continue to focus on Git text blobs.
 
 This phase emphasizes scaling the service outside of the monolith for general availability and to allow
 an on-by-default behavior. The architecture is adapted to provide an isolated and independently
@@ -268,13 +301,17 @@ scalable service outside of the Rails monolith.
 
 In the case of a push detection, the commit is rejected inline and error returned to the end user.
 
+#### Configuration
+
+This phase will be considered "Generally Available" and on-by-default, with disablement configuration through organization-level settings.
+
 #### High-Level Architecture
 
 The Phase 2 architecture involves extracting the secret detection logic into a standalone service
 which communicates directly with both the Rails application and Gitaly. This provides a means to scale
 the secret detection nodes independently, and reduce resource usage overhead on the rails application.
 
-Scans still runs synchronously as a (potentially) blocking pre-receive transaction.
+Scans still runs synchronously as a (potentially) blocking pre-receive transaction. The blob size remains limited to 1MB.
 
 Note that the node count is purely illustrative, but serves to emphasize the independent scaling requirements for the scanning service.
 
@@ -387,6 +424,10 @@ In any other case of detection, the Rails application manually creates a vulnera
 using the `Vulnerabilities::ManuallyCreateService` to surface the finding in the
 existing Vulnerability Management UI.
 
+#### Configuration
+
+This phase will be considered "Generally Available" and on-by-default, with disablement configuration through organization-level settings.
+
 #### High-Level Architecture
 
 There is no change to the architecture defined in Phase 2, however the individual load requirements may require scaling up the node counts for the detection service.
@@ -426,6 +467,43 @@ sequenceDiagram
     Rails->>User: rejected: secret found
 ```
 
+### Future Phases
+
+These are key items for delivering a feature-complete always-on experience but have not have yet been prioritized into phases.
+
+### Large blob sizes (1mb+)
+
+Current phases do not include expansions of blob sizes beyond 1mb. While the main limitation was chosen [to conform to RPC transfer limits for future iterations](#transfer-optimizations-for-large-git-data-blobs) we should expand to supporting additional blob sizes. This can be achieved in two ways:
+
+1. *Post-receive processing*
+
+    Accept blobs in a non-blocking fashion, process scanning as background job and alert passively on detection of a given secret.
+
+1. *Improvements to scanning logic batching*
+
+    Maintaining the constraint of 1MB is primarily futureproofing to match an expected transport protocol. This can be mitigated by using separate transport (http, reads from disk, ...) or by slicing blob sizes.
+
+### Detection Suppression
+
+Suppression of detection and action on leaked secrets will be supported at several levels.
+
+1. *Global suppression* - If a secret is highly-likely to be a false token (i.e. `EXAMPLE`) it should be suppressed in workflow contexts where user would be seriously inconvenienced.
+
+    We should still provide some means of triaging these results, whether via [audit events](#auditability) or as [automatic vulnerability resolution](../../../user/application_security/sast/index.md#automatic-vulnerability-resolution).
+
+1. *Organization suppression* - If a secret matches an organization's allowlist (or was previously flagged and remediated as irrelevant) it should not reoccur. See [Organization-level controls](#organization-level-controls).
+
+1. *Inline suppression* - Inline annotations should be supported in later phases with the Organization-level configuration to ignore annotations.
+
+### External Token Verification
+
+As a post-processing step for detection we should explore verification of detected secrets. This requires processors per supported token type in which we can distinguish tokens that are valid leaks from false positives. Similar to our [automatic response to leaked secrets](../../../user/application_security/secret_detection/automatic_response.md), we must externally verify a given token to give a high degree of confidence in our alerting.
+
+There are two token types: internal and external:
+
+- Internal tokens are verifiable and revocable as part of `ScanSecurityReportSecretsWorker` worker
+- External tokens require external verification, in which [the architecture](../../../user/application_security/secret_detection/automatic_response.md#high-level-architecture) will closely match the [Secret Revocation Service](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/secret-revocation-service/)
+
 ## Iterations
 
 - ✓ Define [requirements for detection coverage and actions](https://gitlab.com/gitlab-org/gitlab/-/issues/376716)
@@ -435,14 +513,14 @@ sequenceDiagram
 - [Pre-Production Performance Profiling for pre-receive PoCs](https://gitlab.com/gitlab-org/gitlab/-/issues/428499)
   - Profiling service capabilities
     - ✓ [Benchmarking regex performance between Ruby and Go approaches](https://gitlab.com/gitlab-org/gitlab/-/issues/423832)
-    - x gRPC commit retrieval from Gitaly
     - transfer latency, CPU, and memory footprint
 - ✓ Implementation of secret scanning gem integration MVC (targeting individual commits)
+- Phase1 - Deployment and monitoring
 - Capacity planning for addition of service component to Reference Architectures headroom
 - Security and readiness review
-- Deployment and monitoring
-- Implementation of secret scanning service MVC (targeting arbitrary text blobs)
-- Deployment and monitoring
+- Phase2 - Deployment and monitoring
+- Implementation of secret scanning service (targeting arbitrary text blobs)
+- Phase3 - Deployment and monitoring
 - High priority domain object rollout (priority `TBD`)
   - Issuable comments
   - Issuable bodies

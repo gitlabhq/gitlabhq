@@ -27,7 +27,7 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition).tap(&:validate!)
+          self.new(path, definition)
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Tracking::InvalidEventError.new(e.message))
         end
@@ -51,17 +51,15 @@ module Gitlab
         path.delete_prefix(Rails.root.to_s)
       end
 
-      def validate!
-        SCHEMA.validate(attributes.stringify_keys).each do |error|
-          error_message = <<~ERROR_MSG
+      def validation_errors
+        SCHEMA.validate(attributes.stringify_keys).map do |error|
+          <<~ERROR_MSG
+            --------------- VALIDATION ERROR ---------------
+            Definition file: #{path}
             Error type: #{error['type']}
             Data: #{error['data']}
             Path: #{error['data_pointer']}
-            Details: #{error['details']}
-            Definition file: #{path}
           ERROR_MSG
-
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(Gitlab::Tracking::InvalidEventError.new(error_message))
         end
       end
 

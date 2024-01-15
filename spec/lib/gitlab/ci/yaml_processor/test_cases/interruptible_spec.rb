@@ -5,9 +5,10 @@ require 'spec_helper'
 module Gitlab
   module Ci
     RSpec.describe YamlProcessor, feature_category: :pipeline_composition do
-      subject(:processor) { described_class.new(config, user: nil).execute }
+      subject(:processor) { described_class.new(config, user: nil) }
 
-      let(:builds) { processor.builds }
+      let(:result) { processor.execute }
+      let(:builds) { result.builds }
 
       context 'with interruptible' do
         let(:default_config) { nil }

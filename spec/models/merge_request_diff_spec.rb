@@ -608,10 +608,34 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     describe '#paginated_diffs' do
+      shared_examples 'diffs with generated files check' do
+        context 'when collapse_generated_diff_files FF is enabled' do
+          it 'checks generated files' do
+            diffs = diff_with_commits.paginated_diffs(1, 10)
+
+            expect(diffs.diff_files.first.generated?).not_to be_nil
+          end
+        end
+
+        context 'when collapse_generated_diff_files FF is disabled' do
+          before do
+            stub_feature_flags(collapse_generated_diff_files: false)
+          end
+
+          it 'does not check generated files' do
+            diffs = diff_with_commits.paginated_diffs(1, 10)
+
+            expect(diffs.diff_files.first.generated?).to be_nil
+          end
+        end
+      end
+
       context 'when no persisted files available' do
         before do
           diff_with_commits.clean!
         end
+
+        it_behaves_like 'diffs with generated files check'
 
         it 'returns a Gitlab::Diff::FileCollection::Compare' do
           diffs = diff_with_commits.paginated_diffs(1, 10)
@@ -622,6 +646,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       context 'when persisted files available' do
+        it_behaves_like 'diffs with generated files check'
+
         it 'returns paginated diffs' do
           diffs = diff_with_commits.paginated_diffs(1, 10)
 

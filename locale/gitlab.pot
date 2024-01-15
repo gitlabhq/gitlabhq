@@ -760,9 +760,6 @@ msgstr ""
 msgid "%{group_name} is approaching the limit of available seats"
 msgstr ""
 
-msgid "%{group_name} uses group managed accounts. You need to create a new GitLab account which will be managed by %{group_name}."
-msgstr ""
-
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
@@ -5045,9 +5042,6 @@ msgid "Alt text"
 msgstr ""
 
 msgid "Alternate support URL for Help page and Help dropdown."
-msgstr ""
-
-msgid "Alternatively, you can convert your account to a managed account by the %{group_name} group."
 msgstr ""
 
 msgid "Amazon EKS"
@@ -20159,9 +20153,6 @@ msgstr ""
 msgid "Existing projects will be able to use cleanup policies. Avoid enabling this if an external Container Registry is being used, as there is a performance risk if many images exist on one project."
 msgstr ""
 
-msgid "Existing sign in methods may be removed"
-msgstr ""
-
 msgid "Expand"
 msgstr ""
 
@@ -21164,9 +21155,6 @@ msgstr ""
 msgid "Finish review"
 msgstr ""
 
-msgid "Finish setting up your dedicated account for %{group_name}."
-msgstr ""
-
 msgid "Finished"
 msgstr ""
 
@@ -21554,9 +21542,6 @@ msgid "Full"
 msgstr ""
 
 msgid "Full log"
-msgstr ""
-
-msgid "Full name"
 msgstr ""
 
 msgid "GCP region configured"
@@ -23435,9 +23420,6 @@ msgstr ""
 msgid "GroupSAML|Enforce SSO-only authentication for web activity for this group"
 msgstr ""
 
-msgid "GroupSAML|Enforce users to have dedicated group-managed accounts for this group"
-msgstr ""
-
 msgid "GroupSAML|Generate a SCIM token"
 msgstr ""
 
@@ -23472,9 +23454,6 @@ msgid "GroupSAML|New SAML group link saved."
 msgstr ""
 
 msgid "GroupSAML|No active SAML group links"
-msgstr ""
-
-msgid "GroupSAML|Prohibit outer forks for this group"
 msgstr ""
 
 msgid "GroupSAML|Reset SCIM token"
@@ -23531,19 +23510,10 @@ msgstr ""
 msgid "GroupSAML|This will be set as the access level of users added to the group."
 msgstr ""
 
-msgid "GroupSAML|To be able to enable group-managed accounts, you first need to enable enforced SSO."
-msgstr ""
-
-msgid "GroupSAML|To be able to prohibit outer forks, you first need to enforce dedicate group managed accounts."
-msgstr ""
-
 msgid "GroupSAML|Use SAML group links to manage group membership using SAML."
 msgstr ""
 
 msgid "GroupSAML|Valid SAML Response"
-msgstr ""
-
-msgid "GroupSAML|With prohibit outer forks flag enabled group members will be able to fork project only inside your group."
 msgstr ""
 
 msgid "GroupSAML|as %{access_level}"
@@ -24535,9 +24505,6 @@ msgid "How the job limiter handles jobs exceeding the thresholds specified below
 msgstr ""
 
 msgid "How to track time"
-msgstr ""
-
-msgid "I accept the %{terms_link}"
 msgstr ""
 
 msgid "I am sorry, I am unable to find what you are looking for."
@@ -33946,9 +33913,6 @@ msgstr ""
 msgid "Only policy:"
 msgstr ""
 
-msgid "Only proceed if you trust %{idp_url} to control your GitLab account sign in."
-msgstr ""
-
 msgid "Only project members can comment."
 msgstr ""
 
@@ -42723,9 +42687,6 @@ msgstr ""
 msgid "SAML SSO"
 msgstr ""
 
-msgid "SAML SSO for %{group_name}"
-msgstr ""
-
 msgid "SAML discovery tokens"
 msgstr ""
 
@@ -46210,16 +46171,10 @@ msgstr ""
 msgid "Sign out"
 msgstr ""
 
-msgid "Sign out & Register"
-msgstr ""
-
 msgid "Sign up"
 msgstr ""
 
 msgid "Sign up for your free trial with:"
-msgstr ""
-
-msgid "Sign up was successful! Please confirm your email to sign in."
 msgstr ""
 
 msgid "Sign-in and Help page"
@@ -51799,9 +51754,6 @@ msgstr ""
 msgid "Transfer group to another parent group."
 msgstr ""
 
-msgid "Transfer ownership"
-msgstr ""
-
 msgid "Transfer project"
 msgstr ""
 
@@ -56153,9 +56105,6 @@ msgstr ""
 msgid "You are about to incur additional charges"
 msgstr ""
 
-msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."
-msgstr ""
-
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
@@ -56785,9 +56734,6 @@ msgstr ""
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
 msgstr ""
 
-msgid "You will be removed from existing projects/groups"
-msgstr ""
-
 msgid "You will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
@@ -56819,9 +56765,6 @@ msgid "You will receive notifications only for comments in which you were @menti
 msgstr ""
 
 msgid "You'll be charged for %{true_up_start}users over license%{true_up_end} on a quarterly or annual basis, depending on the terms of your agreement."
-msgstr ""
-
-msgid "You'll be signed out from your current account automatically."
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
@@ -56971,6 +56914,9 @@ msgid "Your Free top-level group, %{group_name}, has more than %{free_users_limi
 msgstr ""
 
 msgid "Your GPG keys"
+msgstr ""
+
+msgid "Your GitHub access token does not have the correct scope to import collaborators."
 msgstr ""
 
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."

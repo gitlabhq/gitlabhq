@@ -106,11 +106,31 @@ module API
           declared_params(include_missing: false)
         )
 
-        variable = ::Ci::ChangeVariableService.new(
-          container: user_group,
-          current_user: current_user,
-          params: { action: :update, variable_params: filtered_params }
-        ).execute
+        # If the 'filter' parameter is provided, the user is updating a scoped variable
+        # and we need to use `find_variable` to make sure we update the correct one.
+        # However, this would result in an error response in case the user attempts to
+        # update a scoped variable without providing a filter. This error response is
+        # technically correct, because updating a scoped variable without specifying
+        # the targeted scope causes non-deterministic behavior. But this endpoint was
+        # originally introduced without the ability to specify a filter, and returning
+        # an error in these cases now would be considered a breaking change.
+        # Thus we only use the new/correct code if the user provided a filter.
+        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136475
+        if params.key?('filter')
+          variable = find_variable(user_group, params)
+
+          variable = ::Ci::ChangeVariableService.new(
+            container: user_group,
+            current_user: current_user,
+            params: { action: :update, variable: variable, variable_params: filtered_params }
+          ).execute
+        else
+          variable = ::Ci::ChangeVariableService.new(
+            container: user_group,
+            current_user: current_user,
+            params: { action: :update, variable_params: filtered_params }
+          ).execute
+        end
 
         if variable.valid?
           present variable, with: Entities::Ci::Variable

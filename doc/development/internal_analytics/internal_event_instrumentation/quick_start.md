@@ -31,6 +31,13 @@ Triggering an event and thereby updating a metric is slightly different on backe
 
 ### Backend tracking
 
+<div class="video-fallback">
+  Watch the video about <a href="https://www.youtube.com/watch?v=Teid7o_2Mmg">Backend instrumentation using Internal Events</a>
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/Teid7o_2Mmg" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 To trigger an event, call the `Gitlab::InternalEvents.track_event` method with the desired arguments:
 
 ```ruby

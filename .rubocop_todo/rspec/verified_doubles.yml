@@ -147,8 +147,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/services/geo/node_status_request_service_spec.rb'
     - 'ee/spec/services/geo/replication_toggle_request_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/fetch_subscription_plans_service_spec.rb'
-    - 'ee/spec/services/group_saml/group_managed_accounts/clean_up_members_service_spec.rb'
-    - 'ee/spec/services/group_saml/sign_up_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/ide/schemas_config_service_spec.rb'
     - 'ee/spec/services/incident_management/oncall_schedules/update_service_spec.rb'

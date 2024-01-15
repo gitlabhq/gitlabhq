@@ -461,18 +461,25 @@ class MergeRequestDiff < ApplicationRecord
     fetching_repository_diffs({}) do |comparison|
       reorder_diff_files!
 
+      collapse_generated = Feature.enabled?(:collapse_generated_diff_files, project)
+      diff_options = { collapse_generated: collapse_generated }
+
       collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
         self,
         page,
-        per_page
+        per_page,
+        diff_options
       )
 
       if comparison
+        diff_options[:generated_files] = comparison.generated_files if collapse_generated
+
         comparison.diffs(
-          paths: collection.diff_paths,
-          page: collection.current_page,
-          per_page: collection.limit_value,
-          count: collection.total_count
+          diff_options.merge(
+            paths: collection.diff_paths,
+            page: collection.current_page,
+            per_page: collection.limit_value,
+            count: collection.total_count)
         )
       else
         collection

@@ -17,8 +17,8 @@ when developing new features or instrumenting existing ones.
 <div class="video-fallback">
   See the video about <a href="https://www.youtube.com/watch?v=GtFNXbjygWo">the concepts of events and metrics.</a>
 </div>
-<figure class="video_container">
-  <iframe src="https://www.youtube-nocookie.com/embed/GtFNXbjygWo" frameborder="0" allowfullscreen="true"> </iframe>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/GtFNXbjygWo" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 Events and metrics are the foundation of the internal analytics system.

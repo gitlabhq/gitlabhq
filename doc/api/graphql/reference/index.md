@@ -7628,11 +7628,6 @@ Input type: `UpdateDependencyProxyImageTtlGroupPolicyInput`
 Updates or creates dependency proxy for packages settings.
 Requires the packages and dependency proxy to be enabled in the config.
 Requires the packages feature to be enabled at the project level.
-Error is raised if `packages_dependency_proxy_maven` feature flag is disabled.
-
-WARNING:
-**Introduced** in 16.5.
-This feature is an Experiment. It can be changed or removed at any time.
 
 Input type: `UpdateDependencyProxyPackagesSettingsInput`
 
@@ -7641,10 +7636,10 @@ Input type: `UpdateDependencyProxyPackagesSettingsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatedependencyproxypackagessettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatedependencyproxypackagessettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the dependency proxy for packages is enabled for the project. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the dependency proxy for packages is enabled for the project. |
 | <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistrypassword"></a>`mavenExternalRegistryPassword` | [`String`](#string) | Password for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
-| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` | [`String`](#string) | URL for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
-| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` | [`String`](#string) | Username for the external Maven packages registry. Introduced in 16.5: This feature is an Experiment. It can be changed or removed at any time. |
+| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` | [`String`](#string) | URL for the external Maven packages registry. |
+| <a id="mutationupdatedependencyproxypackagessettingsmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` | [`String`](#string) | Username for the external Maven packages registry. |
 | <a id="mutationupdatedependencyproxypackagessettingsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project path for the dependency proxy for packages settings. |
 
 #### Fields
@@ -17601,9 +17596,9 @@ Project-level Dependency Proxy for packages settings.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dependencyproxypackagessettingenabled"></a>`enabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Indicates whether the dependency proxy for packages is enabled for the project. |
-| <a id="dependencyproxypackagessettingmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. URL for the external Maven packages registry. |
-| <a id="dependencyproxypackagessettingmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Username for the external Maven packages registry. |
+| <a id="dependencyproxypackagessettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the dependency proxy for packages is enabled for the project. |
+| <a id="dependencyproxypackagessettingmavenexternalregistryurl"></a>`mavenExternalRegistryUrl` | [`String`](#string) | URL for the external Maven packages registry. |
+| <a id="dependencyproxypackagessettingmavenexternalregistryusername"></a>`mavenExternalRegistryUsername` | [`String`](#string) | Username for the external Maven packages registry. |
 
 ### `DependencyProxySetting`
 
@@ -24335,7 +24330,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
-| <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` **{warning-solid}** | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. Returns `null` if `packages_dependency_proxy_maven` feature flag is disabled. |
+| <a id="projectdependencyproxypackagessetting"></a>`dependencyProxyPackagesSetting` | [`DependencyProxyPackagesSetting`](#dependencyproxypackagessetting) | Packages Dependency Proxy settings for the project. Requires the packages and dependency proxy to be enabled in the config. Requires the packages feature to be enabled at the project level. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |

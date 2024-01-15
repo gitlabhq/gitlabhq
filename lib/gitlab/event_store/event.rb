@@ -47,7 +47,7 @@ module Gitlab
 
       def validate_schema!
         if self.class.json_schema_valid.nil?
-          self.class.json_schema_valid = JSONSchemer.schema(self.class.json_schema).valid?(schema)
+          self.class.json_schema_valid = JSONSchemer.schema(Event.json_schema).valid?(schema)
         end
 
         return if self.class.json_schema_valid == true

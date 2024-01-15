@@ -33,17 +33,19 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     described_class.instance_variable_set(:@definitions, nil)
   end
 
+  def expect_validation_errors
+    expect(described_class.new(path, attributes).validation_errors).not_to be_empty
+  end
+
+  def expect_no_validation_errors
+    expect(described_class.new(path, attributes).validation_errors).to be_empty
+  end
+
   def write_metric(metric, path, content)
     path = File.join(metric, path)
     dir = File.dirname(path)
     FileUtils.mkdir_p(dir)
     File.write(path, content)
-  end
-
-  it 'has only valid definitions' do
-    described_class.all.each do |definition|
-      expect { definition.validate! }.not_to raise_error
-    end
   end
 
   describe '.instrumentation_class' do
@@ -197,10 +199,8 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         attributes[attribute] = value
       end
 
-      it 'raise exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
-
-        described_class.new(path, attributes).validate!
+      it 'has validation errors' do
+        expect_validation_errors
       end
     end
 
@@ -210,9 +210,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           attributes[:status] = 'broken'
           attributes.delete(:repair_issue_url)
 
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
-
-          described_class.new(path, attributes).validate!
+          expect_validation_errors
         end
       end
 
@@ -221,20 +219,16 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           attributes[:status] = 'removed'
         end
 
-        it 'raise dev exception when removed_by_url is not provided' do
+        it 'has validation errors when removed_by_url is not provided' do
           attributes.delete(:removed_by_url)
 
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
-
-          described_class.new(path, attributes).validate!
+          expect_validation_errors
         end
 
-        it 'raises dev exception when milestone_removed is not provided' do
+        it 'has validation errors when milestone_removed is not provided' do
           attributes.delete(:milestone_removed)
 
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
-
-          described_class.new(path, attributes).validate!
+          expect_validation_errors
         end
       end
 
@@ -251,18 +245,16 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         end
 
         with_them do
-          it 'raises dev exception when invalid' do
+          it 'has validation errors when invalid' do
             attributes[:instrumentation_class] = instrumentation_class if instrumentation_class
             attributes[:options] = options if options
             attributes[:events] = events if events
 
             if is_valid
-              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+              expect_no_validation_errors
             else
-              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+              expect_validation_errors
             end
-
-            described_class.new(path, attributes).validate!
           end
         end
       end
@@ -294,12 +286,10 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
             attributes[:options] = options
 
             if is_valid
-              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+              expect_no_validation_errors
             else
-              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+              expect_validation_errors
             end
-
-            described_class.new(path, attributes).validate!
           end
         end
       end
@@ -340,12 +330,10 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
             attributes[:options] = options
 
             if is_valid
-              expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
+              expect_no_validation_errors
             else
-              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
+              expect_validation_errors
             end
-
-            described_class.new(path, attributes).validate!
           end
         end
       end

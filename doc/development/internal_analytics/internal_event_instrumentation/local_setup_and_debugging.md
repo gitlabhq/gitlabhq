@@ -48,6 +48,15 @@ By default, self-managed instances do not collect event data via Snowplow. We ca
 
 1. You can now see all events being sent by your local instance in the [Snowplow Micro UI](http://localhost:9091/micro/ui) and can filter for specific events.
 
+### Introduction to Snowplow Micro UI and API
+
+<div class="video-fallback">
+  Watch the video about <a href="https://www.youtube.com/watch?v=netZ0TogNcA">Snowplow Micro</a>
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/netZ0TogNcA" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 ## Configure a remote event collector
 
 On GitLab.com events are sent to a collector configured by GitLab. By default, self-managed instances do not have a collector configured and do not collect data with Snowplow.
@@ -72,8 +81,8 @@ You can configure your self-managed GitLab instance to use a custom Snowplow col
 <div class="video-fallback">
   Watch the demo video about the <a href="https://www.youtube.com/watch?v=R7vT-VEzZOI">Internal Events Tracking Monitor</a>
 </div>
-<figure class="video_container">
-  <iframe src="https://www.youtube-nocookie.com/embed/R7vT-VEzZOI" frameborder="0" allowfullscreen="true"> </iframe>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/R7vT-VEzZOI" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 To understand how events are triggered and metrics are updated while you use the Rails app locally or `rails console`,
