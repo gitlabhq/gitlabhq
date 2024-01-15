@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::NoteText do
+RSpec.describe Gitlab::GithubImport::Representation::NoteText, feature_category: :importers do
   shared_examples 'a Note text data' do |match_record_type|
     it 'returns an instance of NoteText' do
       expect(representation).to be_an_instance_of(described_class)
@@ -151,6 +151,38 @@ RSpec.describe Gitlab::GithubImport::Representation::NoteText do
           }
         )
       end
+    end
+  end
+
+  describe '#has_attachments?' do
+    subject { described_class.new({ text: text }).has_attachments? }
+
+    context 'when text has attachments' do
+      let(:text) { 'See ![image](https://user-images.githubusercontent.com/1/uuid-1.png) for details' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when text does not have attachments' do
+      let(:text) { 'Some text here'  }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#attachments' do
+    subject { described_class.new({ text: text }).attachments }
+
+    context 'when text has attachments' do
+      let(:text) { 'See ![image](https://user-images.githubusercontent.com/1/uuid-1.png) for details' }
+
+      it { is_expected.to contain_exactly(instance_of(Gitlab::GithubImport::Markdown::Attachment)) }
+    end
+
+    context 'when text does not have attachments' do
+      let(:text) { 'Some text here'  }
+
+      it { is_expected.to be_empty }
     end
   end
 end

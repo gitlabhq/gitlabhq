@@ -1,7 +1,7 @@
 <script>
 import { debounce } from 'lodash';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
-import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { mutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
@@ -282,7 +282,7 @@ export default {
         case TYPE_MERGE_REQUEST:
           return {
             ...updateVariables,
-            operationMode: MutationOperationMode.Replace,
+            operationMode: mutationOperationMode.replace,
           };
         case TYPE_EPIC:
           return {
@@ -343,7 +343,7 @@ export default {
           return {
             ...removeVariables,
             labelIds: [labelId],
-            operationMode: MutationOperationMode.Remove,
+            operationMode: mutationOperationMode.remove,
           };
         case TYPE_EPIC:
           return {

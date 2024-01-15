@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { ContentTypeMultipartFormData } from '~/lib/utils/headers';
+import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -159,7 +159,7 @@ export default {
         url,
         data: this.formData(),
         headers: {
-          ...ContentTypeMultipartFormData,
+          ...contentTypeMultipartFormData,
         },
       })
         .then((response) => {

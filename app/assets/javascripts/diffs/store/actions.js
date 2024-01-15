@@ -10,7 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
-import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import { mergeUrlParams, getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
@@ -118,7 +118,9 @@ export const setBaseConfig = ({ commit }, options) => {
 };
 
 export const prefetchSingleFile = async ({ state, getters, commit }, treeEntry) => {
-  const versionPath = state.mergeRequestDiff?.version_path;
+  const url = new URL(state.endpointBatch, 'https://gitlab.com');
+  const diffId = getParameterValues('diff_id', url)[0];
+  const startSha = getParameterValues('start_sha', url)[0];
 
   if (
     treeEntry &&
@@ -132,12 +134,14 @@ export const prefetchSingleFile = async ({ state, getters, commit }, treeEntry) 
       w: state.showWhitespace ? '0' : '1',
       view: 'inline',
       commit_id: getters.commitId,
+      diff_head: true,
     };
 
-    if (versionPath) {
-      const { diffId, startSha } = getDerivedMergeRequestInformation({ endpoint: versionPath });
-
+    if (diffId) {
       urlParams.diff_id = diffId;
+    }
+
+    if (startSha) {
       urlParams.start_sha = startSha;
     }
 
@@ -160,7 +164,9 @@ export const prefetchSingleFile = async ({ state, getters, commit }, treeEntry) 
 export const fetchFileByFile = async ({ state, getters, commit }) => {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
   const id = parseUrlHashAsFileHash(window?.location?.hash, state.currentDiffFileId);
-  const versionPath = state.mergeRequestDiff?.version_path;
+  const url = new URL(state.endpointBatch, 'https://gitlab.com');
+  const diffId = getParameterValues('diff_id', url)[0];
+  const startSha = getParameterValues('start_sha', url)[0];
   const treeEntry = id
     ? getters.flatBlobsList.find(({ fileHash }) => fileHash === id)
     : getters.flatBlobsList[0];
@@ -178,12 +184,14 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
       w: state.showWhitespace ? '0' : '1',
       view: 'inline',
       commit_id: getters.commitId,
+      diff_head: true,
     };
 
-    if (versionPath) {
-      const { diffId, startSha } = getDerivedMergeRequestInformation({ endpoint: versionPath });
-
+    if (diffId) {
       urlParams.diff_id = diffId;
+    }
+
+    if (startSha) {
       urlParams.start_sha = startSha;
     }
 

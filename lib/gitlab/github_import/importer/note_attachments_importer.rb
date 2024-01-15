@@ -16,10 +16,9 @@ module Gitlab
         end
 
         def execute
-          attachments = MarkdownText.fetch_attachments(note_text.text)
-          return if attachments.blank?
+          return unless note_text.has_attachments?
 
-          new_text = attachments.reduce(note_text.text) do |text, attachment|
+          new_text = note_text.attachments.reduce(note_text.text) do |text, attachment|
             new_url = gitlab_attachment_link(attachment)
             text.gsub(attachment.url, new_url)
           end

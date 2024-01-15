@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker, feature_category: :importers do
-  let(:project) { create(:project) }
-  let(:import_state) { create(:import_state, project: project) }
-  let(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
+
+  subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 

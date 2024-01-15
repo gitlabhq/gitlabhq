@@ -18,7 +18,7 @@ module Pajamas
       render(Pajamas::BannerComponent.new(
                button_text: button_text,
                button_link: button_link,
-               svg_path: "illustrations/autodevops.svg",
+               svg_path: "illustrations/devops-sm.svg",
                variant: variant
              )) do |c|
         content_tag :p, content

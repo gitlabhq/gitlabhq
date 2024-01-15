@@ -196,9 +196,9 @@ When upgrading:
    - GitLab 16: [`16.0.8`](versions/gitlab_16_changes.md#1600) (only
      instances with [lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change) or
      [large pipeline variables history](versions/gitlab_16_changes.md#1610)) >
-     [`16.1.5`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
-     [`16.2.8`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
-     [`16.3.6`](versions/gitlab_16_changes.md#1630) > [`16.7.z`](versions/gitlab_16_changes.md#1670)
+     [`16.1.6`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
+     [`16.2.9`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
+     [`16.3.7`](versions/gitlab_16_changes.md#1630) > [`16.7.z`](versions/gitlab_16_changes.md#1670)
      > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
 1. Check for [required upgrade stops](#required-upgrade-stops).

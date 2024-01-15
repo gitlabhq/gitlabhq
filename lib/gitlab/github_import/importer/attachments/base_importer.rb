@@ -16,9 +16,11 @@ module Gitlab
               batch.each do |record|
                 next if already_imported?(record)
 
-                Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+                if has_attachments?(record)
+                  Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
-                yield record
+                  yield record
+                end
 
                 # We mark the object as imported immediately so we don't end up
                 # scheduling it multiple times.
@@ -47,6 +49,12 @@ module Gitlab
 
           def object_representation(object)
             representation_class.from_db_record(object)
+          end
+
+          def has_attachments?(object)
+            return true if Feature.disabled?(:github_importer_attachments, project, type: :gitlab_com_derisk)
+
+            object_representation(object).has_attachments?
           end
         end
       end

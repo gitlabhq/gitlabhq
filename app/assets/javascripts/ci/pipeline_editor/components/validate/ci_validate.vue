@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { pipelineEditorTrackingOptions } from '../../constants';
 import ValidatePipelinePopover from '../popovers/validate_pipeline_popover.vue';
 import CiLintResults from '../lint/ci_lint_results.vue';
@@ -189,6 +190,7 @@ export default {
   },
   i18n,
   BASE_CLASSES,
+  lintHref: helpPagePath('ci/lint.md'),
 };
 </script>
 
@@ -290,7 +292,7 @@ export default {
             <code>{{ content }}</code>
           </template>
           <template #link="{ content }">
-            <gl-link target="_blank" href="#">{{ content }}</gl-link>
+            <gl-link target="_blank" :href="$options.lintHref">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </gl-alert>

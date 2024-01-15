@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::MarkdownText do
+RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers do
   describe '.format' do
     it 'formats the text' do
       author = double(:author, login: 'Alice')
@@ -102,6 +102,10 @@ RSpec.describe Gitlab::GithubImport::MarkdownText do
         "https://user-images.githubusercontent.com/2/uuid-2.#{image_extension}",
         "https://github.com/nickname/public-test-repo/files/3/git-cheat-sheet.#{doc_extension}"
       )
+    end
+
+    it 'returns an empty array when passed nil' do
+      expect(described_class.fetch_attachments(nil)).to be_empty
     end
   end
 

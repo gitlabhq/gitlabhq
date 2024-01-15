@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker, feature_category: :importers do
-  subject(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
 
-  let(:project) { instance_double(Project, id: 1, import_state: import_state) }
-  let(:import_state) { instance_double(ProjectImportState) }
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:importer) { instance_double(Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImporter) }
   let(:waiter) { Gitlab::JobWaiter.new(2, '123') }
+
+  subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 

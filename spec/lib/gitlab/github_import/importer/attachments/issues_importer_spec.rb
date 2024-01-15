@@ -10,35 +10,64 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::IssuesImporter, feat
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   describe '#sequential_import', :clean_gitlab_redis_cache do
-    let_it_be(:issue_1) { create(:issue, project: project) }
-    let_it_be(:issue_2) { create(:issue, project: project) }
+    let_it_be(:issue) { create(:issue, project: project) }
 
-    let(:importer_stub) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
-    let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
+    let_it_be(:issue_with_attachment) do
+      create(:issue,
+        project: project,
+        description: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+      )
+    end
 
-    it 'imports each project issue attachments' do
-      expect(project.issues).to receive(:id_not_in).with([]).and_return(project.issues)
-      expect(project.issues).to receive(:select).with(:id, :description, :iid).and_call_original
+    it 'selects both issues, and selects only properties it needs' do
+      stubbed_collection = class_double(Issue, each_batch: [])
 
-      expect_next_instances_of(
-        Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2, false, *importer_attrs
-      ) do |note_attachments_importer|
-        expect(note_attachments_importer).to receive(:execute)
+      expect(project.issues).to receive(:id_not_in).with([]).and_return(stubbed_collection)
+      expect(stubbed_collection).to receive(:select).with(:id, :description, :iid).and_return(stubbed_collection)
+
+      importer.sequential_import
+    end
+
+    it 'executes importer only for the issue with an attachment' do
+      expect_next_instance_of(
+        Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
+        have_attributes(record_db_id: issue_with_attachment.id),
+        project,
+        client
+      ) do |importer|
+        expect(importer).to receive(:execute)
       end
 
       importer.sequential_import
     end
 
-    context 'when issue is already processed' do
-      it "doesn't import this issue attachments" do
-        importer.mark_as_imported(issue_1)
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(github_importer_attachments: false)
+      end
 
-        expect(project.issues).to receive(:id_not_in).with([issue_1.id.to_s]).and_call_original
-        expect_next_instance_of(
-          Gitlab::GithubImport::Importer::NoteAttachmentsImporter, *importer_attrs
-        ) do |note_attachments_importer|
-          expect(note_attachments_importer).to receive(:execute)
+      it 'executes importer for both issues' do
+        expect_next_instances_of(Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2) do |importer|
+          expect(importer).to receive(:execute)
         end
+
+        importer.sequential_import
+      end
+    end
+
+    context 'when issue has already been processed' do
+      before do
+        importer.mark_as_imported(issue_with_attachment)
+      end
+
+      it 'does not select issues that were processed' do
+        expect(project.issues).to receive(:id_not_in).with([issue_with_attachment.id.to_s]).and_call_original
+
+        importer.sequential_import
+      end
+
+      it 'does not execute importer for the issue with an attachment' do
+        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new)
 
         importer.sequential_import
       end

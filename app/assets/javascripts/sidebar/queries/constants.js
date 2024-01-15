@@ -22,7 +22,7 @@ import groupLabelsQuery from '../components/labels/labels_select_widget/graphql/
 import issueLabelsQuery from '../components/labels/labels_select_widget/graphql/issue_labels.query.graphql';
 import mergeRequestLabelsQuery from '../components/labels/labels_select_widget/graphql/merge_request_labels.query.graphql';
 import projectLabelsQuery from '../components/labels/labels_select_widget/graphql/project_labels.query.graphql';
-import { IssuableAttributeType, TodoMutationTypes } from '../constants';
+import { IssuableAttributeType, todoMutationTypes } from '../constants';
 import epicConfidentialQuery from './epic_confidential.query.graphql';
 import epicDueDateQuery from './epic_due_date.query.graphql';
 import epicParticipantsQuery from './epic_participants.query.graphql';
@@ -282,8 +282,8 @@ export const todoQueries = {
 };
 
 export const todoMutations = {
-  [TodoMutationTypes.Create]: todoCreateMutation,
-  [TodoMutationTypes.MarkDone]: todoMarkDoneMutation,
+  [todoMutationTypes.create]: todoCreateMutation,
+  [todoMutationTypes.markDone]: todoMarkDoneMutation,
 };
 
 export const escalationStatusQuery = getEscalationStatusQuery;

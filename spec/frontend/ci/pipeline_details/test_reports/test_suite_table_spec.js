@@ -5,7 +5,7 @@ import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuiteTable, { i18n } from '~/ci/pipeline_details/test_reports/test_suite_table.vue';
-import { TestStatus } from '~/ci/pipeline_details/constants';
+import { testStatus } from '~/ci/pipeline_details/constants';
 import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 import { formatFilePath } from '~/ci/pipeline_details/stores/test_reports/utils';
 import { ARTIFACTS_EXPIRED_ERROR_MESSAGE } from '~/ci/pipeline_details/stores/test_reports/constants';
@@ -92,10 +92,10 @@ describe('Test reports suite table', () => {
     });
 
     it.each([
-      TestStatus.ERROR,
-      TestStatus.FAILED,
-      TestStatus.SKIPPED,
-      TestStatus.SUCCESS,
+      testStatus.ERROR,
+      testStatus.FAILED,
+      testStatus.SKIPPED,
+      testStatus.SUCCESS,
       'unknown',
     ])('renders the correct icon for test case with %s status', (status) => {
       const test = testCases.findIndex((x) => x.status === status);

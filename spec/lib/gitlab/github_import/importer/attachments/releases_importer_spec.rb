@@ -10,31 +10,64 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, fe
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   describe '#sequential_import', :clean_gitlab_redis_cache do
-    let_it_be(:release_1) { create(:release, project: project) }
-    let_it_be(:release_2) { create(:release, project: project) }
+    let_it_be(:release) { create(:release, project: project) }
 
-    let(:importer_stub) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
-    let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
+    let_it_be(:release_with_attachment) do
+      create(:release,
+        project: project,
+        description: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+      )
+    end
 
-    it 'imports each project release' do
-      expect(project.releases).to receive(:id_not_in).with([]).and_return(project.releases)
-      expect(project.releases).to receive(:select).with(:id, :description, :tag).and_call_original
+    it 'selects both releases, and selects only properties it needs' do
+      stubbed_collection = class_double(Release, each_batch: [])
 
-      expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
-        .with(*importer_attrs).twice.and_return(importer_stub)
-      expect(importer_stub).to receive(:execute).twice
+      expect(project.releases).to receive(:id_not_in).with([]).and_return(stubbed_collection)
+      expect(stubbed_collection).to receive(:select).with(:id, :description, :tag).and_return(stubbed_collection)
 
       importer.sequential_import
     end
 
-    context 'when note is already processed' do
-      it "doesn't import this release" do
-        importer.mark_as_imported(release_1)
+    it 'executes importer only for the release with an attachment' do
+      expect_next_instance_of(
+        Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
+        have_attributes(record_db_id: release_with_attachment.id),
+        project,
+        client
+      ) do |importer|
+        expect(importer).to receive(:execute)
+      end
 
-        expect(project.releases).to receive(:id_not_in).with([release_1.id.to_s]).and_call_original
-        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
-          .with(*importer_attrs).once.and_return(importer_stub)
-        expect(importer_stub).to receive(:execute).once
+      importer.sequential_import
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(github_importer_attachments: false)
+      end
+
+      it 'executes importer for both releases' do
+        expect_next_instances_of(Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2) do |importer|
+          expect(importer).to receive(:execute)
+        end
+
+        importer.sequential_import
+      end
+    end
+
+    context 'when release has already been processed' do
+      before do
+        importer.mark_as_imported(release_with_attachment)
+      end
+
+      it 'does not select releases that were processed' do
+        expect(project.releases).to receive(:id_not_in).with([release_with_attachment.id.to_s]).and_call_original
+
+        importer.sequential_import
+      end
+
+      it 'does not execute importer for the release with an attachment' do
+        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new)
 
         importer.sequential_import
       end

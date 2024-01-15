@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker, feature_category: :importers do
-  let(:project) { create(:project) }
-  let(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
 
-  let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
+  let(:settings) { ::Gitlab::GithubImport::Settings.new(project.reload) }
   let(:single_endpoint_optional_stage) { true }
+
+  subject(:worker) { described_class.new }
 
   before do
     settings.write({ optional_stages: { single_endpoint_notes_import: single_endpoint_optional_stage } })

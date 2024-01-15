@@ -9460,7 +9460,6 @@
 - './spec/workers/concerns/cronjob_queue_spec.rb'
 - './spec/workers/concerns/gitlab/github_import/object_importer_spec.rb'
 - './spec/workers/concerns/gitlab/github_import/rescheduling_methods_spec.rb'
-- './spec/workers/concerns/gitlab/github_import/stage_methods_spec.rb'
 - './spec/workers/concerns/limited_capacity/job_tracker_spec.rb'
 - './spec/workers/concerns/limited_capacity/worker_spec.rb'
 - './spec/workers/concerns/packages/cleanup_artifact_worker_spec.rb'

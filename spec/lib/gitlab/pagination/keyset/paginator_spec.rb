@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::Keyset::Paginator do
-  let_it_be(:project_1) { create(:project, created_at: 10.weeks.ago) }
-  let_it_be(:project_2) { create(:project, created_at: 2.weeks.ago) }
-  let_it_be(:project_3) { create(:project, created_at: 3.weeks.ago) }
-  let_it_be(:project_4) { create(:project, created_at: 5.weeks.ago) }
-  let_it_be(:project_5) { create(:project, created_at: 2.weeks.ago) }
+  let_it_be(:project_1) { create(:project, :public, name: 'Project A', created_at: 10.weeks.ago) }
+  let_it_be(:project_2) { create(:project, :public, name: 'Project E', created_at: 2.weeks.ago) }
+  let_it_be(:project_3) { create(:project, :private, name: 'Project C', created_at: 3.weeks.ago) }
+  let_it_be(:project_4) { create(:project, :private, name: 'Project B', created_at: 5.weeks.ago) }
+  let_it_be(:project_5) { create(:project, :private, name: 'Project B', created_at: 2.weeks.ago) }
 
   describe 'pagination' do
     let(:per_page) { 10 }
@@ -98,6 +98,13 @@ RSpec.describe Gitlab::Pagination::Keyset::Paginator do
       end
     end
 
+    context 'when the relation is ordered by more than 2 columns' do
+      let(:scope) { Project.order(visibility_level: :asc, name: :asc, id: :asc) }
+      let(:expected_order) { [project_4, project_5, project_3, project_1, project_2] }
+
+      it { expect(paginator.records).to eq(expected_order) }
+    end
+
     describe 'default keyset direction parameter' do
       let(:cursor_converter_class) { Gitlab::Pagination::Keyset::Paginator::Base64CursorConverter }
       let(:per_page) { 2 }
@@ -107,14 +114,6 @@ RSpec.describe Gitlab::Pagination::Keyset::Paginator do
 
         expect(cursor_converter_class.parse(cursor)[:_kd]).to eq(described_class::FORWARD_DIRECTION)
       end
-    end
-  end
-
-  context 'when unsupported order is given' do
-    it 'raises error' do
-      scope = Project.order(path: :asc, name: :asc, id: :desc) # Cannot build 3 column order automatically
-
-      expect { scope.keyset_paginate }.to raise_error(/does not support keyset pagination/)
     end
   end
 

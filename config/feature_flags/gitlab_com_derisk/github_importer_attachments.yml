@@ -1,0 +1,9 @@
+---
+name: github_importer_attachments
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436400
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140524
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17318
+milestone: '16.8'
+group: group::import and integrate
+type: gitlab_com_derisk
+default_enabled: false

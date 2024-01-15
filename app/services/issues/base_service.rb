@@ -61,12 +61,13 @@ module Issues
 
       # Setting created_at, updated_at and iid is allowed only for admins and owners or
       # when moving an issue as we preserve the original issue attributes except id and iid.
-      params.delete(:iid) unless current_user.can?(:set_issue_iid, project)
-      params.delete(:created_at) unless moved_issue || current_user.can?(:set_issue_created_at, project)
-      params.delete(:updated_at) unless moved_issue || current_user.can?(:set_issue_updated_at, project)
+      params.delete(:iid) if params[:iid].present? && !iid_param_allowed?
+      filter_timestamp_params unless moved_issue
 
       # Only users with permission to handle error data can add it to issues
-      params.delete(:sentry_issue_attributes) unless current_user.can?(:update_sentry_issue, project)
+      if params[:sentry_issue_attributes].present? && !current_user.can?(:update_sentry_issue, project)
+        params.delete(:sentry_issue_attributes)
+      end
 
       issue.system_note_timestamp = params[:created_at] || params[:updated_at]
     end
@@ -143,6 +144,19 @@ module Issues
 
     def log_audit_event(issue, user, event_type, message)
       # defined in EE
+    end
+
+    def iid_param_allowed?
+      current_user.can?(:set_issue_iid, project)
+    end
+
+    def filter_timestamp_params
+      timestamp_params = params.slice(:created_at, :updated_at).keys
+      return unless timestamp_params.any?
+
+      timestamp_params.each do |param|
+        params.delete(param) unless current_user.can?(:"set_issue_#{param}", project)
+      end
     end
   end
 end

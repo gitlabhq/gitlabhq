@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Attachments::BaseImporter do
+RSpec.describe Gitlab::GithubImport::Importer::Attachments::BaseImporter, feature_category: :importers do
   subject(:importer) { importer_class.new(project, client) }
 
   let(:project) { instance_double(Project, id: 1) }

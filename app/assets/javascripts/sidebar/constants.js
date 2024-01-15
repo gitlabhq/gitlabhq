@@ -44,9 +44,9 @@ export const IssuableAttributeState = {
   [IssuableAttributeType.Milestone]: 'active',
 };
 
-export const TodoMutationTypes = {
-  Create: 'create',
-  MarkDone: 'mark-done',
+export const todoMutationTypes = {
+  create: 'create',
+  markDone: 'mark-done',
 };
 
 export function dropdowni18nText(issuableAttribute, issuableType) {

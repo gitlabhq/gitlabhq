@@ -347,6 +347,23 @@ execute services that:
 - [Continue their loop](https://gitlab.com/gitlab-org/gitlab/-/blob/487521cc26c1e2bdba4fc67c14478d2b2a5f2bfa/lib/gitlab/github_import/importer/attachments/issues_importer.rb#L27)
   from where it left off.
 
+## `sidekiq_options dead: false`
+
+Typically when a worker's retries are exhausted they go to the Sidekiq dead set
+and can be retried by an instance admin.
+
+`GithubImport::Queue` sets the Sidekiq worker option `dead: false` to prevent
+this from happening to GitHub importer workers.
+
+The reason is:
+
+- The dead set has a max limit and if object importer workers (ones that include
+  `ObjectImporter`) fail en masse they can spam the dead set and push other workers out.
+- Stage workers (ones that include `StageMethods`)
+  [fail the import](https://gitlab.com/gitlab-org/gitlab/-/blob/dd7cde8d6a28254b9c7aff27f9bf6b7be1ac7532/app/workers/concerns/gitlab/github_import/stage_methods.rb#L23)
+  when their retries are exhausted, so a retry would be guaranteed to
+  [be a no-op](https://gitlab.com/gitlab-org/gitlab/-/blob/dd7cde8d6a28254b9c7aff27f9bf6b7be1ac7532/app/workers/concerns/gitlab/github_import/stage_methods.rb#L55-63).
+
 ## Mapping labels and milestones
 
 To reduce pressure on the database we do not query it when setting labels and

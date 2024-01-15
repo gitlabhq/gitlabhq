@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportIssueEventsWorker, feature_category: :importers do
-  subject(:worker) { described_class.new }
+  let_it_be(:project) { create(:project) }
 
-  let(:project) { create(:project) }
   let!(:group) { create(:group, projects: [project]) }
-  let(:settings) { ::Gitlab::GithubImport::Settings.new(project) }
+  let(:settings) { ::Gitlab::GithubImport::Settings.new(project.reload) }
   let(:stage_enabled) { true }
   let(:extended_events) { false }
+
+  subject(:worker) { described_class.new }
 
   before do
     settings.write({

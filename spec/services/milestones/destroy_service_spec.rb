@@ -6,13 +6,14 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }
+  let(:container) { project }
 
   before do
     project.add_maintainer(user)
   end
 
   def service
-    described_class.new(project, user, {})
+    described_class.new(container, user, {})
   end
 
   describe '#execute' do
@@ -45,6 +46,7 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
     context 'group milestones' do
       let(:group) { create(:group) }
       let(:group_milestone) { create(:milestone, group: group) }
+      let(:container) { group }
 
       before do
         project.update!(namespace: group)

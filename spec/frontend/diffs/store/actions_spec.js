@@ -183,6 +183,7 @@ describe('DiffsStoreActions', () => {
         new_path: 'new/123',
         w: '1',
         view: 'inline',
+        diff_head: true,
       };
       const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
       const treeEntry = {
@@ -258,7 +259,9 @@ describe('DiffsStoreActions', () => {
         // wait for the mocked network request to return and start processing the .then
         await waitForPromises();
 
-        expect(mock.history.get[0].url).toEqual(finalPath);
+        expect(mock.history.get[0].url).toContain(
+          'old_path=old%2F123&new_path=new%2F123&w=1&view=inline&commit_id=123',
+        );
       });
 
       describe('version parameters', () => {
@@ -287,6 +290,7 @@ describe('DiffsStoreActions', () => {
             endpointDiffForPath,
           );
           state.mergeRequestDiff = { version_path: versionPath };
+          state.endpointBatch = versionPath;
           mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
 
           diffActions.prefetchSingleFile({ state, getters, commit }, treeEntry);
@@ -351,6 +355,7 @@ describe('DiffsStoreActions', () => {
         new_path: 'new/123',
         w: '1',
         view: 'inline',
+        diff_head: true,
       };
       const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
       const treeEntry = {
@@ -446,7 +451,9 @@ describe('DiffsStoreActions', () => {
         // wait for the mocked network request to return and start processing the .then
         await waitForPromises();
 
-        expect(mock.history.get[0].url).toEqual(finalPath);
+        expect(mock.history.get[0].url).toContain(
+          'old_path=old%2F123&new_path=new%2F123&w=1&view=inline&commit_id=123',
+        );
       });
 
       describe('version parameters', () => {
@@ -474,7 +481,7 @@ describe('DiffsStoreActions', () => {
             { ...defaultParams, diff_id, start_sha },
             endpointDiffForPath,
           );
-          state.mergeRequestDiff = { version_path: versionPath };
+          state.endpointBatch = versionPath;
           mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
 
           diffActions.fetchFileByFile({ state, getters, commit });

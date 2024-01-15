@@ -1,4 +1,4 @@
-import { TestStatus } from '~/ci/pipeline_details/constants';
+import { testStatus } from '~/ci/pipeline_details/constants';
 
 export default [
   {
@@ -7,7 +7,7 @@ export default [
     execution_time: 0,
     name: 'Test#skipped text',
     stack_trace: null,
-    status: TestStatus.SKIPPED,
+    status: testStatus.SKIPPED,
     system_output: null,
   },
   {
@@ -16,7 +16,7 @@ export default [
     execution_time: 0,
     name: 'Test#error text',
     stack_trace: null,
-    status: TestStatus.ERROR,
+    status: testStatus.ERROR,
     system_output: null,
   },
   {
@@ -25,7 +25,7 @@ export default [
     execution_time: 0,
     name: 'Test#unknown text',
     stack_trace: null,
-    status: TestStatus.UNKNOWN,
+    status: testStatus.UNKNOWN,
     system_output: null,
   },
 ];

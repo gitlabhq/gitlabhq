@@ -50,7 +50,7 @@ module Gitlab
       def perform(project_id)
         info(project_id, message: 'starting stage')
 
-        return unless (project = find_project(project_id))
+        return unless (project = Project.find_by_id(project_id))
 
         if project.import_state&.completed?
           info(
@@ -62,11 +62,11 @@ module Gitlab
           return
         end
 
+        RefreshImportJidWorker.perform_in_the_future(project.id, jid)
+
         client = GithubImport.new_client_for(project)
 
         try_import(client, project)
-
-        info(project_id, message: 'stage finished')
       rescue StandardError => e
         Gitlab::Import::ImportFailureService.track(
           project_id: project_id,
@@ -79,25 +79,19 @@ module Gitlab
         raise(e)
       end
 
+      private
+
       # client - An instance of Gitlab::GithubImport::Client.
       # project - An instance of Project.
       def try_import(client, project)
-        RefreshImportJidWorker.perform_in_the_future(project.id, jid)
-
         import(client, project)
-      rescue RateLimitError, UserFinder::FailedToObtainLockError
+
+        info(project.id, message: 'stage finished')
+      rescue RateLimitError, UserFinder::FailedToObtainLockError => e
+        info(project.id, message: "stage retrying", exception_class: e.class.name)
+
         self.class.perform_in(client.rate_limit_resets_in, project.id)
       end
-
-      def find_project(id)
-        # If the project has been marked as failed we want to bail out
-        # automatically.
-        # rubocop: disable CodeReuse/ActiveRecord
-        Project.joins_import_state.where(import_state: { status: :started }).find_by_id(id)
-        # rubocop: enable CodeReuse/ActiveRecord
-      end
-
-      private
 
       def info(project_id, extra = {})
         Gitlab::GithubImport::Logger.info(log_attributes(project_id, extra))

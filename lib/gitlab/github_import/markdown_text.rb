@@ -41,6 +41,8 @@ module Gitlab
 
         def fetch_attachments(text)
           attachments = []
+          return attachments if text.nil?
+
           doc = CommonMarker.render_doc(text)
 
           doc.walk do |node|

@@ -15,16 +15,8 @@ module Gitlab
         # https://gitlab.com/gitlab-org/gitlab/-/blob/eabf0800/app/services/projects/lfs_pointers/lfs_object_download_list_service.rb#L69-71
         resumes_work_when_interrupted!
 
-        def perform(project_id)
-          return unless (project = find_project(project_id))
-
-          import(project)
-        end
-
         # project - An instance of Project.
-        def import(project)
-          info(project.id, message: "starting importer", importer: 'Importer::LfsObjectsImporter')
-
+        def import(_client, project)
           waiter = Importer::LfsObjectsImporter
             .new(project, nil)
             .execute

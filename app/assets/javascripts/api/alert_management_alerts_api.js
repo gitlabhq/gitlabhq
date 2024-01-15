@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { buildApiUrl } from '~/api/api_utils';
-import { ContentTypeMultipartFormData } from '~/lib/utils/headers';
+import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 
 const ALERT_METRIC_IMAGES_PATH =
   '/api/:version/projects/:id/alert_management_alerts/:alert_iid/metric_images';
@@ -16,7 +16,7 @@ export function fetchAlertMetricImages({ alertIid, id }) {
 }
 
 export function uploadAlertMetricImage({ alertIid, id, file, url = null, urlText = null }) {
-  const options = { headers: { ...ContentTypeMultipartFormData } };
+  const options = { headers: { ...contentTypeMultipartFormData } };
   const metricImagesUrl = buildApiUrl(ALERT_METRIC_IMAGES_PATH)
     .replace(':id', encodeURIComponent(id))
     .replace(':alert_iid', encodeURIComponent(alertIid));

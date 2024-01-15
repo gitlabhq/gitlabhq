@@ -14,12 +14,8 @@ module Gitlab
       include ::Gitlab::Import::AdvanceStage
 
       loggable_arguments 1, 2
-      sidekiq_options retry: 6
-
-      # TODO: Allow this class to include GithubImport::Queue and remove
-      # the following two lines https://gitlab.com/gitlab-org/gitlab/-/issues/435622
+      sidekiq_options retry: 6, dead: false
       feature_category :importers
-      sidekiq_options dead: false
 
       # The known importer stages and their corresponding Sidekiq workers.
       #

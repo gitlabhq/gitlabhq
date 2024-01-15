@@ -50,10 +50,10 @@ export const getTypeFromGraphQLId = (gid = '') => {
   return type || null;
 };
 
-export const MutationOperationMode = {
-  Append: 'APPEND',
-  Remove: 'REMOVE',
-  Replace: 'REPLACE',
+export const mutationOperationMode = {
+  append: 'APPEND',
+  remove: 'REMOVE',
+  replace: 'REPLACE',
 };
 
 /**
