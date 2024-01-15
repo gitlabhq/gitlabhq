@@ -83,10 +83,10 @@ module):
 - Maintainer (`40`)
 - Owner (`50`)
 
-If a user is the member of both a project and the project parent groups, the
+If a user is a member of both a project and the project parent groups, the
 highest permission is the applied access level for the project.
 
-If a user is the member of a project, but not the parent groups, they
+If a user is a member of a project, but not the parent groups, they
 can still view the groups and their entities (like epics).
 
 Project membership (where the group membership is already taken into account)

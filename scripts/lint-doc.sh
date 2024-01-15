@@ -143,7 +143,8 @@ then
   ruby -r './tooling/lib/tooling/find_changes' -e "Tooling::FindChanges.new(
       from: :api,
       changed_files_pathname: '${DOC_CHANGES_FILE}',
-      file_filter: ->(file) { !file['deleted_file'] && file['new_path'] =~ %r{doc/.*\.md|lint-doc\.sh|docs\.gitlab-ci\.yml} }
+      file_filter: ->(file) { !file['deleted_file'] && file['new_path'] =~ %r{doc/.*\.md|\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml} },
+      only_new_paths: true
     ).execute"
   if grep -E "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml" < $DOC_CHANGES_FILE
   then

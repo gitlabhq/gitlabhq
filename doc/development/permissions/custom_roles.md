@@ -205,6 +205,95 @@ If you have any concerns, put the new ability behind a feature flag.
 - When you enable the ability by default, add the `feature_flag_enabled_milestone` and `feature_flag_enabled_mr` attributes to the appropriate ability YAML file and regenerate the documentation.
 - You do not have to include these attributes in the YAML file if the feature flag is enabled by default in the same release as the ability is introduced.
 
+#### Testing
+
+Unit tests are preferred to test out changes to any policies affected by the
+addition of new custom permissions. Custom Roles is an Ultimate tier feature so
+these tests can be found in the `ee/spec/policies` directory. The [spec file](https://gitlab.com/gitlab-org/gitlab/-/blob/13baa4e8c92a56260591a5bf0a58d3339890ee10/ee/spec/policies/project_policy_spec.rb#L2726-2740) for
+the `ProjectPolicy` contains shared examples that can be used to test out the
+following conditions:
+
+- when the `custom_roles` licensed feature is not enabled
+- when the `custom_roles` licensed feature is enabled
+  - when a user is a member of a custom role via an inherited group member
+  - when a user is a member of a custom role via a direct group member
+  - when a user is a member of a custom role via a direct project membership
+
+Below is an example for testing out `ProjectPolicy` related changes.
+
+```ruby
+  context 'for a role with `custom_permission` enabled' do
+    let(:member_role_abilities) { { custom_permission: true } }
+    let(:allowed_abilities) { [:custom_permission] }
+
+    it_behaves_like 'custom roles abilities'
+  end
+```
+
+Request specs are preferred to test out any endpoint that allow access via a custom role permission.
+This includes controllers, REST API, and GraphQL. Examples of request specs can be found in `ee/spec/requests/custom_roles/`. In this directory you will find a sub-directory named after each permission that can be enabled via a custom role.
+The `custom_roles` licensed feature must be enabled to test this functionality.
+
+Below is an example of the typical setup that is required to test out a
+Rails Controller endpoint.
+
+```ruby
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, :in_group) }
+  let_it_be(:role) { create(:member_role, :guest, namespace: project.group, custom_permission: true) }
+  let_it_be(:membership) { create(:project_member, :guest, member_role: role, user: user, project: project) }
+
+  before do
+    stub_licensed_features(custom_roles: true)
+    sign_in(user)
+  end
+
+  describe MyController do
+    describe '#show' do
+      it 'allows access' do
+        get my_controller_path(project)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:show)
+      end
+    end
+  end
+```
+
+Below is an example of the typical setup that is required to test out a GraphQL
+mutation.
+
+```ruby
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository, :in_group) }
+  let_it_be(:role) { create(:member_role, :guest, namespace: project.group, custom_permission: true) }
+  let_it_be(:membership) { create(:project_member, :guest, member_role: role, user: user, project: project) }
+
+  before do
+    stub_licensed_features(custom_roles: true)
+  end
+
+  describe MyMutation do
+    include GraphqlHelpers
+
+    describe '#show' do
+      it 'allows access' do
+        post_graphql_mutation(graphql_mutation(:my_mutation, {
+          example: "Example"
+        }), current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        mutation_response = graphql_mutation_response(:my_mutation)
+        expect(mutation_response).to be_present
+        expect(mutation_response["errors"]).to be_empty
+      end
+    end
+  end
+```
+
+[`GITLAB_DEBUG_POLICIES=true`](#finding-existing-abilities-checks) can be used
+to troubleshoot runtime policy decisions.
+
 ## Custom abilities definition
 
 All new custom abilities must have a type definition stored in `ee/config/custom_abilities` that contains a single source of truth for every ability that is part of custom roles feature.
@@ -217,6 +306,7 @@ To add a new custom ability:
    - Use the `ee/bin/custom-ability` CLI to create the YAML definition automatically.
    - Perform manual steps to create a new file in `ee/config/custom_abilities/` with the filename matching the name of the ability name.
 1. Add contents to the file that conform to the [schema](#schema) defined in `ee/config/custom_abilities/types/type_schema.json`.
+1. Add [tests](#testing) for the new ability in `ee/spec/requests/custom_roles/` with a new directory named after the ability name.
 
 ### Schema
 

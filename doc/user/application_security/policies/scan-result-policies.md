@@ -92,9 +92,6 @@ the following sections and tables provide an alternative.
 
 > The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
 
-FLAG:
-On self-managed GitLab, by default the `approval_settings` field is available. To hide the feature, an administrator can [disable the feature flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request` and `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information. On GitLab.com, the `approval_settings` field is available.
-
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
 | `name`              | `string`           | true     |                 | Name of the policy. Maximum of 255 characters.           |
@@ -195,7 +192,6 @@ the defined policy.
 
 FLAG:
 On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is available.
-On self-managed GitLab, by default the  `prevent_approval_by_author`, `prevent_approval_by_commit_author`, `remove_approvals_with_new_commit`, and `require_password_to_approve` fields are available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_any_merge_request`. On GitLab.com, this feature is available.
 On self-managed GitLab, by default the `prevent_pushing_and_force_pushing` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. On GitLab.com, this feature is available.
 
 The settings set in the policy overwrite settings in the project.

@@ -16,7 +16,8 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       predictive_tests_pathname: predictive_tests_pathname,
       frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_pathname,
       from: from,
-      file_filter: file_filter)
+      file_filter: file_filter,
+      only_new_paths: only_new_paths)
   end
 
   let(:changed_files_pathname)             { changed_files_file.path }
@@ -25,6 +26,7 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   let(:from)                               { :api }
   let(:gitlab_client)                      { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
   let(:file_filter)                        { ->(_) { true } }
+  let(:only_new_paths)                     { false }
 
   around do |example|
     self.changed_files_file             = Tempfile.new('changed_files_file')
@@ -120,6 +122,37 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
           subject
 
           expect(File.read(changed_files_file)).to eq('doc/index.md')
+        end
+      end
+
+      context 'when used with only_new_paths' do
+        let(:only_new_paths) { true }
+
+        let(:mr_changes_array) do
+          [
+            {
+              "new_path" => "scripts/test.js",
+              "old_path" => "scripts/test.js"
+            },
+            {
+              "new_path" => "doc/renamed_index.md",
+              "old_path" => "doc/index.md"
+            }
+          ]
+        end
+
+        before do
+          # rubocop:disable RSpec/VerifiedDoubles -- The class from the GitLab gem isn't public, so we cannot use verified doubles for it.
+          allow(gitlab_client).to receive(:merge_request_changes)
+            .with('dummy-project', '1234')
+            .and_return(double(changes: mr_changes_array))
+          # rubocop:enable RSpec/VerifiedDoubles
+        end
+
+        it 'only writes new file paths to output' do
+          subject
+
+          expect(File.read(changed_files_file)).to eq('doc/renamed_index.md scripts/test.js')
         end
       end
     end

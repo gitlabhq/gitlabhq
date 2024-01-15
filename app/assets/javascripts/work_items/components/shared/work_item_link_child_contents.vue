@@ -131,7 +131,7 @@ export default {
     class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-pl-3 gl-pr-2 gl-py-2 gl-mx-n2 gl-rounded-base gl-gap-3"
     data-testid="links-child"
   >
-    <div class="item-contents gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
+    <div class="gl-display-flex gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
       <div
         class="gl-display-flex gl-flex-grow-1 gl-flex-wrap flex-xl-nowrap gl-align-items-center gl-justify-content-space-between gl-gap-3 gl-min-w-0"
       >
