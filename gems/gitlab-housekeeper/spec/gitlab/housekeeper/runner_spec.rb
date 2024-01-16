@@ -83,13 +83,13 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
       # Branches get shown and pushed
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', '--no-pager', 'diff', 'master',
+        .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('git', 'push', '-f', 'housekeeper',
           'the-identifier-for-the-first-change:the-identifier-for-the-first-change')
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', '--no-pager', 'diff', 'master',
+        .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('git', 'push', '-f', 'housekeeper',

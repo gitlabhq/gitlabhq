@@ -1,0 +1,9 @@
+---
+name: reorder_garbage_collection_calls
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429514
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141109
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17363
+milestone: '16.8'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

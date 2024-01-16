@@ -259,3 +259,14 @@ might be caused by one of the following:
   [Issue 418998](https://gitlab.com/gitlab-org/gitlab/-/issues/418998) proposes a fix for this known issue.
 - GitLab and KAS run on different sites. For example, GitLab on `gitlab.example.com` and KAS on `kas.example.com`.
   GitLab does not support this use case. For details, see [issue 416436](https://gitlab.com/gitlab-org/gitlab/-/issues/416436).
+
+## Agent version mismatch
+
+In GitLab, on the **Agent** tab of the Kubernetes clusters page, you might see
+a warning that says `Agent version mismatch: The agent versions do not match each other across your cluster's pods.`
+
+This warning might be caused by an older version of the agent being cached by the agent server for Kubernetes (`kas`).
+Because `kas` periodically deletes outdated agent versions, you should wait at least 20 minutes for the agent
+and GitLab to reconcile.
+
+If the warning persists, update the agent installed on your cluster.

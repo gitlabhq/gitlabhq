@@ -90,7 +90,7 @@
 .issuable-list li,
 .issuable-info-container .controls {
   .avatar-counter {
-    @include gl-pl-1
+    @include gl-pl-1;
     @include gl-pr-2;
     @include gl-h-5;
     @include gl-min-w-5;

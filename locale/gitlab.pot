@@ -36987,9 +36987,6 @@ msgstr ""
 msgid "Previous unresolved discussion"
 msgstr ""
 
-msgid "Primary Action"
-msgstr ""
-
 msgid "Primary navigation sidebar"
 msgstr ""
 

@@ -22,7 +22,8 @@
     "CHROME_DISABLE_DEV_SHM": "true",
     "GITLAB_QA_ADMIN_ACCESS_TOKEN": "ypCa3Dzb23o5nvsixwPA",
     "QA_GITLAB_URL": "${localEnv:QA_GITLAB_URL}",
-    "QA_SMOCKER_HOST": "smocker"
+    "QA_SMOCKER_HOST": "smocker",
+    "QA_ALLOW_LOCAL_REQUESTS": "true"
   },
   "onCreateCommand": "echo \"export QA_GITLAB_URL=${QA_GITLAB_URL:-http://$(docker ps | grep -m 1 'gitlab' | awk '{ print $NF }').test}\" >> /root/.bashrc",
   "updateContentCommand": "cp .solargraph.yml.example .solargraph.yml",

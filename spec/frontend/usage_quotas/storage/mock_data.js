@@ -7,4 +7,6 @@ export const defaultProjectProvideValues = {
   projectPath: '/project-path',
 };
 
-export const defaultNamespaceProvideValues = {};
+export const defaultNamespaceProvideValues = {
+  userNamespace: false,
+};

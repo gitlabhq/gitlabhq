@@ -77,7 +77,8 @@ module Gitlab
         puts
 
         puts '=> Diff:'
-        puts Shell.execute('git', '--no-pager', 'diff', 'master', branch_name, '--', *change.changed_files)
+        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', 'master', branch_name, '--',
+          *change.changed_files)
         puts
       end
 

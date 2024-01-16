@@ -1,23 +1,3 @@
-# Proxy mock definition, useful for recording all interaction with github
-#
-# - request:
-#     method: "GET"
-#     headers:
-#       Host: "api.github.com"
-#   proxy:
-#     host: "https://api.github.com"
-#     follow_redirect: true
-#     keep_host: true
-
-# - request:
-#     method: "POST"
-#     headers:
-#       Host: "api.github.com"
-#   proxy:
-#     host: "https://api.github.com"
-#     follow_redirect: true
-#     keep_host: true
-
 # Mocked response definition
 #
 - request:
@@ -31,6 +11,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "data": {
@@ -68,6 +49,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
@@ -115,6 +97,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "rate": {
@@ -192,6 +175,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -320,6 +304,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       []
 
@@ -336,6 +321,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "allow_forking": true,
@@ -467,6 +453,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -566,6 +553,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -620,6 +608,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -676,6 +665,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -1121,6 +1111,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "teams": [],
@@ -1140,6 +1131,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -1235,6 +1227,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -1530,6 +1523,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -1616,6 +1610,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -1962,6 +1957,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -2346,6 +2342,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -2407,6 +2404,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -2512,6 +2510,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -2578,6 +2577,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "allow_deletions": {
@@ -2637,6 +2637,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "allow_deletions": {
@@ -2692,6 +2693,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       [
         {
@@ -2763,6 +2765,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
@@ -2822,6 +2825,7 @@
       Content-Type: application/json; charset=utf-8
       X-Ratelimit-Limit: '5000'
       X-Ratelimit-Remaining: '5000'
+      X-Oauth-Scopes: 'admin:org, repo, user'
     body: |
       {
         "avatar_url": "https://avatars.githubusercontent.com/u/40021320?v=4",

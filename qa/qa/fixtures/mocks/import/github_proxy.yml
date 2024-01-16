@@ -1,0 +1,19 @@
+# Proxy mock definition, useful for recording all interaction with github
+#
+- request:
+    method: "GET"
+    headers:
+      Host: "api.github.com"
+  proxy:
+    host: "https://api.github.com"
+    follow_redirect: true
+    keep_host: true
+
+- request:
+    method: "POST"
+    headers:
+      Host: "api.github.com"
+  proxy:
+    host: "https://api.github.com"
+    follow_redirect: true
+    keep_host: true

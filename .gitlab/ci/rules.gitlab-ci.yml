@@ -1152,7 +1152,7 @@
     # If any of the files that are DIRECTLY related to generating or managing the GLFM specification change,
     # run `glfm-verify` to get quick feedback on any needed updates, even if the MR is not yet approved
     - <<: *if-default-refs
-    - changes: *glfm-patterns
+      changes: *glfm-patterns
     # Otherwise do not run `glfm-verify` if the MR is not approved
     - <<: *if-merge-request-not-approved
       when: never
@@ -1160,7 +1160,7 @@
     # This could potentially be a wide range of files, so we reuse `setup-test-env-patterns`, which includes
     # almost all app files except docs files.
     - <<: *if-default-refs
-    - changes: *setup-test-env-patterns
+      changes: *setup-test-env-patterns
     # If we are forcing all rspec to run, run this job too.
     - <<: *if-merge-request-labels-run-all-rspec
 

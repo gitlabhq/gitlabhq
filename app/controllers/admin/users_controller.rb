@@ -10,7 +10,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :set_shared_view_parameters, only: [:show, :projects, :keys]
 
   before_action only: [:index] do
-    push_frontend_feature_flag(:simplified_badges)
+    push_frontend_feature_flag(:simplified_badges, current_user)
   end
 
   feature_category :user_management

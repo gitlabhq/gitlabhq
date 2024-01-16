@@ -25,6 +25,11 @@ RSpec.describe 'Admin browse spam logs', feature_category: :shared do
     expect(page).to have_link('Trust user')
   end
 
+  it 'passes axe automated accessibility testing', :js do
+    visit admin_spam_logs_path
+    expect(page).to be_axe_clean.within('.table').skipping :'link-in-text-block'
+  end
+
   it 'does not perform N+1 queries' do
     control_queries = ActiveRecord::QueryRecorder.new { visit admin_spam_logs_path }
     create(:spam_log)

@@ -1750,6 +1750,9 @@
                   "project",
                   "ref"
                 ]
+              },
+              {
+                "$ref": "#/definitions/!reference"
               }
             ]
           }
