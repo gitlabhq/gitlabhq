@@ -152,12 +152,6 @@ include:
     - <<: *if-schedule-pipeline
       when: never
 
-.rules:test:gdk-load-balancer-changes:
-  rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
-
 .rules:test:qa-default-branch:
   rules:
     - *qa-run-all-e2e-label

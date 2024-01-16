@@ -641,7 +641,7 @@ To determine the IP address of a shared runner:
 
 ### Determine the IP address of a project runner
 
-To can find the IP address of a runner for a project project,
+To can find the IP address of a runner for a project,
 you must have the Owner role for the
 project.
 

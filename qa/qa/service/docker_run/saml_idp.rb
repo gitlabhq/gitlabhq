@@ -4,6 +4,8 @@ module QA
   module Service
     module DockerRun
       class SamlIdp < Base
+        include Support::API
+
         def initialize(gitlab_host, group)
           @image = 'jamedjo/test-saml-idp'
           @name = 'saml-idp-server'
@@ -11,6 +13,8 @@ module QA
           @group = group
           super()
         end
+
+        delegate :logger, to: Runtime::Logger
 
         def idp_base_url
           "https://#{host_name}:8443/simplesaml"
@@ -40,17 +44,10 @@ module QA
           QA::Runtime::Env.simple_saml_fingerprint || '119b9e027959cdb7c662cfd075d9e2ef384e445f'
         end
 
-        def host_name
-          return 'localhost' unless QA::Runtime::Env.running_in_ci?
-
-          super
-        end
-
         def register!
           command = <<~CMD.tr("\n", ' ')
             docker run -d --rm
             --network #{network}
-            --hostname #{host_name}
             --name #{@name}
             --env SIMPLESAMLPHP_SP_ENTITY_ID=#{@gitlab_host}/groups/#{@group}
             --env SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=#{@gitlab_host}/groups/#{@group}/-/saml/callback
@@ -59,9 +56,23 @@ module QA
             #{@image}
           CMD
 
-          command.gsub!("--network #{network} ", '') unless QA::Runtime::Env.running_in_ci?
-
           shell command
+
+          logger.debug("Waiting for SAML IDP to start...")
+          Support::Retrier.retry_until(
+            max_attempts: 3,
+            sleep_interval: 1,
+            retry_on_exception: true,
+            message: "Waiting for SAML IDP to start"
+          ) do
+            logger.debug("Pinging SAML IDP service")
+            # Endpoint will return 403 for unauthenticated request once it is up
+            get("http://#{host_name}:8080").code == 403
+          end
+        rescue StandardError => e
+          # Remove container on failure because it isn't using a unique name
+          remove!
+          raise e
         end
       end
     end

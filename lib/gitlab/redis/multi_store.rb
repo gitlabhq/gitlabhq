@@ -99,6 +99,7 @@ module Gitlab
         hset
         incr
         incrby
+        ltrim
         mapped_hmset
         pfadd
         pfmerge

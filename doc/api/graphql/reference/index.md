@@ -1384,7 +1384,6 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionfillinmergerequesttemplate"></a>`fillInMergeRequestTemplate` | [`AiFillInMergeRequestTemplateInput`](#aifillinmergerequesttemplateinput) | Input for fill_in_merge_request_template AI action. |
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
-| <a id="mutationaiactiongeneratetestfile"></a>`generateTestFile` | [`GenerateTestFileInput`](#generatetestfileinput) | Input for generate_test_file AI action. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
@@ -34333,15 +34332,6 @@ Represents an escalation rule.
 | <a id="escalationruleinputoncallscheduleiid"></a>`oncallScheduleIid` | [`ID`](#id) | On-call schedule to notify. |
 | <a id="escalationruleinputstatus"></a>`status` | [`EscalationRuleStatus!`](#escalationrulestatus) | Status required to prevent the rule from activating. |
 | <a id="escalationruleinputusername"></a>`username` | [`String`](#string) | Username of the user to notify. |
-
-### `GenerateTestFileInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="generatetestfileinputfilepath"></a>`filePath` | [`String!`](#string) | File path to generate test files for. |
-| <a id="generatetestfileinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `JiraUsersMappingInputType`
 

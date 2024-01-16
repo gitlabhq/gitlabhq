@@ -21,11 +21,11 @@ include:
 
 .rules:gdk:qa-parallel:
   rules:
+    # To account for cases where a group label is set which may trigger selective execution
+    # But we want to execute full reliable suite on gdk in case of code-pattern-changes
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
-          # To account for cases where a group label is set which may trigger selective execution
-          # But we want to execute full reliable suite on gdk in case of code-pattern-changes
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]
@@ -41,14 +41,32 @@ include:
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - !reference [.rules:test:manual, rules]
 
+.rules:test:gdk-load-balancer-changes:
+  rules:
+    - when: manual
+      allow_failure: true
+      changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
+
+.with-gdk-log:
+  after_script:
+    - mv $CI_BUILDS_DIR/*.log $CI_PROJECT_DIR/
+
 .gdk-qa-base:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .qa-cache
     - .default-retry
+    - .gitlab-qa-report
   stage: test
   services:
-    - docker:${DOCKER_VERSION}-dind
+    - name: docker:${DOCKER_VERSION}-dind
+    - name: ${GDK_IMAGE}
+      alias: gdk.test
+      # CI setup will tail each component in to separate file
+      # Override default command so we don't tail all of the logs to stdout unnecessarily
+      command: [gdk, tail, rails-web]
   tags:
     - e2e
   variables:
@@ -56,51 +74,29 @@ include:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "false"
+    QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
+    QA_DOCKER_NETWORK: host
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     RSPEC_REPORT_OPTS: "--order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json  --format html --out tmp/rspec-${CI_JOB_ID}.htm"
-    FF_NETWORK_PER_BUILD: 1
     GDK_URL: http://gdk.test:3000
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
-    QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
+    FF_NETWORK_PER_BUILD: "true"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
-    - echo -e "\e[0Ksection_start:`date +%s`:pull_image[collapsed=true]\r\e[0KPull GDK QA image"
-    - docker pull ${GDK_IMAGE}
-    - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
-    # Despite `incremental: false` and `static: true`, GDK sometimes fails to start without increasing max user watches
-    # This is why we're not running the GDK container as a service
-    - sysctl -n -w fs.inotify.max_user_watches=524288
-    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk[collapsed=true]\r\e[0KLaunch GDK"
-    - mkdir -p $CI_PROJECT_DIR/log/gdk $CI_PROJECT_DIR/log/gitlab
-    # This command matches the permissions of the user that runs GDK inside the container.
-    - chown -R 1000:1000 $CI_PROJECT_DIR/log
-    - |
-      docker run -d --rm --name gdk --network host \
-        --volume $CI_PROJECT_DIR/log/gdk:/home/gdk/gitlab-development-kit/log \
-        --volume $CI_PROJECT_DIR/log/gitlab:/home/gdk/gitlab-development-kit/gitlab/log \
-        ${GDK_IMAGE}
-    # With `FF_NETWORK_PER_BUILD=1` and `--network host` the IP of the gdk container should be 172.18.0.2, but we get it
-    # dynamically just in case
-    - echo "$(docker exec gdk bash -c "getent hosts \$HOSTNAME" | awk '{print $1}') gdk.test" >> /etc/hosts
-    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
     - cd qa && bundle config set --local without 'development' && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - echo -e "\e[0Ksection_start:`date +%s`:healthcheck[collapsed=true]\r\e[0KWait for gdk to start"
-    - retry_times_sleep 100 3 test_url $GDK_URL/users/sign_in
-    - echo -e "\e[0Ksection_end:`date +%s`:healthcheck\r\e[0K"
-    - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
-    - echo -e "\e[0Ksection_end:`date +%s`:run_tests\r\e[0K"
+  after_script:
+    - !reference [.with-gdk-log, after_script]
+    - !reference [.gitlab-qa-report, after_script]
   artifacts:
     paths:
       - qa/tmp
-      - log/gitlab
-      - log/gdk/*/current
+      - ${CI_PROJECT_DIR}/*.log
     reports:
       junit: qa/tmp/rspec-*.xml
       dotenv: "$QA_SUITE_STATUS_ENV_FILE"
@@ -111,15 +107,8 @@ include:
 # balancing. Adding 5s lag to 1 of the replicas to validate robustness of
 # the load balancer.
 .gdk-with-load-balancer-setup:
-  before_script:
-    - !reference [".gdk-qa-base", "before_script"]
-    - |
-      docker exec gdk bash -c "
-        gdk config set postgresql.replica.enabled true &&\
-        gdk config set postgresql.replica_2.enabled true &&\
-        gdk config set load_balancing.enabled true &&\
-        gdk reconfigure &&\
-        gdk restart"
+  variables:
+    WITH_LOAD_BALANCER: "true"
 
 # ==========================================
 # Pre stage
@@ -141,37 +130,21 @@ download-knapsack-report:
 # ==========================================
 # Test stage
 # ==========================================
+
+# ------------------------------------------
+# Blocking tests
+# ------------------------------------------
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
-    - .gitlab-qa-report
     - .rules:gdk:qa-smoke
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
 
-gdk-qa-smoke-with-load-balancer:
-  extends:
-    - .gdk-qa-base
-    - .gdk-with-load-balancer-setup
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: gdk-qa-smoke
-  artifacts:
-    paths:
-      - log
-    reports:
-      dotenv: ""
-  rules:
-    - !reference [".rules:test:never-schedule-pipeline", rules]
-    - !reference [".rules:test:gdk-load-balancer-changes", rules]
-  allow_failure: true
-
 gdk-qa-reliable:
   extends:
     - .gdk-qa-base
-    - .gitlab-qa-report
-    - .parallel
     - .rules:gdk:qa-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
@@ -181,20 +154,40 @@ gdk-qa-reliable:
 gdk-qa-reliable-selective:
   extends:
     - .gdk-qa-base
-    - .gitlab-qa-report
     - .rules:gdk:qa-selective
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
 
+# ------------------------------------------
+# Non Blocking tests
+# ------------------------------------------
+gdk-qa-smoke-with-load-balancer:
+  extends:
+    - .gdk-qa-base
+    - .gdk-with-load-balancer-setup
+    - .with-gdk-log
+  variables:
+    QA_SCENARIO: Test::Instance::Smoke
+    QA_RUN_TYPE: gdk-qa-smoke
+  artifacts:
+    paths:
+      - gdk.log
+    reports:
+      dotenv: ""
+  rules:
+    - !reference [".rules:test:never-schedule-pipeline", rules]
+    - !reference [".rules:test:gdk-load-balancer-changes", rules]
+
 gdk-qa-reliable-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
-    - .parallel
+    - .with-gdk-log
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+  parallel: 5
   artifacts:
     paths:
       - log
@@ -203,15 +196,15 @@ gdk-qa-reliable-with-load-balancer:
   rules:
     - !reference [".rules:test:never-schedule-pipeline", rules]
     - !reference [".rules:test:gdk-load-balancer-changes", rules]
-  allow_failure: true
 
 gdk-qa-non-blocking:
   extends:
     - .gdk-qa-base
-    - .parallel
+    - .with-gdk-log
   variables:
     QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
+  parallel: 5
   rules:
     - when: manual
       allow_failure: true

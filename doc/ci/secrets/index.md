@@ -33,7 +33,7 @@ The [Authenticating and Reading Secrets With HashiCorp Vault](../examples/authen
 tutorial has more details about authenticating with ID tokens.
 
 You must [configure your Vault server](#configure-your-vault-server) before you
-can use [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
+can [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
 
 The flow for using GitLab with HashiCorp Vault
 is summarized by this diagram:

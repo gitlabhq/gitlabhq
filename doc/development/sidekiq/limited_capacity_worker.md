@@ -94,3 +94,8 @@ name as label:
 - `limited_capacity_worker_running_jobs`
 - `limited_capacity_worker_max_running_jobs`
 - `limited_capacity_worker_remaining_work_count`
+
+## Alternatives
+
+If limited capacity worker doesn't fit your architecture, there's also a [concurrency limit](worker_attributes.md#concurrency-limit)
+attribute that can be used to restrict concurrency of a Sidekiq worker.

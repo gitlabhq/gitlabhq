@@ -35471,6 +35471,8 @@ CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON syst
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
 
+CREATE UNIQUE INDEX index_system_note_metadata_pkey_on_id_convert_to_bigint ON system_note_metadata USING btree (id_convert_to_bigint);
+
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);

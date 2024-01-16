@@ -159,6 +159,13 @@ module WorkerAttributes
       ::Gitlab::SidekiqMiddleware::PauseControl::WorkersMap.strategy_for(worker: self)
     end
 
+    def concurrency_limit(max_jobs)
+      ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.set_limit_for(
+        worker: self,
+        max_jobs: max_jobs
+      )
+    end
+
     def get_weight
       get_class_attribute(:weight) ||
         NAMESPACE_WEIGHTS[queue_namespace] ||

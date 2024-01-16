@@ -376,7 +376,7 @@ You should use PgBouncer with `session` pool mode. You can use the
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
-you need to prepare PostgreSQL server as documented in [in the setup instructions](#manual-database-setup):
+you need to prepare PostgreSQL server as documented in [the setup instructions](#manual-database-setup):
 
 ```ruby
 pgbouncer['databases'] = {

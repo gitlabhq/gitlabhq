@@ -3,10 +3,10 @@ hostname: gdk.test
 sshd:
   additional_config: 'AcceptEnv GIT_PROTOCOL'
 webpack:
-  live_reload: false
-  sourcemaps: false
-  incremental: false
-  static: true
+  enabled: false
+vite:
+  enabled: true
+  hot_module_reloading: false
 gdk:
   ask_to_restart_after_update: false
   auto_reconfigure: false

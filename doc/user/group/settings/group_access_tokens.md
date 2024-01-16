@@ -82,7 +82,7 @@ or API. However, administrators can use a workaround:
    # Set the GitLab administration user to use. If user ID 1 is not available or is not an administrator, use 'admin = User.admins.first' instead to select an administrator.
    admin = User.find(1)
 
-   # Set the group group you want to create a token for. For example, group with ID 109.
+   # Set the group you want to create a token for. For example, group with ID 109.
    group = Group.find(109)
 
    # Create the group bot user. For further group access tokens, the username should be `group_{group_id}_bot_{random_string}` and email address `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`.

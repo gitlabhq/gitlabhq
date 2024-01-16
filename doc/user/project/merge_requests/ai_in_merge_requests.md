@@ -94,27 +94,15 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 - Contents of the file
 - The file name
 
+<!--- start_remove The following content will be removed on remove_date: '2024-04-12' -->
+
 ## Generate suggested tests in merge requests
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141086) to GitLab Duo Chat in GitLab 16.8.
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature was [moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141086)
+into GitLab Duo Chat in GitLab 16.8. Find more information in
+[Write tests in the IDE](../../gitlab_duo_chat.md#write-tests-in-the-ide).
 
-Use GitLab Duo Test generation in a merge request to see a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
-
-View a [click-through demo](https://go.gitlab.com/Xfp0l4).
-
-To generate a test suggestion:
-
-1. In a merge request, select the **Changes** tab.
-1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
-1. Select **Suggest test cases**.
-
-The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
-
-Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Contents of the file
-- The file name
+<!--- end_remove -->

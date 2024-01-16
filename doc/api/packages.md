@@ -32,7 +32,7 @@ GET /projects/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -98,7 +98,7 @@ GET /groups/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"

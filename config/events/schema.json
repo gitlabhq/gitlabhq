@@ -1,8 +1,18 @@
 {
   "type": "object",
   "required": [
-
+    "description",
+    "category",
+    "action",
+    "product_section",
+    "product_stage",
+    "product_group",
+    "introduced_by_url",
+    "milestone",
+    "tiers",
+    "distributions"
   ],
+  "additionalProperties": false,
   "properties": {
     "description": {
       "type": "string"

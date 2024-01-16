@@ -85,8 +85,6 @@ export default {
     GlPagination,
     GlSprintf,
     GlAlert,
-    GenerateTestFileDrawer: () =>
-      import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   alerts: {
@@ -240,7 +238,6 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
-      'generateTestFilePath',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -443,7 +440,6 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
-      'setGenerateTestFilePath',
       'fetchPinnedFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
@@ -818,11 +814,5 @@ export default {
         </div>
       </div>
     </div>
-    <generate-test-file-drawer
-      v-if="getNoteableData.id"
-      :resource-id="resourceId"
-      :file-path="generateTestFilePath"
-      @close="() => setGenerateTestFilePath('')"
-    />
   </div>
 </template>

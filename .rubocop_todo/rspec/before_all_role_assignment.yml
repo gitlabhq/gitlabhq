@@ -679,7 +679,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/llm/generate_commit_message_service_spec.rb'
     - 'ee/spec/services/llm/generate_description_service_spec.rb'
     - 'ee/spec/services/llm/generate_summary_service_spec.rb'
-    - 'ee/spec/services/llm/generate_test_file_service_spec.rb'
     - 'ee/spec/services/llm/git_command_service_spec.rb'
     - 'ee/spec/services/llm/merge_requests/summarize_diff_service_spec.rb'
     - 'ee/spec/services/llm/merge_requests/summarize_review_service_spec.rb'

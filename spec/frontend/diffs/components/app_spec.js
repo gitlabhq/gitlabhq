@@ -47,8 +47,6 @@ const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
 Vue.use(Vuex);
 Vue.use(VueApollo);
 
-Vue.config.ignoredElements = ['copy-code'];
-
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.findComponent(CollapsedFilesWarning);
 }

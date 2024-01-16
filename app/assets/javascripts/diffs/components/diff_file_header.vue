@@ -54,11 +54,6 @@ export default {
     compareButtonLabel: __('Compare submodule commit revisions'),
     fileModeTooltip: __('File permissions'),
   },
-  inject: {
-    showGenerateTestFileButton: {
-      default: false,
-    },
-  },
   props: {
     discussionPath: {
       type: String,
@@ -225,7 +220,6 @@ export default {
       'reviewFile',
       'setFileCollapsedByUser',
       'setFileForcedOpen',
-      'setGenerateTestFilePath',
       'toggleFileCommentForm',
       'unpinFile',
     ]),
@@ -468,15 +462,6 @@ export default {
               target="_blank"
             >
               {{ __('Open in Web IDE') }}
-            </gl-dropdown-item>
-            <gl-dropdown-item
-              v-if="showGenerateTestFileButton"
-              @click="setGenerateTestFilePath(diffFile.new_path)"
-            >
-              <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-                {{ __('Suggest test cases') }}
-                <gl-icon name="tanuki-ai" class="gl-text-purple-600 gl-mr-n3" />
-              </span>
             </gl-dropdown-item>
             <gl-dropdown-item
               v-if="diffFile.replaced_view_path"

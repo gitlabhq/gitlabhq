@@ -61,6 +61,7 @@ module QA
       end
 
       def remove_saml_idp_service(saml_idp_service)
+        saml_idp_service.logs # print log output before removal
         saml_idp_service.remove!
       end
 

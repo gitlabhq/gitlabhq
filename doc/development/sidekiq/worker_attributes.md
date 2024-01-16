@@ -365,3 +365,44 @@ class PausedWorker
   # ...
 end
 ```
+
+## Concurrency limit
+
+With the `concurrency_limit` property, you can limit the worker's concurrency. It will put the jobs that are over this limit in
+a separate `LIST` and re-enqueued when it falls under the limit. `ConcurrencyLimit::ResumeWorker` is a cron
+worker that checks if any throttled jobs should be re-enqueued.
+
+The first job that crosses the defined concurency limit initiates the throttling process for all other jobs of this class.
+Until this happens, jobs are scheduled and executed as usual.
+
+When the throttling starts, newly scheduled and executed jobs will be added to the end of the `LIST` to ensure that
+the execution order is preserved. As soon as the `LIST` is empty again, the throttling process ends.
+
+WARNING:
+If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
+the workload drops under the limit.
+
+FLAG:
+The feature is currently behind a default-disabled feature flag `sidekiq_concurrency_limit_middleware`.
+
+You should use a lambda to define the limit. If it returns `nil`, `0`, or a negative value, the limit won't be applied.
+
+```ruby
+class LimitedWorker
+  include ApplicationWorker
+
+  concurrency_limit -> { 60 }
+
+  # ...
+end
+```
+
+```ruby
+class LimitedWorker
+  include ApplicationWorker
+
+  concurrency_limit -> { ApplicationSetting.current.elasticsearch_concurrent_sidekiq_jobs }
+
+  # ...
+end
+```

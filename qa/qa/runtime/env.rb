@@ -692,8 +692,11 @@ module QA
         ENV['QA_1P_GITHUB_UUID']
       end
 
-      def gdk_url
-        ENV['GDK_URL']
+      # Docker network to use when starting sidecar containers
+      #
+      # @return [String]
+      def docker_network
+        ENV["QA_DOCKER_NETWORK"]
       end
 
       private

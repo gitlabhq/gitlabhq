@@ -41,7 +41,6 @@ module QA
             docker run -d --rm --network #{network} --name #{@name} #{'--user=root' if Runtime::Env.fips?}
             #{'-v /var/run/docker.sock:/var/run/docker.sock' if @executor == :docker}
             --privileged
-            #{"--add-host gdk.test:#{gdk_host_ip}" if gdk_network}
             #{@image}  #{add_gitlab_tls_cert if @address.include? 'https'}
             && docker exec --detach #{@name} sh -c "#{register_command}"
           CMD
@@ -91,7 +90,6 @@ module QA
             args << '--docker-privileged=true'
             args << "--docker-network-mode=#{network}"
             args << "--docker-volumes=/certs/client"
-            args << "--docker-extra-hosts=gdk.test:#{gdk_host_ip}" if gdk_network
           end
 
           <<~CMD.strip

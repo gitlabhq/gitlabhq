@@ -5,6 +5,9 @@ require 'socket'
 module QA
   module Service
     module DockerRun
+      # TODO: There are a lot of methods that reference @name yet it is not part of initializer
+      # Refactor all child implementations to remove assumption that @name will exist
+      #
       class Base
         include Service::Shellout
 
@@ -13,7 +16,7 @@ module QA
         end
 
         def initialize
-          @network = gdk_network || Runtime::Scenario.attributes[:network] || 'test'
+          @network = Runtime::Scenario.attributes[:network] || Runtime::Env.docker_network || 'test'
         end
 
         # Authenticate against a container registry
@@ -40,7 +43,9 @@ module QA
         end
 
         def network
-          network_exists?(@network) ? @network : 'bridge'
+          return @network_cache if @network_cache
+
+          @network_cache = network_exists?(@network) ? @network : 'bridge'
         end
 
         def inspect_network(name)
@@ -58,8 +63,17 @@ module QA
           end
         end
 
+        # Host name of the container
+        #
+        # If host or default bridge network is used, container can only be reached using ip address
+        #
+        # @return [String]
         def host_name
-          "#{@name}.#{network}"
+          @host_name ||= if network == "host" || network == "bridge"
+                           host_ip
+                         else
+                           "#{@name}.#{network}"
+                         end
         end
 
         def register!
@@ -86,24 +100,6 @@ module QA
 
         def health
           shell("docker inspect --format='{{json .State.Health.Status}}' #{@name}").delete('"')
-        end
-
-        # The network to use when testing against GDK in docker
-        #
-        # @return [String]
-        def gdk_network
-          return unless Runtime::Env.gdk_url
-
-          'host'
-        end
-
-        # The IP address of the docker host when testing against GDK in docker
-        #
-        # @return [String]
-        def gdk_host_ip
-          return unless Runtime::Env.gdk_url
-
-          Addrinfo.tcp(URI(Runtime::Env.gdk_url).host, nil).ip_address
         end
 
         # Returns the IP address of the docker host

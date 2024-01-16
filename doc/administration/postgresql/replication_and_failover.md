@@ -428,8 +428,8 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
 
    # START user configuration
    # Set the real values as explained in Required Information section
-   # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
-   # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
+   # Replace CONSUL_PASSWORD_HASH with a generated md5 value
+   # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
    pgbouncer['users'] = {
      'gitlab-consul': {
        password: 'CONSUL_PASSWORD_HASH'

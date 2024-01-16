@@ -143,21 +143,24 @@ export default defineConfig({
           }
         : viteGDKConfig.hmr,
     https: false,
-    watch: {
-      ignored: [
-        '**/*.stories.js',
-        function ignoreRootFolder(x) {
-          /*
-           `vite` watches the root folder of gitlab and all of its sub folders
-           This is not what we want, because we have temp files, and all kind
-           of other stuff. As vite starts its watchers recursively, we just
-           ignore if the path matches exactly the root folder
+    watch:
+      viteGDKConfig.hmr === null
+        ? null
+        : {
+            ignored: [
+              '**/*.stories.js',
+              function ignoreRootFolder(x) {
+                /*
+             `vite` watches the root folder of gitlab and all of its sub folders
+             This is not what we want, because we have temp files, and all kind
+             of other stuff. As vite starts its watchers recursively, we just
+             ignore if the path matches exactly the root folder
 
-           Additional folders like `ee/app/assets` are defined in
-           */
-          return x === __dirname;
-        },
-      ],
-    },
+             Additional folders like `ee/app/assets` are defined in
+             */
+                return x === __dirname;
+              },
+            ],
+          },
   },
 });
