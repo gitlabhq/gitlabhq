@@ -10,34 +10,25 @@ RSpec.describe Gitlab::ProtocolAccess, feature_category: :source_code_management
 
   describe ".allowed?" do
     where(:protocol, :project, :admin_setting, :namespace_setting, :expected_result) do
-      "web"              | nil       | nil    | nil    | true
-      "ssh"              | nil       | nil    | nil    | true
-      "http"             | nil       | nil    | nil    | true
-      "ssh_certificates" | nil       | nil    | nil    | true
-      "ssh"              | nil       | ""     | nil    | true
-      "http"             | nil       | ""     | nil    | true
-      "ssh_certificates" | nil       | ""     | nil    | true
-      "ssh"              | nil       | "ssh"  | nil    | true
-      "http"             | nil       | "http" | nil    | true
-      "ssh_certificates" | nil       | "ssh_certificates" | nil | true
-      "ssh"              | nil       | "http" | nil    | false
-      "http"             | nil       | "ssh"  | nil    | false
-      "ssh_certificates" | nil       | "ssh"  | nil    | false
-      "ssh"              | ref(:p1)  | nil    | "all"  | true
-      "http"             | ref(:p1)  | nil    | "all"  | true
-      "ssh_certificates" | ref(:p1)  | nil    | "all"  | true
-      "ssh"              | ref(:p1)  | nil    | "ssh"  | true
-      "http"             | ref(:p1)  | nil    | "http" | true
-      "ssh_certificates" | ref(:p1)  | nil    | "ssh_certificates" | true
-      "ssh"              | ref(:p1)  | nil    | "http" | false
-      "http"             | ref(:p1)  | nil    | "ssh"  | false
-      "ssh_certificates" | ref(:p1)  | nil    | "ssh"  | false
-      "ssh"              | ref(:p1)  | ""     | "all"  | true
-      "http"             | ref(:p1)  | ""     | "all"  | true
-      "ssh_certificates" | ref(:p1)  | ""     | "all"  | true
-      "ssh"              | ref(:p1)  | "ssh"  | "ssh"  | true
-      "http"             | ref(:p1)  | "http" | "http" | true
-      "ssh_certificates" | ref(:p1)  | "ssh_certificates" | "ssh_certificates" | true
+      "web"  | nil       | nil    | nil    | true
+      "ssh"  | nil       | nil    | nil    | true
+      "http" | nil       | nil    | nil    | true
+      "ssh"  | nil       | ""     | nil    | true
+      "http" | nil       | ""     | nil    | true
+      "ssh"  | nil       | "ssh"  | nil    | true
+      "http" | nil       | "http" | nil    | true
+      "ssh"  | nil       | "http" | nil    | false
+      "http" | nil       | "ssh"  | nil    | false
+      "ssh"  | ref(:p1)  | nil    | "all"  | true
+      "http" | ref(:p1)  | nil    | "all"  | true
+      "ssh"  | ref(:p1)  | nil    | "ssh"  | true
+      "http" | ref(:p1)  | nil    | "http" | true
+      "ssh"  | ref(:p1)  | nil    | "http" | false
+      "http" | ref(:p1)  | nil    | "ssh"  | false
+      "ssh"  | ref(:p1)  | ""     | "all"  | true
+      "http" | ref(:p1)  | ""     | "all"  | true
+      "ssh"  | ref(:p1)  | "ssh"  | "ssh"  | true
+      "http" | ref(:p1)  | "http" | "http" | true
     end
 
     with_them do

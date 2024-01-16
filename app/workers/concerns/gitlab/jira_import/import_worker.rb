@@ -8,9 +8,9 @@ module Gitlab
       included do
         include ApplicationWorker
 
-        sidekiq_options retry: 3
         include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
+        sidekiq_options retry: 6
       end
 
       def perform(project_id)

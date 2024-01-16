@@ -2683,6 +2683,28 @@ Input type: `CreateDiffNoteInput`
 | <a id="mutationcreatediffnoteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatediffnotenote"></a>`note` | [`Note`](#note) | Note after mutation. |
 
+### `Mutation.createDiscussion`
+
+Input type: `CreateDiscussionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatediscussionbody"></a>`body` | [`String!`](#string) | Content of the note. |
+| <a id="mutationcreatediscussionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatediscussionconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreatediscussioninternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
+| <a id="mutationcreatediscussionnoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatediscussionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatediscussionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcreatediscussionnote"></a>`note` | [`Note`](#note) | Note after mutation. |
+
 ### `Mutation.createEpic`
 
 Input type: `CreateEpicInput`

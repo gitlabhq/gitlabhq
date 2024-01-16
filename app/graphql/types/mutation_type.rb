@@ -102,6 +102,7 @@ module Types
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true
     mount_mutation Mutations::Notes::Update::Note
     mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::RepositionImageDiffNote

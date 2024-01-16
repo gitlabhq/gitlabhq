@@ -533,24 +533,22 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe "#enabled_git_access_protocol_options_for_group" do
-    let_it_be(:group) { create(:group) }
-
-    subject { helper.enabled_git_access_protocol_options_for_group(group) }
+    subject { helper.enabled_git_access_protocol_options_for_group }
 
     before do
-      allow(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
+      expect(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
     end
 
     context "instance setting is nil" do
       let(:instance_setting) { nil }
 
-      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is blank" do
-      let(:instance_setting) { '' }
+      let(:instance_setting) { nil }
 
-      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is ssh" do

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module BitbucketServerImport
+  module Import
     module UserFromMention
-      SOURCE_USER_CACHE_KEY = 'bitbucket_server/project/%s/source/username/%s'
+      SOURCE_USER_CACHE_KEY = '%s/project/%s/source/username/%s'
 
       def user_from_cache(mention)
         cached_email = read(mention)
@@ -17,14 +17,14 @@ module Gitlab
         ::Gitlab::Cache::Import::Caching.write_multiple(hash, timeout: timeout)
       end
 
-      def source_user_cache_key(project_id, username)
-        format(SOURCE_USER_CACHE_KEY, project_id, username)
+      def source_user_cache_key(importer, project_id, username)
+        format(SOURCE_USER_CACHE_KEY, importer, project_id, username)
       end
 
       private
 
       def read(mention)
-        ::Gitlab::Cache::Import::Caching.read(source_user_cache_key(project_id, mention))
+        ::Gitlab::Cache::Import::Caching.read(source_user_cache_key(importer, project_id, mention))
       end
 
       def find_user(email)

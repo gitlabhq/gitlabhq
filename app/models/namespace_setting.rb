@@ -15,7 +15,7 @@ class NamespaceSetting < ApplicationRecord
   belongs_to :namespace, inverse_of: :namespace_settings
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
-  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2, ssh_certificates: 3 }, _suffix: true
+  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 

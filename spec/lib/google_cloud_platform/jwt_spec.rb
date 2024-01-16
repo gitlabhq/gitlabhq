@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::GoogleCloudPlatform::Jwt, feature_category: :shared do
+RSpec.describe GoogleCloudPlatform::Jwt, feature_category: :shared do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

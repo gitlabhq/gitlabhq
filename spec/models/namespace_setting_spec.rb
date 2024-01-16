@@ -12,7 +12,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   it { is_expected.to define_enum_for(:jobs_to_be_done).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other]).with_suffix }
-  it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_suffix }
+  it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_values([:all, :ssh, :http]).with_suffix }
 
   describe 'default values' do
     subject(:setting) { described_class.new }

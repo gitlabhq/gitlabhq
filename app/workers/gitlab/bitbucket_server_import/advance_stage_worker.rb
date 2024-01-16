@@ -12,10 +12,6 @@ module Gitlab
 
       data_consistency :delayed
 
-      sidekiq_options dead: false, retry: 3
-
-      feature_category :importers
-
       loggable_arguments 1, 2
 
       # The known importer stages and their corresponding Sidekiq workers.

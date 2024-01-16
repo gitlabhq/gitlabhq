@@ -1151,6 +1151,7 @@
       when: never
     # If any of the files that are DIRECTLY related to generating or managing the GLFM specification change,
     # run `glfm-verify` to get quick feedback on any needed updates, even if the MR is not yet approved
+    - <<: *if-default-refs
     - changes: *glfm-patterns
     # Otherwise do not run `glfm-verify` if the MR is not approved
     - <<: *if-merge-request-not-approved
@@ -1158,6 +1159,7 @@
     # If we passed all the previous rules, run `glfm-verify` if there are any changes that could impact `glfm-verify`.
     # This could potentially be a wide range of files, so we reuse `setup-test-env-patterns`, which includes
     # almost all app files except docs files.
+    - <<: *if-default-refs
     - changes: *setup-test-env-patterns
     # If we are forcing all rspec to run, run this job too.
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1233,6 +1235,7 @@
 .frontend:rules:compile-test-assets:
   rules:
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
+    - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns

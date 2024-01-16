@@ -83,6 +83,8 @@ by an administrator. Users can use their account only after they have been appro
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
+[View how to set up a user cap for groups](../../user/group/manage.md#user-cap-for-groups).
+
 NOTE:
 For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
 is enabled or disabled, downtime might occur due to changes in the Rails configuration.

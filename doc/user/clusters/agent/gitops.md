@@ -87,7 +87,7 @@ unnecessary pulls from GitLab.
 The agent for Kubernetes automatically detects Flux `GitRepository` objects that
 reference GitLab projects in the instance the agent is connected to,
 and configures a [`Receiver`](https://fluxcd.io/flux/components/notification/receiver/) for the instance.
-When the agent for Kubernetes detects a `git push`, the `Receiver` is triggered
+When the agent for Kubernetes detects a `git push` to a repository it has access to, the `Receiver` is triggered
 and Flux reconciles the cluster with any changes to the repository.
 
 To use immediate Git repository reconciliation, you must have a Kubernetes cluster that runs:
@@ -99,6 +99,11 @@ Immediate Git repository reconciliation can reduce the time between a push and r
 but it doesn't guarantee that every `git push` event is received. You should still set
 [`GitRepository.spec.interval`](https://fluxcd.io/flux/components/source/gitrepositories/#interval)
 to an acceptable duration.
+
+DISCLAIMER:
+The agent only has access to the agent configuration project and all public projects.
+The agent is not able to immediately reconcile any private projects, except the agent configuration project.
+Allowing the agent to access private projects is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
 
 ### Custom webhook endpoints
 

@@ -2,22 +2,24 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketServerImport::UserFromMention, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::Import::UserFromMention, :clean_gitlab_redis_cache, feature_category: :importers do
   let(:project_id) { 11 }
   let(:username) { '@johndoe' }
   let(:email) { 'john@gmail.com' }
   let(:hash) { { key: 'value' } }
-  let(:cache_key) { "bitbucket_server/project/#{project_id}/source/username/#{username}" }
+  let(:importer) { 'bitbucket_server' }
+  let(:cache_key) { "#{importer}/project/#{project_id}/source/username/#{username}" }
 
   let(:example) do
     Class.new do
-      include Gitlab::BitbucketServerImport::UserFromMention
+      include Gitlab::Import::UserFromMention
 
-      def initialize(project_id)
+      def initialize(importer, project_id)
+        @importer = importer
         @project_id = project_id
       end
 
-      attr_reader :project_id
+      attr_reader :project_id, :importer
 
       def foo(mention)
         user_from_cache(mention)
@@ -29,7 +31,7 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFromMention, :clean_gitlab_red
     end
   end
 
-  subject(:example_class) { example.new(project_id) }
+  subject(:example_class) { example.new(importer, project_id) }
 
   describe '#user_from_cache' do
     it 'returns nil if the cache is empty' do

@@ -18,7 +18,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
     it 'imports the merge request correctly' do
       expect_next(Gitlab::Import::MergeRequestCreator, project).to receive(:execute).and_call_original
       expect_next(Gitlab::BitbucketServerImport::UserFinder, project).to receive(:author_id).and_call_original
-      expect_next(Gitlab::BitbucketServerImport::MentionsConverter, project.id).to receive(:convert).and_call_original
+      expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server',
+        project.id).to receive(:convert).and_call_original
 
       expect { importer.execute }.to change { MergeRequest.count }.by(1)
 
@@ -42,7 +43,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       end
 
       it 'does not convert mentions' do
-        expect_next(Gitlab::BitbucketServerImport::MentionsConverter, project.id).not_to receive(:convert)
+        expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project.id).not_to receive(:convert)
 
         importer.execute
       end

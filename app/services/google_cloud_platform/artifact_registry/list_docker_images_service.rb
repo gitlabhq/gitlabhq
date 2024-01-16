@@ -16,7 +16,7 @@ module GoogleCloudPlatform
       end
 
       def client
-        ::Integrations::GoogleCloudPlatform::ArtifactRegistry::Client.new(
+        ::GoogleCloudPlatform::ArtifactRegistry::Client.new(
           project: project,
           user: current_user,
           gcp_project_id: gcp_project_id,

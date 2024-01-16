@@ -6,7 +6,6 @@ import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import {
   STATE_OPEN,
-  TASK_TYPE_NAME,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -14,6 +13,7 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WORK_ITEM_NAME_TO_ICON_MAP,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '../../constants';
 
 export default {
@@ -79,7 +79,7 @@ export default {
       return this.childItem.state === STATE_OPEN;
     },
     iconName() {
-      if (this.childItemType === TASK_TYPE_NAME && !this.showTaskIcon) {
+      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK && !this.showTaskIcon) {
         return this.isChildItemOpen ? 'issue-open-m' : 'issue-close';
       }
       return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
@@ -88,7 +88,7 @@ export default {
       return this.childItem.workItemType.name;
     },
     iconClass() {
-      if (this.childItemType === TASK_TYPE_NAME && !this.showTaskIcon) {
+      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK && !this.showTaskIcon) {
         return this.isChildItemOpen ? 'gl-text-green-500' : 'gl-text-blue-500';
       }
       return '';

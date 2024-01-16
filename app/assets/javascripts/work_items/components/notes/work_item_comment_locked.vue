@@ -2,7 +2,7 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { TASK_TYPE_NAME } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_VALUE_TASK } from '~/work_items/constants';
 
 export default {
   components: {
@@ -13,7 +13,7 @@ export default {
     workItemType: {
       required: false,
       type: String,
-      default: TASK_TYPE_NAME,
+      default: WORK_ITEM_TYPE_VALUE_TASK,
     },
     isProjectArchived: {
       required: false,

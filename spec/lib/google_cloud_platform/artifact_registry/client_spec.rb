@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::GoogleCloudPlatform::ArtifactRegistry::Client, feature_category: :container_registry do
+RSpec.describe GoogleCloudPlatform::ArtifactRegistry::Client, feature_category: :container_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:rsa_key) { OpenSSL::PKey::RSA.generate(3072) }
   let_it_be(:rsa_key_data) { rsa_key.to_s }

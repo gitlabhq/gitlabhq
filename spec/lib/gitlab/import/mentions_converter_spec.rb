@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketServerImport::MentionsConverter, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::Import::MentionsConverter, :clean_gitlab_redis_cache, feature_category: :importers do
   let(:project_id) { 12 }
+  let(:importer) { 'bitbucket_server' }
   let(:text) { 'text without @ mentions' }
   let(:source_user_cache_prefix) { "bitbucket_server/project/#{project_id}/source/username" }
 
-  subject(:converted_text) { described_class.new(project_id).convert(text) }
+  subject(:converted_text) { described_class.new(importer, project_id).convert(text) }
 
   describe '#convert' do
     context 'when the text has no mentions' do

@@ -14,8 +14,6 @@ module Gitlab
       include ::Gitlab::Import::AdvanceStage
 
       loggable_arguments 1, 2
-      sidekiq_options retry: 6, dead: false
-      feature_category :importers
 
       # The known importer stages and their corresponding Sidekiq workers.
       #

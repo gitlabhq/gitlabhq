@@ -240,7 +240,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :auto_devops_enabled?
 
   validates :enabled_git_access_protocol,
-    inclusion: { in: ->(_) { enabled_git_access_protocol_values }, allow_blank: true }
+    inclusion: { in: %w[ssh http], allow_blank: true }
 
   validates :domain_denylist,
     presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
@@ -896,10 +896,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def self.human_attribute_name(attribute, *options)
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
-  end
-
-  def self.enabled_git_access_protocol_values
-    %w[ssh http]
   end
 
   def parsed_grafana_url

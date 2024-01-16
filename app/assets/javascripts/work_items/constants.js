@@ -10,8 +10,6 @@ export const STATE_EVENT_CLOSE = 'CLOSE';
 
 export const TRACKING_CATEGORY_SHOW = 'workItems:show';
 
-export const TASK_TYPE_NAME = 'Task';
-
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_AWARD_EMOJI = 'AWARD_EMOJI';
@@ -45,9 +43,6 @@ export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
 export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
-
-export const NAMESPACE_GROUP = 'group';
-export const NAMESPACE_PROJECT = 'project';
 
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 

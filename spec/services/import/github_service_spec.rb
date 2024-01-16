@@ -202,7 +202,25 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       end
     end
 
-    context 'validates scopes when collaborator import is true' do
+    context 'validates minimum scope when collaborator import is false' do
+      let(:optional_stages) do
+        {
+          collaborators_import: false
+        }
+      end
+
+      let(:headers) do
+        {
+          'x-oauth-scopes' => 'write:packages'
+        }
+      end
+
+      it 'returns error when scope is not adequate' do
+        expect(subject.execute(access_params, :github)).to include(minimum_scope_error)
+      end
+    end
+
+    context 'validates collaborator scopes when collaborator import is true' do
       let(:optional_stages) do
         {
           collaborators_import: true
@@ -211,12 +229,12 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
       let(:headers) do
         {
-          'x-oauth-scopes' => 'read:user'
+          'x-oauth-scopes' => 'repo, read:user'
         }
       end
 
       it 'returns error when scope is not adequate' do
-        expect(subject.execute(access_params, :github)).to include(scope_error)
+        expect(subject.execute(access_params, :github)).to include(collab_import_scope_error)
       end
     end
 
@@ -355,7 +373,15 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     }
   end
 
-  def scope_error
+  def minimum_scope_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: 'Your GitHub access token does not have the correct scope to import.'
+    }
+  end
+
+  def collab_import_scope_error
     {
       status: :error,
       http_status: :unprocessable_entity,

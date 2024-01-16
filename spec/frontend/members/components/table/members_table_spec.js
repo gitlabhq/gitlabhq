@@ -45,8 +45,7 @@ describe('MembersTable', () => {
             members: [],
             tableFields: [],
             tableAttrs: {
-              table: { 'data-qa-selector': 'members_list' },
-              tr: { 'data-qa-selector': 'member_row' },
+              tr: { 'data-testid': 'member-row' },
             },
             pagination,
             ...state,
@@ -274,16 +273,10 @@ describe('MembersTable', () => {
     });
   });
 
-  it('adds QA selector to table', () => {
+  it('adds QA testid to table row', () => {
     createComponent();
 
-    expect(findTable().attributes('data-qa-selector')).toBe('members_list');
-  });
-
-  it('adds QA selector to table row', () => {
-    createComponent();
-
-    expect(findTable().find('tbody tr').attributes('data-qa-selector')).toBe('member_row');
+    expect(findTable().find('tbody tr').attributes('data-testid')).toBe('member-row');
   });
 
   describe('when required pagination data is provided', () => {

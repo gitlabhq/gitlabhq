@@ -26,10 +26,10 @@ RSpec.describe GoogleCloudPlatform::ArtifactRegistry::ListDockerImagesService, f
   describe '#execute' do
     let(:page_token) { nil }
     let(:list_docker_images_response) { dummy_list_response }
-    let(:client_double) { instance_double('::Integrations::GoogleCloudPlatform::ArtifactRegistry::Client') }
+    let(:client_double) { instance_double('::GoogleCloudPlatform::ArtifactRegistry::Client') }
 
     before do
-      allow(::Integrations::GoogleCloudPlatform::ArtifactRegistry::Client).to receive(:new)
+      allow(::GoogleCloudPlatform::ArtifactRegistry::Client).to receive(:new)
         .with(
           project: project,
           user: user,

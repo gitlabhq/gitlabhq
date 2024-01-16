@@ -56,7 +56,7 @@ default:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
-    - if: '$CI_PROJECT_PATH == "gitlab-org/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline" && $GITALY_TEST'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'

@@ -14,9 +14,9 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import {
   i18n,
-  TASK_TYPE_NAME,
-  TRACKING_CATEGORY_SHOW,
   DEFAULT_PAGE_SIZE_ASSIGNEES,
+  TRACKING_CATEGORY_SHOW,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 import {
   projectMembersResponseWithCurrentUser,
@@ -97,7 +97,7 @@ describe('WorkItemAssignees component', () => {
         fullPath: 'test-project-path',
         workItemId,
         allowsMultipleAssignees,
-        workItemType: TASK_TYPE_NAME,
+        workItemType: WORK_ITEM_TYPE_VALUE_TASK,
         canUpdate,
         canInviteMembers,
       },

@@ -4,9 +4,11 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository X-Ray **(PREMIUM)**
+# Repository X-Ray **(PREMIUM ALL)**
 
-Repository X-Ray enhances GitLab Duo Code Suggestions by providing additional context to improve the accuracy and relevance of code recommendations.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7. 
+
+Repository X-Ray enhances [GitLab Duo Code Suggestions](index.md) by providing additional context to improve the accuracy and relevance of code recommendations.
 
 Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies to generate better code suggestions. It does this by analyzing key project configuration files such as `Gemfile.lock`, `package.json`, and `go.mod` to build additional context.
 

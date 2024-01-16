@@ -4,7 +4,11 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { STATE_OPEN, TRACKING_CATEGORY_SHOW, TASK_TYPE_NAME } from '~/work_items/constants';
+import {
+  STATE_OPEN,
+  TRACKING_CATEGORY_SHOW,
+  WORK_ITEM_TYPE_VALUE_TASK,
+} from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -127,10 +131,12 @@ export default {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
     workItemDocPath() {
-      return this.workItemType === TASK_TYPE_NAME ? 'user/tasks.html' : 'user/okrs.html';
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'user/tasks.html' : 'user/okrs.html';
     },
     workItemDocAnchor() {
-      return this.workItemType === TASK_TYPE_NAME ? 'confidential-tasks' : 'confidential-okrs';
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
+        ? 'confidential-tasks'
+        : 'confidential-okrs';
     },
     getWorkItemData() {
       return {

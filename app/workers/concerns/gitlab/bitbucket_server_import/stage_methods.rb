@@ -14,7 +14,7 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options dead: false, retry: 3
+        sidekiq_options dead: false, retry: 6
 
         sidekiq_retries_exhausted do |msg, e|
           Gitlab::Import::ImportFailureService.track(

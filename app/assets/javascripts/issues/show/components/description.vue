@@ -20,7 +20,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_CREATING,
   I18N_WORK_ITEM_ERROR_DELETING,
-  TASK_TYPE_NAME,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '../event_hub';
@@ -129,7 +129,7 @@ export default {
   },
   computed: {
     taskWorkItemTypeId() {
-      return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
+      return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_TASK)?.id;
     },
     issueGid() {
       return this.issueId ? convertToGraphQLId(TYPENAME_WORK_ITEM, this.issueId) : null;

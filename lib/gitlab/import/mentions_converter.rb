@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module BitbucketServerImport
+  module Import
     class MentionsConverter
       include UserFromMention
 
       MENTIONS_REGEX = User.reference_pattern
       MENTION_PLACEHOLDER = '~GITLAB_MENTION_PLACEHOLDER~'
 
-      attr_reader :project_id
+      attr_reader :importer, :project_id
 
-      def initialize(project_id)
+      def initialize(importer, project_id)
+        @importer = importer
         @project_id = project_id
       end
 
