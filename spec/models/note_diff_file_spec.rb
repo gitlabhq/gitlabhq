@@ -32,7 +32,7 @@ RSpec.describe NoteDiffFile do
     end
 
     it 'excludes note diff files with the wrong sha' do
-      found = described_class.referencing_sha(Gitlab::Git::BLANK_SHA, project_id: project.id)
+      found = described_class.referencing_sha(Gitlab::Git::SHA1_BLANK_SHA, project_id: project.id)
 
       expect(found).to be_empty
     end

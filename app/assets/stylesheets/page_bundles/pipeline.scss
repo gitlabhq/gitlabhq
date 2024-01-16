@@ -130,6 +130,11 @@
 
 .gl-pipeline-job-width {
   width: 100%;
+  max-width: 400px;
+
+  .pipeline-graph-container & {
+    max-width: unset;
+  }
 }
 
 .gl-pipeline-job-width\! {
@@ -316,5 +321,15 @@
 
   .pipeline-graph .pipeline-graph {
     background-color: $gray-100;
+  }
+}
+
+.scan-reports-summary-grid {
+  grid-template-columns: 1fr 1fr max-content;
+}
+
+@media (max-width: $breakpoint-sm) {
+  .scan-reports-summary-grid :nth-child(3n+1) {
+    grid-column: 1 / -1;
   }
 }

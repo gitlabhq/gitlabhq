@@ -26,7 +26,7 @@ Each event is defined in a separate YAML file consisting of the following fields
 |------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `description`          | yes      | A description of the event.                                                                                                                                                                 |
 | `category`             | yes      | Always InternalEventTracking (only different for legacy events).                                                                                                                             |
-| `action`               | yes      | A unique name for the event.                                                                                                                               |
+| `action`               | yes      | A unique name for the event. Use the format `<operation>_<target_of_operation>_<where/when>`. <br/><br/> Ex: `publish_go_module_to_the_registry_from_pipeline` <br/>`<operation> = publish`<br/>`<target> = go_module`<br/>`<when/where> = to_the_registry_from_pipeline`. |
 | `identifiers`          | no       | A list of identifiers sent with the event. Can be set to one or more of `project`, `user`, or `namespace`.                                                                                  |
 | `product_section`      | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml).                                                                                                |
 | `product_stage`        | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the event.                                                                                        |
@@ -43,7 +43,7 @@ This is an example YAML file for an internal event:
 ```yaml
 description: A user visited a product analytics dashboard
 category: InternalEventTracking
-action: user_visited_dashboard
+action: visit_product_analytics_dashboard
 identifiers:
 - project
 - user

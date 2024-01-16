@@ -63,14 +63,14 @@ For example, you can format the emails to include a header and footer in accorda
 organization's brand guidelines. You can also include the following placeholders to display dynamic
 content specific to the Service Desk ticket or your GitLab instance.
 
-| Placeholder            | `thank_you.md`         | `new_note.md`          | Description
-| ---------------------- | ---------------------- | ---------------------- | -----------
-| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID.
-| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID.
-| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default).
-| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design.
-| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL.
-| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket.
+| Placeholder            | `thank_you.md`         | `new_note.md`          | Description |
+|------------------------|------------------------|------------------------|-------------|
+| `%{ISSUE_ID}`          | **{check-circle}** Yes | **{check-circle}** Yes | Ticket IID. |
+| `%{ISSUE_PATH}`        | **{check-circle}** Yes | **{check-circle}** Yes | Project path appended with the ticket IID. |
+| `%{ISSUE_URL}`         | **{check-circle}** Yes | **{check-circle}** Yes | URL of the ticket. External participants can only view the ticket if the project is public and ticket is not confidential (Service Desk tickets are confidential by default). |
+| `%{ISSUE_DESCRIPTION}` | **{check-circle}** Yes | **{check-circle}** Yes | Ticket description. If a user has edited the description, it may contain sensitive information that is not intended to be delivered to external participants. Use this placeholder with care and ideally only if you never modify descriptions or your team is aware of the template design. |
+| `%{UNSUBSCRIBE_URL}`   | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe URL. |
+| `%{NOTE_TEXT}`         | **{dotted-circle}** No | **{check-circle}** Yes | The new comment added to the ticket by a user. Take care to include this placeholder in `new_note.md`. Otherwise, the requesters may never see the updates on their Service Desk ticket. |
 
 ### Thank you email
 
@@ -105,7 +105,7 @@ Instance administrators can add a header, footer or additional text to the GitLa
 them to all emails sent from GitLab. If you're using a custom `thank_you.md` or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
-For more information, see [System header and footer messages](../../../administration/appearance.md#system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
+For more information, see [System header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).
 
 ## Use a custom template for Service Desk tickets
 
@@ -165,6 +165,7 @@ the assignees of the issue and creates to-do items for them.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a walkthrough, see [a short showcase video](https://youtu.be/163wDM1e43o).
+<!-- Video published on 2023-12-12 -->
 
 Prerequisites:
 
@@ -191,6 +192,7 @@ Maintain brand identity and instill confidence among support requesters with a d
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
+<!-- Video published on 2023-09-12 -->
 
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 A Beta feature is not production-ready, but is unlikely to change drastically
@@ -225,12 +227,12 @@ Configure and verify a custom email address when you want to send Service Desk e
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
-1. Expand **Service Desk** and find the **Custom email** settings.
+1. Expand **Service Desk** and find the **Configure a custom email address** section.
 1. Note the presented Service Desk address of this project, and with your email provider
    (for example, Gmail), set up email forwarding from the custom email address to the
    Service Desk address.
 1. Back in GitLab, complete the fields.
-1. Select **Save & test settings**.
+1. Select **Save & test connection**.
 
 The configuration has been saved and the verification of the custom email address is triggered.
 
@@ -945,7 +947,7 @@ or completely separately.
    ::EndTabs
 
 1. GitLab offers two methods to transport emails from `mail_room` to the GitLab
-application. You can configure the `delivery_method` for each email setting individually:
+   application. You can configure the `delivery_method` for each email setting individually:
    1. Recommended: `webhook` (default in GitLab 15.3 and later) sends the email payload via an API POST request to your GitLab
       application. It uses a shared token to authenticate. If you choose this method,
       make sure the `mail_room` process can access the API endpoint and distribute the shared

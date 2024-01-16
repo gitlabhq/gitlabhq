@@ -25,7 +25,7 @@ RSpec.describe 'Admin uses repository checks', :request_store, feature_category:
 
   context 'when admin mode is enabled' do
     before do
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
     end
 
     it 'to trigger a single check', :js do

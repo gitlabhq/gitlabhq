@@ -1,6 +1,7 @@
 #import "~/ci/catalog/graphql/fragments/catalog_resource.fragment.graphql"
 
 query getCatalogResources(
+  $scope: CiCatalogResourceScope
   $searchTerm: String
   $sortValue: CiCatalogResourceSort
   $after: String
@@ -9,6 +10,7 @@ query getCatalogResources(
   $last: Int
 ) {
   ciCatalogResources(
+    scope: $scope
     search: $searchTerm
     sort: $sortValue
     after: $after
@@ -22,7 +24,6 @@ query getCatalogResources(
       hasNextPage
       hasPreviousPage
     }
-    count
     nodes {
       ...CatalogResourceFields
     }

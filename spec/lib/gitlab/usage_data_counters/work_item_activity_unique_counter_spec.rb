@@ -44,4 +44,12 @@ RSpec.describe Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter, :clean_
 
     it_behaves_like 'work item unique counter'
   end
+
+  describe '.track_work_item_todo_marked_action' do
+    subject(:track_event) { described_class.track_work_item_mark_todo_action(author: user) }
+
+    let(:event_name) { described_class::WORK_ITEM_TODO_MARKED }
+
+    it_behaves_like 'work item unique counter'
+  end
 end

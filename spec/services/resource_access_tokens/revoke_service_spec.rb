@@ -26,7 +26,7 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
       it 'removes membership of bot user' do
         subject
 
-        expect(resource.reload.users).not_to include(resource_bot)
+        expect(resource.reload).not_to have_user(resource_bot)
       end
 
       it 'initiates user removal' do
@@ -56,7 +56,7 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
       it 'does not remove bot from member list' do
         subject
 
-        expect(resource.reload.users).to include(resource_bot)
+        expect(resource.reload).to have_user(resource_bot)
       end
 
       it 'does not transfer issuables of bot user to ghost user' do

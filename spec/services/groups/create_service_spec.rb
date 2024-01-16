@@ -3,45 +3,58 @@
 require 'spec_helper'
 
 RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_projects do
-  let!(:user) { create(:user) }
-  let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
+  let_it_be(:user, reload: true) { create(:user) }
+  let(:current_user) { user }
+  let(:group_params) { { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC }.merge(extra_params) }
+  let(:extra_params) { {} }
+  let(:created_group) { response }
 
-  subject { service.execute }
+  subject(:response) { described_class.new(current_user, group_params).execute }
 
   shared_examples 'has sync-ed traversal_ids' do
-    specify { expect(subject.reload.traversal_ids).to eq([subject.parent&.traversal_ids, subject.id].flatten.compact) }
+    specify do
+      expect(created_group.traversal_ids).to eq([created_group.parent&.traversal_ids, created_group.id].flatten.compact)
+    end
   end
 
-  describe 'visibility level restrictions' do
-    let!(:service) { described_class.new(user, group_params) }
+  shared_examples 'creating a group' do
+    specify do
+      expect { response }.to change { Group.count }
+      expect(created_group).to be_persisted
+    end
+  end
 
-    context "create groups without restricted visibility level" do
-      it { is_expected.to be_persisted }
+  shared_examples 'does not create a group' do
+    specify do
+      expect { response }.not_to change { Group.count }
+      expect(created_group).not_to be_persisted
+    end
+  end
+
+  context 'for visibility level restrictions' do
+    context 'without restricted visibility level' do
+      it_behaves_like 'creating a group'
     end
 
-    context "cannot create group with restricted visibility level" do
+    context 'with restricted visibility level' do
       before do
-        allow_any_instance_of(ApplicationSetting).to receive(:restricted_visibility_levels).and_return([Gitlab::VisibilityLevel::PUBLIC])
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
-      it { is_expected.not_to be_persisted }
+      it_behaves_like 'does not create a group'
     end
   end
 
-  context 'when `setup_for_company:true` is passed' do
-    let(:params) { group_params.merge(setup_for_company: true) }
-    let(:service) { described_class.new(user, params) }
-    let(:created_group) { service.execute }
+  context 'with `setup_for_company` attribute' do
+    let(:extra_params) { { setup_for_company: true } }
 
-    it 'creates group with the specified setup_for_company' do
+    it 'has the specified setup_for_company' do
       expect(created_group.setup_for_company).to eq(true)
     end
   end
 
-  context 'creating a group with `default_branch_protection` attribute' do
-    let(:params) { group_params.merge(default_branch_protection: Gitlab::Access::PROTECTION_NONE) }
-    let(:service) { described_class.new(user, params) }
-    let(:created_group) { service.execute }
+  context 'with `default_branch_protection` attribute' do
+    let(:extra_params) { { default_branch_protection: Gitlab::Access::PROTECTION_NONE } }
 
     context 'for users who have the ability to create a group with `default_branch_protection`' do
       it 'creates group with the specified branch protection level' do
@@ -52,23 +65,22 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     context 'for users who do not have the ability to create a group with `default_branch_protection`' do
       it 'does not create the group with the specified branch protection level' do
         allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+        allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
         expect(created_group.default_branch_protection).not_to eq(Gitlab::Access::PROTECTION_NONE)
       end
     end
   end
 
-  context 'creating a group with `default_branch_protection_defaults` attribute' do
+  context 'with `default_branch_protection_defaults` attribute' do
     let(:branch_protection) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
-    let(:params) { group_params.merge(default_branch_protection_defaults: branch_protection) }
-    let(:service) { described_class.new(user, params) }
-    let(:created_group) { service.execute }
+    let(:extra_params) { { default_branch_protection_defaults: branch_protection } }
 
     context 'for users who have the ability to create a group with `default_branch_protection`' do
       before do
         allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
+        allow(Ability)
+          .to receive(:allowed?).with(user, :update_default_branch_protection, an_instance_of(Group)).and_return(true)
       end
 
       it 'creates group with the specified default branch protection settings' do
@@ -79,31 +91,26 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     context 'for users who do not have the ability to create a group with `default_branch_protection_defaults`' do
       it 'does not create the group with the specified default branch protection settings' do
         allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+        allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
         expect(created_group.default_branch_protection_defaults).not_to eq(Gitlab::Access::PROTECTION_NONE)
       end
     end
   end
 
-  context 'creating a group with `allow_mfa_for_subgroups` attribute' do
-    let(:params) { group_params.merge(allow_mfa_for_subgroups: false) }
-    let(:service) { described_class.new(user, params) }
+  context 'with `allow_mfa_for_subgroups` attribute' do
+    let(:extra_params) { { allow_mfa_for_subgroups: false } }
 
-    it 'creates group without error' do
-      expect(service.execute).to be_persisted
-    end
+    it_behaves_like 'creating a group'
   end
 
-  describe 'creating a top level group' do
-    let(:service) { described_class.new(user, group_params) }
-
+  context 'for a top level group' do
     context 'when user can create a group' do
       before do
         user.update_attribute(:can_create_group, true)
       end
 
-      it { is_expected.to be_persisted }
+      it_behaves_like 'creating a group'
 
       context 'with before_commit callback' do
         it_behaves_like 'has sync-ed traversal_ids'
@@ -115,144 +122,167 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         user.update_attribute(:can_create_group, false)
       end
 
-      it { is_expected.not_to be_persisted }
+      it_behaves_like 'does not create a group'
     end
   end
 
-  describe 'creating subgroup' do
-    let!(:group) { create(:group) }
-    let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
+  context 'when creating a group within an organization' do
+    context 'when organization is provided' do
+      let_it_be(:organization) { create(:organization) }
+      let(:extra_params) { { organization_id: organization.id } }
+
+      context 'when user can create the group' do
+        before do
+          create(:organization_user, user: user, organization: organization)
+        end
+
+        it_behaves_like 'creating a group'
+      end
+
+      context 'when user is an admin', :enable_admin_mode do
+        let(:current_user) { create(:admin) }
+
+        it_behaves_like 'creating a group'
+      end
+
+      context 'when user can not create the group' do
+        it_behaves_like 'does not create a group'
+
+        it 'returns an error and does not set organization_id' do
+          expect(created_group.errors[:organization_id].first)
+            .to eq(s_("CreateGroup|You don't have permission to create a group in the provided organization."))
+          expect(created_group.organization_id).to be_nil
+        end
+      end
+    end
+
+    context 'when organization is the default organization and not set by params' do
+      before do
+        create(:organization, :default)
+      end
+
+      it_behaves_like 'creating a group'
+    end
+  end
+
+  context 'for a subgroup' do
+    let_it_be(:group) { create(:group) }
+    let(:extra_params) { { parent_id: group.id } }
 
     context 'as group owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
-      it { is_expected.to be_persisted }
-
+      it_behaves_like 'creating a group'
       it_behaves_like 'has sync-ed traversal_ids'
     end
 
     context 'as guest' do
-      it 'does not save group and returns an error' do
-        is_expected.not_to be_persisted
+      it_behaves_like 'does not create a group'
 
-        expect(subject.errors[:parent_id].first).to eq(s_('CreateGroup|You don’t have permission to create a subgroup in this group.'))
-        expect(subject.parent_id).to be_nil
+      it 'returns an error and does not set parent_id' do
+        expect(created_group.errors[:parent_id].first)
+          .to eq(s_('CreateGroup|You don’t have permission to create a subgroup in this group.'))
+        expect(created_group.parent_id).to be_nil
       end
     end
 
     context 'as owner' do
-      before do
+      before_all do
         group.add_owner(user)
       end
 
-      it { is_expected.to be_persisted }
+      it_behaves_like 'creating a group'
     end
 
     context 'as maintainer' do
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
-      it { is_expected.to be_persisted }
+      it_behaves_like 'creating a group'
     end
   end
 
-  describe "when visibility level is passed as a string" do
-    let(:service) { described_class.new(user, group_params) }
-    let(:group_params) { { path: 'group_path', visibility: 'public' } }
+  context 'when visibility level is passed as a string' do
+    let(:extra_params) { { visibility: 'public' } }
 
-    it "assigns the correct visibility level" do
-      group = service.execute
-
-      expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+    it 'assigns the correct visibility level' do
+      expect(created_group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
   end
 
-  describe 'creating a mattermost team' do
-    let!(:params) { group_params.merge(create_chat_team: "true") }
-    let!(:service) { described_class.new(user, params) }
+  context 'for creating a mattermost team' do
+    let(:extra_params) { { create_chat_team: 'true' } }
 
     before do
       stub_mattermost_setting(enabled: true)
     end
 
     it 'create the chat team with the group' do
-      allow_any_instance_of(::Mattermost::Team).to receive(:create)
-        .and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })
+      allow_next_instance_of(::Mattermost::Team) do |instance|
+        allow(instance).to receive(:create).and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })
+      end
 
-      expect { subject }.to change { ChatTeam.count }.from(0).to(1)
+      expect { response }.to change { ChatTeam.count }.from(0).to(1)
     end
   end
 
-  describe 'creating a setting record' do
-    let(:service) { described_class.new(user, group_params) }
-
+  context 'for creating a setting record' do
     it 'create the settings record connected to the group' do
-      group = subject
-      expect(group.namespace_settings).to be_persisted
+      expect(created_group.namespace_settings).to be_persisted
     end
   end
 
-  describe 'creating a details record' do
-    let(:service) { described_class.new(user, group_params) }
-
+  context 'for creating a details record' do
     it 'create the details record connected to the group' do
-      group = subject
-      expect(group.namespace_details).to be_persisted
+      expect(created_group.namespace_details).to be_persisted
     end
   end
 
-  describe 'create service for the group' do
-    let(:service) { described_class.new(user, group_params) }
-    let(:created_group) { service.execute }
+  context 'with an active instance-level integration' do
+    let_it_be(:instance_integration) do
+      create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
+    end
 
-    context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+    it 'creates a service from the instance-level integration' do
+      expect(created_group.integrations.count).to eq(1)
+      expect(created_group.integrations.first.api_url).to eq(instance_integration.api_url)
+      expect(created_group.integrations.first.inherit_from_id).to eq(instance_integration.id)
+    end
 
-      it 'creates a service from the instance-level integration' do
+    context 'with an active group-level integration' do
+      let(:extra_params) { { parent_id: group.id } }
+      let_it_be(:group) { create(:group) { |g| g.add_owner(user) } }
+      let_it_be(:group_integration) do
+        create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/')
+      end
+
+      it 'creates a service from the group-level integration' do
         expect(created_group.integrations.count).to eq(1)
-        expect(created_group.integrations.first.api_url).to eq(instance_integration.api_url)
-        expect(created_group.integrations.first.inherit_from_id).to eq(instance_integration.id)
+        expect(created_group.integrations.first.api_url).to eq(group_integration.api_url)
+        expect(created_group.integrations.first.inherit_from_id).to eq(group_integration.id)
       end
 
-      context 'with an active group-level integration' do
-        let(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
-        let!(:group_integration) { create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/') }
-        let(:group) do
-          create(:group).tap do |group|
-            group.add_owner(user)
-          end
+      context 'with an active subgroup' do
+        let(:extra_params) { { parent_id: subgroup.id } }
+        let_it_be(:subgroup) { create(:group, parent: group) { |g| g.add_owner(user) } }
+        let_it_be(:subgroup_integration) do
+          create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/')
         end
 
-        it 'creates a service from the group-level integration' do
+        it 'creates a service from the subgroup-level integration' do
           expect(created_group.integrations.count).to eq(1)
-          expect(created_group.integrations.first.api_url).to eq(group_integration.api_url)
-          expect(created_group.integrations.first.inherit_from_id).to eq(group_integration.id)
-        end
-
-        context 'with an active subgroup' do
-          let(:service) { described_class.new(user, group_params.merge(parent_id: subgroup.id)) }
-          let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/') }
-          let(:subgroup) do
-            create(:group, parent: group).tap do |subgroup|
-              subgroup.add_owner(user)
-            end
-          end
-
-          it 'creates a service from the subgroup-level integration' do
-            expect(created_group.integrations.count).to eq(1)
-            expect(created_group.integrations.first.api_url).to eq(subgroup_integration.api_url)
-            expect(created_group.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
-          end
+          expect(created_group.integrations.first.api_url).to eq(subgroup_integration.api_url)
+          expect(created_group.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
         end
       end
     end
   end
 
-  context 'shared runners configuration' do
-    context 'parent group present' do
+  context 'with shared runners configuration' do
+    context 'when parent group is present' do
       using RSpec::Parameterized::TableSyntax
 
       where(:shared_runners_config, :descendants_override_disabled_shared_runners_config) do
@@ -263,30 +293,31 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       end
 
       with_them do
-        let!(:group) { create(:group, shared_runners_enabled: shared_runners_config, allow_descendants_override_disabled_shared_runners: descendants_override_disabled_shared_runners_config) }
-        let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
+        let(:extra_params) { { parent_id: group.id } }
+        let(:group) do
+          create(
+            :group,
+            shared_runners_enabled: shared_runners_config,
+            allow_descendants_override_disabled_shared_runners: descendants_override_disabled_shared_runners_config
+          )
+        end
 
         before do
           group.add_owner(user)
         end
 
         it 'creates group following the parent config' do
-          new_group = service.execute
-
-          expect(new_group.shared_runners_enabled).to eq(shared_runners_config)
-          expect(new_group.allow_descendants_override_disabled_shared_runners).to eq(descendants_override_disabled_shared_runners_config)
+          expect(created_group.shared_runners_enabled).to eq(shared_runners_config)
+          expect(created_group.allow_descendants_override_disabled_shared_runners)
+            .to eq(descendants_override_disabled_shared_runners_config)
         end
       end
     end
 
-    context 'root group' do
-      let!(:service) { described_class.new(user) }
-
+    context 'for root group' do
       it 'follows default config' do
-        new_group = service.execute
-
-        expect(new_group.shared_runners_enabled).to eq(true)
-        expect(new_group.allow_descendants_override_disabled_shared_runners).to eq(false)
+        expect(created_group.shared_runners_enabled).to eq(true)
+        expect(created_group.allow_descendants_override_disabled_shared_runners).to eq(false)
       end
     end
   end

@@ -89,13 +89,13 @@ RSpec.describe Gitlab::DataBuilder::Push do
       described_class.build(
         project: project,
         user: user,
-        oldrev: Gitlab::Git::BLANK_SHA,
+        oldrev: Gitlab::Git::SHA1_BLANK_SHA,
         newrev: '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
         ref: 'refs/tags/v1.1.0')
     end
 
     it { expect(data).to be_a(Hash) }
-    it { expect(data[:before]).to eq(Gitlab::Git::BLANK_SHA) }
+    it { expect(data[:before]).to eq(Gitlab::Git::SHA1_BLANK_SHA) }
     it { expect(data[:checkout_sha]).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
     it { expect(data[:after]).to eq('8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b') }
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }

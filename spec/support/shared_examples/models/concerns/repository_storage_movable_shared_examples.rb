@@ -76,7 +76,7 @@ RSpec.shared_examples 'handles repository moves' do
 
       context 'and transitions to scheduled' do
         it 'triggers the corresponding repository storage worker' do
-          expect(repository_storage_worker).to receive(:perform_async).with(container.id, 'test_second_storage', storage_move.id)
+          expect(repository_storage_worker).to receive(:perform_async).with(storage_move.id)
 
           storage_move.schedule!
 

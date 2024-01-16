@@ -3,8 +3,10 @@
 module Gitlab
   module BitbucketServerImport
     module Stage
-      class ImportUsersWorker # rubocop:disable Scalability/IdempotentWorker -- ImportPullRequestsWorker is not idempotent
+      class ImportUsersWorker
         include StageMethods
+
+        idempotent!
 
         private
 

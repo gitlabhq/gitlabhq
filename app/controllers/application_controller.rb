@@ -26,7 +26,6 @@ class ApplicationController < BaseActionController
   include CheckRateLimit
   include RequestPayloadLogger
 
-  before_action :limit_session_time, if: -> { !current_user }
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :check_password_expiration, if: :html_request?
@@ -51,7 +50,6 @@ class ApplicationController < BaseActionController
   around_action :set_current_admin
 
   after_action :set_page_title_header, if: :json_request?
-  after_action :ensure_authenticated_session_time, if: -> { current_user }
 
   protect_from_forgery with: :exception, prepend: true
 

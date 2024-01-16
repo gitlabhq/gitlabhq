@@ -303,6 +303,75 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 - You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
 - To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
 
+## Group SAML Tests
+
+Tests that are tagged with `:group_saml` meta are orchestrated tests where the user accesses a group via SAML SSO.
+
+These tests depend on a SAML IDP Docker container ([jamedjo/test-SAML-idp](https://hub.docker.com/r/jamedjo/test-saml-idp)). The tests spin up the container themselves.
+
+To run these tests on your computer against the GDK:
+
+1. Add these settings to your `gitlab.yml` file:
+
+   ```yaml
+   omniauth:
+     enabled: true
+     providers:
+       - { name: 'group_saml' }
+   ```
+
+1. Run a group SAML test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
+
+   ```shell
+   QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_spec.rb -- --tag orchestrated
+   ```
+
+For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationgroupsaml-eefull-image-address).
+
+## Instance SAML Tests
+
+Tests that are tagged with `:instance_saml` meta are orchestrated tests where the instance level sign-in happens using SAML SSO.
+
+These tests require a SAML IDP Docker container ([jamedjo/test-SAML-idp](https://hub.docker.com/r/jamedjo/test-saml-idp)) to be configured and running.
+
+To run these tests on your computer against the GDK:
+
+1. Add these settings to your `gitlab.yml` file:
+
+   ```yaml
+   omniauth:
+     enabled: true
+     allow_single_sign_on: ["saml"]
+     block_auto_created_users: false
+     auto_link_saml_user: true
+     providers:
+       - { name: 'saml',
+         args: {
+         assertion_consumer_service_url: 'http://gdk.test:3000/users/auth/saml/callback',
+         idp_cert_fingerprint: '11:9b:9e:02:79:59:cd:b7:c6:62:cf:d0:75:d9:e2:ef:38:4e:44:5f',
+         idp_sso_target_url: 'https://gdk.test:8443/simplesaml/saml2/idp/SSOService.php',
+         issuer: 'http://gdk.test:3000',
+         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+       } }
+   ```
+
+1. Start the SAML IDP Docker container:
+
+   ```shell
+   docker run --name=group_saml_qa_idp -p 8080:8080 -p 8443:8443 \
+   -e SIMPLESAMLPHP_SP_ENTITY_ID=http://localhost:3000 \
+   -e SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:3000/users/auth/saml/callback \
+   -d jamedjo/test-saml-idp
+   ```
+
+1. Run the test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
+
+   ```shell
+   QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/1_manage/login/login_via_instance_wide_saml_sso_spec.rb -- --tag orchestrated
+   ```
+
+For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationinstancesaml-ceeefull-image-address).
+
 ## LDAP Tests
 
 Tests that are tagged with `:ldap_tls` and `:ldap_no_tls` meta are orchestrated tests where the sign-in happens via LDAP.

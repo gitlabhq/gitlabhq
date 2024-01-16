@@ -324,6 +324,27 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
   end
 
+  context 'local' do
+    it 'runs locally' do
+      stub_env('CI_JOB_NAME', nil)
+      group = describe_successfully 'Runs locally', :local do
+        it('runs locally') {}
+      end
+
+      expect(group.examples[0].execution_result.status).to eq(:passed)
+    end
+
+    it 'does not run in CI' do
+      stub_env('CI_JOB_NAME', 'ee:instance-image')
+
+      group = describe_successfully 'Does not run in CI' do
+        it('does not run in CI', only: :local) {}
+      end
+
+      expect(group.examples[0].execution_result.status).to eq(:pending)
+    end
+  end
+
   context 'production' do
     before do
       allow(GitlabEdition).to receive(:jh?).and_return(false)

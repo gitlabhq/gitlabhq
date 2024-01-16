@@ -1232,7 +1232,7 @@ lib/gitlab/checks/**
 /lib/tasks/tokens.rake
 
 # Necessary for GitLab availability
-[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
+[Verify] @gitlab-org/maintainers/cicd-verify @stanhu @ayufan
 # With these catch-all rules we will require backend approval and use it as an
 # opportunity to refine specific rules defined in this section.
 # Note that frontend, CI templates and other concerns should be kept within
@@ -1443,11 +1443,13 @@ ee/lib/ee/api/entities/project.rb
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
-# Necessary for availablity, similar to DB migrations
+# Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/elastic/migrate/
-/ee/spec/elastic/migrate/
 /ee/spec/support/elastic.rb
+
+^[Global Search] @gitlab-org/search-team/migration-maintainers
+/ee/spec/elastic/migrate/
 
 ^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
 /ee/app/models/remote_development/

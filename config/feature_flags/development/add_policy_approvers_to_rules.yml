@@ -1,0 +1,8 @@
+---
+name: add_policy_approvers_to_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138809
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434385
+milestone: '16.8'
+type: development
+group: group::security policies
+default_enabled: true

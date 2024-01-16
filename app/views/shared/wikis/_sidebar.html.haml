@@ -15,7 +15,7 @@
         - if can?(current_user, :create_wiki, @wiki)
           - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
           - link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = link_to edit_sidebar_url, class: link_class, data: { qa_selector: 'edit_sidebar_link' } do
+          = link_to edit_sidebar_url, class: link_class do
             = sprite_icon('pencil', css_class: 'gl-mr-2')
             %span= _("Edit sidebar")
 

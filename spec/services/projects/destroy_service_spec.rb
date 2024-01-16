@@ -166,6 +166,14 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  context 'deleting a project with deployments' do
+    let!(:deployment) { create(:deployment, project: project) }
+
+    it 'deletes deployments' do
+      expect { destroy_project(project, user, {}) }.to change(Deployment, :count).by(-1)
+    end
+  end
+
   it_behaves_like 'deleting the project'
 
   context 'personal projects count cache' do

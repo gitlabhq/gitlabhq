@@ -16,6 +16,7 @@ class UploadsController < ApplicationController
     "projects/topic" => Projects::Topic,
     'alert_management_metric_image' => ::AlertManagement::MetricImage,
     "achievements/achievement" => Achievements::Achievement,
+    "organizations/organization_detail" => Organizations::OrganizationDetail,
     "abuse_report" => AbuseReport,
     nil => PersonalSnippet
   }.freeze
@@ -65,6 +66,8 @@ class UploadsController < ApplicationController
       can?(current_user, :read_alert_management_metric_image, model.alert)
     when ::Achievements::Achievement
       true
+    when Organizations::OrganizationDetail
+      can?(current_user, :read_organization, model.organization)
     else
       can?(current_user, "read_#{model.class.underscore}".to_sym, model)
     end
@@ -96,7 +99,7 @@ class UploadsController < ApplicationController
 
   def cache_settings
     case model
-    when User, Appearance, Projects::Topic, Achievements::Achievement
+    when User, Appearance, Projects::Topic, Achievements::Achievement, Organizations::OrganizationDetail
       [5.minutes, { public: true, must_revalidate: false }]
     when Project, Group
       [5.minutes, { private: true, must_revalidate: true }]

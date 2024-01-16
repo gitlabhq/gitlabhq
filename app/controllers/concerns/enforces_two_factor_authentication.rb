@@ -46,15 +46,11 @@ module EnforcesTwoFactorAuthentication
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def two_factor_authentication_reason(global: -> {}, group: -> {})
-    if two_factor_authentication_required?
-      if Gitlab::CurrentSettings.require_two_factor_authentication?
-        global.call
-      else
-        groups = current_user.source_groups_of_two_factor_authentication_requirement.reorder(name: :asc)
-        group.call(groups)
-      end
-    end
+  def execute_action_for_2fa_reason(actions)
+    reason = two_factor_verifier.two_factor_authentication_reason
+    groups_enforcing_two_factor = current_user.source_groups_of_two_factor_authentication_requirement
+                                              .reorder(name: :asc)
+    actions[reason].call(groups_enforcing_two_factor)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

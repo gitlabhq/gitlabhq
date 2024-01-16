@@ -29,7 +29,7 @@ A database review is required for:
   These metrics could have complex queries over large tables.
   See the [Analytics Instrumentation Guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
   for implementation details.
-- Changes that use [`update`, `delete`, `update_all`, `delete_all` or `destroy_all`](#preparation-when-using-update-delete-update_all-delete_all-or-destroy_all)
+- Changes that use [`update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`](#preparation-when-using-bulk-update-operations)
   methods on an ActiveRecord object.
 
 A database reviewer is expected to look out for overly complex
@@ -113,7 +113,7 @@ the following preparations into account.
 #### Preparation when adding migrations
 
 - Ensure `db/structure.sql` is updated as [documented](migration_style_guide.md#schema-changes), and additionally ensure that the relevant version files under
-`db/schema_migrations` were added or removed.
+  `db/schema_migrations` were added or removed.
 - Ensure that the Database Dictionary is updated as [documented](database/database_dictionary.md).
 - Make migrations reversible by using the `change` method or include a `down` method when using `up`.
   - Include either a rollback procedure or describe how to rollback changes.
@@ -153,7 +153,7 @@ Include in the MR description:
 - Write the raw SQL in the MR description. Preferably formatted
   nicely with [pgFormatter](https://sqlformat.darold.net) or
   <https://paste.depesz.com> and using regular quotes
-  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `"projects"."id"`).
+  (for example, `"projects"."id"`) and avoiding smart quotes (for example, `“projects”.“id”`).
 - In case of queries generated dynamically by using parameters, there should be one raw SQL query for each variation.
 
   For example, a finder for issues that may take as a parameter an optional filter on projects,
@@ -227,9 +227,10 @@ Include in the MR description:
 - If you're adding a composite index, another index might become redundant, so remove that in the same migration.
   For example adding `index(column_A, column_B, column_C)` makes the indexes `index(column_A, column_B)` and `index(column_A)` redundant.
 
-#### Preparation when using `update`, `delete`, `update_all`, `delete_all` or `destroy_all`
+#### Preparation when using bulk update operations
 
-Using these ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
+Using  `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
+ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
 can destroy data if improperly scoped. These methods are also
 [incompatible with Common Table Expression (CTE) statements](sql.md#when-to-use-common-table-expressions).
 Danger will comment on a Merge Request Diff when these methods are used.

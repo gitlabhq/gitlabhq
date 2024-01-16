@@ -50,3 +50,17 @@ invalid_service_platform:
     - name: mysql:5.7
       docker:
         platform: ["arm64"] # The expected value is a string, not an array
+
+invalid_service_user:
+  script: echo "Specifying user."
+  services:
+    - name: mysql:5.7
+      docker:
+        user: ["dave"] # The expected value is a string, not an array
+
+empty_service_user:
+  script: echo "Specifying user"
+  services:
+    - name: alpine:latest
+      docker:
+        user: ""

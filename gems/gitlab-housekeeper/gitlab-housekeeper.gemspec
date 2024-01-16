@@ -19,11 +19,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.executables   = ['gitlab-housekeeper']
 
+  spec.add_runtime_dependency 'activesupport'
   spec.add_runtime_dependency 'httparty'
   spec.add_runtime_dependency 'rubocop'
 
   spec.add_development_dependency 'gitlab-styles'
   spec.add_development_dependency 'rspec-rails'
-  spec.add_development_dependency "rubocop-rspec"
+  spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'webmock'
 end

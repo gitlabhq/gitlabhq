@@ -69,6 +69,12 @@ describe('ProjectSelect component', () => {
       expect(findGlCollapsibleListBox().exists()).toBe(true);
       expect(findGlCollapsibleListBox().text()).toContain('Select a project');
     });
+
+    it('passes down non archived projects to dropdown', async () => {
+      findGlCollapsibleListBox().vm.$emit('shown');
+      await nextTick();
+      expect(findGlCollapsibleListBox().props('items').length).toEqual(mockProjects.length - 1);
+    });
   });
 
   describe('when dropdown menu is open', () => {

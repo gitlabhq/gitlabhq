@@ -1,24 +1,26 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import DeployKeysApp from './components/app.vue';
+import { createApolloProvider } from './graphql/client';
 
-export default () =>
-  new Vue({
-    el: document.getElementById('js-deploy-keys'),
-    components: {
-      DeployKeysApp,
-    },
-    data() {
-      return {
-        endpoint: this.$options.el.dataset.endpoint,
-        projectId: this.$options.el.dataset.projectId,
-      };
-    },
+Vue.use(VueApollo);
+
+export default () => {
+  const el = document.getElementById('js-deploy-keys');
+  return new Vue({
+    el,
+    apolloProvider: createApolloProvider({
+      enabledKeysEndpoint: el.dataset.enabledEndpoint,
+      availableProjectKeysEndpoint: el.dataset.availableProjectEndpoint,
+      availablePublicKeysEndpoint: el.dataset.availablePublicEndpoint,
+    }),
     render(createElement) {
-      return createElement('deploy-keys-app', {
+      return createElement(DeployKeysApp, {
         props: {
-          endpoint: this.endpoint,
-          projectId: this.projectId,
+          projectId: el.dataset.projectId,
+          projectPath: el.dataset.projectPath,
         },
       });
     },
   });
+};

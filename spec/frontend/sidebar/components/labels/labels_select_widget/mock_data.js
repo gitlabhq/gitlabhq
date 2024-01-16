@@ -58,30 +58,6 @@ export const mockConfig = {
   attrWorkspacePath: 'test',
 };
 
-export const mockSuggestedColors = {
-  '#009966': 'Green-cyan',
-  '#8fbc8f': 'Dark sea green',
-  '#3cb371': 'Medium sea green',
-  '#00b140': 'Green screen',
-  '#013220': 'Dark green',
-  '#6699cc': 'Blue-gray',
-  '#0000ff': 'Blue',
-  '#e6e6fa': 'Lavender',
-  '#9400d3': 'Dark violet',
-  '#330066': 'Deep violet',
-  '#808080': 'Gray',
-  '#36454f': 'Charcoal grey',
-  '#f7e7ce': 'Champagne',
-  '#c21e56': 'Rose red',
-  '#cc338b': 'Magenta-pink',
-  '#dc143c': 'Crimson',
-  '#ff0000': 'Red',
-  '#cd5b45': 'Dark coral',
-  '#eee600': 'Titanium yellow',
-  '#ed9121': 'Carrot orange',
-  '#c39953': 'Aztec Gold',
-};
-
 export const createLabelSuccessfulResponse = {
   data: {
     labelCreate: {

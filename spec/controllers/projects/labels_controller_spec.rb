@@ -108,7 +108,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
 
         # some n+1 queries still exist
         # calls to get max project authorization access level
-        expect { list_labels }.not_to exceed_all_query_limit(control.count).with_threshold(25)
+        expect { list_labels }.not_to exceed_all_query_limit(control).with_threshold(25)
         expect(assigns(:labels).count).to eq(10)
       end
     end

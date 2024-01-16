@@ -20,6 +20,17 @@ const BULLET_LIST_HTML = `<ul data-sourcepos="1:1-3:24" dir="auto">
   </li>
 </ul>`;
 
+const MALFORMED_BULLET_LIST_HTML =
+  `<ul data-sourcepos="1:1-3:24" dir="auto">
+  <li data-sourcepos="1:1-1:13">list item 1</li>` +
+  // below line has malformed sourcepos
+  `<li data-sourcepos="5:1-5:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+      <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+  </li>
+</ul>`;
+
 const BULLET_TASK_LIST_MARKDOWN = `- [ ] list item 1
 + [x] checked list item 2
   + [ ] embedded list item 1
@@ -85,6 +96,21 @@ const bulletListDoc = () =>
     ),
   );
 
+const bulletListDocWithMalformedSourcepos = () =>
+  doc(
+    bulletList(
+      { bullet: '+', source: '+ list item 1\n+ list item 2\n  - embedded list item 3' },
+      listItem({ source: '+ list item 1' }, paragraph('list item 1')),
+      listItem(
+        paragraph('list item 2'),
+        bulletList(
+          { bullet: '-', source: '- embedded list item 3' },
+          listItem({ source: '- embedded list item 3' }, paragraph('embedded list item 3')),
+        ),
+      ),
+    ),
+  );
+
 const bulletTaskListDoc = () =>
   doc(
     taskList(
@@ -138,9 +164,10 @@ describe('content_editor/services/markdown_sourcemap', () => {
   });
 
   it.each`
-    description           | sourceMarkdown               | sourceHTML               | expectedDoc
-    ${'bullet list'}      | ${BULLET_LIST_MARKDOWN}      | ${BULLET_LIST_HTML}      | ${bulletListDoc}
-    ${'bullet task list'} | ${BULLET_TASK_LIST_MARKDOWN} | ${BULLET_TASK_LIST_HTML} | ${bulletTaskListDoc}
+    description                               | sourceMarkdown               | sourceHTML                    | expectedDoc
+    ${'bullet list'}                          | ${BULLET_LIST_MARKDOWN}      | ${BULLET_LIST_HTML}           | ${bulletListDoc}
+    ${'bullet list with malformed sourcepos'} | ${BULLET_LIST_MARKDOWN}      | ${MALFORMED_BULLET_LIST_HTML} | ${bulletListDocWithMalformedSourcepos}
+    ${'bullet task list'}                     | ${BULLET_TASK_LIST_MARKDOWN} | ${BULLET_TASK_LIST_HTML}      | ${bulletTaskListDoc}
   `(
     'gets markdown source for a rendered $description',
     async ({ sourceMarkdown, sourceHTML, expectedDoc }) => {

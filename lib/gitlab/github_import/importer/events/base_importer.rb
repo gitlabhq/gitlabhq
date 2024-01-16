@@ -10,6 +10,7 @@ module Gitlab
           # client - An instance of `Gitlab::GithubImport::Client`.
           def initialize(project, client)
             @project = project
+            @client = client
             @user_finder = UserFinder.new(project, client)
           end
 
@@ -20,7 +21,7 @@ module Gitlab
 
           private
 
-          attr_reader :project, :user_finder
+          attr_reader :project, :user_finder, :client
 
           def author_id(issue_event, author_key: :actor)
             user_finder.author_id_for(issue_event, author_key: author_key).first
@@ -41,6 +42,10 @@ module Gitlab
           def resource_event_belongs_to(issue_event)
             belongs_to_key = merge_request_event?(issue_event) ? :merge_request_id : :issue_id
             { belongs_to_key => issuable_db_id(issue_event) }
+          end
+
+          def import_settings
+            @import_settings ||= Gitlab::GithubImport::Settings.new(project)
           end
         end
       end

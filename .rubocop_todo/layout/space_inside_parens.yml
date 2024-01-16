@@ -35,7 +35,7 @@ Layout/SpaceInsideParens:
     - 'ee/spec/models/iteration_spec.rb'
     - 'ee/spec/models/ldap_group_link_spec.rb'
     - 'ee/spec/models/license_spec.rb'
-    - 'ee/spec/models/member_spec.rb'
+    - 'ee/spec/models/ee/member_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'
     - 'ee/spec/models/security/orchestration_policy_configuration_spec.rb'
     - 'ee/spec/models/vulnerabilities/feedback_spec.rb'

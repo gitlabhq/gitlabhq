@@ -3,10 +3,9 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import BoardApp from '~/boards/components/board_app.vue';
 import '~/boards/filters/due_date_filters';
-import store from '~/boards/stores';
 import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
-  NavigationType,
+  navigationType,
   isLoggedIn,
   parseBoolean,
   convertObjectPropsToCamelCase,
@@ -24,7 +23,6 @@ const apolloProvider = new VueApollo({
 
 function mountBoardApp(el) {
   const { boardId, groupId, fullPath, rootPath } = el.dataset;
-  const isApolloBoard = true;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
@@ -34,31 +32,12 @@ function mountBoardApp(el) {
 
   const boardType = el.dataset.parent;
 
-  if (!isApolloBoard) {
-    store.dispatch('fetchBoard', {
-      fullPath,
-      fullBoardId: fullBoardId(boardId),
-      boardType,
-    });
-
-    store.dispatch('setInitialBoardData', {
-      boardId,
-      fullBoardId: fullBoardId(boardId),
-      fullPath,
-      boardType,
-      disabled: parseBoolean(el.dataset.disabled) || true,
-      issuableType: TYPE_ISSUE,
-    });
-  }
-
   // eslint-disable-next-line no-new
   new Vue({
     el,
     name: 'BoardAppRoot',
-    store,
     apolloProvider,
     provide: {
-      isApolloBoard,
       initialBoardId: fullBoardId(boardId),
       disabled: parseBoolean(el.dataset.disabled),
       groupId: Number(groupId),
@@ -114,7 +93,7 @@ export default () => {
   // check for browser back and trigger a hard reload to circumvent browser caching.
   window.addEventListener('pageshow', (event) => {
     const isNavTypeBackForward =
-      window.performance && window.performance.navigation.type === NavigationType.TYPE_BACK_FORWARD;
+      window.performance && window.performance.navigation.type === navigationType.TYPE_BACK_FORWARD;
 
     if (event.persisted || isNavTypeBackForward) {
       window.location.reload();

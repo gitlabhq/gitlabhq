@@ -31,13 +31,17 @@ module API
             optional :tags, type: Array, desc: 'Additional metadata for registered model.'
           end
           post 'create', urgency: :low do
-            present ::Ml::CreateModelService.new(
+            model = ::Ml::CreateModelService.new(
               user_project,
               params[:name],
               current_user,
               params[:description],
               params[:tags]
-            ).execute,
+            ).execute
+
+            resource_already_exists! unless model.persisted?
+
+            present model,
               with: Entities::Ml::Mlflow::RegisteredModel,
               root: :registered_model
           rescue ActiveRecord::RecordInvalid

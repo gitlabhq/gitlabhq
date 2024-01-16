@@ -482,7 +482,7 @@ class ContainerRepository < ApplicationRecord
     raise 'too many pages requested' if page_count >= MAX_TAGS_PAGES
   end
 
-  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100)
+  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil)
     raise ArgumentError, 'not a migrated repository' unless migrated?
 
     page = gitlab_api_client.tags(
@@ -491,7 +491,8 @@ class ContainerRepository < ApplicationRecord
       before: before,
       last: last,
       sort: sort,
-      name: name
+      name: name,
+      referrers: referrers
     )
 
     {
@@ -618,12 +619,11 @@ class ContainerRepository < ApplicationRecord
     self.new(project: path.repository_project, name: path.repository_name)
   end
 
-  def self.find_or_create_from_path(path)
-    repository = safe_find_or_create_by(
-      project: path.repository_project,
+  def self.find_or_create_from_path!(path)
+    ContainerRepository.upsert({
+      project_id: path.repository_project.id,
       name: path.repository_name
-    )
-    return repository if repository.persisted?
+    }, unique_by: %i[project_id name])
 
     find_by_path!(path)
   end
@@ -657,6 +657,8 @@ class ContainerRepository < ApplicationRecord
       tag.total_size = raw_tag['size_bytes']
       tag.manifest_digest = raw_tag['digest']
       tag.revision = raw_tag['config_digest'].to_s.split(':')[1] || ''
+      tag.referrers = raw_tag['referrers']
+      tag.published_at = raw_tag['published_at']
       tag
     end
   end

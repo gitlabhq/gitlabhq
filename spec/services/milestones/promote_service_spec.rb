@@ -62,13 +62,20 @@ RSpec.describe Milestones::PromoteService, feature_category: :team_planning do
 
       it 'sets issuables with new promoted milestone' do
         issue = create(:issue, milestone: milestone, project: project)
+        create(:resource_milestone_event, issue: issue, milestone: milestone)
+
         merge_request = create(:merge_request, milestone: milestone, source_project: project)
+        create(:resource_milestone_event, merge_request: merge_request, milestone: milestone)
 
         promoted_milestone = service.execute(milestone)
 
         expect(promoted_milestone).to be_group_milestone
+
         expect(issue.reload.milestone).to eq(promoted_milestone)
         expect(merge_request.reload.milestone).to eq(promoted_milestone)
+
+        expect(ResourceMilestoneEvent.where(milestone_id: promoted_milestone).count).to eq(2)
+        expect(ResourceMilestoneEvent.where(milestone_id: milestone).count).to eq(0)
       end
     end
 
@@ -101,9 +108,14 @@ RSpec.describe Milestones::PromoteService, feature_category: :team_planning do
 
       it 'sets all issuables with new promoted milestone' do
         issue = create(:issue, milestone: milestone, project: project)
+        create(:resource_milestone_event, issue: issue, milestone: milestone)
         issue_2 = create(:issue, milestone: milestone_2, project: project_2)
+        create(:resource_milestone_event, issue: issue_2, milestone: milestone_2)
+
         merge_request = create(:merge_request, milestone: milestone, source_project: project)
+        create(:resource_milestone_event, merge_request: merge_request, milestone: milestone)
         merge_request_2 = create(:merge_request, milestone: milestone_2, source_project: project_2)
+        create(:resource_milestone_event, merge_request: merge_request_2, milestone: milestone_2)
 
         promoted_milestone = service.execute(milestone)
 
@@ -111,6 +123,10 @@ RSpec.describe Milestones::PromoteService, feature_category: :team_planning do
         expect(issue_2.reload.milestone).to eq(promoted_milestone)
         expect(merge_request.reload.milestone).to eq(promoted_milestone)
         expect(merge_request_2.reload.milestone).to eq(promoted_milestone)
+
+        expect(ResourceMilestoneEvent.where(milestone_id: promoted_milestone).count).to eq(4)
+        expect(ResourceMilestoneEvent.where(milestone_id: milestone).count).to eq(0)
+        expect(ResourceMilestoneEvent.where(milestone_id: milestone_2).count).to eq(0)
       end
     end
   end

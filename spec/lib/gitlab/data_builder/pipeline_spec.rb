@@ -184,14 +184,14 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
         create(:ci_build, :deploy_to_production, :with_deployment, user: user, project: project, pipeline: pipeline)
 
         # We need `.to_json` as the build hook data is wrapped within `Gitlab::Lazy`
-        control_count = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).to_json }.count
+        control = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).to_json }
 
         # Adding more builds to the pipeline and serializing the data again
         create_list(:ci_build, 3, user: user, project: project, pipeline: pipeline)
         create(:ci_build, :start_review_app, :with_deployment, user: user, project: project, pipeline: pipeline)
         create(:ci_build, :stop_review_app, :with_deployment, user: user, project: project, pipeline: pipeline)
 
-        expect { described_class.build(pipeline.reload).to_json }.not_to exceed_query_limit(control_count)
+        expect { described_class.build(pipeline.reload).to_json }.not_to exceed_query_limit(control)
       end
 
       it "with multiple retried builds" do
@@ -201,14 +201,14 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
         create(:ci_build, :deploy_to_production, :retried, :with_deployment, user: user, project: project, pipeline: pipeline)
 
         # We need `.to_json` as the build hook data is wrapped within `Gitlab::Lazy`
-        control_count = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).with_retried_builds.to_json }.count
+        control = ActiveRecord::QueryRecorder.new { described_class.build(pipeline.reload).with_retried_builds.to_json }
 
         # Adding more builds to the pipeline and serializing the data again
         create_list(:ci_build, 3, :retried, user: user, project: project, pipeline: pipeline)
         create(:ci_build, :start_review_app, :retried, :with_deployment, user: user, project: project, pipeline: pipeline)
         create(:ci_build, :stop_review_app, :retried, :with_deployment, user: user, project: project, pipeline: pipeline)
 
-        expect { described_class.build(pipeline.reload).with_retried_builds.to_json }.not_to exceed_query_limit(control_count)
+        expect { described_class.build(pipeline.reload).with_retried_builds.to_json }.not_to exceed_query_limit(control)
       end
     end
   end

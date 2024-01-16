@@ -14,6 +14,10 @@ Service Desk emails are created in your GitLab project as new issues.
 Your team can respond directly from the project, while customers interact with the thread only
 through email.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video overview, see [Introducing GitLab Service Desk (GitLab 16.7)](https://www.youtube.com/watch?v=LDVQXv3I5rI).
+<!-- Video published on 2023-12-19 -->
+
 ## Service Desk workflow
 
 For example, let's assume you develop a game for iOS or Android.

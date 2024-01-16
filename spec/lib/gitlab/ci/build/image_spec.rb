@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Ci::Build::Image do
       context 'when image is defined as hash' do
         let(:entrypoint) { '/bin/sh' }
         let(:pull_policy) { %w[always if-not-present] }
-        let(:executor_opts) { { docker: { platform: 'arm64' } } }
+        let(:executor_opts) { { docker: { platform: 'arm64', user: 'dave' } } }
 
         let(:job) do
           create(:ci_build, options: { image: { name: image_name,
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Ci::Build::Image do
         let(:service_entrypoint) { '/bin/sh' }
         let(:service_alias) { 'db' }
         let(:service_command) { 'sleep 30' }
-        let(:executor_opts) { { docker: { platform: 'amd64' } } }
+        let(:executor_opts) { { docker: { platform: 'amd64', user: 'dave' } } }
         let(:pull_policy) { %w[always if-not-present] }
         let(:job) do
           create(:ci_build, options: { services: [{ name: service_image_name, entrypoint: service_entrypoint,

@@ -100,15 +100,6 @@ for all authenticated users, and on the Admin Area pages. The statuses are:
 
 ![Orange version check example](../settings/img/update-available.png)
 
-GitLab Inc. collects your instance's version and hostname (through the HTTP
-referer) as part of the version check. No other information is collected.
-
-This information is used, among other things, to identify to which versions
-patches must be backported, making sure active GitLab instances remain
-secure.
-
-If you disable version check, this information isn't collected.
-
 ### Enable or disable version check
 
 1. On the left sidebar, at the bottom, select **Admin Area**.

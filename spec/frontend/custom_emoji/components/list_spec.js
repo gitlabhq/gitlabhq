@@ -21,6 +21,9 @@ function createComponent(propsData = {}) {
       userPermissions: { createCustomEmoji: true },
       ...propsData,
     },
+    stubs: {
+      GlEmoji: { template: '<div/>' },
+    },
   });
 }
 

@@ -48,19 +48,6 @@ RSpec.describe Projects::Security::ConfigurationController do
         expect(sast_feature['available']).to be_truthy
         expect(dast_feature['available']).to be_falsey
       end
-
-      context 'with feature flag unify_security_configuration turned off' do
-        before do
-          stub_feature_flags(unify_security_configuration: false)
-        end
-
-        it 'responds with empty configuration data json' do
-          get :show, params: { namespace_id: project.namespace, project_id: project, format: :json }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_empty
-        end
-      end
     end
   end
 end

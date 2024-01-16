@@ -311,4 +311,3 @@ export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
 export * from './actions/merge_request';
-export * from './actions/alert';

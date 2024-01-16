@@ -6,6 +6,7 @@ import {
   NEW_NO_NEW_LINE_TYPE,
   EMPTY_CELL_TYPE,
 } from '~/diffs/constants';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 
 const LINE_CODE = 'abc123';
 
@@ -108,15 +109,47 @@ describe('diff_row_utils', () => {
 
   describe('lineHref', () => {
     it(`should return #${LINE_CODE}`, () => {
-      expect(utils.lineHref({ line_code: LINE_CODE })).toEqual(`#${LINE_CODE}`);
+      expect(utils.lineHref({ line_code: LINE_CODE }, {})).toEqual(`#${LINE_CODE}`);
     });
 
     it(`should return '#' if line is undefined`, () => {
-      expect(utils.lineHref()).toEqual('#');
+      expect(utils.lineHref()).toEqual('');
     });
 
     it(`should return '#' if line_code is undefined`, () => {
-      expect(utils.lineHref({})).toEqual('#');
+      expect(utils.lineHref({}, {})).toEqual('');
+    });
+
+    describe('pinned file', () => {
+      beforeEach(() => {
+        window.gon.features = { pinnedFile: true };
+      });
+
+      afterEach(() => {
+        delete window.gon.features;
+      });
+
+      it(`should return pinned file URL`, () => {
+        const diffFile = getDiffFileMock();
+        expect(utils.lineHref({ line_code: LINE_CODE }, { diffFile })).toEqual(
+          `?pin=${diffFile.file_hash}#${LINE_CODE}`,
+        );
+      });
+    });
+  });
+
+  describe('pinnedFileHref', () => {
+    beforeEach(() => {
+      window.gon.features = { pinnedFile: true };
+    });
+
+    afterEach(() => {
+      delete window.gon.features;
+    });
+
+    it(`should return pinned file URL`, () => {
+      const diffFile = getDiffFileMock();
+      expect(utils.pinnedFileHref(diffFile)).toEqual(`?pin=${diffFile.file_hash}`);
     });
   });
 

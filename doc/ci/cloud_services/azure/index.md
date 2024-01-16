@@ -153,7 +153,7 @@ you should verify:
   - For the `gitlab-group/gitlab-project` project and `main` branch it would be:
     `project_path:gitlab-group/gitlab-project:ref_type:branch:ref:main`.
   - The correct values of `mygroup` and `myproject` can be retrieved by checking the URL
-    when accessing your GitLab project or by selecting the **Clone** option in the project.
+    when accessing your GitLab project or, in the upper-right corner of the project's overview page, selecting **Code**.
 - The `Audience` defined in the Azure AD federated identity credentials, for example `https://gitlab.com`
   or your own GitLab URL.
 

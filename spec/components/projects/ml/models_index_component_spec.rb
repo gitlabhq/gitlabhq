@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
+  let_it_be(:user) { project.owner }
   let_it_be(:model1) { build_stubbed(:ml_models, :with_latest_version_and_package, project: project) }
   let_it_be(:model2) { build_stubbed(:ml_models, project: project) }
   let_it_be(:models) { [model1, model2] }
@@ -23,48 +24,66 @@ RSpec.describe Projects::Ml::ModelsIndexComponent, type: :component, feature_cat
   end
 
   subject(:component) do
-    described_class.new(model_count: 5, paginator: paginator)
+    described_class.new(project: project, current_user: user, model_count: 5, paginator: paginator)
   end
 
   describe 'rendered' do
     let(:element) { page.find("#js-index-ml-models") }
 
-    before do
-      allow(model1).to receive(:version_count).and_return(1)
-      allow(model2).to receive(:version_count).and_return(0)
-      render_inline component
+    context 'when user can write model registry' do
+      before do
+        allow(model1).to receive(:version_count).and_return(1)
+        allow(model2).to receive(:version_count).and_return(0)
+        render_inline component
+      end
+
+      it 'renders element with view_model' do
+        expect(Gitlab::Json.parse(element['data-view-model'])).to eq({
+          'models' => [
+            {
+              'name' => model1.name,
+              'version' => model1.latest_version.version,
+              'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
+              'versionPackagePath' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
+              'versionPath' => "/#{project.full_path}/-/ml/models/#{model1.id}/versions/#{model1.latest_version.id}",
+              'versionCount' => 1
+            },
+            {
+              'name' => model2.name,
+              'path' => "/#{project.full_path}/-/ml/models/#{model2.id}",
+              'version' => nil,
+              'versionPackagePath' => nil,
+              'versionPath' => nil,
+              'versionCount' => 0
+            }
+          ],
+          'pageInfo' => {
+            'hasNextPage' => true,
+            'hasPreviousPage' => false,
+            'startCursor' => 'abcde',
+            'endCursor' => 'defgh'
+          },
+          'modelCount' => 5,
+          'createModelPath' => "/#{project.full_path}/-/ml/models/new",
+          'canWriteModelRegistry' => true,
+          'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/"
+        })
+      end
     end
 
-    it 'renders element with view_model' do
-      element = page.find("#js-index-ml-models")
+    context 'when user cannot write model registry' do
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?)
+                            .with(user, :write_model_registry, project)
+                            .and_return(false)
 
-      expect(Gitlab::Json.parse(element['data-view-model'])).to eq({
-        'models' => [
-          {
-            'name' => model1.name,
-            'version' => model1.latest_version.version,
-            'path' => "/#{project.full_path}/-/ml/models/#{model1.id}",
-            'versionPackagePath' => "/#{project.full_path}/-/packages/#{model1.latest_version.package_id}",
-            'versionPath' => "/#{project.full_path}/-/ml/models/#{model1.id}/versions/#{model1.latest_version.id}",
-            'versionCount' => 1
-          },
-          {
-            'name' => model2.name,
-            'path' => "/#{project.full_path}/-/ml/models/#{model2.id}",
-            'version' => nil,
-            'versionPackagePath' => nil,
-            'versionPath' => nil,
-            'versionCount' => 0
-          }
-        ],
-        'pageInfo' => {
-          'hasNextPage' => true,
-          'hasPreviousPage' => false,
-          'startCursor' => 'abcde',
-          'endCursor' => 'defgh'
-        },
-        'modelCount' => 5
-      })
+        render_inline component
+      end
+
+      it 'canWriteModelRegistry is false' do
+        expect(Gitlab::Json.parse(element['data-view-model'])['canWriteModelRegistry']).to eq(false)
+      end
     end
   end
 end

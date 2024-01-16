@@ -52,7 +52,7 @@ To import the project:
 This project provides you with:
 
 - A [cluster on Google Cloud Platform (GCP)](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke/-/blob/master/gke.tf)
-with defaults for name, location, node count, and Kubernetes version.
+  with defaults for name, location, node count, and Kubernetes version.
 - The [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-gke/-/blob/master/agent.tf) installed in the cluster.
 
 ## Register the agent
@@ -73,10 +73,10 @@ To create a GitLab agent for Kubernetes:
 To set up your project to communicate to GCP and the GitLab API:
 
 1. To authenticate GCP with GitLab, create a [GCP service account](https://cloud.google.com/docs/authentication#service-accounts)
-with following roles: `Compute Network Viewer`, `Kubernetes Engine Admin`, `Service Account User`, and `Service Account Admin`. Both User and Admin
-service accounts are necessary. The User role impersonates the [default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
-when [creating the node pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/using_gke_with_terraform#node-pool-management).
-The Admin role creates a service account in the `kube-system` namespace.
+   with following roles: `Compute Network Viewer`, `Kubernetes Engine Admin`, `Service Account User`, and `Service Account Admin`. Both User and Admin
+   service accounts are necessary. The User role impersonates the [default service account](https://cloud.google.com/compute/docs/access/service-accounts#default_service_account)
+   when [creating the node pool](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/using_gke_with_terraform#node-pool-management).
+   The Admin role creates a service account in the `kube-system` namespace.
 1. Download the JSON file with the service account key you created in the previous step.
 1. On your computer, encode the JSON file to `base64` (replace `/path/to/sa-key.json` to the path to your key):
 

@@ -47,18 +47,4 @@ RSpec.describe Gitlab::Themes, lib: true do
       expect(ids).not_to be_empty
     end
   end
-
-  describe 'theme.css_filename' do
-    described_class.each do |theme|
-      next unless theme.css_filename
-
-      context "for #{theme.name}" do
-        it 'returns an existing CSS filename' do
-          css_file_path = Rails.root.join('app/assets/stylesheets/themes', theme.css_filename + '.scss')
-
-          expect(File.exist?(css_file_path)).to eq(true)
-        end
-      end
-    end
-  end
 end

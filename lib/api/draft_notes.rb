@@ -22,7 +22,9 @@ module API
       end
 
       def delete_draft_note(draft_note)
-        ::DraftNotes::DestroyService.new(user_project, current_user).execute(draft_note)
+        ::DraftNotes::DestroyService
+          .new(merge_request(params: params), current_user)
+          .execute(draft_note)
       end
 
       def publish_draft_note(params:)

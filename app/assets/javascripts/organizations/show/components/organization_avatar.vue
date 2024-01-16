@@ -44,6 +44,7 @@ export default {
       :entity-name="organization.name"
       :shape="$options.AVATAR_SHAPE_OPTION_RECT"
       :size="64"
+      :src="organization.avatar_url"
     />
     <div class="gl-ml-3">
       <div class="gl-display-flex gl-align-items-center">

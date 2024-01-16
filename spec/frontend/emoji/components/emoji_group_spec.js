@@ -13,6 +13,7 @@ function factory(propsData = {}) {
       propsData,
       stubs: {
         GlButton,
+        GlEmoji: { template: '<div/>' },
       },
     }),
   );

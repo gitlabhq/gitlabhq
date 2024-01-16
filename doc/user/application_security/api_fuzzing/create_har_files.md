@@ -105,7 +105,7 @@ responses in HAR format.
 #### Create a HAR file with Fiddler
 
 1. Go to the [Fiddler home page](https://www.telerik.com/fiddler) and sign in. If you don't already
-have an account, first create an account.
+   have an account, first create an account.
 1. Browse pages that call an API. Fiddler automatically captures the requests.
 1. Select one or more requests, then from the context menu, select **Export > Selected Sessions**.
 1. In the **Choose Format** dropdown list select **HTTPArchive v1.2**.

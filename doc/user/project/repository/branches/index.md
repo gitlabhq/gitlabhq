@@ -35,7 +35,7 @@ To create a new branch from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. On the top right, select **New branch**.
+1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
    tag, or a commit SHA.
@@ -283,62 +283,64 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. On the upper right corner of the page, select **More** **{ellipsis_v}**.
+1. In the upper right corner of the page, select **More** **{ellipsis_v}**.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
-## Configure rules for target branches **(PREMIUM ALL)**
+## Configure workflows for target branches **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.
 
 Some projects use multiple long-term branches for development, like `develop` and `qa`.
 In these projects, you might want to keep `main` as the default branch, but expect
-merge requests to target `develop` or `qa` instead. Target branch rules help ensure
+merge requests to target `develop` or `qa` instead. Target branch workflows help ensure
 merge requests target the appropriate development branch for your project.
 
-When you create a merge request, the rule checks the name of the branch. If the
-branch name matches the rule, the merge request targets the branch you specify
-in the rule. If the branch name does not match, the merge request targets the
+When you create a merge request, the workflow checks the name of the branch. If the
+branch name matches the workflow, the merge request targets the branch you specify. If the branch name does not match, the merge request targets the
 default branch of the project.
+
+Rules are processed on a "first-match" basis - if two rules match the same branch name, the top-most rule is applied.
 
 Prerequisites:
 
 - You must have at least the Maintainer role.
 
-To create a target branch rule:
+To create a target branch workflow:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. Select **Add target branch rule**.
-1. For **Rule name**, provide a string or wild card to compare against branch names.
-1. Select the **Target branch** to use when the branch name matches the **Rule name**.
+1. Scroll down to **Merge request branch workflow**
+1. Select **Add branch target**.
+1. For **Branch name pattern**, provide a string or wild card to compare against branch names.
+1. Select the **Target branch** to use when the branch name matches the **Branch name pattern**.
 1. Select **Save**.
 
 ### Example
 
-You could configure your project to have the following target branch rules:
+You could configure your project to have the following target branch workflows:
 
-| Rule name   | Target branch |
+| Branch name pattern   | Target branch |
 |-------------|---------------|
 | `feature/*` | `develop`     |
 | `bug/*`     | `develop`     |
 | `release/*` | `main`        |
 
-These rules simplify the process of creating merge requests for a project that:
+These target branches simplify the process of creating merge requests for a project that:
 
 - Uses `main` to represent the deployed state of your application.
 - Tracks current, unreleased development work in another long-running branch, like `develop`.
 
-If your workflow initially places new features in `develop` instead of `main`, these rules
+If your workflow initially places new features in `develop` instead of `main`, these target branches
 ensure all branches matching either `feature/*` or `bug/*` do not target `main` by mistake.
 
-When you're ready to release to `main`, create a branch named `release/*`, and the rules
+When you're ready to release to `main`, create a branch named `release/*`, and
 ensure this branch targets `main`.
 
-## Delete a target branch rule
+## Delete a target branch workflow
 
-When you remove a target branch rule, existing merge requests remain unchanged.
+When you remove a target branch workflow, existing merge requests remain unchanged.
 
 Prerequisites:
 
@@ -348,7 +350,7 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. Select **Delete** on the rule you want to delete.
+1. Select **Delete** on the branch target you want to delete.
 
 ## Related topics
 

@@ -15,5 +15,5 @@ RSpec.describe GitlabSchema.types['Namespace'] do
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_namespace_via_membership) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_namespace) }
 end

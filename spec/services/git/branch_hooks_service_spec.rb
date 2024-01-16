@@ -160,7 +160,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     context "with a new default branch" do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'generates a push event with more than one commit' do
         execute_service
@@ -178,7 +178,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     context "with a new non-default branch" do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
       let(:branch) { 'fix' }
       let(:commit_id) { project.commit(branch).id }
 
@@ -198,7 +198,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     context 'removing a branch' do
-      let(:newrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'generates a push event with no commits' do
         execute_service
@@ -222,7 +222,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
       )
     end
 
-    let(:blank_sha) { Gitlab::Git::BLANK_SHA }
+    let(:blank_sha) { Gitlab::Git::SHA1_BLANK_SHA }
 
     def clears_cache(extended: [])
       expect(service).to receive(:invalidated_file_types).and_return(extended)
@@ -361,7 +361,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     context 'creating the default branch' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'processes a limited number of commit messages' do
         expect(project.repository)
@@ -414,7 +414,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     end
 
     context 'removing the default branch' do
-      let(:newrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'does not process commit messages' do
         expect(project.repository).not_to receive(:commits)
@@ -429,7 +429,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
 
     context 'creating a normal branch' do
       let(:branch) { 'fix' }
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'processes a limited number of commit messages' do
         expect(project.repository)
@@ -463,7 +463,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
 
     context 'removing a normal branch' do
       let(:branch) { 'fix' }
-      let(:newrev) { Gitlab::Git::BLANK_SHA }
+      let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'does not process commit messages' do
         expect(project.repository).not_to receive(:commits)
@@ -530,7 +530,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     let(:branch) { 'fix' }
 
     context 'oldrev is the blank SHA' do
-      let(:oldrev) { Gitlab::Git::BLANK_SHA }
+      let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'is treated as a new branch' do
         expect(service).to receive(:branch_create_hooks)

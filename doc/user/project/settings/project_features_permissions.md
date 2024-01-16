@@ -173,7 +173,7 @@ To subscribe to a topic:
 
 - From the **Explore topics** page:
 
-  1. On the left sidebar, expand the top-most chevron ({**chevron-down**}).
+  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
   1. Select **Explore**.
   1. Select **Topics**.
   1. Select the topic you want to subscribe to.

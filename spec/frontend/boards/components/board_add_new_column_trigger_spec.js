@@ -1,13 +1,7 @@
 import { GlButton } from '@gitlab/ui';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
-import { createStore } from '~/boards/stores';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-
-Vue.use(Vuex);
 
 describe('BoardAddNewColumnTrigger', () => {
   let wrapper;
@@ -24,7 +18,6 @@ describe('BoardAddNewColumnTrigger', () => {
       propsData: {
         isNewListShowing,
       },
-      store: createStore(),
     });
   };
 

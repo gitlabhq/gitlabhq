@@ -8,7 +8,7 @@ query getCiCatalogResourceComponents($fullPath: ID!) {
         nodes {
           id
           name
-          path
+          includePath
           inputs {
             name
             required

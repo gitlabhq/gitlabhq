@@ -22,14 +22,14 @@ subdomain. You can set the GitLab Pages hostname:
 As `/etc/hosts` don't support wildcard hostnames, you must configure one entry
 for GitLab Pages, and then one entry for each page site:
 
-   ```plaintext
-   127.0.0.1 gdk.test           # If you're using GDK
-   127.0.0.1 pages.gdk.test     # Pages host
-   # Any namespace/group/user needs to be added
-   # as a subdomain to the pages host. This is because
-   # /etc/hosts doesn't accept wildcards
-   127.0.0.1 root.pages.gdk.test # for the root pages
-   ```
+```plaintext
+127.0.0.1 gdk.test           # If you're using GDK
+127.0.0.1 pages.gdk.test     # Pages host
+# Any namespace/group/user needs to be added
+# as a subdomain to the pages host. This is because
+# /etc/hosts doesn't accept wildcards
+127.0.0.1 root.pages.gdk.test # for the root pages
+```
 
 ### With DNS wildcard alternatives
 
@@ -151,8 +151,8 @@ GitLab Pages access control is disabled by default. To enable it:
 1. Create an [Instance-wide OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    with the `api` scope.
 1. Set the value of your `redirect-uri` to the `pages-domain` authorization endpoint
-(for example, `http://pages.gdk.test:3010/auth`).
-The `redirect-uri` must not contain any GitLab Pages site domain.
+   (for example, `http://pages.gdk.test:3010/auth`).
+   The `redirect-uri` must not contain any GitLab Pages site domain.
 
 1. Add the auth client configuration:
 

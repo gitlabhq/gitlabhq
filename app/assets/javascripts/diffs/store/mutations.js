@@ -81,15 +81,27 @@ export default {
     });
   },
 
-  [types.SET_DIFF_DATA_BATCH](state, data) {
+  [types.SET_DIFF_DATA_BATCH](state, { diff_files: diffFiles, updatePosition = true }) {
     Object.assign(state, {
       diffFiles: prepareDiffData({
-        diff: data,
+        diff: { diff_files: diffFiles },
         priorFiles: state.diffFiles,
+        // when a pinned file is added to diffs its position may be incorrect since it's loaded out of order
+        // we need to ensure when we load it in batched request it updates it position
+        updatePosition,
       }),
       treeEntries: markTreeEntriesLoaded({
         priorEntries: state.treeEntries,
-        loadedFiles: data.diff_files,
+        loadedFiles: diffFiles,
+      }),
+    });
+  },
+
+  [types.SET_DIFF_TREE_ENTRY](state, diffFile) {
+    Object.assign(state, {
+      treeEntries: markTreeEntriesLoaded({
+        priorEntries: state.treeEntries,
+        loadedFiles: [diffFile],
       }),
     });
   },
@@ -403,5 +415,8 @@ export default {
     const file = findDiffFile(state.diffFiles, filePath, 'file_path');
 
     file?.drafts.push(draft);
+  },
+  [types.SET_PINNED_FILE_HASH](state, fileHash) {
+    state.pinnedFileHash = fileHash;
   },
 };

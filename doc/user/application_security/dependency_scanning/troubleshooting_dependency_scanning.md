@@ -65,10 +65,6 @@ Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
 
-## Getting warning message `gl-dependency-scanning-report.json: no matching files`
-
-For information, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
-
 ## Limitation when using rules:exists
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
@@ -129,7 +125,7 @@ The lock file is cached during the build phase and passed to the dependency scan
 scan occurs. Because the cache is downloaded before the analyzer run occurs, the existence of a lock
 file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
-To prevent this warning, lock files should be committed. 
+To prevent this warning, lock files should be committed.
 
 ## You no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
 

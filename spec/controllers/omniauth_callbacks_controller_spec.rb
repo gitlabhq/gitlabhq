@@ -31,6 +31,67 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
     end
   end
 
+  shared_examples 'omniauth sign in that remembers user' do
+    before do
+      stub_omniauth_setting(allow_bypass_two_factor: allow_bypass_two_factor)
+      (request.env['omniauth.params'] ||= {}).deep_merge!('remember_me' => omniauth_params_remember_me)
+    end
+
+    if params[:call_remember_me]
+      it 'calls devise method remember_me' do
+        expect(controller).to receive(:remember_me).with(user).and_call_original
+
+        post_action
+      end
+    else
+      it 'does not calls devise method remember_me' do
+        expect(controller).not_to receive(:remember_me)
+
+        post_action
+      end
+    end
+  end
+
+  shared_examples 'omniauth sign in that remembers user with two factor enabled' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:post_action) { post provider }
+
+    where(:allow_bypass_two_factor, :omniauth_params_remember_me, :call_remember_me) do
+      true  | '1' | true
+      true  | '0' | false
+      true  | nil | false
+      false  | '1' | false
+      false  | '0' | false
+      false  | nil | false
+    end
+
+    with_them do
+      it_behaves_like 'omniauth sign in that remembers user'
+    end
+  end
+
+  shared_examples 'omniauth sign in that remembers user with two factor disabled' do
+    context "when user selects remember me for omniauth sign in flow" do
+      using RSpec::Parameterized::TableSyntax
+
+      subject(:post_action) { post provider }
+
+      where(:allow_bypass_two_factor, :omniauth_params_remember_me, :call_remember_me) do
+        true  | '1' | true
+        true  | '0' | false
+        true  | nil | false
+        false  | '1' | true
+        false  | '0' | false
+        false  | nil | false
+      end
+
+      with_them do
+        it_behaves_like 'omniauth sign in that remembers user'
+      end
+    end
+  end
+
   describe 'omniauth' do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
     let(:additional_info) { {} }
@@ -190,6 +251,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         request.env['omniauth.params'] = { 'redirect_fragment' => 'L101' }
       end
 
+      it_behaves_like 'omniauth sign in that remembers user with two factor disabled'
+
       context 'when a redirect url is stored' do
         it 'redirects with fragment' do
           post provider, session: { user_return_to: '/fake/url' }
@@ -213,6 +276,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           expect(response.redirect?).to be true
           expect(response.location).not_to include('#L101')
         end
+      end
+
+      context 'when a user has 2FA enabled' do
+        let(:user) { create(:omniauth_user, :two_factor, extern_uid: extern_uid, provider: provider) }
+
+        it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
       end
     end
 
@@ -271,6 +340,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           end
         end
 
+        it_behaves_like 'omniauth sign in that remembers user with two factor disabled'
+
         context 'when a user has 2FA enabled' do
           render_views
 
@@ -296,6 +367,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
+
+          it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
         end
 
         context 'for sign up' do
@@ -357,12 +430,24 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         let(:extern_uid) { '' }
         let(:provider) { :auth0 }
 
+        it_behaves_like 'omniauth sign in that remembers user with two factor disabled' do
+          let(:extern_uid) { 'my-uid' }
+        end
+
         it 'does not allow sign in without extern_uid' do
           post 'auth0'
 
           expect(request.env['warden']).not_to be_authenticated
           expect(response).to have_gitlab_http_status(:found)
           expect(controller).to set_flash[:alert].to('Wrong extern UID provided. Make sure Auth0 is configured correctly.')
+        end
+
+        context 'when a user has 2FA enabled' do
+          let(:user) { create(:omniauth_user, :two_factor, extern_uid: extern_uid, provider: provider) }
+
+          it_behaves_like 'omniauth sign in that remembers user with two factor enabled' do
+            let(:extern_uid) { 'my-uid' }
+          end
         end
       end
 
@@ -372,6 +457,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         context 'when the user and identity already exist' do
           let(:user) { create(:atlassian_user, extern_uid: extern_uid) }
+
+          it_behaves_like 'omniauth sign in that remembers user with two factor disabled'
 
           it 'allows sign-in' do
             post :atlassian_oauth2
@@ -390,6 +477,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             end
 
             post :atlassian_oauth2
+          end
+
+          context 'when a user has 2FA enabled' do
+            let(:user) { create(:atlassian_user, :two_factor, extern_uid: extern_uid) }
+
+            it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
           end
         end
 
@@ -443,10 +536,20 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
           include_context 'with sign_up'
           let(:additional_info) { { extra: { email_verified: true } } }
 
+          it_behaves_like 'omniauth sign in that remembers user with two factor disabled' do
+            let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+          end
+
           it 'allows sign in' do
             post 'salesforce'
 
             expect(request.env['warden']).to be_authenticated
+          end
+
+          context 'when a user has 2FA enabled' do
+            let(:user) { create(:omniauth_user, :two_factor, extern_uid: extern_uid, provider: provider) }
+
+            it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
           end
         end
       end
@@ -497,10 +600,18 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:post_action) { post provider }
     end
 
+    it_behaves_like 'omniauth sign in that remembers user with two factor disabled'
+
     it 'allows sign in' do
       post provider
 
       expect(request.env['warden']).to be_authenticated
+    end
+
+    context 'when a user has 2FA enabled' do
+      let(:user) { create(:omniauth_user, :two_factor, extern_uid: extern_uid, provider: provider) }
+
+      it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
     end
   end
 

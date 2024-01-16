@@ -39,6 +39,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:cycle_analytics_stages) }
     it { is_expected.to have_many(:value_streams) }
+    it { is_expected.to have_many(:non_archived_projects).class_name('Project') }
 
     it do
       is_expected.to have_one(:ci_cd_settings).class_name('NamespaceCiCdSetting').inverse_of(:namespace).autosave(true)
@@ -896,12 +897,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'does not cause N+1 query in fetching registries' do
         stub_container_registry_tags(repository: :any, tags: [])
-        control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
+        control = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }
 
         other_repositories = create_list(:container_repository, 2)
         create(:project, namespace: namespace, container_repositories: other_repositories)
 
-        expect { namespace.first_project_with_container_registry_tags }.not_to exceed_query_limit(control_count + 1)
+        expect do
+          namespace.first_project_with_container_registry_tags
+        end.not_to exceed_query_limit(control).with_threshold(1)
       end
     end
 
@@ -1127,6 +1130,28 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         expect(search_result).not_to include(project_namespace)
         expect(search_result).to match_array([first_group, parent_group, second_group])
       end
+    end
+  end
+
+  describe '.gfm_autocomplete_search' do
+    let_it_be(:parent_group) { create(:group, path: 'parent', name: 'Parent') }
+    let_it_be(:group_1) { create(:group, parent: parent_group, path: 'somepath', name: 'Your Group') }
+    let_it_be(:group_2) { create(:group, path: 'noparent', name: 'My Group') }
+
+    it 'returns partial matches on full path' do
+      expect(described_class.gfm_autocomplete_search('parent/som')).to eq([group_1])
+    end
+
+    it 'returns matches on full name across multiple words' do
+      expect(described_class.gfm_autocomplete_search('yourgr')).to eq([group_1])
+    end
+
+    it 'prioritizes sorting of matches that start with the query' do
+      expect(described_class.gfm_autocomplete_search('pare')).to eq([parent_group, group_1, group_2])
+    end
+
+    it 'falls back to sorting by full path' do
+      expect(described_class.gfm_autocomplete_search('group')).to eq([group_2, group_1])
     end
   end
 

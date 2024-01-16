@@ -224,4 +224,56 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache, :clean
       subject { described_class.write_if_greater('foo', value) }
     end
   end
+
+  describe '.list_add' do
+    it 'adds a value to a list' do
+      described_class.list_add('foo', 10)
+      described_class.list_add('foo', 20)
+
+      key = described_class.cache_key_for('foo')
+      values = Gitlab::Redis::Cache.with { |r| r.lrange(key, 0, -1) }
+
+      expect(values).to eq(%w[10 20])
+    end
+
+    context 'when a limit is provided' do
+      it 'limits the size of the list to the number of items defined by the limit' do
+        described_class.list_add('foo', 10, limit: 3)
+        described_class.list_add('foo', 20, limit: 3)
+        described_class.list_add('foo', 30, limit: 3)
+        described_class.list_add('foo', 40, limit: 3)
+
+        key = described_class.cache_key_for('foo')
+        values = Gitlab::Redis::Cache.with { |r| r.lrange(key, 0, -1) }
+
+        expect(values).to eq(%w[20 30 40])
+      end
+    end
+
+    it_behaves_like 'validated redis value' do
+      subject { described_class.list_add('foo', value) }
+    end
+  end
+
+  describe '.values_from_list' do
+    it 'returns empty hash when the list is empty' do
+      expect(described_class.values_from_list('foo')).to eq([])
+    end
+
+    it 'returns the items stored in the list in order' do
+      described_class.list_add('foo', 10)
+      described_class.list_add('foo', 20)
+      described_class.list_add('foo', 10)
+
+      expect(described_class.values_from_list('foo')).to eq(%w[10 20 10])
+    end
+  end
+
+  describe '.del' do
+    it 'deletes the key' do
+      described_class.write('foo', 'value')
+
+      expect { described_class.del('foo') }.to change { described_class.read('foo') }.from('value').to(nil)
+    end
+  end
 end

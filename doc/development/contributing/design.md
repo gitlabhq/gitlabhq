@@ -19,12 +19,12 @@ with additions and improvements.
 As a merge request (MR) author, you must:
 
 - Include _Before_ and _After_
-screenshots (or videos) of your changes in the description, as explained in our
-[MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
-for all reviewers and can speed up the review process, especially if the changes
-are small.
+  screenshots (or videos) of your changes in the description, as explained in our
+  [MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
+  for all reviewers and can speed up the review process, especially if the changes
+  are small.
 - Attach the ~UX label to any merge request that has any user facing changes. This will trigger our
-Reviewer Roulette to suggest a UX [reviewer](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#stage-group-mrs).
+  Reviewer Roulette to suggest a UX [reviewer](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#stage-group-mrs).
 
 If you are a **team member**: We recommend assigning the Product Designer suggested by the
 [Reviewer Roulette](../code_review.md#reviewer-roulette) as reviewer. [This helps us](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#benefits) spread work evenly, improve communication, and make our UI more
@@ -41,10 +41,10 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
 ### Writing
 
-- Follow [Pajamas](https://design.gitlab.com/content/punctuation/) as the primary
+- Follow [Pajamas](https://design.gitlab.com/content/ui-text/) as the primary
   guidelines for UI text and [documentation style guide](../documentation/styleguide/index.md)
   as the secondary.
-- Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
+- Use clear and consistent terminology.
 - Check grammar and spelling.
 - Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
 - Request review from the [appropriate Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments),

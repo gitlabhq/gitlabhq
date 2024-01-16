@@ -24,6 +24,10 @@ dont-interrupt-me:
 .base-rspec-foss-impact:
   extends: .rspec-base-pg14-as-if-foss
   needs:
+  <% if repo_from_artifacts %>
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  <% end %>
     - pipeline: $PARENT_PIPELINE_ID
       job: detect-tests
     - pipeline: $PARENT_PIPELINE_ID

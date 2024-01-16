@@ -29,7 +29,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :authorize_read_code!, only: [:refs]
 
   # Authorize
-  before_action :authorize_admin_project_or_custom_permissions!, only: :edit
+  before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_admin_project!, only: [:update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
@@ -44,6 +44,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
     push_frontend_feature_flag(:encoding_logs_tree)
+    push_frontend_feature_flag(:add_branch_rule, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
@@ -87,8 +88,14 @@ class ProjectsController < Projects::ApplicationController
 
     @parent_group = Group.find_by(id: params[:namespace_id])
 
+    manageable_groups_count = current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count
+
+    if manageable_groups_count == 0 && !can?(current_user, :create_projects, current_user.namespace)
+      return access_denied!
+    end
+
     @current_user_group =
-      if current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count == 1
+      if manageable_groups_count == 1
         current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first
       end
 
@@ -611,11 +618,6 @@ class ProjectsController < Projects::ApplicationController
 
   def render_edit
     render 'edit'
-  end
-
-  # Overridden in EE
-  def authorize_admin_project_or_custom_permissions!
-    authorize_admin_project!
   end
 end
 

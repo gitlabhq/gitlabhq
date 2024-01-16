@@ -37,7 +37,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
   end
 
   let(:pipeline) { service.execute(:push).payload }
-  let(:current_partition_id) { ci_testing_partition_id }
+  let(:current_partition_id) { ci_testing_partition_id_for_check_constraints }
 
   before do
     stub_ci_pipeline_yaml_file(config)

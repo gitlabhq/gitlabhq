@@ -210,7 +210,7 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
 
       it 'returns the original commit if the commit could not be lazy loaded' do
         collection = described_class.new(project, [hash_commit])
-        unexisting_lazy_commit = Commit.lazy(project, Gitlab::Git::BLANK_SHA)
+        unexisting_lazy_commit = Commit.lazy(project, Gitlab::Git::SHA1_BLANK_SHA)
 
         expect(Commit).to receive(:lazy).with(project, hash_commit.id).and_return(unexisting_lazy_commit)
 

@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :model do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:label) { create(:label, project: project) }
 
-  subject { build(:resource_label_event, issue: issue, label: label) }
+  subject(:resource_label_event) { build(:resource_label_event, issue: issue, label: label) }
 
   it_behaves_like 'having unique enum values'
 
@@ -92,6 +93,63 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
       subject.attributes = { reference: 'whatever', cached_markdown_version: Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION << 16 }
 
       expect(subject.outdated_markdown?).to be false
+    end
+  end
+
+  describe '#reference_html' do
+    subject { Nokogiri::HTML.fragment(label_event.reference_html).css('a').first.attr('href') }
+
+    before do
+      label_event.refresh_invalid_reference
+    end
+
+    context 'when resource event belongs to a group level issue' do
+      let(:group_label) { create(:group_label, group: group) }
+      let(:label_event) do
+        group_issue = create(:issue, :group_level, namespace: group)
+
+        create(:resource_label_event, issue: group_issue, label: group_label)
+      end
+
+      it { is_expected.to eq(Gitlab::Routing.url_helpers.group_work_items_path(group, label_name: group_label.title)) }
+    end
+
+    context 'when resource event belongs to a project level issue' do
+      let(:label_event) { resource_label_event }
+
+      it { is_expected.to eq(Gitlab::Routing.url_helpers.project_issues_path(project, label_name: label.title)) }
+    end
+
+    context 'when resource event belongs to a merge request' do
+      let(:label_event) { create(:resource_label_event, merge_request: merge_request, label: label) }
+
+      it do
+        is_expected.to eq(Gitlab::Routing.url_helpers.project_merge_requests_path(project, label_name: label.title))
+      end
+    end
+  end
+
+  describe '#group' do
+    subject { build_stubbed(:resource_label_event, **issuable_attributes).group }
+
+    context 'when issuable is a merge request' do
+      let(:issuable_attributes) { { merge_request: merge_request } }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when issuable is an issue' do
+      context 'when issue exists at the project level' do
+        let(:issuable_attributes) { { issue: issue } }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when issue exists at the group level' do
+        let(:issuable_attributes) { { issue: build_stubbed(:issue, :group_level, namespace: group) } }
+
+        it { is_expected.to eq(group) }
+      end
     end
   end
 

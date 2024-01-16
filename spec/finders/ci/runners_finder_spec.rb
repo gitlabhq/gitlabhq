@@ -112,7 +112,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           context 'by status' do
             Ci::Runner::AVAILABLE_STATUSES.each do |status|
               it "calls the corresponding :#{status} scope on Ci::Runner" do
-                expect(Ci::Runner).to receive(status.to_sym).and_call_original
+                expect(Ci::Runner).to receive(:with_status).with(status).and_call_original
 
                 described_class.new(current_user: admin, params: { status_status: status }).execute
               end
@@ -134,10 +134,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           end
 
           context 'by runner type' do
-            it 'calls the corresponding scope on Ci::Runner' do
-              expect(Ci::Runner).to receive(:project_type).and_call_original
+            Ci::Runner.runner_types.each_key do |runner_type|
+              context "when runner type is #{runner_type}" do
+                it "calls the corresponding scope on Ci::Runner" do
+                  expect(Ci::Runner).to receive(:with_runner_type).with(runner_type).and_call_original
 
-              described_class.new(current_user: admin, params: { type_type: 'project_type' }).execute
+                  described_class.new(current_user: admin, params: { type_type: runner_type }).execute
+                end
+              end
             end
           end
 
@@ -656,12 +660,13 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
           end
 
           context 'by creator' do
-            let_it_be(:runner_creator_1) { create(:ci_runner, creator_id: '1') }
+            let_it_be(:creator) { create(:user) }
+            let_it_be(:runner_with_creator) { create(:ci_runner, creator: creator) }
 
-            let(:extra_params) { { creator_id: '1' } }
+            let(:extra_params) { { creator_id: creator.id } }
 
             it 'returns correct runners' do
-              is_expected.to contain_exactly(runner_creator_1)
+              is_expected.to contain_exactly(runner_with_creator)
             end
           end
 

@@ -1,4 +1,4 @@
-import { GlSorting, GlSortingItem, GlTab } from '@gitlab/ui';
+import { GlSorting, GlTab } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -17,6 +17,7 @@ import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
   ACTIVE_TAB_ARCHIVED,
+  OVERVIEW_TABS_SORTING_ITEMS,
   SORTING_ITEM_NAME,
   SORTING_ITEM_UPDATED,
   SORTING_ITEM_STARS,
@@ -44,6 +45,7 @@ describe('OverviewTabs', () => {
     newProjectIllustration: '',
     emptyProjectsIllustration: '',
     emptySubgroupIllustration: '',
+    emptySearchIllustration: '',
     canCreateSubgroups: false,
     canCreateProjects: false,
     initialSort: 'name_asc',
@@ -73,6 +75,7 @@ describe('OverviewTabs', () => {
   const findTab = (name) => wrapper.findByRole('tab', { name });
   const findSelectedTab = () => wrapper.findByRole('tab', { selected: true });
   const findSearchInput = () => wrapper.findByPlaceholderText(OverviewTabs.i18n.searchPlaceholder);
+  const findGlSorting = () => wrapper.findComponent(GlSorting);
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
@@ -300,7 +303,7 @@ describe('OverviewTabs', () => {
     describe('when sort is changed', () => {
       beforeEach(async () => {
         await setup();
-        wrapper.findAllComponents(GlSortingItem).at(2).vm.$emit('click');
+        findGlSorting().vm.$emit('sortByChange', SORTING_ITEM_UPDATED.label);
         await nextTick();
       });
 
@@ -402,12 +405,15 @@ describe('OverviewTabs', () => {
       });
 
       it('sets sort dropdown', () => {
-        expect(wrapper.findComponent(GlSorting).props()).toMatchObject({
+        const expectedSortOptions = OVERVIEW_TABS_SORTING_ITEMS.map(({ label }) => {
+          return { value: label, text: label };
+        });
+        expect(findGlSorting().props()).toMatchObject({
           text: SORTING_ITEM_UPDATED.label,
           isAscending: false,
+          sortBy: SORTING_ITEM_UPDATED.label,
+          sortOptions: expectedSortOptions,
         });
-
-        expect(wrapper.findAllComponents(GlSortingItem).at(2).vm.$attrs.active).toBe(true);
       });
     });
   });

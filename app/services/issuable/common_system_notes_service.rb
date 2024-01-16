@@ -2,10 +2,11 @@
 
 module Issuable
   class CommonSystemNotesService < ::BaseProjectService
-    attr_reader :issuable
+    attr_reader :issuable, :is_update
 
     def execute(issuable, old_labels: [], old_milestone: nil, is_update: true)
       @issuable = issuable
+      @is_update = is_update
 
       # We disable touch so that created system notes do not update
       # the noteable's updated_at field
@@ -17,10 +18,10 @@ module Issuable
 
           handle_description_change_note
 
-          handle_time_tracking_note if issuable.is_a?(TimeTrackable)
           create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
         end
 
+        handle_time_tracking_note if issuable.is_a?(TimeTrackable)
         handle_start_date_or_due_date_change_note
         create_milestone_change_event(old_milestone) if issuable.previous_changes.include?('milestone_id')
         create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
@@ -37,13 +38,11 @@ module Issuable
     end
 
     def handle_time_tracking_note
-      if issuable.previous_changes.include?('time_estimate')
-        create_time_estimate_note
-      end
+      estimate_updated = is_update && issuable.previous_changes.include?('time_estimate')
+      estimate_set = !is_update && issuable.time_estimate != 0
 
-      if issuable.time_spent?
-        create_time_spent_note
-      end
+      create_time_estimate_note if estimate_updated || estimate_set
+      create_time_spent_note if issuable.time_spent?
     end
 
     def handle_description_change_note

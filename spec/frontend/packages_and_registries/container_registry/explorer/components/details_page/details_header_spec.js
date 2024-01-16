@@ -207,6 +207,7 @@ describe('Details Header', () => {
         expect(findSize().props()).toMatchObject({
           icon: 'disk',
           text: numberToHumanSize(size),
+          textTooltip: 'Includes both tagged and untagged images',
         });
       });
     });

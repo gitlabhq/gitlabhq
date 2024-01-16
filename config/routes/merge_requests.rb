@@ -41,6 +41,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     end
 
     get :diff_for_path, controller: 'merge_requests/diffs'
+    get 'diff_by_file_hash/:file_hash', to: 'merge_requests/diffs#diff_by_file_hash', as: :diff_by_file_hash
 
     scope controller: 'merge_requests/conflicts' do
       get :conflicts, action: :show

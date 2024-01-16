@@ -17,7 +17,7 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
   - [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
     (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
   - [Container registry API](../../api/container_registry.md)
-    (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled).
+    (scoped to the job's project).
 - [Get job artifacts](../../api/job_artifacts.md#get-job-artifacts).
 - [Get job token's job](../../api/jobs.md#get-job-tokens-job).
 - [Pipeline triggers](../../api/pipeline_triggers.md), using the `token=` parameter

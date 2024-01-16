@@ -2,8 +2,12 @@
 <script>
 import { GlBadge, GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { head, tail } from 'lodash';
+import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import currentScopeQuery from '../graphql/queries/current_scope.query.graphql';
+import enableKeyMutation from '../graphql/mutations/enable_key.mutation.graphql';
+import confirmDisableMutation from '../graphql/mutations/confirm_action.mutation.graphql';
 
 import ActionBtn from './action_btn.vue';
 
@@ -23,18 +27,15 @@ export default {
       type: Object,
       required: true,
     },
-    store: {
-      type: Object,
-      required: true,
-    },
-    endpoint: {
-      type: String,
-      required: true,
-    },
     projectId: {
       type: String,
       required: false,
       default: null,
+    },
+  },
+  apollo: {
+    currentScope: {
+      query: currentScopeQuery,
     },
   },
   data() {
@@ -43,28 +44,8 @@ export default {
     };
   },
   computed: {
-    editDeployKeyPath() {
-      return `${this.endpoint}/${this.deployKey.id}/edit`;
-    },
     projects() {
-      const projects = [...this.deployKey.deploy_keys_projects];
-
-      if (this.projectId !== null) {
-        const indexOfCurrentProject = projects.findIndex(
-          (project) =>
-            project &&
-            project.project &&
-            project.project.id &&
-            project.project.id.toString() === this.projectId,
-        );
-
-        if (indexOfCurrentProject > -1) {
-          const currentProject = projects.splice(indexOfCurrentProject, 1);
-          currentProject[0].project.full_name = s__('DeployKeys|Current project');
-          return currentProject.concat(projects);
-        }
-      }
-      return projects;
+      return this.deployKey.deployKeysProjects;
     },
     firstProject() {
       return head(this.projects);
@@ -81,13 +62,11 @@ export default {
       return sprintf(s__('DeployKeys|+%{count} others'), { count: this.restProjects.length });
     },
     isEnabled() {
-      return this.store.isEnabled(this.deployKey.id);
+      return this.currentScope === 'enabledKeys';
     },
     isRemovable() {
       return (
-        this.store.isEnabled(this.deployKey.id) &&
-        this.deployKey.destroyed_when_orphaned &&
-        this.deployKey.almost_orphaned
+        this.isEnabled && this.deployKey.destroyedWhenOrphaned && this.deployKey.almostOrphaned
       );
     },
     isExpandable() {
@@ -99,14 +78,37 @@ export default {
   },
   methods: {
     projectTooltipTitle(project) {
-      return project.can_push
+      return project.canPush
         ? s__('DeployKeys|Grant write permissions to this key')
         : s__('DeployKeys|Read access only');
     },
     toggleExpanded() {
       this.projectsExpanded = !this.projectsExpanded;
     },
+    isCurrentProject({ project } = {}) {
+      if (this.projectId !== null) {
+        return Boolean(project?.id?.toString() === this.projectId);
+      }
+
+      return false;
+    },
+    projectName(project) {
+      if (this.isCurrentProject(project)) {
+        return s__('DeployKeys|Current project');
+      }
+
+      return project?.project?.fullName;
+    },
+    onEnableError(error) {
+      createAlert({
+        message: s__('DeployKeys|Error enabling deploy key'),
+        captureError: true,
+        error,
+      });
+    },
   },
+  enableKeyMutation,
+  confirmDisableMutation,
 };
 </script>
 
@@ -128,7 +130,7 @@ export default {
         <dl class="gl-font-sm gl-mb-0">
           <dt>{{ __('SHA256') }}</dt>
           <dd class="fingerprint" data-testid="key-sha256-fingerprint-content">
-            {{ deployKey.fingerprint_sha256 }}
+            {{ deployKey.fingerprintSha256 }}
           </dd>
           <template v-if="deployKey.fingerprint">
             <dt>
@@ -150,10 +152,10 @@ export default {
           <gl-badge
             v-gl-tooltip
             :title="projectTooltipTitle(firstProject)"
-            :icon="firstProject.can_push ? 'lock-open' : 'lock'"
+            :icon="firstProject.canPush ? 'lock-open' : 'lock'"
             class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
           >
-            <span class="gl-text-truncate">{{ firstProject.project.full_name }}</span>
+            <span class="gl-text-truncate">{{ projectName(firstProject) }}</span>
           </gl-badge>
 
           <gl-badge
@@ -170,14 +172,14 @@ export default {
           <gl-badge
             v-for="deployKeysProject in restProjects"
             v-else-if="isExpanded"
-            :key="deployKeysProject.project.full_path"
+            :key="deployKeysProject.project.fullPath"
             v-gl-tooltip
-            :href="deployKeysProject.project.full_path"
+            :href="deployKeysProject.project.fullPath"
             :title="projectTooltipTitle(deployKeysProject)"
-            :icon="deployKeysProject.can_push ? 'lock-open' : 'lock'"
+            :icon="deployKeysProject.canPush ? 'lock-open' : 'lock'"
             class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"
           >
-            <span class="gl-text-truncate">{{ deployKeysProject.project.full_name }}</span>
+            <span class="gl-text-truncate">{{ projectName(deployKeysProject) }}</span>
           </gl-badge>
         </template>
         <span v-else class="gl-text-secondary">{{ __('None') }}</span>
@@ -188,8 +190,8 @@ export default {
         {{ __('Created') }}
       </div>
       <div class="table-mobile-content gl-text-gray-700 key-created-at">
-        <span v-gl-tooltip :title="tooltipTitle(deployKey.created_at)">
-          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.created_at) }}</span>
+        <span v-gl-tooltip :title="tooltipTitle(deployKey.createdAt)">
+          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.createdAt) }}</span>
         </span>
       </div>
     </div>
@@ -199,12 +201,12 @@ export default {
       </div>
       <div class="table-mobile-content gl-text-gray-700 key-expires-at">
         <span
-          v-if="deployKey.expires_at"
+          v-if="deployKey.expiresAt"
           v-gl-tooltip
-          :title="tooltipTitle(deployKey.expires_at)"
+          :title="tooltipTitle(deployKey.expiresAt)"
           data-testid="expires-at-tooltip"
         >
-          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.expires_at) }}</span>
+          <gl-icon name="calendar" /> <span>{{ timeFormatted(deployKey.expiresAt) }}</span>
         </span>
         <span v-else>
           <span data-testid="expires-never">{{ __('Never') }}</span>
@@ -213,13 +215,19 @@ export default {
     </div>
     <div class="table-section section-10 table-button-footer deploy-key-actions">
       <div class="btn-group table-action-buttons">
-        <action-btn v-if="!isEnabled" :deploy-key="deployKey" type="enable" category="secondary">
+        <action-btn
+          v-if="!isEnabled"
+          :deploy-key="deployKey"
+          :mutation="$options.enableKeyMutation"
+          category="secondary"
+          @error="onEnableError"
+        >
           {{ __('Enable') }}
         </action-btn>
         <gl-button
-          v-if="deployKey.can_edit"
+          v-if="deployKey.editPath"
           v-gl-tooltip
-          :href="editDeployKeyPath"
+          :href="deployKey.editPath"
           :title="__('Edit')"
           :aria-label="__('Edit')"
           data-container="body"
@@ -232,10 +240,10 @@ export default {
           :deploy-key="deployKey"
           :title="__('Remove')"
           :aria-label="__('Remove')"
+          :mutation="$options.confirmDisableMutation"
           category="secondary"
           variant="danger"
           icon="remove"
-          type="remove"
           data-container="body"
         />
         <action-btn
@@ -244,7 +252,7 @@ export default {
           :deploy-key="deployKey"
           :title="__('Disable')"
           :aria-label="__('Disable')"
-          type="disable"
+          :mutation="$options.confirmDisableMutation"
           data-container="body"
           icon="cancel"
           category="secondary"

@@ -14,10 +14,12 @@ module Gitlab
             @review = review
             @project = project
             @client = client
-            @merge_request = project.merge_requests.find_by_id(review.merge_request_id)
+            @merge_request = project.merge_requests.find_by_iid(review.merge_request_iid)
           end
 
-          def execute
+          def execute(options = {})
+            options = { add_reviewer: true }.merge(options)
+
             user_finder = GithubImport::UserFinder.new(project, client)
 
             gitlab_user_id = user_finder.user_id_for(review.author)
@@ -25,7 +27,7 @@ module Gitlab
             if gitlab_user_id
               add_review_note!(gitlab_user_id)
               add_approval!(gitlab_user_id)
-              add_reviewer!(gitlab_user_id)
+              add_reviewer!(gitlab_user_id) if options[:add_reviewer]
             else
               add_complementary_review_note!(project.creator_id)
             end

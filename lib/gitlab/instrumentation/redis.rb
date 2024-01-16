@@ -33,6 +33,10 @@ module Gitlab
           super.merge(*STORAGES.flat_map(&:payload))
         end
 
+        def storage_hash
+          @storage_hash ||= STORAGES.index_by { |k| k.name.demodulize }
+        end
+
         def detail_store
           STORAGES.flat_map do |storage|
             storage.detail_store.map { |details| details.merge(storage: storage.name.demodulize) }

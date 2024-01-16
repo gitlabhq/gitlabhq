@@ -492,6 +492,7 @@ command line.
 
 To configure markdownlint in your editor, install one of the following as appropriate:
 
+- Visual Studio Code [`DavidAnson.vscode-markdownlint` extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
 - Sublime Text [`SublimeLinter-contrib-markdownlint` package](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint).
   This package uses `markdownlint-cli` by default, but can be configured to use `markdownlint-cli2` with this
   SublimeLinter configuration:
@@ -502,11 +503,20 @@ To configure markdownlint in your editor, install one of the following as approp
   }
   ```
 
-- Visual Studio Code [`DavidAnson.vscode-markdownlint` extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
+- Emacs [Flycheck extension](https://github.com/flycheck/flycheck). `Flycheck` supports
+  `markdownlint-cli` out of the box, but you must add a `.dir-locals.el` file to
+  point it to the `.markdownlint.yml` at the base of the project directory:
+
+  ```lisp
+  ;; Place this code in a file called `.dir-locals.el` at the root of the gitlab project.
+  ((markdown-mode . ((flycheck-markdown-markdownlint-cli-config . ".markdownlint.yml"))))
+  ```
 
 To configure Vale in your editor, install one of the following as appropriate:
 
+- Visual Studio Code [`ChrisChinchilla.vale-vscode` extension](https://marketplace.visualstudio.com/items?itemName=ChrisChinchilla.vale-vscode).
+  You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Sublime Text [`SublimeLinter-vale` package](https://packagecontrol.io/packages/SublimeLinter-vale). To have Vale
   suggestions appears as blue instead of red (which is how errors appear), add `vale` configuration to your
   [SublimeLinter](http://sublimelinter.readthedocs.org) configuration:
@@ -522,26 +532,12 @@ To configure Vale in your editor, install one of the following as appropriate:
   ```
 
 - [LSP for Sublime Text](https://lsp.sublimetext.io) package [`LSP-vale-ls`](https://packagecontrol.io/packages/LSP-vale-ls).
-- Visual Studio Code [`ChrisChinchilla.vale-vscode` extension](https://marketplace.visualstudio.com/items?itemName=ChrisChinchilla.vale-vscode).
-  You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
 - JetBrains IDEs - No plugin exists, but
   [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
   contains tips for configuring an external tool.
-- Emacs [Flycheck extension](https://github.com/flycheck/flycheck).
-  This requires some configuration:
-
-  - `Flycheck` supports `markdownlint-cli` out of the box, but you must point it
-  to the `.markdownlint.yml` at the base of the project directory. A `.dir-locals.el`
-  file can accomplish this:
-
-  ```lisp
-  ;; Place this code in a file called `.dir-locals.el` at the root of the gitlab project.
-  ((markdown-mode . ((flycheck-markdown-markdownlint-cli-config . ".markdownlint.yml"))))
-
-  ```
-
-  - A minimal configuration for Flycheck to work with Vale could look like this:
+- Emacs [Flycheck extension](https://github.com/flycheck/flycheck). A minimal configuration
+  for Flycheck to work with Vale could look like:
 
   ```lisp
   (flycheck-define-checker vale

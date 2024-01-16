@@ -191,14 +191,14 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
       let(:supported_widgets) do
         [
-          { klass: WorkItems::Widgets::DescriptionService::UpdateService, callback: :before_update_callback, params: { description: 'foo' } },
+          { klass: WorkItems::Callbacks::Description, callback: :before_update },
           { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
         ]
       end
     end
 
     context 'when updating widgets' do
-      let(:widget_service_class) { WorkItems::Widgets::DescriptionService::UpdateService }
+      let(:widget_service_class) { WorkItems::Callbacks::Description }
       let(:widget_params) { { description_widget: { description: 'changed' } } }
 
       context 'when widget service is not present' do
@@ -215,8 +215,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         before do
           allow_next_instance_of(widget_service_class) do |instance|
             allow(instance)
-              .to receive(:before_update_callback)
-              .with(params: { description: 'changed' }).and_return(nil)
+              .to receive(:before_update)
+              .and_return(nil)
           end
         end
 
@@ -269,7 +269,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
             expect(service).to receive(:update).and_call_original
             expect(service).not_to receive(:execute_widgets).with(callback: :update, widget_params: widget_params)
 
-            expect { update_work_item }.not_to change(work_item, :description)
+            expect do
+              update_work_item
+              work_item.reload
+            end.not_to change(work_item, :description)
           end
         end
       end

@@ -167,8 +167,6 @@
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
   - 1
-- - ci_llm_generate_config
-  - 1
 - - ci_low_urgency_cancel_redundant_pipelines
   - 1
 - - ci_parse_secure_file_metadata
@@ -196,6 +194,8 @@
 - - compliance_management_standards_adherence_export_mailer
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
+  - 1
+- - compliance_management_standards_gitlab_at_least_two_approvals_group
   - 1
 - - compliance_management_standards_gitlab_base
   - 1
@@ -463,8 +463,6 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
-- - merge_requests_llm_summarize_merge_request
-  - 1
 - - merge_requests_mergeability_check_batch
   - 1
 - - merge_requests_notify_approvers
@@ -685,7 +683,11 @@
   - 1
 - - security_scan_execution_policies_rule_schedule
   - 1
+- - security_scan_result_policies_add_approvers_to_rules
+  - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
+  - 1
+- - security_scan_result_policies_sync_merge_request_approvals
   - 1
 - - security_scan_result_policies_sync_project
   - 1

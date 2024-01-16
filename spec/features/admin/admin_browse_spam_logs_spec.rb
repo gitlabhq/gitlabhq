@@ -8,7 +8,7 @@ RSpec.describe 'Admin browse spam logs', feature_category: :shared do
 
   before do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   it 'browse spam logs' do

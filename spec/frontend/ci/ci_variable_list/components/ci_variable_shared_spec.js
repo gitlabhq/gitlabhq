@@ -11,13 +11,11 @@ import { resolvers } from '~/ci/ci_variable_list/graphql/settings';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
 import ciVariableSettings from '~/ci/ci_variable_list/components/ci_variable_settings.vue';
 import ciVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
-import getProjectEnvironments from '~/ci/ci_variable_list/graphql/queries/project_environments.query.graphql';
+import { getProjectEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import getAdminVariables from '~/ci/ci_variable_list/graphql/queries/variables.query.graphql';
 import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
 import getProjectVariables from '~/ci/ci_variable_list/graphql/queries/project_variables.query.graphql';
-
 import {
-  ENVIRONMENT_QUERY_LIMIT,
   environmentFetchErrorText,
   genericMutationErrorText,
   variableFetchErrorText,
@@ -230,7 +228,7 @@ describe('Ci Variable Shared Component', () => {
 
           it('initial query is called with the correct variables', () => {
             expect(mockEnvironments).toHaveBeenCalledWith({
-              first: ENVIRONMENT_QUERY_LIMIT,
+              first: 30,
               fullPath: '/namespace/project/',
               search: '',
             });

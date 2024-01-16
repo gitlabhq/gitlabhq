@@ -230,11 +230,11 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
 
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
       markdown = alert_reference.to_s
-      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
-      end.count
+      end
 
-      expect(max_count).to eq 1
+      expect(control.count).to eq 1
 
       markdown = "#{alert_reference} ^alert#2 ^alert#3 ^alert#4 #{alert2_reference}"
 
@@ -248,11 +248,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
       # 1x2 for alerts in each project
       # Total == 7
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      max_count += 6
-
       expect do
         reference_filter(markdown)
-      end.not_to exceed_all_query_limit(max_count)
+      end.not_to exceed_all_query_limit(control).with_threshold(6)
     end
   end
 end

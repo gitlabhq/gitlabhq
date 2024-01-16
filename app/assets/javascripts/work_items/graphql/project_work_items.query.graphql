@@ -4,11 +4,12 @@ query projectWorkItems(
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
   $iid: String = null
-  $isNumber: Boolean!
+  $searchByIid: Boolean = false
+  $searchByText: Boolean = true
 ) {
   workspace: project(fullPath: $fullPath) {
     id
-    workItems(search: $searchTerm, types: $types, in: $in) {
+    workItems(search: $searchTerm, types: $types, in: $in) @include(if: $searchByText) {
       nodes {
         id
         iid
@@ -16,7 +17,7 @@ query projectWorkItems(
         confidential
       }
     }
-    workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $isNumber) {
+    workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $searchByIid) {
       nodes {
         id
         iid

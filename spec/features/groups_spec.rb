@@ -205,7 +205,10 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     describe 'not showing personalization questions on group creation when it is enabled' do
       before do
         stub_application_setting(hide_third_party_offers: true)
-        visit new_group_path(anchor: 'create-group-pane')
+
+        # If visiting directly via path, personalization setting is not being picked up correctly
+        visit new_group_path
+        click_link 'Create group'
       end
 
       it 'does not render personalization questions' do
@@ -350,10 +353,16 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       visit path
     end
 
-    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="group[name]"]', submit: 'button[type="submit"]' },
-                                          { form: '.js-general-settings-form', input: '#group_visibility_level_0', submit: 'button[type="submit"]' },
-                                          { form: '.js-general-permissions-form', input: '#group_request_access_enabled', submit: 'button[type="submit"]' },
-                                          { form: '.js-general-permissions-form', input: 'input[name="group[two_factor_grace_period]"]', submit: 'button[type="submit"]' }]
+    it_behaves_like 'dirty submit form', [
+      { form: '.js-general-settings-form', input: 'input[name="group[name]"]', submit: 'button[type="submit"]' },
+      { form: '.js-general-settings-form', input: '#group_visibility_level_0', submit: 'button[type="submit"]' },
+      { form: '.js-general-permissions-form', input: '#group_request_access_enabled', submit: 'button[type="submit"]' },
+      {
+        form: '.js-general-permissions-form',
+        input: 'input[name="group[two_factor_grace_period]"]',
+        submit: 'button[type="submit"]'
+      }
+    ]
 
     it 'saves new settings' do
       page.within('.gs-general') do

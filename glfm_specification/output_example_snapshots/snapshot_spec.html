@@ -382,45 +382,45 @@
 <a id="user-content-characters-and-lines" class="anchor" href="#characters-and-lines" aria-hidden="true"></a>Characters and lines</h2>
 <p data-sourcepos="7:1-8:9" dir="auto">Any sequence of [characters] is a valid CommonMark
 document.</p>
-<p data-sourcepos="10:1-13:26" dir="auto">A <a href="@">character</a> is a Unicode code point.  Although some
+<p data-sourcepos="10:1-13:26" dir="auto">A <a data-sourcepos="10:3-10:16" href="@">character</a> is a Unicode code point.  Although some
 code points (for example, combining accents) do not correspond to
 characters in an intuitive sense, all code points count as characters
 for purposes of this spec.</p>
 <p data-sourcepos="15:1-17:22" dir="auto">This spec does not specify an encoding; it thinks of lines as composed
 of [characters] rather than bytes.  A conforming parser may be limited
 to a certain encoding.</p>
-<p data-sourcepos="19:1-21:50" dir="auto">A <a href="@">line</a> is a sequence of zero or more [characters]
-other than newline (<code>U+000A</code>) or carriage return (<code>U+000D</code>),
+<p data-sourcepos="19:1-21:50" dir="auto">A <a data-sourcepos="19:3-19:11" href="@">line</a> is a sequence of zero or more [characters]
+other than newline (<code data-sourcepos="20:22-20:27">U+000A</code>) or carriage return (<code data-sourcepos="20:52-20:57">U+000D</code>),
 followed by a [line ending] or by the end of file.</p>
-<p data-sourcepos="23:1-25:18" dir="auto">A <a href="@">line ending</a> is a newline (<code>U+000A</code>), a carriage return
-(<code>U+000D</code>) not followed by a newline, or a carriage return and a
+<p data-sourcepos="23:1-25:18" dir="auto">A <a data-sourcepos="23:3-23:18" href="@">line ending</a> is a newline (<code data-sourcepos="23:35-23:40">U+000A</code>), a carriage return
+(<code data-sourcepos="24:3-24:8">U+000D</code>) not followed by a newline, or a carriage return and a
 following newline.</p>
 <p data-sourcepos="27:1-28:59" dir="auto">A line containing no characters, or a line containing only spaces
-(<code>U+0020</code>) or tabs (<code>U+0009</code>), is called a <a href="@">blank line</a>.</p>
+(<code data-sourcepos="28:3-28:8">U+0020</code>) or tabs (<code data-sourcepos="28:22-28:27">U+0009</code>), is called a <a data-sourcepos="28:44-28:58" href="@">blank line</a>.</p>
 <p data-sourcepos="30:1-30:73" dir="auto">The following definitions of character classes will be used in this spec:</p>
-<p data-sourcepos="32:1-34:52" dir="auto">A <a href="@">whitespace character</a> is a space
-(<code>U+0020</code>), tab (<code>U+0009</code>), newline (<code>U+000A</code>), line tabulation (<code>U+000B</code>),
-form feed (<code>U+000C</code>), or carriage return (<code>U+000D</code>).</p>
-<p data-sourcepos="36:1-37:12" dir="auto"><a href="@">Whitespace</a> is a sequence of one or more [whitespace
+<p data-sourcepos="32:1-34:52" dir="auto">A <a data-sourcepos="32:3-32:27" href="@">whitespace character</a> is a space
+(<code data-sourcepos="33:3-33:8">U+0020</code>), tab (<code data-sourcepos="33:19-33:24">U+0009</code>), newline (<code data-sourcepos="33:39-33:44">U+000A</code>), line tabulation (<code data-sourcepos="33:67-33:72">U+000B</code>),
+form feed (<code data-sourcepos="34:13-34:18">U+000C</code>), or carriage return (<code data-sourcepos="34:44-34:49">U+000D</code>).</p>
+<p data-sourcepos="36:1-37:12" dir="auto"><a data-sourcepos="36:1-36:15" href="@">Whitespace</a> is a sequence of one or more [whitespace
 characters].</p>
-<p data-sourcepos="39:1-42:11" dir="auto">A <a href="@">Unicode whitespace character</a> is
-any code point in the Unicode <code>Zs</code> general category, or a tab (<code>U+0009</code>),
-carriage return (<code>U+000D</code>), newline (<code>U+000A</code>), or form feed
-(<code>U+000C</code>).</p>
-<p data-sourcepos="44:1-45:40" dir="auto"><a href="@">Unicode whitespace</a> is a sequence of one
+<p data-sourcepos="39:1-42:11" dir="auto">A <a data-sourcepos="39:3-39:35" href="@">Unicode whitespace character</a> is
+any code point in the Unicode <code data-sourcepos="40:32-40:33">Zs</code> general category, or a tab (<code data-sourcepos="40:65-40:70">U+0009</code>),
+carriage return (<code data-sourcepos="41:19-41:24">U+000D</code>), newline (<code data-sourcepos="41:39-41:44">U+000A</code>), or form feed
+(<code data-sourcepos="42:3-42:8">U+000C</code>).</p>
+<p data-sourcepos="44:1-45:40" dir="auto"><a data-sourcepos="44:1-44:23" href="@">Unicode whitespace</a> is a sequence of one
 or more [Unicode whitespace characters].</p>
-<p data-sourcepos="47:1-47:25" dir="auto">A <a href="@">space</a> is <code>U+0020</code>.</p>
-<p data-sourcepos="49:1-50:37" dir="auto">A <a href="@">non-whitespace character</a> is any character
+<p data-sourcepos="47:1-47:25" dir="auto">A <a data-sourcepos="47:3-47:12" href="@">space</a> is <code data-sourcepos="47:18-47:23">U+0020</code>.</p>
+<p data-sourcepos="49:1-50:37" dir="auto">A <a data-sourcepos="49:3-49:31" href="@">non-whitespace character</a> is any character
 that is not a [whitespace character].</p>
-<p data-sourcepos="52:1-57:38" dir="auto">An <a href="@">ASCII punctuation character</a>
-is <code>!</code>, <code>"</code>, <code>#</code>, <code>$</code>, <code>%</code>, <code>&amp;</code>, <code>'</code>, <code>(</code>, <code>)</code>,
-<code>*</code>, <code>+</code>, <code>,</code>, <code>-</code>, <code>.</code>, <code>/</code> (U+0021–2F),
-<code>:</code>, <code>;</code>, <code>&lt;</code>, <code>=</code>, <code>&gt;</code>, <code>?</code>, <code>@</code> (U+003A–0040),
-<code>[</code>, <code>\</code>, <code>]</code>, <code>^</code>, <code>_</code>, <code>`</code> (U+005B–0060),
-<code>{</code>, <code>|</code>, <code>}</code>, or <code>~</code> (U+007B–007E).</p>
-<p data-sourcepos="59:1-61:76" dir="auto">A <a href="@">punctuation character</a> is an [ASCII
+<p data-sourcepos="52:1-57:38" dir="auto">An <a data-sourcepos="52:4-52:35" href="@">ASCII punctuation character</a>
+is <code data-sourcepos="53:5-53:5">!</code>, <code data-sourcepos="53:10-53:10">"</code>, <code data-sourcepos="53:15-53:15">#</code>, <code data-sourcepos="53:20-53:20">$</code>, <code data-sourcepos="53:25-53:25">%</code>, <code data-sourcepos="53:30-53:30">&amp;</code>, <code data-sourcepos="53:35-53:35">'</code>, <code data-sourcepos="53:40-53:40">(</code>, <code data-sourcepos="53:45-53:45">)</code>,
+<code data-sourcepos="54:2-54:2">*</code>, <code data-sourcepos="54:7-54:7">+</code>, <code data-sourcepos="54:12-54:12">,</code>, <code data-sourcepos="54:17-54:17">-</code>, <code data-sourcepos="54:22-54:22">.</code>, <code data-sourcepos="54:27-54:27">/</code> (U+0021–2F),
+<code data-sourcepos="55:2-55:2">:</code>, <code data-sourcepos="55:7-55:7">;</code>, <code data-sourcepos="55:12-55:12">&lt;</code>, <code data-sourcepos="55:17-55:17">=</code>, <code data-sourcepos="55:22-55:22">&gt;</code>, <code data-sourcepos="55:27-55:27">?</code>, <code data-sourcepos="55:32-55:32">@</code> (U+003A–0040),
+<code data-sourcepos="56:2-56:2">[</code>, <code data-sourcepos="56:7-56:7">\</code>, <code data-sourcepos="56:12-56:12">]</code>, <code data-sourcepos="56:17-56:17">^</code>, <code data-sourcepos="56:22-56:22">_</code>, <code data-sourcepos="56:28-56:30">`</code> (U+005B–0060),
+<code data-sourcepos="57:2-57:2">{</code>, <code data-sourcepos="57:7-57:7">|</code>, <code data-sourcepos="57:12-57:12">}</code>, or <code data-sourcepos="57:20-57:20">~</code> (U+007B–007E).</p>
+<p data-sourcepos="59:1-61:76" dir="auto">A <a data-sourcepos="59:3-59:28" href="@">punctuation character</a> is an [ASCII
 punctuation character] or anything in
-the general Unicode categories  <code>Pc</code>, <code>Pd</code>, <code>Pe</code>, <code>Pf</code>, <code>Pi</code>, <code>Po</code>, or <code>Ps</code>.</p>
+the general Unicode categories  <code data-sourcepos="61:34-61:35">Pc</code>, <code data-sourcepos="61:40-61:41">Pd</code>, <code data-sourcepos="61:46-61:47">Pe</code>, <code data-sourcepos="61:52-61:53">Pf</code>, <code data-sourcepos="61:58-61:59">Pi</code>, <code data-sourcepos="61:64-61:65">Po</code>, or <code data-sourcepos="61:73-61:74">Ps</code>.</p>
 <h2 data-sourcepos="63:1-63:7" dir="auto">
 <a id="user-content-tabs" class="anchor" href="#tabs" aria-hidden="true"></a>Tabs</h2>
 <p data-sourcepos="65:1-68:16" dir="auto">Tabs in lines are not expanded to [spaces].  However,
@@ -509,12 +509,12 @@ as indentation with four spaces would:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="159:1-166:36" dir="auto">Normally the <code>&gt;</code> that begins a block quote may be followed
+<p data-sourcepos="159:1-166:36" dir="auto">Normally the <code data-sourcepos="159:15-159:15">&gt;</code> that begins a block quote may be followed
 optionally by a space, which is not considered part of the
-content.  In the following case <code>&gt;</code> is followed by a tab,
+content.  In the following case <code data-sourcepos="161:34-161:34">&gt;</code> is followed by a tab,
 which is treated as if it were expanded into three spaces.
 Since one of these spaces is considered part of the
-delimiter, <code>foo</code> is considered to be indented six spaces
+delimiter, <code data-sourcepos="164:13-164:15">foo</code> is considered to be indented six spaces
 inside the block quote context, so we get an indented
 code block starting with two spaces.</p>
 <div>
@@ -608,15 +608,15 @@ code block starting with two spaces.</p>
 </div>
 <h2 data-sourcepos="265:1-265:22" dir="auto">
 <a id="user-content-insecure-characters" class="anchor" href="#insecure-characters" aria-hidden="true"></a>Insecure characters</h2>
-<p data-sourcepos="267:1-268:42" dir="auto">For security reasons, the Unicode character <code>U+0000</code> must be replaced
-with the REPLACEMENT CHARACTER (<code>U+FFFD</code>).</p>
+<p data-sourcepos="267:1-268:42" dir="auto">For security reasons, the Unicode character <code data-sourcepos="267:46-267:51">U+0000</code> must be replaced
+with the REPLACEMENT CHARACTER (<code data-sourcepos="268:34-268:39">U+FFFD</code>).</p>
 <h1 data-sourcepos="270:1-270:20" dir="auto">
 <a id="user-content-blocks-and-inlines" class="anchor" href="#blocks-and-inlines" aria-hidden="true"></a>Blocks and inlines</h1>
 <p data-sourcepos="272:1-277:54" dir="auto">We can think of a document as a sequence of
-<a href="@">blocks</a>---structural elements like paragraphs, block
+<a data-sourcepos="273:1-273:11" href="@">blocks</a>---structural elements like paragraphs, block
 quotations, lists, headings, rules, and code blocks.  Some blocks (like
 block quotes and list items) contain other blocks; others (like
-headings and paragraphs) contain <a href="@">inline</a> content---text,
+headings and paragraphs) contain <a data-sourcepos="276:34-276:44" href="@">inline</a> content---text,
 links, emphasized text, images, code spans, and so on.</p>
 <h2 data-sourcepos="279:1-279:13" dir="auto">
 <a id="user-content-precedence" class="anchor" href="#precedence" aria-hidden="true"></a>Precedence</h2>
@@ -649,8 +649,8 @@ one block element does not affect the inline parsing of any other.</p>
 <h2 data-sourcepos="311:1-311:35" dir="auto">
 <a id="user-content-container-blocks-and-leaf-blocks" class="anchor" href="#container-blocks-and-leaf-blocks" aria-hidden="true"></a>Container blocks and leaf blocks</h2>
 <p data-sourcepos="313:1-316:13" dir="auto">We can divide blocks into two types:
-<a href="@">container blocks</a>,
-which can contain other blocks, and <a href="@">leaf blocks</a>,
+<a data-sourcepos="314:1-314:21" href="@">container blocks</a>,
+which can contain other blocks, and <a data-sourcepos="315:37-315:52" href="@">leaf blocks</a>,
 which cannot.</p>
 <h1 data-sourcepos="318:1-318:13" dir="auto">
 <a id="user-content-leaf-blocks" class="anchor" href="#leaf-blocks" aria-hidden="true"></a>Leaf blocks</h1>
@@ -659,9 +659,9 @@ Markdown document.</p>
 <h2 data-sourcepos="323:1-323:18" dir="auto">
 <a id="user-content-thematic-breaks" class="anchor" href="#thematic-breaks" aria-hidden="true"></a>Thematic breaks</h2>
 <p data-sourcepos="325:1-328:20" dir="auto">A line consisting of 0-3 spaces of indentation, followed by a sequence
-of three or more matching <code>-</code>, <code>_</code>, or <code>*</code> characters, each followed
+of three or more matching <code data-sourcepos="326:28-326:28">-</code>, <code data-sourcepos="326:33-326:33">_</code>, or <code data-sourcepos="326:41-326:41">*</code> characters, each followed
 optionally by any number of spaces or tabs, forms a
-<a href="@">thematic break</a>.</p>
+<a data-sourcepos="328:1-328:19" href="@">thematic break</a>.</p>
 <div>
 <div><a href="#example-13">Example 13</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -943,16 +943,16 @@ interpretations of a line, the thematic break takes precedence:</p>
 </div>
 <h2 data-sourcepos="661:1-661:15" dir="auto">
 <a id="user-content-atx-headings" class="anchor" href="#atx-headings" aria-hidden="true"></a>ATX headings</h2>
-<p data-sourcepos="663:1-673:35" dir="auto">An <a href="@">ATX heading</a>
+<p data-sourcepos="663:1-673:35" dir="auto">An <a data-sourcepos="663:4-663:19" href="@">ATX heading</a>
 consists of a string of characters, parsed as inline content, between an
-opening sequence of 1--6 unescaped <code>#</code> characters and an optional
-closing sequence of any number of unescaped <code>#</code> characters.
-The opening sequence of <code>#</code> characters must be followed by a
-[space] or by the end of line. The optional closing sequence of <code>#</code>s must be
+opening sequence of 1--6 unescaped <code data-sourcepos="665:37-665:37">#</code> characters and an optional
+closing sequence of any number of unescaped <code data-sourcepos="666:46-666:46">#</code> characters.
+The opening sequence of <code data-sourcepos="667:26-667:26">#</code> characters must be followed by a
+[space] or by the end of line. The optional closing sequence of <code data-sourcepos="668:66-668:66">#</code>s must be
 preceded by a [space] and may be followed by spaces only.  The opening
-<code>#</code> character may be indented 0-3 spaces.  The raw contents of the
+<code data-sourcepos="670:2-670:2">#</code> character may be indented 0-3 spaces.  The raw contents of the
 heading are stripped of leading and trailing spaces before being parsed
-as inline content.  The heading level is equal to the number of <code>#</code>
+as inline content.  The heading level is equal to the number of <code data-sourcepos="672:66-672:66">#</code>
 characters in the opening sequence.</p>
 <p data-sourcepos="675:1-675:16" dir="auto">Simple headings:</p>
 <div>
@@ -976,7 +976,7 @@ characters in the opening sequence.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="700:1-700:46" dir="auto">More than six <code>#</code> characters is not a heading:</p>
+<p data-sourcepos="700:1-700:46" dir="auto">More than six <code data-sourcepos="700:16-700:16">#</code> characters is not a heading:</p>
 <div>
 <div><a href="#example-33">Example 33</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -988,11 +988,11 @@ characters in the opening sequence.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="715:1-721:9" dir="auto">At least one space is required between the <code>#</code> characters and the
+<p data-sourcepos="715:1-721:9" dir="auto">At least one space is required between the <code data-sourcepos="715:45-715:45">#</code> characters and the
 heading's contents, unless the heading is empty.  Note that many
 implementations currently do not require the space.  However, the
 space was required by the
-<a href="http://www.aaronsw.com/2002/atx/atx.py" rel="nofollow noreferrer noopener" target="_blank">original ATX implementation</a>,
+<a data-sourcepos="719:1-719:69" href="http://www.aaronsw.com/2002/atx/atx.py" rel="nofollow noreferrer noopener" target="_blank">original ATX implementation</a>,
 and it helps prevent things like the following from being parsed as
 headings:</p>
 <div>
@@ -1009,7 +1009,7 @@ headings:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="739:1-739:56" dir="auto">This is not a heading, because the first <code>#</code> is escaped:</p>
+<p data-sourcepos="739:1-739:56" dir="auto">This is not a heading, because the first <code data-sourcepos="739:43-739:43">#</code> is escaped:</p>
 <div>
 <div><a href="#example-35">Example 35</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -1087,7 +1087,7 @@ headings:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="834:1-834:49" dir="auto">A closing sequence of <code>#</code> characters is optional:</p>
+<p data-sourcepos="834:1-834:49" dir="auto">A closing sequence of <code data-sourcepos="834:24-834:24">#</code> characters is optional:</p>
 <div>
 <div><a href="#example-41">Example 41</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -1127,7 +1127,7 @@ headings:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="883:1-885:8" dir="auto">A sequence of <code>#</code> characters with anything but [spaces] following it
+<p data-sourcepos="883:1-885:8" dir="auto">A sequence of <code data-sourcepos="883:16-883:16">#</code> characters with anything but [spaces] following it
 is not a closing sequence, but counts as part of the contents of the
 heading:</p>
 <div>
@@ -1153,7 +1153,7 @@ heading:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="915:1-916:24" dir="auto">Backslash-escaped <code>#</code> characters do not count as part
+<p data-sourcepos="915:1-916:24" dir="auto">Backslash-escaped <code data-sourcepos="915:20-915:20">#</code> characters do not count as part
 of the closing sequence:</p>
 <div>
 <div><a href="#example-46">Example 46</a></div>
@@ -1220,7 +1220,7 @@ lines, and they can interrupt paragraphs:</p>
 </div>
 <h2 data-sourcepos="991:1-991:18" dir="auto">
 <a id="user-content-setext-headings" class="anchor" href="#setext-headings" aria-hidden="true"></a>Setext headings</h2>
-<p data-sourcepos="993:1-1001:54" dir="auto">A <a href="@">setext heading</a> consists of one or more
+<p data-sourcepos="993:1-1001:54" dir="auto">A <a data-sourcepos="993:3-993:21" href="@">setext heading</a> consists of one or more
 lines of text, each containing at least one [non-whitespace
 character], with no more than 3 spaces indentation, followed by
 a [setext heading underline].  The lines of text must be such
@@ -1229,14 +1229,14 @@ they would be interpreted as a paragraph:  they cannot be
 interpretable as a [code fence], [ATX heading][ATX headings],
 [block quote][block quotes], [thematic break][thematic breaks],
 [list item][list items], or [HTML block][HTML blocks].</p>
-<p data-sourcepos="1003:1-1008:40" dir="auto">A <a href="@">setext heading underline</a> is a sequence of
-<code>=</code> characters or a sequence of <code>-</code> characters, with no more than 3
+<p data-sourcepos="1003:1-1008:40" dir="auto">A <a data-sourcepos="1003:3-1003:31" href="@">setext heading underline</a> is a sequence of
+<code data-sourcepos="1004:2-1004:2">=</code> characters or a sequence of <code data-sourcepos="1004:34-1004:34">-</code> characters, with no more than 3
 spaces indentation and any number of trailing spaces.  If a line
-containing a single <code>-</code> can be interpreted as an
+containing a single <code data-sourcepos="1006:22-1006:22">-</code> can be interpreted as an
 empty [list items], it should be interpreted this way
 and not as a [setext heading underline].</p>
-<p data-sourcepos="1010:1-1014:8" dir="auto">The heading is a level 1 heading if <code>=</code> characters are used in
-the [setext heading underline], and a level 2 heading if <code>-</code>
+<p data-sourcepos="1010:1-1014:8" dir="auto">The heading is a level 1 heading if <code data-sourcepos="1010:38-1010:38">=</code> characters are used in
+the [setext heading underline], and a level 2 heading if <code data-sourcepos="1011:59-1011:59">-</code>
 characters are used.  The contents of the heading are the result
 of parsing the preceding lines of text as CommonMark inline
 content.</p>
@@ -1609,7 +1609,7 @@ in these examples gets interpreted as a thematic break:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="1446:1-1447:22" dir="auto">If you want a heading with <code>&gt; foo</code> as its literal text, you can
+<p data-sourcepos="1446:1-1447:22" dir="auto">If you want a heading with <code data-sourcepos="1446:29-1446:33">&gt; foo</code> as its literal text, you can
 use backslash escapes:</p>
 <div>
 <div><a href="#example-72">Example 72</a></div>
@@ -1623,7 +1623,7 @@ use backslash escapes:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="1463:1-1465:48" dir="auto"><strong>Compatibility note:</strong>  Most existing Markdown implementations
+<p data-sourcepos="1463:1-1465:48" dir="auto"><strong data-sourcepos="1463:1-1463:23">Compatibility note:</strong>  Most existing Markdown implementations
 do not allow the text of setext headings to span multiple lines.
 But there is no consensus about how to interpret</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -1721,9 +1721,9 @@ underline], such as</p>
 </div>
 <h2 data-sourcepos="1572:1-1572:23" dir="auto">
 <a id="user-content-indented-code-blocks" class="anchor" href="#indented-code-blocks" aria-hidden="true"></a>Indented code blocks</h2>
-<p data-sourcepos="1574:1-1580:44" dir="auto">An <a href="@">indented code block</a> is composed of one or more
+<p data-sourcepos="1574:1-1580:44" dir="auto">An <a data-sourcepos="1574:4-1574:27" href="@">indented code block</a> is composed of one or more
 [indented chunks] separated by blank lines.
-An <a href="@">indented chunk</a> is a sequence of non-blank lines,
+An <a data-sourcepos="1576:4-1576:22" href="@">indented chunk</a> is a sequence of non-blank lines,
 each indented four or more spaces. The contents of the code block are
 the literal contents of the lines, including trailing
 [line endings], minus four spaces of indentation.
@@ -1955,14 +1955,14 @@ are not included in it:</p>
 </div>
 <h2 data-sourcepos="1844:1-1844:21" dir="auto">
 <a id="user-content-fenced-code-blocks" class="anchor" href="#fenced-code-blocks" aria-hidden="true"></a>Fenced code blocks</h2>
-<p data-sourcepos="1846:1-1850:61" dir="auto">A <a href="@">code fence</a> is a sequence
-of at least three consecutive backtick characters (<code>`</code>) or
-tildes (<code>~</code>).  (Tildes and backticks cannot be mixed.)
-A <a href="@">fenced code block</a>
+<p data-sourcepos="1846:1-1850:61" dir="auto">A <a data-sourcepos="1846:3-1846:17" href="@">code fence</a> is a sequence
+of at least three consecutive backtick characters (<code data-sourcepos="1847:54-1847:56">`</code>) or
+tildes (<code data-sourcepos="1848:10-1848:10">~</code>).  (Tildes and backticks cannot be mixed.)
+A <a data-sourcepos="1849:3-1849:24" href="@">fenced code block</a>
 begins with a code fence, indented no more than three spaces.</p>
 <p data-sourcepos="1852:1-1858:34" dir="auto">The line with the opening code fence may optionally contain some text
 following the code fence; this is trimmed of leading and trailing
-whitespace and called the <a href="@">info string</a>. If the [info string] comes
+whitespace and called the <a data-sourcepos="1854:27-1854:42" href="@">info string</a>. If the [info string] comes
 after a backtick fence, it may not contain any backtick
 characters.  (The reason for this restriction is that otherwise
 some inline code would be incorrectly interpreted as the
@@ -1988,8 +1988,8 @@ behavior described here.)</p>
 a blank line either before or after.</p>
 <p data-sourcepos="1882:1-1886:42" dir="auto">The content of a code fence is treated as literal text, not parsed
 as inlines.  The first word of the [info string] is typically used to
-specify the language of the code sample, and rendered in the <code>class</code>
-attribute of the <code>code</code> tag.  However, this spec does not mandate any
+specify the language of the code sample, and rendered in the <code data-sourcepos="1884:63-1884:67">class</code>
+attribute of the <code data-sourcepos="1885:19-1885:22">code</code> tag.  However, this spec does not mandate any
 particular treatment of the [info string].</p>
 <p data-sourcepos="1888:1-1888:40" dir="auto">Here is a simple example with backticks:</p>
 <div>
@@ -2376,8 +2376,8 @@ without an intervening blank line:</p>
 Although this spec doesn't mandate any particular treatment of
 the info string, the first word is typically used to specify
 the language of the code block. In HTML output, the language is
-normally indicated by adding a class to the <code>code</code> element consisting
-of <code>language-</code> followed by the language name.</p>
+normally indicated by adding a class to the <code data-sourcepos="2333:46-2333:49">code</code> element consisting
+of <code data-sourcepos="2334:5-2334:13">language-</code> followed by the language name.</p>
 <div>
 <div><a href="#example-112">Example 112</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -2472,75 +2472,75 @@ of <code>language-</code> followed by the language name.</p>
 </div>
 <h2 data-sourcepos="2444:1-2444:14" dir="auto">
 <a id="user-content-html-blocks" class="anchor" href="#html-blocks" aria-hidden="true"></a>HTML blocks</h2>
-<p data-sourcepos="2446:1-2447:53" dir="auto">An <a href="@">HTML block</a> is a group of lines that is treated
+<p data-sourcepos="2446:1-2447:53" dir="auto">An <a data-sourcepos="2446:4-2446:18" href="@">HTML block</a> is a group of lines that is treated
 as raw HTML (and will not be escaped in HTML output).</p>
 <p data-sourcepos="2449:1-2457:50" dir="auto">There are seven kinds of [HTML block], which can be defined by their
 start and end conditions.  The block begins with a line that meets a
-<a href="@">start condition</a> (after up to three spaces optional indentation).
-It ends with the first subsequent line that meets a matching <a href="@">end
+<a data-sourcepos="2451:1-2451:20" href="@">start condition</a> (after up to three spaces optional indentation).
+It ends with the first subsequent line that meets a matching <a data-sourcepos="2453:62-2453:13" href="@">end
 condition</a>, or the last line of the document, or the last line of
-the <a href="#container-blocks">container block</a> containing the current HTML
+the <a data-sourcepos="2454:5-2454:40" href="#container-blocks">container block</a> containing the current HTML
 block, if no line is encountered that meets the [end condition].  If
 the first line meets both the [start condition] and the [end
 condition], the block will contain just that line.</p>
 <ol data-sourcepos="2459:1-2500:0" dir="auto">
 <li data-sourcepos="2459:1-2465:0">
-<p data-sourcepos="2459:5-2464:30"><strong>Start condition:</strong>  line begins with the string <code>&lt;script</code>,
-<code>&lt;pre</code>, or <code>&lt;style</code> (case-insensitive), followed by whitespace,
-the string <code>&gt;</code>, or the end of the line.<br>
-<strong>End condition:</strong>  line contains an end tag
-<code>&lt;/script&gt;</code>, <code>&lt;/pre&gt;</code>, or <code>&lt;/style&gt;</code> (case-insensitive; it
+<p data-sourcepos="2459:5-2464:30"><strong data-sourcepos="2459:5-2459:24">Start condition:</strong>  line begins with the string <code data-sourcepos="2459:56-2459:62">&lt;script</code>,
+<code data-sourcepos="2460:6-2460:9">&lt;pre</code>, or <code data-sourcepos="2460:17-2460:22">&lt;style</code> (case-insensitive), followed by whitespace,
+the string <code data-sourcepos="2461:17-2461:17">&gt;</code>, or the end of the line.<br data-sourcepos="2461:44-2461:45">
+<strong data-sourcepos="2461:46-2461:63">End condition:</strong>  line contains an end tag
+<code data-sourcepos="2462:6-2462:14">&lt;/script&gt;</code>, <code data-sourcepos="2462:19-2462:24">&lt;/pre&gt;</code>, or <code data-sourcepos="2462:32-2462:39">&lt;/style&gt;</code> (case-insensitive; it
 need not match the start tag).</p>
 </li>
 <li data-sourcepos="2466:1-2468:0">
-<p data-sourcepos="2466:5-2467:51"><strong>Start condition:</strong> line begins with the string <code>&lt;!--</code>.<br>
-<strong>End condition:</strong>  line contains the string <code>--&gt;</code>.</p>
+<p data-sourcepos="2466:5-2467:51"><strong data-sourcepos="2466:5-2466:24">Start condition:</strong> line begins with the string <code data-sourcepos="2466:55-2466:58">&lt;!--</code>.<br data-sourcepos="2466:61-2466:62">
+<strong data-sourcepos="2466:63-2466:80">End condition:</strong>  line contains the string <code data-sourcepos="2466:109-2466:111">--&gt;</code>.</p>
 </li>
 <li data-sourcepos="2469:1-2471:0">
-<p data-sourcepos="2469:5-2470:49"><strong>Start condition:</strong> line begins with the string <code>&lt;?</code>.<br>
-<strong>End condition:</strong> line contains the string <code>?&gt;</code>.</p>
+<p data-sourcepos="2469:5-2470:49"><strong data-sourcepos="2469:5-2469:24">Start condition:</strong> line begins with the string <code data-sourcepos="2469:55-2469:56">&lt;?</code>.<br data-sourcepos="2469:59-2469:60">
+<strong data-sourcepos="2469:61-2469:78">End condition:</strong> line contains the string <code data-sourcepos="2469:106-2469:107">?&gt;</code>.</p>
 </li>
 <li data-sourcepos="2472:1-2475:0">
-<p data-sourcepos="2472:5-2474:51"><strong>Start condition:</strong> line begins with the string <code>&lt;!</code>
-followed by an uppercase ASCII letter.<br>
-<strong>End condition:</strong> line contains the character <code>&gt;</code>.</p>
+<p data-sourcepos="2472:5-2474:51"><strong data-sourcepos="2472:5-2472:24">Start condition:</strong> line begins with the string <code data-sourcepos="2472:55-2472:56">&lt;!</code>
+followed by an uppercase ASCII letter.<br data-sourcepos="2473:43-2473:44">
+<strong data-sourcepos="2473:45-2473:62">End condition:</strong> line contains the character <code data-sourcepos="2473:93-2473:93">&gt;</code>.</p>
 </li>
 <li data-sourcepos="2476:1-2479:0">
-<p data-sourcepos="2476:5-2478:50"><strong>Start condition:</strong>  line begins with the string
-<code>&lt;![CDATA[</code>.<br>
-<strong>End condition:</strong> line contains the string <code>]]&gt;</code>.</p>
+<p data-sourcepos="2476:5-2478:50"><strong data-sourcepos="2476:5-2476:24">Start condition:</strong>  line begins with the string
+<code data-sourcepos="2477:6-2477:14">&lt;![CDATA[</code>.<br data-sourcepos="2477:17-2477:18">
+<strong data-sourcepos="2477:19-2477:36">End condition:</strong> line contains the string <code data-sourcepos="2477:64-2477:66">]]&gt;</code>.</p>
 </li>
 <li data-sourcepos="2480:1-2494:0">
-<p data-sourcepos="2480:5-2493:54"><strong>Start condition:</strong> line begins the string <code>&lt;</code> or <code>&lt;/</code>
-followed by one of the strings (case-insensitive) <code>address</code>,
-<code>article</code>, <code>aside</code>, <code>base</code>, <code>basefont</code>, <code>blockquote</code>, <code>body</code>,
-<code>caption</code>, <code>center</code>, <code>col</code>, <code>colgroup</code>, <code>dd</code>, <code>details</code>, <code>dialog</code>,
-<code>dir</code>, <code>div</code>, <code>dl</code>, <code>dt</code>, <code>fieldset</code>, <code>figcaption</code>, <code>figure</code>,
-<code>footer</code>, <code>form</code>, <code>frame</code>, <code>frameset</code>,
-<code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>, <code>h5</code>, <code>h6</code>, <code>head</code>, <code>header</code>, <code>hr</code>,
-<code>html</code>, <code>iframe</code>, <code>legend</code>, <code>li</code>, <code>link</code>, <code>main</code>, <code>menu</code>, <code>menuitem</code>,
-<code>nav</code>, <code>noframes</code>, <code>ol</code>, <code>optgroup</code>, <code>option</code>, <code>p</code>, <code>param</code>,
-<code>section</code>, <code>summary</code>, <code>table</code>, <code>tbody</code>, <code>td</code>,
-<code>tfoot</code>, <code>th</code>, <code>thead</code>, <code>title</code>, <code>tr</code>, <code>track</code>, <code>ul</code>, followed
-by [whitespace], the end of the line, the string <code>&gt;</code>, or
-the string <code>/&gt;</code>.<br>
-<strong>End condition:</strong> line is followed by a [blank line].</p>
+<p data-sourcepos="2480:5-2493:54"><strong data-sourcepos="2480:5-2480:24">Start condition:</strong> line begins the string <code data-sourcepos="2480:50-2480:50">&lt;</code> or <code data-sourcepos="2480:57-2480:58">&lt;/</code>
+followed by one of the strings (case-insensitive) <code data-sourcepos="2481:56-2481:62">address</code>,
+<code data-sourcepos="2482:6-2482:12">article</code>, <code data-sourcepos="2482:17-2482:21">aside</code>, <code data-sourcepos="2482:26-2482:29">base</code>, <code data-sourcepos="2482:34-2482:41">basefont</code>, <code data-sourcepos="2482:46-2482:55">blockquote</code>, <code data-sourcepos="2482:60-2482:63">body</code>,
+<code data-sourcepos="2483:6-2483:12">caption</code>, <code data-sourcepos="2483:17-2483:22">center</code>, <code data-sourcepos="2483:27-2483:29">col</code>, <code data-sourcepos="2483:34-2483:41">colgroup</code>, <code data-sourcepos="2483:46-2483:47">dd</code>, <code data-sourcepos="2483:52-2483:58">details</code>, <code data-sourcepos="2483:63-2483:68">dialog</code>,
+<code data-sourcepos="2484:6-2484:8">dir</code>, <code data-sourcepos="2484:13-2484:15">div</code>, <code data-sourcepos="2484:20-2484:21">dl</code>, <code data-sourcepos="2484:26-2484:27">dt</code>, <code data-sourcepos="2484:32-2484:39">fieldset</code>, <code data-sourcepos="2484:44-2484:53">figcaption</code>, <code data-sourcepos="2484:58-2484:63">figure</code>,
+<code data-sourcepos="2485:6-2485:11">footer</code>, <code data-sourcepos="2485:16-2485:19">form</code>, <code data-sourcepos="2485:24-2485:28">frame</code>, <code data-sourcepos="2485:33-2485:40">frameset</code>,
+<code data-sourcepos="2486:6-2486:7">h1</code>, <code data-sourcepos="2486:12-2486:13">h2</code>, <code data-sourcepos="2486:18-2486:19">h3</code>, <code data-sourcepos="2486:24-2486:25">h4</code>, <code data-sourcepos="2486:30-2486:31">h5</code>, <code data-sourcepos="2486:36-2486:37">h6</code>, <code data-sourcepos="2486:42-2486:45">head</code>, <code data-sourcepos="2486:50-2486:55">header</code>, <code data-sourcepos="2486:60-2486:61">hr</code>,
+<code data-sourcepos="2487:6-2487:9">html</code>, <code data-sourcepos="2487:14-2487:19">iframe</code>, <code data-sourcepos="2487:24-2487:29">legend</code>, <code data-sourcepos="2487:34-2487:35">li</code>, <code data-sourcepos="2487:40-2487:43">link</code>, <code data-sourcepos="2487:48-2487:51">main</code>, <code data-sourcepos="2487:56-2487:59">menu</code>, <code data-sourcepos="2487:64-2487:71">menuitem</code>,
+<code data-sourcepos="2488:6-2488:8">nav</code>, <code data-sourcepos="2488:13-2488:20">noframes</code>, <code data-sourcepos="2488:25-2488:26">ol</code>, <code data-sourcepos="2488:31-2488:38">optgroup</code>, <code data-sourcepos="2488:43-2488:48">option</code>, <code data-sourcepos="2488:53-2488:53">p</code>, <code data-sourcepos="2488:58-2488:62">param</code>,
+<code data-sourcepos="2489:6-2489:12">section</code>, <code data-sourcepos="2489:17-2489:23">summary</code>, <code data-sourcepos="2489:28-2489:32">table</code>, <code data-sourcepos="2489:37-2489:41">tbody</code>, <code data-sourcepos="2489:46-2489:47">td</code>,
+<code data-sourcepos="2490:6-2490:10">tfoot</code>, <code data-sourcepos="2490:15-2490:16">th</code>, <code data-sourcepos="2490:21-2490:25">thead</code>, <code data-sourcepos="2490:30-2490:34">title</code>, <code data-sourcepos="2490:39-2490:40">tr</code>, <code data-sourcepos="2490:45-2490:49">track</code>, <code data-sourcepos="2490:54-2490:55">ul</code>, followed
+by [whitespace], the end of the line, the string <code data-sourcepos="2491:55-2491:55">&gt;</code>, or
+the string <code data-sourcepos="2492:17-2492:18">/&gt;</code>.<br data-sourcepos="2492:21-2492:22">
+<strong data-sourcepos="2492:23-2492:40">End condition:</strong> line is followed by a [blank line].</p>
 </li>
 <li data-sourcepos="2495:1-2500:0">
-<p data-sourcepos="2495:5-2499:54"><strong>Start condition:</strong>  line begins with a complete [open tag]
-(with any [tag name] other than <code>script</code>,
-<code>style</code>, or <code>pre</code>) or a complete [closing tag],
-followed only by [whitespace] or the end of the line.<br>
-<strong>End condition:</strong> line is followed by a [blank line].</p>
+<p data-sourcepos="2495:5-2499:54"><strong data-sourcepos="2495:5-2495:24">Start condition:</strong>  line begins with a complete [open tag]
+(with any [tag name] other than <code data-sourcepos="2496:38-2496:43">script</code>,
+<code data-sourcepos="2497:6-2497:10">style</code>, or <code data-sourcepos="2497:18-2497:20">pre</code>) or a complete [closing tag],
+followed only by [whitespace] or the end of the line.<br data-sourcepos="2498:58-2498:59">
+<strong data-sourcepos="2498:60-2498:77">End condition:</strong> line is followed by a [blank line].</p>
 </li>
 </ol>
 <p data-sourcepos="2501:1-2506:19" dir="auto">HTML blocks continue until they are closed by their appropriate
-[end condition], or the last line of the document or other <a href="#container-blocks">container
-block</a>.  This means any HTML <strong>within an HTML
+[end condition], or the last line of the document or other <a data-sourcepos="2503:60-2503:25" href="#container-blocks">container
+block</a>.  This means any HTML <strong data-sourcepos="2503:49-2504:7">within an HTML
 block</strong> that might otherwise be recognised as a start condition will
 be ignored by the parser and passed through as-is, without changing
 the parser's state.</p>
-<p data-sourcepos="2508:1-2510:51" dir="auto">For instance, <code>&lt;pre&gt;</code> within a HTML block started by <code>&lt;table&gt;</code> will not affect
+<p data-sourcepos="2508:1-2510:51" dir="auto">For instance, <code data-sourcepos="2508:16-2508:20">&lt;pre&gt;</code> within a HTML block started by <code data-sourcepos="2508:55-2508:61">&lt;table&gt;</code> will not affect
 the parser state; as the HTML block was started in by start condition 6, it
 will end at any blank line. This can be surprising:</p>
 <div>
@@ -2565,9 +2565,9 @@ will end at any blank line. This can be surprising:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="2535:1-2537:55" dir="auto">In this case, the HTML block is terminated by the newline — the <code>**Hello**</code>
+<p data-sourcepos="2535:1-2537:55" dir="auto">In this case, the HTML block is terminated by the newline — the <code data-sourcepos="2535:68-2535:76">**Hello**</code>
 text remains verbatim — and regular parsing resumes, with a paragraph,
-emphasised <code>world</code> and inline and block HTML following.</p>
+emphasised <code data-sourcepos="2537:13-2537:17">world</code> and inline and block HTML following.</p>
 <p data-sourcepos="2539:1-2542:65" dir="auto">All types of [HTML blocks] except type 7 may interrupt
 a paragraph.  Blocks of type 7 may not interrupt a paragraph.
 (This restriction is intended to prevent unwanted interpretation
@@ -2789,7 +2789,7 @@ line or the end of the document is reached:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="2796:1-2798:51" dir="auto">To start an [HTML block] with a tag that is <em>not</em> in the
+<p data-sourcepos="2796:1-2798:51" dir="auto">To start an [HTML block] with a tag that is <em data-sourcepos="2796:45-2796:49">not</em> in the
 list of block-level tags in (6), you must put the tag by
 itself on the first line (and it must be complete):</p>
 <div>
@@ -2853,9 +2853,9 @@ itself on the first line (and it must be complete):</p>
 </div>
 <p data-sourcepos="2868:1-2872:59" dir="auto">These rules are designed to allow us to work with tags that
 can function as either block-level or inline-level tags.
-The <code>&lt;del&gt;</code> tag is a nice example.  We can surround content with
-<code>&lt;del&gt;</code> tags in three different ways.  In this case, we get a raw
-HTML block, because the <code>&lt;del&gt;</code> tag is on a line by itself:</p>
+The <code data-sourcepos="2870:6-2870:10">&lt;del&gt;</code> tag is a nice example.  We can surround content with
+<code data-sourcepos="2871:2-2871:6">&lt;del&gt;</code> tags in three different ways.  In this case, we get a raw
+HTML block, because the <code data-sourcepos="2872:26-2872:30">&lt;del&gt;</code> tag is on a line by itself:</p>
 <div>
 <div><a href="#example-136">Example 136</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -2872,7 +2872,7 @@ HTML block, because the <code>&lt;del&gt;</code> tag is on a line by itself:</p>
 </div>
 </div>
 <p data-sourcepos="2891:1-2893:54" dir="auto">In this case, we get a raw HTML block that just includes
-the <code>&lt;del&gt;</code> tag (because it ends with the following blank
+the <code data-sourcepos="2892:6-2892:10">&lt;del&gt;</code> tag (because it ends with the following blank
 line).  So the contents get interpreted as CommonMark:</p>
 <div>
 <div><a href="#example-137">Example 137</a></div>
@@ -2891,8 +2891,8 @@ line).  So the contents get interpreted as CommonMark:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="2914:1-2917:29" dir="auto">Finally, in this case, the <code>&lt;del&gt;</code> tags are interpreted
-as [raw HTML] <em>inside</em> the CommonMark paragraph.  (Because
+<p data-sourcepos="2914:1-2917:29" dir="auto">Finally, in this case, the <code data-sourcepos="2914:29-2914:33">&lt;del&gt;</code> tags are interpreted
+as [raw HTML] <em data-sourcepos="2915:15-2915:22">inside</em> the CommonMark paragraph.  (Because
 the tag is not on a line by itself, we get inline HTML
 rather than an [HTML block].)</p>
 <div>
@@ -2907,7 +2907,7 @@ rather than an [HTML block].)</p>
 </div>
 </div>
 <p data-sourcepos="2932:1-2937:50" dir="auto">HTML tags designed to contain literal content
-(<code>script</code>, <code>style</code>, <code>pre</code>), comments, processing instructions,
+(<code data-sourcepos="2933:3-2933:8">script</code>, <code data-sourcepos="2933:13-2933:17">style</code>, <code data-sourcepos="2933:22-2933:24">pre</code>), comments, processing instructions,
 and declarations are treated somewhat differently.
 Instead of ending at the first blank line, these blocks
 end at the first line containing a corresponding end tag.
@@ -3261,7 +3261,7 @@ block]:</p>
 specification, which says:</p>
 <blockquote data-sourcepos="3338:1-3341:51" dir="auto">
 <p data-sourcepos="3338:3-3341:51">The only restrictions are that block-level HTML elements —
-e.g. <code>&lt;div&gt;</code>, <code>&lt;table&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;p&gt;</code>, etc. — must be separated from
+e.g. <code data-sourcepos="3339:9-3339:13">&lt;div&gt;</code>, <code data-sourcepos="3339:18-3339:24">&lt;table&gt;</code>, <code data-sourcepos="3339:29-3339:33">&lt;pre&gt;</code>, <code data-sourcepos="3339:38-3339:40">&lt;p&gt;</code>, etc. — must be separated from
 surrounding content by blank lines, and the start and end tags of the
 block should not be indented with tabs or spaces.</p>
 </blockquote>
@@ -3318,12 +3318,12 @@ simply separate the Markdown from the HTML using blank lines:</p>
 </div>
 <p data-sourcepos="3401:1-3405:22" dir="auto">Some Markdown implementations have adopted a convention of
 interpreting content inside tags as text if the open tag has
-the attribute <code>markdown=1</code>.  The rule given above seems a simpler and
+the attribute <code data-sourcepos="3403:16-3403:25">markdown=1</code>.  The rule given above seems a simpler and
 more elegant way of achieving the same expressive power, which is also
 much simpler to parse.</p>
 <p data-sourcepos="3407:1-3410:59" dir="auto">The main potential drawback is that one can no longer paste HTML
 blocks into Markdown documents with 100% reliability.  However,
-<em>in most cases</em> this will work fine, because the blank lines in
+<em data-sourcepos="3409:1-3409:15">in most cases</em> this will work fine, because the blank lines in
 HTML are usually followed by HTML block tags.  For example:</p>
 <div>
 <div><a href="#example-159">Example 159</a></div>
@@ -3353,7 +3353,7 @@ HTML are usually followed by HTML block tags.  For example:</p>
 </div>
 </div>
 <p data-sourcepos="3441:1-3443:23" dir="auto">There are problems, however, if the inner tags are indented
-<em>and</em> separated by spaces, as then they will be interpreted as
+<em data-sourcepos="3442:1-3442:5">and</em> separated by spaces, as then they will be interpreted as
 an indented code block:</p>
 <div>
 <div><a href="#example-160">Example 160</a></div>
@@ -3384,14 +3384,14 @@ an indented code block:</p>
 </div>
 </div>
 <p data-sourcepos="3475:1-3478:26" dir="auto">Fortunately, blank lines are usually not necessary and can be
-deleted.  The exception is inside <code>&lt;pre&gt;</code> tags, but as described
-[above][HTML blocks], raw HTML blocks starting with <code>&lt;pre&gt;</code>
-<em>can</em> contain blank lines.</p>
+deleted.  The exception is inside <code data-sourcepos="3476:36-3476:40">&lt;pre&gt;</code> tags, but as described
+[above][HTML blocks], raw HTML blocks starting with <code data-sourcepos="3477:54-3477:58">&lt;pre&gt;</code>
+<em data-sourcepos="3478:1-3478:5">can</em> contain blank lines.</p>
 <h2 data-sourcepos="3480:1-3480:29" dir="auto">
 <a id="user-content-link-reference-definitions" class="anchor" href="#link-reference-definitions" aria-hidden="true"></a>Link reference definitions</h2>
-<p data-sourcepos="3482:1-3490:61" dir="auto">A <a href="@">link reference definition</a>
+<p data-sourcepos="3482:1-3490:61" dir="auto">A <a data-sourcepos="3482:3-3482:32" href="@">link reference definition</a>
 consists of a [link label], indented up to three spaces, followed
-by a colon (<code>:</code>), optional [whitespace] (including up to one
+by a colon (<code data-sourcepos="3484:14-3484:14">:</code>), optional [whitespace] (including up to one
 [line ending]), a [link destination],
 optional [whitespace] (including up to one
 [line ending]), and an optional [link
@@ -3848,7 +3848,7 @@ no visible content:</p>
 <h2 data-sourcepos="4011:1-4011:13" dir="auto">
 <a id="user-content-paragraphs" class="anchor" href="#paragraphs" aria-hidden="true"></a>Paragraphs</h2>
 <p data-sourcepos="4013:1-4018:13" dir="auto">A sequence of non-blank lines that cannot be interpreted as other
-kinds of blocks forms a <a href="@">paragraph</a>.
+kinds of blocks forms a <a data-sourcepos="4014:25-4014:38" href="@">paragraph</a>.
 The contents of the paragraph are the result of parsing the
 paragraph's raw content as inlines.  The paragraph's raw content
 is formed by concatenating the lines and removing initial and final
@@ -4007,18 +4007,18 @@ is [tight] or [loose].</p>
 <div>
 <h2 data-sourcepos="4199:1-4199:21">
 <a id="user-content-tables-extension" class="anchor" href="#tables-extension" aria-hidden="true"></a>Tables (extension)</h2>
-<p data-sourcepos="4201:1-4202:10">GFM enables the <code>table</code> extension, where an additional leaf block type is
+<p data-sourcepos="4201:1-4202:10">GFM enables the <code data-sourcepos="4201:18-4201:22">table</code> extension, where an additional leaf block type is
 available.</p>
-<p data-sourcepos="4204:1-4206:23">A <a href="@">table</a> is an arrangement of data with rows and columns, consisting of a
+<p data-sourcepos="4204:1-4206:23">A <a data-sourcepos="4204:3-4204:12" href="@">table</a> is an arrangement of data with rows and columns, consisting of a
 single header row, a [delimiter row] separating the header from the data, and
 zero or more data rows.</p>
 <p data-sourcepos="4208:1-4212:23">Each row consists of cells containing arbitrary text, in which [inlines] are
-parsed, separated by pipes (<code>|</code>).  A leading and trailing pipe is also
+parsed, separated by pipes (<code data-sourcepos="4209:30-4209:30">|</code>).  A leading and trailing pipe is also
 recommended for clarity of reading, and if there's otherwise parsing ambiguity.
 Spaces between pipes and cell content are trimmed.  Block-level elements cannot
 be inserted in a table.</p>
-<p data-sourcepos="4214:1-4216:40">The <a href="@">delimiter row</a> consists of cells whose only content are hyphens (<code>-</code>),
-and optionally, a leading or trailing colon (<code>:</code>), or both, to indicate left,
+<p data-sourcepos="4214:1-4216:40">The <a data-sourcepos="4214:5-4214:22" href="@">delimiter row</a> consists of cells whose only content are hyphens (<code data-sourcepos="4214:75-4214:75">-</code>),
+and optionally, a leading or trailing colon (<code data-sourcepos="4215:47-4215:47">:</code>), or both, to indicate left,
 right, or center alignment respectively.</p>
 <div>
 <div><a href="#example-198">Example 198</a></div>
@@ -4221,7 +4221,7 @@ cells are inserted.  If there are greater, the excess is ignored:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4431:1-4431:75">If there are no rows in the body, no <code>&lt;tbody&gt;</code> is generated in HTML output:</p>
+<p data-sourcepos="4431:1-4431:75">If there are no rows in the body, no <code data-sourcepos="4431:39-4431:45">&lt;tbody&gt;</code> is generated in HTML output:</p>
 <div>
 <div><a href="#example-205">Example 205</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4244,7 +4244,7 @@ cells are inserted.  If there are greater, the excess is ignored:</p>
 </div>
 <h1 data-sourcepos="4455:1-4455:18" dir="auto">
 <a id="user-content-container-blocks" class="anchor" href="#container-blocks" aria-hidden="true"></a>Container blocks</h1>
-<p data-sourcepos="4457:1-4460:45" dir="auto">A <a href="#container-blocks">container block</a> is a block that has other
+<p data-sourcepos="4457:1-4460:45" dir="auto">A <a data-sourcepos="4457:3-4457:38" href="#container-blocks">container block</a> is a block that has other
 blocks as its contents.  There are two basic kinds of container blocks:
 [block quotes] and [list items].
 [Lists] are meta-containers for [list items].</p>
@@ -4256,40 +4256,40 @@ transforming X in such-and-such a way is a container of type Y
 with these blocks as its content.</p>
 </blockquote>
 <p data-sourcepos="4469:1-4473:52" dir="auto">So, we explain what counts as a block quote or list item by explaining
-how these can be <em>generated</em> from their contents. This should suffice
-to define the syntax, although it does not give a recipe for <em>parsing</em>
+how these can be <em data-sourcepos="4470:18-4470:28">generated</em> from their contents. This should suffice
+to define the syntax, although it does not give a recipe for <em data-sourcepos="4471:62-4471:70">parsing</em>
 these constructions.  (A recipe is provided below in the section entitled
-<a href="#appendix-a-parsing-strategy">A parsing strategy</a>.)</p>
+<a data-sourcepos="4473:1-4473:50" href="#appendix-a-parsing-strategy">A parsing strategy</a>.)</p>
 <h2 data-sourcepos="4475:1-4475:15" dir="auto">
 <a id="user-content-block-quotes" class="anchor" href="#block-quotes" aria-hidden="true"></a>Block quotes</h2>
-<p data-sourcepos="4477:1-4479:78" dir="auto">A <a href="@">block quote marker</a>
-consists of 0-3 spaces of initial indent, plus (a) the character <code>&gt;</code> together
-with a following space, or (b) a single character <code>&gt;</code> not followed by a space.</p>
+<p data-sourcepos="4477:1-4479:78" dir="auto">A <a data-sourcepos="4477:3-4477:25" href="@">block quote marker</a>
+consists of 0-3 spaces of initial indent, plus (a) the character <code data-sourcepos="4478:67-4478:67">&gt;</code> together
+with a following space, or (b) a single character <code data-sourcepos="4479:52-4479:52">&gt;</code> not followed by a space.</p>
 <p data-sourcepos="4481:1-4481:42" dir="auto">The following rules define [block quotes]:</p>
 <ol data-sourcepos="4483:1-4500:0" dir="auto">
 <li data-sourcepos="4483:1-4487:0">
-<p data-sourcepos="4483:5-4486:54"><strong>Basic case.</strong>  If a string of lines <em>Ls</em> constitute a sequence
-of blocks <em>Bs</em>, then the result of prepending a [block quote
-marker] to the beginning of each line in <em>Ls</em>
-is a <a href="#block-quotes">block quote</a> containing <em>Bs</em>.</p>
+<p data-sourcepos="4483:5-4486:54"><strong data-sourcepos="4483:5-4483:19">Basic case.</strong>  If a string of lines <em data-sourcepos="4483:43-4483:46">Ls</em> constitute a sequence
+of blocks <em data-sourcepos="4484:15-4484:18">Bs</em>, then the result of prepending a [block quote
+marker] to the beginning of each line in <em data-sourcepos="4485:46-4485:49">Ls</em>
+is a <a data-sourcepos="4486:10-4486:37" href="#block-quotes">block quote</a> containing <em data-sourcepos="4486:50-4486:53">Bs</em>.</p>
 </li>
 <li data-sourcepos="4488:1-4497:0">
-<p data-sourcepos="4488:5-4496:48"><strong>Laziness.</strong>  If a string of lines <em>Ls</em> constitute a <a href="#block-quotes">block
-quote</a> with contents <em>Bs</em>, then the result of deleting
+<p data-sourcepos="4488:5-4496:48"><strong data-sourcepos="4488:5-4488:17">Laziness.</strong>  If a string of lines <em data-sourcepos="4488:41-4488:44">Ls</em> constitute a <a data-sourcepos="4489:59-4489:25" href="#block-quotes">block
+quote</a> with contents <em data-sourcepos="4489:41-4489:44">Bs</em>, then the result of deleting
 the initial [block quote marker] from one or
 more lines in which the next [non-whitespace character] after the [block
 quote marker] is [paragraph continuation
-text] is a block quote with <em>Bs</em> as its content.
-<a href="@">Paragraph continuation text</a> is text
+text] is a block quote with <em data-sourcepos="4493:33-4493:36">Bs</em> as its content.
+<a data-sourcepos="4494:5-4494:36" href="@">Paragraph continuation text</a> is text
 that will be parsed as part of the content of a paragraph, but does
 not occur at the beginning of the paragraph.</p>
 </li>
 <li data-sourcepos="4498:1-4500:0">
-<p data-sourcepos="4498:5-4499:65"><strong>Consecutiveness.</strong>  A document cannot contain two [block
+<p data-sourcepos="4498:5-4499:65"><strong data-sourcepos="4498:5-4498:24">Consecutiveness.</strong>  A document cannot contain two [block
 quotes] in a row unless there is a [blank line] between them.</p>
 </li>
 </ol>
-<p data-sourcepos="4501:1-4501:54" dir="auto">Nothing else counts as a <a href="#block-quotes">block quote</a>.</p>
+<p data-sourcepos="4501:1-4501:54" dir="auto">Nothing else counts as a <a data-sourcepos="4501:26-4501:53" href="#block-quotes">block quote</a>.</p>
 <p data-sourcepos="4503:1-4503:25" dir="auto">Here is a simple example:</p>
 <div>
 <div><a href="#example-206">Example 206</a></div>
@@ -4308,7 +4308,7 @@ quotes] in a row unless there is a [blank line] between them.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4524:1-4524:51" dir="auto">The spaces after the <code>&gt;</code> characters can be omitted:</p>
+<p data-sourcepos="4524:1-4524:51" dir="auto">The spaces after the <code data-sourcepos="4524:23-4524:23">&gt;</code> characters can be omitted:</p>
 <div>
 <div><a href="#example-207">Example 207</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4326,7 +4326,7 @@ quotes] in a row unless there is a [blank line] between them.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4545:1-4545:46" dir="auto">The <code>&gt;</code> characters can be indented 1-3 spaces:</p>
+<p data-sourcepos="4545:1-4545:46" dir="auto">The <code data-sourcepos="4545:6-4545:6">&gt;</code> characters can be indented 1-3 spaces:</p>
 <div>
 <div><a href="#example-208">Example 208</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4361,7 +4361,7 @@ quotes] in a row unless there is a [blank line] between them.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4586:1-4587:30" dir="auto">The Laziness clause allows us to omit the <code>&gt;</code> before
+<p data-sourcepos="4586:1-4587:30" dir="auto">The Laziness clause allows us to omit the <code data-sourcepos="4586:44-4586:44">&gt;</code> before
 [paragraph continuation text]:</p>
 <div>
 <div><a href="#example-210">Example 210</a></div>
@@ -4401,7 +4401,7 @@ continuation lines:</p>
 </div>
 <p data-sourcepos="4630:1-4632:61" dir="auto">Laziness only applies to lines that would have been continuations of
 paragraphs had they been prepended with [block quote markers].
-For example, the <code>&gt; </code> cannot be omitted in the second line of</p>
+For example, the <code data-sourcepos="4632:19-4632:20">&gt; </code> cannot be omitted in the second line of</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="4634:1-4637:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="gt">&gt; foo</span></span>
 <span id="LC2" class="line" lang="markdown"><span class="gt">&gt; ---</span></span></code></pre>
@@ -4423,7 +4423,7 @@ For example, the <code>&gt; </code> cannot be omitted in the second line of</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4658:1-4658:52" dir="auto">Similarly, if we omit the <code>&gt; </code> in the second line of</p>
+<p data-sourcepos="4658:1-4658:52" dir="auto">Similarly, if we omit the <code data-sourcepos="4658:28-4658:29">&gt; </code> in the second line of</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="4660:1-4663:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="gt">&gt; - foo</span></span>
 <span id="LC2" class="line" lang="markdown"><span class="gt">&gt; - bar</span></span></code></pre>
@@ -4449,7 +4449,7 @@ For example, the <code>&gt; </code> cannot be omitted in the second line of</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="4688:1-4689:53" dir="auto">For the same reason, we can't omit the <code>&gt; </code> in front of
+<p data-sourcepos="4688:1-4689:53" dir="auto">For the same reason, we can't omit the <code data-sourcepos="4688:41-4688:42">&gt; </code> in front of
 subsequent lines of an indented or fenced code block:</p>
 <div>
 <div><a href="#example-214">Example 214</a></div>
@@ -4508,7 +4508,7 @@ continuation line]:</p>
 <span id="LC2" class="line" lang="markdown"><span class="gt">&gt;     - bar</span></span></code></pre>
 <copy-code></copy-code>
 </div>
-<p data-sourcepos="4756:1-4758:61" dir="auto">the <code>- bar</code> is indented too far to start a list, and can't
+<p data-sourcepos="4756:1-4758:61" dir="auto">the <code data-sourcepos="4756:6-4756:10">- bar</code> is indented too far to start a list, and can't
 be an indented code block because indented code blocks cannot
 interrupt paragraphs, so it is [paragraph continuation text].</p>
 <p data-sourcepos="4760:1-4760:27" dir="auto">A block quote can be empty:</p>
@@ -4574,7 +4574,7 @@ interrupt paragraphs, so it is [paragraph continuation text].</p>
 </div>
 </div>
 <p data-sourcepos="4833:1-4836:44" dir="auto">(Most current Markdown implementations, including John Gruber's
-original <code>Markdown.pl</code>, will parse this example as a single block quote
+original <code data-sourcepos="4834:11-4834:21">Markdown.pl</code>, will parse this example as a single block quote
 with two paragraphs.  But it seems better to allow the author to decide
 whether two block quotes or one are wanted.)</p>
 <p data-sourcepos="4838:1-4839:28" dir="auto">Consecutiveness means that if we put these block quotes together,
@@ -4698,7 +4698,7 @@ a block quote and a following paragraph:</p>
 </div>
 </div>
 <p data-sourcepos="4977:1-4979:19" dir="auto">It is a consequence of the Laziness rule that any number
-of initial <code>&gt;</code>s may be omitted on a continuation line of a
+of initial <code data-sourcepos="4978:13-4978:13">&gt;</code>s may be omitted on a continuation line of a
 nested block quote:</p>
 <div>
 <div><a href="#example-228">Example 228</a></div>
@@ -4742,8 +4742,8 @@ nested block quote:</p>
 </div>
 <p data-sourcepos="5025:1-5028:8" dir="auto">When including an indented code block in a block quote,
 remember that the [block quote marker] includes
-both the <code>&gt;</code> and a following space.  So <em>five spaces</em> are needed after
-the <code>&gt;</code>:</p>
+both the <code data-sourcepos="5027:11-5027:11">&gt;</code> and a following space.  So <em data-sourcepos="5027:41-5027:53">five spaces</em> are needed after
+the <code data-sourcepos="5028:6-5028:6">&gt;</code>:</p>
 <div>
 <div><a href="#example-230">Example 230</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4765,24 +4765,24 @@ the <code>&gt;</code>:</p>
 </div>
 <h2 data-sourcepos="5052:1-5052:13" dir="auto">
 <a id="user-content-list-items" class="anchor" href="#list-items" aria-hidden="true"></a>List items</h2>
-<p data-sourcepos="5054:1-5055:49" dir="auto">A <a href="@">list marker</a> is a
+<p data-sourcepos="5054:1-5055:49" dir="auto">A <a data-sourcepos="5054:3-5054:18" href="@">list marker</a> is a
 [bullet list marker] or an [ordered list marker].</p>
-<p data-sourcepos="5057:1-5058:32" dir="auto">A <a href="@">bullet list marker</a>
-is a <code>-</code>, <code>+</code>, or <code>*</code> character.</p>
-<p data-sourcepos="5060:1-5064:18" dir="auto">An <a href="@">ordered list marker</a>
-is a sequence of 1--9 arabic digits (<code>0-9</code>), followed by either a
-<code>.</code> character or a <code>)</code> character.  (The reason for the length
+<p data-sourcepos="5057:1-5058:32" dir="auto">A <a data-sourcepos="5057:3-5057:25" href="@">bullet list marker</a>
+is a <code data-sourcepos="5058:7-5058:7">-</code>, <code data-sourcepos="5058:12-5058:12">+</code>, or <code data-sourcepos="5058:20-5058:20">*</code> character.</p>
+<p data-sourcepos="5060:1-5064:18" dir="auto">An <a data-sourcepos="5060:4-5060:27" href="@">ordered list marker</a>
+is a sequence of 1--9 arabic digits (<code data-sourcepos="5061:39-5061:41">0-9</code>), followed by either a
+<code data-sourcepos="5062:2-5062:2">.</code> character or a <code data-sourcepos="5062:21-5062:21">)</code> character.  (The reason for the length
 limit is that with 10 digits we start seeing integer overflows
 in some browsers.)</p>
 <p data-sourcepos="5066:1-5066:40" dir="auto">The following rules define [list items]:</p>
 <ol data-sourcepos="5068:1-5087:0" dir="auto">
 <li data-sourcepos="5068:1-5087:0">
-<p data-sourcepos="5068:5-5076:45"><strong>Basic case.</strong>  If a sequence of lines <em>Ls</em> constitute a sequence of
-blocks <em>Bs</em> starting with a [non-whitespace character], and <em>M</em> is a
-list marker of width <em>W</em> followed by 1 ≤ <em>N</em> ≤ 4 spaces, then the result
-of prepending <em>M</em> and the following spaces to the first line of
-<em>Ls</em>, and indenting subsequent lines of <em>Ls</em> by <em>W + N</em> spaces, is a
-list item with <em>Bs</em> as its contents.  The type of the list item
+<p data-sourcepos="5068:5-5076:45"><strong data-sourcepos="5068:5-5068:19">Basic case.</strong>  If a sequence of lines <em data-sourcepos="5068:45-5068:48">Ls</em> constitute a sequence of
+blocks <em data-sourcepos="5069:12-5069:15">Bs</em> starting with a [non-whitespace character], and <em data-sourcepos="5069:65-5069:67">M</em> is a
+list marker of width <em data-sourcepos="5070:26-5070:28">W</em> followed by 1 ≤ <em data-sourcepos="5070:48-5070:50">N</em> ≤ 4 spaces, then the result
+of prepending <em data-sourcepos="5071:19-5071:21">M</em> and the following spaces to the first line of
+<em data-sourcepos="5072:5-5072:8">Ls</em>, and indenting subsequent lines of <em data-sourcepos="5072:45-5072:48">Ls</em> by <em data-sourcepos="5072:53-5072:59">W + N</em> spaces, is a
+list item with <em data-sourcepos="5073:20-5073:23">Bs</em> as its contents.  The type of the list item
 (bullet or ordered) is determined by the type of its list marker.
 If the list item is ordered, then it is also assigned a start
 number, based on the ordered list marker.</p>
@@ -4791,14 +4791,14 @@ number, based on the ordered list marker.</p>
 <li data-sourcepos="5080:5-5084:57">When the first list item in a [list] interrupts
 a paragraph---that is, when it starts on a line that would
 otherwise count as [paragraph continuation text]---then (a)
-the lines <em>Ls</em> must not begin with a blank line, and (b) if
+the lines <em data-sourcepos="5083:18-5083:21">Ls</em> must not begin with a blank line, and (b) if
 the list item is ordered, the start number must be 1.</li>
 <li data-sourcepos="5085:5-5087:0">If any line is a [thematic break][thematic breaks] then
 that line is not a list item.</li>
 </ol>
 </li>
 </ol>
-<p data-sourcepos="5088:1-5088:34" dir="auto">For example, let <em>Ls</em> be the lines</p>
+<p data-sourcepos="5088:1-5088:34" dir="auto">For example, let <em data-sourcepos="5088:18-5088:21">Ls</em> be the lines</p>
 <div>
 <div><a href="#example-231">Example 231</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4821,9 +4821,9 @@ that line is not a list item.</li>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="5114:1-5116:30" dir="auto">And let <em>M</em> be the marker <code>1.</code>, and <em>N</em> = 2.  Then rule #1 says
+<p data-sourcepos="5114:1-5116:30" dir="auto">And let <em data-sourcepos="5114:9-5114:11">M</em> be the marker <code data-sourcepos="5114:28-5114:29">1.</code>, and <em data-sourcepos="5114:37-5114:39">N</em> = 2.  Then rule #1 says
 that the following is an ordered list item with start number 1,
-and the same contents as <em>Ls</em>:</p>
+and the same contents as <em data-sourcepos="5116:26-5116:29">Ls</em>:</p>
 <div>
 <div><a href="#example-232">Example 232</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4957,11 +4957,11 @@ this example:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="5266:1-5268:67" dir="auto">Here <code>two</code> occurs in the same column as the list marker <code>1.</code>,
+<p data-sourcepos="5266:1-5268:67" dir="auto">Here <code data-sourcepos="5266:7-5266:9">two</code> occurs in the same column as the list marker <code data-sourcepos="5266:58-5266:59">1.</code>,
 but is actually contained in the list item, because there is
 sufficient indentation after the last containing blockquote marker.</p>
-<p data-sourcepos="5270:1-5273:38" dir="auto">The converse is also possible.  In the following example, the word <code>two</code>
-occurs far to the right of the initial text of the list item, <code>one</code>, but
+<p data-sourcepos="5270:1-5273:38" dir="auto">The converse is also possible.  In the following example, the word <code data-sourcepos="5270:69-5270:71">two</code>
+occurs far to the right of the initial text of the list item, <code data-sourcepos="5271:64-5271:66">one</code>, but
 it is not considered part of the list item, because it is not indented
 far enough past the blockquote marker:</p>
 <div>
@@ -5142,14 +5142,14 @@ empty lines within the code block verbatim.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<ol start="2" data-sourcepos="5480:1-5490:0" dir="auto">
+<ol data-sourcepos="5480:1-5490:0" start="2" dir="auto">
 <li data-sourcepos="5480:1-5490:0">
-<strong>Item starting with indented code.</strong>  If a sequence of lines <em>Ls</em>
-constitute a sequence of blocks <em>Bs</em> starting with an indented code
-block, and <em>M</em> is a list marker of width <em>W</em> followed by
-one space, then the result of prepending <em>M</em> and the following
-space to the first line of <em>Ls</em>, and indenting subsequent lines of
-<em>Ls</em> by <em>W + 1</em> spaces, is a list item with <em>Bs</em> as its contents.
+<strong data-sourcepos="5480:5-5480:41">Item starting with indented code.</strong>  If a sequence of lines <em data-sourcepos="5480:67-5480:70">Ls</em>
+constitute a sequence of blocks <em data-sourcepos="5481:37-5481:40">Bs</em> starting with an indented code
+block, and <em data-sourcepos="5482:16-5482:18">M</em> is a list marker of width <em data-sourcepos="5482:46-5482:48">W</em> followed by
+one space, then the result of prepending <em data-sourcepos="5483:46-5483:48">M</em> and the following
+space to the first line of <em data-sourcepos="5484:32-5484:35">Ls</em>, and indenting subsequent lines of
+<em data-sourcepos="5485:5-5485:8">Ls</em> by <em data-sourcepos="5485:13-5485:19">W + 1</em> spaces, is a list item with <em data-sourcepos="5485:49-5485:52">Bs</em> as its contents.
 If a line is empty, then it need not be indented.  The type of the
 list item (bullet or ordered) is determined by the type of its list
 marker.  If the list item is ordered, then it is also assigned a
@@ -5197,8 +5197,8 @@ In the following case that is 6 spaces:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="5539:1-5541:12" dir="auto">If the <em>first</em> block in the list item is an indented code block,
-then by rule #2, the contents must be indented <em>one</em> space after the
+<p data-sourcepos="5539:1-5541:12" dir="auto">If the <em data-sourcepos="5539:8-5539:14">first</em> block in the list item is an indented code block,
+then by rule #2, the contents must be indented <em data-sourcepos="5540:48-5540:52">one</em> space after the
 list marker:</p>
 <div>
 <div><a href="#example-250">Example 250</a></div>
@@ -5326,15 +5326,15 @@ the above case:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<ol start="3" data-sourcepos="5684:1-5695:0" dir="auto">
+<ol data-sourcepos="5684:1-5695:0" start="3" dir="auto">
 <li data-sourcepos="5684:1-5695:0">
-<strong>Item starting with a blank line.</strong>  If a sequence of lines <em>Ls</em>
+<strong data-sourcepos="5684:5-5684:40">Item starting with a blank line.</strong>  If a sequence of lines <em data-sourcepos="5684:66-5684:69">Ls</em>
 starting with a single [blank line] constitute a (possibly empty)
-sequence of blocks <em>Bs</em>, not separated from each other by more than
-one blank line, and <em>M</em> is a list marker of width <em>W</em>,
-then the result of prepending <em>M</em> to the first line of <em>Ls</em>, and
-indenting subsequent lines of <em>Ls</em> by <em>W + 1</em> spaces, is a list
-item with <em>Bs</em> as its contents.
+sequence of blocks <em data-sourcepos="5686:24-5686:27">Bs</em>, not separated from each other by more than
+one blank line, and <em data-sourcepos="5687:25-5687:27">M</em> is a list marker of width <em data-sourcepos="5687:55-5687:57">W</em>,
+then the result of prepending <em data-sourcepos="5688:35-5688:37">M</em> to the first line of <em data-sourcepos="5688:60-5688:63">Ls</em>, and
+indenting subsequent lines of <em data-sourcepos="5689:35-5689:38">Ls</em> by <em data-sourcepos="5689:43-5689:49">W + 1</em> spaces, is a list
+item with <em data-sourcepos="5690:15-5690:18">Bs</em> as its contents.
 If a line is empty, then it need not be indented.  The type of the
 list item (bullet or ordered) is determined by the type of its list
 marker.  If the list item is ordered, then it is also assigned a
@@ -5386,7 +5386,7 @@ following the list marker doesn't change the required indentation:</p>
 </div>
 </div>
 <p data-sourcepos="5746:1-5748:5" dir="auto">A list item can begin with at most one blank line.
-In the following example, <code>foo</code> is not part of the list
+In the following example, <code data-sourcepos="5747:28-5747:30">foo</code> is not part of the list
 item:</p>
 <div>
 <div><a href="#example-258">Example 258</a></div>
@@ -5491,11 +5491,11 @@ item:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<ol start="4" data-sourcepos="5869:1-5874:0" dir="auto">
+<ol data-sourcepos="5869:1-5874:0" start="4" dir="auto">
 <li data-sourcepos="5869:1-5874:0">
-<strong>Indentation.</strong>  If a sequence of lines <em>Ls</em> constitutes a list item
+<strong data-sourcepos="5869:5-5869:20">Indentation.</strong>  If a sequence of lines <em data-sourcepos="5869:46-5869:49">Ls</em> constitutes a list item
 according to rule #1, #2, or #3, then the result of indenting each line
-of <em>Ls</em> by 1-3 spaces (the same for each line) also constitutes a
+of <em data-sourcepos="5871:8-5871:11">Ls</em> by 1-3 spaces (the same for each line) also constitutes a
 list item with the same contents and attributes.  If a line is
 empty, then it need not be indented.</li>
 </ol>
@@ -5603,16 +5603,16 @@ empty, then it need not be indented.</li>
 <copy-code></copy-code>
 </div>
 </div>
-<ol start="5" data-sourcepos="5992:1-6000:0" dir="auto">
+<ol data-sourcepos="5992:1-6000:0" start="5" dir="auto">
 <li data-sourcepos="5992:1-6000:0">
-<strong>Laziness.</strong>  If a string of lines <em>Ls</em> constitute a <a href="#list-items">list
-item</a> with contents <em>Bs</em>, then the result of deleting
+<strong data-sourcepos="5992:5-5992:17">Laziness.</strong>  If a string of lines <em data-sourcepos="5992:41-5992:44">Ls</em> constitute a <a data-sourcepos="5993:59-5993:22" href="#list-items">list
+item</a> with contents <em data-sourcepos="5993:38-5993:41">Bs</em>, then the result of deleting
 some or all of the indentation from one or more lines in which the
 next [non-whitespace character] after the indentation is
 [paragraph continuation text] is a
 list item with the same contents and attributes.  The unindented
 lines are called
-<a href="@">lazy continuation line</a>s.</li>
+<a data-sourcepos="5999:5-5999:31" href="@">lazy continuation line</a>s.</li>
 </ol>
 <p data-sourcepos="6001:1-6001:50" dir="auto">Here is an example with [lazy continuation lines]:</p>
 <div>
@@ -5700,10 +5700,10 @@ lines are called
 <copy-code></copy-code>
 </div>
 </div>
-<ol start="6" data-sourcepos="6099:1-6101:0" dir="auto">
+<ol data-sourcepos="6099:1-6101:0" start="6" dir="auto">
 <li data-sourcepos="6099:1-6101:0">
-<strong>That's all.</strong> Nothing that is not counted as a list item by rules
-#1--5 counts as a <a href="#list-items">list item</a>.</li>
+<strong data-sourcepos="6099:5-6099:19">That's all.</strong> Nothing that is not counted as a list item by rules
+#1--5 counts as a <a data-sourcepos="6100:23-6100:46" href="#list-items">list item</a>.</li>
 </ol>
 <p data-sourcepos="6102:1-6105:17" dir="auto">The rules for sublists follow from the general rules
 [above][List items].  A sublist must be indented the same number
@@ -5879,7 +5879,7 @@ tab."</p>
 but here again, Markdown will allow you to be lazy."</p>
 </li>
 <li data-sourcepos="6292:1-6294:0">
-<p data-sourcepos="6292:4-6293:35">"To put a blockquote within a list item, the blockquote's <code>&gt;</code>
+<p data-sourcepos="6292:4-6293:35">"To put a blockquote within a list item, the blockquote's <code data-sourcepos="6292:63-6292:63">&gt;</code>
 delimiters need to be indented."</p>
 </li>
 <li data-sourcepos="6295:1-6297:0">
@@ -5894,12 +5894,12 @@ must be indented eight spaces instead of the usual four.  They also say
 that a block quote must be indented, but not by how much; however, the
 example given has four spaces indentation.  Although nothing is said
 about other kinds of block-level content, it is certainly reasonable to
-infer that <em>all</em> block elements under a list item, including other
+infer that <em data-sourcepos="6305:12-6305:16">all</em> block elements under a list item, including other
 lists, must be indented four spaces.  This principle has been called the
-<em>four-space rule</em>.</p>
+<em data-sourcepos="6307:1-6307:17">four-space rule</em>.</p>
 <p data-sourcepos="6309:1-6320:48" dir="auto">The four-space rule is clear and principled, and if the reference
-implementation <code>Markdown.pl</code> had followed it, it probably would have
-become the standard.  However, <code>Markdown.pl</code> allowed paragraphs and
+implementation <code data-sourcepos="6310:17-6310:27">Markdown.pl</code> had followed it, it probably would have
+become the standard.  However, <code data-sourcepos="6311:33-6311:43">Markdown.pl</code> allowed paragraphs and
 sublists to start with only two spaces indentation, at least on the
 outer level.  Worse, its behavior was inconsistent: a sublist of an
 outer-level list needed two spaces indentation, but a sublist of this
@@ -5908,12 +5908,12 @@ implementations of Markdown have developed very different rules for
 determining what comes under a list item.  (Pandoc and python-Markdown,
 for example, stuck with Gruber's syntax description and the four-space
 rule, while discount, redcarpet, marked, PHP Markdown, and others
-followed <code>Markdown.pl</code>'s behavior more closely.)</p>
+followed <code data-sourcepos="6320:11-6320:21">Markdown.pl</code>'s behavior more closely.)</p>
 <p data-sourcepos="6322:1-6327:45" dir="auto">Unfortunately, given the divergences between implementations, there
 is no way to give a spec for list items that will be guaranteed not
 to break any existing documents.  However, the spec given here should
 correctly handle lists formatted with either the four-space rule or
-the more forgiving <code>Markdown.pl</code> behavior, provided they are laid out
+the more forgiving <code data-sourcepos="6326:21-6326:31">Markdown.pl</code> behavior, provided they are laid out
 in a way that is natural for a human to read.</p>
 <p data-sourcepos="6329:1-6335:22" dir="auto">The strategy here is to let the width and indentation of the list marker
 determine the indentation necessary for blocks to fall under the list
@@ -5961,16 +5961,16 @@ unnatural. It is quite unintuitive that</p>
 not likely to be guessed, and it trips up beginners regularly.</p>
 <p data-sourcepos="6378:1-6382:20" dir="auto">Would it help to adopt a two-space rule?  The problem is that such
 a rule, together with the rule allowing 1--3 spaces indentation of the
-initial list marker, allows text that is indented <em>less than</em> the
+initial list marker, allows text that is indented <em data-sourcepos="6380:51-6380:61">less than</em> the
 original list marker to be included in the list item. For example,
-<code>Markdown.pl</code> parses</p>
+<code data-sourcepos="6382:2-6382:12">Markdown.pl</code> parses</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="6384:1-6388:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="p">   -</span> one</span>
 <span id="LC2" class="line" lang="markdown"></span>
 <span id="LC3" class="line" lang="markdown">  two</span></code></pre>
 <copy-code></copy-code>
 </div>
-<p data-sourcepos="6390:1-6390:59" dir="auto">as a single list item, with <code>two</code> a continuation paragraph:</p>
+<p data-sourcepos="6390:1-6390:59" dir="auto">as a single list item, with <code data-sourcepos="6390:30-6390:32">two</code> a continuation paragraph:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="6392:1-6399:3" data-canonical-lang="html" class="code highlight js-syntax-highlight language-html" lang="html" v-pre="true"><code><span id="LC1" class="line" lang="html"><span class="nt">&lt;ul&gt;</span></span>
 <span id="LC2" class="line" lang="html"><span class="nt">&lt;li&gt;</span></span>
@@ -6004,15 +6004,15 @@ original list marker to be included in the list item. For example,
 a fixed indent (say, two spaces, or even one space) from the list marker (which
 may itself be indented).  This proposal would remove the last anomaly
 discussed.  Unlike the spec presented above, it would count the following
-as a list item with a subparagraph, even though the paragraph <code>bar</code>
-is not indented as far as the first paragraph <code>foo</code>:</p>
+as a list item with a subparagraph, even though the paragraph <code data-sourcepos="6428:64-6428:66">bar</code>
+is not indented as far as the first paragraph <code data-sourcepos="6429:48-6429:50">foo</code>:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="6431:1-6435:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="p"> 10.</span> foo</span>
 <span id="LC2" class="line" lang="markdown"></span>
 <span id="LC3" class="line" lang="markdown">   bar  </span></code></pre>
 <copy-code></copy-code>
 </div>
-<p data-sourcepos="6437:1-6440:62" dir="auto">Arguably this text does read like a list item with <code>bar</code> as a subparagraph,
+<p data-sourcepos="6437:1-6440:62" dir="auto">Arguably this text does read like a list item with <code data-sourcepos="6437:53-6437:55">bar</code> as a subparagraph,
 which may count in favor of the proposal.  However, on this proposal indented
 code would have to be indented six spaces after the list marker.  And this
 would break a lot of existing Markdown, which has the pattern:</p>
@@ -6024,8 +6024,8 @@ would break a lot of existing Markdown, which has the pattern:</p>
 </div>
 <p data-sourcepos="6448:1-6450:28" dir="auto">where the code is indented eight spaces.  The spec above, by contrast, will
 parse this text as expected, since the code block's indentation is measured
-from the beginning of <code>foo</code>.</p>
-<p data-sourcepos="6452:1-6458:62" dir="auto">The one case that needs special treatment is a list item that <em>starts</em>
+from the beginning of <code data-sourcepos="6450:24-6450:26">foo</code>.</p>
+<p data-sourcepos="6452:1-6458:62" dir="auto">The one case that needs special treatment is a list item that <em data-sourcepos="6452:63-6452:70">starts</em>
 with indented code.  How much indentation is required in that case, since
 we don't have a "first paragraph" to measure from?  Rule #2 simply stipulates
 that in such cases, we require one space indentation from the list marker
@@ -6035,16 +6035,16 @@ takes four spaces (a common case), but diverge in other cases.</p>
 <div>
 <h2 data-sourcepos="6462:1-6462:30">
 <a id="user-content-task-list-items-extension" class="anchor" href="#task-list-items-extension" aria-hidden="true"></a>Task list items (extension)</h2>
-<p data-sourcepos="6464:1-6465:26">GFM enables the <code>tasklist</code> extension, where an additional processing step is
+<p data-sourcepos="6464:1-6465:26">GFM enables the <code data-sourcepos="6464:18-6464:25">tasklist</code> extension, where an additional processing step is
 performed on [list items].</p>
-<p data-sourcepos="6467:1-6469:46">A <a href="@">task list item</a> is a [list item][list items] where the first block in it
+<p data-sourcepos="6467:1-6469:46">A <a data-sourcepos="6467:3-6467:21" href="@">task list item</a> is a [list item][list items] where the first block in it
 is a paragraph which begins with a [task list item marker] and at least one
 whitespace character before any other content.</p>
-<p data-sourcepos="6471:1-6473:55">A <a href="@">task list item marker</a> consists of an optional number of spaces, a left
-bracket (<code>[</code>), either a whitespace character or the letter <code>x</code> in either
-lowercase or uppercase, and then a right bracket (<code>]</code>).</p>
+<p data-sourcepos="6471:1-6473:55">A <a data-sourcepos="6471:3-6471:28" href="@">task list item marker</a> consists of an optional number of spaces, a left
+bracket (<code data-sourcepos="6472:11-6472:11">[</code>), either a whitespace character or the letter <code data-sourcepos="6472:61-6472:61">x</code> in either
+lowercase or uppercase, and then a right bracket (<code data-sourcepos="6473:52-6473:52">]</code>).</p>
 <p data-sourcepos="6475:1-6476:70">When rendered, the [task list item marker] is replaced with a semantic checkbox element;
-in an HTML output, this would be an <code>&lt;input type="checkbox"&gt;</code> element.</p>
+in an HTML output, this would be an <code data-sourcepos="6476:38-6476:60">&lt;input type="checkbox"&gt;</code> element.</p>
 <p data-sourcepos="6478:1-6479:50">If the character between the brackets is a whitespace character, the checkbox
 is unchecked.  Otherwise, the checkbox is checked.</p>
 <p data-sourcepos="6481:1-6484:28">This spec does not define how the checkbox elements are interacted with: in practice,
@@ -6092,30 +6092,30 @@ the final rendered document.</p>
 </div>
 <h2 data-sourcepos="6529:1-6529:8" dir="auto">
 <a id="user-content-lists" class="anchor" href="#lists" aria-hidden="true"></a>Lists</h2>
-<p data-sourcepos="6531:1-6533:46" dir="auto">A <a href="@">list</a> is a sequence of one or more
+<p data-sourcepos="6531:1-6533:46" dir="auto">A <a data-sourcepos="6531:3-6531:11" href="@">list</a> is a sequence of one or more
 list items [of the same type].  The list items
 may be separated by any number of blank lines.</p>
-<p data-sourcepos="6535:1-6540:30" dir="auto">Two list items are <a href="@">of the same type</a>
+<p data-sourcepos="6535:1-6540:30" dir="auto">Two list items are <a data-sourcepos="6535:20-6535:40" href="@">of the same type</a>
 if they begin with a [list marker] of the same type.
 Two list markers are of the
 same type if (a) they are bullet list markers using the same character
-(<code>-</code>, <code>+</code>, or <code>*</code>) or (b) they are ordered list numbers with the same
-delimiter (either <code>.</code> or <code>)</code>).</p>
-<p data-sourcepos="6542:1-6546:39" dir="auto">A list is an <a href="@">ordered list</a>
+(<code data-sourcepos="6539:3-6539:3">-</code>, <code data-sourcepos="6539:8-6539:8">+</code>, or <code data-sourcepos="6539:16-6539:16">*</code>) or (b) they are ordered list numbers with the same
+delimiter (either <code data-sourcepos="6540:20-6540:20">.</code> or <code data-sourcepos="6540:27-6540:27">)</code>).</p>
+<p data-sourcepos="6542:1-6546:39" dir="auto">A list is an <a data-sourcepos="6542:14-6542:30" href="@">ordered list</a>
 if its constituent list items begin with
 [ordered list markers], and a
-<a href="@">bullet list</a> if its constituent list
+<a data-sourcepos="6545:1-6545:16" href="@">bullet list</a> if its constituent list
 items begin with [bullet list markers].</p>
-<p data-sourcepos="6548:1-6551:12" dir="auto">The <a href="@">start number</a>
+<p data-sourcepos="6548:1-6551:12" dir="auto">The <a data-sourcepos="6548:5-6548:21" href="@">start number</a>
 of an [ordered list] is determined by the list number of
 its initial list item.  The numbers of subsequent list items are
 disregarded.</p>
-<p data-sourcepos="6553:1-6558:65" dir="auto">A list is <a href="@">loose</a> if any of its constituent
+<p data-sourcepos="6553:1-6558:65" dir="auto">A list is <a data-sourcepos="6553:11-6553:20" href="@">loose</a> if any of its constituent
 list items are separated by blank lines, or if any of its constituent
 list items directly contain two block-level elements with a blank line
-between them.  Otherwise a list is <a href="@">tight</a>.
+between them.  Otherwise a list is <a data-sourcepos="6556:36-6556:45" href="@">tight</a>.
 (The difference in HTML output is that paragraphs in a loose list are
-wrapped in <code>&lt;p&gt;</code> tags, while paragraphs in a tight list are not.)</p>
+wrapped in <code data-sourcepos="6558:13-6558:15">&lt;p&gt;</code> tags, while paragraphs in a tight list are not.)</p>
 <p data-sourcepos="6560:1-6560:64" dir="auto">Changing the bullet or ordered list delimiter starts a new list:</p>
 <div>
 <div><a href="#example-281">Example 281</a></div>
@@ -6175,14 +6175,14 @@ list:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="6626:1-6627:37" dir="auto"><code>Markdown.pl</code> does not allow this, through fear of triggering a list
+<p data-sourcepos="6626:1-6627:37" dir="auto"><code data-sourcepos="6626:2-6626:12">Markdown.pl</code> does not allow this, through fear of triggering a list
 via a numeral in a hard-wrapped line:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="6629:1-6632:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown">The number of windows in my house is</span>
 <span id="LC2" class="line" lang="markdown"><span class="p">14.</span>  The number of doors is 6.</span></code></pre>
 <copy-code></copy-code>
 </div>
-<p data-sourcepos="6634:1-6636:6" dir="auto">Oddly, though, <code>Markdown.pl</code> <em>does</em> allow a blockquote to
+<p data-sourcepos="6634:1-6636:6" dir="auto">Oddly, though, <code data-sourcepos="6634:17-6634:27">Markdown.pl</code> <em data-sourcepos="6634:30-6634:35">does</em> allow a blockquote to
 interrupt a paragraph, even though the same considerations might
 apply.</p>
 <p data-sourcepos="6638:1-6640:35" dir="auto">In CommonMark, we do allow lists to interrupt paragraphs, for
@@ -6197,7 +6197,7 @@ to start lists without blank lines:</p>
 </div>
 <p data-sourcepos="6649:1-6649:29" dir="auto">Second, we are attracted to a</p>
 <blockquote data-sourcepos="6651:1-6654:54" dir="auto">
-<p data-sourcepos="6651:3-6654:54"><a href="@">principle of uniformity</a>:
+<p data-sourcepos="6651:3-6654:54"><a data-sourcepos="6651:3-6651:30" href="@">principle of uniformity</a>:
 if a chunk of text has a certain
 meaning, it will continue to have the same meaning when put into a
 container block (such as a list item or blockquote).</p>
@@ -6213,7 +6213,7 @@ this principle.) This principle implies that if</p>
 </div>
 <p data-sourcepos="6666:1-6669:4" dir="auto">is a list item containing a paragraph followed by a nested sublist,
 as all Markdown implementations agree it is (though the paragraph
-may be rendered without <code>&lt;p&gt;</code> tags, since the list is "tight"),
+may be rendered without <code data-sourcepos="6668:26-6668:28">&lt;p&gt;</code> tags, since the list is "tight"),
 then</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="6671:1-6676:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown">I need to buy</span>
@@ -6226,11 +6226,11 @@ then</p>
 <p data-sourcepos="6680:1-6685:30" dir="auto">Since it is well established Markdown practice to allow lists to
 interrupt paragraphs inside list items, the [principle of
 uniformity] requires us to allow this outside list items as
-well.  (<a href="http://docutils.sourceforge.net/rst.html" rel="nofollow noreferrer noopener" target="_blank">reStructuredText</a>
+well.  (<a data-sourcepos="6683:9-6683:68" href="http://docutils.sourceforge.net/rst.html" rel="nofollow noreferrer noopener" target="_blank">reStructuredText</a>
 takes a different approach, requiring blank lines before lists
 even inside other list items.)</p>
 <p data-sourcepos="6687:1-6689:28" dir="auto">In order to solve of unwanted lists in paragraphs with
-hard-wrapped numerals, we allow only lists starting with <code>1</code> to
+hard-wrapped numerals, we allow only lists starting with <code data-sourcepos="6688:59-6688:59">1</code> to
 interrupt paragraphs.  Thus,</p>
 <div>
 <div><a href="#example-284">Example 284</a></div>
@@ -6432,7 +6432,7 @@ item:</p>
 </div>
 </div>
 <p data-sourcepos="6907:1-6909:52" dir="auto">Note, however, that list items may not be indented more than
-three spaces.  Here <code>- e</code> is treated as a paragraph continuation
+three spaces.  Here <code data-sourcepos="6908:22-6908:24">- e</code> is treated as a paragraph continuation
 line, because it is indented more than three spaces:</p>
 <div>
 <div><a href="#example-292">Example 292</a></div>
@@ -6455,7 +6455,7 @@ line, because it is indented more than three spaces:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="6933:1-6935:11" dir="auto">And here, <code>3. c</code> is treated as in indented code block,
+<p data-sourcepos="6933:1-6935:11" dir="auto">And here, <code data-sourcepos="6933:12-6933:15">3. c</code> is treated as in indented code block,
 because it is indented four spaces and preceded by a
 blank line.</p>
 <div>
@@ -6816,7 +6816,7 @@ Thus, for example, in</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="7335:1-7336:9" dir="auto"><code>hi</code> is parsed as code, leaving the backtick at the end as a literal
+<p data-sourcepos="7335:1-7336:9" dir="auto"><code data-sourcepos="7335:2-7335:3">hi</code> is parsed as code, leaving the backtick at the end as a literal
 backtick.</p>
 <h2 data-sourcepos="7339:1-7339:20" dir="auto">
 <a id="user-content-backslash-escapes" class="anchor" href="#backslash-escapes" aria-hidden="true"></a>Backslash escapes</h2>
@@ -7014,18 +7014,18 @@ blocks and code spans.</p>
 <li data-sourcepos="7565:1-7571:0">
 <p data-sourcepos="7565:3-7570:9">Entity and character references cannot stand in place of
 special characters that define structural elements in
-CommonMark.  For example, although <code>&amp;#42;</code> can be used
-in place of a literal <code>*</code> character, <code>&amp;#42;</code> cannot replace
-<code>*</code> in emphasis delimiters, bullet list markers, or thematic
+CommonMark.  For example, although <code data-sourcepos="7567:39-7567:43">&amp;#42;</code> can be used
+in place of a literal <code data-sourcepos="7568:26-7568:26">*</code> character, <code data-sourcepos="7568:41-7568:45">&amp;#42;</code> cannot replace
+<code data-sourcepos="7569:4-7569:4">*</code> in emphasis delimiters, bullet list markers, or thematic
 breaks.</p>
 </li>
 </ul>
 <p data-sourcepos="7572:1-7574:49" dir="auto">Conforming CommonMark parsers need not store information about
 whether a particular character was represented in the source
 using a Unicode character or an entity reference.</p>
-<p data-sourcepos="7576:1-7580:47" dir="auto"><a href="@">Entity references</a> consist of <code>&amp;</code> + any of the valid
-HTML5 entity names + <code>;</code>. The
-document <a href="https://html.spec.whatwg.org/multipage/entities.json" rel="nofollow noreferrer noopener" target="_blank">https://html.spec.whatwg.org/multipage/entities.json</a>
+<p data-sourcepos="7576:1-7580:47" dir="auto"><a data-sourcepos="7576:1-7576:22" href="@">Entity references</a> consist of <code data-sourcepos="7576:36-7576:36">&amp;</code> + any of the valid
+HTML5 entity names + <code data-sourcepos="7577:23-7577:23">;</code>. The
+document <a data-sourcepos="7578:11-7578:64" href="https://html.spec.whatwg.org/multipage/entities.json" rel="nofollow noreferrer noopener" target="_blank">https://html.spec.whatwg.org/multipage/entities.json</a>
 is used as an authoritative source for the valid entity
 references and their corresponding code points.</p>
 <div>
@@ -7043,13 +7043,13 @@ references and their corresponding code points.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="7599:1-7605:58" dir="auto"><a href="@">Decimal numeric character
+<p data-sourcepos="7599:1-7605:58" dir="auto"><a data-sourcepos="7600:1-7600:14" href="@">Decimal numeric character
 references</a>
-consist of <code>&amp;#</code> + a string of 1--7 arabic digits + <code>;</code>. A
+consist of <code data-sourcepos="7601:13-7601:14">&amp;#</code> + a string of 1--7 arabic digits + <code data-sourcepos="7601:53-7601:53">;</code>. A
 numeric character reference is parsed as the corresponding
 Unicode character. Invalid Unicode code points will be replaced by
-the REPLACEMENT CHARACTER (<code>U+FFFD</code>).  For security reasons,
-the code point <code>U+0000</code> will also be replaced by <code>U+FFFD</code>.</p>
+the REPLACEMENT CHARACTER (<code data-sourcepos="7604:29-7604:34">U+FFFD</code>).  For security reasons,
+the code point <code data-sourcepos="7605:17-7605:22">U+0000</code> will also be replaced by <code data-sourcepos="7605:51-7605:56">U+FFFD</code>.</p>
 <div>
 <div><a href="#example-322">Example 322</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7061,9 +7061,9 @@ the code point <code>U+0000</code> will also be replaced by <code>U+FFFD</code>.
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="7620:1-7624:62" dir="auto"><a href="@">Hexadecimal numeric character
-references</a> consist of <code>&amp;#</code> +
-either <code>X</code> or <code>x</code> + a string of 1-6 hexadecimal digits + <code>;</code>.
+<p data-sourcepos="7620:1-7624:62" dir="auto"><a data-sourcepos="7621:1-7621:14" href="@">Hexadecimal numeric character
+references</a> consist of <code data-sourcepos="7621:28-7621:29">&amp;#</code> +
+either <code data-sourcepos="7622:9-7622:9">X</code> or <code data-sourcepos="7622:16-7622:16">x</code> + a string of 1-6 hexadecimal digits + <code data-sourcepos="7622:59-7622:59">;</code>.
 They too are parsed as the corresponding Unicode character (this
 time specified with a hexadecimal numeral instead of decimal).</p>
 <div>
@@ -7096,7 +7096,7 @@ time specified with a hexadecimal numeral instead of decimal).</p>
 </div>
 </div>
 <p data-sourcepos="7660:1-7662:60" dir="auto">Although HTML5 does accept some entity references
-without a trailing semicolon (such as <code>&amp;copy</code>), these are not
+without a trailing semicolon (such as <code data-sourcepos="7661:40-7661:44">&amp;copy</code>), these are not
 recognized here, because it makes the grammar too ambiguous:</p>
 <div>
 <div><a href="#example-325">Example 325</a></div>
@@ -7268,16 +7268,16 @@ documents.</p>
 </div>
 <h2 data-sourcepos="7859:1-7859:13" dir="auto">
 <a id="user-content-code-spans" class="anchor" href="#code-spans" aria-hidden="true"></a>Code spans</h2>
-<p data-sourcepos="7861:1-7863:36" dir="auto">A <a href="@">backtick string</a>
-is a string of one or more backtick characters (<code>`</code>) that is neither
+<p data-sourcepos="7861:1-7863:36" dir="auto">A <a data-sourcepos="7861:3-7861:22" href="@">backtick string</a>
+is a string of one or more backtick characters (<code data-sourcepos="7862:51-7862:53">`</code>) that is neither
 preceded nor followed by a backtick.</p>
-<p data-sourcepos="7865:1-7868:15" dir="auto">A <a href="@">code span</a> begins with a backtick string and ends with
+<p data-sourcepos="7865:1-7868:15" dir="auto">A <a data-sourcepos="7865:3-7865:16" href="@">code span</a> begins with a backtick string and ends with
 a backtick string of equal length.  The contents of the code span are
 the characters between the two backtick strings, normalized in the
 following ways:</p>
 <ul data-sourcepos="7870:1-7877:0" dir="auto">
 <li data-sourcepos="7870:1-7870:50">First, [line endings] are converted to [spaces].</li>
-<li data-sourcepos="7871:1-7877:0">If the resulting string both begins <em>and</em> ends with a [space]
+<li data-sourcepos="7871:1-7877:0">If the resulting string both begins <em data-sourcepos="7871:39-7871:43">and</em> ends with a [space]
 character, but does not consist entirely of [space]
 characters, a single [space] character is removed from the
 front and back.  This allows you to include code that begins
@@ -7323,7 +7323,7 @@ spaces:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="7925:1-7925:39" dir="auto">Note that only <em>one</em> space is stripped:</p>
+<p data-sourcepos="7925:1-7925:39" dir="auto">Note that only <em data-sourcepos="7925:16-7925:20">one</em> space is stripped:</p>
 <div>
 <div><a href="#example-341">Example 341</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7418,7 +7418,7 @@ stripped in this way:</p>
 </div>
 </div>
 <p data-sourcepos="8034:1-8036:26" dir="auto">Note that browsers will typically collapse consecutive spaces
-when rendering <code>&lt;code&gt;</code> elements, so it is recommended that
+when rendering <code data-sourcepos="8035:17-8035:22">&lt;code&gt;</code> elements, so it is recommended that
 the following CSS be used:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="8038:5-8040:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code{white-space: pre-wrap;}</span></code></pre>
@@ -7438,8 +7438,8 @@ are treated literally:</p>
 </div>
 </div>
 <p data-sourcepos="8057:1-8059:59" dir="auto">Backslash escapes are never needed, because one can always choose a
-string of <em>n</em> backtick characters as delimiters, where the code does
-not contain any strings of exactly <em>n</em> backtick characters.</p>
+string of <em data-sourcepos="8058:11-8058:13">n</em> backtick characters as delimiters, where the code does
+not contain any strings of exactly <em data-sourcepos="8059:36-8059:38">n</em> backtick characters.</p>
 <div>
 <div><a href="#example-349">Example 349</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7464,7 +7464,7 @@ not contain any strings of exactly <em>n</em> backtick characters.</p>
 </div>
 <p data-sourcepos="8086:1-8089:5" dir="auto">Code span backticks have higher precedence than any other inline
 constructs except HTML tags and autolinks.  Thus, for example, this is
-not parsed as emphasized text, since the second <code>*</code> is part of a code
+not parsed as emphasized text, since the second <code data-sourcepos="8088:50-8088:50">*</code> is part of a code
 span:</p>
 <div>
 <div><a href="#example-351">Example 351</a></div>
@@ -7577,18 +7577,18 @@ closing backtick strings to be equal in length:</p>
 </div>
 <h2 data-sourcepos="8224:1-8224:31" dir="auto">
 <a id="user-content-emphasis-and-strong-emphasis" class="anchor" href="#emphasis-and-strong-emphasis" aria-hidden="true"></a>Emphasis and strong emphasis</h2>
-<p data-sourcepos="8226:1-8227:73" dir="auto">John Gruber's original <a href="http://daringfireball.net/projects/markdown/syntax#em" rel="nofollow noreferrer noopener" target="_blank">Markdown syntax
+<p data-sourcepos="8226:1-8227:73" dir="auto">John Gruber's original <a data-sourcepos="8227:24-8227:67" href="http://daringfireball.net/projects/markdown/syntax#em" rel="nofollow noreferrer noopener" target="_blank">Markdown syntax
 description</a> says:</p>
 <blockquote data-sourcepos="8229:1-8232:6" dir="auto">
-<p data-sourcepos="8229:3-8232:6">Markdown treats asterisks (<code>*</code>) and underscores (<code>_</code>) as indicators of
-emphasis. Text wrapped with one <code>*</code> or <code>_</code> will be wrapped with an HTML
-<code>&lt;em&gt;</code> tag; double <code>*</code>'s or <code>_</code>'s will be wrapped with an HTML <code>&lt;strong&gt;</code>
+<p data-sourcepos="8229:3-8232:6">Markdown treats asterisks (<code data-sourcepos="8229:31-8229:31">*</code>) and underscores (<code data-sourcepos="8229:53-8229:53">_</code>) as indicators of
+emphasis. Text wrapped with one <code data-sourcepos="8230:36-8230:36">*</code> or <code data-sourcepos="8230:43-8230:43">_</code> will be wrapped with an HTML
+<code data-sourcepos="8231:4-8231:7">&lt;em&gt;</code> tag; double <code data-sourcepos="8231:23-8231:23">*</code>'s or <code data-sourcepos="8231:32-8231:32">_</code>'s will be wrapped with an HTML <code data-sourcepos="8231:67-8231:74">&lt;strong&gt;</code>
 tag.</p>
 </blockquote>
 <p data-sourcepos="8234:1-8238:57" dir="auto">This is enough for most users, but these rules leave much undecided,
 especially when it comes to nested emphasis.  The original
-<code>Markdown.pl</code> test suite makes it clear that triple <code>***</code> and
-<code>___</code> delimiters can be used for strong emphasis, and most
+<code data-sourcepos="8236:2-8236:12">Markdown.pl</code> test suite makes it clear that triple <code data-sourcepos="8236:54-8236:56">***</code> and
+<code data-sourcepos="8237:2-8237:4">___</code> delimiters can be used for strong emphasis, and most
 implementations have also allowed the following patterns:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="8240:1-8246:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" lang="markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="gs">***strong emph**</span><span class="err">*</span></span>
@@ -7607,7 +7607,7 @@ entries):</p>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="8257:1-8260:31" dir="auto">Many implementations have also restricted intraword emphasis to
-the <code>*</code> forms, to avoid unwanted emphasis in words containing
+the <code data-sourcepos="8258:6-8258:6">*</code> forms, to avoid unwanted emphasis in words containing
 internal underscores.  (It is best practice to put these in code
 spans, but users often do not.)</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7617,19 +7617,19 @@ spans, but users often do not.)</p>
 </div>
 <p data-sourcepos="8267:1-8268:55" dir="auto">The rules given below capture all of these patterns, while allowing
 for efficient parsing strategies that do not backtrack.</p>
-<p data-sourcepos="8270:1-8274:38" dir="auto">First, some definitions.  A <a href="@">delimiter run</a> is either
-a sequence of one or more <code>*</code> characters that is not preceded or
-followed by a non-backslash-escaped <code>*</code> character, or a sequence
-of one or more <code>_</code> characters that is not preceded or followed by
-a non-backslash-escaped <code>_</code> character.</p>
-<p data-sourcepos="8276:1-8282:37" dir="auto">A <a href="@">left-flanking delimiter run</a> is
+<p data-sourcepos="8270:1-8274:38" dir="auto">First, some definitions.  A <a data-sourcepos="8270:29-8270:46" href="@">delimiter run</a> is either
+a sequence of one or more <code data-sourcepos="8271:28-8271:28">*</code> characters that is not preceded or
+followed by a non-backslash-escaped <code data-sourcepos="8272:38-8272:38">*</code> character, or a sequence
+of one or more <code data-sourcepos="8273:17-8273:17">_</code> characters that is not preceded or followed by
+a non-backslash-escaped <code data-sourcepos="8274:26-8274:26">_</code> character.</p>
+<p data-sourcepos="8276:1-8282:37" dir="auto">A <a data-sourcepos="8276:3-8276:34" href="@">left-flanking delimiter run</a> is
 a [delimiter run] that is (1) not followed by [Unicode whitespace],
 and either (2a) not followed by a [punctuation character], or
 (2b) followed by a [punctuation character] and
 preceded by [Unicode whitespace] or a [punctuation character].
 For purposes of this definition, the beginning and the end of
 the line count as Unicode whitespace.</p>
-<p data-sourcepos="8284:1-8290:37" dir="auto">A <a href="@">right-flanking delimiter run</a> is
+<p data-sourcepos="8284:1-8290:37" dir="auto">A <a data-sourcepos="8284:3-8284:35" href="@">right-flanking delimiter run</a> is
 a [delimiter run] that is (1) not preceded by [Unicode whitespace],
 and either (2a) not preceded by a [punctuation character], or
 (2b) preceded by a [punctuation character] and
@@ -7678,51 +7678,51 @@ the line count as Unicode whitespace.</p>
 <p data-sourcepos="8326:1-8332:49" dir="auto">(The idea of distinguishing left-flanking and right-flanking
 delimiter runs based on the character before and the character
 after comes from Roopesh Chander's
-<a href="http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags" rel="nofollow noreferrer noopener" target="_blank">vfmd</a>.
+<a data-sourcepos="8329:1-8329:92" href="http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags" rel="nofollow noreferrer noopener" target="_blank">vfmd</a>.
 vfmd uses the terminology "emphasis indicator string" instead of "delimiter
 run," and its rules for distinguishing left- and right-flanking runs
 are a bit more complex than the ones given here.)</p>
 <p data-sourcepos="8334:1-8334:56" dir="auto">The following rules define emphasis and strong emphasis:</p>
 <ol data-sourcepos="8336:1-8400:0" dir="auto">
 <li data-sourcepos="8336:1-8338:0">
-<p data-sourcepos="8336:5-8337:71">A single <code>*</code> character <a href="@">can open emphasis</a>
+<p data-sourcepos="8336:5-8337:71">A single <code data-sourcepos="8336:15-8336:15">*</code> character <a data-sourcepos="8336:28-8336:49" href="@">can open emphasis</a>
 iff (if and only if) it is part of a [left-flanking delimiter run].</p>
 </li>
 <li data-sourcepos="8339:1-8344:0">
-<p data-sourcepos="8339:5-8343:28">A single <code>_</code> character [can open emphasis] iff
+<p data-sourcepos="8339:5-8343:28">A single <code data-sourcepos="8339:15-8339:15">_</code> character [can open emphasis] iff
 it is part of a [left-flanking delimiter run]
 and either (a) not part of a [right-flanking delimiter run]
 or (b) part of a [right-flanking delimiter run]
 preceded by punctuation.</p>
 </li>
 <li data-sourcepos="8345:1-8347:0">
-<p data-sourcepos="8345:5-8346:55">A single <code>*</code> character <a href="@">can close emphasis</a>
+<p data-sourcepos="8345:5-8346:55">A single <code data-sourcepos="8345:15-8345:15">*</code> character <a data-sourcepos="8345:28-8345:50" href="@">can close emphasis</a>
 iff it is part of a [right-flanking delimiter run].</p>
 </li>
 <li data-sourcepos="8348:1-8353:0">
-<p data-sourcepos="8348:5-8352:28">A single <code>_</code> character [can close emphasis] iff
+<p data-sourcepos="8348:5-8352:28">A single <code data-sourcepos="8348:15-8348:15">_</code> character [can close emphasis] iff
 it is part of a [right-flanking delimiter run]
 and either (a) not part of a [left-flanking delimiter run]
 or (b) part of a [left-flanking delimiter run]
 followed by punctuation.</p>
 </li>
 <li data-sourcepos="8354:1-8356:0">
-<p data-sourcepos="8354:5-8355:54">A double <code>**</code> <a href="@">can open strong emphasis</a>
+<p data-sourcepos="8354:5-8355:54">A double <code data-sourcepos="8354:15-8354:16">**</code> <a data-sourcepos="8354:19-8354:47" href="@">can open strong emphasis</a>
 iff it is part of a [left-flanking delimiter run].</p>
 </li>
 <li data-sourcepos="8357:1-8362:0">
-<p data-sourcepos="8357:5-8361:28">A double <code>__</code> [can open strong emphasis] iff
+<p data-sourcepos="8357:5-8361:28">A double <code data-sourcepos="8357:15-8357:16">__</code> [can open strong emphasis] iff
 it is part of a [left-flanking delimiter run]
 and either (a) not part of a [right-flanking delimiter run]
 or (b) part of a [right-flanking delimiter run]
 preceded by punctuation.</p>
 </li>
 <li data-sourcepos="8363:1-8365:0">
-<p data-sourcepos="8363:5-8364:55">A double <code>**</code> <a href="@">can close strong emphasis</a>
+<p data-sourcepos="8363:5-8364:55">A double <code data-sourcepos="8363:15-8363:16">**</code> <a data-sourcepos="8363:19-8363:48" href="@">can close strong emphasis</a>
 iff it is part of a [right-flanking delimiter run].</p>
 </li>
 <li data-sourcepos="8366:1-8371:0">
-<p data-sourcepos="8366:5-8370:28">A double <code>__</code> [can close strong emphasis] iff
+<p data-sourcepos="8366:5-8370:28">A double <code data-sourcepos="8366:15-8366:16">__</code> [can close strong emphasis] iff
 it is part of a [right-flanking delimiter run]
 and either (a) not part of a [left-flanking delimiter run]
 or (b) part of a [left-flanking delimiter run]
@@ -7731,7 +7731,7 @@ followed by punctuation.</p>
 <li data-sourcepos="8372:1-8381:0">
 <p data-sourcepos="8372:5-8380:19">Emphasis begins with a delimiter that [can open emphasis] and ends
 with a delimiter that [can close emphasis], and that uses the same
-character (<code>_</code> or <code>*</code>) as the opening delimiter.  The
+character (<code data-sourcepos="8374:17-8374:17">_</code> or <code data-sourcepos="8374:24-8374:24">*</code>) as the opening delimiter.  The
 opening and closing delimiters must belong to separate
 [delimiter runs].  If one of the delimiters can both
 open and close emphasis, then the sum of the lengths of the
@@ -7743,7 +7743,7 @@ multiples of 3.</p>
 <p data-sourcepos="8382:5-8391:23">Strong emphasis begins with a delimiter that
 [can open strong emphasis] and ends with a delimiter that
 [can close strong emphasis], and that uses the same character
-(<code>_</code> or <code>*</code>) as the opening delimiter.  The
+(<code data-sourcepos="8385:7-8385:7">_</code> or <code data-sourcepos="8385:14-8385:14">*</code>) as the opening delimiter.  The
 opening and closing delimiters must belong to separate
 [delimiter runs].  If one of the delimiters can both open
 and close strong emphasis, then the sum of the lengths of
@@ -7752,49 +7752,49 @@ delimiters must not be a multiple of 3 unless both lengths
 are multiples of 3.</p>
 </li>
 <li data-sourcepos="8393:1-8396:0">
-<p data-sourcepos="8393:5-8395:25">A literal <code>*</code> character cannot occur at the beginning or end of
-<code>*</code>-delimited emphasis or <code>**</code>-delimited strong emphasis, unless it
+<p data-sourcepos="8393:5-8395:25">A literal <code data-sourcepos="8393:16-8393:16">*</code> character cannot occur at the beginning or end of
+<code data-sourcepos="8394:6-8394:6">*</code>-delimited emphasis or <code data-sourcepos="8394:32-8394:33">**</code>-delimited strong emphasis, unless it
 is backslash-escaped.</p>
 </li>
 <li data-sourcepos="8397:1-8400:0">
-<p data-sourcepos="8397:5-8399:25">A literal <code>_</code> character cannot occur at the beginning or end of
-<code>_</code>-delimited emphasis or <code>__</code>-delimited strong emphasis, unless it
+<p data-sourcepos="8397:5-8399:25">A literal <code data-sourcepos="8397:16-8397:16">_</code> character cannot occur at the beginning or end of
+<code data-sourcepos="8398:6-8398:6">_</code>-delimited emphasis or <code data-sourcepos="8398:32-8398:33">__</code>-delimited strong emphasis, unless it
 is backslash-escaped.</p>
 </li>
 </ol>
 <p data-sourcepos="8401:1-8402:43" dir="auto">Where rules 1--12 above are compatible with multiple parsings,
 the following principles resolve ambiguity:</p>
-<ol start="13" data-sourcepos="8404:1-8429:0" dir="auto">
+<ol data-sourcepos="8404:1-8429:0" start="13" dir="auto">
 <li data-sourcepos="8404:1-8407:0">
 <p data-sourcepos="8404:5-8406:28">The number of nestings should be minimized. Thus, for example,
-an interpretation <code>&lt;strong&gt;...&lt;/strong&gt;</code> is always preferred to
-<code>&lt;em&gt;&lt;em&gt;...&lt;/em&gt;&lt;/em&gt;</code>.</p>
+an interpretation <code data-sourcepos="8405:24-8405:43">&lt;strong&gt;...&lt;/strong&gt;</code> is always preferred to
+<code data-sourcepos="8406:6-8406:26">&lt;em&gt;&lt;em&gt;...&lt;/em&gt;&lt;/em&gt;</code>.</p>
 </li>
 <li data-sourcepos="8408:1-8410:0">
-<p data-sourcepos="8408:5-8409:49">An interpretation <code>&lt;em&gt;&lt;strong&gt;...&lt;/strong&gt;&lt;/em&gt;</code> is always
-preferred to <code>&lt;strong&gt;&lt;em&gt;...&lt;/em&gt;&lt;/strong&gt;</code>.</p>
+<p data-sourcepos="8408:5-8409:49">An interpretation <code data-sourcepos="8408:24-8408:52">&lt;em&gt;&lt;strong&gt;...&lt;/strong&gt;&lt;/em&gt;</code> is always
+preferred to <code data-sourcepos="8409:19-8409:47">&lt;strong&gt;&lt;em&gt;...&lt;/em&gt;&lt;/strong&gt;</code>.</p>
 </li>
 <li data-sourcepos="8411:1-8416:0">
 <p data-sourcepos="8411:5-8415:34">When two potential emphasis or strong emphasis spans overlap,
 so that the second begins before the first ends and ends after
 the first ends, the first takes precedence. Thus, for example,
-<code>*foo _bar* baz_</code> is parsed as <code>&lt;em&gt;foo _bar&lt;/em&gt; baz_</code> rather
-than <code>*foo &lt;em&gt;bar* baz&lt;/em&gt;</code>.</p>
+<code data-sourcepos="8414:6-8414:20">*foo _bar* baz_</code> is parsed as <code data-sourcepos="8414:37-8414:58">&lt;em&gt;foo _bar&lt;/em&gt; baz_</code> rather
+than <code data-sourcepos="8415:11-8415:32">*foo &lt;em&gt;bar* baz&lt;/em&gt;</code>.</p>
 </li>
 <li data-sourcepos="8417:1-8422:0">
 <p data-sourcepos="8417:5-8421:49">When there are two potential emphasis or strong emphasis spans
 with the same closing delimiter, the shorter one (the one that
 opens later) takes precedence. Thus, for example,
-<code>**foo **bar baz**</code> is parsed as <code>**foo &lt;strong&gt;bar baz&lt;/strong&gt;</code>
-rather than <code>&lt;strong&gt;foo **bar baz&lt;/strong&gt;</code>.</p>
+<code data-sourcepos="8420:6-8420:22">**foo **bar baz**</code> is parsed as <code data-sourcepos="8420:39-8420:68">**foo &lt;strong&gt;bar baz&lt;/strong&gt;</code>
+rather than <code data-sourcepos="8421:18-8421:47">&lt;strong&gt;foo **bar baz&lt;/strong&gt;</code>.</p>
 </li>
 <li data-sourcepos="8423:1-8429:0">
 <p data-sourcepos="8423:5-8428:26">Inline code spans, links, images, and HTML tags group more tightly
 than emphasis.  So, when there is a choice between an interpretation
 that contains one of these elements and one that does not, the
-former always wins.  Thus, for example, <code>*[foo*](bar)</code> is
-parsed as <code>*&lt;a href="bar"&gt;foo*&lt;/a&gt;</code> rather than as
-<code>&lt;em&gt;[foo&lt;/em&gt;](bar)</code>.</p>
+former always wins.  Thus, for example, <code data-sourcepos="8426:46-8426:57">*[foo*](bar)</code> is
+parsed as <code data-sourcepos="8427:16-8427:38">*&lt;a href="bar"&gt;foo*&lt;/a&gt;</code> rather than as
+<code data-sourcepos="8428:6-8428:24">&lt;em&gt;[foo&lt;/em&gt;](bar)</code>.</p>
 </li>
 </ol>
 <p data-sourcepos="8430:1-8430:60" dir="auto">These rules can be illustrated through a series of examples.</p>
@@ -7810,7 +7810,7 @@ parsed as <code>*&lt;a href="bar"&gt;foo*&lt;/a&gt;</code> rather than as
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8447:1-8448:66" dir="auto">This is not emphasis, because the opening <code>*</code> is followed by
+<p data-sourcepos="8447:1-8448:66" dir="auto">This is not emphasis, because the opening <code data-sourcepos="8447:44-8447:44">*</code> is followed by
 whitespace, and hence not part of a [left-flanking delimiter run]:</p>
 <div>
 <div><a href="#example-361">Example 361</a></div>
@@ -7823,7 +7823,7 @@ whitespace, and hence not part of a [left-flanking delimiter run]:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8463:1-8465:44" dir="auto">This is not emphasis, because the opening <code>*</code> is preceded
+<p data-sourcepos="8463:1-8465:44" dir="auto">This is not emphasis, because the opening <code data-sourcepos="8463:44-8463:44">*</code> is preceded
 by an alphanumeric and followed by punctuation, and hence
 not part of a [left-flanking delimiter run]:</p>
 <div>
@@ -7849,7 +7849,7 @@ not part of a [left-flanking delimiter run]:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8495:1-8495:41" dir="auto">Intraword emphasis with <code>*</code> is permitted:</p>
+<p data-sourcepos="8495:1-8495:41" dir="auto">Intraword emphasis with <code data-sourcepos="8495:26-8495:26">*</code> is permitted:</p>
 <div>
 <div><a href="#example-364">Example 364</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7884,7 +7884,7 @@ not part of a [left-flanking delimiter run]:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8538:1-8539:11" dir="auto">This is not emphasis, because the opening <code>_</code> is followed by
+<p data-sourcepos="8538:1-8539:11" dir="auto">This is not emphasis, because the opening <code data-sourcepos="8538:44-8538:44">_</code> is followed by
 whitespace:</p>
 <div>
 <div><a href="#example-367">Example 367</a></div>
@@ -7897,7 +7897,7 @@ whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8554:1-8555:47" dir="auto">This is not emphasis, because the opening <code>_</code> is preceded
+<p data-sourcepos="8554:1-8555:47" dir="auto">This is not emphasis, because the opening <code data-sourcepos="8554:44-8554:44">_</code> is preceded
 by an alphanumeric and followed by punctuation:</p>
 <div>
 <div><a href="#example-368">Example 368</a></div>
@@ -7910,7 +7910,7 @@ by an alphanumeric and followed by punctuation:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8570:1-8570:46" dir="auto">Emphasis with <code>_</code> is not allowed inside words:</p>
+<p data-sourcepos="8570:1-8570:46" dir="auto">Emphasis with <code data-sourcepos="8570:16-8570:16">_</code> is not allowed inside words:</p>
 <div>
 <div><a href="#example-369">Example 369</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -7944,7 +7944,7 @@ by an alphanumeric and followed by punctuation:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8611:1-8612:47" dir="auto">Here <code>_</code> does not generate emphasis, because the first delimiter run
+<p data-sourcepos="8611:1-8612:47" dir="auto">Here <code data-sourcepos="8611:7-8611:7">_</code> does not generate emphasis, because the first delimiter run
 is right-flanking and the second left-flanking:</p>
 <div>
 <div><a href="#example-372">Example 372</a></div>
@@ -7985,7 +7985,7 @@ not match the opening delimiter:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8662:1-8663:11" dir="auto">This is not emphasis, because the closing <code>*</code> is preceded by
+<p data-sourcepos="8662:1-8663:11" dir="auto">This is not emphasis, because the closing <code data-sourcepos="8662:44-8662:44">*</code> is preceded by
 whitespace:</p>
 <div>
 <div><a href="#example-375">Example 375</a></div>
@@ -8012,7 +8012,7 @@ whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8695:1-8697:58" dir="auto">This is not emphasis, because the second <code>*</code> is
+<p data-sourcepos="8695:1-8697:58" dir="auto">This is not emphasis, because the second <code data-sourcepos="8695:43-8695:43">*</code> is
 preceded by punctuation and followed by an alphanumeric
 (hence it is not part of a [right-flanking delimiter run]:</p>
 <div>
@@ -8039,7 +8039,7 @@ with this example:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8728:1-8728:39" dir="auto">Intraword emphasis with <code>*</code> is allowed:</p>
+<p data-sourcepos="8728:1-8728:39" dir="auto">Intraword emphasis with <code data-sourcepos="8728:26-8728:26">*</code> is allowed:</p>
 <div>
 <div><a href="#example-379">Example 379</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -8052,7 +8052,7 @@ with this example:</p>
 </div>
 </div>
 <p data-sourcepos="8744:1-8744:7" dir="auto">Rule 4:</p>
-<p data-sourcepos="8746:1-8747:11" dir="auto">This is not emphasis, because the closing <code>_</code> is preceded by
+<p data-sourcepos="8746:1-8747:11" dir="auto">This is not emphasis, because the closing <code data-sourcepos="8746:44-8746:44">_</code> is preceded by
 whitespace:</p>
 <div>
 <div><a href="#example-380">Example 380</a></div>
@@ -8065,7 +8065,7 @@ whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8762:1-8763:56" dir="auto">This is not emphasis, because the second <code>_</code> is
+<p data-sourcepos="8762:1-8763:56" dir="auto">This is not emphasis, because the second <code data-sourcepos="8762:43-8762:43">_</code> is
 preceded by punctuation and followed by an alphanumeric:</p>
 <div>
 <div><a href="#example-381">Example 381</a></div>
@@ -8090,7 +8090,7 @@ preceded by punctuation and followed by an alphanumeric:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8793:1-8793:41" dir="auto">Intraword emphasis is disallowed for <code>_</code>:</p>
+<p data-sourcepos="8793:1-8793:41" dir="auto">Intraword emphasis is disallowed for <code data-sourcepos="8793:39-8793:39">_</code>:</p>
 <div>
 <div><a href="#example-383">Example 383</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -8163,7 +8163,7 @@ followed by whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8882:1-8884:44" dir="auto">This is not strong emphasis, because the opening <code>**</code> is preceded
+<p data-sourcepos="8882:1-8884:44" dir="auto">This is not strong emphasis, because the opening <code data-sourcepos="8882:51-8882:52">**</code> is preceded
 by an alphanumeric and followed by punctuation, and hence
 not part of a [left-flanking delimiter run]:</p>
 <div>
@@ -8177,7 +8177,7 @@ not part of a [left-flanking delimiter run]:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8899:1-8899:49" dir="auto">Intraword strong emphasis with <code>**</code> is permitted:</p>
+<p data-sourcepos="8899:1-8899:49" dir="auto">Intraword strong emphasis with <code data-sourcepos="8899:33-8899:34">**</code> is permitted:</p>
 <div>
 <div><a href="#example-390">Example 390</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -8228,7 +8228,7 @@ followed by whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8961:1-8962:47" dir="auto">This is not strong emphasis, because the opening <code>__</code> is preceded
+<p data-sourcepos="8961:1-8962:47" dir="auto">This is not strong emphasis, because the opening <code data-sourcepos="8961:51-8961:52">__</code> is preceded
 by an alphanumeric and followed by punctuation:</p>
 <div>
 <div><a href="#example-394">Example 394</a></div>
@@ -8241,7 +8241,7 @@ by an alphanumeric and followed by punctuation:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="8977:1-8977:49" dir="auto">Intraword strong emphasis is forbidden with <code>__</code>:</p>
+<p data-sourcepos="8977:1-8977:49" dir="auto">Intraword strong emphasis is forbidden with <code data-sourcepos="8977:46-8977:47">__</code>:</p>
 <div>
 <div><a href="#example-395">Example 395</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -8314,9 +8314,9 @@ by whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="9067:1-9068:9" dir="auto">(Nor can it be interpreted as an emphasized <code>*foo bar *</code>, because of
+<p data-sourcepos="9067:1-9068:9" dir="auto">(Nor can it be interpreted as an emphasized <code data-sourcepos="9067:46-9067:55">*foo bar *</code>, because of
 Rule 11.)</p>
-<p data-sourcepos="9070:1-9071:56" dir="auto">This is not strong emphasis, because the second <code>**</code> is
+<p data-sourcepos="9070:1-9071:56" dir="auto">This is not strong emphasis, because the second <code data-sourcepos="9070:50-9070:51">**</code> is
 preceded by punctuation and followed by an alphanumeric:</p>
 <div>
 <div><a href="#example-401">Example 401</a></div>
@@ -8392,7 +8392,7 @@ preceded by whitespace:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="9163:1-9164:56" dir="auto">This is not strong emphasis, because the second <code>__</code> is
+<p data-sourcepos="9163:1-9164:56" dir="auto">This is not strong emphasis, because the second <code data-sourcepos="9163:50-9163:51">__</code> is
 preceded by punctuation and followed by an alphanumeric:</p>
 <div>
 <div><a href="#example-407">Example 407</a></div>
@@ -8418,7 +8418,7 @@ with this example:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="9195:1-9195:49" dir="auto">Intraword strong emphasis is forbidden with <code>__</code>:</p>
+<p data-sourcepos="9195:1-9195:49" dir="auto">Intraword strong emphasis is forbidden with <code data-sourcepos="9195:46-9195:47">__</code>:</p>
 <div>
 <div><a href="#example-409">Example 409</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -8567,7 +8567,7 @@ inside emphasis:</p>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="9372:1-9377:32" dir="auto">is precluded by the condition that a delimiter that
-can both open and close (like the <code>*</code> after <code>foo</code>)
+can both open and close (like the <code data-sourcepos="9373:36-9373:36">*</code> after <code data-sourcepos="9373:46-9373:48">foo</code>)
 cannot form emphasis if the sum of the lengths of
 the delimiter runs containing the opening and
 closing delimiters is a multiple of 3 unless
@@ -8623,7 +8623,7 @@ omitted:</p>
 </div>
 </div>
 <p data-sourcepos="9441:1-9443:34" dir="auto">When the lengths of the interior closing and opening
-delimiter runs are <em>both</em> multiples of 3, though,
+delimiter runs are <em data-sourcepos="9442:20-9442:25">both</em> multiples of 3, though,
 they can match to create emphasis:</p>
 <div>
 <div><a href="#example-425">Example 425</a></div>
@@ -8926,7 +8926,7 @@ inside strong emphasis:</p>
 </div>
 </div>
 <p data-sourcepos="9806:1-9808:32" dir="auto">Note that when delimiters do not match evenly, Rule 11 determines
-that the excess literal <code>*</code> characters will appear outside of the
+that the excess literal <code data-sourcepos="9807:26-9807:26">*</code> characters will appear outside of the
 emphasis, rather than inside it:</p>
 <div>
 <div><a href="#example-451">Example 451</a></div>
@@ -9073,7 +9073,7 @@ emphasis, rather than inside it:</p>
 </div>
 </div>
 <p data-sourcepos="9982:1-9984:32" dir="auto">Note that when delimiters do not match evenly, Rule 12 determines
-that the excess literal <code>_</code> characters will appear outside of the
+that the excess literal <code data-sourcepos="9983:26-9983:26">_</code> characters will appear outside of the
 emphasis, rather than inside it:</p>
 <div>
 <div><a href="#example-464">Example 464</a></div>
@@ -9385,9 +9385,9 @@ delimiters:</p>
 <div>
 <h2 data-sourcepos="10357:1-10357:28">
 <a id="user-content-strikethrough-extension" class="anchor" href="#strikethrough-extension" aria-hidden="true"></a>Strikethrough (extension)</h2>
-<p data-sourcepos="10359:1-10360:10">GFM enables the <code>strikethrough</code> extension, where an additional emphasis type is
+<p data-sourcepos="10359:1-10360:10">GFM enables the <code data-sourcepos="10359:18-10359:30">strikethrough</code> extension, where an additional emphasis type is
 available.</p>
-<p data-sourcepos="10362:1-10362:59">Strikethrough text is any text wrapped in two tildes (<code>~</code>).</p>
+<p data-sourcepos="10362:1-10362:59">Strikethrough text is any text wrapped in two tildes (<code data-sourcepos="10362:56-10362:56">~</code>).</p>
 <div>
 <div><a href="#example-491">Example 491</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -9424,8 +9424,8 @@ There are two basic kinds of links in Markdown.  In [inline links] the
 destination and title are given immediately after the link text.  In
 [reference links] the destination and title are defined elsewhere in
 the document.</p>
-<p data-sourcepos="10405:1-10407:22" dir="auto">A <a href="@">link text</a> consists of a sequence of zero or more
-inline elements enclosed by square brackets (<code>[</code> and <code>]</code>).  The
+<p data-sourcepos="10405:1-10407:22" dir="auto">A <a data-sourcepos="10405:3-10405:16" href="@">link text</a> consists of a sequence of zero or more
+inline elements enclosed by square brackets (<code data-sourcepos="10406:47-10406:47">[</code> and <code data-sourcepos="10406:55-10406:55">]</code>).  The
 following rules apply:</p>
 <ul data-sourcepos="10409:1-10425:0" dir="auto">
 <li data-sourcepos="10409:1-10412:0">
@@ -9436,30 +9436,30 @@ other, the inner-most definition is used.</p>
 <li data-sourcepos="10413:1-10417:0">
 <p data-sourcepos="10413:3-10416:22">Brackets are allowed in the [link text] only if (a) they
 are backslash-escaped or (b) they appear as a matched pair of brackets,
-with an open bracket <code>[</code>, a sequence of zero or more inlines, and
-a close bracket <code>]</code>.</p>
+with an open bracket <code data-sourcepos="10415:25-10415:25">[</code>, a sequence of zero or more inlines, and
+a close bracket <code data-sourcepos="10416:20-10416:20">]</code>.</p>
 </li>
 <li data-sourcepos="10418:1-10422:0">
 <p data-sourcepos="10418:3-10421:25">Backtick [code spans], [autolinks], and raw [HTML tags] bind more tightly
 than the brackets in link text.  Thus, for example,
-<code>[foo`]`</code> could not be a link text, since the second <code>]</code>
+<code data-sourcepos="10420:5-10420:13">[foo`]`</code> could not be a link text, since the second <code data-sourcepos="10420:61-10420:61">]</code>
 is part of a code span.</p>
 </li>
 <li data-sourcepos="10423:1-10425:0">
 <p data-sourcepos="10423:3-10424:78">The brackets in link text bind more tightly than markers for
-[emphasis and strong emphasis]. Thus, for example, <code>*[foo*](url)</code> is a link.</p>
+[emphasis and strong emphasis]. Thus, for example, <code data-sourcepos="10424:55-10424:66">*[foo*](url)</code> is a link.</p>
 </li>
 </ul>
-<p data-sourcepos="10426:1-10426:42" dir="auto">A <a href="@">link destination</a> consists of either</p>
+<p data-sourcepos="10426:1-10426:42" dir="auto">A <a data-sourcepos="10426:3-10426:23" href="@">link destination</a> consists of either</p>
 <ul data-sourcepos="10428:1-10439:0" dir="auto">
 <li data-sourcepos="10428:1-10431:0">
-<p data-sourcepos="10428:3-10430:27">a sequence of zero or more characters between an opening <code>&lt;</code> and a
-closing <code>&gt;</code> that contains no line breaks or unescaped
-<code>&lt;</code> or <code>&gt;</code> characters, or</p>
+<p data-sourcepos="10428:3-10430:27">a sequence of zero or more characters between an opening <code data-sourcepos="10428:61-10428:61">&lt;</code> and a
+closing <code data-sourcepos="10429:12-10429:12">&gt;</code> that contains no line breaks or unescaped
+<code data-sourcepos="10430:4-10430:4">&lt;</code> or <code data-sourcepos="10430:11-10430:11">&gt;</code> characters, or</p>
 </li>
 <li data-sourcepos="10432:1-10439:0">
 <p data-sourcepos="10432:3-10438:23">a nonempty sequence of characters that does not start with
-<code>&lt;</code>, does not include ASCII space or control characters, and
+<code data-sourcepos="10433:4-10433:4">&lt;</code>, does not include ASCII space or control characters, and
 includes parentheses only if (a) they are backslash-escaped or
 (b) they are part of a balanced pair of unescaped parentheses.
 (Implementations may impose limits on parentheses nesting to
@@ -9467,34 +9467,34 @@ avoid performance issues, but at least three levels of nesting
 should be supported.)</p>
 </li>
 </ul>
-<p data-sourcepos="10440:1-10440:37" dir="auto">A <a href="@">link title</a>  consists of either</p>
+<p data-sourcepos="10440:1-10440:37" dir="auto">A <a data-sourcepos="10440:3-10440:17" href="@">link title</a>  consists of either</p>
 <ul data-sourcepos="10442:1-10453:0" dir="auto">
 <li data-sourcepos="10442:1-10445:0">
 <p data-sourcepos="10442:3-10444:23">a sequence of zero or more characters between straight double-quote
-characters (<code>"</code>), including a <code>"</code> character only if it is
+characters (<code data-sourcepos="10443:16-10443:16">"</code>), including a <code data-sourcepos="10443:34-10443:34">"</code> character only if it is
 backslash-escaped, or</p>
 </li>
 <li data-sourcepos="10446:1-10449:0">
 <p data-sourcepos="10446:3-10448:23">a sequence of zero or more characters between straight single-quote
-characters (<code>'</code>), including a <code>'</code> character only if it is
+characters (<code data-sourcepos="10447:16-10447:16">'</code>), including a <code data-sourcepos="10447:34-10447:34">'</code> character only if it is
 backslash-escaped, or</p>
 </li>
 <li data-sourcepos="10450:1-10453:0">
 <p data-sourcepos="10450:3-10452:20">a sequence of zero or more characters between matching parentheses
-(<code>(...)</code>), including a <code>(</code> or <code>)</code> character only if it is
+(<code data-sourcepos="10451:5-10451:9">(...)</code>), including a <code data-sourcepos="10451:27-10451:27">(</code> or <code data-sourcepos="10451:34-10451:34">)</code> character only if it is
 backslash-escaped.</p>
 </li>
 </ul>
 <p data-sourcepos="10454:1-10455:15" dir="auto">Although [link titles] may span multiple lines, they may not contain
 a [blank line].</p>
-<p data-sourcepos="10457:1-10467:6" dir="auto">An <a href="@">inline link</a> consists of a [link text] followed immediately
-by a left parenthesis <code>(</code>, optional [whitespace], an optional
+<p data-sourcepos="10457:1-10467:6" dir="auto">An <a data-sourcepos="10457:4-10457:19" href="@">inline link</a> consists of a [link text] followed immediately
+by a left parenthesis <code data-sourcepos="10458:24-10458:24">(</code>, optional [whitespace], an optional
 [link destination], an optional [link title] separated from the link
 destination by [whitespace], optional [whitespace], and a right
-parenthesis <code>)</code>. The link's text consists of the inlines contained
+parenthesis <code data-sourcepos="10461:14-10461:14">)</code>. The link's text consists of the inlines contained
 in the [link text] (excluding the enclosing square brackets).
 The link's URI consists of the link destination, excluding enclosing
-<code>&lt;...&gt;</code> if present, with backslash-escapes in effect as described
+<code data-sourcepos="10464:2-10464:6">&lt;...&gt;</code> if present, with backslash-escapes in effect as described
 above.  The link's title consists of the link title, excluding its
 enclosing delimiters, with backslash-escapes in effect as described
 above.</p>
@@ -9597,7 +9597,7 @@ even if enclosed in pointy brackets:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="10584:1-10585:19" dir="auto">The destination can contain <code>)</code> if it is enclosed
+<p data-sourcepos="10584:1-10585:19" dir="auto">The destination can contain <code data-sourcepos="10584:30-10584:30">)</code> if it is enclosed
 in pointy brackets:</p>
 <div>
 <div><a href="#example-501">Example 501</a></div>
@@ -9665,7 +9665,7 @@ balanced:</p>
 </div>
 </div>
 <p data-sourcepos="10661:1-10662:13" dir="auto">However, if you have unbalanced parentheses, you need to escape or use the
-<code>&lt;...&gt;</code> form:</p>
+<code data-sourcepos="10662:2-10662:6">&lt;...&gt;</code> form:</p>
 <div>
 <div><a href="#example-506">Example 506</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -9831,17 +9831,17 @@ Other [Unicode whitespace] like non-breaking space doesn't work.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="10863:1-10876:61" dir="auto">(Note:  <code>Markdown.pl</code> did allow double quotes inside a double-quoted
+<p data-sourcepos="10863:1-10876:61" dir="auto">(Note:  <code data-sourcepos="10863:10-10863:20">Markdown.pl</code> did allow double quotes inside a double-quoted
 title, and its test suite included a test demonstrating this.
 But it is hard to see a good rationale for the extra complexity this
 brings, since there are already many ways---backslash escaping,
 entity and numeric character references, or using a different
 quote type for the enclosing title---to write titles containing
-double quotes.  <code>Markdown.pl</code>'s handling of titles has a number
+double quotes.  <code data-sourcepos="10869:18-10869:28">Markdown.pl</code>'s handling of titles has a number
 of other strange features.  For example, it allows single-quoted
 titles in inline links, but not reference links.  And, in
 reference links but not inline links, it allows a title to begin
-with <code>"</code> and end with <code>)</code>.  <code>Markdown.pl</code> 1.0.1 even allows
+with <code data-sourcepos="10873:7-10873:7">"</code> and end with <code data-sourcepos="10873:24-10873:24">)</code>.  <code data-sourcepos="10873:30-10873:40">Markdown.pl</code> 1.0.1 even allows
 titles with no closing quotation mark, though 1.0.2b8 does not.
 It seems preferable to adopt a simple, rational rule that works
 the same way in inline links and link reference definitions.)</p>
@@ -9998,7 +9998,7 @@ emphasis grouping:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11063:1-11064:11" dir="auto">Note that brackets that <em>aren't</em> part of links do not take
+<p data-sourcepos="11063:1-11064:11" dir="auto">Note that brackets that <em data-sourcepos="11063:25-11063:32">aren't</em> part of links do not take
 precedence:</p>
 <div>
 <div><a href="#example-531">Example 531</a></div>
@@ -10046,23 +10046,23 @@ and autolinks over link grouping:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11121:1-11123:41" dir="auto">There are three kinds of <a href="@">reference link</a>s:
-<a href="#full-reference-link">full</a>, <a href="#collapsed-reference-link">collapsed</a>,
-and <a href="#shortcut-reference-link">shortcut</a>.</p>
-<p data-sourcepos="11125:1-11127:71" dir="auto">A <a href="@">full reference link</a>
+<p data-sourcepos="11121:1-11123:41" dir="auto">There are three kinds of <a data-sourcepos="11121:26-11121:44" href="@">reference link</a>s:
+<a data-sourcepos="11122:1-11122:28" href="#full-reference-link">full</a>, <a data-sourcepos="11122:31-11122:68" href="#collapsed-reference-link">collapsed</a>,
+and <a data-sourcepos="11123:5-11123:40" href="#shortcut-reference-link">shortcut</a>.</p>
+<p data-sourcepos="11125:1-11127:71" dir="auto">A <a data-sourcepos="11125:3-11125:26" href="@">full reference link</a>
 consists of a [link text] immediately followed by a [link label]
 that [matches] a [link reference definition] elsewhere in the document.</p>
-<p data-sourcepos="11129:1-11135:9" dir="auto">A <a href="@">link label</a>  begins with a left bracket (<code>[</code>) and ends
-with the first right bracket (<code>]</code>) that is not backslash-escaped.
+<p data-sourcepos="11129:1-11135:9" dir="auto">A <a data-sourcepos="11129:3-11129:17" href="@">link label</a>  begins with a left bracket (<code data-sourcepos="11129:49-11129:49">[</code>) and ends
+with the first right bracket (<code data-sourcepos="11130:32-11130:32">]</code>) that is not backslash-escaped.
 Between these brackets there must be at least one [non-whitespace character].
 Unescaped square bracket characters are not allowed inside the
 opening and closing square brackets of [link labels].  A link
 label can have at most 999 characters inside the square
 brackets.</p>
-<p data-sourcepos="11137:1-11144:69" dir="auto">One label <a href="@">matches</a>
+<p data-sourcepos="11137:1-11144:69" dir="auto">One label <a data-sourcepos="11137:11-11137:22" href="@">matches</a>
 another just in case their normalized forms are equal.  To normalize a
 label, strip off the opening and closing brackets,
-perform the <em>Unicode case fold</em>, strip leading and trailing
+perform the <em data-sourcepos="11140:13-11140:31">Unicode case fold</em>, strip leading and trailing
 [whitespace] and collapse consecutive internal
 [whitespace] to a single space.  If there are multiple
 matching reference link definitions, the one that comes first in the
@@ -10332,7 +10332,7 @@ intended:</p>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="11458:1-11464:20" dir="auto">(Note that [shortcut reference links] were introduced by Gruber
-himself in a beta version of <code>Markdown.pl</code>, but never included
+himself in a beta version of <code data-sourcepos="11459:31-11459:41">Markdown.pl</code>, but never included
 in the official syntax description.  Without shortcut reference
 links, it is harmless to allow space between the link text and
 link label; but once shortcut references are introduced, it is
@@ -10428,7 +10428,7 @@ backslash-escaped:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11571:1-11571:55" dir="auto">Note that in this example <code>]</code> is not backslash-escaped:</p>
+<p data-sourcepos="11571:1-11571:55" dir="auto">Note that in this example <code data-sourcepos="11571:28-11571:28">]</code> is not backslash-escaped:</p>
 <div>
 <div><a href="#example-558">Example 558</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10475,14 +10475,14 @@ backslash-escaped:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11626:1-11633:40" dir="auto">A <a href="@">collapsed reference link</a>
+<p data-sourcepos="11626:1-11633:40" dir="auto">A <a data-sourcepos="11626:3-11626:31" href="@">collapsed reference link</a>
 consists of a [link label] that [matches] a
 [link reference definition] elsewhere in the
-document, followed by the string <code>[]</code>.
+document, followed by the string <code data-sourcepos="11629:35-11629:36">[]</code>.
 The contents of the first link label are parsed as inlines,
 which are used as the link's text.  The link's URI and title are
 provided by the matching reference link definition.  Thus,
-<code>[foo][]</code> is equivalent to <code>[foo][foo]</code>.</p>
+<code data-sourcepos="11633:2-11633:8">[foo][]</code> is equivalent to <code data-sourcepos="11633:29-11633:38">[foo][foo]</code>.</p>
 <div>
 <div><a href="#example-561">Example 561</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10540,14 +10540,14 @@ allowed between the two sets of brackets:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11703:1-11710:41" dir="auto">A <a href="@">shortcut reference link</a>
+<p data-sourcepos="11703:1-11710:41" dir="auto">A <a data-sourcepos="11703:3-11703:30" href="@">shortcut reference link</a>
 consists of a [link label] that [matches] a
 [link reference definition] elsewhere in the
-document and is not followed by <code>[]</code> or a link label.
+document and is not followed by <code data-sourcepos="11706:34-11706:35">[]</code> or a link label.
 The contents of the first link label are parsed as inlines,
 which are used as the link's text.  The link's URI and title
 are provided by the matching link reference definition.
-Thus, <code>[foo]</code> is equivalent to <code>[foo][]</code>.</p>
+Thus, <code data-sourcepos="11710:8-11710:12">[foo]</code> is equivalent to <code data-sourcepos="11710:33-11710:39">[foo][]</code>.</p>
 <div>
 <div><a href="#example-565">Example 565</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10714,8 +10714,8 @@ references:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11904:1-11905:23" dir="auto">In the following case <code>[bar][baz]</code> is parsed as a reference,
-<code>[foo]</code> as normal text:</p>
+<p data-sourcepos="11904:1-11905:23" dir="auto">In the following case <code data-sourcepos="11904:24-11904:33">[bar][baz]</code> is parsed as a reference,
+<code data-sourcepos="11905:2-11905:6">[foo]</code> as normal text:</p>
 <div>
 <div><a href="#example-577">Example 577</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10729,8 +10729,8 @@ references:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11922:1-11923:19" dir="auto">Here, though, <code>[foo][bar]</code> is parsed as a reference, since
-<code>[bar]</code> is defined:</p>
+<p data-sourcepos="11922:1-11923:19" dir="auto">Here, though, <code data-sourcepos="11922:16-11922:25">[foo][bar]</code> is parsed as a reference, since
+<code data-sourcepos="11923:2-11923:6">[bar]</code> is defined:</p>
 <div>
 <div><a href="#example-578">Example 578</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10745,8 +10745,8 @@ references:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="11941:1-11942:65" dir="auto">Here <code>[foo]</code> is not parsed as a shortcut reference, because it
-is followed by a link label (even though <code>[bar]</code> is not defined):</p>
+<p data-sourcepos="11941:1-11942:65" dir="auto">Here <code data-sourcepos="11941:7-11941:11">[foo]</code> is not parsed as a shortcut reference, because it
+is followed by a link label (even though <code data-sourcepos="11942:43-11942:47">[bar]</code> is not defined):</p>
 <div>
 <div><a href="#example-579">Example 579</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10765,13 +10765,13 @@ is followed by a link label (even though <code>[bar]</code> is not defined):</p>
 <a id="user-content-images" class="anchor" href="#images" aria-hidden="true"></a>Images</h2>
 <p data-sourcepos="11963:1-11971:55" dir="auto">Syntax for images is like the syntax for links, with one
 difference. Instead of [link text], we have an
-<a href="@">image description</a>.  The rules for this are the
+<a data-sourcepos="11965:1-11965:22" href="@">image description</a>.  The rules for this are the
 same as for [link text], except that (a) an
-image description starts with <code>![</code> rather than <code>[</code>, and
+image description starts with <code data-sourcepos="11967:32-11967:33">![</code> rather than <code data-sourcepos="11967:49-11967:49">[</code>, and
 (b) an image description may contain links.
 An image description has inline elements
 as its contents.  When an image is rendered to HTML,
-this is standardly used as the image's <code>alt</code> attribute.</p>
+this is standardly used as the image's <code data-sourcepos="11971:41-11971:43">alt</code> attribute.</p>
 <div>
 <div><a href="#example-580">Example 580</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -10821,7 +10821,7 @@ this is standardly used as the image's <code>alt</code> attribute.</p>
 <p data-sourcepos="12027:1-12032:40" dir="auto">Though this spec is concerned with parsing, not rendering, it is
 recommended that in rendering to HTML, only the plain string content
 of the [image description] be used.  Note that in
-the above example, the alt attribute's value is <code>foo bar</code>, not <code>foo [bar](/url)</code> or <code>foo &lt;a href="/url"&gt;bar&lt;/a&gt;</code>.  Only the plain string
+the above example, the alt attribute's value is <code data-sourcepos="12030:50-12030:56">foo bar</code>, not <code data-sourcepos="12030:65-12031:11">foo [bar](/url)</code> or <code data-sourcepos="12031:18-12031:43">foo &lt;a href="/url"&gt;bar&lt;/a&gt;</code>.  Only the plain string
 content is rendered, without formatting.</p>
 <div>
 <div><a href="#example-584">Example 584</a></div>
@@ -11034,8 +11034,8 @@ between the two sets of brackets:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12284:1-12285:33" dir="auto">If you just want a literal <code>!</code> followed by bracketed text, you can
-backslash-escape the opening <code>[</code>:</p>
+<p data-sourcepos="12284:1-12285:33" dir="auto">If you just want a literal <code data-sourcepos="12284:29-12284:29">!</code> followed by bracketed text, you can
+backslash-escape the opening <code data-sourcepos="12285:31-12285:31">[</code>:</p>
 <div>
 <div><a href="#example-600">Example 600</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11049,8 +11049,8 @@ backslash-escape the opening <code>[</code>:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12302:1-12303:4" dir="auto">If you want a link after a literal <code>!</code>, backslash-escape the
-<code>!</code>:</p>
+<p data-sourcepos="12302:1-12303:4" dir="auto">If you want a link after a literal <code data-sourcepos="12302:37-12302:37">!</code>, backslash-escape the
+<code data-sourcepos="12303:2-12303:2">!</code>:</p>
 <div>
 <div><a href="#example-601">Example 601</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11066,19 +11066,19 @@ backslash-escape the opening <code>[</code>:</p>
 </div>
 <h2 data-sourcepos="12320:1-12320:12" dir="auto">
 <a id="user-content-autolinks" class="anchor" href="#autolinks" aria-hidden="true"></a>Autolinks</h2>
-<p data-sourcepos="12322:1-12324:18" dir="auto"><a href="@">Autolink</a>s are absolute URIs and email addresses inside
-<code>&lt;</code> and <code>&gt;</code>. They are parsed as links, with the URL or email address
+<p data-sourcepos="12322:1-12324:18" dir="auto"><a data-sourcepos="12322:1-12322:13" href="@">Autolink</a>s are absolute URIs and email addresses inside
+<code data-sourcepos="12323:2-12323:2">&lt;</code> and <code data-sourcepos="12323:10-12323:10">&gt;</code>. They are parsed as links, with the URL or email address
 as the link label.</p>
-<p data-sourcepos="12326:1-12328:52" dir="auto">A <a href="@">URI autolink</a> consists of <code>&lt;</code>, followed by an
-[absolute URI] followed by <code>&gt;</code>.  It is parsed as
+<p data-sourcepos="12326:1-12328:52" dir="auto">A <a data-sourcepos="12326:3-12326:19" href="@">URI autolink</a> consists of <code data-sourcepos="12326:34-12326:34">&lt;</code>, followed by an
+[absolute URI] followed by <code data-sourcepos="12327:29-12327:29">&gt;</code>.  It is parsed as
 a link to the URI, with the URI as the link's label.</p>
-<p data-sourcepos="12330:1-12335:25" dir="auto">An <a href="@">absolute URI</a>,
-for these purposes, consists of a [scheme] followed by a colon (<code>:</code>)
+<p data-sourcepos="12330:1-12335:25" dir="auto">An <a data-sourcepos="12330:4-12330:20" href="@">absolute URI</a>,
+for these purposes, consists of a [scheme] followed by a colon (<code data-sourcepos="12331:66-12331:66">:</code>)
 followed by zero or more characters other than ASCII
-[whitespace] and control characters, <code>&lt;</code>, and <code>&gt;</code>.  If
+[whitespace] and control characters, <code data-sourcepos="12333:39-12333:39">&lt;</code>, and <code data-sourcepos="12333:48-12333:48">&gt;</code>.  If
 the URI includes these characters, they must be percent-encoded
-(e.g. <code>%20</code> for a space).</p>
-<p data-sourcepos="12337:1-12340:37" dir="auto">For purposes of this spec, a <a href="@">scheme</a> is any sequence
+(e.g. <code data-sourcepos="12335:8-12335:10">%20</code> for a space).</p>
+<p data-sourcepos="12337:1-12340:37" dir="auto">For purposes of this spec, a <a data-sourcepos="12337:30-12337:40" href="@">scheme</a> is any sequence
 of 2--32 characters beginning with an ASCII letter and followed
 by any combination of ASCII letters, digits, or the symbols plus
 ("+"), period ("."), or hyphen ("-").</p>
@@ -11200,13 +11200,13 @@ with their syntax:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12485:1-12488:55" dir="auto">An <a href="@">email autolink</a>
-consists of <code>&lt;</code>, followed by an [email address],
-followed by <code>&gt;</code>.  The link's label is the email address,
-and the URL is <code>mailto:</code> followed by the email address.</p>
-<p data-sourcepos="12490:1-12493:83" dir="auto">An <a href="@">email address</a>,
+<p data-sourcepos="12485:1-12488:55" dir="auto">An <a data-sourcepos="12485:4-12485:22" href="@">email autolink</a>
+consists of <code data-sourcepos="12486:14-12486:14">&lt;</code>, followed by an [email address],
+followed by <code data-sourcepos="12487:14-12487:14">&gt;</code>.  The link's label is the email address,
+and the URL is <code data-sourcepos="12488:17-12488:23">mailto:</code> followed by the email address.</p>
+<p data-sourcepos="12490:1-12493:83" dir="auto">An <a data-sourcepos="12490:4-12490:21" href="@">email address</a>,
 for these purposes, is anything that matches
-the <a href="https://html.spec.whatwg.org/multipage/forms.html#e-mail-state-(type=email)" rel="nofollow noreferrer noopener" target="_blank">non-normative regex from the HTML5
+the <a data-sourcepos="12493:5-12493:82" href="https://html.spec.whatwg.org/multipage/forms.html#e-mail-state-(type=email)" rel="nofollow noreferrer noopener" target="_blank">non-normative regex from the HTML5
 spec</a>:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="12495:5-12497:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">/^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?</span>
@@ -11318,21 +11318,21 @@ spec</a>:</p>
 <div>
 <h2 data-sourcepos="12622:1-12622:24">
 <a id="user-content-autolinks-extension" class="anchor" href="#autolinks-extension" aria-hidden="true"></a>Autolinks (extension)</h2>
-<p data-sourcepos="12624:1-12625:29">GFM enables the <code>autolink</code> extension, where autolinks will be recognised in a
+<p data-sourcepos="12624:1-12625:29">GFM enables the <code data-sourcepos="12624:18-12624:25">autolink</code> extension, where autolinks will be recognised in a
 greater number of conditions.</p>
-<p data-sourcepos="12627:1-12631:8">[Autolink]s can also be constructed without requiring the use of <code>&lt;</code> and to <code>&gt;</code>
+<p data-sourcepos="12627:1-12631:8">[Autolink]s can also be constructed without requiring the use of <code data-sourcepos="12627:67-12627:67">&lt;</code> and to <code data-sourcepos="12627:78-12627:78">&gt;</code>
 to delimit them, although they will be recognized under a smaller set of
 circumstances.  All such recognized autolinks can only come at the beginning of
-a line, after whitespace, or any of the delimiting characters <code>*</code>, <code>_</code>, <code>~</code>,
-and <code>(</code>.</p>
-<p data-sourcepos="12633:1-12639:73">An <a href="@">extended www autolink</a> will be recognized
-when the text <code>www.</code> is found followed by a [valid domain].
-A <a href="@">valid domain</a> consists of segments
-of alphanumeric characters, underscores (<code>_</code>) and hyphens (<code>-</code>)
-separated by periods (<code>.</code>).
+a line, after whitespace, or any of the delimiting characters <code data-sourcepos="12630:64-12630:64">*</code>, <code data-sourcepos="12630:69-12630:69">_</code>, <code data-sourcepos="12630:74-12630:74">~</code>,
+and <code data-sourcepos="12631:6-12631:6">(</code>.</p>
+<p data-sourcepos="12633:1-12639:73">An <a data-sourcepos="12633:4-12633:29" href="@">extended www autolink</a> will be recognized
+when the text <code data-sourcepos="12634:16-12634:19">www.</code> is found followed by a [valid domain].
+A <a data-sourcepos="12635:3-12635:19" href="@">valid domain</a> consists of segments
+of alphanumeric characters, underscores (<code data-sourcepos="12636:43-12636:43">_</code>) and hyphens (<code data-sourcepos="12636:61-12636:61">-</code>)
+separated by periods (<code data-sourcepos="12637:24-12637:24">.</code>).
 There must be at least one period,
 and no underscores may be present in the last two segments of the domain.</p>
-<p data-sourcepos="12641:1-12641:49">The scheme <code>http</code> will be inserted automatically:</p>
+<p data-sourcepos="12641:1-12641:49">The scheme <code data-sourcepos="12641:13-12641:16">http</code> will be inserted automatically:</p>
 <div>
 <div><a href="#example-621">Example 621</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11344,7 +11344,7 @@ and no underscores may be present in the last two segments of the domain.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12655:1-12655:77">After a [valid domain], zero or more non-space non-<code>&lt;</code> characters may follow:</p>
+<p data-sourcepos="12655:1-12655:77">After a [valid domain], zero or more non-space non-<code data-sourcepos="12655:53-12655:53">&lt;</code> characters may follow:</p>
 <div>
 <div><a href="#example-622">Example 622</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11356,8 +11356,8 @@ and no underscores may be present in the last two segments of the domain.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12669:1-12669:64">We then apply <a href="@">extended autolink path validation</a> as follows:</p>
-<p data-sourcepos="12671:1-12673:21">Trailing punctuation (specifically, <code>?</code>, <code>!</code>, <code>.</code>, <code>,</code>, <code>:</code>, <code>*</code>, <code>_</code>, and <code>~</code>)
+<p data-sourcepos="12669:1-12669:64">We then apply <a data-sourcepos="12669:15-12669:52" href="@">extended autolink path validation</a> as follows:</p>
+<p data-sourcepos="12671:1-12673:21">Trailing punctuation (specifically, <code data-sourcepos="12671:38-12671:38">?</code>, <code data-sourcepos="12671:43-12671:43">!</code>, <code data-sourcepos="12671:48-12671:48">.</code>, <code data-sourcepos="12671:53-12671:53">,</code>, <code data-sourcepos="12671:58-12671:58">:</code>, <code data-sourcepos="12671:63-12671:63">*</code>, <code data-sourcepos="12671:68-12671:68">_</code>, and <code data-sourcepos="12671:77-12671:77">~</code>)
 will not be considered part of the autolink, though they may be included in the
 interior of the link:</p>
 <div>
@@ -11374,7 +11374,7 @@ interior of the link:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12690:1-12693:76">When an autolink ends in <code>)</code>, we scan the entire autolink for the total number
+<p data-sourcepos="12690:1-12693:76">When an autolink ends in <code data-sourcepos="12690:27-12690:27">)</code>, we scan the entire autolink for the total number
 of parentheses.  If there is a greater number of closing parentheses than
 opening ones, we don't consider the unmatched trailing parentheses part of the
 autolink, in order to facilitate including an autolink inside a parenthesis:</p>
@@ -11398,7 +11398,7 @@ autolink, in order to facilitate including an autolink inside a parenthesis:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12716:1-12718:8">This check is only done when the link ends in a closing parentheses <code>)</code>, so if
+<p data-sourcepos="12716:1-12718:8">This check is only done when the link ends in a closing parentheses <code data-sourcepos="12716:70-12716:70">)</code>, so if
 the only parentheses are in the interior of the autolink, no special rules are
 applied:</p>
 <div>
@@ -11412,8 +11412,8 @@ applied:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12732:1-12735:13">If an autolink ends in a semicolon (<code>;</code>), we check to see if it appears to
-resemble an [entity reference][entity references]; if the preceding text is <code>&amp;</code>
+<p data-sourcepos="12732:1-12735:13">If an autolink ends in a semicolon (<code data-sourcepos="12732:38-12732:38">;</code>), we check to see if it appears to
+resemble an [entity reference][entity references]; if the preceding text is <code data-sourcepos="12733:78-12733:78">&amp;</code>
 followed by one or more alphanumeric characters.  If so, it is excluded from
 the autolink:</p>
 <div>
@@ -11430,7 +11430,7 @@ the autolink:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12752:1-12752:33"><code>&lt;</code> immediately ends an autolink.</p>
+<p data-sourcepos="12752:1-12752:33"><code data-sourcepos="12752:2-12752:2">&lt;</code> immediately ends an autolink.</p>
 <div>
 <div><a href="#example-627">Example 627</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11442,9 +11442,9 @@ the autolink:</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12766:1-12769:36">An <a href="@">extended url autolink</a> will be recognised when one of the schemes
-<code>http://</code>, <code>https://</code>, or <code>ftp://</code>, followed by a [valid domain], then zero or
-more non-space non-<code>&lt;</code> characters according to
+<p data-sourcepos="12766:1-12769:36">An <a data-sourcepos="12766:4-12766:29" href="@">extended url autolink</a> will be recognised when one of the schemes
+<code data-sourcepos="12767:2-12767:8">http://</code>, <code data-sourcepos="12767:13-12767:20">https://</code>, or <code data-sourcepos="12767:28-12767:33">ftp://</code>, followed by a [valid domain], then zero or
+more non-space non-<code data-sourcepos="12768:21-12768:21">&lt;</code> characters according to
 [extended autolink path validation]:</p>
 <div>
 <div><a href="#example-628">Example 628</a></div>
@@ -11463,18 +11463,18 @@ more non-space non-<code>&lt;</code> characters according to
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12790:1-12792:20">An <a href="@">extended email autolink</a> will be recognised when an email address is
+<p data-sourcepos="12790:1-12792:20">An <a data-sourcepos="12790:4-12790:31" href="@">extended email autolink</a> will be recognised when an email address is
 recognised within any text node.  Email addresses are recognised according to
 the following rules:</p>
 <ul data-sourcepos="12794:1-12800:0">
-<li data-sourcepos="12794:1-12794:75">One ore more characters which are alphanumeric, or <code>.</code>, <code>-</code>, <code>_</code>, or <code>+</code>.</li>
-<li data-sourcepos="12795:1-12795:16">An <code>@</code> symbol.</li>
-<li data-sourcepos="12796:1-12800:0">One or more characters which are alphanumeric, or <code>-</code> or <code>_</code>,
-separated by periods (<code>.</code>).
+<li data-sourcepos="12794:1-12794:75">One ore more characters which are alphanumeric, or <code data-sourcepos="12794:55-12794:55">.</code>, <code data-sourcepos="12794:60-12794:60">-</code>, <code data-sourcepos="12794:65-12794:65">_</code>, or <code data-sourcepos="12794:73-12794:73">+</code>.</li>
+<li data-sourcepos="12795:1-12795:16">An <code data-sourcepos="12795:7-12795:7">@</code> symbol.</li>
+<li data-sourcepos="12796:1-12800:0">One or more characters which are alphanumeric, or <code data-sourcepos="12796:54-12796:54">-</code> or <code data-sourcepos="12796:61-12796:61">_</code>,
+separated by periods (<code data-sourcepos="12797:26-12797:26">.</code>).
 There must be at least one period.
-The last character must not be one of <code>-</code> or <code>_</code>.</li>
+The last character must not be one of <code data-sourcepos="12799:42-12799:42">-</code> or <code data-sourcepos="12799:49-12799:49">_</code>.</li>
 </ul>
-<p data-sourcepos="12801:1-12801:71">The scheme <code>mailto:</code> will automatically be added to the generated link:</p>
+<p data-sourcepos="12801:1-12801:71">The scheme <code data-sourcepos="12801:13-12801:19">mailto:</code> will automatically be added to the generated link:</p>
 <div>
 <div><a href="#example-629">Example 629</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11486,7 +11486,7 @@ The last character must not be one of <code>-</code> or <code>_</code>.</li>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12815:1-12815:44"><code>+</code> can occur before the <code>@</code>, but not after.</p>
+<p data-sourcepos="12815:1-12815:44"><code data-sourcepos="12815:2-12815:2">+</code> can occur before the <code data-sourcepos="12815:27-12815:27">@</code>, but not after.</p>
 <div>
 <div><a href="#example-630">Example 630</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -11498,7 +11498,7 @@ The last character must not be one of <code>-</code> or <code>_</code>.</li>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="12829:1-12831:12"><code>.</code>, <code>-</code>, and <code>_</code> can occur on both sides of the <code>@</code>, but only <code>.</code> may occur at
+<p data-sourcepos="12829:1-12831:12"><code data-sourcepos="12829:2-12829:2">.</code>, <code data-sourcepos="12829:7-12829:7">-</code>, and <code data-sourcepos="12829:16-12829:16">_</code> can occur on both sides of the <code data-sourcepos="12829:51-12829:51">@</code>, but only <code data-sourcepos="12829:65-12829:65">.</code> may occur at
 the end of the email address, in which case it will not be considered part of
 the address:</p>
 <div>
@@ -11524,58 +11524,58 @@ the address:</p>
 </div>
 <h2 data-sourcepos="12856:1-12856:11" dir="auto">
 <a id="user-content-raw-html" class="anchor" href="#raw-html" aria-hidden="true"></a>Raw HTML</h2>
-<p data-sourcepos="12858:1-12861:57" dir="auto">Text between <code>&lt;</code> and <code>&gt;</code> that looks like an HTML tag is parsed as a
+<p data-sourcepos="12858:1-12861:57" dir="auto">Text between <code data-sourcepos="12858:15-12858:15">&lt;</code> and <code data-sourcepos="12858:23-12858:23">&gt;</code> that looks like an HTML tag is parsed as a
 raw HTML tag and will be rendered in HTML without escaping.
 Tag and attribute names are not limited to current HTML tags,
 so custom tags (and even, say, DocBook tags) may be used.</p>
 <p data-sourcepos="12863:1-12863:29" dir="auto">Here is the grammar for tags:</p>
-<p data-sourcepos="12865:1-12867:14" dir="auto">A <a href="@">tag name</a> consists of an ASCII letter
+<p data-sourcepos="12865:1-12867:14" dir="auto">A <a data-sourcepos="12865:3-12865:15" href="@">tag name</a> consists of an ASCII letter
 followed by zero or more ASCII letters, digits, or
-hyphens (<code>-</code>).</p>
-<p data-sourcepos="12869:1-12871:32" dir="auto">An <a href="@">attribute</a> consists of [whitespace],
+hyphens (<code data-sourcepos="12867:11-12867:11">-</code>).</p>
+<p data-sourcepos="12869:1-12871:32" dir="auto">An <a data-sourcepos="12869:4-12869:17" href="@">attribute</a> consists of [whitespace],
 an [attribute name], and an optional
 [attribute value specification].</p>
-<p data-sourcepos="12873:1-12876:52" dir="auto">An <a href="@">attribute name</a>
-consists of an ASCII letter, <code>_</code>, or <code>:</code>, followed by zero or more ASCII
-letters, digits, <code>_</code>, <code>.</code>, <code>:</code>, or <code>-</code>.  (Note:  This is the XML
+<p data-sourcepos="12873:1-12876:52" dir="auto">An <a data-sourcepos="12873:4-12873:22" href="@">attribute name</a>
+consists of an ASCII letter, <code data-sourcepos="12874:31-12874:31">_</code>, or <code data-sourcepos="12874:39-12874:39">:</code>, followed by zero or more ASCII
+letters, digits, <code data-sourcepos="12875:19-12875:19">_</code>, <code data-sourcepos="12875:24-12875:24">.</code>, <code data-sourcepos="12875:29-12875:29">:</code>, or <code data-sourcepos="12875:37-12875:37">-</code>.  (Note:  This is the XML
 specification restricted to ASCII.  HTML5 is laxer.)</p>
-<p data-sourcepos="12878:1-12881:7" dir="auto">An <a href="@">attribute value specification</a>
+<p data-sourcepos="12878:1-12881:7" dir="auto">An <a data-sourcepos="12878:4-12878:37" href="@">attribute value specification</a>
 consists of optional [whitespace],
-a <code>=</code> character, optional [whitespace], and an [attribute
+a <code data-sourcepos="12880:4-12880:4">=</code> character, optional [whitespace], and an [attribute
 value].</p>
-<p data-sourcepos="12883:1-12885:72" dir="auto">An <a href="@">attribute value</a>
+<p data-sourcepos="12883:1-12885:72" dir="auto">An <a data-sourcepos="12883:4-12883:23" href="@">attribute value</a>
 consists of an [unquoted attribute value],
 a [single-quoted attribute value], or a [double-quoted attribute value].</p>
-<p data-sourcepos="12887:1-12889:60" dir="auto">An <a href="@">unquoted attribute value</a>
+<p data-sourcepos="12887:1-12889:60" dir="auto">An <a data-sourcepos="12887:4-12887:32" href="@">unquoted attribute value</a>
 is a nonempty string of characters not
-including [whitespace], <code>"</code>, <code>'</code>, <code>=</code>, <code>&lt;</code>, <code>&gt;</code>, or <code>`</code>.</p>
-<p data-sourcepos="12891:1-12893:46" dir="auto">A <a href="@">single-quoted attribute value</a>
-consists of <code>'</code>, zero or more
-characters not including <code>'</code>, and a final <code>'</code>.</p>
-<p data-sourcepos="12895:1-12897:46" dir="auto">A <a href="@">double-quoted attribute value</a>
-consists of <code>"</code>, zero or more
-characters not including <code>"</code>, and a final <code>"</code>.</p>
-<p data-sourcepos="12899:1-12901:31" dir="auto">An <a href="@">open tag</a> consists of a <code>&lt;</code> character, a [tag name],
-zero or more [attributes], optional [whitespace], an optional <code>/</code>
-character, and a <code>&gt;</code> character.</p>
-<p data-sourcepos="12903:1-12904:57" dir="auto">A <a href="@">closing tag</a> consists of the string <code>&lt;/</code>, a
-[tag name], optional [whitespace], and the character <code>&gt;</code>.</p>
-<p data-sourcepos="12906:1-12909:63" dir="auto">An <a href="@">HTML comment</a> consists of <code>&lt;!--</code> + <em>text</em> + <code>--&gt;</code>,
-where <em>text</em> does not start with <code>&gt;</code> or <code>-&gt;</code>, does not end with <code>-</code>,
-and does not contain <code>--</code>.  (See the
-<a href="http://www.w3.org/TR/html5/syntax.html#comments" rel="nofollow noreferrer noopener" target="_blank">HTML5 spec</a>.)</p>
-<p data-sourcepos="12911:1-12914:5" dir="auto">A <a href="@">processing instruction</a>
-consists of the string <code>&lt;?</code>, a string
-of characters not including the string <code>?&gt;</code>, and the string
-<code>?&gt;</code>.</p>
-<p data-sourcepos="12916:1-12919:37" dir="auto">A <a href="@">declaration</a> consists of the
-string <code>&lt;!</code>, a name consisting of one or more uppercase ASCII letters,
+including [whitespace], <code data-sourcepos="12889:26-12889:26">"</code>, <code data-sourcepos="12889:31-12889:31">'</code>, <code data-sourcepos="12889:36-12889:36">=</code>, <code data-sourcepos="12889:41-12889:41">&lt;</code>, <code data-sourcepos="12889:46-12889:46">&gt;</code>, or <code data-sourcepos="12889:55-12889:57">`</code>.</p>
+<p data-sourcepos="12891:1-12893:46" dir="auto">A <a data-sourcepos="12891:3-12891:36" href="@">single-quoted attribute value</a>
+consists of <code data-sourcepos="12892:14-12892:14">'</code>, zero or more
+characters not including <code data-sourcepos="12893:27-12893:27">'</code>, and a final <code data-sourcepos="12893:44-12893:44">'</code>.</p>
+<p data-sourcepos="12895:1-12897:46" dir="auto">A <a data-sourcepos="12895:3-12895:36" href="@">double-quoted attribute value</a>
+consists of <code data-sourcepos="12896:14-12896:14">"</code>, zero or more
+characters not including <code data-sourcepos="12897:27-12897:27">"</code>, and a final <code data-sourcepos="12897:44-12897:44">"</code>.</p>
+<p data-sourcepos="12899:1-12901:31" dir="auto">An <a data-sourcepos="12899:4-12899:16" href="@">open tag</a> consists of a <code data-sourcepos="12899:33-12899:33">&lt;</code> character, a [tag name],
+zero or more [attributes], optional [whitespace], an optional <code data-sourcepos="12900:64-12900:64">/</code>
+character, and a <code data-sourcepos="12901:19-12901:19">&gt;</code> character.</p>
+<p data-sourcepos="12903:1-12904:57" dir="auto">A <a data-sourcepos="12903:3-12903:18" href="@">closing tag</a> consists of the string <code data-sourcepos="12903:44-12903:45">&lt;/</code>, a
+[tag name], optional [whitespace], and the character <code data-sourcepos="12904:55-12904:55">&gt;</code>.</p>
+<p data-sourcepos="12906:1-12909:63" dir="auto">An <a data-sourcepos="12906:4-12906:20" href="@">HTML comment</a> consists of <code data-sourcepos="12906:35-12906:38">&lt;!--</code> + <em data-sourcepos="12906:43-12906:48">text</em> + <code data-sourcepos="12906:53-12906:55">--&gt;</code>,
+where <em data-sourcepos="12907:7-12907:12">text</em> does not start with <code data-sourcepos="12907:35-12907:35">&gt;</code> or <code data-sourcepos="12907:42-12907:43">-&gt;</code>, does not end with <code data-sourcepos="12907:66-12907:66">-</code>,
+and does not contain <code data-sourcepos="12908:23-12908:24">--</code>.  (See the
+<a data-sourcepos="12909:1-12909:61" href="http://www.w3.org/TR/html5/syntax.html#comments" rel="nofollow noreferrer noopener" target="_blank">HTML5 spec</a>.)</p>
+<p data-sourcepos="12911:1-12914:5" dir="auto">A <a data-sourcepos="12911:3-12911:29" href="@">processing instruction</a>
+consists of the string <code data-sourcepos="12912:25-12912:26">&lt;?</code>, a string
+of characters not including the string <code data-sourcepos="12913:41-12913:42">?&gt;</code>, and the string
+<code data-sourcepos="12914:2-12914:3">?&gt;</code>.</p>
+<p data-sourcepos="12916:1-12919:37" dir="auto">A <a data-sourcepos="12916:3-12916:18" href="@">declaration</a> consists of the
+string <code data-sourcepos="12917:9-12917:10">&lt;!</code>, a name consisting of one or more uppercase ASCII letters,
 [whitespace], a string of characters not including the
-character <code>&gt;</code>, and the character <code>&gt;</code>.</p>
-<p data-sourcepos="12921:1-12923:28" dir="auto">A <a href="@">CDATA section</a> consists of
-the string <code>&lt;![CDATA[</code>, a string of characters not including the string
-<code>]]&gt;</code>, and the string <code>]]&gt;</code>.</p>
-<p data-sourcepos="12925:1-12927:21" dir="auto">An <a href="@">HTML tag</a> consists of an [open tag], a [closing tag],
+character <code data-sourcepos="12919:12-12919:12">&gt;</code>, and the character <code data-sourcepos="12919:35-12919:35">&gt;</code>.</p>
+<p data-sourcepos="12921:1-12923:28" dir="auto">A <a data-sourcepos="12921:3-12921:20" href="@">CDATA section</a> consists of
+the string <code data-sourcepos="12922:13-12922:21">&lt;![CDATA[</code>, a string of characters not including the string
+<code data-sourcepos="12923:2-12923:4">]]&gt;</code>, and the string <code data-sourcepos="12923:24-12923:26">]]&gt;</code>.</p>
+<p data-sourcepos="12925:1-12927:21" dir="auto">An <a data-sourcepos="12925:4-12925:16" href="@">HTML tag</a> consists of an [open tag], a [closing tag],
 an [HTML comment], a [processing instruction], a [declaration],
 or a [CDATA section].</p>
 <p data-sourcepos="12929:1-12929:31" dir="auto">Here are some simple open tags:</p>
@@ -11847,20 +11847,20 @@ attributes:</p>
 <div>
 <h2 data-sourcepos="13258:1-13258:34">
 <a id="user-content-disallowed-raw-html-extension" class="anchor" href="#disallowed-raw-html-extension" aria-hidden="true"></a>Disallowed Raw HTML (extension)</h2>
-<p data-sourcepos="13260:1-13261:36">GFM enables the <code>tagfilter</code> extension, where the following HTML tags will be
+<p data-sourcepos="13260:1-13261:36">GFM enables the <code data-sourcepos="13260:18-13260:26">tagfilter</code> extension, where the following HTML tags will be
 filtered when rendering HTML output:</p>
 <ul data-sourcepos="13263:1-13272:0">
-<li data-sourcepos="13263:1-13263:11"><code>&lt;title&gt;</code></li>
-<li data-sourcepos="13264:1-13264:14"><code>&lt;textarea&gt;</code></li>
-<li data-sourcepos="13265:1-13265:11"><code>&lt;style&gt;</code></li>
-<li data-sourcepos="13266:1-13266:9"><code>&lt;xmp&gt;</code></li>
-<li data-sourcepos="13267:1-13267:12"><code>&lt;iframe&gt;</code></li>
-<li data-sourcepos="13268:1-13268:13"><code>&lt;noembed&gt;</code></li>
-<li data-sourcepos="13269:1-13269:14"><code>&lt;noframes&gt;</code></li>
-<li data-sourcepos="13270:1-13270:12"><code>&lt;script&gt;</code></li>
-<li data-sourcepos="13271:1-13272:0"><code>&lt;plaintext&gt;</code></li>
+<li data-sourcepos="13263:1-13263:11"><code data-sourcepos="13263:4-13263:10">&lt;title&gt;</code></li>
+<li data-sourcepos="13264:1-13264:14"><code data-sourcepos="13264:4-13264:13">&lt;textarea&gt;</code></li>
+<li data-sourcepos="13265:1-13265:11"><code data-sourcepos="13265:4-13265:10">&lt;style&gt;</code></li>
+<li data-sourcepos="13266:1-13266:9"><code data-sourcepos="13266:4-13266:8">&lt;xmp&gt;</code></li>
+<li data-sourcepos="13267:1-13267:12"><code data-sourcepos="13267:4-13267:11">&lt;iframe&gt;</code></li>
+<li data-sourcepos="13268:1-13268:13"><code data-sourcepos="13268:4-13268:12">&lt;noembed&gt;</code></li>
+<li data-sourcepos="13269:1-13269:14"><code data-sourcepos="13269:4-13269:13">&lt;noframes&gt;</code></li>
+<li data-sourcepos="13270:1-13270:12"><code data-sourcepos="13270:4-13270:11">&lt;script&gt;</code></li>
+<li data-sourcepos="13271:1-13272:0"><code data-sourcepos="13271:4-13271:14">&lt;plaintext&gt;</code></li>
 </ul>
-<p data-sourcepos="13273:1-13276:71">Filtering is done by replacing the leading <code>&lt;</code> with the entity <code>&amp;lt;</code>.  These
+<p data-sourcepos="13273:1-13276:71">Filtering is done by replacing the leading <code data-sourcepos="13273:45-13273:45">&lt;</code> with the entity <code data-sourcepos="13273:65-13273:68">&amp;lt;</code>.  These
 tags are chosen in particular as they change how HTML is interpreted in a way
 unique to them (i.e. nested HTML is interpreted differently), and this is
 usually undesireable in the context of other rendered Markdown content.</p>
@@ -11888,8 +11888,8 @@ usually undesireable in the context of other rendered Markdown content.</p>
 <a id="user-content-hard-line-breaks" class="anchor" href="#hard-line-breaks" aria-hidden="true"></a>Hard line breaks</h2>
 <p data-sourcepos="13303:1-13306:27" dir="auto">A line break (not in a code span or HTML tag) that is preceded
 by two or more spaces and does not occur at the end of a block
-is parsed as a <a href="@">hard line break</a> (rendered
-in HTML as a <code>&lt;br /&gt;</code> tag):</p>
+is parsed as a <a data-sourcepos="13305:16-13305:35" href="@">hard line break</a> (rendered
+in HTML as a <code data-sourcepos="13306:15-13306:20">&lt;br /&gt;</code> tag):</p>
 <div>
 <div><a href="#example-654">Example 654</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12090,7 +12090,7 @@ other block element:</p>
 <a id="user-content-soft-line-breaks" class="anchor" href="#soft-line-breaks" aria-hidden="true"></a>Soft line breaks</h2>
 <p data-sourcepos="13543:1-13547:62" dir="auto">A regular line break (not in a code span or HTML tag) that is not
 preceded by two or more spaces or a backslash is parsed as a
-<a href="@">softbreak</a>.  (A softbreak may be rendered in HTML either as a
+<a data-sourcepos="13545:1-13545:14" href="@">softbreak</a>.  (A softbreak may be rendered in HTML either as a
 [line ending] or as a space. The result will be the same in
 browsers. In the examples here, a [line ending] will be used.)</p>
 <div>
@@ -12167,13 +12167,13 @@ be parsed as plain textual content.</p>
 <a id="user-content-gitlab-official-specification-markdown" class="anchor" href="#gitlab-official-specification-markdown" aria-hidden="true"></a>GitLab Official Specification Markdown</h1>
 <p data-sourcepos="13636:1-13638:104" dir="auto">Note: This specification is a work in progress. Only some of the official GLFM extensions
 are defined. We will continue to add any additional ones found in the
-<a href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
+<a data-sourcepos="13638:1-13638:103" href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <p data-sourcepos="13640:1-13641:69" dir="auto">There is currently only this single top-level heading, but the
 examples may be split into multiple top-level headings in the future.</p>
 <h2 data-sourcepos="13643:1-13643:18" dir="auto">
 <a id="user-content-task-list-items" class="anchor" href="#task-list-items" aria-hidden="true"></a>Task list items</h2>
 <p data-sourcepos="13645:1-13646:117" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="13646:1-13646:70" href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13648:1-13651:39" dir="auto">Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
 GitLab extends the behavior of task list items to support additional features.
 Some of these features are in-progress, and should not yet be considered part of the official
@@ -12236,7 +12236,7 @@ GitLab Flavored Markdown specification.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="13719:1-13720:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code>&lt;del&gt;</code> tag is not applied to the
+<p data-sourcepos="13719:1-13720:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code data-sourcepos="13719:53-13719:57">&lt;del&gt;</code> tag is not applied to the
 loose text; it has strikethrough applied with CSS.</p>
 <div>
 <div><a href="#example-677">Example 677</a></div>
@@ -12267,7 +12267,7 @@ loose text; it has strikethrough applied with CSS.</p>
 <h2 data-sourcepos="13749:1-13749:15" dir="auto">
 <a id="user-content-front-matter" class="anchor" href="#front-matter" aria-hidden="true"></a>Front matter</h2>
 <p data-sourcepos="13751:1-13752:121" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="13752:1-13752:74" href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13754:1-13755:95" dir="auto">Front matter is metadata included at the beginning of a Markdown document, preceding the content.
 This data can be used by static site generators like Jekyll, Hugo, and many other applications.</p>
 <p data-sourcepos="13757:1-13757:18" dir="auto">YAML front matter:</p>
@@ -12364,15 +12364,15 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <h2 data-sourcepos="13858:1-13858:20" dir="auto">
 <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"></a>Table of contents</h2>
 <p data-sourcepos="13860:1-13862:46" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
+<a data-sourcepos="13861:1-13861:84" href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
 in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13864:1-13868:23" dir="auto">NOTE: Because of this bug (<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/359077" rel="nofollow noreferrer noopener" target="_blank">https://gitlab.com/gitlab-org/gitlab/-/issues/359077</a>),
-we cannot actually include the <code>TOC</code> tag with single brackets in backticks
+we cannot actually include the <code data-sourcepos="13865:33-13865:35">TOC</code> tag with single brackets in backticks
 in this Markdown document, otherwise it would render a table of contents inline
-right here. So, it's been switched to <code>[</code> + <code>TOC</code> + <code>]</code> instead. This can be reverted
+right here. So, it's been switched to <code data-sourcepos="13867:40-13867:40">[</code> + <code data-sourcepos="13867:46-13867:48">TOC</code> + <code data-sourcepos="13867:54-13867:54">]</code> instead. This can be reverted
 once that bug is fixed.</p>
 <p data-sourcepos="13870:1-13871:76" dir="auto">A table of contents is an unordered list that links to subheadings in the document.
-Add either the <code>[[_TOC_]]</code> tag or the <code>[</code> + <code>TOC</code> + <code>]</code> tag on its own line.</p>
+Add either the <code data-sourcepos="13871:17-13871:25">[[_TOC_]]</code> tag or the <code data-sourcepos="13871:40-13871:40">[</code> + <code data-sourcepos="13871:46-13871:48">TOC</code> + <code data-sourcepos="13871:54-13871:54">]</code> tag on its own line.</p>
 <div>
 <div><a href="#example-683">Example 683</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12463,9 +12463,9 @@ line.</p>
 <h2 data-sourcepos="13966:1-13966:8" dir="auto">
 <a id="user-content-audio" class="anchor" href="#audio" aria-hidden="true"></a>Audio</h2>
 <p data-sourcepos="13968:1-13969:107" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#audio" rel="nofollow noreferrer noopener" target="_blank">audio</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="13969:1-13969:60" href="https://docs.gitlab.com/ee/user/markdown.html#audio" rel="nofollow noreferrer noopener" target="_blank">audio</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13971:1-13973:63" dir="auto">GLFM renders image elements as an audio player as long as the resource’s file extension is
-one of the following supported audio extensions <code>.mp3</code>, <code>.oga</code>, <code>.ogg</code>, <code>.spx</code>, and <code>.wav</code>.
+one of the following supported audio extensions <code data-sourcepos="13972:50-13972:53">.mp3</code>, <code data-sourcepos="13972:58-13972:61">.oga</code>, <code data-sourcepos="13972:66-13972:69">.ogg</code>, <code data-sourcepos="13972:74-13972:77">.spx</code>, and <code data-sourcepos="13972:86-13972:89">.wav</code>.
 Audio ignore the alternative text part of an image declaration.</p>
 <div>
 <div><a href="#example-687">Example 687</a></div>
@@ -12495,9 +12495,9 @@ Audio ignore the alternative text part of an image declaration.</p>
 <h2 data-sourcepos="14003:1-14003:8" dir="auto">
 <a id="user-content-video" class="anchor" href="#video" aria-hidden="true"></a>Video</h2>
 <p data-sourcepos="14005:1-14006:109" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#videos" rel="nofollow noreferrer noopener" target="_blank">videos</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="14006:1-14006:62" href="https://docs.gitlab.com/ee/user/markdown.html#videos" rel="nofollow noreferrer noopener" target="_blank">videos</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="14008:1-14010:64" dir="auto">GLFM renders image elements as a video player as long as the resource’s file extension is
-one of the following supported video extensions  <code>.mp4</code>, <code>.m4v</code>, <code>.mov</code>, <code>.webm</code>, and <code>.ogv</code>.
+one of the following supported video extensions  <code data-sourcepos="14009:51-14009:54">.mp4</code>, <code data-sourcepos="14009:59-14009:62">.m4v</code>, <code data-sourcepos="14009:67-14009:70">.mov</code>, <code data-sourcepos="14009:75-14009:79">.webm</code>, and <code data-sourcepos="14009:88-14009:91">.ogv</code>.
 Videos ignore the alternative text part of an image declaration.</p>
 <div>
 <div><a href="#example-689">Example 689</a></div>
@@ -12526,10 +12526,10 @@ Videos ignore the alternative text part of an image declaration.</p>
 </div>
 <h2 data-sourcepos="14041:1-14041:41" dir="auto">
 <a id="user-content-markdown-preview-api-request-overrides" class="anchor" href="#markdown-preview-api-request-overrides" aria-hidden="true"></a>Markdown Preview API Request Overrides</h2>
-<p data-sourcepos="14043:1-14045:42" dir="auto">This section contains examples of all controllers which use <code>PreviewMarkdown</code> module
-and use different <code>markdown_context_params</code>. They exercise the various <code>preview_markdown</code>
-endpoints via <code>glfm_example_metadata.yml</code>.</p>
-<p data-sourcepos="14048:1-14048:75" dir="auto"><code>preview_markdown</code> exercising <code>groups</code> API endpoint and <code>UploadLinkFilter</code>:</p>
+<p data-sourcepos="14043:1-14045:42" dir="auto">This section contains examples of all controllers which use <code data-sourcepos="14043:62-14043:76">PreviewMarkdown</code> module
+and use different <code data-sourcepos="14044:20-14044:42">markdown_context_params</code>. They exercise the various <code data-sourcepos="14044:73-14044:88">preview_markdown</code>
+endpoints via <code data-sourcepos="14045:16-14045:40">glfm_example_metadata.yml</code>.</p>
+<p data-sourcepos="14048:1-14048:75" dir="auto"><code data-sourcepos="14048:2-14048:17">preview_markdown</code> exercising <code data-sourcepos="14048:32-14048:37">groups</code> API endpoint and <code data-sourcepos="14048:58-14048:73">UploadLinkFilter</code>:</p>
 <div>
 <div><a href="#example-691">Example 691</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12541,7 +12541,7 @@ endpoints via <code>glfm_example_metadata.yml</code>.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14062:1-14062:81" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>RepositoryLinkFilter</code>:</p>
+<p data-sourcepos="14062:1-14062:81" dir="auto"><code data-sourcepos="14062:2-14062:17">preview_markdown</code> exercising <code data-sourcepos="14062:32-14062:39">projects</code> API endpoint and <code data-sourcepos="14062:60-14062:79">RepositoryLinkFilter</code>:</p>
 <div>
 <div><a href="#example-692">Example 692</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12553,7 +12553,7 @@ endpoints via <code>glfm_example_metadata.yml</code>.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14076:1-14076:83" dir="auto"><code>preview_markdown</code> exercising <code>projects</code> API endpoint and <code>SnippetReferenceFilter</code>:</p>
+<p data-sourcepos="14076:1-14076:83" dir="auto"><code data-sourcepos="14076:2-14076:17">preview_markdown</code> exercising <code data-sourcepos="14076:32-14076:39">projects</code> API endpoint and <code data-sourcepos="14076:60-14076:81">SnippetReferenceFilter</code>:</p>
 <div>
 <div><a href="#example-693">Example 693</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12565,10 +12565,10 @@ endpoints via <code>glfm_example_metadata.yml</code>.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14090:1-14093:50" dir="auto"><code>preview_markdown</code> exercising personal (non-project) <code>snippets</code> API endpoint. This is
+<p data-sourcepos="14090:1-14093:50" dir="auto"><code data-sourcepos="14090:2-14090:17">preview_markdown</code> exercising personal (non-project) <code data-sourcepos="14090:55-14090:62">snippets</code> API endpoint. This is
 only used by the comment field on personal snippets. It has no unique custom markdown
 extension behavior, and specifically does not render snippet references via
-<code>SnippetReferenceFilter</code>, even if the ID is valid.</p>
+<code data-sourcepos="14093:2-14093:23">SnippetReferenceFilter</code>, even if the ID is valid.</p>
 <div>
 <div><a href="#example-694">Example 694</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12580,7 +12580,7 @@ extension behavior, and specifically does not render snippet references via
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14107:1-14107:80" dir="auto"><code>preview_markdown</code> exercising project <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>:</p>
+<p data-sourcepos="14107:1-14107:80" dir="auto"><code data-sourcepos="14107:2-14107:17">preview_markdown</code> exercising project <code data-sourcepos="14107:40-14107:44">wikis</code> API endpoint and <code data-sourcepos="14107:65-14107:78">WikiLinkFilter</code>:</p>
 <div>
 <div><a href="#example-695">Example 695</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12592,8 +12592,8 @@ extension behavior, and specifically does not render snippet references via
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="14121:1-14122:63" dir="auto"><code>preview_markdown</code> exercising group <code>wikis</code> API endpoint and <code>WikiLinkFilter</code>. This example
-also requires an EE license enabling the <code>group_wikis</code> feature:</p>
+<p data-sourcepos="14121:1-14122:63" dir="auto"><code data-sourcepos="14121:2-14121:17">preview_markdown</code> exercising group <code data-sourcepos="14121:38-14121:42">wikis</code> API endpoint and <code data-sourcepos="14121:63-14121:76">WikiLinkFilter</code>. This example
+also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53">group_wikis</code> feature:</p>
 <div>
 <div><a href="#example-696">Example 696</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13454,12 +13454,12 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 <h2 data-sourcepos="15034:1-15034:19" dir="auto">
 <a id="user-content-image-attributes" class="anchor" href="#image-attributes" aria-hidden="true"></a>Image Attributes</h2>
 <p data-sourcepos="15036:1-15038:46" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions" rel="nofollow noreferrer noopener" target="_blank">Change the image dimensions</a>
+<a data-sourcepos="15037:1-15037:104" href="https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions" rel="nofollow noreferrer noopener" target="_blank">Change the image dimensions</a>
 in the GitLab Flavored Markdown documentation.</p>
-<p data-sourcepos="15040:1-15041:19" dir="auto">The <code>width</code> and <code>height</code> attributes for an image can be specified directly after
+<p data-sourcepos="15040:1-15041:19" dir="auto">The <code data-sourcepos="15040:6-15040:10">width</code> and <code data-sourcepos="15040:18-15040:23">height</code> attributes for an image can be specified directly after
 the image markdown.</p>
 <p data-sourcepos="15043:1-15045:21" dir="auto">General syntax conforms to the
-<a href="https://github.com/jgm/commonmark-hs/blob/master/commonmark-extensions/test/attributes.md" rel="nofollow noreferrer noopener" target="_blank">commonmark-hs attribute syntax</a>
+<a data-sourcepos="15044:1-15044:123" href="https://github.com/jgm/commonmark-hs/blob/master/commonmark-extensions/test/attributes.md" rel="nofollow noreferrer noopener" target="_blank">commonmark-hs attribute syntax</a>
 where it makes sense.</p>
 <div>
 <div><a href="#example-749">Example 749</a></div>
@@ -13472,7 +13472,7 @@ where it makes sense.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="15059:1-15059:41" dir="auto"><code>%</code> and <code>px</code> units may also be specified.</p>
+<p data-sourcepos="15059:1-15059:41" dir="auto"><code data-sourcepos="15059:2-15059:2">%</code> and <code data-sourcepos="15059:10-15059:11">px</code> units may also be specified.</p>
 <div>
 <div><a href="#example-750">Example 750</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13522,7 +13522,7 @@ where it makes sense.</p>
 <h2 data-sourcepos="15113:1-15113:12" dir="auto">
 <a id="user-content-footnotes-1" class="anchor" href="#footnotes-1" aria-hidden="true"></a>Footnotes</h2>
 <p data-sourcepos="15115:1-15116:143" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
+<a data-sourcepos="15116:1-15116:142" href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <div>
 <div><a href="#example-754">Example 754</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">

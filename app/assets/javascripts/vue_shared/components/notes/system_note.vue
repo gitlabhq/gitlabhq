@@ -160,13 +160,12 @@ export default {
             v-if="canSeeDescriptionVersion || note.outdated_line_change_path"
             #extra-controls
           >
-            &middot;
             <gl-button
               v-if="canSeeDescriptionVersion"
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
-              class="gl-vertical-align-text-bottom gl-font-sm!"
+              class="gl-vertical-align-text-bottom gl-font-sm! gl-ml-3"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
@@ -190,8 +189,11 @@ export default {
           class="note-text md"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
-          <div class="system-note-commit-list-toggler flex-row" @click="expanded = !expanded">
-            <gl-icon :name="toggleIcon" :size="8" class="gl-mr-2" />
+          <div
+            class="system-note-commit-list-toggler flex-row gl-pl-4 gl-pt-3"
+            @click="expanded = !expanded"
+          >
+            <gl-icon :name="toggleIcon" :size="12" class="gl-mr-2" />
             <span>{{ __('Toggle commit list') }}</span>
           </div>
         </div>

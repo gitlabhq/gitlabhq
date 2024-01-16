@@ -172,6 +172,13 @@ class ProjectTeam
     max_member_access(user.id) >= min_access_level
   end
 
+  # Only for direct and not invited members
+  def has_user?(user)
+    return false unless user
+
+    project.project_members.non_invite.exists?(user: user)
+  end
+
   def human_max_access(user_id)
     Gitlab::Access.human_access(max_member_access(user_id))
   end

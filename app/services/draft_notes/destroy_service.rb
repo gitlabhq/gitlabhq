@@ -15,9 +15,11 @@ module DraftNotes
     private
 
     def clear_highlight_diffs_cache(drafts)
-      if drafts.any? { |draft| draft.diff_file&.unfolded? }
-        merge_request.diffs.clear_cache
-      end
+      merge_request.diffs.clear_cache if unfolded_drafts?(drafts)
+    end
+
+    def unfolded_drafts?(drafts)
+      drafts.any? { |draft| draft.diff_file&.unfolded? }
     end
   end
 end

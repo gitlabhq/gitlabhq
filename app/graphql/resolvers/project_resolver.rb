@@ -2,7 +2,11 @@
 
 module Resolvers
   class ProjectResolver < BaseResolver
-    prepend FullPathResolver
+    def self.target_type
+      'project'
+    end
+
+    include FullPathResolver
 
     type Types::ProjectType, null: true
 

@@ -6,6 +6,10 @@ module Gitlab
       extend ActiveSupport::Concern
       include Gitlab::QuickActions::Dsl
 
+      REBASE_FAILURE_UNMERGEABLE = 'This merge request is currently in an unmergeable state, and cannot be rebased.'
+      REBASE_FAILURE_PROTECTED_BRANCH = 'This merge request branch is protected from force push.'
+      REBASE_FAILURE_REBASE_IN_PROGRESS = 'A rebase is already in progress.'
+
       included do
         # MergeRequest only quick actions definitions
         desc do
@@ -46,6 +50,10 @@ module Gitlab
           @updates[:merge] = params[:merge_request_diff_head_sha]
         end
 
+        ########################################################################
+        #
+        # /rebase
+        #
         types MergeRequest
         desc do
           _('Rebase source branch')
@@ -66,17 +74,17 @@ module Gitlab
         end
         command :rebase do
           unless quick_action_target.permits_force_push?
-            @execution_message[:rebase] = _('This merge request branch is protected from force push.')
+            @execution_message[:rebase] = _(REBASE_FAILURE_PROTECTED_BRANCH)
             next
           end
 
           if quick_action_target.cannot_be_merged?
-            @execution_message[:rebase] = _('This merge request cannot be rebased while there are conflicts.')
+            @execution_message[:rebase] = _(REBASE_FAILURE_UNMERGEABLE)
             next
           end
 
           if quick_action_target.rebase_in_progress?
-            @execution_message[:rebase] = _('A rebase is already in progress.')
+            @execution_message[:rebase] = _(REBASE_FAILURE_REBASE_IN_PROGRESS)
             next
           end
 
@@ -210,7 +218,7 @@ module Gitlab
         explanation { _('Approve the current merge request.') }
         types MergeRequest
         condition do
-          quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user)
+          quick_action_target.persisted? && quick_action_target.eligible_for_approval_by?(current_user) && !quick_action_target.merged?
         end
         command :approve do
           success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
@@ -224,7 +232,7 @@ module Gitlab
         explanation { _('Unapprove the current merge request.') }
         types MergeRequest
         condition do
-          quick_action_target.persisted? && quick_action_target.eligible_for_unapproval_by?(current_user)
+          quick_action_target.persisted? && quick_action_target.eligible_for_unapproval_by?(current_user) && !quick_action_target.merged?
         end
         command :unapprove do
           success = ::MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)

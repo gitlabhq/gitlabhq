@@ -146,7 +146,7 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     context 'when more than 2 columns are given for the order' do
       let(:scope) { Project.order(created_at: :asc, updated_at: :desc, id: :asc) }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to eq(true) }
     end
   end
 end

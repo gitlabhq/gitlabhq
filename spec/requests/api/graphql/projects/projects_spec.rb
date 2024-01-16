@@ -45,14 +45,14 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
     it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
       post_graphql(single_project_query, current_user: current_user)
 
-      query_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         post_graphql(single_project_query, current_user: current_user)
-      end.count
+      end
 
       # There is an N+1 query for max_member_access_for_user_ids
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(query_count + 5)
+      end.not_to exceed_all_query_limit(control).with_threshold(5)
     end
 
     it 'returns the expected projects' do

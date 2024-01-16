@@ -168,6 +168,54 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           end
         end
       end
+
+      describe "redis key overrides" do
+        let(:event_name) { "g_analytics_contribution" }
+
+        before do
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read).with(described_class::KEY_OVERRIDES_PATH).and_return(overrides_file_content)
+        end
+
+        after do
+          described_class.clear_memoization(:key_overrides)
+        end
+
+        context "with an empty file" do
+          let(:overrides_file_content) { "{}" }
+
+          it "tracks the events using original Redis key" do
+            expected_key = "{hll_counters}_#{event_name}-2020-23"
+            expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
+
+            described_class.track_event(event_name, values: entity1)
+          end
+        end
+
+        context "with the file including overrides" do
+          let(:overrides_file_content) { "#{event_name}1: new_key2\n#{event_name}: new_key" }
+
+          context "when the event is included in overrides file" do
+            it "tracks the events using overridden Redis key" do
+              expected_key = "{hll_counters}_new_key-2020-23"
+              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
+
+              described_class.track_event(:g_analytics_contribution, values: entity1)
+            end
+          end
+
+          context "when the event is not included in overrides file" do
+            let(:not_overridden_name) { "g_compliance_dashboard" }
+
+            it "tracks the events using original Redis key" do
+              expected_key = "{hll_counters}_#{not_overridden_name}-2020-23"
+              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
+
+              described_class.track_event(not_overridden_name, values: entity1)
+            end
+          end
+        end
+      end
     end
 
     describe '.unique_events' do
@@ -234,6 +282,16 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect { described_class.unique_events(event_names: [weekly_event], start_date: DateTime.parse('2020-12-26'), end_date: DateTime.parse('2021-02-01')) }
             .not_to raise_error
         end
+      end
+    end
+
+    describe 'key overrides file' do
+      let(:key_overrides) { YAML.safe_load(File.read(described_class::KEY_OVERRIDES_PATH)) }
+
+      it "has a valid structure", :aggregate_failures do
+        expect(key_overrides).to be_a(Hash)
+
+        expect(key_overrides.keys + key_overrides.values).to all(be_a(String))
       end
     end
   end

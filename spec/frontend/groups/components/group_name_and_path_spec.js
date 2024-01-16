@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { merge } from 'lodash';
-import { GlAlert, GlDropdown, GlTruncate, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlTruncate, GlDropdownItem } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -74,7 +74,8 @@ describe('GroupNameAndPath', () => {
   const findSubgroupNameField = () => wrapper.findByLabelText('Subgroup name');
   const findSubgroupSlugField = () => wrapper.findByLabelText('Subgroup slug');
   const findSelectedGroup = () => wrapper.findComponent(GlTruncate);
-  const findAlert = () => extendedWrapper(wrapper.findComponent(GlAlert));
+  const findChangeUrlAlert = () => extendedWrapper(wrapper.findByTestId('changing-url-alert'));
+  const findDotInPathAlert = () => extendedWrapper(wrapper.findByTestId('dot-in-path-alert'));
 
   const apiMockAvailablePath = () => {
     getGroupPathAvailability.mockResolvedValueOnce({
@@ -179,6 +180,12 @@ describe('GroupNameAndPath', () => {
       await findGroupNameField().setValue(mockGroupName);
 
       expectLoadingMessageExists();
+    });
+
+    it('shows warning alert on using dot in path', () => {
+      createComponentEditGroup();
+
+      expect(findDotInPathAlert().exists()).toBe(true);
     });
 
     describe('when path is available', () => {
@@ -396,8 +403,10 @@ describe('GroupNameAndPath', () => {
     it('shows warning alert with `Learn more` link', () => {
       createComponentEditGroup();
 
-      expect(findAlert().exists()).toBe(true);
-      expect(findAlert().findByRole('link', { name: 'Learn more' }).attributes('href')).toBe(
+      expect(findChangeUrlAlert().exists()).toBe(true);
+      expect(
+        findChangeUrlAlert().findByRole('link', { name: 'Learn more' }).attributes('href'),
+      ).toBe(
         helpPagePath('user/group/manage', {
           anchor: 'change-a-groups-path',
         }),

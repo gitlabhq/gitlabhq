@@ -2,7 +2,11 @@
 
 module Resolvers
   class NamespaceResolver < BaseResolver
-    prepend FullPathResolver
+    def self.target_type
+      'namespace'
+    end
+
+    include FullPathResolver
 
     type Types::NamespaceType, null: true
 

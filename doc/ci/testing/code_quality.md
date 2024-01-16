@@ -27,14 +27,15 @@ You can extend the code coverage either by using Code Climate
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Capability                                                             | In Free             | In Premium          | In Ultimate        |
-|:-----------------------------------------------------------------------|:--------------------|:--------------------|:-------------------|
-| [Configure scanners](#customizing-scan-settings)                       | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [Integrate custom scanners](#implement-a-custom-tool)                  | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [See findings in merge request widget](#merge-request-widget)          | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [Generate JSON or HTML report artifacts](#output)                      | **{check-circle}**  | **{check-circle}**  | **{check-circle}** |
-| [See reports in CI pipelines](#pipeline-details-view)                  | **{dotted-circle}** | **{check-circle}**  | **{check-circle}** |
-| [See findings in merge request diff view](#merge-request-changes-view) | **{dotted-circle}** | **{dotted-circle}** | **{check-circle}** |
+| Feature                                                               | In Free                | In Premium             | In Ultimate            |
+|:----------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|
+| [Configure scanners](#customizing-scan-settings)                      | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Integrate custom scanners](#implement-a-custom-tool)                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Generate JSON or HTML report artifacts](#output)                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in merge request widget](#merge-request-widget)             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in pipelines](#pipeline-details-view)                       | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Findings in merge request changes view](#merge-request-changes-view) | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Summary in project quality view](#project-quality-view)              | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## View Code Quality results
 
@@ -219,63 +220,42 @@ To configure the Code Quality job:
 1. Declare a job with the same name as the Code Quality job, after the template's inclusion.
 1. Specify additional keys in the job's stanza.
 
-For an example, see [Download output in JSON format](#download-output-in-json-format).
+For an example, see [Download output in HTML format](#output-in-only-html-format).
 
-### Available CI/CD variables
-
-> In [GitLab 13.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/11100), the option to override the Code Quality environment variables was added.
+## Available CI/CD variables
 
 Code Quality can be customized by defining available CI/CD variables:
 
-| CI/CD variable              | Description |
-| --------------------------- | ----------- |
-| `SOURCE_CODE`               | Path to the source code to scan. |
-| `TIMEOUT_SECONDS`           | Custom timeout per engine container for the `codeclimate analyze` command, default is 900 seconds (15 minutes). |
-| `CODECLIMATE_DEBUG`         | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables) |
-| `CODECLIMATE_DEV`           | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
-| `REPORT_STDOUT`             | Set to print the report to `STDOUT` instead of generating the usual report file. |
-| `REPORT_FORMAT`             | Set to control the format of the generated report file. One of: `json\|html`. |
-| `ENGINE_MEMORY_LIMIT_BYTES` | Set the memory limit for engines, default is 1,024,000,000 bytes. |
-| `CODE_QUALITY_DISABLED`     | Prevents the Code Quality job from running. |
-| `CODECLIMATE_PREFIX`        | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). |
+| CI/CD variable                  | Description |
+|---------------------------------|-------------|
+| `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables). |
+| `CODECLIMATE_DEV`               | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
+| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [Use a private container registry](#use-a-private-container-image-registry). |
+| `CODECLIMATE_REGISTRY_USERNAME` | Set to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`. |
+| `CODECLIMATE_REGISTRY_PASSWORD` | Set to specify the password for the registry domain parsed from `CODECLIMATE_PREFIX`. |
+| `CODE_QUALITY_DISABLED`         | Prevents the Code Quality job from running. |
+| `CODE_QUALITY_IMAGE`            | Set to a fully prefixed image name. Image must be accessible from your job environment. |
+| `ENGINE_MEMORY_LIMIT_BYTES`     | Set the memory limit for engines. Default: 1,024,000,000 bytes. |
+| `REPORT_STDOUT`                 | Set to print the report to `STDOUT` instead of generating the usual report file. |
+| `REPORT_FORMAT`                 | Set to control the format of the generated report file. Either `json` or `html`. |
+| `SOURCE_CODE`                   | Path to the source code to scan. |
+| `TIMEOUT_SECONDS`               | Custom timeout per engine container for the `codeclimate analyze` command. Default: 900 seconds (15 minutes) |
 
 ## Output
 
-Code Quality creates a file named `gl-code-quality-report.json`. The content of this file is
-processed internally and the results shown in the UI. To see the raw results, you can
-configure the Code Quality job to allow download of this file. Format options are JSON format, HTML
-format, or both. Use the HTML format to view the report in a more human-readable
-format. For example, you could publish the HTML format file on GitLab Pages for even easier
+Code Quality outputs a report containing details of issues found. The content of this report is
+processed internally and the results shown in the UI. The report is also output as a job artifact of
+the `code_quality` job, named `gl-code-quality-report.json`. You can optionally output the report in
+HTML format. For example, you could publish the HTML format file on GitLab Pages for even easier
 reviewing.
 
-### Download output in JSON format
+### Output in JSON and HTML format
 
-To be able to download the Code Quality report in JSON format, declare the
-`gl-code-quality-report.json` file as an artifact of the `code_quality` job:
+To output the Code Quality report in JSON and HTML format, you create an additional job. This requires
+Code Quality to be run twice, once each for file format.
 
-```yaml
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
-code_quality:
-  artifacts:
-    paths: [gl-code-quality-report.json]
-```
-
-The full JSON file is available as a
-[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
-
-### Download output in JSON and HTML format
-
-> HTML report format [introduced](https://gitlab.com/gitlab-org/ci-cd/codequality/-/issues/10) in GitLab 13.6.
-
-NOTE:
-To create the HTML format file, the Code Quality job must be run twice, once for each format.
-In this configuration, the JSON format file is created but it is only processed internally.
-
-To be able to download the Code Quality report in both JSON and HTML format, add another job to your
-template by using `extends: code_quality`:
+To output the Code Quality report in HTML format, add another job to your template by using
+`extends: code_quality`:
 
 ```yaml
 include:
@@ -289,18 +269,17 @@ code_quality_html:
     paths: [gl-code-quality-report.html]
 ```
 
-Both the JSON and HTML files are available as
-[downloadable artifacts](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
+Both the JSON and HTML files are output as job artifacts. The HTML file is contained in the
+`artifacts.zip` job artifact.
 
-### Download output in only HTML format
+### Output in only HTML format
 
-To download the Code Quality report in _only_ an HTML format file, set `REPORT_FORMAT` to `html` in
-the existing job.
+To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
+the default definition of the `code_quality` job.
 
 NOTE:
-This does not create a JSON format file, so Code Quality results are not shown in the
-merge request widget, pipeline report, or changes view.
+This does not create a JSON format file, so Code Quality results are not shown in the merge request
+widget, pipeline report, or changes view.
 
 ```yaml
 include:
@@ -313,9 +292,7 @@ code_quality:
     paths: [gl-code-quality-report.html]
 ```
 
-The HTML file is available as a
-[downloadable artifact](../jobs/job_artifacts.md#download-job-artifacts) of the `code_quality`
-job.
+The HTML file is output as a job artifact.
 
 ## Use Code Quality with merge request pipelines
 

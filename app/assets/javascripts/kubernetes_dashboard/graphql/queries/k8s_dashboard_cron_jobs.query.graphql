@@ -1,0 +1,18 @@
+query getK8sDashboardCronJobs($configuration: LocalConfiguration) {
+  k8sCronJobs(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    status {
+      active
+      lastScheduleTime
+    }
+    spec {
+      suspend
+    }
+  }
+}

@@ -141,7 +141,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                   class="gl-vertical-align-middle!"
                   role="cell"
                 >
-                  <gl-emoji
+                  <div
                     data-fallback-src="https://gitlab.com/custom_emoji/custom_emoji/-/raw/main/img/confused_husky.gif"
                     data-name="confused_husky"
                     data-unicode-version="custom"

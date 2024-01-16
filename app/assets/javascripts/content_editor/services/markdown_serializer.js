@@ -228,7 +228,11 @@ const defaultSerializerConfig = {
     [TableHeader.name]: renderTableCell,
     [TableRow.name]: renderTableRow,
     [TaskItem.name]: preserveUnchanged((state, node) => {
-      state.write(`[${node.attrs.checked ? 'x' : ' '}] `);
+      let symbol = ' ';
+      if (node.attrs.inapplicable) symbol = '~';
+      else if (node.attrs.checked) symbol = 'x';
+
+      state.write(`[${symbol}] `);
       if (!node.textContent) state.write('&nbsp;');
       state.renderContent(node);
     }),

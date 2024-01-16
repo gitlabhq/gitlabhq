@@ -41,8 +41,8 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
     let(:expected_emails) { emails }
 
     let(:error_feature_flag) { "Feature flag issue_email_participants is not enabled for this project." }
-    let(:error_underprivileged) { _("You don't have permission to add email participants.") }
-    let(:error_no_participants) do
+    let(:error_underprivileged) { _("You don't have permission to manage email participants.") }
+    let(:error_no_participants_added) do
       _("No email participants were added. Either none were provided, or they already exist.")
     end
 
@@ -58,7 +58,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
       end
 
       context 'when no emails are provided' do
-        let(:error_message) { error_no_participants }
+        let(:error_message) { error_no_participants_added }
 
         it_behaves_like 'a failed service execution'
       end
@@ -69,7 +69,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
         it_behaves_like 'a successful service execution'
 
         context 'when email is already a participant of the issue' do
-          let(:error_message) { error_no_participants }
+          let(:error_message) { error_no_participants_added }
 
           before do
             issue.issue_email_participants.create!(email: emails.first)
@@ -89,7 +89,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
             end
 
             let(:emails) { ['over-max@example.com'] }
-            let(:error_message) { error_no_participants }
+            let(:error_message) { error_no_participants_added }
 
             it_behaves_like 'a failed service execution'
 

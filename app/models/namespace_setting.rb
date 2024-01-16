@@ -4,9 +4,13 @@ class NamespaceSetting < ApplicationRecord
   include CascadingNamespaceSettingAttribute
   include Sanitizable
   include ChronicDurationAttribute
+  include IgnorableColumns
+
+  ignore_column :project_import_level, remove_with: '16.10', remove_after: '2024-02-22'
 
   cascading_attr :delayed_project_removal
   cascading_attr :toggle_security_policy_custom_ci
+  cascading_attr :toggle_security_policies_policy_scope
 
   belongs_to :namespace, inverse_of: :namespace_settings
 

@@ -316,10 +316,10 @@ module QA
           raise "Merge did not appear to be successful" unless merged?
         end
 
-        def merge_when_pipeline_succeeds!
+        def set_to_auto_merge!
           wait_until_ready_to_merge
 
-          click_element('merge-button', text: 'Merge when pipeline succeeds')
+          click_element('merge-button', text: 'Set to auto-merge')
         end
 
         def merged?

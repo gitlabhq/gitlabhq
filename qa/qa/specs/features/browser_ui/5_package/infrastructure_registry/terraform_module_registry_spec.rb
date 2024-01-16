@@ -43,7 +43,8 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'publishes a module', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
+      it 'publishes a module', :reliable,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
           terraform_module_yaml = ERB.new(
             read_fixture('package_managers/terraform', 'module_upload.yaml.erb')
@@ -63,7 +64,7 @@ module QA
         end
 
         Page::Project::Job::Show.perform do |job|
-          expect(job).to be_successful(timeout: 800)
+          expect(job).to be_successful(timeout: 180)
         end
 
         Page::Project::Menu.perform(&:go_to_infrastructure_registry)

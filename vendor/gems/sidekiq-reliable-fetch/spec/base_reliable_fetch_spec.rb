@@ -3,14 +3,20 @@ require 'fetch_shared_examples'
 require 'sidekiq/base_reliable_fetch'
 require 'sidekiq/reliable_fetch'
 require 'sidekiq/semi_reliable_fetch'
+require 'sidekiq/capsule'
 
 describe Sidekiq::BaseReliableFetch do
   let(:job) { Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], jid: 55) }
+  let(:queues) { ['foo'] }
+  let(:options) { { queues: queues } }
+  let(:config) { Sidekiq::Config.new(options) }
+  let(:capsule) { Sidekiq::Capsule.new("default", config) }
+  let(:fetcher) { Sidekiq::ReliableFetch.new(capsule) }
 
   before { Sidekiq.redis(&:flushdb) }
 
   describe 'UnitOfWork' do
-    let(:fetcher) { Sidekiq::ReliableFetch.new(queues: ['foo']) }
+    before { config.queues = queues }
 
     describe '#requeue' do
       it 'requeues job' do
@@ -40,9 +46,11 @@ describe Sidekiq::BaseReliableFetch do
   end
 
   describe '#bulk_requeue' do
-    let(:options) { { queues: %w[foo bar] } }
+    let(:queues) { %w[foo bar] }
     let!(:queue1) { Sidekiq::Queue.new('foo') }
     let!(:queue2) { Sidekiq::Queue.new('bar') }
+
+    before { config.queues = queues }
 
     it 'requeues the bulk' do
       uow = described_class::UnitOfWork
@@ -57,7 +65,7 @@ describe Sidekiq::BaseReliableFetch do
         )
       end
 
-      described_class.new(options).bulk_requeue(jobs, nil)
+      described_class.new(capsule).bulk_requeue(jobs)
 
       expect(queue1.size).to eq 2
       expect(queue2.size).to eq 1
@@ -67,24 +75,26 @@ describe Sidekiq::BaseReliableFetch do
       uow = described_class::UnitOfWork
       interrupted_job = Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], interrupted_count: 3)
       jobs = [ uow.new('queue:foo', interrupted_job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
-      described_class.new(options).bulk_requeue(jobs, nil)
+      described_class.new(capsule).bulk_requeue(jobs)
 
       expect(queue1.size).to eq 1
       expect(queue2.size).to eq 1
       expect(Sidekiq::InterruptedSet.new.size).to eq 1
     end
 
-    it 'does not put jobs into interrupted queue if it is disabled' do
-      options[:max_retries_after_interruption] = -1
+    context 'when max_retries_after_interruption is disabled' do
+      let(:options) { { queues: queues, max_retries_after_interruption: -1 } }
 
-      uow = described_class::UnitOfWork
-      interrupted_job = Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], interrupted_count: 3)
-      jobs = [ uow.new('queue:foo', interrupted_job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
-      described_class.new(options).bulk_requeue(jobs, nil)
+      it 'does not put jobs into interrupted queue' do
+        uow = described_class::UnitOfWork
+        interrupted_job = Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], interrupted_count: 3)
+        jobs = [ uow.new('queue:foo', interrupted_job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
+        described_class.new(capsule).bulk_requeue(jobs)
 
-      expect(queue1.size).to eq 2
-      expect(queue2.size).to eq 1
-      expect(Sidekiq::InterruptedSet.new.size).to eq 0
+        expect(queue1.size).to eq 2
+        expect(queue2.size).to eq 1
+        expect(Sidekiq::InterruptedSet.new.size).to eq 0
+      end
     end
 
     it 'does not put jobs into interrupted queue if it is disabled on the worker' do
@@ -93,7 +103,7 @@ describe Sidekiq::BaseReliableFetch do
       uow = described_class::UnitOfWork
       interrupted_job = Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo'], interrupted_count: 3)
       jobs = [ uow.new('queue:foo', interrupted_job), uow.new('queue:foo', job), uow.new('queue:bar', job) ]
-      described_class.new(options).bulk_requeue(jobs, nil)
+      described_class.new(capsule).bulk_requeue(jobs)
 
       expect(queue1.size).to eq 2
       expect(queue2.size).to eq 1

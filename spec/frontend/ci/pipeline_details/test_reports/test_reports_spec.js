@@ -5,7 +5,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { getParameterValues } from '~/lib/utils/url_utility';
+import {
+  getParameterValues,
+  updateHistory,
+  removeParams,
+  setUrlParams,
+} from '~/lib/utils/url_utility';
 import EmptyState from '~/ci/pipeline_details/test_reports/empty_state.vue';
 import TestReports from '~/ci/pipeline_details/test_reports/test_reports.vue';
 import TestSummary from '~/ci/pipeline_details/test_reports/test_summary.vue';
@@ -17,6 +22,9 @@ Vue.use(Vuex);
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   getParameterValues: jest.fn().mockReturnValue([]),
+  updateHistory: jest.fn().mockName('updateHistory'),
+  removeParams: jest.fn().mockName('removeParams'),
+  setUrlParams: jest.fn().mockName('setUrlParams'),
 }));
 
 describe('Test reports app', () => {
@@ -36,7 +44,7 @@ describe('Test reports app', () => {
     removeSelectedSuiteIndex: jest.fn(),
   };
 
-  const createComponent = ({ state = {} } = {}) => {
+  const createComponent = ({ state = {}, getterStubs = {} } = {}) => {
     store = new Vuex.Store({
       modules: {
         testReports: {
@@ -48,7 +56,10 @@ describe('Test reports app', () => {
             ...state,
           },
           actions: actionSpies,
-          getters,
+          getters: {
+            ...getters,
+            ...getterStubs,
+          },
         },
       },
     });
@@ -124,24 +135,41 @@ describe('Test reports app', () => {
 
   describe('when a suite is clicked', () => {
     beforeEach(() => {
-      createComponent({ state: { hasFullReport: true } });
+      document.title = 'Test reports';
+      createComponent({
+        state: { hasFullReport: true },
+        getters: { getSelectedSuite: jest.fn().mockReturnValue({ name: 'test' }) },
+      });
       testSummaryTable().vm.$emit('row-click', 0);
     });
 
-    it('should call setSelectedSuiteIndex and fetchTestSuite', () => {
-      expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalled();
-      expect(actionSpies.fetchTestSuite).toHaveBeenCalled();
+    it('should call setSelectedSuiteIndex, fetchTestSuite and updateHistory', () => {
+      expect(actionSpies.setSelectedSuiteIndex).toHaveBeenCalledWith(expect.anything(Object), 0);
+      expect(actionSpies.fetchTestSuite).toHaveBeenCalledWith(expect.anything(Object), 0);
+      expect(setUrlParams).toHaveBeenCalledWith({ job_name: undefined });
+      expect(updateHistory).toHaveBeenCalledWith({
+        replace: true,
+        title: 'Test reports',
+        url: undefined,
+      });
     });
   });
 
   describe('when clicking back to summary', () => {
     beforeEach(() => {
+      document.title = 'Test reports';
       createComponent({ state: { selectedSuiteIndex: 0 } });
       testSummary().vm.$emit('on-back-click');
     });
 
-    it('should call removeSelectedSuiteIndex', () => {
+    it('should call removeSelectedSuiteIndex and updateHistory', () => {
       expect(actionSpies.removeSelectedSuiteIndex).toHaveBeenCalled();
+      expect(removeParams).toHaveBeenCalledWith(['job_name']);
+      expect(updateHistory).toHaveBeenCalledWith({
+        replace: true,
+        title: 'Test reports',
+        url: undefined,
+      });
     });
   });
 });

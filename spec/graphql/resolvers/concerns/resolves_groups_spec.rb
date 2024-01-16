@@ -22,26 +22,27 @@ RSpec.describe ResolvesGroups do
     end
   end
 
-  let_it_be(:lookahead_fields) do
+  let_it_be(:preloaded_fields) do
     <<~FIELDS
       containerRepositoriesCount
       customEmoji { nodes { id } }
       fullPath
+      groupMembersCount
       path
       dependencyProxyBlobCount
       dependencyProxyBlobs { nodes { fileName } }
       dependencyProxyImageCount
       dependencyProxyImageTtlPolicy { enabled }
       dependencyProxySetting { enabled }
+      descendantGroupsCount
+      projectsCount
     FIELDS
   end
 
-  it 'avoids N+1 queries on the fields marked with lookahead' do
+  it 'avoids N+1 queries on the preloaded fields' do
     group_ids = groups.map(&:id)
 
     allow_next(resolver).to receive(:resolve_groups).and_return(Group.id_in(group_ids))
-    # Prevent authorization queries from affecting the test.
-    allow(Ability).to receive(:allowed?).and_return(true)
 
     single_group_query = ActiveRecord::QueryRecorder.new do
       data = query_groups(limit: 1)
@@ -57,7 +58,7 @@ RSpec.describe ResolvesGroups do
   end
 
   def query_groups(limit:)
-    query_string = "{ groups(first: #{limit}) { nodes { id #{lookahead_fields} } } }"
+    query_string = "{ groups(first: #{limit}) { nodes { id #{preloaded_fields} } } }"
 
     data = execute_query(query_type, graphql: query_string)
 

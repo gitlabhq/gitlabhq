@@ -9,6 +9,7 @@ class Deployment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
   include IgnorableColumns
+  include EachBatch
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)
@@ -230,7 +231,7 @@ class Deployment < ApplicationRecord
     ##
     # FastDestroyAll concerns
     def begin_fast_destroy
-      preload(:project).find_each.map do |deployment|
+      preload(:project, :environment).find_each.map do |deployment|
         [deployment.project, deployment.ref_path]
       end
     end

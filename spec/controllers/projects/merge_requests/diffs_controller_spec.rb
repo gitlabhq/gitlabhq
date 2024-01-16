@@ -138,9 +138,15 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
   end
 
   let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
   let(:maintainer) { true }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be(:other_project) { create(:project) }
+
+  before_all do
+    other_project.add_maintainer(user)
+  end
 
   before do
     project.add_maintainer(user) if maintainer
@@ -429,11 +435,86 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
     end
 
     context 'when the merge request belongs to a different project' do
-      let(:other_project) { create(:project) }
-
       before do
-        other_project.add_maintainer(user)
         diff_for_path(old_path: existing_path, new_path: existing_path, project_id: other_project)
+      end
+
+      it 'returns a 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET diff_by_file_hash' do
+    def diff_by_file_hash(extra_params = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid,
+        format: 'json'
+      }
+
+      get :diff_by_file_hash, params: params.merge(extra_params)
+    end
+
+    let(:file) { merge_request.merge_request_diff.diffs.diff_files.first }
+    let(:file_hash) { file.file_hash }
+
+    context 'when the merge request exists' do
+      context 'when the user can view the merge request' do
+        context 'when the path exists in the diff' do
+          include_examples 'diff tracking' do
+            let(:method_call) { diff_by_file_hash(file_hash: file_hash) }
+          end
+
+          it 'enables diff notes' do
+            diff_by_file_hash(file_hash: file_hash)
+
+            expect(assigns(:diff_notes_disabled)).to be_falsey
+            expect(assigns(:new_diff_note_attrs)).to eq(
+              noteable_type: 'MergeRequest',
+              noteable_id: merge_request.id,
+              commit_id: nil
+            )
+          end
+
+          it 'only renders diff for the hash given' do
+            diff_by_file_hash(file_hash: file_hash)
+
+            diffs = json_response['diff_files']
+
+            expect(diffs.count).to eq(1)
+            expect(diffs.first['file_hash']).to eq(file_hash)
+          end
+        end
+      end
+
+      context 'when the user cannot view the merge request' do
+        let(:maintainer) { false }
+
+        before do
+          diff_by_file_hash(file_hash: file_hash)
+        end
+
+        it 'returns a 404' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when the merge request does not exist' do
+      before do
+        diff_by_file_hash(id: merge_request.iid.succ, file_hash: file_hash)
+      end
+
+      it 'returns a 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the merge request belongs to a different project' do
+      before do
+        diff_by_file_hash(project_id: other_project, file_hash: file_hash)
       end
 
       it 'returns a 404' do

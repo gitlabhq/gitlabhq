@@ -13,6 +13,8 @@ RSpec.shared_context 'with a table structure for converting a table to a list pa
   let(:table_identifier) { "#{connection.current_schema}.#{table_name}" }
   let(:partitioning_column) { :partition_number }
   let(:partitioning_default) { 1 }
+  let(:single_partitioning_value) { 1 }
+  let(:multiple_partitioning_values) { [1, 2, 3, 4] }
   let(:referenced_table_name) { '_test_referenced_table' }
   let(:other_referenced_table_name) { '_test_other_referenced_table' }
   let(:referencing_table_name) { '_test_referencing_table' }

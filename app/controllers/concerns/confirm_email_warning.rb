@@ -38,6 +38,6 @@ module ConfirmEmailWarning
   end
 
   def email_to_display
-    html_escape(email)
+    ERB::Util.html_escape(email)
   end
 end

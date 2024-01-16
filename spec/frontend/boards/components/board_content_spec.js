@@ -147,7 +147,7 @@ describe('BoardContent', () => {
 
     describe('when error is passed', () => {
       beforeEach(async () => {
-        createComponent({ props: { apolloError: 'Error' } });
+        createComponent({ props: { error: 'Error' } });
         await waitForPromises();
       });
 

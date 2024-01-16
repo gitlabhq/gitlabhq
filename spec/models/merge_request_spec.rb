@@ -5044,10 +5044,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#should_be_rebased?' do
-    it 'returns false for the same source and target branches' do
-      merge_request = build_stubbed(:merge_request, source_project: project, target_project: project)
+    let(:merge_request) { build_stubbed(:merge_request) }
 
-      expect(merge_request.should_be_rebased?).to be_falsey
+    subject { merge_request.should_be_rebased? }
+
+    context 'when the same source and target branches' do
+      let(:merge_request) { build_stubbed(:merge_request, source_project: project, target_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the project is using ff merge method' do
+      before do
+        allow(merge_request.target_project).to receive(:ff_merge_must_be_possible?).and_return(true)
+      end
+
+      context 'when the mr needs to be rebased to merge' do
+        before do
+          allow(merge_request).to receive(:ff_merge_possible?).and_return(false)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the MR can be merged without rebase' do
+        before do
+          allow(merge_request).to receive(:ff_merge_possible?).and_return(true)
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
   end
 
@@ -6126,6 +6152,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it { is_expected.to eq(false) }
     end
+  end
+
+  describe '#allows_multiple_assignees?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:allows_multiple_assignees?) { merge_request.allows_multiple_assignees? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:allows_multiple_merge_request_assignees?)
+        .and_return(false)
+    end
+
+    it { is_expected.to eq(false) }
+  end
+
+  describe '#allows_multiple_reviewers?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:allows_multiple_reviewers?) { merge_request.allows_multiple_reviewers? }
+
+    before do
+      allow(merge_request.project)
+        .to receive(:allows_multiple_merge_request_reviewers?)
+        .and_return(false)
+    end
+
+    it { is_expected.to eq(false) }
   end
 
   describe '#previous_diff' do

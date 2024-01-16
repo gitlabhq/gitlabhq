@@ -72,6 +72,11 @@ export default {
       return this.actionButtons.length > 0;
     },
   },
+  methods: {
+    hasHeader() {
+      return Boolean(this.$scopedSlots.header || this.header || this.shouldShowHeaderActions);
+    },
+  },
   i18n: {
     learnMore: __('Learn more'),
   },
@@ -91,9 +96,9 @@ export default {
       :icon-name="statusIconName"
     />
     <div class="gl-w-full gl-min-w-0">
-      <div class="gl-display-flex">
+      <div v-if="hasHeader()" class="gl-display-flex">
         <slot name="header">
-          <div v-if="header" class="gl-mb-2">
+          <div class="gl-mb-2">
             <strong v-safe-html="generatedHeader" class="gl-display-block"></strong
             ><span
               v-if="generatedSubheader"

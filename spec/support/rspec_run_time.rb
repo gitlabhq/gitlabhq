@@ -87,7 +87,8 @@ module Support
         unless @last_elapsed_seconds.nil? || elapsed_seconds - @last_elapsed_seconds < 1
           output.puts \
             "# [RSpecRunTime] RSpec elapsed time: #{readable_duration(elapsed_seconds)}. " \
-            "#{current_rss_in_megabytes}\n\n"
+            "#{current_rss_in_megabytes}. " \
+            "#{load_average}\n\n"
         end
 
         @last_elapsed_seconds = elapsed_seconds
@@ -97,6 +98,14 @@ module Support
         rss_in_megabytes = OS.rss_bytes / 1024 / 1024
 
         "Current RSS: ~#{rss_in_megabytes.round}M"
+      end
+
+      def load_average
+        if File.exist?('/proc/loadavg')
+          "load average: #{File.read('/proc/loadavg')}"
+        else
+          `uptime`[/(load average:[^\n]+)/, 1] || '(uptime failed)'
+        end
       end
     end
   end

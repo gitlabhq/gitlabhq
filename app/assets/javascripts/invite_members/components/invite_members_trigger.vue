@@ -94,7 +94,6 @@ export default {
   <gl-dropdown-item
     v-else-if="isDropdownWithEmojiTrigger"
     v-bind="componentAttributes"
-    button-class="top-nav-menu-item"
     @click="openModal"
   >
     {{ displayText }}

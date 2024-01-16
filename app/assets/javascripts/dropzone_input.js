@@ -46,7 +46,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   let hasPlainText;
 
   formTextarea.wrap('<div class="div-dropzone"></div>');
-  formTextarea.on('paste', (event) => handlePaste(event));
 
   // Add dropzone area to the form.
   const $mdArea = formTextarea.closest('.md-area');
@@ -59,6 +58,8 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     $formDropzone.addClass('js-invalid-dropzone');
     return null;
   }
+
+  formTextarea.on('paste', (event) => handlePaste(event));
 
   const dropzone = $formDropzone.dropzone({
     url: uploadsPath,

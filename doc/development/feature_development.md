@@ -97,6 +97,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Application limits](application_limits.md)
 - [AI features](ai_features/index.md)
 - [Application settings](application_settings.md)
+- [Remote Development](remote_development/index.md)
 
 ### Import and Export
 

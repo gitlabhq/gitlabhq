@@ -16,9 +16,7 @@ your Git branches like a CI/CD server.
 
 This means you don't have to wait for dependencies to be downloaded and builds to finish, you can start
 coding immediately. With Gitpod you can start coding instantly on any project, branch, and merge
-request from any device, at any time, from your browser:
-
-![Gitpod interface](img/gitpod_web_interface_v13_4.png)
+request from your browser.
 
 To use the GitLab Gitpod integration, it must be enabled for your GitLab instance. Users of:
 

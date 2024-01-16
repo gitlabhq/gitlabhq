@@ -31,13 +31,15 @@ module Gitlab
       end
 
       def external_url(name, external_ref)
-        return if GIT_INVALID_URL_REGEX.match?(external_ref)
+        ref = external_ref.to_s
 
-        case external_ref
+        return if GIT_INVALID_URL_REGEX.match?(ref)
+
+        case ref
         when /\A#{URL_REGEX}\z/o
-          external_ref
+          ref
         when /\A#{REPO_REGEX}\z/o
-          github_url(external_ref)
+          github_url(ref)
         else
           package_url(name)
         end

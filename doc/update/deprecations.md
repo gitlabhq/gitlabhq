@@ -52,6 +52,23 @@ For deprecation reviewers (Technical Writers only):
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Atlassian Crowd OmniAuth provider
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.3</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
+</div>
+
+The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
+next major release, GitLab 18.0. This gem sees very little use and its
+[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
+[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner registration token in Runner Operator
 
 <div class="deprecation-notes">
@@ -124,6 +141,24 @@ Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Slack notifications integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435909).
+</div>
+
+As we're consolidating all Slack capabilities into the
+GitLab for Slack app, we've deprecated the Slack notifications
+integration.
+Use the GitLab for Slack app to manage notifications
+to your Slack workspace.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">
@@ -176,23 +211,6 @@ From GitLab 18.0 and later, the methods to register runners introduced by the ne
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Atlassian Crowd OmniAuth provider
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.3</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
-</div>
-
-The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
-next major release, GitLab 16.0. This gem sees very little use and its
-[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
-[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Auto DevOps support for Herokuish is deprecated
 
 <div class="deprecation-notes">
@@ -204,6 +222,20 @@ next major release, GitLab 16.0. This gem sees very little use and its
 Auto DevOps support for Herokuish is deprecated in favor of [Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build-using-cloud-native-buildpacks). You should [migrate your builds from Herokuish to Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#moving-from-herokuish-to-cloud-native-buildpacks). From GitLab 14.0, Auto Build uses Cloud Native Buildpacks by default.
 
 Because Cloud Native Buildpacks do not support automatic testing, the Auto Test feature of Auto DevOps is also deprecated.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Block usage of ref and sha together in `GET /projects/:id/ci/lint`
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430322).
+</div>
+
+Due to a problem with ambiguity, we've deprecated the use of both `ref` and `sha` in the same API call to `GET /projects/:id/ci/lint`. Make sure your API calls to this endpoint use only `ref` or `sha`, but not both. In GitLab 17.0, using them in the same call will no longer be possible to ensure the correct ref or SHA is linted.
 
 </div>
 
@@ -330,6 +362,22 @@ When using the Dependency Proxy for containers with a group access token or pers
 GitLab 17.0 adds checks for group or personal access tokens authenticating with the dependency proxy for containers. This is a breaking change, because tokens without the required scopes will fail.
 
 To help avoid being impacted by this breaking change, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy), and update your workflow variables and scripts with those new tokens.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Dependency Scanning support for sbt 1.0.X
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415835).
+</div>
+
+Supporting very old versions of sbt is preventing us from improving our support for additional use cases with this package manager without increasing our maintenance cost.
+
+Version 1.1.0 of sbt was released 6 years ago, and users are advised to upgrade from 1.0.x as Dependency Scanning will no longer work.
 
 </div>
 
@@ -579,6 +627,20 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GitLab Runner provenance metadata SLSA v0.2 statement
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/36869).
+</div>
+
+Runners generate provenance metadata and currently defaults to generating statements that adhere to SLSA v0.2. Because SLSA v1.0 has been released and is now supported by GitLab, the v0.2 statement is now deprecated and removal is planned in GitLab 17.0. The SLSA v1.0 statement is planned to become the new default statement format in GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field
 
 <div class="deprecation-notes">
@@ -779,6 +841,41 @@ The table below lists the deprecated metrics and their respective replacements. 
 | `geo_repositories_verification_failed`   | `geo_project_repositories_verification_failed` |
 | `geo_repositories_checksum_mismatch`     |  None available                                |
 | `geo_repositories_retrying_verification` |  None available                                |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### License List is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/436100).
+</div>
+
+Today in GitLab you can see a list of all of the licenses your project and the components that
+use that license on the License List.  As of 16.8, the License List
+is deprecated and scheduled to be removed in 17.0 as a breaking change.
+With the release of the [Group Dependency List](https://docs.gitlab.com/ee/user/application_security/dependency_list/)
+and the ability to filter by license on the project and group Dependency List, you can now
+access all of the licenses your project or group is using on the Dependency List.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### License Scanning support for sbt 1.0.X
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437591).
+</div>
+
+GitLab 17.0 removes License Scanning support for sbt 1.0.x.
+
+Users are advised to upgrade from sbt 1.0.x.
 
 </div>
 
@@ -1083,20 +1180,20 @@ automatically from GitLab 16.0 onwards.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Slack notifications integration
+### Support for setting custom schema for backup is deprecated
 
 <div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
+- Announced in GitLab <span class="milestone">16.8</span>
 - Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435210).
 </div>
 
-As we're consolidating all Slack capabilities into the
-GitLab for Slack app, we're [deprecating the Slack notifications
-integration](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
-GitLab.com users can now use the GitLab for Slack app to manage notifications
-to their Slack workspace. For self-managed users of the Slack notifications integration,
-we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/1211).
+You could configure GitLab to use a custom schema for backup, by setting
+`gitlab_rails['backup_pg_schema'] = '<schema_name>'` in `/etc/gitlab/gitlab.rb` for Linux package installations,
+or by editing `config/gitlab.yml` for self-compiled installations.
+
+While the configuration setting was available, it had no effect and did not serve the purpose it was intended.
+This configuration setting will be removed in GitLab 17.0.
 
 </div>
 
@@ -1254,6 +1351,34 @@ In GitLab 15.3, [security report schemas below version 15 were deprecated](https
 The `confidence` attribute on vulnerability findings exists only in schema versions before `15-0-0`, and therefore is effectively deprecated since GitLab 15.4 supports schema version `15-0-0`. To maintain consistency
 between the reports and our public APIs, the `confidence` attribute on any vulnerability-related components of our GraphQL API is now deprecated and will be
 removed in 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### `after_script` keyword will run for cancelled jobs
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437789).
+</div>
+
+The [`after_script`](https://docs.gitlab.com/ee/ci/yaml/#after_script) CI/CD keyword is used to run additional commands after the main `script` section of a job. This is often used for cleaning up environments or other resources that were used by the job. For many users, the fact that the `after_script` commands do not run if a job is cancelled was unexpected and undesired. In 17.0, the keyword will be updated to also run commands after job cancellation. Make sure that your CI/CD configuration that uses the `after_script` keyword is able to handle running for cancelled jobs as well.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### `metric` filter and `value` field for DORA API
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393172).
+</div>
+
+Multiple DORA metrics can now be queried simultaneously using a new metrics field. The `metric` filter and `value` field for Graphql DORA API will be removed in GitLab 17.0.
 
 </div>
 

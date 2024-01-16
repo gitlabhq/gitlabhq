@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_started) }
+  let_it_be(:project) { create(:project) }
 
-  let(:worker) { described_class.new }
+  subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 

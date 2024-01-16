@@ -699,7 +699,7 @@ Before doing any migration work, you should first:
 1. Get familiar with GitLab.
    - Read about the [key GitLab CI/CD features](../../ci/index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
-   - Review the [`.gitlab-ci.yml` keyword reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
    - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.

@@ -10,10 +10,10 @@ RSpec.shared_examples 'a counter caching service' do
   describe '#count' do
     it 'caches the count', :request_store do
       subject.delete_cache
-      control_count = ActiveRecord::QueryRecorder.new { subject.count }.count
+      control = ActiveRecord::QueryRecorder.new { subject.count }
       subject.delete_cache
 
-      expect { 2.times { subject.count } }.not_to exceed_query_limit(control_count)
+      expect { 2.times { subject.count } }.not_to exceed_query_limit(control)
     end
   end
 

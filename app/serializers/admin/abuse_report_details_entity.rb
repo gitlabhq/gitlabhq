@@ -17,12 +17,6 @@ module Admin
         admin_user_path(report.user)
       end
 
-      expose :plan do |report|
-        if Gitlab::CurrentSettings.current_application_settings.try(:should_check_namespace_plan?)
-          report.user.namespace&.actual_plan&.title
-        end
-      end
-
       expose :verification_state do
         expose :email do |report|
           report.user.confirmed?
@@ -41,6 +35,15 @@ module Admin
         end
         expose :card_matches_link do |report|
           card_match_admin_user_path(report.user) if Gitlab.ee?
+        end
+      end
+
+      expose :phone_number, if: ->(report) { report.user.phone_number_validation.present? } do
+        expose :similar_records_count do |report|
+          report.user.phone_number_validation.similar_records.count
+        end
+        expose :phone_matches_link do |report|
+          phone_match_admin_user_path(report.user) if Gitlab.ee?
         end
       end
 
@@ -82,3 +85,5 @@ module Admin
     end
   end
 end
+
+Admin::AbuseReportDetailsEntity.prepend_mod_with('Admin::AbuseReportDetailsEntity')

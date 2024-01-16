@@ -10,17 +10,20 @@ module Ci
     # @cascade_to_children - if true cancels all related child pipelines for parent child pipelines
     # @auto_canceled_by_pipeline - store the pipeline_id of the pipeline that triggered cancellation
     # @execute_async - if true cancel the children asyncronously
+    # @safe_cancellation - if true only cancel interruptible:true jobs
     def initialize(
       pipeline:,
       current_user:,
       cascade_to_children: true,
       auto_canceled_by_pipeline: nil,
-      execute_async: true)
+      execute_async: true,
+      safe_cancellation: false)
       @pipeline = pipeline
       @current_user = current_user
       @cascade_to_children = cascade_to_children
       @auto_canceled_by_pipeline = auto_canceled_by_pipeline
       @execute_async = execute_async
+      @safe_cancellation = safe_cancellation
     end
 
     def execute
@@ -42,13 +45,16 @@ module Ci
       log_pipeline_being_canceled
 
       pipeline.update_column(:auto_canceled_by_id, @auto_canceled_by_pipeline.id) if @auto_canceled_by_pipeline
-      cancel_jobs(pipeline.cancelable_statuses)
 
-      return ServiceResponse.success unless cascade_to_children?
+      if @safe_cancellation
+        # Only build and bridge (trigger) jobs can be interruptible.
+        # We do not cancel GenericCommitStatuses because they can't have the `interruptible` attribute.
+        cancel_jobs(pipeline.processables.cancelable.interruptible)
+      else
+        cancel_jobs(pipeline.cancelable_statuses)
+      end
 
-      # cancel any bridges that could spin up new child pipelines
-      cancel_jobs(pipeline.bridges_in_self_and_project_descendants.cancelable)
-      cancel_children
+      cancel_children if cascade_to_children?
 
       ServiceResponse.success
     end
@@ -106,8 +112,15 @@ module Ci
       )
     end
 
-    # For parent child-pipelines only (not multi-project)
+    # We don't handle the case when `cascade_to_children` is `true` and `safe_cancellation` is `true`
+    # because `safe_cancellation` is passed as `true` only when `cascade_to_children` is `false`
+    # from `CancelRedundantPipelinesService`.
+    # In the future, when "safe cancellation" is implemented as a regular cancellation feature,
+    # we need to handle this case.
     def cancel_children
+      cancel_jobs(pipeline.bridges_in_self_and_project_descendants.cancelable)
+
+      # For parent child-pipelines only (not multi-project)
       pipeline.all_child_pipelines.each do |child_pipeline|
         if execute_async?
           ::Ci::CancelPipelineWorker.perform_async(

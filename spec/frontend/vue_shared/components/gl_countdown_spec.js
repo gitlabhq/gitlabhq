@@ -44,6 +44,10 @@ describe('GlCountdown', () => {
     it('displays 00:00:00', () => {
       expect(wrapper.text()).toContain('00:00:00');
     });
+
+    it('emits `timer-expired` event', () => {
+      expect(wrapper.emitted('timer-expired')).toStrictEqual([[]]);
+    });
   });
 
   describe('when an invalid date is passed', () => {

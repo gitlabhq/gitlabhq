@@ -1,0 +1,56 @@
+// FF :simplified_labels
+//
+// Temporarily override label styles
+// globally
+//
+// Once verified we will update the
+// label component in GitLab UI
+// refactor GitLab and remove this
+// custom code
+//
+// see https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3307
+.ff-simplified-labels-enabled {
+  // These changes will be moved to
+  // GitLab UI's label component
+  .gl-label,
+  .gl-label-sm {
+    @include gl-vertical-align-bottom;
+
+    &:focus:active {
+      @include gl-reset-color;
+      @include gl-shadow-none;
+      @include gl-outline-none;
+    }
+
+    .gl-label-text,
+    .gl-label-text-scoped {
+      @include gl-font-sm;
+      padding-block: $gl-spacing-scale-1;
+      padding-inline: calc(#{$gl-spacing-scale-3} - 2px);
+    }
+
+    > .gl-label-close.gl-button {
+      width: px-to-rem(14px);
+      height: px-to-rem(14px);
+      margin-left: calc(#{-$gl-spacing-scale-2} - 1px);
+      margin-right: calc(#{$gl-spacing-scale-2} - 1px);
+    }
+  }
+
+  // These changes will be moved to
+  // app/assets/stylesheets/framework/sidebar.scss
+  .issuable-show-labels .gl-label {
+    margin-bottom: $gl-spacing-scale-2;
+    margin-right: $gl-spacing-scale-2;
+  }
+
+  // These changes will be moved to
+  // app/assets/stylesheets/framework/typography.scss
+  .md p > code {
+    font-size: px-to-rem(13px);
+  }
+
+  .md code {
+    @include gl-vertical-align-bottom;
+  }
+}

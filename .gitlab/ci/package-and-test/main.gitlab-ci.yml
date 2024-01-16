@@ -25,11 +25,6 @@ download-knapsack-report:
     - .download-knapsack-report
     - .rules:download-knapsack
 
-download-fast-quarantine-report:
-  extends:
-    - .download-fast-quarantine-report
-    - .rules:download-fast-quarantine-report
-
 # ==========================================
 # Test stage
 # ==========================================
@@ -571,6 +566,22 @@ importers:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
+
+ai-gateway-sync-seat-link:
+  extends:
+    - .qa
+    - .failure-videos
+  variables:
+    QA_SCENARIO: Test::Integration::AiGateway
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-sync-service-token:
+  extends: ai-gateway-sync-seat-link
+  variables:
+    QA_USE_SYNC_SERVICE_TOKEN_WORKER: "true"
 
 # ------------------------------------------
 # Update jobs

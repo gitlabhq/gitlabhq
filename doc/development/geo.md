@@ -472,6 +472,10 @@ and the administrator can see this in the [Geo Admin Area](../administration/geo
 Geo secondaries can proxy web requests to the primary.
 Read more on the [Geo proxying (development) page](geo/proxying.md).
 
+## Geo API
+
+Geo uses the external [API](geo/api.md) to facilitate communication between various components.
+
 ## Glossary
 
 ### Primary site

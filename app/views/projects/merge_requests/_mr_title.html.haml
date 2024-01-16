@@ -24,7 +24,10 @@
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request
-        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: {class: "gl-display-none gl-md-display-block js-issuable-edit", data: { testid: "edit-title-button" }}) do
+        - edit_action_description = _('Edit merge request')
+        - edit_action_shortcut = 'e'
+        - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
+        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-display-none gl-md-display-block has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
 
       - if @merge_request.source_project

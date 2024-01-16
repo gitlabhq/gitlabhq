@@ -17,6 +17,9 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         schema_inconsistencies
         sharding_key
         desired_sharding_key
+        allow_cross_joins
+        allow_cross_transactions
+        allow_cross_foreign_keys
       ]
     end
 

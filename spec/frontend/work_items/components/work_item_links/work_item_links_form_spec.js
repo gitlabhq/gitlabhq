@@ -15,12 +15,14 @@ import {
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
+import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
   availableWorkItemsResponse,
   projectWorkItemTypesQueryResponse,
+  groupWorkItemTypesQueryResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
   mockIterationWidgetResponse,
@@ -34,22 +36,27 @@ describe('WorkItemLinksForm', () => {
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
+  const projectWorkItemTypesResolver = jest
+    .fn()
+    .mockResolvedValue(projectWorkItemTypesQueryResponse);
+  const groupWorkItemTypesResolver = jest.fn().mockResolvedValue(groupWorkItemTypesQueryResponse);
 
   const mockParentIteration = mockIterationWidgetResponse;
 
   const createComponent = async ({
-    typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
     hasIterationsFeature = false,
     parentIteration = null,
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, availableWorkItemsResolver],
-        [projectWorkItemTypesQuery, jest.fn().mockResolvedValue(typesResponse)],
+        [projectWorkItemTypesQuery, projectWorkItemTypesResolver],
+        [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
         [updateWorkItemMutation, updateMutationResolver],
         [createWorkItemMutation, createMutationResolver],
       ]),
@@ -64,7 +71,7 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         hasIterationsFeature,
-        isGroup: false,
+        isGroup,
       },
     });
 
@@ -78,6 +85,19 @@ describe('WorkItemLinksForm', () => {
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
   const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
+
+  it.each`
+    workspace    | isGroup  | queryResolver
+    ${'project'} | ${false} | ${projectWorkItemTypesResolver}
+    ${'group'}   | ${true}  | ${groupWorkItemTypesResolver}
+  `(
+    'fetches $workspace work item types when isGroup is $isGroup',
+    async ({ isGroup, queryResolver }) => {
+      await createComponent({ isGroup });
+
+      expect(queryResolver).toHaveBeenCalled();
+    },
+  );
 
   describe('creating a new work item', () => {
     beforeEach(async () => {

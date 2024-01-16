@@ -27,6 +27,9 @@ boards_epic_board_recent_visits:
 boards_epic_user_preferences:
   index_boards_epic_user_preferences_on_board_user_epic_unique:
     - index_boards_epic_user_preferences_on_board_id
+ci_build_trace_metadata:
+  index_ci_build_trace_metadata_on_trace_artifact_id:
+    - index_ci_build_trace_metadata_on_trace_artifact_id_partition_id
 ci_job_artifacts:
   index_ci_job_artifacts_on_id_project_id_and_created_at:
     - index_ci_job_artifacts_on_project_id
@@ -63,9 +66,6 @@ error_tracking_errors:
 geo_node_namespace_links:
   index_geo_node_namespace_links_on_geo_node_id_and_namespace_id:
     - index_geo_node_namespace_links_on_geo_node_id
-in_product_marketing_emails:
-  index_in_product_marketing_emails_on_user_track_series:
-    - index_in_product_marketing_emails_on_user_id
 incident_management_oncall_participants:
   index_inc_mgmnt_oncall_participants_on_user_id_and_rotation_id:
     - index_inc_mgmnt_oncall_participants_on_oncall_user_id
@@ -102,19 +102,6 @@ ml_models:
 p_ci_runner_machine_builds:
   index_p_ci_runner_machine_builds_on_runner_machine_id:
     - index_ci_runner_machine_builds_on_runner_machine_id
-packages_debian_group_distributions:
-  uniq_pkgs_debian_group_distributions_group_id_and_codename:
-    - index_packages_debian_group_distributions_on_group_id
-  uniq_pkgs_debian_group_distributions_group_id_and_suite:
-    - index_packages_debian_group_distributions_on_group_id
-packages_debian_project_distributions:
-  uniq_pkgs_debian_project_distributions_project_id_and_codename:
-    - index_packages_debian_project_distributions_on_project_id
-  uniq_pkgs_debian_project_distributions_project_id_and_suite:
-    - index_packages_debian_project_distributions_on_project_id
-packages_tags:
-  index_packages_tags_on_package_id_and_updated_at:
-    - index_packages_tags_on_package_id
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
     - index_pages_domains_on_project_id

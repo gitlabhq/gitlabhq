@@ -3,26 +3,27 @@
 %label.label-bold.gl-mb-0
   = s_('Profiles|Connected Accounts')
   %p= s_('Profiles|Select a service to sign in with.')
-  - providers.each do |provider|
-    - unlink_allowed = unlink_provider_allowed?(provider)
-    - link_allowed = link_provider_allowed?(provider)
-    - has_icon = provider_has_icon?(provider)
-    - if unlink_allowed || link_allowed
-      - if auth_active?(provider)
-        - if unlink_allowed
-          = link_to unlink_profile_account_path(provider: provider), method: :delete, class: button_class do
+  .gl-display-flex.gl-flex-wrap.gl-gap-3
+    - providers.each do |provider|
+      - unlink_allowed = unlink_provider_allowed?(provider)
+      - link_allowed = link_provider_allowed?(provider)
+      - has_icon = provider_has_icon?(provider)
+      - if unlink_allowed || link_allowed
+        - if auth_active?(provider)
+          - if unlink_allowed
+            = link_to unlink_profile_account_path(provider: provider), method: :delete, class: button_class do
+              - if has_icon
+                .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
+              .gl-button-text
+                = s_('Profiles|Disconnect %{provider}') % { provider: label_for_provider(provider) }
+          - else
+            %a{ class: button_class }
+              .gl-button-text
+                = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
+        - elsif link_allowed
+          = link_to omniauth_authorize_path(:user, provider), method: :post, class: button_class do
             - if has_icon
               .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
             .gl-button-text
-              = s_('Profiles|Disconnect %{provider}') % { provider: label_for_provider(provider) }
-        - else
-          %a{ class: button_class }
-            .gl-button-text
-              = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
-      - elsif link_allowed
-        = link_to omniauth_authorize_path(:user, provider), method: :post, class: button_class do
-          - if has_icon
-            .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
-          .gl-button-text
-            = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }
-  = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities
+              = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }
+    = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities

@@ -1,0 +1,25 @@
+gitlab_ci:
+  rspec:
+    image:
+      name: alpine:latest
+      docker:
+        user: dave
+    script: echo Hello World
+
+request_response:
+  image:
+    name: alpine:latest
+    entrypoint: null
+    executor_opts:
+      docker:
+        user: dave
+    ports: []
+    pull_policy: null
+  steps:
+    - name: script
+      script: ["echo Hello World"]
+      timeout: 3600
+      when: on_success
+      allow_failure: false
+  services: []
+

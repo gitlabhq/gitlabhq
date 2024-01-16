@@ -6,6 +6,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
   subject(:config) { described_class.new(workflow_hash) }
 
   describe 'validations' do
+    before do
+      config.compose!
+    end
+
     context 'when work config value is a string' do
       let(:workflow_hash) { 'build' }
 
@@ -27,6 +31,28 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
     end
 
     context 'when work config value is a hash' do
+      context 'with an invalid key' do
+        let(:workflow_hash) { { trash: [{ if: '$VAR' }] } }
+
+        describe '#valid?' do
+          it 'is invalid' do
+            expect(config).not_to be_valid
+          end
+
+          it 'attaches an error specifying the unknown key' do
+            expect(config.errors).to include('workflow config contains unknown keys: trash')
+          end
+        end
+
+        describe '#value' do
+          it 'returns the invalid configuration' do
+            expect(config.value).to eq(workflow_hash)
+          end
+        end
+      end
+    end
+
+    context 'when config has rules' do
       let(:workflow_hash) { { rules: [{ if: '$VAR' }] } }
 
       describe '#valid?' do
@@ -45,8 +71,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
         end
       end
 
-      context 'with an invalid key' do
-        let(:workflow_hash) { { trash: [{ if: '$VAR' }] } }
+      context 'when rules has an invalid key' do
+        let(:workflow_hash) { { rules: [{ if: '$VAR', trash: 'something' }] } }
 
         describe '#valid?' do
           it 'is invalid' do
@@ -54,13 +80,48 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
           end
 
           it 'attaches an error specifying the unknown key' do
-            expect(config.errors).to include('workflow config contains unknown keys: trash')
+            expect(config.errors).to include('rules:rule config contains unknown keys: trash')
           end
         end
 
         describe '#value' do
           it 'returns the invalid configuration' do
             expect(config.value).to eq(workflow_hash)
+          end
+        end
+      end
+
+      context 'when rules has auto_cancel' do
+        let(:workflow_hash) { { rules: [{ if: '$VAR', auto_cancel: { on_new_commit: 'interruptible' } }] } }
+
+        describe '#valid?' do
+          it 'is valid' do
+            expect(config).to be_valid
+          end
+
+          it 'attaches no errors' do
+            expect(config.errors).to be_empty
+          end
+        end
+
+        describe '#value' do
+          it 'returns the config' do
+            expect(config.value).to eq(workflow_hash)
+          end
+        end
+
+        context 'when auto_cancel has an invalid value' do
+          let(:workflow_hash) { { rules: [{ if: '$VAR', auto_cancel: { on_new_commit: 'xyz' } }] } }
+
+          describe '#valid?' do
+            it 'is invalid' do
+              expect(config).not_to be_valid
+            end
+
+            it 'returns error' do
+              expect(config.errors).to include(
+                'rules:rule:auto_cancel on new commit must be one of: conservative, interruptible, none')
+            end
           end
         end
       end

@@ -20,13 +20,13 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
       create(:container_repository, project: project)
       endpoint = group_container_registries_path(group, format: :json)
 
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { get(endpoint) }.count
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get(endpoint) }
 
       create_list(:project, 2, group: group).each do |project|
         create_list(:container_repository, 2, project: project)
       end
 
-      expect { get(endpoint) }.not_to exceed_all_query_limit(control_count)
+      expect { get(endpoint) }.not_to exceed_all_query_limit(control)
 
       # sanity check that response is 200
       expect(response).to have_gitlab_http_status(:ok)

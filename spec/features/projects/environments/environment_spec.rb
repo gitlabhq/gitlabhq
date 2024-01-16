@@ -319,7 +319,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
       params = {
         change: {
           oldrev: project.commit(branch).id,
-          newrev: Gitlab::Git::BLANK_SHA,
+          newrev: Gitlab::Git::SHA1_BLANK_SHA,
           ref: "refs/heads/#{branch}"
         }
       }

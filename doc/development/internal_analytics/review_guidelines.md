@@ -29,7 +29,7 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
 #### The merge request **author** should
 
 - Decide whether a Analytics Instrumentation review is needed. You can skip the Analytics Instrumentation
-review and remove the labels if the changes are not related to the Analytics Instrumentation domain.
+  review and remove the labels if the changes are not related to the Analytics Instrumentation domain.
 - If an Analytics Instrumentation review is needed and was not assigned automatically, add the labels
   `~analytics instrumentation` and `~analytics instrumentation::review pending`.
 - Use reviewer roulette to assign an [Analytics Instrumentation reviewer](https://gitlab-org.gitlab.io/gitlab-roulette/?hourFormat24=true&visible=reviewer%7Canalytics+instrumentation) who is not the author.

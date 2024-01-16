@@ -83,6 +83,7 @@ export default class ProtectedBranchCreate {
       block: true,
       accessLevel,
       accessLevelsData,
+      groupsWithProjectAccess: true,
       testId,
     });
 

@@ -208,20 +208,6 @@ RSpec.describe Label, feature_category: :team_planning do
   end
 
   describe 'scopes' do
-    describe '.on_board' do
-      let(:board) { create(:board, project: project) }
-      let!(:list1) { create(:list, board: board, label: development) }
-      let!(:list2) { create(:list, board: board, label: testing) }
-
-      let!(:development) { create(:label, project: project, name: 'Development') }
-      let!(:testing) { create(:label, project: project, name: 'Testing') }
-      let!(:regression) { create(:label, project: project, name: 'Regression') }
-
-      it 'returns only the board labels' do
-        expect(described_class.on_board(board.id)).to match_array([development, testing])
-      end
-    end
-
     describe '.with_lock_on_merge' do
       let(:label) { create(:label, project: project, name: 'Label') }
       let(:label_locked) { create(:label, project: project, name: 'Label locked', lock_on_merge: true) }

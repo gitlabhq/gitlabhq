@@ -18,6 +18,8 @@ You might also want to view documentation for:
 
 ## List namespaces
 
+> `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
+
 Get a list of the namespaces of the authenticated user. If the user is an
 administrator, a list of all namespaces in the GitLab instance is shown.
 
@@ -25,12 +27,14 @@ administrator, a list of all namespaces in the GitLab instance is shown.
 GET /namespaces
 GET /namespaces?search=foobar
 GET /namespaces?owned_only=true
+GET /namespaces?top_level_only=true
 ```
 
-| Attribute    | Type    | Required | Description |
-| ------------ | ------- | -------- | ----------- |
-| `search`     | string  | no       | Returns a list of namespaces the user is authorized to view based on the search criteria |
-| `owned_only` | boolean | no       | In GitLab 14.2 and later, returns a list of owned namespaces only |
+| Attribute        | Type    | Required | Description |
+| ---------------- | ------- | -------- | ----------- |
+| `search`         | string  | no       | Returns a list of namespaces the user is authorized to view based on the search criteria |
+| `owned_only`     | boolean | no       | In GitLab 14.2 and later, returns a list of owned namespaces only |
+| `top_level_only` | boolean | no       | In GitLab 16.8 and later, returns a list of top level namespaces only |
 
 Example request:
 

@@ -424,7 +424,7 @@ describe('Release edit/new getters', () => {
 
   describe('formattedReleaseNotes', () => {
     it.each`
-      description        | includeTagNotes | tagNotes       | included | showCreateFrom
+      description        | includeTagNotes | tagNotes       | included | isNewTag
       ${'release notes'} | ${true}         | ${'tag notes'} | ${true}  | ${false}
       ${'release notes'} | ${true}         | ${''}          | ${false} | ${false}
       ${'release notes'} | ${false}        | ${'tag notes'} | ${false} | ${false}
@@ -432,25 +432,24 @@ describe('Release edit/new getters', () => {
       ${'release notes'} | ${true}         | ${''}          | ${false} | ${true}
       ${'release notes'} | ${false}        | ${'tag notes'} | ${false} | ${true}
     `(
-      'should include tag notes=$included when includeTagNotes=$includeTagNotes and tagNotes=$tagNotes and showCreateFrom=$showCreateFrom',
-      ({ description, includeTagNotes, tagNotes, included, showCreateFrom }) => {
+      'should include tag notes=$included when includeTagNotes=$includeTagNotes and tagNotes=$tagNotes and isNewTag=$isNewTag',
+      ({ description, includeTagNotes, tagNotes, included, isNewTag }) => {
         let state;
 
-        if (showCreateFrom) {
+        if (isNewTag) {
           state = {
             release: { description, tagMessage: tagNotes },
             includeTagNotes,
-            showCreateFrom,
           };
         } else {
-          state = { release: { description }, includeTagNotes, tagNotes, showCreateFrom };
+          state = { release: { description }, includeTagNotes, tagNotes };
         }
 
         const text = `### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`;
         if (included) {
-          expect(getters.formattedReleaseNotes(state)).toContain(text);
+          expect(getters.formattedReleaseNotes(state, { isNewTag })).toContain(text);
         } else {
-          expect(getters.formattedReleaseNotes(state)).not.toContain(text);
+          expect(getters.formattedReleaseNotes(state, { isNewTag })).not.toContain(text);
         }
       },
     );

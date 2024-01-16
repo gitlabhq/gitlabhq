@@ -65,6 +65,7 @@ RSpec.describe ApplicationSettingsHelper do
           project_download_export_limit project_export_limit project_import_limit
           raw_blob_request_limit group_export_limit group_download_export_limit
           group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
+          members_delete_limit
         ])
     end
 

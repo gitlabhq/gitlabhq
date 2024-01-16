@@ -35,13 +35,13 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     # Run this once to establish a baseline
     reference_filter("Label #{reference}")
 
-    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+    control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
       reference_filter("Label #{reference}")
     end
 
     labels_markdown = Array.new(10, "Label #{reference}").join('\n')
 
-    expect { reference_filter(labels_markdown) }.not_to exceed_all_query_limit(control_count.count)
+    expect { reference_filter(labels_markdown) }.not_to exceed_all_query_limit(control)
   end
 
   it 'includes a data-project attribute' do

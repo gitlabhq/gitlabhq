@@ -87,6 +87,10 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       let!(:deleted_draft_note_id) { draft_note_by_current_user.id }
 
       before do
+        allow_next_instance_of(DraftNotes::DestroyService) do |service|
+          allow(service).to receive(:unfolded_drafts?).and_return(true)
+        end
+
         delete api(
           "#{base_url}/#{draft_note_by_current_user.id}",
           user

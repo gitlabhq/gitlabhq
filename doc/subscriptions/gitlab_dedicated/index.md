@@ -1,12 +1,13 @@
 ---
 stage: SaaS Platforms
 group: GitLab Dedicated
+description: Available features and benefits.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab Dedicated
 
-GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
+GitLab Dedicated is a fully isolated, single-tenant SaaS solution that is:
 
 - Hosted and managed by GitLab, Inc.
 - Deployed on AWS in a cloud region of your choice. See [available AWS regions](#available-aws-regions).
@@ -56,6 +57,10 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 During onboarding, you can specify an AWS KMS encryption key stored in your own AWS account that GitLab uses to encrypt the data for your Dedicated instance. This gives you full control over the data you store in GitLab.
 
+#### SMTP
+
+Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/). The connection to Amazon SES is encrypted.
+
 ### Compliance
 
 #### Certifications
@@ -69,7 +74,7 @@ GitLab Dedicated offers the following [compliance certifications](https://about.
 
 #### Isolation
 
-As a single-tenant SaaS service, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
+As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level isolation of your GitLab environment. Your environment is placed into a separate AWS account from other tenants. This AWS account contains all of the underlying infrastructure necessary to host the GitLab application and your data stays within the account boundary. You administer the application while GitLab manages the underlying infrastructure. Tenant environments are also completely isolated from GitLab.com.
 
 #### Access controls
 
@@ -109,7 +114,7 @@ To help you migrate your data to GitLab Dedicated, you can choose from the follo
     - Use the UI, including [group import](../../user/group/import/index.md) and [project import](../../user/project/settings/import_export.md).
     - Use APIs, including the [group import API](../../api/group_import_export.md) and [project import API](../../api/project_import_export.md).
     - Note: Import functionality behind a feature flag (such as `bulk_import_project`) is not supported in GitLab Dedicated.
-1. When migrating from third-party services, you can use [the GitLab importers](../../user/project/import/index.md#available-project-importers).
+1. When migrating from third-party services, you can use [the GitLab importers](../../user/project/import/index.md#supported-import-sources).
 1. You can perform a fully-automated migration through the [Congregate Automation Tool](../../user/project/import/index.md#automate-group-and-project-import), which supports migrating from existing GitLab instances as well as third-party services.
 
 ## Features that are not available

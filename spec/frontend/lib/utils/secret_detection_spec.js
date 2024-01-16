@@ -14,6 +14,8 @@ describe('containsSensitiveToken', () => {
       '1234567890',
       '!@#$%^&*()_+',
       'https://example.com',
+      'Some tokens are prefixed with glpat- or glcbt-, for example.',
+      'glpat-FAKE',
     ];
 
     it.each(nonSensitiveMessages)('returns false for message: %s', (message) => {
@@ -32,6 +34,9 @@ describe('containsSensitiveToken', () => {
       'https://example.com/feed?feed_token=123456789_abcdefghij',
       'glpat-1234567890 and feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       'token: gldt-cgyKc1k_AsnEpmP-5fRL',
+      'curl "https://gitlab.example.com/api/v4/groups/33/scim/identities" --header "PRIVATE-TOKEN: glsoat-cgyKc1k_AsnEpmP-5fRL',
+      'CI_JOB_TOKEN=glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL',
+      'Use this secret job token: glcbt-1_cgyKc1k_AsnEpmP-5fRL',
     ];
 
     it.each(sensitiveMessages)('returns true for message: %s', (message) => {

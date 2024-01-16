@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require_dependency 'active_model'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Rules do
+RSpec.describe Gitlab::Ci::Config::Entry::Rules, feature_category: :pipeline_composition do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .metadata(metadata)
       .value(config)
   end
 
-  let(:metadata) { { allowed_when: %w[always never] } }
+  let(:metadata) do
+    { allowed_when: %w[always never], allowed_keys: %i[if when] }
+  end
 
   subject(:entry) { factory.create! }
 

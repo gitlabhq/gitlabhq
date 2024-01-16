@@ -12,6 +12,7 @@ class Namespace < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
+  include Namespaces::Traversal::Cached
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
@@ -45,6 +46,7 @@ class Namespace < ApplicationRecord
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
@@ -54,6 +56,9 @@ class Namespace < ApplicationRecord
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
 
   has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
+
+  has_one :namespace_descendants, class_name: 'Namespaces::Descendants'
+  accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
@@ -261,6 +266,28 @@ class Namespace < ApplicationRecord
       else
         without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit, exact_matches_first: exact_matches_first)
       end
+    end
+
+    # This should be kept in sync with the frontend filtering in
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L68 and
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L1053
+    def gfm_autocomplete_search(query)
+      without_project_namespaces
+        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+        .joins(:route)
+        .where(
+          "REPLACE(routes.name, ' ', '') ILIKE :pattern OR routes.path ILIKE :pattern",
+          pattern: "%#{sanitize_sql_like(query)}%"
+        )
+        .order(
+          Arel.sql(sanitize_sql(
+            [
+              "CASE WHEN starts_with(REPLACE(routes.name, ' ', ''), :pattern) OR starts_with(routes.path, :pattern) THEN 1 ELSE 2 END",
+              { pattern: query }
+            ]
+          )),
+          'routes.path'
+        )
     end
 
     def clean_path(path, limited_to: Namespace.all)

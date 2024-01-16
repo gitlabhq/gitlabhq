@@ -229,6 +229,7 @@ export const updateWorkItemMutationResponse = {
         state: 'OPEN',
         description: 'description',
         confidential: false,
+        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
@@ -339,6 +340,7 @@ export const convertWorkItemMutationResponse = {
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
+        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
@@ -471,6 +473,13 @@ export const issueType = {
   id: 'gid://gitlab/WorkItems::Type/2411',
   name: 'Issue',
   iconName: 'issue-type-issue',
+};
+
+export const epicType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Epic',
+  iconName: 'issue-type-epic',
 };
 
 export const mockEmptyLinkedItems = {
@@ -644,6 +653,7 @@ export const workItemResponseFactory = ({
       title: 'Updated title',
       state,
       description: 'description',
+      webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
       confidential,
       createdAt,
       updatedAt,
@@ -726,6 +736,12 @@ export const workItemResponseFactory = ({
                 title: 'Iteration default title',
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
+                webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/iterations/23205',
+                iterationCadence: {
+                  id: 'gid://gitlab/Iterations::Cadence/5852',
+                  title: 'A dolores assumenda harum non facilis similique delectus quod.',
+                  __typename: 'IterationCadence',
+                },
               },
             }
           : { type: 'MOCK TYPE' },
@@ -907,6 +923,18 @@ export const projectWorkItemTypesQueryResponse = {
   },
 };
 
+export const groupWorkItemTypesQueryResponse = {
+  data: {
+    workspace: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/2',
+      workItemTypes: {
+        nodes: [{ id: 'gid://gitlab/WorkItems::Type/6', name: 'Epic' }],
+      },
+    },
+  },
+};
+
 export const createWorkItemMutationResponse = {
   data: {
     workItemCreate: {
@@ -923,6 +951,7 @@ export const createWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: null,
         closedAt: null,
+        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         author: {
           ...mockAssignees[0],
         },
@@ -1010,6 +1039,7 @@ export const workItemHierarchyEmptyResponse = {
               __typename: 'WorkItemType',
             },
             title: 'New title',
+            webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
             description: '',
             createdAt: '2022-08-03T12:41:54Z',
             updatedAt: null,
@@ -1229,6 +1259,7 @@ export const workItemHierarchyResponse = {
               __typename: 'WorkItemType',
             },
             title: 'New title',
+            webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
             userPermissions: {
               deleteWorkItem: true,
               updateWorkItem: true,
@@ -1495,6 +1526,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
           __typename: 'WorkItemPermissions',
         },
         description: null,
+        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         id: 'gid://gitlab/WorkItem/13',
         iid: '13',
         archived: false,
@@ -1564,6 +1596,7 @@ export const changeWorkItemParentMutationResponse = {
           __typename: 'WorkItemPermissions',
         },
         description: null,
+        webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         id: 'gid://gitlab/WorkItem/2',
         iid: '2',
         archived: false,
@@ -1734,6 +1767,28 @@ export const searchWorkItemsIidResponse = {
   },
 };
 
+export const searchWorkItemsURLRefResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [],
+      },
+      workItemsByIid: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/460',
+            iid: '101',
+            title: 'Task 3',
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const searchWorkItemsTextIidResponse = {
   data: {
     workspace: {
@@ -1763,6 +1818,23 @@ export const searchWorkItemsTextIidResponse = {
       },
     },
   },
+};
+
+export const searchWorkItemsResponse = ({ workItems = [], workItemsByIid = [] } = {}) => {
+  return {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/2',
+        workItems: {
+          nodes: workItems,
+        },
+        workItemsByIid: {
+          nodes: workItemsByIid,
+        },
+      },
+    },
+  };
 };
 
 export const projectMembersResponseWithCurrentUser = {

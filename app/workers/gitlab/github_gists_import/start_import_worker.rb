@@ -17,7 +17,7 @@ module Gitlab
         Gitlab::GithubGistsImport::Status.new(msg['args'][0]).fail!
 
         user = User.find(msg['args'][0])
-        Gitlab::GithubImport::PageCounter.new(user, :gists, 'github-gists-importer').expire!
+        Gitlab::Import::PageCounter.new(user, :gists, 'github-gists-importer').expire!
       end
 
       def perform(user_id, encrypted_token)

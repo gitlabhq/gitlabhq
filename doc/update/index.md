@@ -1,10 +1,11 @@
 ---
 stage: Systems
 group: Distribution
+description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading GitLab **(FREE SELF)**
+# Upgrade GitLab **(FREE SELF)**
 
 Upgrading GitLab is a relatively straightforward process, but the complexity
 can increase based on the installation method you have used, how old your
@@ -88,10 +89,10 @@ As for the artifacts, the GitLab Runner attempts to upload them three times, aft
 To address the above two scenarios, it is advised to do the following prior to upgrading:
 
 1. Plan your maintenance.
-1. Pause your runners or block new jobs from starting by adding following to your `/etc/gitlab/gitlab.rb`:
+1. Pause your runners, or block new jobs from starting by adding the following to your `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   nginx['custom_gitlab_server_config'] = "location /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
+   nginx['custom_gitlab_server_config'] = "location ^~ /api/v4/jobs/request {\n deny all;\n return 503;\n}\n"
    ```
 
    And reconfigure GitLab with:
@@ -192,12 +193,13 @@ When upgrading:
    - GitLab 15: [`15.0.5`](versions/gitlab_15_changes.md#1500) > [`15.1.6`](versions/gitlab_15_changes.md#1510) (for
      GitLab instances with multiple web nodes) > [`15.4.6`](versions/gitlab_15_changes.md#1540) >
      [`15.11.13`](versions/gitlab_15_changes.md#15110).
-   - GitLab 16: [`16.0.x`](versions/gitlab_16_changes.md#1600) (only
+   - GitLab 16: [`16.0.8`](versions/gitlab_16_changes.md#1600) (only
      instances with [lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change) or
      [large pipeline variables history](versions/gitlab_16_changes.md#1610)) >
-     [`16.1`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
-     [`16.2.x`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
-     [`16.3`](versions/gitlab_16_changes.md#1630) > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
+     [`16.1.6`](versions/gitlab_16_changes.md#1610) (instances with NPM packages in their package registry) >
+     [`16.2.9`](versions/gitlab_16_changes.md#1620) (only instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630)) >
+     [`16.3.7`](versions/gitlab_16_changes.md#1630) > [`16.7.z`](versions/gitlab_16_changes.md#1670)
+     > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
 1. Check for [required upgrade stops](#required-upgrade-stops).
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).

@@ -243,7 +243,7 @@ by default.
 Capitalize names of:
 
 - GitLab [product tiers](https://about.gitlab.com/pricing/). For example,
-  GitLab Free and GitLab Ultimate. (Tested in [`BadgeCapitalization.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/BadgeCapitalization.yml).)
+  GitLab Free and GitLab Ultimate.
 - Third-party organizations, software, and products. For example, Prometheus,
   Kubernetes, Git, and The Linux Foundation.
 - Methods or methodologies. For example, Continuous Integration,
@@ -351,10 +351,10 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
 - [Write in Markdown](#markdown).
 - Insert an empty line for new paragraphs.
 - Insert an empty line between different markups (for example, after every
-  paragraph, header, list, and so on). Example:
+  paragraph, heading, list, and so on). Example:
 
   ```markdown
-  ## Header
+  ## Heading
 
   Paragraph.
 
@@ -692,9 +692,9 @@ Markdown tables naturally fall out of alignment over time, but still render corr
 on `docs.gitlab.com`. The technical writing team can realign cells the next time
 the page is refactored.
 
-### Table headings
+### Table headers
 
-Use sentence case for table headings. For example, `Keyword value` or `Project name`.
+Use sentence case for table headers. For example, `Keyword value` or `Project name`.
 
 ### Feature tables
 
@@ -1140,7 +1140,7 @@ When you take screenshots:
   Reduce the size of your browser window as much as possible to keep elements close
   together and reduce empty space. Try to keep the screenshot dimensions as small as possible.
 - **Review how the image renders on the page.** Preview the image locally or use the
-review app in the merge request. Make sure the image isn't blurry or overwhelming.
+  review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page for a consistent reading experience. Ensure your navigation theme
   is **Indigo** and the syntax highlighting theme is **Light**. These are the default preferences.
@@ -1237,8 +1237,7 @@ and annoying for users.
 If you're describing a complicated interaction in the user interface and want to
 include a visual representation to help readers understand it, you can:
 
-- Use a static image (screenshot) and if necessary, add callouts to emphasize an
-  an area of the screen.
+- Use a static image (screenshot) and if necessary, add callouts to emphasize an area of the screen.
 - Create a short video of the interaction and link to it.
 
 ### Automatic screenshot generator
@@ -1349,12 +1348,14 @@ Do not upload videos to the product repositories. [Link](#link-to-video) or
 
 ### Link to video
 
-To link out to a video, include a YouTube icon so that readers can scan the page
-for videos before reading:
+To link to a video, include a YouTube icon so that readers can scan the page
+for videos before reading. Include the video's publication date after the link, to help identify
+videos that might be out-of-date.
 
 ```markdown
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Video Title](link-to-video).
+<!-- Video published on YYYY-MM-DD -->
 ```
 
 You can link any up-to-date video that's useful to the GitLab user.
@@ -1384,6 +1385,8 @@ To embed a video:
    (`https://www.youtube-nocookie.com/embed/VIDEO-ID`),
    and paste it, replacing the content of the `src` field in the
    `iframe` tag.
+1. Include the video's publication date below the link, to help identify
+   videos that might be out-of-date.
 
 ```html
 leave a blank line here
@@ -1393,6 +1396,7 @@ leave a blank line here
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
+<!-- Video published on YYYY-MM-DD -->
 leave a blank line here
 ```
 
@@ -1434,7 +1438,7 @@ NOTE:
 This is something to note.
 ```
 
-To display an alert box for multiple paragraphs, lists, or headers, use
+To display an alert box for multiple paragraphs, lists, or headings, use
 [blockquotes](#blockquotes) instead.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
@@ -1636,12 +1640,36 @@ When names change, it is more complicated to search or grep text that has line b
 
 Tier badges provide information about a feature and are displayed next to the topic title.
 
-You should assign a tier badge:
+#### When to add tier badges
 
-- To all H1 topic titles, except the pages under `doc/development/*`.
-- To topic titles that don't apply to the same tier as the H1.
+Assign tier badges to:
+
+- All H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
+- Topic titles that don't apply to the same tier as the H1.
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
+
+#### When not to add tier badges
+
+Do not assign tier badges:
+
+- When a feature does not have one obvious subscription tier or offering.
+  For example, if a feature applies to one tier for SaaS and a different tier for self-managed.
+
+In this case, do any or all of the following:
+
+- Use a `NOTE` in an alert box to describe the tiers.
+- Add tier badges to other topic titles where this information makes more sense.
+- Do not add tier badges to the H1.
+
+##### Pages that don't need a tier badge
+
+Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 #### Available product tier badges
 
@@ -1667,7 +1695,9 @@ You can also add a third component for the feature's status:
 
 For example, `**(FREE ALL EXPERIMENT)**`.
 
-A tier or status can stand alone. An offering should always have a tier.
+- A tier or status can stand alone.
+- An offering should always have a tier.
+- Do not add more than one offering, tier, or status. Multiples do not render properly in the documentation.
 
 #### Add a tier badge
 
@@ -1696,15 +1726,6 @@ Or add the status by itself:
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
 The single source of truth for a feature should be the topic where the
 functionality is described.
-
-##### Pages that don't need a tier badge
-
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
-
-- Tutorials.
-- Pages that compare features from different tiers.
-- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
-- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 ##### Administrator documentation tier badges
 

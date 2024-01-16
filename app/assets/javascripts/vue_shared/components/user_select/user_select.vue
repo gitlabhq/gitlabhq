@@ -252,6 +252,7 @@ export default {
         selected.push(user);
         this.$emit('input', selected);
       }
+      this.clearAndFocusSearch();
     },
     unassign() {
       this.$emit('input', []);
@@ -260,6 +261,7 @@ export default {
     unselect(name) {
       const selected = this.value.filter((user) => user.username !== name);
       this.$emit('input', selected);
+      this.clearAndFocusSearch();
     },
     focusSearch() {
       this.$refs.search.focusInput();
@@ -295,6 +297,10 @@ export default {
         return '';
       }
       return user.canMerge ? '' : __('Cannot merge');
+    },
+    clearAndFocusSearch() {
+      this.search = '';
+      this.focusSearch();
     },
   },
 };

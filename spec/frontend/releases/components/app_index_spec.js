@@ -1,11 +1,13 @@
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAlert } from '@gitlab/ui';
 import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
+import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
@@ -16,6 +18,7 @@ import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
 import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
 import { deleteReleaseSessionKey } from '~/releases/release_notification_service';
+import { generateCatalogSettingsResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -46,19 +49,22 @@ describe('app_index.vue', () => {
   let noReleases;
   let queryMock;
   let toast;
+  let ciCatalogSettingsResponse;
 
   const createComponent = ({
     singleResponse = Promise.resolve(singleRelease),
     fullResponse = Promise.resolve(allReleases),
   } = {}) => {
-    const apolloProvider = createMockApollo([
+    const handlers = [
       [
         allReleasesQuery,
         queryMock.mockImplementation((vars) => {
           return vars.first === 1 ? singleResponse : fullResponse;
         }),
       ],
-    ]);
+      [getCiCatalogSettingsQuery, ciCatalogSettingsResponse],
+    ];
+    const apolloProvider = createMockApollo(handlers);
 
     toast = jest.fn();
 
@@ -98,6 +104,7 @@ describe('app_index.vue', () => {
   const findAllReleaseBlocks = () => wrapper.findAllComponents(ReleaseBlock);
   const findPagination = () => wrapper.findComponent(ReleasesPagination);
   const findSort = () => wrapper.findComponent(ReleasesSort);
+  const findCatalogAlert = () => wrapper.findComponent(GlAlert);
 
   // Tests
   describe('component states', () => {
@@ -162,7 +169,9 @@ describe('app_index.vue', () => {
               error: expect.any(Error),
             });
           } else {
-            expect(createAlert).not.toHaveBeenCalled();
+            expect(createAlert).not.toHaveBeenCalledWith({
+              error: expect.any(Error),
+            });
           }
         });
 
@@ -412,7 +421,6 @@ describe('app_index.vue', () => {
     });
 
     it('shows a toast', () => {
-      expect(createAlert).toHaveBeenCalledTimes(1);
       expect(createAlert).toHaveBeenCalledWith({
         message: `Release ${release} has been successfully deleted.`,
         variant: VARIANT_SUCCESS,
@@ -421,6 +429,34 @@ describe('app_index.vue', () => {
 
     it('clears session storage', () => {
       expect(window.sessionStorage.getItem(key)).toBe(null);
+    });
+  });
+
+  describe('CI/CD Catalog Alert', () => {
+    beforeEach(() => {
+      ciCatalogSettingsResponse = jest.fn();
+    });
+
+    describe('when the project is a catalog resource', () => {
+      beforeEach(async () => {
+        ciCatalogSettingsResponse.mockResolvedValue(generateCatalogSettingsResponse(true));
+        await createComponent();
+      });
+
+      it('renders the CI/CD Catalog alert', () => {
+        expect(findCatalogAlert().exists()).toBe(true);
+      });
+    });
+
+    describe('when the project is not a catalog resource', () => {
+      beforeEach(async () => {
+        ciCatalogSettingsResponse.mockResolvedValue(generateCatalogSettingsResponse(false));
+        await createComponent();
+      });
+
+      it('does not render the CI/CD Catalog alert', () => {
+        expect(findCatalogAlert().exists()).toBe(false);
+      });
     });
   });
 });

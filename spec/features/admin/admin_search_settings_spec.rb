@@ -8,7 +8,7 @@ RSpec.describe 'Admin searches application settings', :js, feature_category: :gl
 
   before do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   context 'in appearances page' do

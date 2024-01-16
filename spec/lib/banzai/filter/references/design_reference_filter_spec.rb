@@ -240,7 +240,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
        * #1[not a valid reference.gif]
       MD
 
-      baseline = ActiveRecord::QueryRecorder.new { process(one_ref_per_project) }
+      control = ActiveRecord::QueryRecorder.new { process(one_ref_per_project) }
 
       # each project mentioned requires 2 queries:
       #
@@ -253,7 +253,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
       # In addition there is a 1 query overhead for all the projects at the
       # start. Currently, the baseline for 2 projects is `2 * 2 + 1 = 5` queries
       #
-      expect { process(multiple_references) }.not_to exceed_query_limit(baseline.count)
+      expect { process(multiple_references) }.not_to exceed_query_limit(control)
     end
   end
 

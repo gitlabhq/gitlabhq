@@ -30,6 +30,19 @@ valid_image_with_docker:
     docker:
       platform: linux/amd64
 
+valid_image_with_docker_user:
+  image:
+    name: ubuntu:latest
+    docker:
+      user: ubuntu
+
+valid_image_with_docker_multiple_options:
+  image:
+    name: ubuntu:latest
+    docker:
+      platform: linux/arm64
+      user: ubuntu
+
 valid_image_full:
   image:
     name: alpine:latest

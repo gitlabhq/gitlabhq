@@ -67,8 +67,8 @@ export default {
     releasedAt() {
       return getTimeago().format(this.latestVersion?.releasedAt);
     },
-    tagName() {
-      return this.latestVersion?.tagName || this.$options.i18n.unreleased;
+    name() {
+      return this.latestVersion?.name || this.$options.i18n.unreleased;
     },
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
@@ -117,7 +117,7 @@ export default {
           <b> {{ resource.name }}</b>
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
-          <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ tagName }}</gl-badge>
+          <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ name }}</gl-badge>
           <span class="gl-display-flex gl-align-items-center gl-ml-5">
             <span
               v-gl-tooltip.top

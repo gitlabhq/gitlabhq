@@ -71,6 +71,29 @@ To update the adherence status for these projects, the group-level or the projec
 To comply with GitLab standard, you must have at least two users approve a merge request to get it merged. For more
 information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
 
+### Export standards adherence report for projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+named `compliance_standards_adherence_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Exports the contents of a standards adherence report for projects in a group. Reports are truncated at 15 MB to avoid a large email attachment.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export the standards adherence report for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export standards adherence report**.
+
+A report is compiled and delivered to your email inbox as an attachment.
+
 ## Compliance violations report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.
@@ -391,10 +414,11 @@ Repeat this process to filter by multiple attributes.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422973) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `compliance_framework_report_ui`. Disabled by default.
 > - In GitLab 16.4 and earlier, **Compliance frameworks report** referred to what is now called **Compliance projects report**. The formally-named **Compliance frameworks report** was [renamed to **Compliance projects report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140825) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`compliance_framework_report_ui`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature an administrator to [disable the feature flag](../../../administration/feature_flags.md) named
+`compliance_framework_report_ui`. On GitLab.com, this feature is available.
 
 With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 

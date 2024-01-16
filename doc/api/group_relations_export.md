@@ -13,7 +13,7 @@ top-level
 relation (for example, milestones, boards, and labels).
 
 The group relations export API is primarily used in
-[group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended)
+[group migration by direct transfer](../user/group/import/index.md)
 and
 can't be used with the [group import and export API](group_import_export.md).
 

@@ -47,7 +47,7 @@ describe('BoardApp', () => {
   beforeEach(async () => {
     cacheUpdates.setError = jest.fn();
 
-    createComponent({ isApolloBoard: true });
+    createComponent();
     await nextTick();
   });
 
@@ -60,7 +60,7 @@ describe('BoardApp', () => {
   });
 
   it('should not have is-compact class when no card is selected', async () => {
-    createComponent({ isApolloBoard: true, issue: {} });
+    createComponent({ issue: {} });
     await nextTick();
 
     expect(wrapper.classes()).not.toContain('is-compact');
@@ -69,14 +69,14 @@ describe('BoardApp', () => {
   it('refetches lists when updateBoard event is received', async () => {
     jest.spyOn(eventHub, '$on').mockImplementation(() => {});
 
-    createComponent({ isApolloBoard: true });
+    createComponent();
     await waitForPromises();
 
     expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
   });
 
   it('sets error on fetch lists failure', async () => {
-    createComponent({ isApolloBoard: true, handler: boardListQueryHandlerFailure });
+    createComponent({ handler: boardListQueryHandlerFailure });
 
     await waitForPromises();
 

@@ -8,7 +8,9 @@ module ButtonHelper
   #         :gfm    - GitLab Flavored Markdown to copy, if different from `text` (optional)
   #         :target - Selector for target element to copy from (optional)
   #         :class  - CSS classes to be applied to the button (optional)
-  #         :title  - Button's title attribute (used for the tooltip) (optional)
+  #         :title  - Button's title attribute (used for the tooltip) (optional, default: Copy)
+  #         :aria_label - Button's aria-label attribute (optional)
+  #         :aria_keyshortcuts - Button's aria-keyshortcuts attribute (optional)
   #         :button_text - Button's displayed label (optional)
   #         :hide_tooltip - Whether the tooltip should be hidden (optional, default: false)
   #         :hide_button_icon - Whether the icon should be hidden (optional, default: false)
@@ -31,6 +33,8 @@ module ButtonHelper
   def clipboard_button(data = {})
     css_class = data.delete(:class)
     title = data.delete(:title) || _('Copy')
+    aria_keyshortcuts = data.delete(:aria_keyshortcuts) || nil
+    aria_label = data.delete(:aria_label) || title
     button_text = data[:button_text] || nil
     hide_tooltip = data[:hide_tooltip] || false
     hide_button_icon = data[:hide_button_icon] || false
@@ -54,7 +58,7 @@ module ButtonHelper
     data[:clipboard_target] = target if target
 
     unless hide_tooltip
-      data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+      data = { toggle: 'tooltip', placement: 'bottom', container: 'body', html: 'true' }.merge(data)
     end
 
     render ::Pajamas::ButtonComponent.new(
@@ -62,7 +66,7 @@ module ButtonHelper
       variant: variant,
       category: category,
       size: size,
-      button_options: { class: css_class, title: title, aria: { label: title, live: 'polite' }, data: data, itemprop: item_prop }) do
+      button_options: { class: css_class, title: title, aria: { keyshortcuts: aria_keyshortcuts, label: aria_label, live: 'polite' }, data: data, itemprop: item_prop }) do
       button_text
     end
   end

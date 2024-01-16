@@ -143,11 +143,11 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       it 'returns multiple deployments without N + 1' do
         perform_request # warm up the cache
 
-        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+        control = ActiveRecord::QueryRecorder.new { perform_request }
 
         create(:deployment, :success, project: project, deployable: build, iid: 21, ref: 'master')
 
-        expect { perform_request }.not_to exceed_query_limit(control_count)
+        expect { perform_request }.not_to exceed_query_limit(control)
       end
     end
 

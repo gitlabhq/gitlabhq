@@ -68,9 +68,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   describe 'associations' do
+    it { is_expected.to belong_to(:project_mirror) }
+
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
       expect(Project.reflect_on_association(:builds).has_inverse?).to eq(:project)
+    end
+
+    it 'has a bidirectional relationship with project mirror' do
+      expect(described_class.reflect_on_association(:project_mirror).has_inverse?).to eq(:builds)
+      expect(Ci::ProjectMirror.reflect_on_association(:builds).has_inverse?).to eq(:project_mirror)
     end
   end
 
@@ -325,14 +332,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_exposed_artifacts' do
     subject { described_class.with_exposed_artifacts }
 
-    let!(:job1) { create(:ci_build, pipeline: pipeline) }
-    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
-    let!(:job3) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:job1) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:job3) { create(:ci_build, pipeline: pipeline) }
 
-    context 'when some jobs have exposed artifacs and some not' do
+    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
+
+    context 'when some jobs have exposed artifacts and some not' do
       let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
 
-      before do
+      before_all do
         job1.ensure_metadata.update!(has_exposed_artifacts: nil)
         job3.ensure_metadata.update!(has_exposed_artifacts: false)
       end
@@ -356,10 +364,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
 
-    let!(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
-    let!(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
-    let!(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
-    let!(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let_it_be(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let_it_be(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
+    let_it_be(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
+    let_it_be(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     it 'returns artifacts matching the given scope' do
       expect(builds).to contain_exactly(build_1, build_4)
@@ -383,10 +391,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '.with_needs' do
-    let!(:build) { create(:ci_build, pipeline: pipeline) }
-    let!(:build_b) { create(:ci_build, pipeline: pipeline) }
-    let!(:build_need_a) { create(:ci_build_need, build: build) }
-    let!(:build_need_b) { create(:ci_build_need, build: build_b) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_b) { create(:ci_build, pipeline: pipeline) }
+    let_it_be(:build_need_a) { create(:ci_build_need, build: build) }
+    let_it_be(:build_need_b) { create(:ci_build_need, build: build_b) }
 
     context 'when passing build name' do
       subject { described_class.with_needs(build_need_a.name) }
@@ -416,6 +424,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when a build_need is created' do
       let!(:need_a) { create(:ci_build_need, build: build) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.belonging_to_runner_manager' do
+    subject { described_class.belonging_to_runner_manager(runner_manager) }
+
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:build_b) { create(:ci_build, :success) }
+
+    context 'with runner_manager of runner associated with build' do
+      let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+      let!(:runner_manager_build) { create(:ci_runner_machine_build, build: build, runner_manager: runner_manager) }
+
+      it { is_expected.to contain_exactly(build) }
+    end
+
+    context 'with runner_manager of runner not associated with build' do
+      let!(:runner_manager) { create(:ci_runner_machine, runner: instance_runner) }
+      let!(:instance_runner) { create(:ci_runner, :with_runner_manager) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'with nil runner_manager' do
+      let(:runner_manager) { nil }
 
       it { is_expected.to be_empty }
     end
@@ -3262,6 +3297,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    context 'for the diffblue_cover integration' do
+      context 'when active' do
+        let_it_be(:diffblue_cover_integration) { create(:diffblue_cover_integration, active: true) }
+
+        let(:diffblue_cover_variables) do
+          [
+            { key: 'DIFFBLUE_LICENSE_KEY', value: diffblue_cover_integration.diffblue_license_key, masked: true, public: false },
+            { key: 'DIFFBLUE_ACCESS_TOKEN_NAME', value: diffblue_cover_integration.diffblue_access_token_name, masked: true, public: false },
+            { key: 'DIFFBLUE_ACCESS_TOKEN', value: diffblue_cover_integration.diffblue_access_token_secret, masked: true, public: false }
+          ]
+        end
+
+        it 'includes diffblue_cover variables' do
+          is_expected.to include(*diffblue_cover_variables)
+        end
+      end
+
+      context 'when inactive' do
+        let_it_be(:diffblue_cover_integration) { create(:diffblue_cover_integration, active: false) }
+
+        it 'does not include diffblue_cover variables' do
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_LICENSE_KEY' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_ACCESS_TOKEN_NAME' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'DIFFBLUE_ACCESS_TOKEN' }).to be_nil
+        end
+      end
+    end
+
     context 'for the google_play integration' do
       before do
         allow(build.pipeline).to receive(:protected_ref?).and_return(pipeline_protected_ref)
@@ -5507,10 +5570,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       stub_current_partition_id
     end
 
-    it 'includes partition_id as a token prefix' do
-      prefix = ci_build.token.split('_').first.to_i(16)
+    it 'includes partition_id in the token prefix' do
+      prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
+      partition_prefix = prefix[1].to_i(16)
 
-      expect(prefix).to eq(ci_testing_partition_id)
+      expect(partition_prefix).to eq(ci_testing_partition_id)
     end
   end
 
@@ -5648,7 +5712,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'generates a token' do
         expect { ci_build.enqueue }
-          .to change { ci_build.token }.from(nil).to(a_string_starting_with(partition_id_prefix_in_16_bit_encode))
+          .to change { ci_build.token }.from(nil).to(a_string_starting_with("glcbt-#{partition_id_prefix_in_16_bit_encode}"))
       end
     end
 
@@ -5662,6 +5726,53 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'does not change the existing token' do
         expect { ci_build.enqueue }
           .not_to change { ci_build.token }.from(token)
+      end
+    end
+  end
+
+  describe '#prefix_and_partition_for_token' do
+    # 100.to_s(16) -> 64
+    let(:ci_build) { described_class.new(partition_id: 100) }
+
+    shared_examples 'partition prefix' do
+      it 'is prefixed with partition_id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^64_[\w-]{20}$/)
+      end
+    end
+
+    shared_examples 'static and partition prefixes' do
+      it 'is prefixed with static string and partition id' do
+        ci_build.ensure_token
+        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
+      end
+    end
+
+    it_behaves_like 'static and partition prefixes'
+
+    context 'when feature flag is globally disabled' do
+      before do
+        stub_feature_flags(prefix_ci_build_tokens: false)
+      end
+
+      it_behaves_like 'partition prefix'
+
+      context 'when enabled for a different project' do
+        let_it_be(:project) { create(:project) }
+
+        before do
+          stub_feature_flags(prefix_ci_build_tokens: project)
+        end
+
+        it_behaves_like 'partition prefix'
+      end
+
+      context 'when enabled for the project' do
+        before do
+          stub_feature_flags(prefix_ci_build_tokens: ci_build.project)
+        end
+
+        it_behaves_like 'static and partition prefixes'
       end
     end
   end

@@ -28,7 +28,7 @@ run as a process group leader (for example, using `chpst -P`). If using a Linux 
 
 ## Configuring the limits
 
-Sidekiq memory limits are controlled using environment variables.
+Sidekiq memory limits are controlled using [environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html#setting-custom-environment-variables)
 
 - `SIDEKIQ_MEMORY_KILLER_MAX_RSS` (KB): defines the Sidekiq process soft limit for allowed RSS.
   If the Sidekiq process RSS (expressed in kilobytes) exceeds `SIDEKIQ_MEMORY_KILLER_MAX_RSS`,

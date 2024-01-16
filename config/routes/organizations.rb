@@ -6,6 +6,10 @@ resources(
   param: :organization_path,
   module: :organizations
 ) do
+  collection do
+    post :preview_markdown
+  end
+
   member do
     get :groups_and_projects
     get :users

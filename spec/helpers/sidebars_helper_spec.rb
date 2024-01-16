@@ -135,6 +135,13 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         name: user.name,
         username: user.username,
         admin_url: admin_root_url,
+        admin_mode: {
+          admin_mode_feature_enabled: true,
+          admin_mode_active: false,
+          enter_admin_mode_url: new_admin_session_path,
+          leave_admin_mode_url: destroy_admin_session_path,
+          user_is_admin: false
+        },
         avatar_url: user.avatar_url,
         has_link_to_profile: helper.current_user_menu?(:profile),
         link_to_profile: user_path(user),
@@ -432,15 +439,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         { title: s_('Navigation|Admin Area'), link: '/admin', icon: 'admin' }
       end
 
-      let_it_be(:enter_admin_mode_link) do
-        { title: s_('Navigation|Enter admin mode'), link: '/admin/session/new', icon: 'lock' }
-      end
-
-      let_it_be(:leave_admin_mode_link) do
-        { title: s_('Navigation|Leave admin mode'), link: '/admin/session/destroy', icon: 'lock-open',
-          data_method: 'post' }
-      end
-
       subject do
         helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
       end
@@ -478,8 +476,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
             it 'returns public links, admin area and leave admin mode links' do
               expect(subject[:context_switcher_links]).to eq([
                 *public_links_for_user,
-                admin_area_link,
-                leave_admin_mode_link
+                admin_area_link
               ])
             end
           end
@@ -487,8 +484,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           context 'when admin mode is off' do
             it 'returns public links and enter admin mode link' do
               expect(subject[:context_switcher_links]).to eq([
-                *public_links_for_user,
-                enter_admin_mode_link
+                *public_links_for_user
               ])
             end
           end

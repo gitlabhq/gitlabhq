@@ -254,12 +254,12 @@ version: alpha
 ...</p>
 <h1 data-sourcepos="8:1-8:14" dir="auto">
 <a id="user-content-introduction" class="anchor" href="#introduction" aria-hidden="true"></a>Introduction</h1>
-<p data-sourcepos="10:1-10:284" dir="auto">GitLab Flavored Markdown (GLFM) extends the <a href="https://spec.commonmark.org/current/" rel="nofollow noreferrer noopener" target="_blank">CommonMark specification</a> and is considered a strict superset of CommonMark. It also incorporates the extensions defined by the <a href="https://github.github.com/gfm/" rel="nofollow noreferrer noopener" target="_blank">GitHub Flavored Markdown specification</a>.</p>
-<p data-sourcepos="12:1-12:433" dir="auto">This specification will define the various official extensions that comprise GLFM. These extensions are GitLab independent - they do not require a GitLab server for parsing or interaction. The intent is to provide a specification that can be implemented in standard markdown editors. This includes many of the features listed in <a href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
+<p data-sourcepos="10:1-10:284" dir="auto">GitLab Flavored Markdown (GLFM) extends the <a data-sourcepos="10:45-10:108" href="https://spec.commonmark.org/current/" rel="nofollow noreferrer noopener" target="_blank">CommonMark specification</a> and is considered a strict superset of CommonMark. It also incorporates the extensions defined by the <a data-sourcepos="10:212-10:283" href="https://github.github.com/gfm/" rel="nofollow noreferrer noopener" target="_blank">GitHub Flavored Markdown specification</a>.</p>
+<p data-sourcepos="12:1-12:433" dir="auto">This specification will define the various official extensions that comprise GLFM. These extensions are GitLab independent - they do not require a GitLab server for parsing or interaction. The intent is to provide a specification that can be implemented in standard markdown editors. This includes many of the features listed in <a data-sourcepos="12:330-12:432" href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <p data-sourcepos="14:1-14:69" dir="auto">The CommonMark and GitHub specifications will not be duplicated here.</p>
 <p data-sourcepos="16:1-19:75" dir="auto">NOTE: The example numbering in this document does not start at "1", because this official specification
 only contains a subset of all the examples which are supported by GitLab Flavored Markdown. See
-<a href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/snapshot_spec.html" rel="nofollow noreferrer noopener" target="_blank"><code>snapshot_spec.html</code></a>
+<a data-sourcepos="18:1-18:137" href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/snapshot_spec.html" rel="nofollow noreferrer noopener" target="_blank"><code data-sourcepos="18:3-18:20">snapshot_spec.html</code></a>
 for a complete list of all examples, which are a superset of examples from:</p>
 <ul data-sourcepos="21:1-25:0" dir="auto">
 <li data-sourcepos="21:1-21:12">CommonMark</li>
@@ -272,13 +272,13 @@ for a complete list of all examples, which are a superset of examples from:</p>
 <a id="user-content-gitlab-official-specification-markdown" class="anchor" href="#gitlab-official-specification-markdown" aria-hidden="true"></a>GitLab Official Specification Markdown</h1>
 <p data-sourcepos="29:1-31:104" dir="auto">Note: This specification is a work in progress. Only some of the official GLFM extensions
 are defined. We will continue to add any additional ones found in the
-<a href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
+<a data-sourcepos="31:1-31:103" href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <p data-sourcepos="33:1-34:69" dir="auto">There is currently only this single top-level heading, but the
 examples may be split into multiple top-level headings in the future.</p>
 <h2 data-sourcepos="36:1-36:18" dir="auto">
 <a id="user-content-task-list-items" class="anchor" href="#task-list-items" aria-hidden="true"></a>Task list items</h2>
 <p data-sourcepos="38:1-39:117" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="39:1-39:70" href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="41:1-44:39" dir="auto">Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
 GitLab extends the behavior of task list items to support additional features.
 Some of these features are in-progress, and should not yet be considered part of the official
@@ -341,7 +341,7 @@ GitLab Flavored Markdown specification.</p>
 <copy-code></copy-code>
 </div>
 </div>
-<p data-sourcepos="112:1-113:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code>&lt;del&gt;</code> tag is not applied to the
+<p data-sourcepos="112:1-113:50" dir="auto">Inapplicable task in a "loose" list. Note that the <code data-sourcepos="112:53-112:57">&lt;del&gt;</code> tag is not applied to the
 loose text; it has strikethrough applied with CSS.</p>
 <div>
 <div><a href="#example-677">Example 677</a></div>
@@ -372,7 +372,7 @@ loose text; it has strikethrough applied with CSS.</p>
 <h2 data-sourcepos="142:1-142:15" dir="auto">
 <a id="user-content-front-matter" class="anchor" href="#front-matter" aria-hidden="true"></a>Front matter</h2>
 <p data-sourcepos="144:1-145:121" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
+<a data-sourcepos="145:1-145:74" href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="147:1-148:95" dir="auto">Front matter is metadata included at the beginning of a Markdown document, preceding the content.
 This data can be used by static site generators like Jekyll, Hugo, and many other applications.</p>
 <p data-sourcepos="150:1-150:18" dir="auto">YAML front matter:</p>
@@ -469,15 +469,15 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 <h2 data-sourcepos="251:1-251:20" dir="auto">
 <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"></a>Table of contents</h2>
 <p data-sourcepos="253:1-255:46" dir="auto">See
-<a href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
+<a data-sourcepos="254:1-254:84" href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
 in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="257:1-261:23" dir="auto">NOTE: Because of this bug (<a href="https://gitlab.com/gitlab-org/gitlab/-/issues/359077" rel="nofollow noreferrer noopener" target="_blank">https://gitlab.com/gitlab-org/gitlab/-/issues/359077</a>),
-we cannot actually include the <code>TOC</code> tag with single brackets in backticks
+we cannot actually include the <code data-sourcepos="258:33-258:35">TOC</code> tag with single brackets in backticks
 in this Markdown document, otherwise it would render a table of contents inline
-right here. So, it's been switched to <code>[</code> + <code>TOC</code> + <code>]</code> instead. This can be reverted
+right here. So, it's been switched to <code data-sourcepos="260:40-260:40">[</code> + <code data-sourcepos="260:46-260:48">TOC</code> + <code data-sourcepos="260:54-260:54">]</code> instead. This can be reverted
 once that bug is fixed.</p>
 <p data-sourcepos="263:1-264:76" dir="auto">A table of contents is an unordered list that links to subheadings in the document.
-Add either the <code>[[_TOC_]]</code> tag or the <code>[</code> + <code>TOC</code> + <code>]</code> tag on its own line.</p>
+Add either the <code data-sourcepos="264:17-264:25">[[_TOC_]]</code> tag or the <code data-sourcepos="264:40-264:40">[</code> + <code data-sourcepos="264:46-264:48">TOC</code> + <code data-sourcepos="264:54-264:54">]</code> tag on its own line.</p>
 <div>
 <div><a href="#example-683">Example 683</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">

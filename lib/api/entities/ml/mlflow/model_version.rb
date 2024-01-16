@@ -18,7 +18,7 @@ module API
           expose :run_id
           expose :status
           expose :status_message
-          expose :metadata
+          expose :metadata, as: :tags, using: KeyValue
           expose :run_link
           expose :aliases, documentation: { is_array: true, type: String }
 
@@ -66,10 +66,6 @@ module API
 
           def status_message
             ""
-          end
-
-          def metadata
-            []
           end
 
           def run_link

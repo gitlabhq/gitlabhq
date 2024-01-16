@@ -172,6 +172,6 @@ export default {
         </div>
       </div>
     </div>
-    <component :is="routerView" />
+    <component :is="routerView" list-item-class="gl-px-5" />
   </div>
 </template>

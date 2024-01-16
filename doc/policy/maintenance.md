@@ -72,14 +72,14 @@ GitLab.
 These two policies are in place because:
 
 1. GitLab has Community and Enterprise distributions, doubling the amount of work
-necessary to test/release the software.
+   necessary to test/release the software.
 1. Backporting to more than one release creates a high development, quality assurance,
-and support cost.
+   and support cost.
 1. Supporting parallel version discourages incremental upgrades which over time accumulate in
-complexity and create upgrade challenges for all users. GitLab has a dedicated team ensuring that
-incremental upgrades (and installations) are as simple as possible.
+   complexity and create upgrade challenges for all users. GitLab has a dedicated team ensuring that
+   incremental upgrades (and installations) are as simple as possible.
 1. The number of changes created in the GitLab application is high, which contributes to backporting complexity to older releases. In several cases, backporting has to go through the same
-review process a new change goes through.
+   review process a new change goes through.
 1. Ensuring that tests pass on the older release is a considerable challenge in some cases, and as such is very time-consuming.
 
 Including new features in a patch release is not possible as that would break [Semantic Versioning](https://semver.org/).

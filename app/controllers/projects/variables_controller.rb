@@ -47,6 +47,6 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def variable_params_attributes
-    %i[id variable_type key secret_value protected masked raw environment_scope _destroy]
+    %i[id variable_type key description secret_value protected masked raw environment_scope _destroy]
   end
 end

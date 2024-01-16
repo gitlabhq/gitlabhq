@@ -72,7 +72,7 @@ module Gitlab
             merge_requests_to_import.find_each do |merge_request|
               # The page counter needs to be scoped by merge request to avoid skipping
               # pages of reviews from already imported merge requests.
-              page_counter = PageCounter.new(project, page_counter_id(merge_request))
+              page_counter = Gitlab::Import::PageCounter.new(project, page_counter_id(merge_request))
               repo = project.import_source
               options = collection_options.merge(page: page_counter.current)
 

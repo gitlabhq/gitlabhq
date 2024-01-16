@@ -159,6 +159,13 @@ production: &base
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10
 
+    ## HTTP client settings
+    http_client:
+        # Filename of HTTP client pem
+        # tls_client_cert_file:
+        # PEM password (optional)
+        # tls_client_cert_password:
+
     ### GraphQL Settings
     # Tells the rails application how long it has to complete a GraphQL request.
     # We suggest this value to be higher than the database timeout value

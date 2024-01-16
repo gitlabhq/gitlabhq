@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Environments describe where code is deployed.
 
-Each time [GitLab CI/CD](../yaml/index.md) deploys a version of code to an environment,
+Each time [GitLab CI/CD](../index.md) deploys a version of code to an environment,
 a deployment is created.
 
 GitLab:
@@ -24,7 +24,7 @@ associated with your project, you can use it to assist with your deployments.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- In a private project, you must have at least the Reporter role. See [Environment permissions](#environment-permissions).
 
 There are a few ways to view a list of environments for a given project:
 
@@ -108,7 +108,7 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 
 1. Define a job in the `deploy` stage.
 1. In the job, define the environment `name` and `url`. If an
-environment of that name doesn't exist when the pipeline runs, it is created.
+   environment of that name doesn't exist when the pipeline runs, it is created.
 
 NOTE:
 Some characters cannot be used in environment names. For more information about the
@@ -912,6 +912,38 @@ like [Review Apps](../review_apps/index.md) (`review/*`).
 The most specific spec takes precedence over the other wildcard matching. In this case,
 the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 
+## Environment permissions
+
+Depending on your role, you can interact with environments in public
+and private projects.
+
+### View environments
+
+- In public projects, anyone can view a list of environments, including non-members.
+- In private projects, you must have at least the Reporter role to view a list of environments.
+
+### Create and update environments
+
+- You must have at least the Developer role to create a new environment, or update an existing unprotected environment.
+- If an existing environment is protected and you don't have access to it, you cannot update the environment.
+
+### Stop and delete environments
+
+- You must have at least the Developer role to stop or delete an unprotected environment.
+- If an environment is protected and you don't have access to it, you cannot stop or delete the environment.
+
+### Run deployment jobs in protected environments
+
+If you can push or merge to the protected branch:
+
+- You must have at least the Reporter role.
+
+If you can't push to the protected branch:
+
+- You must be a part of a group with the Reporter role.
+
+See [Deployment-only access to protected environments](protected_environments.md#deployment-only-access-to-protected-environments).
+
 ## Related topics
 
 - [Dashboard for Kubernetes](kubernetes_dashboard.md)
@@ -1007,7 +1039,7 @@ deploy:
 
 Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
 create an environment with a name `production/`, which is invalid in
-[the environment name constraint](../yaml/index.md).
+[the environment name constraint](../yaml/index.md#environmentname).
 
 To fix this, use one of the following solutions:
 

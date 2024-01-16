@@ -37,7 +37,7 @@ module GroupsHelper
     group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
-  def group_title(group, name = nil, url = nil)
+  def group_title(group)
     @has_group_title = true
     full_title = []
 
@@ -55,11 +55,6 @@ module GroupsHelper
 
     full_title << breadcrumb_list_item(group_title_link(group))
     push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group))
-
-    if name
-      full_title << ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text')
-      push_to_schema_breadcrumb(simple_sanitize(name), url)
-    end
 
     full_title.join.html_safe
   end
@@ -160,6 +155,7 @@ module GroupsHelper
       new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
+      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
@@ -241,8 +237,8 @@ module GroupsHelper
 
   private
 
-  def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
-    link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
+  def group_title_link(group, hidable: false, show_avatar: false)
+    link_to(group_path(group), class: "group-path js-breadcrumb-item-text #{'hidable' if hidable}") do
       icon = render Pajamas::AvatarComponent.new(group, alt: group.name, class: "avatar-tile", size: 16) if group.try(:avatar_url) || show_avatar
       [icon, simple_sanitize(group.name)].join.html_safe
     end

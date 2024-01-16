@@ -30,10 +30,10 @@ You can use advanced search in:
 
 ## Enable advanced search
 
-- On GitLab.com, advanced search is enabled for groups with paid subscriptions.
-- For self-managed GitLab instances, an administrator must
+- For [GitLab SaaS](../../subscriptions/gitlab_com/index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md),
+  advanced search is enabled in paid subscriptions.
+- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
-- For GitLab Dedicated, advanced search is enabled.
 
 ## Syntax
 

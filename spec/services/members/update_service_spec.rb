@@ -263,7 +263,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
       it 'emails the users that their group membership expiry has changed' do
         members.each do |member|
-          expect(notification_service).to receive(:updated_group_member_expiration).with(member)
+          expect(notification_service).to receive(:updated_member_expiration).with(member)
         end
 
         subject

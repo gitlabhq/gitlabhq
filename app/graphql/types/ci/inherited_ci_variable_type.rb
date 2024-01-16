@@ -15,6 +15,10 @@ module Types
         null: true,
         description: 'Name of the variable.'
 
+      field :description, GraphQL::Types::String,
+        null: true,
+        description: 'Description of the variable.'
+
       field :raw, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates whether the variable is raw.'

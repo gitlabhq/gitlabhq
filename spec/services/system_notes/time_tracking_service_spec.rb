@@ -198,11 +198,13 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         let(:action) { 'time_tracking' }
       end
 
-      context 'with a time estimate' do
-        it 'sets the note text' do
+      context 'when adding a time estimate' do
+        before do
           noteable.update_attribute(:time_estimate, 277200)
+        end
 
-          expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+        it 'sets the note text' do
+          expect(subject.note).to eq "added time estimate of 1w 4d 5h"
         end
 
         context 'when time_tracking_limit_to_hours setting is true' do
@@ -211,16 +213,32 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
           end
 
           it 'sets the note text' do
-            noteable.update_attribute(:time_estimate, 277200)
-
-            expect(subject.note).to eq "changed time estimate to 77h"
+            expect(subject.note).to eq "added time estimate of 77h"
           end
         end
       end
 
-      context 'without a time estimate' do
+      context 'when removing a time estimate' do
+        before do
+          noteable.update_attribute(:time_estimate, 277200)
+          noteable.save!
+          noteable.update_attribute(:time_estimate, 0)
+        end
+
         it 'sets the note text' do
-          expect(subject.note).to eq "removed time estimate"
+          expect(subject.note).to eq "removed time estimate of 1w 4d 5h"
+        end
+      end
+
+      context 'when changing a time estimate' do
+        before do
+          noteable.update_attribute(:time_estimate, 277200)
+          noteable.save!
+          noteable.update_attribute(:time_estimate, 3600)
+        end
+
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed time estimate to 1h from 1w 4d 5h"
         end
       end
 

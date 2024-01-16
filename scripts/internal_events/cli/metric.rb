@@ -16,7 +16,6 @@ module InternalEventsCli
     :data_source,
     :data_category,
     :product_category,
-    :instrumentation_class,
     :distribution,
     :tier,
     :options,
@@ -50,7 +49,6 @@ module InternalEventsCli
         .merge(to_h.compact)
         .merge(
           key_path: key_path,
-          instrumentation_class: instrumentation_class,
           events: events)
         .slice(*NEW_METRIC_FIELDS)
         .transform_keys(&:to_s)
@@ -82,10 +80,6 @@ module InternalEventsCli
       self[:key_path] ||= "#{key_path_prefix}.#{key}"
     end
 
-    def instrumentation_class
-      self[:instrumentation_class] ||= identifier ? 'RedisHLLMetric' : 'TotalCountMetric'
-    end
-
     def events
       self[:events] ||= actions.map do |action|
         if identifier
@@ -100,10 +94,9 @@ module InternalEventsCli
     end
 
     def key_path_prefix
-      case instrumentation_class
-      when 'RedisHLLMetric'
+      if identifier
         'redis_hll_counters'
-      when 'TotalCountMetric'
+      else
         'counts'
       end
     end

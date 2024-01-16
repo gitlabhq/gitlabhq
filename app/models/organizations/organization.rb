@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Organizations
-  class Organization < ApplicationRecord
+  class Organization < MainClusterwide::ApplicationRecord
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }
@@ -16,6 +16,8 @@ module Organizations
     has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization
+    # if considering disable_joins on the below see:
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140343#note_1705047949
     has_many :users, through: :organization_users, inverse_of: :organizations
 
     validates :name,
@@ -28,7 +30,7 @@ module Organizations
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
 
-    delegate :description, :avatar, :avatar_url, to: :organization_detail
+    delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
 
@@ -50,6 +52,10 @@ module Organizations
 
     def user?(user)
       organization_users.exists?(user: user)
+    end
+
+    def owner?(user)
+      organization_users.owners.exists?(user: user)
     end
 
     def web_url(only_path: nil)

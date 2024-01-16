@@ -33,7 +33,19 @@ export const shouldRenderCommentButton = (isLoggedIn, isCommentButtonRendered) =
 
 export const hasDiscussions = (line) => line?.discussions?.length > 0;
 
-export const lineHref = (line) => `#${line?.line_code || ''}`;
+export const pinnedFileHref = (diffFile) => {
+  if (!window?.gon?.features?.pinnedFile) return '';
+  return `?pin=${diffFile.file_hash}`;
+};
+
+export const lineHref = (line, content) => {
+  if (!line || !line.line_code) return '';
+  return `${pinnedFileHref(content.diffFile)}#${line.line_code}`;
+};
+
+export const fileContentsId = (diffFile) => {
+  return `diff-content-${diffFile.file_hash}`;
+};
 
 export const lineCode = (line) => {
   if (!line) return undefined;
@@ -179,8 +191,8 @@ export const mapParallel = (content) => (line) => {
     isContextLineRight: isContextLine(right?.type),
     hasDiscussionsLeft: hasDiscussions(left),
     hasDiscussionsRight: hasDiscussions(right),
-    lineHrefOld: lineHref(left),
-    lineHrefNew: lineHref(right),
+    lineHrefOld: lineHref(left, content),
+    lineHrefNew: lineHref(right, content),
     lineCode: lineCode(line),
     isMetaLineLeft: isMetaLine(left?.type),
     isMetaLineRight: isMetaLine(right?.type),

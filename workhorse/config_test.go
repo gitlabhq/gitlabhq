@@ -1,17 +1,22 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"fmt"
 	"io"
 	"net/url"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
@@ -283,4 +288,388 @@ func TestConfigFlagParsing(t *testing.T) {
 		MetricsListener:          &config.ListenerConfig{Network: "tcp", Addr: "prometheus listen addr"},
 	}
 	require.Equal(t, expectedCfg, cfg)
+}
+
+func TestLoadConfigCommand(t *testing.T) {
+	t.Parallel()
+
+	modifyDefaultConfig := func(modify func(cfg *config.Config)) config.Config {
+		f, err := os.CreateTemp("", "workhorse-config-test")
+		require.NoError(t, err)
+		t.Cleanup(func() {
+			defer os.Remove(f.Name())
+		})
+
+		cfg := &config.Config{}
+
+		modify(cfg)
+		return *cfg
+	}
+
+	writeScript := func(t *testing.T, script string) string {
+		return testhelper.WriteExecutable(t,
+			filepath.Join(testhelper.TempDir(t), "script"),
+			[]byte("#!/bin/sh\n"+script),
+		)
+	}
+
+	type setupData struct {
+		cfg         config.Config
+		expectedErr string
+		expectedCfg config.Config
+	}
+
+	for _, tc := range []struct {
+		desc  string
+		setup func(t *testing.T) setupData
+	}{
+		{
+			desc: "nonexistent executable",
+			setup: func(t *testing.T) setupData {
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: "/does/not/exist",
+					},
+					expectedErr: "running config command: fork/exec /does/not/exist: no such file or directory",
+				}
+			},
+		},
+		{
+			desc: "command points to non-executable file",
+			setup: func(t *testing.T) setupData {
+				cmd := filepath.Join(testhelper.TempDir(t), "script")
+				require.NoError(t, os.WriteFile(cmd, nil, 0o600))
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedErr: fmt.Sprintf(
+						"running config command: fork/exec %s: permission denied", cmd,
+					),
+				}
+			},
+		},
+		{
+			desc: "executable returns error",
+			setup: func(t *testing.T) setupData {
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: writeScript(t, "echo error >&2 && exit 1"),
+					},
+					expectedErr: "running config command: exit status 1, stderr: \"error\\n\"",
+				}
+			},
+		},
+		{
+			desc: "invalid JSON",
+			setup: func(t *testing.T) setupData {
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: writeScript(t, "echo 'this is not json'"),
+					},
+					expectedErr: "unmarshalling generated config: invalid character 'h' in literal true (expecting 'r')",
+				}
+			},
+		},
+		{
+			desc: "mixed stdout and stderr",
+			setup: func(t *testing.T) setupData {
+				// We want to verify that we're able to correctly parse the output
+				// even if the process writes to both its stdout and stderr.
+				cmd := writeScript(t, "echo error >&2 && echo '{}'")
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+					}),
+				}
+			},
+		},
+		{
+			desc: "empty script",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, "echo '{}'")
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+					}),
+				}
+			},
+		},
+		{
+			desc: "unknown value",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo '{"key_does_not_exist":"value"}'`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+					}),
+				}
+			},
+		},
+		{
+			desc: "generated value",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo '{"shutdown_timeout": "100s"}'`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.ShutdownTimeout = config.TomlDuration{Duration: 100 * time.Second}
+					}),
+				}
+			},
+		},
+		{
+			desc: "overridden value",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo '{"shutdown_timeout": "100s"}'`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand:   cmd,
+						ShutdownTimeout: config.TomlDuration{Duration: 1 * time.Second},
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.ShutdownTimeout = config.TomlDuration{Duration: 100 * time.Second}
+					}),
+				}
+			},
+		},
+		{
+			desc: "mixed configuration",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo '{"redis": { "url": "redis://redis.example.com", "db": 1 } }'`)
+				redisURL, err := url.Parse("redis://redis.example.com")
+				require.NoError(t, err)
+				db := 1
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand:      cmd,
+						ImageResizerConfig: config.DefaultImageResizerConfig,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.Redis = &config.RedisConfig{
+							URL: config.TomlURL{URL: *redisURL},
+							DB:  &db,
+						}
+						cfg.ImageResizerConfig = config.DefaultImageResizerConfig
+					}),
+				}
+			},
+		},
+		{
+			desc: "subsections are being merged",
+			setup: func(t *testing.T) setupData {
+				redisURL, err := url.Parse("redis://redis.example.com")
+				require.NoError(t, err)
+				origDB := 1
+				scriptDB := 5
+
+				cmd := writeScript(t, `cat <<-EOF
+						{
+							"redis": {
+								"url": "redis://redis.example.com",
+								"db": 5
+							}
+						}
+						EOF
+					`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+						Redis: &config.RedisConfig{
+							URL: config.TomlURL{URL: *redisURL},
+							DB:  &origDB,
+						},
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.Redis = &config.RedisConfig{
+							URL: config.TomlURL{URL: *redisURL},
+							DB:  &scriptDB,
+						}
+					}),
+				}
+			},
+		},
+		{
+			desc: "listener config",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `cat <<-EOF
+							{
+								"listeners": [
+									{
+										"network": "tcp",
+										"addr": "127.0.0.1:3443",
+										"tls": {
+											"certificate": "/path/to/certificate",
+											"key": "/path/to/private/key"
+										}
+									}
+								]
+							}
+							EOF
+						`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.Listeners = []config.ListenerConfig{
+							{
+								Network: "tcp",
+								Addr:    "127.0.0.1:3443",
+								Tls: &config.TlsConfig{
+									Certificate: "/path/to/certificate",
+									Key:         "/path/to/private/key",
+								},
+							},
+						}
+					}),
+				}
+			},
+		},
+		{
+			desc: "S3 object storage config",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `cat <<-EOF
+							{
+								"object_storage": {
+									"provider": "AWS",
+									"s3": {
+										"aws_access_key_id": "MY-AWS-ACCESS-KEY",
+										"aws_secret_access_key": "MY-AWS-SECRET-ACCESS-KEY"
+									}
+								}
+							}
+							EOF
+						`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.ObjectStorageCredentials = config.ObjectStorageCredentials{
+							Provider: "AWS",
+							S3Credentials: config.S3Credentials{
+								AwsAccessKeyID:     "MY-AWS-ACCESS-KEY",
+								AwsSecretAccessKey: "MY-AWS-SECRET-ACCESS-KEY",
+							},
+						}
+					}),
+				}
+			},
+		},
+		{
+			desc: "Azure object storage config",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `cat <<-EOF
+								{
+									"object_storage": {
+										"provider": "AzureRM",
+										"azurerm": {
+											"azure_storage_account_name": "MY-STORAGE-ACCOUNT",
+											"azure_storage_access_key": "MY-STORAGE-ACCESS-KEY"
+										}
+									}
+								}
+								EOF
+							`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.ObjectStorageCredentials = config.ObjectStorageCredentials{
+							Provider: "AzureRM",
+							AzureCredentials: config.AzureCredentials{
+								AccountName: "MY-STORAGE-ACCOUNT",
+								AccountKey:  "MY-STORAGE-ACCESS-KEY",
+							},
+						}
+					}),
+				}
+			},
+		},
+		{
+			desc: "Google Cloud object storage config",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `cat <<-EOF
+								{
+									"object_storage": {
+										"provider": "Google",
+										"google": {
+											"google_application_default": true,
+											"google_json_key_string": "MY-GOOGLE-JSON-KEY"
+										}
+									}
+								}
+								EOF
+							`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: cmd,
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = cmd
+						cfg.ObjectStorageCredentials = config.ObjectStorageCredentials{
+							Provider: "Google",
+							GoogleCredentials: config.GoogleCredentials{
+								ApplicationDefault: true,
+								JSONKeyString:      "MY-GOOGLE-JSON-KEY",
+							},
+						}
+					}),
+				}
+			},
+		},
+	} {
+		tc := tc
+
+		t.Run(tc.desc, func(t *testing.T) {
+			t.Parallel()
+
+			setup := tc.setup(t)
+
+			var cfgBuffer bytes.Buffer
+			require.NoError(t, toml.NewEncoder(&cfgBuffer).Encode(setup.cfg))
+
+			cfg, err := config.LoadConfig(cfgBuffer.String())
+			// We can't use `require.Equal()` for the error as it's basically impossible
+			// to reproduce the exact `exec.ExitError`.
+			if setup.expectedErr != "" {
+				require.EqualError(t, err, setup.expectedErr)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t, setup.expectedCfg, *cfg)
+			}
+		})
+	}
 }

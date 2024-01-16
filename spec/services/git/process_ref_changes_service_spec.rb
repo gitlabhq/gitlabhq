@@ -21,9 +21,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
     let(:changes) do
       [
-        { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
+        { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
         { index: 1, oldrev: '123456', newrev: '789012', ref: "#{ref_prefix}/update" },
-        { index: 2, oldrev: '123456', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/delete" }
+        { index: 2, oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/delete" }
       ]
     end
 
@@ -71,9 +71,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
 
       let(:changes) do
         [
-          { oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
+          { oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create" },
           { oldrev: '123456', newrev: '789012', ref: "#{ref_prefix}/update" },
-          { oldrev: '123456', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/delete" }
+          { oldrev: '123456', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/delete" }
         ].map do |change|
           multiple_changes(change, push_event_activities_limit + 1)
         end.flatten
@@ -216,19 +216,19 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
     context 'when there are merge requests associated with branches' do
       let(:tag_changes) do
         [
-          { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
+          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
         ]
       end
 
       let(:branch_changes) do
         [
-          { index: 0, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
-          { index: 1, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789013', ref: "#{ref_prefix}/create2" },
-          { index: 2, oldrev: Gitlab::Git::BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" },
+          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "#{ref_prefix}/create1" },
+          { index: 1, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789013', ref: "#{ref_prefix}/create2" },
+          { index: 2, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789014', ref: "#{ref_prefix}/create3" },
           { index: 3, oldrev: '789015', newrev: '789016', ref: "#{ref_prefix}/changed1" },
           { index: 4, oldrev: '789017', newrev: '789018', ref: "#{ref_prefix}/changed2" },
-          { index: 5, oldrev: '789019', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/removed1" },
-          { index: 6, oldrev: '789020', newrev: Gitlab::Git::BLANK_SHA, ref: "#{ref_prefix}/removed2" }
+          { index: 5, oldrev: '789019', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/removed1" },
+          { index: 6, oldrev: '789020', newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: "#{ref_prefix}/removed2" }
         ]
       end
 
@@ -246,7 +246,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
           project.id,
           user.id,
-          Gitlab::Git::BLANK_SHA,
+          Gitlab::Git::SHA1_BLANK_SHA,
           '789012',
           "#{ref_prefix}/create1",
           { 'push_options' => nil }).ordered
@@ -254,7 +254,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(
           project.id,
           user.id,
-          Gitlab::Git::BLANK_SHA,
+          Gitlab::Git::SHA1_BLANK_SHA,
           '789013',
           "#{ref_prefix}/create2",
           { 'push_options' => nil }).ordered
@@ -271,7 +271,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           project.id,
           user.id,
           '789020',
-          Gitlab::Git::BLANK_SHA,
+          Gitlab::Git::SHA1_BLANK_SHA,
           "#{ref_prefix}/removed2",
           { 'push_options' => nil }).ordered
 

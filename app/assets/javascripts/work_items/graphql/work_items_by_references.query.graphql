@@ -1,0 +1,10 @@
+query getWorkItemsByReferences($contextNamespacePath: ID!, $refs: [String!]!) {
+  workItemsByReference(contextNamespacePath: $contextNamespacePath, refs: $refs) {
+    nodes {
+      id
+      iid
+      title
+      confidential
+    }
+  }
+}

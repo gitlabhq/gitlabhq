@@ -33,7 +33,7 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
       end
 
       it 'ensures no N+1 queries are made' do
-        control_count = ActiveRecord::QueryRecorder.new { subject }.count
+        control = ActiveRecord::QueryRecorder.new { subject }
 
         project = create :project, :public
         milestone = create :milestone, project: project
@@ -44,7 +44,7 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
         create :issue_link, source: issue_x, target: issue_z
         create :issue_link, source: issue_y, target: issue_z
 
-        expect { subject }.not_to exceed_query_limit(control_count)
+        expect { subject }.not_to exceed_query_limit(control)
       end
 
       it 'returns related issues JSON' do

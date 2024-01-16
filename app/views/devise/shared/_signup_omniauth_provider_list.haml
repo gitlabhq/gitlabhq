@@ -1,21 +1,9 @@
-- if Feature.enabled?(:restyle_login_page, @project)
-  .gl-text-center.gl-pt-5
-    %label.gl-font-weight-normal
-      = _("Register with:")
-    .gl-display-flex.gl-flex-direction-column.gl-gap-3
-      - providers.each do |provider|
-        = render 'devise/shared/signup_omniauth_provider_button',
-          href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
-          provider: provider,
-          tracking_label: tracking_label
-
-
-- else
-  %label.gl-font-weight-bold
-    = _("Create an account using:")
+.gl-text-center.gl-pt-5
+  %label.gl-font-weight-normal
+    = _("Register with:")
   .gl-display-flex.gl-flex-direction-column.gl-gap-3
     - providers.each do |provider|
       = render 'devise/shared/signup_omniauth_provider_button',
-          href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
-          provider: provider,
-          tracking_label: tracking_label
+        href: omniauth_authorize_path(:user, provider, register_omniauth_params(local_assigns)),
+        provider: provider,
+        tracking_label: tracking_label

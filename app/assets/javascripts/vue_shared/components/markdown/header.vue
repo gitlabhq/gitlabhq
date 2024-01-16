@@ -382,6 +382,7 @@ export default {
             @click="handleQuote"
           />
           <toolbar-button
+            v-if="!restrictedToolBarItems.includes('code')"
             v-show="!previewMarkdown"
             tag="`"
             tag-block="```"

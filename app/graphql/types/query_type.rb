@@ -86,7 +86,8 @@ module Types
     field :jobs,
           ::Types::Ci::JobType.connection_type,
           null: true,
-          description: 'All jobs on this GitLab instance.',
+          description: 'All jobs on this GitLab instance.' \
+                       ' Returns an empty result for users without administrator access.',
           resolver: ::Resolvers::Ci::AllJobsResolver
     field :merge_request, Types::MergeRequestType,
           null: true,
@@ -122,6 +123,11 @@ module Types
           resolver: Resolvers::Organizations::OrganizationResolver,
           description: "Find an organization.",
           alpha: { milestone: '16.4' }
+    field :organizations, Types::Organizations::OrganizationType.connection_type,
+          null: true,
+          resolver: Resolvers::Organizations::OrganizationsResolver,
+          description: "List organizations.",
+          alpha: { milestone: '16.8' }
     field :package,
           description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
           resolver: Resolvers::PackageDetailsResolver

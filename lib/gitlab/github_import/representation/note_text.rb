@@ -55,6 +55,14 @@ module Gitlab
           }.merge(record_type_specific_attribute)
         end
 
+        def has_attachments?
+          attachments.present?
+        end
+
+        def attachments
+          @attachments ||= MarkdownText.fetch_attachments(text)
+        end
+
         private
 
         def record_type_specific_attribute

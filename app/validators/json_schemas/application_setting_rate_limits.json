@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application rate limits",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "members_delete_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of project or group members a user can delete per minute."
+    }
+  }
+}

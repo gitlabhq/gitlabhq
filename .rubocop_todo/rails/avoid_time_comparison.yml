@@ -1,0 +1,13 @@
+---
+Rails/AvoidTimeComparison:
+  Details: grace period
+  Exclude:
+    - 'app/services/packages/mark_package_files_for_destruction_service.rb'
+    - 'app/workers/container_registry/migration/enqueuer_worker.rb'
+    - 'app/workers/gitlab/import/advance_stage.rb'
+    - 'ee/app/services/incident_management/pending_escalations/process_service.rb'
+    - 'ee/app/workers/update_all_mirrors_worker.rb'
+    - 'lib/gitlab/chaos.rb'
+    - 'lib/gitlab/database/background_migration/batched_migration.rb'
+    - 'spec/lib/gitlab/ci/cron_parser_spec.rb'
+    - 'spec/support/helpers/wait_helpers.rb'

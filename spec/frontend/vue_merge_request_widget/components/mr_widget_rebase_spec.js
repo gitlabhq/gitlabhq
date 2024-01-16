@@ -398,4 +398,20 @@ describe('Merge request widget rebase component', () => {
       expect(toast).toHaveBeenCalledWith('Rebase completed');
     });
   });
+
+  // This may happen when the session of a user is expired.
+  // see https://gitlab.com/gitlab-org/gitlab/-/issues/413627
+  describe('with empty project', () => {
+    it('does not throw any error', async () => {
+      const fn = async () => {
+        createWrapper({
+          handler: jest.fn().mockResolvedValue({ data: { project: null } }),
+        });
+
+        await waitForPromises();
+      };
+
+      await expect(fn()).resolves.not.toThrow();
+    });
+  });
 });

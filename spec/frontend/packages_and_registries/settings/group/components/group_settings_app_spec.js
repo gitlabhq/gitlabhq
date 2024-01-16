@@ -73,11 +73,11 @@ describe('Group Settings App', () => {
   };
 
   describe.each`
-    finder                           | entitySpecificProps               | successMessage                   | errorMessage
-    ${findPackageSettings}           | ${packageSettingsProps}           | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
-    ${findPackageForwardingSettings} | ${packageForwardingSettingsProps} | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
-    ${findDependencyProxySettings}   | ${dependencyProxyProps}           | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
-  `('settings blocks', ({ finder, entitySpecificProps, successMessage, errorMessage }) => {
+    finder                           | entitySpecificProps
+    ${findPackageSettings}           | ${packageSettingsProps}
+    ${findPackageForwardingSettings} | ${packageForwardingSettingsProps}
+    ${findDependencyProxySettings}   | ${dependencyProxyProps}
+  `('settings blocks', ({ finder, entitySpecificProps }) => {
     beforeEach(() => {
       mountComponent();
       return waitForApolloQueryAndRender();
@@ -94,7 +94,7 @@ describe('Group Settings App', () => {
     describe('success event', () => {
       it('shows a success toast', () => {
         finder().vm.$emit('success');
-        expect(show).toHaveBeenCalledWith(successMessage);
+        expect(show).toHaveBeenCalledWith('Settings saved successfully.');
       });
 
       it('hides the error alert', async () => {
@@ -121,7 +121,7 @@ describe('Group Settings App', () => {
       });
 
       it('alert has the right text', () => {
-        expect(findAlert().text()).toBe(errorMessage);
+        expect(findAlert().text()).toBe('An error occurred while saving the settings.');
       });
 
       it('dismissing the alert removes it', async () => {

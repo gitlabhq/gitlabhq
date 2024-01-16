@@ -1,3 +1,4 @@
+import { isValidDate } from '~/lib/utils/datetime_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
@@ -128,6 +129,24 @@ function handleAttributeFilter(filterValue, filterOperator, searchParams) {
   }
 }
 
+function handlePeriodFilter(rawValue, filterName, filterParams) {
+  if (rawValue.trim().indexOf(' ') < 0) {
+    filterParams.append(filterName, rawValue.trim());
+    return;
+  }
+
+  const dateParts = rawValue.split(' - ');
+  if (dateParts.length === 2) {
+    const [start, end] = dateParts;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    if (isValidDate(startDate) && isValidDate(endDate)) {
+      filterParams.append('start_time', startDate.toISOString());
+      filterParams.append('end_time', endDate.toISOString());
+    }
+  }
+}
+
 /**
  * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
  *  e.g:
@@ -154,6 +173,8 @@ function filterObjToQueryParams(filterObj) {
     validFilters.forEach(({ operator, value: rawValue }) => {
       if (filterName === 'attribute') {
         handleAttributeFilter(rawValue, operator, filterParams);
+      } else if (filterName === 'period') {
+        handlePeriodFilter(rawValue, filterName, filterParams);
       } else {
         const paramName = getFilterParamName(filterName, operator);
         let value = rawValue;

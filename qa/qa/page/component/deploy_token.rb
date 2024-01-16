@@ -19,12 +19,6 @@ module QA
             element 'deploy-token-write-registry-checkbox'
             element 'create-deploy-token-button'
           end
-
-          base.view 'app/views/shared/deploy_tokens/_new_deploy_token.html.haml' do
-            element 'created-deploy-token-container'
-            element 'deploy-token-user-field'
-            element 'deploy-token-field'
-          end
         end
 
         def fill_token_name(name)
@@ -45,26 +39,6 @@ module QA
 
         def add_token
           click_element('create-deploy-token-button')
-        end
-
-        def token_username
-          within_new_project_deploy_token do
-            find_element('deploy-token-user-field').value
-          end
-        end
-
-        def token_password
-          within_new_project_deploy_token do
-            find_element('deploy-token-field').value
-          end
-        end
-
-        private
-
-        def within_new_project_deploy_token(&block)
-          has_element?('created-deploy-token-container', wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
-
-          within_element('created-deploy-token-container', &block)
         end
       end
     end

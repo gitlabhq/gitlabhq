@@ -11,7 +11,7 @@ module Milestones
         end
 
         milestone.merge_requests.each do |merge_request|
-          MergeRequests::UpdateService.new(project: parent, current_user: current_user, params: update_params).execute(merge_request)
+          MergeRequests::UpdateService.new(project: merge_request.project, current_user: current_user, params: update_params).execute(merge_request)
         end
 
         log_destroy_event_for(milestone)

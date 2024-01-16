@@ -225,6 +225,53 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+#### `Search::Elastic::MigrationDeleteBasedOnSchemaVersion`
+
+Deletes all documents in the index that stores the specified document type and has `schema_version` less than the given value.
+
+Requires the `DOCUMENT_TYPE` constant and `schema_version` method.
+The index mapping must have a `schema_version` integer field in a `YYMM` format.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include ::Search::Elastic::MigrationDeleteBasedOnSchemaVersion
+
+  DOCUMENT_TYPE = Issue
+
+  batch_size 10_000
+  batched!
+  throttle_delay 1.minute
+  retry_on_failure
+
+  def schema_version
+    23_12
+  end
+end
+```
+
+#### `Search::Elastic::MigrationDatabaseBackfillHelper`
+
+Reindexes all documents in the database to the elastic search index respecting the `limited_indexing` setting.
+
+Requires the `DOCUMENT_TYPE` constant and `respect_limited_indexing?` method.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include ::Search::Elastic::MigrationDatabaseBackfillHelper
+
+  batch_size 10_000
+  batched!
+  throttle_delay 1.minute
+  retry_on_failure
+
+  DOCUMENT_TYPE = Issue
+
+  def respect_limited_indexing?
+    true
+  end
+end
+```
+
 #### `Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.

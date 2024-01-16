@@ -14,6 +14,11 @@ module Resolvers
         required: false,
         default_value: nil
 
+    argument :referrers, GraphQL::Types::Boolean,
+        description: 'Include tag referrers.',
+        required: false,
+        default_value: nil
+
     alias_method :container_repository, :object
 
     def resolve(sort:, **filters)
@@ -25,7 +30,8 @@ module Resolvers
           last: filters[:after],
           sort: map_sort_field(sort),
           name: filters[:name],
-          page_size: page_size
+          page_size: page_size,
+          referrers: filters[:referrers]
         )
 
         Gitlab::Graphql::ExternallyPaginatedArray.new(

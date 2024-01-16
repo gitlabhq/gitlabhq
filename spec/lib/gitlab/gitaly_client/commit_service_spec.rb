@@ -203,15 +203,15 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     shared_examples 'includes paths different in any parent' do
       let(:changed_paths) do
         [
-          { path: 'files/locked/foo.lfs', status: 'ADDED' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED' }
+          { path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' }
         ].as_json
       end
 
@@ -223,12 +223,12 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     shared_examples 'includes paths different in all parents' do
       let(:changed_paths) do
         [
-          { path: 'files/locked/foo.lfs', status: 'ADDED' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED' }
+          { path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
+          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
+          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' }
         ].as_json
       end
 

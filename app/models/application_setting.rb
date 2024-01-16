@@ -99,7 +99,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
 
-  validates :failed_login_attempts_unlock_period_in_minutes,
+  validates :external_pipeline_validation_service_timeout,
+    :failed_login_attempts_unlock_period_in_minutes,
+    :max_login_attempts,
     allow_nil: true,
     numericality: { only_integer: true, greater_than: 0 }
 
@@ -117,10 +119,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 1_000, message: N_('is too long (maximum is 1000 entries)') },
     allow_nil: false,
     qualified_domain_array: true
-
-  validates :session_expire_delay,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :minimum_password_length,
     presence: true,
@@ -222,38 +220,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     hostname: true,
     length: { maximum: 255 }
 
-  validates :max_attachment_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
-  validates :max_artifacts_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
-  validates :max_export_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :max_import_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :max_import_remote_file_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :bulk_import_max_download_file_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :max_decompressed_archive_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :max_login_attempts,
-    allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
   validates :max_pages_size,
     presence: true,
     numericality: {
@@ -261,30 +227,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte
     }
 
-  validates :max_pages_custom_domains_per_project,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :jobs_per_stage_page_size,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :max_terraform_state_size_bytes,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
-
-  validates :container_registry_token_expire_delay,
-    presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
-  validates :decompress_archive_file_timeout,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validate :check_repository_storages_weighted
 
@@ -299,14 +245,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :domain_denylist,
     presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
     if: :domain_denylist_enabled?
-
-  validates :housekeeping_optimize_repository_period,
-    presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
-  validates :terminal_max_session_time,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :polling_interval_multiplier,
     presence: true,
@@ -413,58 +351,25 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
     allow_nil: false
 
-  validates :push_event_hooks_limit,
-    numericality: { greater_than_or_equal_to: 0 }
-
   validates :push_event_activities_limit,
+    :push_event_hooks_limit,
     numericality: { greater_than_or_equal_to: 0 }
 
-  validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobytes }
   validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
-  validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
-  validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
-
-  validates :ci_max_total_yaml_size_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
-
-  validates :ci_max_includes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
 
   validates :email_restrictions, untrusted_regexp: true
 
   validates :hashed_storage_enabled, inclusion: { in: [true], message: N_("Hashed storage can't be disabled anymore for new projects") }
 
-  validates :container_registry_delete_tags_service_timeout,
-    :container_registry_cleanup_tags_service_max_list_size,
-    :container_registry_data_repair_detail_worker_max_concurrency,
-    :container_registry_expiration_policies_worker_capacity,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
   validates :container_registry_expiration_policies_caching,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
-
-  validates :container_registry_import_max_tags_count,
-    :container_registry_import_max_retries,
-    :container_registry_import_start_max_retries,
-    :container_registry_import_max_step_duration,
-    :container_registry_pre_import_timeout,
-    :container_registry_import_timeout,
-    allow_nil: false,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :container_registry_pre_import_tags_rate,
     allow_nil: false,
     numericality: { greater_than_or_equal_to: 0 }
   validates :container_registry_import_target_plan, presence: true
   validates :container_registry_import_created_before, presence: true
-
-  validates :dependency_proxy_ttl_group_policy_worker_capacity,
-    allow_nil: false,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :packages_cleanup_package_file_worker_capacity,
-    :package_registry_cleanup_policies_worker_capacity,
-    allow_nil: false,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :invisible_captcha_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -584,15 +489,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 255 },
     allow_blank: true
 
-  validates :issues_create_limit,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :raw_blob_request_limit,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :pipeline_limit_per_project_user_sha,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
   validates :ci_jwt_signing_key,
     rsa_key: true, allow_nil: true
 
@@ -619,41 +515,90 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :slack_app_verification_token
   end
 
-  with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
-    validates :throttle_unauthenticated_api_requests_per_period
-    validates :throttle_unauthenticated_api_period_in_seconds
-    validates :throttle_unauthenticated_requests_per_period
-    validates :throttle_unauthenticated_period_in_seconds
-    validates :throttle_unauthenticated_packages_api_requests_per_period
-    validates :throttle_unauthenticated_packages_api_period_in_seconds
-    validates :throttle_unauthenticated_files_api_requests_per_period
-    validates :throttle_unauthenticated_files_api_period_in_seconds
-    validates :throttle_unauthenticated_deprecated_api_requests_per_period
-    validates :throttle_unauthenticated_deprecated_api_period_in_seconds
-    validates :throttle_authenticated_api_requests_per_period
-    validates :throttle_authenticated_api_period_in_seconds
-    validates :throttle_authenticated_git_lfs_requests_per_period
-    validates :throttle_authenticated_git_lfs_period_in_seconds
-    validates :throttle_authenticated_web_requests_per_period
-    validates :throttle_authenticated_web_period_in_seconds
-    validates :throttle_authenticated_packages_api_requests_per_period
-    validates :throttle_authenticated_packages_api_period_in_seconds
-    validates :throttle_authenticated_files_api_requests_per_period
-    validates :throttle_authenticated_files_api_period_in_seconds
-    validates :throttle_authenticated_deprecated_api_requests_per_period
-    validates :throttle_authenticated_deprecated_api_period_in_seconds
-    validates :throttle_protected_paths_requests_per_period
-    validates :throttle_protected_paths_period_in_seconds
-    validates :project_jobs_api_rate_limit
+  with_options(numericality: { only_integer: true, greater_than: 0 }) do
+    validates :bulk_import_concurrent_pipeline_batch_limit,
+      :container_registry_token_expire_delay,
+      :housekeeping_optimize_repository_period,
+      :inactive_projects_delete_after_months,
+      :max_artifacts_size,
+      :max_attachment_size,
+      :max_yaml_depth,
+      :max_yaml_size_bytes,
+      :namespace_aggregation_schedule_lease_duration_in_seconds,
+      :project_jobs_api_rate_limit,
+      :snippet_size_limit,
+      :throttle_authenticated_api_period_in_seconds,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_deprecated_api_period_in_seconds,
+      :throttle_authenticated_deprecated_api_requests_per_period,
+      :throttle_authenticated_files_api_period_in_seconds,
+      :throttle_authenticated_files_api_requests_per_period,
+      :throttle_authenticated_git_lfs_period_in_seconds,
+      :throttle_authenticated_git_lfs_requests_per_period,
+      :throttle_authenticated_packages_api_period_in_seconds,
+      :throttle_authenticated_packages_api_requests_per_period,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_protected_paths_period_in_seconds,
+      :throttle_protected_paths_requests_per_period,
+      :throttle_unauthenticated_api_period_in_seconds,
+      :throttle_unauthenticated_api_requests_per_period,
+      :throttle_unauthenticated_deprecated_api_period_in_seconds,
+      :throttle_unauthenticated_deprecated_api_requests_per_period,
+      :throttle_unauthenticated_files_api_period_in_seconds,
+      :throttle_unauthenticated_files_api_requests_per_period,
+      :throttle_unauthenticated_packages_api_period_in_seconds,
+      :throttle_unauthenticated_packages_api_requests_per_period,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_unauthenticated_requests_per_period
   end
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do
-    validates :notes_create_limit
-    validates :search_rate_limit
-    validates :search_rate_limit_unauthenticated
-    validates :projects_api_rate_limit_unauthenticated
-    validates :gitlab_shell_operation_limit
+    validates :bulk_import_max_download_file_size,
+      :ci_max_includes,
+      :ci_max_total_yaml_size_bytes,
+      :container_registry_cleanup_tags_service_max_list_size,
+      :container_registry_data_repair_detail_worker_max_concurrency,
+      :container_registry_delete_tags_service_timeout,
+      :container_registry_expiration_policies_worker_capacity,
+      :container_registry_import_max_retries,
+      :container_registry_import_max_step_duration,
+      :container_registry_import_max_tags_count,
+      :container_registry_import_start_max_retries,
+      :container_registry_import_timeout,
+      :container_registry_pre_import_timeout,
+      :decompress_archive_file_timeout,
+      :dependency_proxy_ttl_group_policy_worker_capacity,
+      :gitlab_shell_operation_limit,
+      :inactive_projects_min_size_mb,
+      :issues_create_limit,
+      :jobs_per_stage_page_size,
+      :max_decompressed_archive_size,
+      :max_export_size,
+      :max_import_remote_file_size,
+      :max_import_size,
+      :max_pages_custom_domains_per_project,
+      :max_terraform_state_size_bytes,
+      :members_delete_limit,
+      :notes_create_limit,
+      :package_registry_cleanup_policies_worker_capacity,
+      :packages_cleanup_package_file_worker_capacity,
+      :pipeline_limit_per_project_user_sha,
+      :projects_api_rate_limit_unauthenticated,
+      :raw_blob_request_limit,
+      :search_rate_limit,
+      :search_rate_limit_unauthenticated,
+      :session_expire_delay,
+      :sidekiq_job_limiter_compression_threshold_bytes,
+      :sidekiq_job_limiter_limit_bytes,
+      :terminal_max_session_time,
+      :users_get_by_id_limit
   end
+
+  jsonb_accessor :rate_limits,
+    members_delete_limit: [:integer, { default: 60 }]
+
+  validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :search_rate_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
@@ -669,10 +614,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :external_pipeline_validation_service_url,
     addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
-  validates :external_pipeline_validation_service_timeout,
-    allow_nil: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
   validates :whats_new_variant,
     inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
@@ -686,10 +627,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :sidekiq_job_limiter_mode,
     inclusion: { in: self.sidekiq_job_limiter_modes }
-  validates :sidekiq_job_limiter_compression_threshold_bytes,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :sidekiq_job_limiter_limit_bytes,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :sentry_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -711,8 +648,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 255 },
     if: :error_tracking_enabled?
 
-  validates :users_get_by_id_limit,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :users_get_by_id_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
     allow_nil: false
@@ -724,19 +659,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     if: :update_runner_versions_enabled?
 
-  validates :inactive_projects_min_size_mb,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :inactive_projects_delete_after_months,
-    numericality: { only_integer: true, greater_than: 0 }
-
   validates :inactive_projects_send_warning_email_after_months,
     numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
   validates :prometheus_alert_db_indicators_settings, json_schema: { filename: 'application_setting_prometheus_alert_db_indicators_settings' }, allow_nil: true
-
-  validates :namespace_aggregation_schedule_lease_duration_in_seconds,
-    numericality: { only_integer: true, greater_than: 0 }
 
   validates :sentry_clientside_traces_sample_rate,
     presence: true,
@@ -815,10 +741,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :bulk_import_concurrent_pipeline_batch_limit,
-    presence: true,
-    numericality: { only_integer: true, greater_than: 0 }
-
   validates :allow_runner_registration_token,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -833,6 +755,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :math_rendering_limits_enabled,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :require_admin_two_factor_authentication,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!
@@ -982,7 +907,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   def parsed_kroki_url
-    @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w[http https], enforce_sanitization: true)[0]
+    @parsed_kroki_url ||= Gitlab::HTTP_V2::UrlBlocker.validate!(
+      kroki_url, schemes: %w[http https],
+      enforce_sanitization: true,
+      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)[0]
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,

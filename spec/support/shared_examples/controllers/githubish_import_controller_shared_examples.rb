@@ -125,9 +125,9 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     group_a.add_owner(user)
     create(:project, :import_started, import_type: provider, namespace: user.namespace)
 
-    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+    control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
       get :status, format: :json
-    end.count
+    end
 
     stub_client(repos: [repo, org_repo], orgs: [])
     group_b = create(:group)
@@ -135,7 +135,7 @@ RSpec.shared_examples 'a GitHub-ish import controller: GET status' do
     create(:project, :import_started, import_type: provider, namespace: user.namespace)
 
     expect { get :status, format: :json }
-      .not_to exceed_all_query_limit(control_count)
+      .not_to exceed_all_query_limit(control)
   end
 
   context 'when user is not allowed to import projects' do

@@ -48,6 +48,25 @@ from using `$FORCE_GITLAB_CI`.
 - [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
 - [Gitaly downstream GitLab pipeline](https://gitlab.com/gitlab-org/gitaly/-/issues/4615)
 
+See the next section for how we can enable pipelines without using
+`$FORCE_GITLAB_CI`.
+
+#### Alternative to `$FORCE_GITLAB_CI`
+
+Essentially, we use different variables to enable different pipelines.
+An example doing this is `$START_AS_IF_FOSS`. When we want to trigger a
+cross project FOSS pipeline, we set `$START_AS_IF_FOSS`, along with a set of
+other variables like `$ENABLE_RSPEC_UNIT`, `$ENABLE_RSPEC_SYSTEM`, and so on
+so forth to enable each jobs we want to run in the as-if-foss cross project
+downstream pipeline.
+
+The advantage of this over `$FORCE_GITLAB_CI` is that we have full control
+over how we want to run the pipeline because `$START_AS_IF_FOSS` is only used
+for this purpose, and changing how the pipeline behaves under this variable
+will not affect other types of pipelines, while using `$FORCE_GITLAB_CI` we
+do not know what exactly the pipeline is because it's used for multiple
+purposes.
+
 ## Default image
 
 The default image is defined in [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
@@ -149,6 +168,7 @@ that are scoped to a single [configuration keyword](../../ci/yaml/index.md#job-k
 |------------------|-------------|
 | `.default-retry` | Allows a job to [retry](../../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
+| `.repo-from-artifacts` | Allows a job to fetch the repository from artifacts in `clone-gitlab-repo` instead of cloning. This should reduce GitLab.com Gitaly load and also slightly improve the speed because downloading from artifacts is faster than cloning. Note that this should be avoided to be used with jobs having `needs: []` because otherwise it'll start later and we normally want all jobs to start as soon as possible. Use this only on jobs which has other dependencies so that we don't wait longer than just cloning. Note that this behavior can be controlled via `CI_FETCH_REPO_GIT_STRATEGY`. See [Fetch repository via artifacts instead of cloning/fetching from Gitaly](performance.md#fetch-repository-via-artifacts-instead-of-cloningfetching-from-gitaly) for more details. |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.ruby-cache` | Allows a job to use a default `cache` definition suitable for Ruby tasks. |
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
@@ -199,6 +219,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-as-if-foss" | |
 | `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:update-cache". | |
 | `if-merge-request-labels-run-all-rspec`                      | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-all-rspec". | |
+| `if-merge-request-labels-run-cs-evaluation`                  | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-CS-evaluation". | |
 | `if-security-merge-request`                                  | Matches if the pipeline is for a security merge request. | |
 | `if-security-schedule`                                       | Matches if the pipeline is for a security scheduled pipeline. | |
 | `if-nightly-master-schedule`                                 | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
@@ -414,6 +435,8 @@ For this scenario, you have to:
     - `scripts/merge-simplecov`
     - `spec/simplecov_env_core.rb`
     - `spec/simplecov_env.rb`
+  - `prepare-as-if-foss-env` for:
+    - `scripts/setup/generate-as-if-foss-env.rb`
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).
 
@@ -425,7 +448,7 @@ projects, only one of the following tags should be added to a job:
 
 - `gitlab-org`: Jobs randomly use privileged and unprivileged runners.
 - `gitlab-org-docker`: Jobs must use a privileged runner. If you need [Docker-in-Docker support](../../ci/docker/using_docker_build.md#use-docker-in-docker),
-use `gitlab-org-docker` instead of `gitlab-org`.
+  use `gitlab-org-docker` instead of `gitlab-org`.
 
 The `gitlab-org-docker` tag is added by the `.use-docker-in-docker` job
 definition above.

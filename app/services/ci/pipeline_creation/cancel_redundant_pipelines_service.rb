@@ -23,7 +23,7 @@ module Ci
           pipelines = parent_and_child_pipelines(ids)
 
           Gitlab::OptimisticLocking.retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
-            auto_cancel_interruptible_pipelines(cancelables.ids)
+            auto_cancel_pipelines(cancelables.ids)
           end
         end
       end
@@ -69,29 +69,64 @@ module Ci
           .base_and_descendants
           .alive_or_scheduled
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
-      def auto_cancel_interruptible_pipelines(pipeline_ids)
+      def legacy_auto_cancel_pipelines(pipeline_ids)
         ::Ci::Pipeline
           .id_in(pipeline_ids)
-          .with_only_interruptible_builds
+          .conservative_interruptible
           .each do |cancelable_pipeline|
-            Gitlab::AppLogger.info(
-              class: self.class.name,
-              message: "Pipeline #{pipeline.id} auto-canceling pipeline #{cancelable_pipeline.id}",
-              canceled_pipeline_id: cancelable_pipeline.id,
-              canceled_by_pipeline_id: pipeline.id,
-              canceled_by_pipeline_source: pipeline.source
-            )
-
-            # cascade_to_children not needed because we iterate through descendants here
-            ::Ci::CancelPipelineService.new(
-              pipeline: cancelable_pipeline,
-              current_user: nil,
-              auto_canceled_by_pipeline: pipeline,
-              cascade_to_children: false
-            ).force_execute
+            cancel_pipeline(cancelable_pipeline, safe_cancellation: false)
           end
+      end
+
+      def auto_cancel_pipelines(pipeline_ids)
+        if Feature.disabled?(:ci_workflow_auto_cancel_on_new_commit, project)
+          return legacy_auto_cancel_pipelines(pipeline_ids)
+        end
+
+        ::Ci::Pipeline
+          .id_in(pipeline_ids)
+          .each do |cancelable_pipeline|
+            case cancelable_pipeline.auto_cancel_on_new_commit
+            when 'none'
+              # no-op
+            when 'conservative'
+              next unless conservative_cancellable_pipeline_ids(pipeline_ids).include?(cancelable_pipeline.id)
+
+              cancel_pipeline(cancelable_pipeline, safe_cancellation: false)
+            when 'interruptible'
+              cancel_pipeline(cancelable_pipeline, safe_cancellation: true)
+            else
+              raise ArgumentError,
+                "Unknown auto_cancel_on_new_commit value: #{cancelable_pipeline.auto_cancel_on_new_commit}"
+            end
+          end
+      end
+
+      def conservative_cancellable_pipeline_ids(pipeline_ids)
+        strong_memoize_with(:conservative_cancellable_pipeline_ids, pipeline_ids) do
+          ::Ci::Pipeline.id_in(pipeline_ids).conservative_interruptible.ids
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      def cancel_pipeline(cancelable_pipeline, safe_cancellation:)
+        Gitlab::AppLogger.info(
+          class: self.class.name,
+          message: "Pipeline #{pipeline.id} auto-canceling pipeline #{cancelable_pipeline.id}",
+          canceled_pipeline_id: cancelable_pipeline.id,
+          canceled_by_pipeline_id: pipeline.id,
+          canceled_by_pipeline_source: pipeline.source
+        )
+
+        # cascade_to_children not needed because we iterate through descendants here
+        ::Ci::CancelPipelineService.new(
+          pipeline: cancelable_pipeline,
+          current_user: nil,
+          auto_canceled_by_pipeline: pipeline,
+          cascade_to_children: false,
+          safe_cancellation: safe_cancellation
+        ).force_execute
       end
 
       def pipelines_created_after

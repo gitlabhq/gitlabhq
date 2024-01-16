@@ -64,7 +64,7 @@ describe('~/deploy_keys/graphql/resolvers', () => {
       const scope = 'enabledKeys';
       const page = 2;
       mock
-        .onGet(ENDPOINTS.enabledKeysEndpoint, { params: { page } })
+        .onGet(ENDPOINTS.enabledKeysEndpoint, { params: { page, per_page: 5 } })
         .reply(HTTP_STATUS_OK, { keys: [key] });
 
       const keys = await mockResolvers.Project.deployKeys(null, { scope, page }, { client });
@@ -156,6 +156,11 @@ describe('~/deploy_keys/graphql/resolvers', () => {
         query: currentPageQuery,
         data: { currentPage: 1 },
       });
+    });
+
+    it('throws failure on bad scope', () => {
+      scope = 'bad scope';
+      expect(() => mockResolvers.Mutation.currentScope(null, { scope }, { client })).toThrow(scope);
     });
   });
 

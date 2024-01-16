@@ -127,7 +127,6 @@ module API
             end
 
             optional :unique_counters, type: Hash do
-              optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
               optional :k8s_api_proxy_requests_unique_users_via_ci_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `ci_access`'
               optional :k8s_api_proxy_requests_unique_agents_via_ci_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `ci_access`'
               optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `user_access`'

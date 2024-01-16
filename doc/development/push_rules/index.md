@@ -42,9 +42,6 @@ change the push behavior.
 - `EE::Gitlab::Checks::PushRules::FileSizeCheck`: Executes push rule checks
   related to file size rules.
   - Defined in `ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb`.
-- `EE::Gitlab::Checks::PushRules::SecretsCheck`: Executes push rule checks
-  related to secrets rules.
-  - Defined in `ee/lib/ee/gitlab/checks/push_rules/secrets_check.rb`.
 - `EE::Gitlab::Checks::PushRules::TagCheck`: Executes push rule checks
   related to tag rules.
   - Defined in `ee/lib/ee/gitlab/checks/push_rules/tag_check.rb`.
@@ -83,11 +80,9 @@ graph TD
   EE::Gitlab::Checks::PushRuleCheck -->|Only if pushing to a tag| EE::Gitlab::Checks::PushRules::TagCheck
   EE::Gitlab::Checks::PushRuleCheck -->|Only if pushing to a branch| EE::Gitlab::Checks::PushRules::BranchCheck
   EE::Gitlab::Checks::PushRuleCheck --> EE::Gitlab::Checks::PushRules::FileSizeCheck
-  EE::Gitlab::Checks::PushRuleCheck --> EE::Gitlab::Checks::PushRules::SecretsCheck
-  EE::Gitlab::Checks::PushRuleCheck --> EE::Gitlab::Checks::PushRules::SecretsCheck
 ```
 
 NOTE:
 The `PushRuleCheck` only triggers checks in parallel if the
 `parallel_push_checks` feature flag is enabled. Otherwise tag or branch check
-runs first, then file size, then secrets.
+runs first, then file size.

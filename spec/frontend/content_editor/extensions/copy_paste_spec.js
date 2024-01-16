@@ -92,7 +92,7 @@ describe('content_editor/extensions/copy_paste', () => {
     return Object.assign(new Event(eventName), {
       clipboardData: {
         types,
-        getData: jest.fn((type) => data[type] || defaultData[type]),
+        getData: jest.fn((type) => data[type] ?? defaultData[type]),
         setData: jest.fn(),
         clearData: jest.fn(),
       },
@@ -188,6 +188,17 @@ describe('content_editor/extensions/copy_paste', () => {
 `,
       );
     });
+  });
+
+  it('does not handle pasting when textContent is empty (eg. images)', async () => {
+    expect(
+      await triggerPasteEventHandler(
+        buildClipboardEvent({
+          types: ['text/plain'],
+          data: { 'text/plain': '' },
+        }),
+      ),
+    ).toBe(false);
   });
 
   describe('when pasting raw markdown source', () => {

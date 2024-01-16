@@ -124,8 +124,8 @@ curl \
 To create a new customer subscription from a Marketplace partner client application,
 
 - Make an authorized POST request to the
-[`/api/v1/marketplace/subscriptions`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/post_api_v1_marketplace_subscriptions)
-endpoint in the Customers Portal with the following parameters in JSON format:
+  [`/api/v1/marketplace/subscriptions`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/post_api_v1_marketplace_subscriptions)
+  endpoint in the Customers Portal with the following parameters in JSON format:
 
 | Parameter                | Type   | Required | Description                                                                                                                                          |
 |--------------------------|--------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -144,8 +144,8 @@ If the subscription creation is unsuccessful, the response body includes an erro
 To get the status of a given subscription,
 
 - Make an authorized GET request to the
-[`/api/v1/marketplace/subscriptions/{external_subscription_id}`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/get_api_v1_marketplace_subscriptions__external_subscription_id_)
-endpoint in the Customers Portal.
+  [`/api/v1/marketplace/subscriptions/{external_subscription_id}`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/get_api_v1_marketplace_subscriptions__external_subscription_id_)
+  endpoint in the Customers Portal.
 
 The request must include the Marketplace partner system ID of the subscription to fetch the status for.
 

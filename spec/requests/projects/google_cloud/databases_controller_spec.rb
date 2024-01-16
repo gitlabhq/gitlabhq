@@ -96,7 +96,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
       context 'when EnableCloudsqlService fails' do
         before do
-          allow_next_instance_of(::GoogleCloud::EnableCloudsqlService) do |service|
+          allow_next_instance_of(::CloudSeed::GoogleCloud::EnableCloudsqlService) do |service|
             allow(service).to receive(:execute)
                                  .and_return({ status: :error, message: 'error' })
           end
@@ -125,7 +125,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
       context 'when EnableCloudsqlService is successful' do
         before do
-          allow_next_instance_of(::GoogleCloud::EnableCloudsqlService) do |service|
+          allow_next_instance_of(::CloudSeed::GoogleCloud::EnableCloudsqlService) do |service|
             allow(service).to receive(:execute)
                                 .and_return({ status: :success, message: 'success' })
           end
@@ -133,7 +133,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
         context 'when CreateCloudsqlInstanceService fails' do
           before do
-            allow_next_instance_of(::GoogleCloud::CreateCloudsqlInstanceService) do |service|
+            allow_next_instance_of(::CloudSeed::GoogleCloud::CreateCloudsqlInstanceService) do |service|
               allow(service).to receive(:execute)
                                    .and_return({ status: :error, message: 'error' })
             end
@@ -162,7 +162,7 @@ RSpec.describe Projects::GoogleCloud::DatabasesController, :snowplow, feature_ca
 
         context 'when CreateCloudsqlInstanceService is successful' do
           before do
-            allow_next_instance_of(::GoogleCloud::CreateCloudsqlInstanceService) do |service|
+            allow_next_instance_of(::CloudSeed::GoogleCloud::CreateCloudsqlInstanceService) do |service|
               allow(service).to receive(:execute)
                                   .and_return({ status: :success, message: 'success' })
             end

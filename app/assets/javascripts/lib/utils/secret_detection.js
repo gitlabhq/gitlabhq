@@ -32,6 +32,14 @@ export const containsSensitiveToken = (message) => {
       name: 'GitLab Deploy Token',
       regex: `gldt-[0-9a-zA-Z_-]{20}`,
     },
+    {
+      name: 'GitLab SCIM OAuth Access Token',
+      regex: `glsoat-[0-9a-zA-Z_-]{20}`,
+    },
+    {
+      name: 'GitLab CI Build (Job) Token',
+      regex: `glcbt-[0-9a-zA-Z]{1,5}_[0-9a-zA-Z_-]{20}`,
+    },
   ];
 
   for (const rule of sensitiveDataPatterns) {

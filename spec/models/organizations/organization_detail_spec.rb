@@ -16,6 +16,15 @@ RSpec.describe Organizations::OrganizationDetail, type: :model, feature_category
     let(:model) { create(:organization_detail) }
   end
 
+  describe '#description_html' do
+    let_it_be(:model) { create(:organization_detail, description: '### Foo **Bar**') }
+    let(:expected_description) { ' Foo <strong>Bar</strong> ' }
+
+    subject { model.description_html }
+
+    it { is_expected.to eq_no_sourcepos(expected_description) }
+  end
+
   context 'with uploads' do
     it_behaves_like 'model with uploads', false do
       let(:model_object) { create(:organization_detail) }

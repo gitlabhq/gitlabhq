@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def attributes
-        signature = ::Gitlab::Ssh::Signature.new(signature_text, signed_text, signer, @commit.committer_email)
+        signature = ::Gitlab::Ssh::Signature.new(signature_text, signed_text, signer, @commit)
 
         {
           commit_sha: @commit.sha,

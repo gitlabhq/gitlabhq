@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { createAlert, VARIANT_DANGER, VARIANT_INFO } from '~/alert';
+import { createAlert, VARIANT_DANGER } from '~/alert';
 import { INTEGRATION_VIEW_CONFIGS, i18n } from '../constants';
 import IntegrationView from './integration_view.vue';
 
@@ -94,9 +94,8 @@ export default {
         return;
       }
       updateClasses(this.bodyClasses, this.getSelectedTheme().css_class, this.selectedLayout);
-      const { message = this.$options.i18n.defaultSuccess, variant = VARIANT_INFO } =
-        customEvent?.detail?.[0] || {};
-      createAlert({ message, variant });
+      const message = customEvent?.detail?.[0]?.message || this.$options.i18n.defaultSuccess || '';
+      this.$toast.show(message);
       this.isSubmitEnabled = true;
     },
     handleError(customEvent) {

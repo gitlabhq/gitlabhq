@@ -8,12 +8,14 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           attr_reader :component_type, :version, :path
+          attr_accessor :properties
 
-          def initialize(type:, name:, purl:, version:)
+          def initialize(type:, name:, purl:, version:, properties: nil)
             @component_type = type
             @name = name
             @raw_purl = purl
             @version = version
+            @properties = properties
           end
 
           def <=>(other)

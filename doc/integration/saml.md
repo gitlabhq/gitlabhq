@@ -666,10 +666,12 @@ IdPs, contact your provider's support.
 Prerequisites:
 
 - Make sure you have access to a
-[Google Workspace Super Admin account](https://support.google.com/a/answer/2405986#super_admin).
+  [Google Workspace Super Admin account](https://support.google.com/a/answer/2405986#super_admin).
+
+To set up a Google Workspace:
 
 1. Use the following information, and follow the instructions in
-[Set up your own custom SAML application in Google Workspace](https://support.google.com/a/answer/6087519?hl=en).
+   [Set up your own custom SAML application in Google Workspace](https://support.google.com/a/answer/6087519?hl=en).
 
    |                  | Typical value                                      | Description                                                                                   |
    |:-----------------|:---------------------------------------------------|:----------------------------------------------------------------------------------------------|
@@ -2437,7 +2439,10 @@ The value given is added to the current time at which the response is validated.
 
 ::EndTabs
 
-### Designate a unique attribute for the `uid`
+### Designate a unique attribute for the `uid` (optional)
+
+By default, the users `uid` is set as the `NameID` attribute in the SAML response. To designate
+a different attribute for the `uid`, you can set the `uid_attribute`.
 
 Before setting the `uid` to a unique attribute, make sure that you have configured
 the following attributes so your SAML users cannot change them:
@@ -2448,10 +2453,7 @@ the following attributes so your SAML users cannot change them:
 If users can change these attributes, they can sign in as other authorized users.
 See your SAML IdP documentation for information on how to make these attributes
 unchangeable.
-
-By default, the `uid` is set as the `name_id` in the SAML response. To designate
-a unique attribute for the `uid`, you can set the `uid_attribute`. In the following
-example, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
+In the following example, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
 ::Tabs
 

@@ -22,14 +22,15 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     )
   end
 
-  def highlight(to: nil, plain: nil)
+  def highlight(to: nil, plain: nil, used_on: :blob)
     load_all_blob_data
 
     Gitlab::Highlight.highlight(
       blob.path,
       blob_data(to),
       language: blob_language,
-      plain: plain
+      plain: plain,
+      used_on: used_on
     )
   end
 

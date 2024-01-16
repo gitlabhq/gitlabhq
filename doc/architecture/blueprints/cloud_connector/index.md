@@ -170,16 +170,16 @@ It will have the following responsibilities:
 We suggest to use one of the following language stacks:
 
 1. **Go.** There is substantial organizational knowledge in writing and running
-Go systems at GitLab, and it is a great systems language that gives us efficient ways to handle requests where
-they merely need to be forwarded (request proxying) and a powerful concurrency mechanism through goroutines. This makes the
-service easier to scale and cheaper to run than Ruby or Python, which scale largely at the process level due to their use
-of Global Interpreter Locks, and use inefficient memory models especially as regards byte stream handling and manipulation.
-A drawback of Go is that resource requirements such as memory use are less predictable because Go is a garbage collected language.
+   Go systems at GitLab, and it is a great systems language that gives us efficient ways to handle requests where
+   they merely need to be forwarded (request proxying) and a powerful concurrency mechanism through goroutines. This makes the
+   service easier to scale and cheaper to run than Ruby or Python, which scale largely at the process level due to their use
+   of Global Interpreter Locks, and use inefficient memory models especially as regards byte stream handling and manipulation.
+   A drawback of Go is that resource requirements such as memory use are less predictable because Go is a garbage collected language.
 1. **Rust.** We are starting to build up knowledge in Rust at GitLab. Like Go, it is a great systems language that is
-also starting to see wider adoption in the Ruby ecosystem to write CRuby extensions. A major benefit is more predictable
-resource consumption because it is not garbage collected and allows for finer control of memory use.
-It is also very fast; we found that the Rust implementation for `prometheus-client-mmap` outperformed the original
-extension written in C.
+   also starting to see wider adoption in the Ruby ecosystem to write CRuby extensions. A major benefit is more predictable
+   resource consumption because it is not garbage collected and allows for finer control of memory use.
+   It is also very fast; we found that the Rust implementation for `prometheus-client-mmap` outperformed the original
+   extension written in C.
 
 ## Alternative solutions
 

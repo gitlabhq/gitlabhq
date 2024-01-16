@@ -19,10 +19,9 @@ just one. A quick example is account security:
 - Use a long, complex, and unique password for the account.
 - Implement a second factor to the authentication process for added security.
 - Use a hardware token as a second factor.
-- Lock out an account (for at least a fixed amount of time) for failed authentication
-attempts.
+- Lock out an account (for at least a fixed amount of time) for failed authentication attempts.
 - An account that is unused for a specific time frame should be disabled, enforce this
-with either automation or regular audits.
+  with either automation or regular audits.
 
 Instead of using only one or two items on the list, use as many as possible. This
 philosophy can apply to other areas besides account security - it should be applied to

@@ -53,20 +53,26 @@ module Gitlab
 
         importer_class.new(object, project, client).execute
 
-        if increment_object_counter?(object)
-          Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
-        end
+        increment_object_counter(object, project) if increment_object_counter?(object)
 
         info(project.id, message: 'importer finished')
       rescue ActiveRecord::RecordInvalid, NotRetriableError, NoMethodError => e
         # We do not raise exception to prevent job retry
         track_exception(project, e)
+      rescue UserFinder::FailedToObtainLockError
+        warn(project.id, message: 'Failed to obtaing lock for user finder. Retrying later.')
+
+        raise
       rescue StandardError => e
         track_and_raise_exception(project, e)
       end
 
       def increment_object_counter?(_object)
         true
+      end
+
+      def increment_object_counter(_object, project)
+        Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :imported)
       end
 
       def object_type
@@ -90,6 +96,10 @@ module Gitlab
 
       def info(project_id, extra = {})
         Logger.info(log_attributes(project_id, extra))
+      end
+
+      def warn(project_id, extra = {})
+        Logger.warn(log_attributes(project_id, extra))
       end
 
       def log_attributes(project_id, extra = {})

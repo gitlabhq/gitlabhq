@@ -21,7 +21,7 @@ describe('CiResourcesListItem', () => {
   const release = {
     author: { name: 'author', webUrl: '/user/1' },
     releasedAt: Date.now(),
-    tagName: '1.0.0',
+    name: '1.0.0',
   };
   const defaultProps = {
     resource,
@@ -114,7 +114,7 @@ describe('CiResourcesListItem', () => {
 
       it('renders the version badge', () => {
         expect(findBadge().exists()).toBe(true);
-        expect(findBadge().text()).toBe(release.tagName);
+        expect(findBadge().text()).toBe(release.name);
       });
     });
   });

@@ -18,7 +18,12 @@ module Gitlab
             def content
               return unless component_result.success?
 
-              ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('cicd_component_usage', values: context.user.id)
+              if context.user.present?
+                ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
+                  'cicd_component_usage',
+                  values: context.user.id
+                )
+              end
 
               component_payload.fetch(:content)
             end

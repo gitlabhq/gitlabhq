@@ -42,7 +42,7 @@ include:
     - !reference [.rules:test:manual, rules]
 
 .gdk-qa-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .qa-cache
     - .default-retry
@@ -137,11 +137,6 @@ download-knapsack-report:
   before_script:
     - cd qa && bundle install
   after_script: []
-
-download-fast-quarantine-report:
-  extends:
-    - .download-fast-quarantine-report
-    - .rules:download-fast-quarantine-report
 
 # ==========================================
 # Test stage

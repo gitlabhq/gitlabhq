@@ -205,11 +205,12 @@ class AbuseReport < ApplicationRecord
     return if links_to_spam.blank?
 
     links_to_spam.each do |link|
-      Gitlab::UrlBlocker.validate!(
+      Gitlab::HTTP_V2::UrlBlocker.validate!(
         link,
         schemes: %w[http https],
         allow_localhost: true,
-        dns_rebind_protection: true
+        dns_rebind_protection: true,
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       )
 
       next unless link.length > MAX_CHAR_LIMIT_URL

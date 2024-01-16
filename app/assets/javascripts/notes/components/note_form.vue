@@ -352,7 +352,7 @@ export default {
         </template>
       </gl-sprintf>
     </div>
-    <div class="flash-container timeline-content"></div>
+    <div class="flash-container"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <comment-field-layout :noteable-data="getNoteableData" :is-internal-note="isInternalNote">
         <markdown-editor

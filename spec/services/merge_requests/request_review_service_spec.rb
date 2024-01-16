@@ -71,6 +71,14 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
         service.execute(merge_request, user)
       end
 
+      it 'creates a sytem note' do
+        expect(SystemNoteService)
+          .to receive(:request_review)
+          .with(merge_request, project, current_user, user)
+
+        service.execute(merge_request, user)
+      end
+
       it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
         let(:action) { result }
       end

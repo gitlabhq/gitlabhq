@@ -151,6 +151,8 @@
 
     = render_if_exists 'admin/users/credit_card_info', user: @user, link_to_match_page: true
 
+    = render_if_exists 'admin/users/phone_info', user: @user, link_to_match_page: true
+
     = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
 
   -# Rendered on desktop only so order of cards can be different on desktop vs mobile

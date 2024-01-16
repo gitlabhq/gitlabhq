@@ -240,6 +240,78 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
         expect(pipeline.pipeline_metadata).not_to be_persisted
       end
     end
+
+    context 'with workflow:rules:auto_cancel' do
+      context 'with auto_cancel:on_new_commit not set and rules:workflow:auto_cancel:on_new_commit set' do
+        let(:config) do
+          {
+            variables: { MY_VAR: my_var_value },
+            workflow: {
+              auto_cancel: { on_job_failure: 'all' },
+              rules: [{ if: '$MY_VAR == "something"', auto_cancel: { on_new_commit: 'interruptible' } }]
+            },
+            rspec: { script: 'rspec' }
+          }
+        end
+
+        context 'when the rule is matched' do
+          let(:my_var_value) { 'something' }
+
+          it 'builds pipeline_metadata' do
+            run_chain
+
+            expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+            expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
+          end
+        end
+
+        context 'when the rule is not matched' do
+          let(:my_var_value) { 'something else' }
+
+          it 'builds pipeline_metadata' do
+            run_chain
+
+            expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('conservative')
+            expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('all')
+          end
+        end
+      end
+
+      context 'with auto_cancel:on_new_commit set and rules:workflow:auto_cancel:on_new_commit set' do
+        let(:config) do
+          {
+            variables: { MY_VAR: my_var_value },
+            workflow: {
+              auto_cancel: { on_new_commit: 'interruptible' },
+              rules: [{ if: '$MY_VAR == "something"', auto_cancel: { on_new_commit: 'none' } }]
+            },
+            rspec: { script: 'rspec' }
+          }
+        end
+
+        context 'when the rule is matched' do
+          let(:my_var_value) { 'something' }
+
+          it 'builds pipeline_metadata' do
+            run_chain
+
+            expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('none')
+            expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+          end
+        end
+
+        context 'when the rule is not matched' do
+          let(:my_var_value) { 'something else' }
+
+          it 'builds pipeline_metadata' do
+            run_chain
+
+            expect(pipeline.pipeline_metadata.auto_cancel_on_new_commit).to eq('interruptible')
+            expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
+          end
+        end
+      end
+    end
   end
 
   context 'with both pipeline name and auto_cancel' do

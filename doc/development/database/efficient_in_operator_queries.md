@@ -916,16 +916,16 @@ Here's an outline of the steps we take in the recursive CTE query
 
 1. Sort the initial `resultset` according to the `ORDER BY` clause.
 1. Pick the top cursor to fetch the record, this is our first record. In the example,
-this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
+   this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
 1. We can use (`2020-01-05`, `3`) to fetch the next issue respecting the `ORDER BY` clause
-`project_id=9` filter. This produces an updated `resultset`.
+   `project_id=9` filter. This produces an updated `resultset`.
 
-  | `project_ids` | `created_at_values` | `id_values` |
-  | ------------- | ------------------- | ----------- |
-  | 2             | 2020-01-10          | 5           |
-  | 5             | 2020-01-05          | 4           |
-  | 10            | 2020-01-15          | 7           |
-  | **9**         | **2020-01-06**      | **6**       |
+   | `project_ids` | `created_at_values` | `id_values` |
+   | ------------- | ------------------- | ----------- |
+   | 2             | 2020-01-10          | 5           |
+   | 5             | 2020-01-05          | 4           |
+   | 10            | 2020-01-15          | 7           |
+   | **9**         | **2020-01-06**      | **6**       |
 
 1. Repeat 1 to 3 with the updated `resultset` until we have fetched `N=20` records.
 
@@ -944,9 +944,9 @@ Example initializer row:
 | `NULL::issues` | `[9, 2, 5, 10]` | `[...]`             | `[...]`     | `0`     | `NULL`     |
 
 - The `records` column contains our sorted database records, and the initializer query sets the
-first value to `NULL`, which is filtered out later.
+  first value to `NULL`, which is filtered out later.
 - The `count` column tracks the number of records found. We use this column to filter out the
-initializer row from the result set.
+  initializer row from the result set.
 
 ### Recursive portion of the CTE query
 
@@ -1016,7 +1016,7 @@ As the final step, we need to produce a new row by manipulating the initializer 
 (`data_collector_query` method). Two things happen here:
 
 - Read the full row from the DB and return it in the `records` columns. (`result_collector_columns`
-method)
+  method)
 - Replace the cursor values at the current position with the results from the keyset query.
 
 Reading the full row from the database is only one index scan by the primary key. We use the
@@ -1091,7 +1091,7 @@ in the PostgreSQL's buffer cache.
 The optimized `IN` query reads maximum 519 entries (cursor values) from the index:
 
 - 500 index-only scans for populating the arrays for each project. The cursor values of the first
-record is here.
+  record is here.
 - Maximum 19 additional index-only scans for the consecutive records.
 
 The optimized `IN` query sorts the array (cursor values per project array) 20 times, which

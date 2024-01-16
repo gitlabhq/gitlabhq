@@ -159,17 +159,17 @@ RSpec.describe GitlabSchema.types['CurrentUserTodos'] do
       #    AND ("todos"."state" IN ('done','pending'))
       #    AND "todos"."target_id" = merge_request
       #    AND "todos"."target_type" = 'MergeRequest' ORDER BY "todos"."id" DESC
-      baseline = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         execute_query(query_type, graphql: base_query)
       end
 
       expect do
         execute_query(query_type, graphql: query_without_state_arguments)
-      end.not_to exceed_query_limit(baseline) # at present this is 3
+      end.not_to exceed_query_limit(control) # at present this is 3
 
       expect do
         execute_query(query_type, graphql: with_state_arguments)
-      end.not_to exceed_query_limit(baseline.count + 1)
+      end.not_to exceed_query_limit(control).with_threshold(1)
     end
 
     it 'returns correct data' do

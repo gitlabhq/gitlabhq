@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'gitlab_edition'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/dependencies'
 
@@ -120,6 +121,10 @@ module StubConfiguration
       .to receive(:sentry_clientside_dsn) { clientside_dsn }
   end
 
+  def clear_sentry_settings
+    Sentry.get_current_scope.clear
+  end
+
   def stub_microsoft_graph_mailer_setting(messages)
     allow(Gitlab.config.microsoft_graph_mailer).to receive_messages(to_settings(messages))
   end
@@ -194,6 +199,6 @@ module StubConfiguration
 end
 
 require_relative '../../../ee/spec/support/helpers/ee/stub_configuration' if
-  Dir.exist?("#{__dir__}/../../../ee")
+  GitlabEdition.ee?
 
 StubConfiguration.prepend_mod_with('StubConfiguration')

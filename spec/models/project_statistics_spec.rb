@@ -647,4 +647,22 @@ RSpec.describe ProjectStatistics do
       end
     end
   end
+
+  describe '#export_size' do
+    it 'does not include artifacts & packages size' do
+      statistics.update!(
+        repository_size: 3.gigabytes,
+        wiki_size: 3.gigabytes,
+        lfs_objects_size: 3.gigabytes,
+        build_artifacts_size: 3.gigabytes,
+        packages_size: 3.gigabytes,
+        snippets_size: 3.gigabytes,
+        uploads_size: 3.gigabytes
+      )
+
+      statistics.refresh_storage_size!
+
+      expect(statistics.reload.export_size).to eq(15.gigabytes)
+    end
+  end
 end

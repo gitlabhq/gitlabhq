@@ -93,6 +93,13 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
 
           expect(event_class.json_schema_valid).to eq(false)
         end
+
+        it 'does not store JSON schema on subclass' do
+          expect { event }.to raise_error(Gitlab::EventStore::InvalidEvent)
+
+          expect(event_class.instance_variables).not_to include(:@json_schema)
+          expect(described_class.instance_variables).to include(:@json_schema)
+        end
       end
     end
   end

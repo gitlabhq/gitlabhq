@@ -63,6 +63,35 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         end
       end
 
+      context 'when two factor is enforced for administrator users' do
+        let_it_be(:admin) { create(:admin) }
+
+        before do
+          stub_application_setting(require_admin_two_factor_authentication: require_admin_two_factor_authentication)
+          sign_in(admin)
+        end
+
+        context 'when visiting root dashboard path' do
+          let(:require_admin_two_factor_authentication) { true }
+
+          it 'renders alert for administrator users' do
+            visit profile_two_factor_auth_path
+            expect(page).to have_content('Administrator users are required to enable Two-Factor Authentication for their account. You need to do this before ')
+          end
+        end
+      end
+
+      context 'when two factor is disabled for administrator users' do
+        context 'when visiting root dashboard path' do
+          let(:require_admin_two_factor_authentication) { false }
+
+          it 'does not render an alert for administrator users' do
+            visit profile_two_factor_auth_path
+            expect(page).not_to have_content('Administrator users are required to enable Two-Factor Authentication for their account. You need to do this before ')
+          end
+        end
+      end
+
       context 'when two factor is enforced in global settings' do
         before do
           stub_application_setting(require_two_factor_authentication: true)

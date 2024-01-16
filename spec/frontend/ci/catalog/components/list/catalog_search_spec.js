@@ -1,4 +1,4 @@
-import { GlSearchBoxByClick, GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlSearchBoxByClick, GlSorting } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CatalogSearch from '~/ci/catalog/components/list/catalog_search.vue';
 import { SORT_ASC, SORT_DESC, SORT_OPTION_CREATED } from '~/ci/catalog/constants';
@@ -8,7 +8,7 @@ describe('CatalogSearch', () => {
 
   const findSearchBar = () => wrapper.findComponent(GlSearchBoxByClick);
   const findSorting = () => wrapper.findComponent(GlSorting);
-  const findAllSortingItems = () => wrapper.findAllComponents(GlSortingItem);
+  const findAllSortingItems = () => findSorting().props('sortOptions');
 
   const createComponent = () => {
     wrapper = shallowMountExtended(CatalogSearch, {});
@@ -23,13 +23,14 @@ describe('CatalogSearch', () => {
       expect(findSearchBar().exists()).toBe(true);
     });
 
-    it('renders the sorting options', () => {
-      expect(findSorting().exists()).toBe(true);
-      expect(findAllSortingItems()).toHaveLength(1);
+    it('sets sorting options', () => {
+      const sortOptionsProp = findAllSortingItems();
+      expect(sortOptionsProp).toHaveLength(1);
+      expect(sortOptionsProp[0].text).toBe('Created at');
     });
 
     it('renders the `Created at` option as the default', () => {
-      expect(findAllSortingItems().at(0).text()).toBe('Created at');
+      expect(findSorting().props('text')).toBe('Created at');
     });
   });
 

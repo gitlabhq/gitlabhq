@@ -2,8 +2,8 @@ import { uniq, isString, omit, isFunction } from 'lodash';
 import { removeLastSlashInUrlPath, removeUrlProtocol } from '../../lib/utils/url_utility';
 
 const defaultAttrs = {
-  td: { colspan: 1, rowspan: 1, colwidth: null },
-  th: { colspan: 1, rowspan: 1, colwidth: null },
+  td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
+  th: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
 };
 
 const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey'];
@@ -649,6 +649,9 @@ export const link = {
 
     const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
 
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (href.startsWith('data:') || href.startsWith('blob:')) return '';
+
     if (linkType(sourceMarkdown) === LINK_MARKDOWN) {
       return '[';
     }
@@ -667,6 +670,9 @@ export const link = {
     }
 
     const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
+
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (href.startsWith('data:') || href.startsWith('blob:')) return '';
 
     if (isReference) {
       return `][${state.esc(canonicalSrc || href || '')}]`;

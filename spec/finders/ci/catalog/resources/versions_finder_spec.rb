@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeline_composition do
   include_context 'when there are catalog resources with versions'
 
+  let(:name) { nil }
   let(:sort) { nil }
   let(:latest) { nil }
-  let(:params) { { sort: sort, latest: latest }.compact }
+  let(:params) { { name: name, sort: sort, latest: latest }.compact }
 
   subject(:execute) { described_class.new([resource1, resource2], current_user, params).execute }
 
@@ -18,7 +19,7 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
     new_user = create(:user)
 
     expect do
-      described_class.new([resource1, resource2, resource3], new_user, params).execute
+      described_class.new([resource1, resource2], new_user, params).execute
     end.not_to exceed_query_limit(control_count)
   end
 
@@ -35,6 +36,23 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
 
     it 'returns the versions of the authorized catalog resource' do
       expect(execute).to match_array([v1_0, v1_1])
+    end
+
+    context 'with name parameter' do
+      let(:name) { 'v1.0' }
+
+      it 'returns the version that matches the name' do
+        expect(execute.count).to eq(1)
+        expect(execute.first.name).to eq('v1.0')
+      end
+
+      context 'when no version matches the name' do
+        let(:name) { 'does_not_exist' }
+
+        it 'returns empty response' do
+          is_expected.to be_empty
+        end
+      end
     end
 
     context 'with sort parameter' do

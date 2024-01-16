@@ -20,8 +20,8 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
+import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
 import {
-  allEnvironments,
   defaultVariableState,
   DRAWER_EVENT_LABEL,
   EDIT_VARIABLE_ACTION,
@@ -34,7 +34,6 @@ import {
   variableOptions,
   WHITESPACE_REG_EX,
 } from '../constants';
-import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
 
 const trackingMixin = Tracking.mixin({ label: DRAWER_EVENT_LABEL });
@@ -43,9 +42,10 @@ const KEY_REGEX = /^\w+$/;
 export const i18n = {
   addVariable: s__('CiVariables|Add variable'),
   cancel: __('Cancel'),
-  defaultScope: allEnvironments.text,
+  defaultScope: __('All (default)'),
   deleteVariable: s__('CiVariables|Delete variable'),
   editVariable: s__('CiVariables|Edit variable'),
+  saveVariable: __('Save changes'),
   environments: __('Environments'),
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
@@ -259,8 +259,11 @@ export default {
 
       return validationIssuesText.trim();
     },
-    modalActionText() {
+    modalTitle() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
+    },
+    modalActionText() {
+      return this.isEditing ? this.$options.i18n.saveVariable : this.$options.i18n.addVariable;
     },
     removeVariableMessage() {
       return sprintf(this.$options.i18n.modalDeleteMessage, { key: this.variable.key });
@@ -359,7 +362,7 @@ export default {
       @close="close"
     >
       <template #title>
-        <h2 class="gl-m-0">{{ modalActionText }}</h2>
+        <h2 class="gl-m-0">{{ modalTitle }}</h2>
       </template>
       <gl-form-group
         :label="$options.i18n.type"
@@ -493,8 +496,8 @@ export default {
           v-model="variable.value"
           :spellcheck="false"
           class="gl-border-none gl-font-monospace!"
-          rows="3"
-          max-rows="10"
+          rows="5"
+          :no-resize="false"
           data-testid="ci-variable-value"
         />
         <p
@@ -515,9 +518,15 @@ export default {
       >
         {{ $options.i18n.variableReferenceDescription }}
       </gl-alert>
-      <div class="gl-display-flex gl-justify-content-end">
-        <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
-          >{{ $options.i18n.cancel }}
+      <div class="gl-display-flex">
+        <gl-button
+          category="primary"
+          class="gl-mr-3"
+          variant="confirm"
+          :disabled="!canSubmit"
+          data-testid="ci-variable-confirm-button"
+          @click="submit"
+          >{{ modalActionText }}
         </gl-button>
         <gl-button
           v-if="isEditing"
@@ -528,13 +537,8 @@ export default {
           data-testid="ci-variable-delete-button"
           >{{ $options.i18n.deleteVariable }}</gl-button
         >
-        <gl-button
-          category="primary"
-          variant="confirm"
-          :disabled="!canSubmit"
-          data-testid="ci-variable-confirm-button"
-          @click="submit"
-          >{{ modalActionText }}
+        <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
+          >{{ $options.i18n.cancel }}
         </gl-button>
       </div>
     </gl-drawer>

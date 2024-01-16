@@ -10,9 +10,6 @@ module PagesDomains
     # no particular SLA, usually takes 10-15 seconds
     CERTIFICATE_PROCESSING_DELAY = 1.minute.freeze
 
-    # Maximum domain length for Let's Encrypt
-    MAX_DOMAIN_LENGTH = 64
-
     attr_reader :pages_domain
 
     def initialize(pages_domain)
@@ -20,11 +17,6 @@ module PagesDomains
     end
 
     def execute
-      if pages_domain.domain.bytesize > MAX_DOMAIN_LENGTH
-        log_domain_length_error
-        return
-      end
-
       pages_domain.acme_orders.expired.delete_all
       acme_order = pages_domain.acme_orders.first
 
@@ -65,16 +57,6 @@ module PagesDomains
       acme_order.destroy!
 
       NotificationService.new.pages_domain_auto_ssl_failed(pages_domain)
-    end
-
-    def log_domain_length_error
-      Gitlab::AppLogger.error(
-        message: "Domain name too long for Let's Encrypt certificate",
-        pages_domain: pages_domain.domain,
-        pages_domain_bytesize: pages_domain.domain.bytesize,
-        max_allowed_bytesize: MAX_DOMAIN_LENGTH,
-        project_id: pages_domain.project_id
-      )
     end
 
     def log_error(api_order)

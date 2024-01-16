@@ -2,10 +2,13 @@ package config
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"net/url"
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 	"time"
@@ -30,6 +33,10 @@ func (u *TomlURL) UnmarshalText(text []byte) error {
 	return err
 }
 
+func (u *TomlURL) MarshalText() ([]byte, error) {
+	return []byte(u.String()), nil
+}
+
 type TomlDuration struct {
 	time.Duration
 }
@@ -40,12 +47,16 @@ func (d *TomlDuration) UnmarshalText(text []byte) error {
 	return err
 }
 
+func (d TomlDuration) MarshalText() ([]byte, error) {
+	return []byte(d.String()), nil
+}
+
 type ObjectStorageCredentials struct {
 	Provider string
 
-	S3Credentials     S3Credentials     `toml:"s3"`
-	AzureCredentials  AzureCredentials  `toml:"azurerm"`
-	GoogleCredentials GoogleCredentials `toml:"google"`
+	S3Credentials     S3Credentials     `toml:"s3" json:"s3"`
+	AzureCredentials  AzureCredentials  `toml:"azurerm" json:"azurerm"`
+	GoogleCredentials GoogleCredentials `toml:"google" json:"google"`
 }
 
 type ObjectStorageConfig struct {
@@ -53,8 +64,9 @@ type ObjectStorageConfig struct {
 }
 
 type S3Credentials struct {
-	AwsAccessKeyID     string `toml:"aws_access_key_id"`
-	AwsSecretAccessKey string `toml:"aws_secret_access_key"`
+	AwsAccessKeyID     string `toml:"aws_access_key_id" json:"aws_access_key_id"`
+	AwsSecretAccessKey string `toml:"aws_secret_access_key" json:"aws_secret_access_key"`
+	AwsSessionToken    string `toml:"aws_session_token" json:"aws_session_token"`
 }
 
 type S3Config struct {
@@ -72,14 +84,14 @@ type GoCloudConfig struct {
 }
 
 type AzureCredentials struct {
-	AccountName string `toml:"azure_storage_account_name"`
-	AccountKey  string `toml:"azure_storage_access_key"`
+	AccountName string `toml:"azure_storage_account_name" json:"azure_storage_account_name"`
+	AccountKey  string `toml:"azure_storage_access_key" json:"azure_storage_access_key"`
 }
 
 type GoogleCredentials struct {
-	ApplicationDefault bool   `toml:"google_application_default"`
-	JSONKeyString      string `toml:"google_json_key_string"`
-	JSONKeyLocation    string `toml:"google_json_key_location"`
+	ApplicationDefault bool   `toml:"google_application_default" json:"google_application_default"`
+	JSONKeyString      string `toml:"google_json_key_string" json:"google_json_key_string"`
+	JSONKeyLocation    string `toml:"google_json_key_location" json:"google_json_key_location"`
 }
 
 type RedisConfig struct {
@@ -94,25 +106,27 @@ type RedisConfig struct {
 }
 
 type ImageResizerConfig struct {
-	MaxScalerProcs uint32 `toml:"max_scaler_procs"`
-	MaxFilesize    uint64 `toml:"max_filesize"`
+	MaxScalerProcs uint32 `toml:"max_scaler_procs" json:"max_scaler_procs"`
+	MaxScalerMem   uint64 `toml:"max_scaler_mem" json:"max_scaler_mem"`
+	MaxFilesize    uint64 `toml:"max_filesize" json:"max_filesize"`
 }
 
 type TlsConfig struct {
-	Certificate string `toml:"certificate"`
-	Key         string `toml:"key"`
-	MinVersion  string `toml:"min_version"`
-	MaxVersion  string `toml:"max_version"`
+	Certificate string `toml:"certificate" json:"certificate"`
+	Key         string `toml:"key" json:"key"`
+	MinVersion  string `toml:"min_version" json:"min_version"`
+	MaxVersion  string `toml:"max_version" json:"max_version"`
 }
 
 type ListenerConfig struct {
-	Network string     `toml:"network"`
-	Addr    string     `toml:"addr"`
-	Tls     *TlsConfig `toml:"tls"`
+	Network string     `toml:"network" json:"network"`
+	Addr    string     `toml:"addr" json:"addr"`
+	Tls     *TlsConfig `toml:"tls" json:"tls"`
 }
 
 type Config struct {
-	Redis                        *RedisConfig             `toml:"redis"`
+	ConfigCommand                string                   `toml:"config_command,omitempty" json:"config_command"`
+	Redis                        *RedisConfig             `toml:"redis" json:"redis"`
 	Backend                      *url.URL                 `toml:"-"`
 	CableBackend                 *url.URL                 `toml:"-"`
 	Version                      string                   `toml:"-"`
@@ -126,15 +140,15 @@ type Config struct {
 	APIQueueTimeout              time.Duration            `toml:"-"`
 	APICILongPollingDuration     time.Duration            `toml:"-"`
 	ObjectStorageConfig          ObjectStorageConfig      `toml:"-"`
-	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage"`
+	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage" json:"object_storage"`
 	PropagateCorrelationID       bool                     `toml:"-"`
-	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer"`
-	AltDocumentRoot              string                   `toml:"alt_document_root"`
-	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout"`
-	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for"`
-	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation"`
-	Listeners                    []ListenerConfig         `toml:"listeners"`
-	MetricsListener              *ListenerConfig          `toml:"metrics_listener"`
+	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer" json:"image_resizer"`
+	AltDocumentRoot              string                   `toml:"alt_document_root" json:"alt_document_root"`
+	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout" json:"shutdown_timeout"`
+	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for" json:"trusted_cidrs_for_x_forwarded_for"`
+	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation" json:"trusted_cidrs_for_propagation"`
+	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
+	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{
@@ -147,6 +161,22 @@ func LoadConfig(data string) (*Config, error) {
 
 	if _, err := toml.Decode(data, cfg); err != nil {
 		return nil, err
+	}
+
+	if cfg.ConfigCommand != "" {
+		output, err := exec.Command(cfg.ConfigCommand).Output()
+		if err != nil {
+			var exitErr *exec.ExitError
+			if errors.As(err, &exitErr) {
+				return cfg, fmt.Errorf("running config command: %w, stderr: %q", err, string(exitErr.Stderr))
+			}
+
+			return cfg, fmt.Errorf("running config command: %w", err)
+		}
+
+		if err := json.Unmarshal(output, &cfg); err != nil {
+			return cfg, fmt.Errorf("unmarshalling generated config: %w", err)
+		}
 	}
 
 	return cfg, nil

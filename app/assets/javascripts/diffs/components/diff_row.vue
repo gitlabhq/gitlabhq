@@ -292,7 +292,7 @@ export default {
             v-if="props.line.left.old_line && props.line.left.type !== $options.CONFLICT_THEIR"
             :data-linenumber="props.line.left.old_line"
             :href="props.line.lineHrefOld"
-            @click="listeners.setHighlightedRow(props.line.lineCode)"
+            @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>
           <component
@@ -318,7 +318,7 @@ export default {
             v-if="props.line.left.new_line && props.line.left.type !== $options.CONFLICT_OUR"
             :data-linenumber="props.line.left.new_line"
             :href="props.line.lineHrefOld"
-            @click="listeners.setHighlightedRow(props.line.lineCode)"
+            @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>
         </div>
@@ -446,7 +446,7 @@ export default {
             v-if="props.line.right.new_line"
             :data-linenumber="props.line.right.new_line"
             :href="props.line.lineHrefNew"
-            @click="listeners.setHighlightedRow(props.line.lineCode)"
+            @click="listeners.setHighlightedRow({ lineCode: props.line.lineCode, event: $event })"
           >
           </a>
           <component

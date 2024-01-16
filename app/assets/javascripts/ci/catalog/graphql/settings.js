@@ -15,7 +15,7 @@ export const cacheConfig = {
           });
         },
         ciCatalogResources: {
-          keyArgs: false,
+          keyArgs: ['scope', 'search', 'sort'],
         },
       },
     },

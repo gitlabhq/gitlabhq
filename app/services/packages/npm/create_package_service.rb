@@ -8,23 +8,34 @@ module Packages
       PACKAGE_JSON_NOT_ALLOWED_FIELDS = %w[readme readmeFilename licenseText contributors exports].freeze
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i
 
+      ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
+      ERROR_REASON_PACKAGE_EXISTS = :package_already_exists
+      ERROR_REASON_PACKAGE_LEASE_TAKEN = :package_lease_taken
+      ERROR_REASON_PACKAGE_PROTECTED = :package_attachment_data_empty
+
       def execute
-        return error('Version is empty.', 400) if version.blank?
-        return error('Attachment data is empty.', 400) if attachment['data'].blank?
-        return error('Package already exists.', 403) if current_package_exists?
-        return error('Package protected.', 403) if current_package_protected?
-        return error('File is too large.', 400) if file_size_exceeded?
+        return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
+        return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
+        return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?
+        return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if current_package_protected?
+        return error('File is too large.', ERROR_REASON_INVALID_PARAMETER) if file_size_exceeded?
 
         package = try_obtain_lease do
           ApplicationRecord.transaction { create_npm_package! }
         end
 
-        return error('Could not obtain package lease. Please try again.', 400) unless package
+        unless package
+          return error('Could not obtain package lease. Please try again.', ERROR_REASON_PACKAGE_LEASE_TAKEN)
+        end
 
-        package
+        ServiceResponse.success(payload: { package: package })
       end
 
       private
+
+      def error(message, reason)
+        ServiceResponse.error(message: message, reason: reason)
+      end
 
       def create_npm_package!
         package = create_package!(:npm, name: name, version: version)

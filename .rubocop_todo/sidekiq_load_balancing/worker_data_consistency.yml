@@ -388,7 +388,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/merge_request_reset_approvals_worker.rb'
     - 'ee/app/workers/merge_requests/capture_suggested_reviewers_accepted_worker.rb'
     - 'ee/app/workers/merge_requests/fetch_suggested_reviewers_worker.rb'
-    - 'ee/app/workers/merge_requests/llm/summarize_merge_request_worker.rb'
     - 'ee/app/workers/merge_requests/sync_code_owner_approval_rules_worker.rb'
     - 'ee/app/workers/merge_trains/refresh_worker.rb'
     - 'ee/app/workers/namespaces/sync_namespace_name_worker.rb'

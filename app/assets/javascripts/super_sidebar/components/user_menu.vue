@@ -30,6 +30,8 @@ export default {
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
+    enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
+    leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
     signOut: __('Sign out'),
   },
   components: {
@@ -142,6 +144,27 @@ export default {
         },
       };
     },
+    enterAdminModeItem() {
+      return {
+        text: this.$options.i18n.enterAdminMode,
+        href: this.data.admin_mode.enter_admin_mode_url,
+        extraAttrs: {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'enter_admin_mode',
+        },
+      };
+    },
+    leaveAdminModeItem() {
+      return {
+        text: this.$options.i18n.leaveAdminMode,
+        href: this.data.admin_mode.leave_admin_mode_url,
+        extraAttrs: {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'leave_admin_mode',
+          'data-method': 'post',
+        },
+      };
+    },
     signOutGroup() {
       return {
         items: [
@@ -183,6 +206,20 @@ export default {
             'data-dismiss-endpoint': this.data.pipeline_minutes.callout_attrs.dismiss_endpoint,
           }
         : {};
+    },
+    showEnterAdminModeItem() {
+      return (
+        this.data.admin_mode.user_is_admin &&
+        this.data.admin_mode.admin_mode_feature_enabled &&
+        !this.data.admin_mode.admin_mode_active
+      );
+    },
+    showLeaveAdminModeItem() {
+      return (
+        this.data.admin_mode.user_is_admin &&
+        this.data.admin_mode.admin_mode_feature_enabled &&
+        this.data.admin_mode.admin_mode_active
+      );
     },
     showNotificationDot() {
       return this.data.pipeline_minutes?.show_notification_dot;
@@ -248,7 +285,11 @@ export default {
       @shown="onShow"
     >
       <template #toggle>
-        <gl-button category="tertiary" class="user-bar-dropdown-toggle btn-with-notification">
+        <gl-button
+          category="tertiary"
+          class="user-bar-dropdown-toggle btn-with-notification"
+          data-testid="user-menu-toggle"
+        >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
             :size="24"
@@ -319,6 +360,17 @@ export default {
           v-if="data.gitlab_com_but_not_canary"
           :item="gitlabNextItem"
           data-testid="gitlab-next-item"
+        />
+
+        <gl-disclosure-dropdown-item
+          v-if="showEnterAdminModeItem"
+          :item="enterAdminModeItem"
+          data-testid="enter-admin-mode-item"
+        />
+        <gl-disclosure-dropdown-item
+          v-if="showLeaveAdminModeItem"
+          :item="leaveAdminModeItem"
+          data-testid="leave-admin-mode-item"
         />
       </gl-disclosure-dropdown-group>
 

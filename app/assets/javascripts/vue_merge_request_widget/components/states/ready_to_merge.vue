@@ -119,7 +119,11 @@ export default {
           },
         ) {
           if (mergeRequestMergeStatusUpdated) {
-            this.state = mergeRequestMergeStatusUpdated;
+            this.state = {
+              ...mergeRequestMergeStatusUpdated,
+              mergeRequestsFfOnlyEnabled: this.state.mergeRequestsFfOnlyEnabled,
+              onlyAllowMergeIfPipelineSucceeds: this.state.onlyAllowMergeIfPipelineSucceeds,
+            };
 
             if (!this.commitMessageIsTouched) {
               this.commitMessage = mergeRequestMergeStatusUpdated.defaultMergeCommitMessage;
@@ -277,10 +281,7 @@ export default {
       return __('Merge');
     },
     showAutoMergeHelperText() {
-      return (
-        !(this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed) &&
-        this.isAutoMergeAvailable
-      );
+      return this.isAutoMergeAvailable;
     },
     hasPipelineMustSucceedConflict() {
       return !this.hasCI && this.state.onlyAllowMergeIfPipelineSucceeds;

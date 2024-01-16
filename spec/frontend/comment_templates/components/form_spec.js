@@ -74,7 +74,7 @@ describe('Comment templates form component', () => {
         name: 'Test',
       });
       expect(trackingSpy).toHaveBeenCalledWith(
-        expect.any(String),
+        undefined,
         'i_code_review_saved_replies_create',
         expect.any(Object),
       );
@@ -134,6 +134,18 @@ describe('Comment templates form component', () => {
       await waitForPromises();
 
       expect(findSubmitBtn().props('loading')).toBe(false);
+    });
+
+    it('shows markdown preview button', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.text()).toContain('Preview');
+    });
+
+    it('allows switching to rich text editor', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.text()).toContain('Switch to rich text editing');
     });
   });
 

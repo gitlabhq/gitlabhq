@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 )
@@ -17,7 +19,7 @@ var (
 
 // Will not return a non-nil error after the response body has been
 // written to.
-func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) error {
+func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
 	ctx := r.Context()
 
 	// Prevent the client from holding the connection open indefinitely. A
@@ -42,15 +44,16 @@ func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) e
 	return handleUploadPackWithGitaly(ctx, a, cr, cw, gitProtocol)
 }
 
-func handleUploadPackWithGitaly(ctx context.Context, a *api.Response, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
+func handleUploadPackWithGitaly(ctx context.Context, a *api.Response, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) (*gitalypb.PackfileNegotiationStatistics, error) {
 	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
 	if err != nil {
-		return fmt.Errorf("get gitaly client: %w", err)
+		return nil, fmt.Errorf("get gitaly client: %w", err)
 	}
 
-	if err := smarthttp.UploadPack(ctx, &a.Repository, clientRequest, clientResponse, gitConfigOptions(a), gitProtocol); err != nil {
-		return fmt.Errorf("do gitaly call: %w", err)
+	resp, err := smarthttp.UploadPack(ctx, &a.Repository, clientRequest, clientResponse, gitConfigOptions(a), gitProtocol)
+	if err != nil {
+		return nil, fmt.Errorf("do gitaly call: %w", err)
 	}
 
-	return nil
+	return resp.PackfileNegotiationStatistics, nil
 }

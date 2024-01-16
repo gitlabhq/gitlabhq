@@ -196,6 +196,7 @@ class MergeRequestDiff < ApplicationRecord
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
+  after_create_commit :trigger_diff_generated_subscription, unless: :importing?
 
   after_save :update_external_diff_store
   after_save :set_count_columns
@@ -256,6 +257,12 @@ class MergeRequestDiff < ApplicationRecord
     MergeRequest
       .where('id = ? AND COALESCE(latest_merge_request_diff_id, 0) < ?', self.merge_request_id, self.id)
       .update_all(latest_merge_request_diff_id: self.id)
+  end
+
+  def trigger_diff_generated_subscription
+    return unless Feature.enabled?(:merge_request_diff_generated_subscription, merge_request.project)
+
+    GraphqlTriggers.merge_request_diff_generated(merge_request)
   end
 
   def ensure_commit_shas
@@ -439,6 +446,8 @@ class MergeRequestDiff < ApplicationRecord
           )
         end
 
+        diff_options[:generated_files] = comparison.generated_files if diff_options[:collapse_generated]
+
         Gitlab::Metrics.measure(:diffs_comparison) do
           comparison.diffs(diff_options)
         end
@@ -452,18 +461,25 @@ class MergeRequestDiff < ApplicationRecord
     fetching_repository_diffs({}) do |comparison|
       reorder_diff_files!
 
+      collapse_generated = Feature.enabled?(:collapse_generated_diff_files, project)
+      diff_options = { collapse_generated: collapse_generated }
+
       collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
         self,
         page,
-        per_page
+        per_page,
+        diff_options
       )
 
       if comparison
+        diff_options[:generated_files] = comparison.generated_files if collapse_generated
+
         comparison.diffs(
-          paths: collection.diff_paths,
-          page: collection.current_page,
-          per_page: collection.limit_value,
-          count: collection.total_count
+          diff_options.merge(
+            paths: collection.diff_paths,
+            page: collection.current_page,
+            per_page: collection.limit_value,
+            count: collection.total_count)
         )
       else
         collection

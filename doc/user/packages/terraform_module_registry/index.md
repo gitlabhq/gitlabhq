@@ -48,10 +48,10 @@ You can publish Terraform modules by using the [Terraform Module Registry API](.
 
 Prerequisites:
 
-- The package name and version [must be unique in the top-level namespace](#how-module-resolution-works).
+- Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the package name and version [must be unique in the top-level namespace](#how-module-resolution-works).
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
 - You must [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
-- The name of a module [must be unique in the scope of its group](#how-module-resolution-works), otherwise an
+- Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the name of a module [must be unique in the scope of its group](#how-module-resolution-works), otherwise an
   [error occurs](#troubleshooting).
 
 ```plaintext
@@ -155,7 +155,23 @@ upload:
 ```
 
 To trigger this upload job, add a Git tag to your commit. Ensure the tag follows the [Semantic versioning specification](https://semver.org/) that Terraform requires. The `rules:if: $CI_COMMIT_TAG` ensures that only tagged commits to your repository trigger the module upload job.
-For other ways to control jobs in your CI/CD pipeline, refer to the [`.gitlab-ci.yml`](../../../ci/yaml/index.md) keyword reference.
+For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML syntax reference](../../../ci/yaml/index.md).
+
+### Allow duplicate Terraform modules
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
+
+By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace. To allow publishing duplicate module names:
+
+- Enable `terraform_module_duplicates_allowed` for the namespace with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+
+To allow duplicates with specific names:
+
+1. Ensure `terraform_module_duplicates_allowed` is disabled.
+1. Use `terraform_module_duplicate_exception_regex` to define a regex pattern for the module names you want to allow duplicates for.
+
+The top-level namespace setting takes precedence over the child namespace settings.
+For example, if you enable `terraform_module_duplicates_allowed` for a group, and disable it for a subgroup, duplicates are allowed for all projects in the group and its subgroups.
 
 ## Reference a Terraform module
 
@@ -163,7 +179,9 @@ Prerequisites:
 
 - You need to [authenticate with the API](../../../api/rest/index.md#authentication). If authenticating with a personal access token, it must be configured with the `read_api` scope.
 
-Authentication tokens (Job Token or Personal Access Token) can be provided for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
+### From a namespace
+
+You can provide authentication tokens (job tokens, personal access tokens, or deploy tokens) for `terraform` in your `~/.terraformrc` or `%APPDATA%/terraform.rc` file:
 
 ```terraform
 credentials "gitlab.com" {
@@ -182,6 +200,32 @@ module "<module>" {
 ```
 
 Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the Terraform Module Registry.
+
+### From a project
+
+To reference a Terraform module using a project-level source, use the [fetching archives over HTTP](https://developer.hashicorp.com/terraform/language/modules/sources#fetching-archives-over-http) source type provided by Terraform.
+
+You can provide authentication tokens (job tokens, personal access tokens, or deploy tokens) for `terraform` in your `~/.netrc` file:
+
+```netrc
+machine gitlab.com
+login <USERNAME>
+password <TOKEN>
+```
+
+Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance, and `<USERNAME>` is your token username.
+
+You can refer to your Terraform module from a downstream Terraform project:
+
+```terraform
+module "<module>" {
+  source = "https://gitlab.com/api/v4/projects/<project-id>/packages/terraform/modules/<module-name>/<module-system>/<module-version>"
+}
+```
+
+If you need to reference the latest version of a module, you can omit the `<module-version>` from the source URL. To prevent future issues, you should reference a specific version if possible.
+
+If there are [duplicate module names](#allow-duplicate-terraform-modules) in the same namespace, referencing the module from the namespace level installs the recently published module. To reference a specific version of a duplicate module, use the [project-level](#from-a-project) source type.
 
 ## Download a Terraform module
 
@@ -249,4 +293,4 @@ For examples of the Terraform Module Registry, check the projects below:
 
 ## Troubleshooting
 
-- Publishing a module with a duplicate name results in a `{"message":"Access Denied"}` error. There's an ongoing discussion about allowing duplicate module names [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368040).
+- Publishing a module with a duplicate name results in a `{"message":"A package with the same name already exists in the namespace"}` error.

@@ -61,6 +61,7 @@ export default ({
   updateError: null,
 
   tagNotes: '',
+  isFetchingTagNotes: false,
   includeTagNotes: false,
   existingRelease: null,
   originalReleasedAt: new Date(),

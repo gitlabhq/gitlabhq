@@ -66,6 +66,24 @@ module QA
         end
       end
 
+      # Fabricate a Group using the UI from the Groups Dashboard page
+      # @param [String] group_name
+      # @return [Page::Group::New]
+      def fabricate_group!(group_name: nil)
+        Page::Main::Menu.perform(&:go_to_groups)
+        Page::Dashboard::Groups.perform do |groups|
+          groups.click_new_group
+
+          Page::Group::New.perform do |group_new|
+            group_new.click_create_group
+
+            group_new.set_path(group_name)
+
+            group_new.create
+          end
+        end
+      end
+
       def fabricate_via_api!
         resource_web_url(api_get)
       rescue ResourceNotFoundError

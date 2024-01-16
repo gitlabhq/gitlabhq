@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'system note creation' do |update_params, note_text|
-  subject { described_class.new(project: project, current_user: user).execute(issuable, old_labels: []) }
+RSpec.shared_examples 'system note creation' do |update_params, note_text, is_update = true|
+  subject do
+    described_class.new(project: project, current_user: user).execute(issuable, old_labels: [], is_update: is_update)
+  end
 
   before do
     issuable.assign_attributes(update_params)

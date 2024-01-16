@@ -3,177 +3,199 @@
 describe QA::Tools::ReliableReport do
   include QA::Support::Helpers::StubEnv
 
+  before do
+    stub_env("QA_INFLUXDB_URL", "url")
+    stub_env("QA_INFLUXDB_TOKEN", "token")
+    stub_env("SLACK_WEBHOOK", "slack_url")
+    stub_env("CI_API_V4_URL", "gitlab_api_url")
+    stub_env("GITLAB_ACCESS_TOKEN", "gitlab_token")
+
+    allow(RestClient::Request).to receive(:execute)
+    allow(Slack::Notifier).to receive(:new).and_return(slack_notifier)
+    allow(InfluxDB2::Client).to receive(:new).and_return(influx_client)
+
+    allow(query_api).to receive(:query).with(query: flux_query(reliable: false)).and_return(runs)
+    allow(query_api).to receive(:query).with(query: flux_query(reliable: true)).and_return(reliable_runs)
+  end
+
+  let(:slack_notifier) { instance_double("Slack::Notifier", post: nil) }
+  let(:influx_client) { instance_double("InfluxDB2::Client", create_query_api: query_api) }
+  let(:query_api) { instance_double("InfluxDB2::QueryApi") }
+
+  let(:slack_channel) { "#quality-reports" }
+  let(:range) { 14 }
+  let(:issue_url) { "https://gitlab.com/issue/1" }
+  let(:time) { "2021-12-07T04:05:25.000000000+00:00" }
+  let(:failure_message) { 'random failure message' }
+
+  let(:run_values) do
+    {
+      "name" => "stable spec1",
+      "status" => "passed",
+      "file_path" => "/some/spec.rb",
+      "stage" => "create",
+      "product_group" => "code_review",
+      "testcase" => "https://testcase/url",
+      "run_type" => "staging",
+      "_time" => time
+    }
+  end
+
+  let(:run_more_values) do
+    {
+      "name" => "stable spec2",
+      "status" => "passed",
+      "file_path" => "/some/spec.rb",
+      "stage" => "manage",
+      "product_group" => "import_and_integrate",
+      "testcase" => "https://testcase/url",
+      "run_type" => "staging",
+      "_time" => time
+    }
+  end
+
+  let(:runs) do
+    [
+      instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: run_values),
+          instance_double("InfluxDB2::FluxRecord", values: run_values),
+          instance_double("InfluxDB2::FluxRecord", values: run_values.merge({ "_time" => Time.now.to_s }))
+        ]
+      ),
+      instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: run_more_values),
+          instance_double("InfluxDB2::FluxRecord", values: run_more_values),
+          instance_double("InfluxDB2::FluxRecord", values: run_more_values.merge({ "_time" => Time.now.to_s }))
+        ]
+      )
+    ]
+  end
+
+  let(:reliable_run_values) do
+    {
+      "name" => "unstable spec",
+      "status" => "failed",
+      "file_path" => "/some/spec.rb",
+      "stage" => "create",
+      "product_group" => "code_review",
+      "failure_exception" => failure_message,
+      "job_url" => "https://job/url",
+      "testcase" => "https://testcase/url",
+      "failure_issue" => "https://issues/url",
+      "run_type" => "staging",
+      "_time" => time
+    }
+  end
+
+  let(:reliable_run_more_values) do
+    {
+      "name" => "unstable spec",
+      "status" => "failed",
+      "file_path" => "/some/spec.rb",
+      "stage" => "manage",
+      "product_group" => "import_and_integrate",
+      "failure_exception" => failure_message,
+      "job_url" => "https://job/url",
+      "testcase" => "https://testcase/url",
+      "failure_issue" => "https://issues/url",
+      "run_type" => "staging",
+      "_time" => time
+    }
+  end
+
+  let(:reliable_runs) do
+    [
+      instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: { **reliable_run_values, "status" => "passed" }),
+          instance_double("InfluxDB2::FluxRecord", values: reliable_run_values),
+          instance_double("InfluxDB2::FluxRecord", values: reliable_run_values.merge({ "_time" => Time.now.to_s }))
+        ]
+      ),
+      instance_double(
+        "InfluxDB2::FluxTable",
+        records: [
+          instance_double("InfluxDB2::FluxRecord", values: { **reliable_run_more_values, "status" => "passed" }),
+          instance_double("InfluxDB2::FluxRecord", values: reliable_run_more_values),
+          instance_double("InfluxDB2::FluxRecord", values: reliable_run_more_values.merge({ "_time" => Time.now.to_s }))
+        ]
+      )
+    ]
+  end
+
+  def flux_query(reliable:)
+    <<~QUERY
+      from(bucket: "e2e-test-stats-main")
+        |> range(start: -#{range}d)
+        |> filter(fn: (r) => r._measurement == "test-stats")
+        |> filter(fn: (r) => r.run_type == "staging-full" or
+          r.run_type == "staging-sanity" or
+          r.run_type == "production-full" or
+          r.run_type == "production-sanity" or
+          r.run_type == "package-and-qa" or
+          r.run_type == "nightly"
+        )
+        |> filter(fn: (r) => r.job_name != "airgapped" and
+          r.job_name != "instance-image-slow-network" and
+          r.job_name != "nplus1-instance-image"
+        )
+        |> filter(fn: (r) => r.status != "pending" and
+          r.merge_request == "false" and
+          r.quarantined == "false" and
+          r.smoke == "false" and
+          r.reliable == "#{reliable}"
+        )
+        |> filter(fn: (r) => r["_field"] == "job_url" or
+          r["_field"] == "failure_exception" or
+          r["_field"] == "id" or
+          r["_field"] == "failure_issue"
+        )
+        |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+        |> group(columns: ["name"])
+    QUERY
+  end
+
+  def expected_stage_markdown(result, stage, product_group, type)
+    <<~SECTION.strip
+      ## #{stage.capitalize} (1)
+
+      <details>
+      <summary>Executions table ~\"group::#{product_group}\" (1)</summary>
+
+      #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
+
+      </details>
+    SECTION
+  end
+
+  def expected_summary_table(summary, type, markdown = false)
+    table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
+  end
+
+  def table(rows, headings, title, markdown = false)
+    Terminal::Table.new(
+      headings: headings,
+      title: markdown ? nil : title,
+      rows: rows,
+      style: markdown ? { border: :markdown } : { all_separators: true }
+    )
+  end
+
+  def name_column(spec_name, exceptions_and_related_urls = {})
+    "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_related_urls)}"
+  end
+
+  def exceptions_markdown(exceptions_and_related_urls)
+    exceptions_and_related_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://issues/url)"
+  end
+
   describe '.run' do
     subject(:run) { described_class.run(range: range, report_in_issue_and_slack: create_issue) }
-
-    let(:slack_notifier) { instance_double("Slack::Notifier", post: nil) }
-    let(:influx_client) { instance_double("InfluxDB2::Client", create_query_api: query_api) }
-    let(:query_api) { instance_double("InfluxDB2::QueryApi") }
-
-    let(:slack_channel) { "#quality-reports" }
-    let(:range) { 14 }
-    let(:issue_url) { "https://gitlab.com/issue/1" }
-    let(:time) { "2021-12-07T04:05:25.000000000+00:00" }
-    let(:failure_message) { 'random failure message' }
-
-    let(:runs) do
-      values = {
-        "name" => "stable spec1",
-        "status" => "passed",
-        "file_path" => "some/spec.rb",
-        "stage" => "create",
-        "product_group" => "code_review",
-        "_time" => time
-      }
-      more_values = {
-        "name" => "stable spec2",
-        "status" => "passed",
-        "file_path" => "some/spec.rb",
-        "stage" => "manage",
-        "product_group" => "import_and_integrate",
-        "_time" => time
-      }
-      [
-        instance_double(
-          "InfluxDB2::FluxTable",
-          records: [
-            instance_double("InfluxDB2::FluxRecord", values: values),
-            instance_double("InfluxDB2::FluxRecord", values: values),
-            instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
-          ]
-        ),
-        instance_double(
-          "InfluxDB2::FluxTable",
-          records: [
-            instance_double("InfluxDB2::FluxRecord", values: more_values),
-            instance_double("InfluxDB2::FluxRecord", values: more_values),
-            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
-          ]
-        )
-      ]
-    end
-
-    let(:reliable_runs) do
-      values = {
-        "name" => "unstable spec",
-        "status" => "failed",
-        "file_path" => "some/spec.rb",
-        "stage" => "create",
-        "product_group" => "code_review",
-        "failure_exception" => failure_message,
-        "job_url" => "https://job/url",
-        "_time" => time
-      }
-      more_values = {
-        "name" => "unstable spec",
-        "status" => "failed",
-        "file_path" => "some/spec.rb",
-        "stage" => "manage",
-        "product_group" => "import_and_integrate",
-        "failure_exception" => failure_message,
-        "job_url" => "https://job/url",
-        "_time" => time
-      }
-      [
-        instance_double(
-          "InfluxDB2::FluxTable",
-          records: [
-            instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
-            instance_double("InfluxDB2::FluxRecord", values: values),
-            instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
-          ]
-        ),
-        instance_double(
-          "InfluxDB2::FluxTable",
-          records: [
-            instance_double("InfluxDB2::FluxRecord", values: { **more_values, "status" => "passed" }),
-            instance_double("InfluxDB2::FluxRecord", values: more_values),
-            instance_double("InfluxDB2::FluxRecord", values: more_values.merge({ "_time" => Time.now.to_s }))
-          ]
-        )
-      ]
-    end
-
-    def flux_query(reliable:)
-      <<~QUERY
-        from(bucket: "e2e-test-stats-main")
-          |> range(start: -#{range}d)
-          |> filter(fn: (r) => r._measurement == "test-stats")
-          |> filter(fn: (r) => r.run_type == "staging-full" or
-            r.run_type == "staging-sanity" or
-            r.run_type == "production-full" or
-            r.run_type == "production-sanity" or
-            r.run_type == "package-and-qa" or
-            r.run_type == "nightly"
-          )
-          |> filter(fn: (r) => r.job_name != "airgapped" and
-            r.job_name != "instance-image-slow-network" and
-            r.job_name != "nplus1-instance-image"
-          )
-          |> filter(fn: (r) => r.status != "pending" and
-            r.merge_request == "false" and
-            r.quarantined == "false" and
-            r.smoke == "false" and
-            r.reliable == "#{reliable}"
-          )
-          |> filter(fn: (r) => r["_field"] == "job_url" or
-            r["_field"] == "failure_exception" or
-            r["_field"] == "id" or
-            r["_field"] == "failure_issue"
-          )
-          |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
-          |> group(columns: ["name"])
-      QUERY
-    end
-
-    def expected_stage_markdown(result, stage, product_group, type)
-      <<~SECTION.strip
-        ## #{stage.capitalize} (1)
-
-        <details>
-        <summary>Executions table ~\"group::#{product_group}\" (1)</summary>
-
-        #{table(result, ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'], "Top #{type} specs in '#{stage}' stage for past #{range} days", true)}
-
-        </details>
-      SECTION
-    end
-
-    def expected_summary_table(summary, type, markdown = false)
-      table(summary, %w[STAGE COUNT], "#{type.capitalize} spec summary for past #{range} days".ljust(50), markdown)
-    end
-
-    def table(rows, headings, title, markdown = false)
-      Terminal::Table.new(
-        headings: headings,
-        title: markdown ? nil : title,
-        rows: rows,
-        style: markdown ? { border: :markdown } : { all_separators: true }
-      )
-    end
-
-    def name_column(spec_name, exceptions_and_related_urls = {})
-      "**Name**: #{spec_name}<br>**File**: [spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb)#{exceptions_markdown(exceptions_and_related_urls)}"
-    end
-
-    def exceptions_markdown(exceptions_and_related_urls)
-      exceptions_and_related_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`#{failure_message}`](https://job/url)"
-    end
-
-    before do
-      stub_env("QA_INFLUXDB_URL", "url")
-      stub_env("QA_INFLUXDB_TOKEN", "token")
-      stub_env("SLACK_WEBHOOK", "slack_url")
-      stub_env("CI_API_V4_URL", "gitlab_api_url")
-      stub_env("GITLAB_ACCESS_TOKEN", "gitlab_token")
-
-      allow(RestClient::Request).to receive(:execute)
-      allow(Slack::Notifier).to receive(:new).and_return(slack_notifier)
-      allow(InfluxDB2::Client).to receive(:new).and_return(influx_client)
-
-      allow(query_api).to receive(:query).with(query: flux_query(reliable: false)).and_return(runs)
-      allow(query_api).to receive(:query).with(query: flux_query(reliable: true)).and_return(reliable_runs)
-    end
 
     context "without report creation" do
       let(:create_issue) { "false" }
@@ -398,35 +420,125 @@ describe QA::Tools::ReliableReport do
       it "returns an empty hash" do
         expect(reliable_report.send(:exceptions_and_related_urls, records)).to be_empty
       end
+    end
 
-      context "with failure_exception" do
-        context "without failure_issue" do
-          let(:values) do
-            {
-              "failure_exception" => failure_message,
-              "job_url" => job_url
-            }
-          end
-
-          it "returns job_url as value" do
-            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([job_url])
-          end
+    context "with failure_exception" do
+      context "without failure_issue" do
+        let(:values) do
+          {
+            "failure_exception" => failure_message,
+            "job_url" => job_url
+          }
         end
 
-        context "with failure_issue and job_url" do
-          let(:values) do
-            {
-              "failure_exception" => failure_message,
-              "failure_issue" => failure_issue_url,
-              "job_url" => job_url
-            }
-          end
-
-          it "returns failure_issue as value" do
-            expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([failure_issue_url])
-          end
+        it "returns job_url as value" do
+          expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([job_url])
         end
       end
+
+      context "with failure_issue and job_url" do
+        let(:values) do
+          {
+            "failure_exception" => failure_message,
+            "failure_issue" => failure_issue_url,
+            "job_url" => job_url
+          }
+        end
+
+        it "returns failure_issue as value" do
+          expect(reliable_report.send(:exceptions_and_related_urls, records).values).to eq([failure_issue_url])
+        end
+      end
+    end
+  end
+
+  describe "#specs_attributes" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    let(:report_web_url) { 'https://report/url' }
+
+    before do
+      allow(reliable_report).to receive(:report_web_url).and_return(report_web_url)
+    end
+
+    shared_examples "spec attributes" do |stable|
+      it "returns #{stable} spec attributes" do
+        expect(reliable_report.send(:specs_attributes, stable: stable)).to eq(expected_specs_attributes)
+      end
+    end
+
+    context "with stable false" do
+      let(:expected_specs_attributes) do
+        { type: "Unstable Specs",
+          report_issue: "https://report/url",
+          specs:
+            [
+              { stage: "create",
+                product_group: "code_review",
+                name: "unstable spec",
+                file: "spec.rb",
+                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                runs: 3,
+                failed: 2,
+                failure_issue: "https://issues/url",
+                failure_rate: 66.67,
+                testcase: "https://testcase/url",
+                file_path: "/qa/qa/specs/features/some/spec.rb",
+                run_type: "staging" },
+              { stage: "manage",
+                product_group: "import_and_integrate",
+                name: "unstable spec",
+                file: "spec.rb",
+                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                runs: 3,
+                failed: 2,
+                failure_issue: "https://issues/url",
+                failure_rate: 66.67,
+                testcase: "https://testcase/url",
+                file_path: "/qa/qa/specs/features/some/spec.rb",
+                run_type: "staging" }
+            ] }
+      end
+
+      it_behaves_like "spec attributes", false
+    end
+
+    context "with stable true" do
+      let(:expected_specs_attributes) do
+        {
+          type: "Stable Specs",
+          report_issue: "https://report/url",
+          specs:
+            [
+              { stage: "create",
+                product_group: "code_review",
+                name: "stable spec1",
+                file: "spec.rb",
+                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                runs: 3,
+                failed: 0,
+                failure_issue: "",
+                failure_rate: 0,
+                testcase: "https://testcase/url",
+                file_path: "/qa/qa/specs/features/some/spec.rb",
+                run_type: "staging" },
+              { stage: "manage",
+                product_group: "import_and_integrate",
+                name: "stable spec2",
+                file: "spec.rb",
+                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                runs: 3,
+                failed: 0,
+                failure_issue: "",
+                failure_rate: 0,
+                testcase: "https://testcase/url",
+                file_path: "/qa/qa/specs/features/some/spec.rb",
+                run_type: "staging" }
+            ]
+        }
+      end
+
+      it_behaves_like "spec attributes", true
     end
   end
 end

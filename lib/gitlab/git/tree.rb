@@ -12,15 +12,17 @@ module Gitlab
       class << self
         # Get list of tree objects
         # for repository based on commit sha and path
-        def where(
-          repository, sha, path = nil, recursive = false, skip_flat_paths = true, rescue_not_found = true,
-          pagination_params = nil)
+        def tree_entries(
+          repository:,
+          sha:,
+          path: nil,
+          recursive: false,
+          skip_flat_paths: true,
+          rescue_not_found:  true,
+          pagination_params: nil
+        )
           path = nil if path == '' || path == '/'
 
-          tree_entries(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params)
-        end
-
-        def tree_entries(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params = nil)
           wrapped_gitaly_errors do
             repository.gitaly_commit_client.tree_entries(
               repository, sha, path, recursive, skip_flat_paths, pagination_params)

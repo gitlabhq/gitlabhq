@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ActivityPub
-  class ReleasesActorSerializer < ActivityStreamsSerializer
+  class ReleasesActorSerializer < ActorSerializer
     entity ReleasesActorEntity
   end
 end

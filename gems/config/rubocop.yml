@@ -96,10 +96,6 @@ RSpec/ContextWording:
 RSpec/FeatureCategory:
   Enabled: false
 
-# Enable once we drop 3.0 support
-Style/HashSyntax:
-  Enabled: false
-
 Style/InlineDisableAnnotation:
   Enabled: false
 
@@ -114,3 +110,8 @@ Style/RegexpLiteralMixedPreserve:
     - mixed
     - mixed_preserve
   EnforcedStyle: mixed_preserve
+
+# Short-hand Hash syntax does not work prior 3.1.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

@@ -48,6 +48,10 @@ RSpec.describe 'Database schema', feature_category: :database do
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
+    ci_pipeline_artifacts: %w[partition_id],
+    ci_pipeline_chat_data: %w[partition_id],
+    ci_pipelines_config: %w[partition_id],
+    ci_pipeline_metadata: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
     ci_runner_projects: %w[runner_id],
@@ -86,6 +90,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_request_diffs: %w[project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
+    namespace_descendants: %w[namespace_id],
     notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
     notification_settings: %w[source_id],
     oauth_access_grants: %w[resource_owner_id application_id],
@@ -128,7 +133,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     web_hook_logs: %w[web_hook_id],
     webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
     ml_candidates: %w[internal_id],
-    value_stream_dashboard_counts: %w[namespace_id]
+    value_stream_dashboard_counts: %w[namespace_id],
+    zoekt_indices: %w[namespace_id] # needed for cells sharding key
   }.with_indifferent_access.freeze
 
   context 'for table' do

@@ -156,9 +156,9 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
       create(:release_link, release: project.releases.first)
 
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/releases", maintainer)
-      end.count
+      end
 
       create_list(:release, 2, :with_evidence, project: project, author: maintainer)
       create_list(:release, 2, project: project)
@@ -167,7 +167,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
       expect do
         get api("/projects/#{project.id}/releases", maintainer)
-      end.not_to exceed_all_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control)
     end
 
     it 'serializes releases for the first time and read cached data from the second time' do
@@ -1715,9 +1715,9 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
             subject
             expect(response).to have_gitlab_http_status(:ok)
 
-            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               subject
-            end.count
+            end
 
             subgroups = create_list(:group, 10, parent: group1)
             projects = create_list(:project, 10, namespace: subgroups[0])
@@ -1725,7 +1725,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
             expect do
               subject
-            end.not_to exceed_all_query_limit(control_count)
+            end.not_to exceed_all_query_limit(control)
           end
         end
       end

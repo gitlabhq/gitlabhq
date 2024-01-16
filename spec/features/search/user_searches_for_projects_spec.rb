@@ -14,6 +14,14 @@ RSpec.describe 'User searches for projects', :js, :disable_rate_limiter, feature
       include_examples 'top right search form'
       include_examples 'search timeouts', 'projects'
 
+      it 'shows scopes when there is no search term' do
+        submit_dashboard_search('')
+
+        within_testid('search-filter') do
+          expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+        end
+      end
+
       it 'finds a project' do
         visit(search_path)
         submit_dashboard_search(project.name[0..3])

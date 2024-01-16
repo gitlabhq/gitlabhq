@@ -18,7 +18,7 @@ RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_manag
   describe "#perform" do
     context "when push is a new branch" do
       before do
-        data_new_branch = data.stringify_keys.merge("before" => Gitlab::Git::BLANK_SHA)
+        data_new_branch = data.stringify_keys.merge("before" => Gitlab::Git::SHA1_BLANK_SHA)
 
         subject.perform(project.id, recipients, data_new_branch)
       end
@@ -34,7 +34,7 @@ RSpec.describe EmailsOnPushWorker, :mailer, feature_category: :source_code_manag
 
     context "when push is a deleted branch" do
       before do
-        data_deleted_branch = data.stringify_keys.merge("after" => Gitlab::Git::BLANK_SHA)
+        data_deleted_branch = data.stringify_keys.merge("after" => Gitlab::Git::SHA1_BLANK_SHA)
 
         subject.perform(project.id, recipients, data_deleted_branch)
       end

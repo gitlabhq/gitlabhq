@@ -522,29 +522,40 @@ class NotificationService
     ).deliver_later
   end
 
-  # Project invite
-  def invite_project_member(project_member, token)
-    return true unless project_member.notifiable?(:subscription)
-
-    mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
+  def invite_member(member, token)
+    mailer.member_invited_email(member.real_source_type, member.id, token).deliver_later
   end
 
-  def accept_project_invite(project_member)
-    return true unless project_member.notifiable?(:subscription)
+  def new_member(member)
+    notifiable_options = case member.source
+                         when Group
+                           {}
+                         when Project
+                           { skip_read_ability: true }
+                         end
 
-    mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
+    return true unless member.notifiable?(:mention, notifiable_options)
+
+    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
   end
 
-  def new_project_member(project_member)
-    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
+  def accept_invite(member)
+    return true if member.source.is_a?(Project) && !member.notifiable?(:subscription)
 
-    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+    mailer.member_invite_accepted_email(member.real_source_type, member.id).deliver_later
   end
 
-  def update_project_member(project_member)
-    return true unless project_member.notifiable?(:mention)
+  def updated_member_access_level(member)
+    return true unless member.notifiable?(:mention)
 
-    mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+    mailer.member_access_granted_email(member.real_source_type, member.id).deliver_later
+  end
+
+  def updated_member_expiration(member)
+    return true unless member.source.is_a?(Group)
+    return true unless member.notifiable?(:mention)
+
+    mailer.member_expiration_date_updated_email(member.real_source_type, member.id).deliver_later
   end
 
   def member_about_to_expire(member)
@@ -553,35 +564,8 @@ class NotificationService
     mailer.member_about_to_expire_email(member.real_source_type, member.id).deliver_later
   end
 
-  # Group invite
-  def invite_group_member(group_member, token)
-    mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
-  end
-
   def invite_member_reminder(group_member, token, reminder_index)
     mailer.member_invited_reminder_email(group_member.real_source_type, group_member.id, token, reminder_index).deliver_later
-  end
-
-  def accept_group_invite(group_member)
-    mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def new_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def update_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def updated_group_member_expiration(group_member)
-    return true unless group_member.notifiable?(:mention)
-
-    mailer.member_expiration_date_updated_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)

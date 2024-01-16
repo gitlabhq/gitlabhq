@@ -23,7 +23,8 @@ RSpec.describe ::API::Entities::Diff, feature_category: :source_code_management 
         b_mode: diff.b_mode,
         new_file: diff.new_file?,
         renamed_file: diff.renamed_file?,
-        deleted_file: diff.deleted_file?
+        deleted_file: diff.deleted_file?,
+        generated_file: diff.generated?
       }
     )
   end

@@ -876,107 +876,95 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'Query limits' do
-    def runner_query(runner)
-      <<~SINGLE
-        runner(id: "#{runner.to_global_id}") {
-          #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
-          createdBy {
-            id
-            username
-            webPath
-            webUrl
-          }
-          groups {
-            nodes {
-              id
-              path
-              fullPath
-              webUrl
-            }
-          }
-          projects {
-            nodes {
-              id
-              path
-              fullPath
-              webUrl
-            }
-          }
-          ownerProject {
-            id
-            path
-            fullPath
-            webUrl
-          }
-        }
-      SINGLE
+    let_it_be(:user2) { another_admin }
+    let_it_be(:user3) { create(:user) }
+    let_it_be(:tag_list) { %w[n_plus_1_test some_tag] }
+    let_it_be(:args) do
+      { current_user: user, token: { personal_access_token: create(:personal_access_token, user: user) } }
     end
 
-    let(:active_project_runner2) { create(:ci_runner, :project) }
-    let(:active_group_runner2) { create(:ci_runner, :group) }
+    let_it_be(:runner1) { create(:ci_runner, tag_list: tag_list, creator: user) }
+    let_it_be(:runner2) do
+      create(:ci_runner, :group, groups: [group], tag_list: tag_list, creator: user)
+    end
 
-    # Exclude fields that are already hardcoded above
-    let(:excluded_fields) { %w[createdBy jobs groups projects ownerProject] }
+    let_it_be(:runner3) do
+      create(:ci_runner, :project, projects: [project1], tag_list: tag_list, creator: user)
+    end
 
-    let(:single_query) do
+    let(:single_discrete_runners_query) do
+      multiple_discrete_runners_query([])
+    end
+
+    let(:runner_fragment) do
       <<~QUERY
-        {
-          instance_runner1: #{runner_query(active_instance_runner)}
-          group_runner1: #{runner_query(active_group_runner)}
-          project_runner1: #{runner_query(active_project_runner)}
+        #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
+        createdBy {
+          id
+          username
+          webPath
+          webUrl
         }
       QUERY
     end
 
-    let(:double_query) do
+    # Exclude fields that are already hardcoded above (or tested separately),
+    #   and also some fields from deeper objects which are problematic:
+    # - createdBy: Known N+1 issues, but only on exotic fields which we don't normally use
+    # - ownerProject.pipeline: Needs arguments (iid or sha)
+    # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
+    let(:excluded_fields) { %w[createdBy jobs pipeline productAnalyticsState] }
+
+    it 'avoids N+1 queries', :use_sql_query_cache do
+      discrete_runners_control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(single_discrete_runners_query, **args)
+      end
+
+      additional_runners = setup_additional_records
+
+      expect do
+        post_graphql(multiple_discrete_runners_query(additional_runners), **args)
+
+        raise StandardError, flattened_errors if graphql_errors # Ensure any error in query causes test to fail
+      end.not_to exceed_query_limit(discrete_runners_control)
+    end
+
+    def runner_query(runner, nr)
       <<~QUERY
-        {
-          instance_runner1: #{runner_query(active_instance_runner)}
-          instance_runner2: #{runner_query(inactive_instance_runner)}
-          group_runner1: #{runner_query(active_group_runner)}
-          group_runner2: #{runner_query(active_group_runner2)}
-          project_runner1: #{runner_query(active_project_runner)}
-          project_runner2: #{runner_query(active_project_runner2)}
+        runner#{nr}: runner(id: "#{runner.to_global_id}") {
+          #{runner_fragment}
         }
       QUERY
     end
 
-    it 'does not execute more queries per runner', :aggregate_failures, quarantine: "https://gitlab.com/gitlab-org/gitlab/-/issues/391442" do
-      # warm-up license cache and so on:
-      personal_access_token = create(:personal_access_token, user: user)
-      args = { current_user: user, token: { personal_access_token: personal_access_token } }
-      post_graphql(double_query, **args)
+    def multiple_discrete_runners_query(additional_runners)
+      <<~QUERY
+        {
+          #{runner_query(runner1, 1)}
+          #{runner_query(runner2, 2)}
+          #{runner_query(runner3, 3)}
+          #{additional_runners.each_with_index.map { |r, i| runner_query(r, 4 + i) }.join("\n")}
+        }
+      QUERY
+    end
 
-      control = ActiveRecord::QueryRecorder.new { post_graphql(single_query, **args) }
+    def setup_additional_records
+      # Add more runners (including owned by other users)
+      runner4 = create(:ci_runner, tag_list: tag_list + %w[tag1 tag2], creator: user2)
+      runner5 = create(:ci_runner, :group, groups: [create(:group)], tag_list: tag_list + %w[tag2 tag3], creator: user3)
+      # Add one more project to runner
+      runner3.assign_to(create(:project))
 
-      personal_access_token = create(:personal_access_token, user: another_admin)
-      args = { current_user: another_admin, token: { personal_access_token: personal_access_token } }
-      expect { post_graphql(double_query, **args) }.not_to exceed_query_limit(control)
+      # Add more runner managers (including to existing runners)
+      runner_manager1 = create(:ci_runner_machine, runner: runner1)
+      create(:ci_runner_machine, runner: runner1)
+      create(:ci_runner_machine, runner: runner2, system_xid: runner_manager1.system_xid)
+      create(:ci_runner_machine, runner: runner3)
+      create(:ci_runner_machine, runner: runner4, version: '16.4.1')
+      create(:ci_runner_machine, runner: runner5, version: '16.4.0', system_xid: runner_manager1.system_xid)
+      create(:ci_runner_machine, runner: runner3)
 
-      expect(graphql_data.count).to eq 6
-      expect(graphql_data).to match(
-        a_hash_including(
-          'instance_runner1' => a_graphql_entity_for(active_instance_runner),
-          'instance_runner2' => a_graphql_entity_for(inactive_instance_runner),
-          'group_runner1' => a_graphql_entity_for(
-            active_group_runner,
-            groups: { 'nodes' => contain_exactly(a_graphql_entity_for(group)) }
-          ),
-          'group_runner2' => a_graphql_entity_for(
-            active_group_runner2,
-            groups: { 'nodes' => active_group_runner2.groups.map { |g| a_graphql_entity_for(g) } }
-          ),
-          'project_runner1' => a_graphql_entity_for(
-            active_project_runner,
-            projects: { 'nodes' => active_project_runner.projects.map { |p| a_graphql_entity_for(p) } },
-            owner_project: a_graphql_entity_for(active_project_runner.projects[0])
-          ),
-          'project_runner2' => a_graphql_entity_for(
-            active_project_runner2,
-            projects: { 'nodes' => active_project_runner2.projects.map { |p| a_graphql_entity_for(p) } },
-            owner_project: a_graphql_entity_for(active_project_runner2.projects[0])
-          )
-        ))
+      [runner4, runner5]
     end
   end
 

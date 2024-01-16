@@ -470,3 +470,12 @@ The content of each log file is listed in chronological order. To minimize perfo
 ### Audit Events **(PREMIUM SELF)**
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
+
+### Statistics
+
+The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance. This information is retrieved using the [Application statistics API](../api/statistics.md#get-current-application-statistics).
+
+NOTE:
+These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data
+when [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16) and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads) strategies are used for calculations.
+.

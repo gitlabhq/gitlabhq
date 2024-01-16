@@ -90,7 +90,8 @@ module Gitlab
         rich_line = syntax_highlighter(diff_line).highlight(
           diff_line.text(prefix: false),
           plain: plain,
-          context: { line_number: diff_line.line }
+          context: { line_number: diff_line.line },
+          used_on: :diff
         )
 
         # Only update text if line is found. This will prevent
@@ -143,7 +144,7 @@ module Gitlab
 
         blob.load_all_data!
 
-        blob.present.highlight.lines
+        blob.present.highlight(used_on: :diff).lines
       end
 
       def blobs_too_large?

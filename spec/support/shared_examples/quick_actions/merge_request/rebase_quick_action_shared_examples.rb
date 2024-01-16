@@ -59,7 +59,7 @@ RSpec.shared_examples 'rebase quick action' do
         it 'tells the user a rebase is in progress' do
           add_note('/rebase')
 
-          expect(page).to have_content 'A rebase is already in progress.'
+          expect(page).to have_content Gitlab::QuickActions::MergeRequestActions::REBASE_FAILURE_REBASE_IN_PROGRESS
           expect(page).not_to have_content 'Scheduled a rebase'
         end
       end
@@ -70,7 +70,7 @@ RSpec.shared_examples 'rebase quick action' do
         it 'does not rebase the MR' do
           add_note("/rebase")
 
-          expect(page).to have_content 'This merge request cannot be rebased while there are conflicts.'
+          expect(page).to have_content Gitlab::QuickActions::MergeRequestActions::REBASE_FAILURE_UNMERGEABLE
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.shared_examples 'rebase quick action' do
         it 'does not rebase the MR' do
           add_note("/rebase")
 
-          expect(page).to have_content 'This merge request branch is protected from force push.'
+          expect(page).to have_content Gitlab::QuickActions::MergeRequestActions::REBASE_FAILURE_PROTECTED_BRANCH
         end
       end
     end

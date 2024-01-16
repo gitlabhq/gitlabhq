@@ -8,13 +8,13 @@ RSpec.shared_examples_for 'service deleting label links of an issuable' do
   end
 
   it 'deletes label links for specified target ID and type' do
-    control_count = ActiveRecord::QueryRecorder.new { execute }.count
+    control = ActiveRecord::QueryRecorder.new { execute }
 
     # Create more label links for the target
     create(:label_link, target: target)
     create(:label_link, target: target)
 
-    expect { execute }.not_to exceed_query_limit(control_count)
+    expect { execute }.not_to exceed_query_limit(control)
     expect(target.reload.label_links.count).to eq(0)
   end
 end

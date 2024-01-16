@@ -1,19 +1,6 @@
 # ------------------------------------------
 # Conditions
 # ------------------------------------------
-# Specific specs passed
-.specific-specs: &specific-specs
-  if: $QA_TESTS != ""
-
-# No specific specs passed
-.all-specs: &all-specs
-  if: $QA_TESTS == ""
-
-# No specific specs in mr pipeline
-.all-specs-mr: &all-specs-mr
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS == ""'
-  when: manual
-
 # Triggered by change pattern
 .app-changes: &app-changes
   if: $APP_CHANGE_TRIGGER == "true"
@@ -46,29 +33,6 @@
   - "scripts/review_apps/**/*"
   - "scripts/trigger-build.rb"
   - "{,ee/,jh/}{bin,config}/**/*.rb"
-
-# ------------------------------------------
-# Conditions set
-# ------------------------------------------
-.qa-manual: &qa-manual
-  when: manual
-  allow_failure: true
-  variables:
-    QA_TESTS: ""
-
-.never-when-qa-run-all-tests-or-no-specific-specs:
-  - <<: *qa-run-all-tests
-    when: never
-  - <<: *all-specs
-    when: never
-
-.never-when-specific-specs-always-when-qa-run-all-tests:
-  - *qa-run-all-tests
-  - <<: *specific-specs
-    when: manual
-    allow_failure: true
-    variables:
-      QA_TESTS: ""
 
 # ------------------------------------------
 # Prepare
@@ -112,32 +76,11 @@
         QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
     - *qa-run-all-tests
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
-    - *qa-manual
-
-.rules:qa-blocking:
-  rules:
-    - <<: *app-changes
-      when: never
-    - !reference [.never-when-qa-run-all-tests-or-no-specific-specs]
-    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
-.rules:qa-blocking-parallel:
-  rules:
-    # always trigger blocking suite if review pipeline got triggered by specific changes in application code
-    - <<: *app-changes
+    # keep option to trigger tests manually even if no rules match
+    - when: manual
+      allow_failure: true
       variables:
-        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
-    - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
-    - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
-
-.rules:qa-non-blocking:
-  rules:
-    - !reference [.never-when-qa-run-all-tests-or-no-specific-specs]
-    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
-.rules:qa-non-blocking-parallel:
-  rules:
-    - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
-    - *all-specs-mr  # set full suite to manual when no specific specs passed in mr
-    - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
+        QA_TESTS: ""
 
 .review:rules:review-performance:
   rules:

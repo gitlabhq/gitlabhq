@@ -11,6 +11,8 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
+  GROUP_VISIBILITY_TYPE,
+  PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -24,7 +26,7 @@ const createComponent = (
 ) => {
   return mountExtended(GroupItem, {
     propsData,
-    components: { GroupFolder },
+    components: { GroupFolder, GroupItem },
     provide,
   });
 };
@@ -113,6 +115,51 @@ describe('GroupItemComponent', () => {
 
         expect(wrapper.vm.isGroup).toBe(false);
         wrapper.destroy();
+      });
+    });
+
+    describe('visibilityTooltip', () => {
+      describe('if item represents group', () => {
+        it.each`
+          visibilityLevel                     | visibilityTooltip
+          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
+          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
+          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
+        `(
+          'should return corresponding text when visibility level is $visibilityLevel',
+          ({ visibilityLevel, visibilityTooltip }) => {
+            const group = { ...mockParentGroupItem };
+
+            group.type = 'group';
+            group.visibility = visibilityLevel;
+            wrapper = createComponent({ group });
+
+            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
+            wrapper.destroy();
+          },
+        );
+      });
+
+      describe('if item represents project', () => {
+        it.each`
+          visibilityLevel                     | visibilityTooltip
+          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
+          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
+          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
+        `(
+          'should return corresponding text when visibility level is $visibilityLevel',
+          ({ visibilityLevel, visibilityTooltip }) => {
+            const group = { ...mockParentGroupItem };
+
+            group.type = 'project';
+            group.lastActivityAt = '2017-04-09T18:40:39.101Z';
+            group.visibility = visibilityLevel;
+            wrapper = createComponent({ group });
+
+            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
+            wrapper.destroy();
+          },
+        );
       });
     });
   });
@@ -261,10 +308,9 @@ describe('GroupItemComponent', () => {
       });
 
       it.each`
-        attr           | value
-        ${'itemscope'} | ${'itemscope'}
-        ${'itemtype'}  | ${'https://schema.org/Organization'}
-        ${'itemprop'}  | ${'subOrganization'}
+        attr          | value
+        ${'itemtype'} | ${'https://schema.org/Organization'}
+        ${'itemprop'} | ${'subOrganization'}
       `('does set correct $attr', ({ attr, value } = {}) => {
         expect(wrapper.attributes(attr)).toBe(value);
       });
@@ -281,7 +327,7 @@ describe('GroupItemComponent', () => {
   });
 
   describe('visibility warning popover', () => {
-    const findPopover = () => extendedWrapper(wrapper.findComponent(GlPopover));
+    const findPopover = () => wrapper.findComponent(GlPopover);
 
     const itDoesNotRenderVisibilityWarningPopover = () => {
       it('does not render visibility warning popover', () => {
@@ -343,9 +389,10 @@ describe('GroupItemComponent', () => {
 
           if (isPopoverShown) {
             it('renders visibility warning popover with `Learn more` link', () => {
-              const popover = findPopover();
+              const popover = extendedWrapper(findPopover());
 
               expect(popover.exists()).toBe(true);
+
               expect(
                 popover.findByRole('link', { name: GroupItem.i18n.learnMore }).attributes('href'),
               ).toBe(

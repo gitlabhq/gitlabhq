@@ -10,11 +10,15 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   let_it_be(:secondary_db) { 2 }
   let_it_be(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
   let_it_be(:secondary_store) { create_redis_store(redis_store_class.params, db: secondary_db, serializer: nil) }
+  let_it_be(:primary_pool) { ConnectionPool.new { primary_store } }
+  let_it_be(:secondary_pool) { ConnectionPool.new { secondary_store } }
   let_it_be(:instance_name) { 'TestStore' }
-  let_it_be(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
+  let_it_be(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
 
   subject do
-    multi_store.send(name, *args)
+    multi_store.with_borrowed_connection do
+      multi_store.send(name, *args)
+    end
   end
 
   before do
@@ -23,12 +27,12 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   after(:all) do
-    primary_store.flushdb
-    secondary_store.flushdb
+    primary_store.with(&:flushdb)
+    secondary_store.with(&:flushdb)
   end
 
   context 'when primary_store is nil' do
-    let(:multi_store) { described_class.new(nil, secondary_store, instance_name) }
+    let(:multi_store) { described_class.new(nil, secondary_pool, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /primary_store is required/)
@@ -36,7 +40,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   context 'when secondary_store is nil' do
-    let(:multi_store) { described_class.new(primary_store, nil, instance_name) }
+    let(:multi_store) { described_class.new(primary_pool, nil, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /secondary_store is required/)
@@ -45,7 +49,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
   context 'when instance_name is nil' do
     let(:instance_name) { nil }
-    let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
+    let(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
@@ -58,7 +62,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
 
     it 'fails with exception' do
-      expect { described_class.new(primary_store, secondary_store, instance_name) }
+      expect { described_class.new(primary_pool, secondary_pool, instance_name) }
         .to raise_error(ArgumentError, /invalid primary_store/)
     end
   end
@@ -69,7 +73,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
 
     it 'fails with exception' do
-      expect { described_class.new(primary_store, secondary_store, instance_name) }
+      expect { described_class.new(primary_pool, secondary_pool, instance_name) }
         .to raise_error(ArgumentError, /invalid secondary_store/)
     end
   end
@@ -77,7 +81,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   # rubocop:disable RSpec/MultipleMemoizedHelpers
   context 'with READ redis commands' do
     subject do
-      multi_store.send(name, *args, **kwargs)
+      multi_store.with_borrowed_connection do
+        multi_store.send(name, *args, **kwargs)
+      end
     end
 
     let(:args) { 'args' }
@@ -117,7 +123,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when reading from default instance is raising an exception' do
           before do
-            allow(multi_store.default_store).to receive(name).with(*expected_args).and_raise(StandardError)
+            multi_store.with_borrowed_connection do
+              allow(multi_store.default_store).to receive(name).with(*expected_args).and_raise(StandardError)
+            end
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
@@ -132,8 +140,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when the command is executed within pipelined block' do
           subject do
-            multi_store.pipelined do |pipeline|
-              pipeline.send(name, *args, **kwargs)
+            multi_store.with_borrowed_connection do
+              multi_store.pipelined do |pipeline|
+                pipeline.send(name, *args, **kwargs)
+              end
             end
           end
 
@@ -153,7 +163,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when block provided' do
           subject do
-            multi_store.send(name, expected_args) { nil }
+            multi_store.with_borrowed_connection do
+              multi_store.send(name, expected_args) { nil }
+            end
           end
 
           it 'only default store to execute' do
@@ -167,7 +179,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         context 'with both primary and secondary store using same redis instance' do
           let(:primary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
           let(:secondary_store) { create_redis_store(redis_store_class.params, db: primary_db, serializer: nil) }
-          let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name) }
+          let(:primary_pool) { ConnectionPool.new { primary_store } }
+          let(:secondary_pool) { ConnectionPool.new { secondary_store } }
+          let(:multi_store) { described_class.new(primary_pool, secondary_pool, instance_name) }
 
           it_behaves_like 'secondary store'
         end
@@ -219,8 +233,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     end
 
     subject do
-      multi_store.mget(values) do |v|
-        multi_store.sadd(skey, v)
+      multi_store.with_borrowed_connection do
+        multi_store.mget(values) do |v|
+          multi_store.sadd(skey, v)
+        end
       end
     end
 
@@ -335,19 +351,27 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when executing on the default instance is raising an exception' do
           before do
-            allow(multi_store.default_store).to receive(name).with(*args).and_raise(StandardError)
+            multi_store.with_borrowed_connection do
+              allow(multi_store.default_store).to receive(name).with(*args).and_raise(StandardError)
+            end
+
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
           it 'raises error and does not execute on non default instance', :aggregate_failures do
-            expect(multi_store.non_default_store).not_to receive(name).with(*args)
+            multi_store.with_borrowed_connection do
+              expect(multi_store.non_default_store).not_to receive(name).with(*args)
+            end
+
             expect { subject }.to raise_error(StandardError)
           end
         end
 
         context 'when executing on the non default instance is raising an exception' do
           before do
-            allow(multi_store.non_default_store).to receive(name).with(*args).and_raise(StandardError)
+            multi_store.with_borrowed_connection do
+              allow(multi_store.non_default_store).to receive(name).with(*args).and_raise(StandardError)
+            end
             allow(Gitlab::ErrorTracking).to receive(:log_exception)
           end
 
@@ -355,7 +379,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
             expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
               hash_including(:multi_store_error_message,
                 command_name: name, instance_name: instance_name))
-            expect(multi_store.default_store).to receive(name).with(*args)
+            multi_store.with_borrowed_connection do
+              expect(multi_store.default_store).to receive(name).with(*args)
+            end
 
             subject
           end
@@ -363,8 +389,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when the command is executed within pipelined block' do
           subject do
-            multi_store.pipelined do |pipeline|
-              pipeline.send(name, *args)
+            multi_store.with_borrowed_connection do
+              multi_store.pipelined do |pipeline|
+                pipeline.send(name, *args)
+              end
             end
           end
 
@@ -390,7 +418,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
     it "#{store} redis store contains correct values", :aggregate_failures do
       subject
 
-      redis_store = multi_store.send(store)
+      redis_store = multi_store.with_borrowed_connection { multi_store.send(store) }
 
       if expected_value.is_a?(Array)
         # :smembers does not guarantee the order it will return the values
@@ -425,8 +453,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       subject do
-        multi_store.send(name) do |redis|
-          redis.set(key1, value1)
+        multi_store.with_borrowed_connection do
+          multi_store.send(name) do |redis|
+            redis.set(key1, value1)
+          end
         end
       end
 
@@ -444,11 +474,15 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when executing on the default instance is raising an exception' do
         before do
-          allow(multi_store.default_store).to receive(name).and_raise(StandardError)
+          multi_store.with_borrowed_connection do
+            allow(multi_store.default_store).to receive(name).and_raise(StandardError)
+          end
         end
 
         it 'raises error and does not execute on non default instance', :aggregate_failures do
-          expect(multi_store.non_default_store).not_to receive(name)
+          multi_store.with_borrowed_connection do
+            expect(multi_store.non_default_store).not_to receive(name)
+          end
 
           expect { subject }.to raise_error(StandardError)
         end
@@ -456,14 +490,18 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when executing on the non default instance is raising an exception' do
         before do
-          allow(multi_store.non_default_store).to receive(name).and_raise(StandardError)
+          multi_store.with_borrowed_connection do
+            allow(multi_store.non_default_store).to receive(name).and_raise(StandardError)
+          end
           allow(Gitlab::ErrorTracking).to receive(:log_exception)
         end
 
         it 'logs the exception and execute on default instance', :aggregate_failures do
           expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(StandardError),
             hash_including(:multi_store_error_message, command_name: name))
-          expect(multi_store.default_store).to receive(name).and_call_original
+          multi_store.with_borrowed_connection do
+            expect(multi_store.default_store).to receive(name).and_call_original
+          end
 
           subject
         end
@@ -481,8 +519,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         end
 
         subject do
-          multi_store.send(name) do |redis|
-            redis.get(key1)
+          multi_store.with_borrowed_connection do
+            multi_store.send(name) do |redis|
+              redis.get(key1)
+            end
           end
         end
 
@@ -501,8 +541,10 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when the value exists on both but differ' do
           before do
-            multi_store.non_default_store.set(key1, value1)
-            multi_store.default_store.set(key1, value2)
+            multi_store.with_borrowed_connection do
+              multi_store.non_default_store.set(key1, value1)
+              multi_store.default_store.set(key1, value2)
+            end
           end
 
           it 'returns the value from the secondary store, logging an error' do
@@ -522,7 +564,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
         context 'when the value does not exist on the non-default store but it does on the default' do
           before do
-            multi_store.default_store.set(key1, value2)
+            multi_store.with_borrowed_connection { multi_store.default_store.set(key1, value2) }
           end
 
           it 'returns the value from the secondary store, logging an error' do
@@ -584,18 +626,22 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         before do
           allow(client).to receive(:instance_of?).with(::Redis::Cluster).and_return(true)
           allow(pipeline).to receive(:pipelined)
-          allow(multi_store.default_store).to receive(:_client).and_return(client)
+          multi_store.with_borrowed_connection do
+            allow(multi_store.default_store).to receive(:_client).and_return(client)
+          end
         end
 
         it 'calls cross-slot pipeline within multistore' do
           if name == :pipelined
             # we intentionally exclude `.and_call_original` since primary_store/secondary_store
             # may not be running on a proper Redis Cluster.
-            expect(Gitlab::Redis::CrossSlot::Pipeline).to receive(:new)
-                                                            .with(multi_store.default_store)
-                                                            .exactly(:once)
-                                                            .and_return(pipeline)
-            expect(Gitlab::Redis::CrossSlot::Pipeline).not_to receive(:new).with(multi_store.non_default_store)
+            multi_store.with_borrowed_connection do
+              expect(Gitlab::Redis::CrossSlot::Pipeline).to receive(:new)
+                                                              .with(multi_store.default_store)
+                                                              .exactly(:once)
+                                                              .and_return(pipeline)
+              expect(Gitlab::Redis::CrossSlot::Pipeline).not_to receive(:new).with(multi_store.non_default_store)
+            end
           end
 
           subject
@@ -637,7 +683,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   describe '#ping' do
-    subject { multi_store.ping }
+    subject { multi_store.with_borrowed_connection { multi_store.ping } }
 
     context 'when using both stores' do
       before do
@@ -652,7 +698,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'with message' do
         it 'returns the same message' do
-          expect(multi_store.ping('hello world')).to eq('hello world')
+          expect(multi_store.with_borrowed_connection { multi_store.ping('hello world') }).to eq('hello world')
         end
       end
 
@@ -757,11 +803,13 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   describe '#blpop' do
     let_it_be(:key) { "mylist" }
 
-    subject { multi_store.blpop(key, timeout: 0.1) }
+    subject { multi_store.with_borrowed_connection { multi_store.blpop(key, timeout: 0.1) } }
 
     shared_examples 'calls blpop on default_store' do
       it 'calls blpop on default_store' do
-        expect(multi_store.default_store).to receive(:blpop).with(key, { timeout: 0.1 })
+        multi_store.with_borrowed_connection do
+          expect(multi_store.default_store).to receive(:blpop).with(key, { timeout: 0.1 })
+        end
 
         subject
       end
@@ -769,7 +817,9 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
     shared_examples 'does not call lpop on non_default_store' do
       it 'does not call blpop on non_default_store' do
-        expect(multi_store.non_default_store).not_to receive(:blpop)
+        multi_store.with_borrowed_connection do
+          expect(multi_store.non_default_store).not_to receive(:blpop)
+        end
 
         subject
       end
@@ -784,11 +834,13 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context "when an element exists in the default_store" do
         before do
-          multi_store.default_store.lpush(key, 'abc')
+          multi_store.with_borrowed_connection { multi_store.default_store.lpush(key, 'abc') }
         end
 
         it 'calls lpop on non_default_store' do
-          expect(multi_store.non_default_store).to receive(:blpop).with(key, { timeout: 1 })
+          multi_store.with_borrowed_connection do
+            expect(multi_store.non_default_store).to receive(:blpop).with(key, { timeout: 1 })
+          end
 
           subject
         end
@@ -818,7 +870,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
     end
 
-    subject { multi_store.command }
+    subject { multi_store.with_borrowed_connection { multi_store.command } }
 
     context 'when in test environment' do
       it 'raises error' do
@@ -868,7 +920,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       context 'when command is in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
-        subject { multi_store.info }
+        subject { multi_store.with_borrowed_connection { multi_store.info } }
 
         it 'does not log MethodMissingError' do
           expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
@@ -907,7 +959,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
       context 'when the command is executed within pipelined block' do
         subject do
-          multi_store.pipelined(&:command)
+          multi_store.with_borrowed_connection { multi_store.pipelined(&:command) }
         end
 
         it 'is executed only 1 time on each instance', :aggregate_failures do
@@ -927,7 +979,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   describe '#to_s' do
-    subject { multi_store.to_s }
+    subject { multi_store.with_borrowed_connection { multi_store.to_s } }
 
     it 'returns same value as primary_store' do
       is_expected.to eq(primary_store.to_s)
@@ -936,13 +988,17 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
   describe '#is_a?' do
     it 'returns true for ::Redis::Store' do
-      expect(multi_store.is_a?(::Redis::Store)).to be true
+      expect(multi_store.with_borrowed_connection { multi_store.is_a?(::Redis::Store) }).to be true
     end
   end
 
   describe '#use_primary_and_secondary_stores?' do
+    subject(:use_both) do
+      multi_store.with_borrowed_connection { multi_store.use_primary_and_secondary_stores? }
+    end
+
     it 'multi store is enabled' do
-      expect(multi_store.use_primary_and_secondary_stores?).to be true
+      expect(use_both).to be true
     end
 
     context 'with empty DB' do
@@ -951,7 +1007,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'multi store is disabled' do
-        expect(multi_store.use_primary_and_secondary_stores?).to be false
+        expect(use_both).to be false
       end
     end
 
@@ -961,14 +1017,18 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'multi store is disabled' do
-        expect(multi_store.use_primary_and_secondary_stores?).to be false
+        expect(use_both).to be false
       end
     end
   end
 
   describe '#use_primary_store_as_default?' do
+    subject(:primary_default) do
+      multi_store.with_borrowed_connection { multi_store.use_primary_store_as_default? }
+    end
+
     it 'multi store is disabled' do
-      expect(multi_store.use_primary_store_as_default?).to be true
+      expect(primary_default).to be true
     end
 
     context 'with empty DB' do
@@ -977,7 +1037,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'multi store is disabled' do
-        expect(multi_store.use_primary_and_secondary_stores?).to be false
+        expect(primary_default).to be false
       end
     end
 
@@ -987,7 +1047,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
 
       it 'multi store is disabled' do
-        expect(multi_store.use_primary_and_secondary_stores?).to be false
+        expect(primary_default).to be false
       end
     end
   end
@@ -1003,7 +1063,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       it 'publishes to one or more stores' do
         expect(stores).to all(receive(:publish))
 
-        multi_store.publish(channel_name, message)
+        multi_store.with_borrowed_connection { multi_store.publish(channel_name, message) }
       end
     end
 
@@ -1012,14 +1072,14 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
         expect(default_store).to receive(:subscribe)
         expect(non_default_store).not_to receive(:subscribe)
 
-        multi_store.subscribe(channel_name)
+        multi_store.with_borrowed_connection { multi_store.subscribe(channel_name) }
       end
 
       it 'unsubscribes to the default store' do
         expect(default_store).to receive(:unsubscribe)
         expect(non_default_store).not_to receive(:unsubscribe)
 
-        multi_store.unsubscribe
+        multi_store.with_borrowed_connection { multi_store.unsubscribe }
       end
     end
 
@@ -1104,6 +1164,32 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       duplicated_commands = commands.group_by { |c| c }.select { |k, v| v.size > 1 }.map(&:first)
 
       expect(duplicated_commands).to be_empty, "commands #{duplicated_commands} defined more than once"
+    end
+  end
+
+  describe '.with_borrowed_connection' do
+    it 'permits nested borrows' do
+      multi_store.with_borrowed_connection do
+        expect(Thread.current[multi_store.borrow_counter]).to eq(1)
+
+        multi_store.with_borrowed_connection do
+          multi_store.ping
+
+          expect(Thread.current[multi_store.borrow_counter]).to eq(2)
+          expect(multi_store.primary_store).not_to eq(nil)
+          expect(multi_store.secondary_store).not_to eq(nil)
+        end
+
+        multi_store.ping
+
+        expect(Thread.current[multi_store.borrow_counter]).to eq(1)
+        expect(multi_store.primary_store).not_to eq(nil)
+        expect(multi_store.secondary_store).not_to eq(nil)
+      end
+
+      expect(Thread.current[multi_store.borrow_counter]).to eq(0)
+      expect(multi_store.primary_store).to eq(nil)
+      expect(multi_store.secondary_store).to eq(nil)
     end
   end
 end

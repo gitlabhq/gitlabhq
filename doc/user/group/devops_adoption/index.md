@@ -21,9 +21,9 @@ DevOps Adoption shows you how groups in your organization adopt and use the most
 You can use Group DevOps Adoption to:
 
 - Identify specific subgroups that are lagging in their adoption of GitLab features, so you can guide them on
-their DevOps journey.
+  their DevOps journey.
 - Find subgroups that have adopted certain features, and provide guidance to other subgroups on
-how to use those features.
+  how to use those features.
 - Verify if you are getting the return on investment that you expected from GitLab.
 
 ![DevOps Adoption](img/group_devops_adoption_v14_2.png)
@@ -43,11 +43,11 @@ To view DevOps Adoption:
 
 DevOps Adoption shows feature adoption for development, security, and operations.
 
-| Category | Feature |
-| ---      | ---      |
-| Development   | Approvals<br>Code owners<br>Issues<br>Merge requests   |
-| Security   | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST  |
-| Operations   | Deployments<br>Pipelines<br>Runners   |
+| Category    | Feature |
+|-------------|---------|
+| Development | Approvals<br>Code owners<br>Issues<br>Merge requests |
+| Security    | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST |
+| Operations  | Deployments<br>Pipelines<br>Runners |
 
 ## Feature adoption
 

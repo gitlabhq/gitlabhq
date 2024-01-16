@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlBadge } from '@gitlab/ui';
+import { GlTab, GlTabs, GlBadge, GlLink } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
@@ -19,6 +19,7 @@ export default {
     GlBadge,
     MetadataItem,
     ModelVersionDetail,
+    GlLink,
   },
   props: {
     model: {
@@ -32,9 +33,6 @@ export default {
     },
     candidateCount() {
       return this.model.candidateCount || 0;
-    },
-    latestVersionTitle() {
-      return `${i18n.LATEST_VERSION_LABEL}: ${this.model.latestVersion.version}`;
     },
   },
   i18n,
@@ -60,7 +58,14 @@ export default {
     <gl-tabs class="gl-mt-4">
       <gl-tab :title="$options.i18n.MODEL_DETAILS_TAB_LABEL">
         <template v-if="model.latestVersion">
-          <h3 class="gl-font-lg">{{ latestVersionTitle }}</h3>
+          <h3 class="gl-font-lg">
+            {{ $options.i18n.LATEST_VERSION_LABEL }}:
+
+            <gl-link :href="model.latestVersion.path" data-testid="model-version-link">
+              {{ model.latestVersion.version }}
+            </gl-link>
+          </h3>
+
           <model-version-detail :model-version="model.latestVersion" />
         </template>
 

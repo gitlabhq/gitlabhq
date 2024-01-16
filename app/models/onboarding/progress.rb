@@ -32,7 +32,8 @@ module Onboarding
       :secure_api_fuzzing_run,
       :secure_cluster_image_scanning_run,
       :license_scanning_run,
-      :promote_ultimate_features
+      :promote_ultimate_features,
+      :code_added
     ].freeze
 
     scope :incomplete_actions, ->(actions) do

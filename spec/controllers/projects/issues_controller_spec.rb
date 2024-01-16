@@ -987,11 +987,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         labels = create_list(:label, 10, project: project).map(&:to_reference)
         issue = create(:issue, project: project, description: 'Test issue')
 
-        control_count = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }.count
+        control = ActiveRecord::QueryRecorder.new { issue.update!(description: [issue.description, label].join(' ')) }
 
         # Follow-up to get rid of this `2 * label.count` requirement: https://gitlab.com/gitlab-org/gitlab-foss/issues/52230
         expect { issue.update!(description: [issue.description, labels].join(' ')) }
-          .not_to exceed_query_limit(control_count + 2 * labels.count)
+          .not_to exceed_query_limit(control).with_threshold(2 * labels.count)
       end
 
       it 'logs the view with Gitlab::Search::RecentIssues' do
@@ -1849,15 +1849,17 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
           RequestStore.clear!
 
-          control_count = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new do
             get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
-          end.count
+          end
 
           RequestStore.clear!
 
           create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
 
-          expect { get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid } }.not_to exceed_query_limit(control_count)
+          expect do
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+          end.not_to exceed_query_limit(control)
         end
       end
 

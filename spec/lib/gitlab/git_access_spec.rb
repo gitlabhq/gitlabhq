@@ -802,13 +802,13 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
     let(:changes) do
       { any: Gitlab::GitAccess::ANY,
-        push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
+        push_new_branch: "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/heads/wow",
         push_master: '6f6d7e7ed 570e7b2ab refs/heads/master',
         push_protected_branch: '6f6d7e7ed 570e7b2ab refs/heads/feature',
-        push_remove_protected_branch: "570e7b2ab #{Gitlab::Git::BLANK_SHA} "\
+        push_remove_protected_branch: "570e7b2ab #{Gitlab::Git::SHA1_BLANK_SHA} "\
                                       'refs/heads/feature',
         push_tag: '6f6d7e7ed 570e7b2ab refs/tags/v1.0.0',
-        push_new_tag: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/tags/v7.8.9",
+        push_new_tag: "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/tags/v7.8.9",
         push_all: ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature'],
         merge_into_protected_branch: "0b4bc9a #{merge_into_protected_branch} refs/heads/feature" }
     end
@@ -1018,7 +1018,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
     context 'when pushing to a project' do
       let(:project) { create(:project, :public, :repository) }
-      let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
+      let(:changes) { "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/heads/wow" }
 
       before do
         project.add_developer(user)
@@ -1062,14 +1062,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         # additional queries.
         access.check('git-receive-pack', changes)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           access.check('git-receive-pack', changes)
         end
 
         changes = ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature']
 
         # There is still an N+1 query with protected branches
-        expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(2)
+        expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control).with_threshold(2)
       end
 
       it 'raises TimeoutError when #check_access! raises a timeout error' do

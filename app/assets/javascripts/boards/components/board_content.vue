@@ -46,7 +46,7 @@ export default {
       required: false,
       default: () => {},
     },
-    apolloError: {
+    error: {
       type: String,
       required: false,
       default: null,
@@ -96,9 +96,6 @@ export default {
       };
 
       return this.canDragColumns ? options : {};
-    },
-    errorToDisplay() {
-      return this.apolloError || null;
     },
   },
   methods: {
@@ -195,8 +192,8 @@ export default {
     data-testid="boards-list"
     class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
   >
-    <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="dismissError">
-      {{ errorToDisplay }}
+    <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="dismissError">
+      {{ error }}
     </gl-alert>
     <component
       :is="boardColumnWrapper"

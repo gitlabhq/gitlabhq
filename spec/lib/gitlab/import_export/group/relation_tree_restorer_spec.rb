@@ -52,10 +52,10 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
     )
   end
 
-  subject { relation_tree_restorer.restore }
+  subject(:restore_relations) { relation_tree_restorer.restore }
 
   it 'restores group tree' do
-    expect(subject).to eq(true)
+    expect(restore_relations).to eq(true)
   end
 
   it 'logs top-level relation creation' do
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
       .with(hash_including(message: '[Project/Group Import] Created new object relation'))
       .at_least(:once)
 
-    subject
+    restore_relations
   end
 
   describe 'relation object saving' do
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
               error_messages: "Label can't be blank, Position can't be blank, and Position is not a number"
             )
 
-          subject
+          restore_relations
 
           board = importable.boards.last
           failure = importable.import_failures.first
@@ -112,6 +112,33 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
           expect(failure.exception_message)
             .to eq("Label can't be blank, Position can't be blank, and Position is not a number")
         end
+      end
+    end
+
+    context 'when invalid relation object has a loggable external identifier' do
+      before do
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'milestones')
+          .and_return([
+            [invalid_milestone, 0],
+            [invalid_milestone_with_no_iid, 1]
+          ])
+      end
+
+      let(:invalid_milestone) { build(:milestone, iid: 123, name: nil) }
+      let(:invalid_milestone_with_no_iid) { build(:milestone, iid: nil, name: nil) }
+
+      it 'logs invalid record with external identifier' do
+        restore_relations
+
+        iids_for_failures = importable.import_failures.collect { |f| [f.relation_key, f.external_identifiers] }
+        expected_iids = [
+          ["milestones", { "iid" => invalid_milestone.iid }],
+          ["milestones", {}]
+        ]
+
+        expect(iids_for_failures).to match_array(expected_iids)
       end
     end
 
@@ -129,7 +156,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
         it 'saves import failure with nested errors' do
           label.priorities << [LabelPriority.new, LabelPriority.new]
 
-          subject
+          restore_relations
 
           failure = importable.import_failures.first
 

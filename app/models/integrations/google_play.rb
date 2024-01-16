@@ -18,19 +18,25 @@ module Integrations
     field :package_name,
       section: SECTION_TYPE_CONNECTION,
       placeholder: 'com.example.myapp',
+      description: -> { _('Package name of the app in Google Play.') },
       required: true
 
     field :service_account_key_file_name,
       section: SECTION_TYPE_CONNECTION,
-      required: true
+      required: true,
+      description: -> { _('File name of the Google Play service account key.') }
 
-    field :service_account_key, api_only: true
+    field :service_account_key,
+      required: true,
+      description: -> { _('Google Play service account key.') },
+      api_only: true
 
     field :google_play_protected_refs,
       type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('GooglePlayStore|Protected branches and tags only') },
-      checkbox_label: -> { s_('GooglePlayStore|Only set variables on protected branches and tags') }
+      description: -> { _('Set variables on protected branches and tags only.') },
+      checkbox_label: -> { s_('GooglePlayStore|Set variables on protected branches and tags only') }
 
     def self.title
       s_('GooglePlay|Google Play')
@@ -48,10 +54,10 @@ module Integrations
 
       # rubocop:disable Layout/LineLength
       texts = [
-        s_("Use the Google Play integration to connect to Google Play with fastlane in CI/CD pipelines."),
-        s_("After you enable the integration, the following protected variable is created for CI/CD use:"),
+        s_("Use this integration to connect to Google Play with fastlane in CI/CD pipelines."),
+        s_("After you enable the integration, the following protected variables are created for CI/CD use:"),
         variable_list.join('<br>'),
-        s_(format("To generate a Google Play service account key and use this integration, see the <a href='%{url}' target='_blank'>integration documentation</a>.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/google_play'))).html_safe
+        s_(format("For more information, see the <a href='%{url}' target='_blank'>documentation</a>.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/google_play'))).html_safe
       ]
       # rubocop:enable Layout/LineLength
 

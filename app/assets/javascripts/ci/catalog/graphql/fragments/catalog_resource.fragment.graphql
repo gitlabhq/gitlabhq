@@ -7,8 +7,8 @@ fragment CatalogResourceFields on CiCatalogResource {
   starCount
   latestVersion {
     id
-    tagName
-    tagPath
+    name
+    path
     releasedAt
     author {
       id

@@ -29,6 +29,45 @@ This works well for the following reasons:
 - We use [shallow clone](../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
   history for every job.
 
+### Fetch repository via artifacts instead of cloning/fetching from Gitaly
+
+Lately we see errors from Gitaly look like this: (see [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435456))
+
+```plaintext
+fatal: remote error: GitLab is currently unable to handle this request due to load.
+```
+
+While GitLab.com uses [pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+sometimes the load is still too heavy for Gitaly to handle, and
+[thundering herds](https://gitlab.com/gitlab-org/gitlab/-/issues/423830) can
+also be a concern that we have a lot of jobs cloning the repository around
+the same time.
+
+To mitigate and reduce loads for Gitaly, we changed some jobs to fetch the
+repository from artifacts in a job instead of all cloning from Gitaly at once.
+
+For now this applies to most of the RSpec jobs, which has the most concurrent
+jobs in most pipelines. This also slightly improved the speed because fetching
+from the artifacts is also slightly faster than cloning, at the cost of saving
+more artifacts for each pipeline.
+
+Based on the numbers on 2023-12-20 at [Fetch repo from artifacts for RSpec jobs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140330),
+the extra storage cost was about 280M for each pipeline, and we save 15 seconds
+for each RSpec jobs.
+
+We do not apply this to jobs having no other job dependencies because we don't
+want to delay any jobs from starting.
+
+This behavior can be controlled by variable `CI_FETCH_REPO_GIT_STRATEGY`:
+
+- Set to `none` means jobs using `.repo-from-artifacts` fetch repository from
+  artifacts in job `clone-gitlab-repo` rather than cloning.
+- Set to `clone` means jobs using `.repo-from-artifacts` clone repository
+  as usual. Job `clone-gitlab-repo` does not run in this case.
+
+To disable it, set `CI_FETCH_REPO_GIT_STRATEGY` to `clone`. To enable it,
+set `CI_FETCH_REPO_GIT_STRATEGY` to `none`.
+
 ## Caching strategy
 
 1. All jobs must only pull caches by default.

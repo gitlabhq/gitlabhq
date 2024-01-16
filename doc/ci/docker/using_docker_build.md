@@ -853,7 +853,7 @@ This indicates the GitLab Runner does not have permission to start the
 
 1. Check that `privileged = true` is set in the `config.toml`.
 1. Make sure the CI job has the right Runner tags to use these
-privileged runners.
+   privileged runners.
 
 ### Error: `cgroups: cgroup mountpoint does not exist: unknown`
 

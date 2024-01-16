@@ -3,7 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
-import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone_inline.vue';
+import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
 import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent_with_edit.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -24,7 +25,8 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
-  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
+  const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
+  const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
   const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
 
@@ -110,6 +112,26 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
     });
+
+    it.each`
+      description                                                      | milestoneWidgetInlinePresent | milestoneWidgetWithEditPresent | workItemsMvc2FlagEnabled
+      ${'renders WorkItemMilestone when workItemsMvc2 enabled'}        | ${false}                     | ${true}                        | ${true}
+      ${'renders WorkItemMilestoneInline when workItemsMvc2 disabled'} | ${true}                      | ${false}                       | ${false}
+    `(
+      '$description',
+      async ({
+        milestoneWidgetInlinePresent,
+        milestoneWidgetWithEditPresent,
+        workItemsMvc2FlagEnabled,
+      }) => {
+        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+
+        await waitForPromises();
+
+        expect(findWorkItemMilestone().exists()).toBe(milestoneWidgetWithEditPresent);
+        expect(findWorkItemMilestoneInline().exists()).toBe(milestoneWidgetInlinePresent);
+      },
+    );
   });
 
   describe('parent widget', () => {

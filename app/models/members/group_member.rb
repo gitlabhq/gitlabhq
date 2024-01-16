@@ -18,24 +18,11 @@ class GroupMember < Member
 
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
-  scope :of_groups, ->(groups) { where(source_id: groups&.select(:id)) }
+  scope :of_groups, ->(groups) { where(source_id: groups) }
   scope :of_ldap_type, -> { where(ldap: true) }
   scope :count_users_by_group_id, -> { group(:source_id).count }
 
-  after_create :update_two_factor_requirement, unless: :invite?
-  after_destroy :update_two_factor_requirement, unless: :invite?
-
   attr_accessor :last_owner
-
-  def update_two_factor_requirement
-    return unless user
-
-    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-      %w[users user_details user_preferences], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424288'
-    ) do
-      user.update_two_factor_requirement
-    end
-  end
 
   # For those who get to see a modal with a role dropdown, here are the options presented
   def self.permissible_access_level_roles(_, _)
@@ -54,10 +41,6 @@ class GroupMember < Member
   # Because source_type is `Namespace`...
   def real_source_type
     Group.sti_name
-  end
-
-  def notifiable_options
-    { group: group }
   end
 
   def last_owner_of_the_group?
@@ -84,40 +67,6 @@ class GroupMember < Member
     # its projects are also destroyed, so the removal of project_authorizations
     # will happen behind the scenes via DB foreign keys anyway.
     return if destroyed_by_association.present?
-
-    super
-  end
-
-  def send_invite
-    run_after_commit_or_now { notification_service.invite_group_member(self, @raw_invite_token) }
-
-    super
-  end
-
-  def post_create_hook
-    run_after_commit_or_now { notification_service.new_group_member(self) }
-
-    super
-  end
-
-  def post_update_hook
-    if saved_change_to_access_level?
-      run_after_commit { notification_service.update_group_member(self) }
-    end
-
-    if saved_change_to_expires_at?
-      run_after_commit { notification_service.updated_group_member_expiration(self) }
-    end
-
-    super
-  end
-
-  def after_accept_invite
-    run_after_commit_or_now do
-      notification_service.accept_group_invite(self)
-    end
-
-    update_two_factor_requirement
 
     super
   end

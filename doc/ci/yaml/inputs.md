@@ -89,7 +89,7 @@ spec:
       default: true
 ---
 
-"$[[ job-prefix ]]-scan-website":
+"$[[ inputs.job-prefix ]]-scan-website":
   stage: $[[ inputs.job-stage ]]
   script:
     - echo "scanning website -e $[[ inputs.environment ]] -c $[[ inputs.concurrency ]] -v $[[ inputs.version ]]"
@@ -233,11 +233,18 @@ Only variables you can [use with the `include` keyword](includes.md#use-variable
 Example:
 
 ```yaml
-$[[ inputs.test | expand_vars ]]
+spec:
+  inputs:
+    test:
+      default: 'test $MY_VAR'
+---
+
+test-job:
+  script: echo $[[ inputs.test | expand_vars ]]
 ```
 
-Assuming the value of `inputs.test` is `test $MY_VAR`, and the variable `$MY_VAR` is unmasked
-with a value of `my value`, then the output would be `test my value`.
+In this example, if `$MY_VAR` is unmasked (exposed in job logs) with a value of `my value`, then the input
+would expand to `test my value`.
 
 #### `truncate`
 
@@ -259,3 +266,56 @@ $[[ inputs.test | truncate(3,5) ]]
 ```
 
 Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
+
+## Troubleshooting
+
+### YAML syntax errors when using `inputs`
+
+[CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions)
+in `rules:if` expect a comparison of a CI/CD variable with a string, otherwise
+[a variety of syntax errors could be returned](../jobs/job_control.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
+
+You must ensure that expressions remain properly formatted after input values are
+inserted into the configuration, which might require the use of additional quote characters.
+
+For example:
+
+```yaml
+spec:
+  inputs:
+    branch:
+      default: $CI_DEFAULT_BRANCH
+---
+
+job-name:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $[[ inputs.branch ]]
+```
+
+In this example:
+
+- Using `include: inputs: branch: $CI_DEFAULT_BRANCH` is valid. The `if:` clause evaluates to
+  `if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`, which is a valid variable expression.
+- Using `include: inputs: branch: main` is **invalid**. The `if:` clause evaluates to
+  `if: $CI_COMMIT_REF_NAME == main`, which is invalid because `main` is a string but is not quoted.
+
+Alternatively, add quotes to resolve some variable expression issues. For example:
+
+```yaml
+spec:
+  inputs:
+    environment:
+      default: "$ENVIRONMENT"
+---
+
+$[[ inputs.environment | expand_vars ]] job:
+  script: echo
+  rules:
+    - if: '"$[[ inputs.environment1 | expand_vars ]]" == "production"'
+```
+
+In this example, quoting the input block and also the entire variable expression
+ensures valid `if:` syntax after the input is evaluated. The internal and external quotes
+in the expression must not be the same character. You can use `"` for the internal quotes
+and `'` for the external quotes, or the inverse. On the other hand, the job name does
+not require any quoting.

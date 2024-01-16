@@ -29,7 +29,8 @@ module QA
 
       # Project for report creation: https://gitlab.com/gitlab-org/gitlab
       PROJECT_ID = 278964
-      FEATURES_DIR = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/'
+      BLOB_MASTER = 'https://gitlab.com/gitlab-org/gitlab/-/blob/master'
+      FEATURES_DIR = '/qa/qa/specs/features'
 
       # @param [Integer] range amount of days for results range
       def initialize(range)
@@ -49,6 +50,7 @@ module QA
 
         if report_in_issue_and_slack == "true"
           reporter.report_in_issue_and_slack
+          reporter.write_specs_json
           reporter.close_previous_reports
         end
       rescue StandardError => e
@@ -83,8 +85,8 @@ module QA
           labels: "#{RELIABLE_REPORT_LABEL},Quality,test,type::maintenance,automation:ml"
         )
         @report_iid = issue[:iid]
-        web_url = issue[:web_url]
-        puts "Created report issue: #{web_url}"
+        @report_web_url = issue[:web_url]
+        puts "Created report issue: #{@report_web_url}"
 
         puts "Sending slack notification".colorize(:green)
         notifier.post(
@@ -93,7 +95,7 @@ module QA
             ```#{summary_table(stable: true)}```
             ```#{summary_table(stable: false)}```
 
-            #{web_url}
+            #{@report_web_url}
           TEXT
         )
         puts "Done!"
@@ -129,9 +131,14 @@ module QA
         )
       end
 
+      def write_specs_json
+        File.write('tmp/unstable_specs.json', JSON.pretty_generate(specs_attributes(stable: false)))
+        File.write('tmp/stable_specs.json', JSON.pretty_generate(specs_attributes(stable: true)))
+      end
+
       private
 
-      attr_reader :range, :slack_channel, :report_iid
+      attr_reader :range, :slack_channel, :report_iid, :report_web_url
 
       # Slack notifier
       #
@@ -371,24 +378,103 @@ module QA
         end.join('')}"
       end
 
+      def api_query_unreliable
+        @api_query_unreliable ||= begin
+          log_fetching_query_data(true)
+          query_api.query(query: query(false))
+        end
+      end
+
+      def api_query_reliable
+        @api_query_reliable ||= begin
+          log_fetching_query_data(true)
+          query_api.query(query: query(true))
+        end
+      end
+
+      def log_fetching_query_data(reliable)
+        puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
+      end
+
+      def specs_attributes(stable:)
+        all_runs = stable ? api_query_unreliable : api_query_reliable
+
+        specs_array = all_runs.each_with_object([]) do |table, arr|
+          records = table.records.sort_by { |record| record.values["_time"] }
+
+          next if within_execution_range(records.first.values["_time"], records.last.values["_time"])
+
+          result = spec_attributes_per_run(records)
+
+          next if !stable && result[:failed] == 0
+
+          next if stable && result[:failed] != 0
+
+          # A failure issue does not exist
+          next if !stable && result[:failure_issue].exclude?('issues')
+
+          arr << result
+        end
+
+        {
+          type: stable ? 'Stable Specs' : 'Unstable Specs',
+          report_issue: report_web_url,
+          specs: specs_array
+        }
+      end
+
+      def spec_attributes_per_run(records)
+        failed = records.count do |r|
+          r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
+        end
+
+        failure_issue = exceptions_and_related_urls(records).values.last
+        last_record = records.last.values
+        name = last_record["name"]
+        file = last_record["file_path"].split("/").last
+        link = BLOB_MASTER + FEATURES_DIR + last_record["file_path"]
+        file_path = FEATURES_DIR + last_record["file_path"]
+        stage = last_record["stage"] || "unknown"
+        testcase = last_record["testcase"]
+        run_type = last_record["run_type"]
+        product_group = last_record["product_group"] || "unknown"
+        runs = records.count
+        failure_rate = (failed.to_f / runs) * 100
+
+        {
+          stage: stage,
+          product_group: product_group,
+          name: name,
+          file: file,
+          link: link,
+          runs: runs,
+          failed: failed,
+          failure_issue: failure_issue || '',
+          failure_rate: failure_rate == 0 ? failure_rate.round(0) : failure_rate.round(2),
+          testcase: testcase,
+          file_path: file_path,
+          run_type: run_type
+        }
+      end
+
       # rubocop:disable Metrics/AbcSize
       # Test executions grouped by name
       #
       # @param [Boolean] reliable
       # @return [Hash<String, Hash>]
       def test_runs(reliable:)
-        puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
+        all_runs = reliable ? api_query_reliable : api_query_unreliable
 
-        all_runs = query_api.query(query: query(reliable))
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
 
           next if within_execution_range(records.first.values["_time"], records.last.values["_time"])
 
           last_record = records.last.values
+
           name = last_record["name"]
           file = last_record["file_path"].split("/").last
-          link = FEATURES_DIR + last_record["file_path"]
+          link = BLOB_MASTER + FEATURES_DIR + last_record["file_path"]
           stage = last_record["stage"] || "unknown"
           product_group = last_record["product_group"] || "unknown"
 

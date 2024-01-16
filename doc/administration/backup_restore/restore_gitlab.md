@@ -38,8 +38,7 @@ before restoring the backup.
 To restore a backup, **you must also restore the GitLab secrets**.
 These include the database encryption key, [CI/CD variables](../../ci/variables/index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
-Without the keys, [multiple issues occur](backup_gitlab.md#when-the-secrets-file-is-lost),
-including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
+Without the keys, [multiple issues occur](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
 and GitLab Runners cannot log in.
 
 Restore:
@@ -282,7 +281,8 @@ project or group from there:
    the backed-up instance from which you want to restore.
 1. [Restore the backup](#restore-gitlab) into this new instance, then
    export your [project](../../user/project/settings/import_export.md)
-   or [group](../../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated). For more information about what is and isn't exported, see the export feature's documentation.
+   or [group](../../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated). For
+   more information about what is and isn't exported, see the export feature's documentation.
 1. After the export is complete, go to the old instance and then import it.
 1. After importing the projects or groups that you wanted is complete, you may
    delete the new, temporary GitLab instance.

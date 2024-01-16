@@ -172,6 +172,8 @@ export default Extension.create({
               return true;
             }
 
+            if (!textContent) return false;
+
             const hasHTML = clipboardData.types.some((type) => type === HTML_FORMAT);
             const hasVsCode = clipboardData.types.some((type) => type === VS_CODE_FORMAT);
             const vsCodeMeta = hasVsCode ? JSON.parse(clipboardData.getData(VS_CODE_FORMAT)) : {};

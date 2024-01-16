@@ -40,6 +40,7 @@ export default class ProtectedTagCreate {
       hasLicense: this.hasLicense,
       accessLevel: ACCESS_LEVELS.CREATE,
       accessLevelsData: gon.create_access_levels,
+      groupsWithProjectAccess: true,
       searchEnabled: dropdownEl.dataset.filter !== undefined,
       testId: 'allowed-to-create-dropdown',
     });

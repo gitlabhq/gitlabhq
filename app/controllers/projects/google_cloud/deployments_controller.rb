@@ -17,7 +17,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
 
   def cloud_run
     params = { google_oauth2_token: token_in_session }
-    enable_cloud_run_response = GoogleCloud::EnableCloudRunService
+    enable_cloud_run_response = CloudSeed::GoogleCloud::EnableCloudRunService
                                   .new(project, current_user, params).execute
 
     if enable_cloud_run_response[:status] == :error
@@ -25,8 +25,8 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
       flash[:alert] = enable_cloud_run_response[:message]
       redirect_to project_google_cloud_deployments_path(project)
     else
-      params = { action: GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
-      generate_pipeline_response = GoogleCloud::GeneratePipelineService
+      params = { action: CloudSeed::GoogleCloud::GeneratePipelineService::ACTION_DEPLOY_TO_CLOUD_RUN }
+      generate_pipeline_response = CloudSeed::GoogleCloud::GeneratePipelineService
                                      .new(project, current_user, params).execute
 
       if generate_pipeline_response[:status] == :error

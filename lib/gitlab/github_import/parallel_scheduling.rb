@@ -8,6 +8,8 @@ module Gitlab
       attr_reader :project, :client, :page_counter, :already_imported_cache_key,
         :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
+      attr_accessor :job_started_at, :enqueued_job_counter
+
       # The base cache key to use for tracking already imported objects.
       ALREADY_IMPORTED_CACHE_KEY =
         'github-importer/already-imported/%{project}/%{collection}'
@@ -25,7 +27,7 @@ module Gitlab
         @project = project
         @client = client
         @parallel = parallel
-        @page_counter = PageCounter.new(project, collection_method)
+        @page_counter = Gitlab::Import::PageCounter.new(project, collection_method)
         @already_imported_cache_key = format(ALREADY_IMPORTED_CACHE_KEY, project: project.id,
           collection: collection_method)
         @job_waiter_cache_key = format(JOB_WAITER_CACHE_KEY, project: project.id, collection: collection_method)
@@ -91,14 +93,15 @@ module Gitlab
       end
 
       def spread_parallel_import
-        enqueued_job_counter = 0
+        self.job_started_at = Time.current
+        self.enqueued_job_counter = 0
 
         each_object_to_import do |object|
           repr = object_representation(object)
 
-          job_delay = calculate_job_delay(enqueued_job_counter)
           sidekiq_worker_class.perform_in(job_delay, project.id, repr.to_hash.deep_stringify_keys, job_waiter.key.to_s)
-          enqueued_job_counter += 1
+
+          self.enqueued_job_counter += 1
 
           job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
         end
@@ -245,6 +248,14 @@ module Gitlab
 
           JobWaiter.new(jobs_remaining, key)
         end
+      end
+
+      def job_delay
+        runtime = Time.current - job_started_at
+
+        delay = calculate_job_delay(enqueued_job_counter) - runtime
+
+        delay > 0 ? delay : 1.0.second
       end
     end
   end

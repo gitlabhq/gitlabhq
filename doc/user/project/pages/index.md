@@ -226,7 +226,7 @@ Some other examples of mixing [variables](../../../ci/variables/index.md) with s
 
 ### Use multiple deployments to create pages environments
 
-You can use multiple GitLap Pages deployments to create a new [environment](../../../ci/environments/index.md).
+You can use multiple GitLab Pages deployments to create a new [environment](../../../ci/environments/index.md).
 For example:
 
 ```yaml

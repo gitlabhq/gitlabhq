@@ -1,16 +1,45 @@
 # frozen_string_literal: true
 
+RSpec.shared_context 'with work_items_mvc_2' do |flag|
+  before do
+    stub_feature_flags(work_items_mvc_2: flag)
+
+    page.refresh
+    wait_for_all_requests
+  end
+end
+
 RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
+  let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
 
-  it 'successfully shows and changes the title of the work item' do
-    expect(work_item.reload.title).to eq work_item.title
+  context 'when the work_items_mvc_2 FF is disabled' do
+    include_context 'with work_items_mvc_2', false
 
-    find(title_selector).set("Work item title")
-    find(title_selector).native.send_keys(:return)
-    wait_for_requests
+    it 'successfully shows and changes the title of the work item' do
+      expect(work_item.reload.title).to eq work_item.title
 
-    expect(work_item.reload.title).to eq 'Work item title'
+      find(title_selector).set("Work item title")
+      find(title_selector).native.send_keys(:return)
+      wait_for_requests
+
+      expect(work_item.reload.title).to eq 'Work item title'
+    end
+  end
+
+  context 'when the work_items_mvc_2 FF is enabled' do
+    include_context 'with work_items_mvc_2', true
+
+    it 'successfully shows and changes the title of the work item' do
+      expect(work_item.reload.title).to eq work_item.title
+
+      click_button 'Edit', match: :first
+      find(title_with_edit_selector).set("Work item title")
+      send_keys([:command, :enter])
+      wait_for_requests
+
+      expect(work_item.reload.title).to eq 'Work item title'
+    end
   end
 end
 
@@ -299,54 +328,62 @@ RSpec.shared_examples 'work items labels' do
 end
 
 RSpec.shared_examples 'work items description' do
-  it 'shows GFM autocomplete', :aggregate_failures do
-    click_button "Edit description"
-    fill_in _('Description'), with: "@#{user.username}"
+  context 'for work_items_mvc_2 FF' do
+    [true, false].each do |work_items_mvc_2_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
+      let(:edit_button) { work_items_mvc_2_flag ? 'Edit' : 'Edit description' }
 
-    page.within('.atwho-container') do
-      expect(page).to have_text(user.name)
-    end
-  end
+      include_context 'with work_items_mvc_2', work_items_mvc_2_flag
 
-  it 'autocompletes available quick actions', :aggregate_failures do
-    click_button "Edit description"
-    fill_in _('Description'), with: '/'
+      it 'shows GFM autocomplete', :aggregate_failures do
+        click_button edit_button, match: :first
+        fill_in _('Description'), with: "@#{user.username}"
 
-    page.within('#at-view-commands') do
-      expect(page).to have_text("title")
-      expect(page).to have_text("shrug")
-      expect(page).to have_text("tableflip")
-      expect(page).to have_text("close")
-      expect(page).to have_text("cc")
-    end
-  end
+        page.within('.atwho-container') do
+          expect(page).to have_text(user.name)
+        end
+      end
 
-  context 'on conflict' do
-    let_it_be(:other_user) { create(:user) }
-    let(:expected_warning) { 'Someone edited the description at the same time you did.' }
+      it 'autocompletes available quick actions', :aggregate_failures do
+        click_button edit_button, match: :first
+        fill_in _('Description'), with: '/'
 
-    before do
-      project.add_developer(other_user)
-    end
+        page.within('#at-view-commands') do
+          expect(page).to have_text("title")
+          expect(page).to have_text("shrug")
+          expect(page).to have_text("tableflip")
+          expect(page).to have_text("close")
+          expect(page).to have_text("cc")
+        end
+      end
 
-    it 'shows conflict message when description changes', :aggregate_failures do
-      click_button "Edit description"
+      context 'on conflict' do
+        let_it_be(:other_user) { create(:user) }
+        let(:expected_warning) { 'Someone edited the description at the same time you did.' }
 
-      ::WorkItems::UpdateService.new(
-        container: work_item.project,
-        current_user: other_user,
-        params: { description: "oh no!" }
-      ).execute(work_item)
+        before do
+          project.add_developer(other_user)
+        end
 
-      wait_for_requests
+        it 'shows conflict message when description changes', :aggregate_failures do
+          click_button edit_button, match: :first
 
-      fill_in _('Description'), with: 'oh yeah!'
+          ::WorkItems::UpdateService.new(
+            container: work_item.project,
+            current_user: other_user,
+            params: { description: "oh no!" }
+          ).execute(work_item)
 
-      expect(page).to have_text(expected_warning)
+          wait_for_requests
 
-      click_button s_('WorkItem|Save and overwrite')
+          fill_in _('Description'), with: 'oh yeah!'
 
-      expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+          expect(page).to have_text(expected_warning)
+
+          click_button s_('WorkItem|Save and overwrite')
+
+          expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")
+        end
+      end
     end
   end
 end
@@ -368,17 +405,61 @@ RSpec.shared_examples 'work items invite members' do
 end
 
 RSpec.shared_examples 'work items milestone' do
-  it 'searches and sets or removes milestone for the work item' do
-    click_button s_('WorkItem|Add to milestone')
-    send_keys "\"#{milestone.title}\""
-    select_listbox_item(milestone.title, exact_text: true)
+  context 'on work_items_mvc_2 FF off' do
+    include_context 'with work_items_mvc_2', false
 
-    expect(page).to have_button(milestone.title)
+    it 'searches and sets or removes milestone for the work item' do
+      click_button s_('WorkItem|Add to milestone')
+      send_keys "\"#{milestone.title}\""
+      select_listbox_item(milestone.title, exact_text: true)
 
-    click_button milestone.title
-    select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
+      expect(page).to have_button(milestone.title)
 
-    expect(page).to have_button(s_('WorkItem|Add to milestone'))
+      click_button milestone.title
+      select_listbox_item(s_('WorkItem|No milestone'), exact_text: true)
+
+      expect(page).to have_button(s_('WorkItem|Add to milestone'))
+    end
+  end
+
+  context 'on work_items_mvc_2 FF on' do
+    let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
+
+    include_context 'with work_items_mvc_2', true
+
+    it 'passes axe automated accessibility testing in closed state' do
+      expect(page).to be_axe_clean.within(work_item_milestone_selector)
+    end
+
+    context 'when edit is clicked' do
+      it 'selects and updates the right milestone', :aggregate_failures do
+        find_and_click_edit(work_item_milestone_selector)
+
+        select_listbox_item(milestones[10].title)
+
+        wait_for_requests
+        within(work_item_milestone_selector) do
+          expect(page).to have_text(milestones[10].title)
+        end
+
+        find_and_click_edit(work_item_milestone_selector)
+
+        find_and_click_clear(work_item_milestone_selector)
+
+        expect(find(work_item_milestone_selector)).to have_content('None')
+      end
+
+      it 'searches and sets or removes milestone for the work item' do
+        find_and_click_edit(work_item_milestone_selector)
+        within(work_item_milestone_selector) do
+          send_keys "\"#{milestones[11].title}\""
+          wait_for_requests
+
+          select_listbox_item(milestones[11].title)
+          expect(page).to have_text(milestones[11].title)
+        end
+      end
+    end
   end
 end
 
@@ -520,5 +601,103 @@ RSpec.shared_examples 'work items parent' do |type|
     wait_for_requests
 
     expect(find_by_testid('work-item-parent-none')).to have_text('None')
+  end
+end
+
+def find_and_click_edit(selector)
+  within(selector) do
+    click_button 'Edit'
+  end
+end
+
+def find_and_click_clear(selector)
+  within(selector) do
+    click_button 'Clear'
+  end
+end
+
+RSpec.shared_examples 'work items iteration' do
+  let(:work_item_iteration_selector) { '[data-testid="work-item-iteration-with-edit"]' }
+  let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
+  let_it_be(:iteration) do
+    create(
+      :iteration,
+      iterations_cadence: iteration_cadence,
+      group: group,
+      start_date: 1.day.from_now,
+      due_date: 2.days.from_now
+    )
+  end
+
+  let_it_be(:iteration2) do
+    create(
+      :iteration,
+      iterations_cadence: iteration_cadence,
+      group: group,
+      start_date: 2.days.ago,
+      due_date: 1.day.ago,
+      state: 'closed',
+      skip_future_date_validation: true
+    )
+  end
+
+  include_context 'with work_items_mvc_2', true
+
+  context 'for accessibility' do
+    it 'has the work item iteration with edit' do
+      expect(page).to have_selector(work_item_iteration_selector)
+    end
+
+    it 'passes axe automated accessibility testing in closed state' do
+      expect(page).to be_axe_clean.within(work_item_iteration_selector)
+    end
+
+    # TODO, add test for automated accessibility after it is fixed in GlCollapsibleListBox
+    # Invalid ARIA attribute value: aria-owns="listbox-##" when searchable
+    # it 'passes axe automated accessibility testing in open state' do
+    #   within(work_item_iteration) do
+    #     click_button _('Edit')
+    #     wait_for_requests
+
+    #     expect(page).to be_axe_clean.within(work_item_iteration)
+    #   end
+    # end
+  end
+
+  context 'when edit is clicked' do
+    it 'selects and updates the right iteration', :aggregate_failures do
+      find_and_click_edit(work_item_iteration_selector)
+
+      within(work_item_iteration_selector) do
+        expect(page).to have_text(iteration_cadence.title)
+        expect(page).to have_text(iteration.period)
+      end
+
+      select_listbox_item(iteration.period)
+
+      wait_for_requests
+
+      within(work_item_iteration_selector) do
+        expect(page).to have_text(iteration_cadence.title)
+        expect(page).to have_text(iteration.period)
+      end
+
+      find_and_click_edit(work_item_iteration_selector)
+
+      find_and_click_clear(work_item_iteration_selector)
+
+      expect(find(work_item_iteration_selector)).to have_content('None')
+    end
+
+    it 'searches and sets or removes iteration for the work item' do
+      find_and_click_edit(work_item_iteration_selector)
+      within(work_item_iteration_selector) do
+        send_keys(iteration.title)
+        wait_for_requests
+
+        select_listbox_item(iteration.period)
+        expect(page).to have_text(iteration.period)
+      end
+    end
   end
 end

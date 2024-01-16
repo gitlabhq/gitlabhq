@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 In GitLab, there is an API endpoint available to work with GitLab CI/CD YAML. For more
 information on CI/CD pipeline configuration in GitLab, see the
-[configuration reference documentation](../../ci/yaml/index.md).
+[CI/CD YAML syntax reference](../../ci/yaml/index.md).
 
 ## List GitLab CI YAML templates
 

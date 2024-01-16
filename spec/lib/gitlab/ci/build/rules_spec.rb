@@ -254,6 +254,18 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
       end
     end
 
+    context 'with auto_cancel' do
+      context 'with matching rule' do
+        let(:rule_list) { [{ if: '$VAR == null', auto_cancel: { on_new_commit: 'interruptible' } }] }
+
+        it do
+          is_expected.to eq(
+            described_class::Result.new(when: 'on_success', auto_cancel: { on_new_commit: 'interruptible' })
+          )
+        end
+      end
+    end
+
     context 'with a regexp variable matching rule' do
       let(:rule_list) { [{ if: '"abcde" =~ $pattern' }] }
 

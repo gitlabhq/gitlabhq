@@ -1,24 +1,23 @@
-import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import WalkthroughPopover from '~/ci/pipeline_editor/components/popovers/walkthrough_popover.vue';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 describe('WalkthroughPopover component', () => {
   let wrapper;
 
-  const createComponent = (mountFn = shallowMount) => {
-    return extendedWrapper(mountFn(WalkthroughPopover));
+  const createComponent = () => {
+    wrapper = shallowMount(WalkthroughPopover, {
+      components: {
+        GlEmoji: { template: '<img/>' },
+      },
+    });
   };
 
   describe('CTA button clicked', () => {
-    beforeEach(async () => {
-      wrapper = createComponent(mount);
-      await wrapper.findByTestId('ctaBtn').trigger('click');
-    });
-
     it('emits "walkthrough-popover-cta-clicked" event', () => {
+      createComponent(shallowMount);
+      wrapper.findComponent(GlButton).vm.$emit('click');
+
       expect(wrapper.emitted()['walkthrough-popover-cta-clicked']).toHaveLength(1);
     });
   });

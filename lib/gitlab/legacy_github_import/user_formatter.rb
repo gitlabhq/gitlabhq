@@ -23,7 +23,7 @@ module Gitlab
       def gitlab_id
         return @gitlab_id if defined?(@gitlab_id)
 
-        @gitlab_id = find_by_external_uid || find_by_email
+        @gitlab_id = find_by_email
       end
 
       private
@@ -45,14 +45,6 @@ module Gitlab
         User.find_by_any_email(email)
             .try(:id)
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def find_by_external_uid
-        return unless id
-
-        User.by_provider_and_extern_uid(:github, id).select(:id).first&.id
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

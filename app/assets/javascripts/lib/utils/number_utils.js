@@ -1,12 +1,5 @@
 import { sprintf, __ } from '~/locale';
-import {
-  BYTES_IN_KIB,
-  THOUSAND,
-  BYTES_FORMAT_BYTES,
-  BYTES_FORMAT_KIB,
-  BYTES_FORMAT_MIB,
-  BYTES_FORMAT_GIB,
-} from './constants';
+import { BYTES_IN_KIB, THOUSAND } from './constants';
 
 /**
  * Function that allows a number with an X amount of decimals
@@ -73,47 +66,47 @@ export function bytesToGiB(number) {
 /**
  * Formats the bytes in number into a more understandable
  * representation. Returns an array with the first value being the human size
- * and the second value being the format (e.g., [1.5, 'KiB']).
+ * and the second value being the label (e.g., [1.5, 'KiB']).
  *
- * @param {Number} size
- * @param {Number} digits - The number of digits to appear after the decimal point
- * @returns {String}
+ * @param {number} size
+ * @param {number} [digits=2] - The number of digits to appear after the decimal point
+ * @returns {string[]}
  */
 export function numberToHumanSizeSplit(size, digits = 2) {
   const abs = Math.abs(size);
 
   if (abs < BYTES_IN_KIB) {
-    return [size.toString(), BYTES_FORMAT_BYTES];
+    return [size.toString(), __('B')];
   }
   if (abs < BYTES_IN_KIB ** 2) {
-    return [bytesToKiB(size).toFixed(digits), BYTES_FORMAT_KIB];
+    return [bytesToKiB(size).toFixed(digits), __('KiB')];
   }
   if (abs < BYTES_IN_KIB ** 3) {
-    return [bytesToMiB(size).toFixed(digits), BYTES_FORMAT_MIB];
+    return [bytesToMiB(size).toFixed(digits), __('MiB')];
   }
-  return [bytesToGiB(size).toFixed(digits), BYTES_FORMAT_GIB];
+  return [bytesToGiB(size).toFixed(digits), __('GiB')];
 }
 
 /**
  * Port of rails number_to_human_size
  * Formats the bytes in number into a more understandable
- * representation (e.g., giving it 1500 yields 1.5 KB).
+ * representation (e.g., giving it 1536 yields 1.5 KiB).
  *
- * @param {Number} size
- * @param {Number} digits - The number of digits to appear after the decimal point
- * @returns {String}
+ * @param {number} size
+ * @param {number} [digits=2] - The number of digits to appear after the decimal point
+ * @returns {string}
  */
 export function numberToHumanSize(size, digits = 2) {
-  const [humanSize, format] = numberToHumanSizeSplit(size, digits);
+  const [humanSize, label] = numberToHumanSizeSplit(size, digits);
 
-  switch (format) {
-    case BYTES_FORMAT_BYTES:
+  switch (label) {
+    case __('B'):
       return sprintf(__('%{size} B'), { size: humanSize });
-    case BYTES_FORMAT_KIB:
+    case __('KiB'):
       return sprintf(__('%{size} KiB'), { size: humanSize });
-    case BYTES_FORMAT_MIB:
+    case __('MiB'):
       return sprintf(__('%{size} MiB'), { size: humanSize });
-    case BYTES_FORMAT_GIB:
+    case __('GiB'):
       return sprintf(__('%{size} GiB'), { size: humanSize });
     default:
       return '';

@@ -37,6 +37,20 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
     end
   end
 
+  describe '.by_project' do
+    subject { described_class.by_project(exp.project) }
+
+    it { is_expected.to match_array([exp, exp2]) }
+  end
+
+  describe '.including_project' do
+    subject { described_class.including_project }
+
+    it 'loads latest version' do
+      expect(subject.first.association_cached?(:project)).to be(true)
+    end
+  end
+
   describe '#by_project_id_and_iid' do
     subject { described_class.by_project_id_and_iid(exp.project_id, iid) }
 

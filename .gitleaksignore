@@ -1,2 +1,5 @@
 afedb913baf4203aa688421873fdb9f94649578e:doc/api/users.md:generic-api-key:2201
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:34
+spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:35
+spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:38
+spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:39

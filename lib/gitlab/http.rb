@@ -26,13 +26,6 @@ module Gitlab
     }.freeze
     DEFAULT_READ_TOTAL_TIMEOUT = 30.seconds
 
-    SILENT_MODE_ALLOWED_METHODS = [
-      Net::HTTP::Get,
-      Net::HTTP::Head,
-      Net::HTTP::Options,
-      Net::HTTP::Trace
-    ].freeze
-
     # We are explicitly assigning these constants because they are used in the codebase.
     Error = HTTParty::Error
     Response = HTTParty::Response
@@ -42,11 +35,7 @@ module Gitlab
     class << self
       ::Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS.each do |method|
         define_method(method) do |path, options = {}, &block|
-          if ::Feature.enabled?(:use_gitlab_http_v2, Feature.current_request)
-            ::Gitlab::HTTP_V2.public_send(method, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend
-          else
-            ::Gitlab::LegacyHTTP.public_send(method, path, options, &block) # rubocop:disable GitlabSecurity/PublicSend
-          end
+          ::Gitlab::HTTP_V2.public_send(method, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend -- method is validated to make sure it is one of the methods in Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS
         end
       end
 
@@ -59,18 +48,14 @@ module Gitlab
       # TODO: This method is subject to be removed
       # We have this for now because we explicitly use the `perform_request` method in some places.
       def perform_request(http_method, path, options, &block)
-        if ::Feature.enabled?(:use_gitlab_http_v2, Feature.current_request)
-          method_name = http_method::METHOD.downcase.to_sym
+        method_name = http_method::METHOD.downcase.to_sym
 
-          unless ::Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS.include?(method_name)
-            raise ArgumentError, "Unsupported HTTP method: '#{method_name}'."
-          end
-
-          # Use `::Gitlab::HTTP_V2.get/post/...` methods
-          ::Gitlab::HTTP_V2.public_send(method_name, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend
-        else
-          ::Gitlab::LegacyHTTP.perform_request(http_method, path, options, &block)
+        unless ::Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS.include?(method_name)
+          raise ArgumentError, "Unsupported HTTP method: '#{method_name}'."
         end
+
+        # Use `::Gitlab::HTTP_V2.get/post/...` methods
+        ::Gitlab::HTTP_V2.public_send(method_name, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend -- method is validated to make sure it is one of the methods in Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS
       end
 
       private

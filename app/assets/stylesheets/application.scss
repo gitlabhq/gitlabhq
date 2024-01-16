@@ -13,10 +13,10 @@
 @import 'page_specific_files';
 
 // Component specific styles, will be moved to gitlab-ui
-@import 'components/**/*';
+@import 'components/index';
 
 // Vendors specific styles
-@import 'vendors/**/*';
+@import 'vendors/index';
 
 // Styles for JS behaviors.
 @import 'behaviors';
@@ -27,7 +27,5 @@
 // JH-only stylesheets
 @import 'application_jh';
 
-/* print styles */
-@media print {
-  @import 'print';
-}
+// print styles
+@import 'print';

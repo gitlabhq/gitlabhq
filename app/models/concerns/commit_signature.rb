@@ -9,17 +9,7 @@ module CommitSignature
 
     sha_attribute :commit_sha
 
-    enum verification_status: {
-      unverified: 0,
-      verified: 1,
-      same_user_different_email: 2,
-      other_user: 3,
-      unverified_key: 4,
-      unknown_key: 5,
-      multiple_signatures: 6,
-      revoked_key: 7,
-      verified_system: 8
-    }
+    enum verification_status: Enums::CommitSignature.verification_statuses
 
     belongs_to :project, class_name: 'Project', foreign_key: 'project_id', optional: false
 

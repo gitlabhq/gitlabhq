@@ -103,32 +103,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
-  describe 'session expiration' do
-    controller(described_class) do
-      def index
-        render html: 'authenticated'
-      end
-    end
-
-    context 'authenticated user' do
-      it 'does not set the expire_after option' do
-        sign_in(create(:user))
-
-        get :index
-
-        expect(request.env['rack.session.options'][:expire_after]).to be_nil
-      end
-    end
-
-    context 'unauthenticated user' do
-      it 'sets the expire_after option' do
-        get :index
-
-        expect(request.env['rack.session.options'][:expire_after]).to eq(Settings.gitlab['unauthenticated_session_expire_delay'])
-      end
-    end
-  end
-
   describe 'response format' do
     controller(described_class) do
       def index
@@ -470,7 +444,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
 
       enforce_terms
 
-      expect { get :index }.not_to exceed_query_limit(control.count).with_threshold(1)
+      expect { get :index }.not_to exceed_query_limit(control).with_threshold(1)
     end
 
     context 'when terms are enforced' do

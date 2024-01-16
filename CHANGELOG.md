@@ -25,12 +25,6 @@ entry.
 - [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@f972a67468aa2da9530188930da2fb5225eb1aad) ([merge request](gitlab-org/security/gitlab!3763))
 - [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@ca7e81b8ce6c2140820c9ce21aa75af1967a2fb5) ([merge request](gitlab-org/security/gitlab!3759))
 
-## 16.7.1 (2023-12-23)
-
-### Security (1 change)
-
-- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@5b046650cfd9ffe7454a4e74d6217d22bcd7e2e1) ([merge request](gitlab-org/security/gitlab!3772))
-
 ## 16.7.0 (2023-12-20)
 
 ### Added (199 changes)
@@ -934,6 +928,24 @@ entry.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.5 (2024-01-13)
+
+No changes.
+
+## 16.6.4 (2024-01-10)
+
+### Fixed (1 change)
+
+- [Add missing ci_sources_pipelines indexes for self-host](gitlab-org/security/gitlab@3c1411f3e5843e0d52315237b8fcc7d33c7dff2e) ([merge request](gitlab-org/security/gitlab!3810))
+
+### Security (5 changes)
+
+- [Consider older commits when resetting codeowner approvals](gitlab-org/security/gitlab@950b435ea484bcff31bd549d11738ff54fe21ccf) ([merge request](gitlab-org/security/gitlab!3765))
+- [Password reset followups](gitlab-org/security/gitlab@db6b903bac7435dc2484bb4b97715d05a81d45c6) ([merge request](gitlab-org/security/gitlab!3778))
+- [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@0db0cb8673d406e0f464fd9f6b95e46c3b4f9695) ([merge request](gitlab-org/security/gitlab!3757))
+- [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@9d9a33b8201ccd5734ec56b149841193f4611741) ([merge request](gitlab-org/security/gitlab!3760))
+- [Sync security with canonical for 16.6 stable branch](gitlab-org/security/gitlab@e1ec9524344f469375e40145e78d3068462bed05) ([merge request](gitlab-org/security/gitlab!3782))
+
 ## 16.6.2 (2023-12-13)
 
 ### Fixed (1 change)
@@ -1518,6 +1530,25 @@ entry.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.7 (2024-01-13)
+
+### Fixed (1 change)
+
+- [Make chat_names table migration idempotent](gitlab-org/gitlab@1a2ac58037d06717b9a27f5b2a6a9e5ec887d374) ([merge request](gitlab-org/gitlab!141706))
+
+## 16.5.6 (2024-01-11)
+
+### Fixed (1 change)
+
+- [Add missing ci_sources_pipelines indexes for self-host](gitlab-org/security/gitlab@bcc8c8f2b4c3fec3288cba0d3e69d22ebc519dfb) ([merge request](gitlab-org/security/gitlab!3811))
+
+### Security (4 changes)
+
+- [Consider older commits when resetting codeowner approvals](gitlab-org/security/gitlab@6a7a49ba29793e1a3454f56dee47b584938c6c46) ([merge request](gitlab-org/security/gitlab!3766))
+- [Password reset followups](gitlab-org/security/gitlab@0043a2acd829accf42e8bb61dbf5aaa2a2bb3e22) ([merge request](gitlab-org/security/gitlab!3779))
+- [Add verification layer for BaseSlash commands](gitlab-org/security/gitlab@d8293ba365c85465f5fe02ac2edc6d22714a9946) ([merge request](gitlab-org/security/gitlab!3758))
+- [Ensure workspaces are created under same root namespace as agent](gitlab-org/security/gitlab@59391fdf8a15807c28e68136279e348bd29d572a) ([merge request](gitlab-org/security/gitlab!3761))
 
 ## 16.5.4 (2023-12-13)
 
@@ -2246,6 +2277,13 @@ entry.
 - [Remove FF when canceling redundant pipelines](gitlab-org/gitlab@16bb8c5ff1ef7c6b1d854c71f4fec555439de210) ([merge request](gitlab-org/gitlab!131978))
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
+
+## 16.4.5 (2024-01-11)
+
+### Security (2 changes)
+
+- [Fix clickouse-server version in CI](gitlab-org/security/gitlab@71878185c35a1025d00eebc6dea54688fb93b585) ([merge request](gitlab-org/security/gitlab!3808))
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@394e91005d4a7b3df36be077aecf8a36acdee0f3) ([merge request](gitlab-org/security/gitlab!3795))
 
 ## 16.4.4 (2023-12-13)
 
@@ -3049,6 +3087,13 @@ entry.
 - [Remove completed partition_id migrations](gitlab-org/gitlab@119f7a7fd961c93be6b1bbd606fbbe2b798f10aa) ([merge request](gitlab-org/gitlab!129118))
 - [Convert design_user_mentions.note_id to bigint for self-managed](gitlab-org/gitlab@08219da99fc356fecc4e9965fe1891baca4d10ff) ([merge request](gitlab-org/gitlab!129111))
 - [Migrate etag cache store from SharedState to Cache](gitlab-org/gitlab@6476298fcdcf77206fa768bcca6bd1e3c7994936) ([merge request](gitlab-org/gitlab!129050))
+
+## 16.3.7 (2024-01-11)
+
+### Security (2 changes)
+
+- [Fix clickouse-server version in CI](gitlab-org/security/gitlab@114a80eae87becf50ff7df80ae632409c08ea79e) ([merge request](gitlab-org/security/gitlab!3807))
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@d65f79dcccc4df9bea87a8a172719961b010cf4f) ([merge request](gitlab-org/security/gitlab!3796))
 
 ## 16.3.6 (2023-10-30)
 
@@ -3919,6 +3964,13 @@ entry.
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
 
+## 16.2.9 (2024-01-11)
+
+### Security (2 changes)
+
+- [Fix clickouse-server version in CI](gitlab-org/security/gitlab@2cbdec30b45c350c246fb1298d3060028433e993) ([merge request](gitlab-org/security/gitlab!3806))
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@7b7ac0b352c269e8b8865b6d1dc39e31fd0be9cf) ([merge request](gitlab-org/security/gitlab!3797))
+
 ## 16.2.8 (2023-09-28)
 
 ### Security (16 changes)
@@ -4740,6 +4792,12 @@ No changes.
 - [Accept period_time as string on DORA executor](gitlab-org/gitlab@7d0792288be02cd3300410144067ea947da4846a) ([merge request](gitlab-org/gitlab!123975)) **GitLab Enterprise Edition**
 - [Add schema_version in the commits index mapping](gitlab-org/gitlab@e75b94903b69e1e1588e251217926882875555a8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123435)) **GitLab Enterprise Edition**
 - [Allow to set labels for Redis calls](gitlab-org/gitlab@8ccfff9e2d250eb22afaa7d0243e707b536a5436) ([merge request](gitlab-org/gitlab!122340))
+
+## 16.1.6 (2024-01-11)
+
+### Security (1 change)
+
+- [User password reset accepts multiple email addresses](gitlab-org/security/gitlab@44deb06e2c8e1c1b9424fc89dec4f60c8806711a) ([merge request](gitlab-org/security/gitlab!3798))
 
 ## 16.1.5 (2023-08-31)
 

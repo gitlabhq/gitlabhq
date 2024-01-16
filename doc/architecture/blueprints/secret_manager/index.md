@@ -114,10 +114,10 @@ the data keys mentioned above.
 ### Further investigations required
 
 1. Management of identities stored in GCP Key Management.
-We need to investigate how we can correlate and de-multiplex GitLab identities into
-GCP identities that are used to allow access to cryptographic operations on GCP Key Management.
+   We need to investigate how we can correlate and de-multiplex GitLab identities into
+   GCP identities that are used to allow access to cryptographic operations on GCP Key Management.
 1. Authentication of clients. Clients to the Secrets Manager could be GitLab Runner or external clients.
-For each of these, we need a secure and reliable method to authenticate requests to decrypt a secret.
+   For each of these, we need a secure and reliable method to authenticate requests to decrypt a secret.
 1. Assignment of GCP backed private keys to each identity.
 
 ### Availability on SaaS and Self-Managed

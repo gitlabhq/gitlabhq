@@ -145,7 +145,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     it 'imports each protected branch in parallel' do
       expect(Gitlab::GithubImport::ImportProtectedBranchWorker)
         .to receive(:perform_in)
-        .with(1, project.id, an_instance_of(Hash), an_instance_of(String))
+        .with(an_instance_of(Float), project.id, an_instance_of(Hash), an_instance_of(String))
 
       expect(Gitlab::GithubImport::ObjectCounter)
         .to receive(:increment).with(project, :protected_branch, :fetched)
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     # when user has no admin rights on repo
     let(:unknown_protection_branch) { branch_struct.new(name: 'development', protection: nil) }
 
-    let(:page_counter) { instance_double(Gitlab::GithubImport::PageCounter) }
+    let(:page_counter) { instance_double(Gitlab::Import::PageCounter) }
 
     before do
       allow(client).to receive(:branches).with(project.import_source)

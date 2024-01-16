@@ -190,7 +190,7 @@ RSpec.describe Projects::CleanupService, feature_category: :source_code_manageme
     Gitaly::ApplyBfgObjectMapStreamResponse::Entry.new(
       type: :COMMIT,
       old_oid: old_oid,
-      new_oid: Gitlab::Git::BLANK_SHA
+      new_oid: Gitlab::Git::SHA1_BLANK_SHA
     )
   end
 

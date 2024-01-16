@@ -14,7 +14,7 @@ RSpec.describe Todos::Destroy::DestroyedIssuableService, feature_category: :team
       let_it_be(:done_todo) { create(:todo, :done, project: target.project, target: target, user: user) }
 
       it 'deletes todos for specified target ID and type' do
-        control_count = ActiveRecord::QueryRecorder.new { subject }.count
+        control = ActiveRecord::QueryRecorder.new { subject }
 
         # Create more todos for the target
         create(:todo, :pending, project: target.project, target: target, user: user)
@@ -22,7 +22,7 @@ RSpec.describe Todos::Destroy::DestroyedIssuableService, feature_category: :team
         create(:todo, :done, project: target.project, target: target, user: user)
         create(:todo, :done, project: target.project, target: target, user: user)
 
-        expect { subject }.not_to exceed_query_limit(control_count)
+        expect { subject }.not_to exceed_query_limit(control)
       end
 
       it 'invalidates todos cache counts of todo users', :use_clean_rails_redis_caching do

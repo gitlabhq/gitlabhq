@@ -353,6 +353,7 @@ module ApplicationSettingsHelper
       :repository_checks_enabled,
       :repository_storages_weighted,
       :require_admin_approval_after_user_signup,
+      :require_admin_two_factor_authentication,
       :require_two_factor_authentication,
       :remember_me_enabled,
       :restricted_visibility_levels,
@@ -449,6 +450,7 @@ module ApplicationSettingsHelper
       :issues_create_limit,
       :notes_create_limit,
       :notes_create_limit_allowlist_raw,
+      :members_delete_limit,
       :raw_blob_request_limit,
       :project_import_limit,
       :project_export_limit,
@@ -511,7 +513,8 @@ module ApplicationSettingsHelper
       :namespace_aggregation_schedule_lease_duration_in_seconds,
       :ci_max_total_yaml_size_bytes,
       :project_jobs_api_rate_limit,
-      :security_txt_content
+      :security_txt_content,
+      :allow_project_creation_for_guest_and_below
     ].tap do |settings|
       next if Gitlab.com?
 
@@ -562,10 +565,6 @@ module ApplicationSettingsHelper
 
     clusterable.certificate_based_clusters_enabled? &&
       can?(current_user, :read_cluster, clusterable)
-  end
-
-  def omnibus_protected_paths_throttle?
-    Rack::Attack.throttles.key?('protected paths')
   end
 
   def valid_runner_registrars

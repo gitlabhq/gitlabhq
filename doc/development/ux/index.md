@@ -20,7 +20,7 @@ To contribute to [Pajamas design system](https://design.gitlab.com/) and the [UI
 
 ## Contributing to other issues
 
-1. Review the list of available issues that are currently [accepting UX contribution](https://gitlab.com/groups/gitlab-org/-/issues/?sort=weight&state=opened&label_name%5B%5D=UX&label_name%5B%5D=workflow%3A%3Aready%20for%20design&label_name%5B%5D=Accepting%20UX%20contributions&first_page_size=20).
+1. Review the list of available UX issues that are currently [seeking community contribution](https://gitlab.com/groups/gitlab-org/-/issues/?sort=weight&state=opened&label_name%5B%5D=UX&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=100).
 1. Find an issue that does not have an Assignee to ensure someone else is not working on a solution. Add the `~"workflow::design"` and `~"Community contribution"` labels and mention `@gitlab-com/gitlab-ux/reviewers` to request they assign the issue to you.
 1. Add your design proposal to the issue description/[design management](../../user/project/issues/design_management.md) section. Remember to keep the scope of the proposal/change small following our [MVCs guidelines](https://about.gitlab.com/handbook/values/#minimal-viable-change-mvc).
 1. If you have any questions or are ready for a review of your proposal, mention `@gitlab-com/gitlab-ux/reviewers` in a comment to make your request.

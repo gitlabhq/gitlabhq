@@ -256,6 +256,23 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       it { is_expected.to eq(expected) }
     end
 
+    context 'with referrers included' do
+      subject { client.tags(path, page_size: page_size, referrers: true) }
+
+      let(:expected) do
+        {
+          pagination: {},
+          response_body: ::Gitlab::Json.parse(response.to_json)
+        }
+      end
+
+      before do
+        stub_tags(path, page_size: page_size, input: { referrers: 'true' }, respond_with: response)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+
     context 'with a response with a link header containing next page' do
       let(:expected) do
         {
@@ -961,7 +978,8 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       last: input[:last],
       name: input[:name],
       sort: input[:sort],
-      before: input[:before]
+      before: input[:before],
+      referrers: input[:referrers]
     }.compact
 
     url = "#{registry_api_url}/gitlab/v1/repositories/#{path}/tags/list/"

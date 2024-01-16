@@ -58,7 +58,7 @@ The three types of merge request pipelines are:
 
 To use merge request pipelines:
 
-- Your project's [CI/CD configuration file](../yaml/index.md) must be configured with
+- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured with
   jobs that run in merge request pipelines. To do this, you can use:
   - [`rules`](#use-rules-to-add-jobs).
   - [`only/except`](#use-only-to-add-jobs).
@@ -160,7 +160,7 @@ GitLab shows a warning that you must accept before the pipeline runs. Otherwise,
 
 Prerequisites:
 
-- The parent project's [CI/CD configuration file](../yaml/index.md) must be configured to
+- The parent project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured to
   [run jobs in merge request pipelines](#prerequisites).
 - You must be a member of the parent project with [permissions to run CI/CD pipelines](../../user/permissions.md#gitlab-cicd-permissions).
   You might need additional permissions if the branch is protected.

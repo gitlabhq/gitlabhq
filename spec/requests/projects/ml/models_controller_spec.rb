@@ -152,6 +152,27 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
   end
 
+  describe 'GET new' do
+    subject(:create_model_request) do
+      new_model
+      response
+    end
+
+    before do
+      create_model_request
+    end
+
+    it 'renders the template' do
+      is_expected.to render_template('projects/ml/models/new')
+    end
+
+    context 'when user does not have access' do
+      let(:write_model_registry) { false }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
+
   describe 'destroy' do
     let(:model_for_deletion) do
       create(:ml_models, project: project)
@@ -197,5 +218,9 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
 
   def delete_model
     delete project_ml_model_path(project, model_id)
+  end
+
+  def new_model
+    get new_project_ml_model_path(project)
   end
 end

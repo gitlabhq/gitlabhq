@@ -8,17 +8,20 @@ module Integrations
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
+      description: -> { _('Discord webhook (for example, `https://discord.com/api/webhooks/…`).') },
       help: 'e.g. https://discord.com/api/webhooks/…',
       required: true
 
     field :notify_only_broken_pipelines,
       type: :checkbox,
-      section: SECTION_TYPE_CONFIGURATION
+      section: SECTION_TYPE_CONFIGURATION,
+      description: -> { _('Send notifications for broken pipelines.') }
 
     field :branches_to_be_notified,
       type: :select,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      description: -> { _('Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`.') },
       choices: -> { branch_choices }
 
     def self.title

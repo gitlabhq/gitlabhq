@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module DnsHelpers
+  include ViteHelper
+
   def block_dns!
     stub_all_dns!
     stub_invalid_dns!
     permit_local_dns!
     permit_postgresql!
+    permit_redis!
+    permit_vite!
   end
 
   def permit_dns!
@@ -51,6 +55,26 @@ module DnsHelpers
 
   def db_hosts
     ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).map(&:host).compact.uniq
+  end
+
+  def permit_redis!
+    # https://github.com/redis-rb/redis-client/blob/v0.11.2/lib/redis_client/ruby_connection.rb#L51 uses Socket.tcp that
+    # calls Addrinfo.getaddrinfo internally.
+    hosts = Gitlab::Redis::ALL_CLASSES.map do |redis_instance|
+      redis_instance.redis_client_params[:host]
+    end.uniq.compact
+
+    hosts.each do |host|
+      allow(Addrinfo).to receive(:getaddrinfo).with(host, anything, nil, :STREAM, anything, anything, any_args).and_call_original
+    end
+  end
+
+  def permit_vite!
+    # https://github.com/ElMassimo/vite_ruby/blob/7d2f558c9760802e5d763bfa40efe87607eb166a/vite_ruby/lib/vite_ruby.rb#L91
+    # uses Socket.tcp to connect to vite dev server - this won't necessarily be localhost
+    return unless vite_enabled?
+
+    allow(Addrinfo).to receive(:getaddrinfo).with(ViteRuby.instance.config.host, ViteRuby.instance.config.port, nil, :STREAM, anything, anything, any_args).and_call_original
   end
 
   def stub_resolver(stubbed_lookups = {})

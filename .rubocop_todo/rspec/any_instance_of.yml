@@ -251,7 +251,6 @@ RSpec/AnyInstanceOf:
     - 'spec/services/events/render_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'
     - 'spec/services/git/process_ref_changes_service_spec.rb'
-    - 'spec/services/groups/create_service_spec.rb'
     - 'spec/services/groups/update_service_spec.rb'
     - 'spec/services/issuable/destroy_service_spec.rb'
     - 'spec/services/issues/close_service_spec.rb'

@@ -1,11 +1,7 @@
 import API from '~/api';
 
 import Tracking from './tracking';
-import {
-  GITLAB_INTERNAL_EVENT_CATEGORY,
-  LOAD_INTERNAL_EVENTS_SELECTOR,
-  SERVICE_PING_SCHEMA,
-} from './constants';
+import { LOAD_INTERNAL_EVENTS_SELECTOR, SERVICE_PING_SCHEMA } from './constants';
 import { Tracker } from './tracker';
 import { InternalEventHandler, createInternalEventPayload } from './utils';
 
@@ -16,7 +12,7 @@ const InternalEvents = {
    */
   trackEvent(event) {
     API.trackInternalEvent(event);
-    Tracking.event(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
+    Tracking.event(undefined, event, {
       context: {
         schema: SERVICE_PING_SCHEMA,
         data: {

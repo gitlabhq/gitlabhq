@@ -72,7 +72,7 @@ To view an objective:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
-for `Type = objective`.
+   for `Type = objective`.
 1. Select the title of an objective from the list.
 
 ## View a key result
@@ -82,7 +82,7 @@ To view a key result:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
-for `Type = key_result`.
+   for `Type = key_result`.
 1. Select the title of a key result from the list.
 
 Alternatively, you can access a key result from the **Child objectives and key results** section in
@@ -220,7 +220,7 @@ Prerequisites:
 To promote a key result:
 
 1. [Open the key result](#view-a-key-result).
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**)..
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Promote to objective**.
 
 Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
@@ -236,7 +236,7 @@ To copy the objective or key result reference to your clipboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your objective or key result to view it.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
 
 You can now paste the reference into another description or comment.
 
@@ -256,7 +256,7 @@ To copy the objective's or key result's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
 
 ## Close an OKR
 
@@ -443,7 +443,7 @@ Prerequisites:
 To change the confidentiality of an existing OKR:
 
 1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
-1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Turn on confidentiality** or **Turn off confidentiality**.
 
 ### Who can see confidential OKRs
@@ -498,6 +498,7 @@ or assignees, on the right.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a flag](../administration/feature_flags.md) named `linked_work_items`. Enabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
+> - Adding related items by entering their URLs and IDs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427594) in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
@@ -522,7 +523,7 @@ To link an item to an objective or key result:
    - **Relates to**
    - **Blocks**
    - **Is blocked by**
-1. Enter the search text of the item.
+1. Enter the search text of the item, URL, or its reference ID.
 1. When you have added all the items to be linked, select **Add** below the search box.
 
 When you have finished adding all linked items, you can see

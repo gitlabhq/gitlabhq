@@ -24,9 +24,9 @@ RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity, feature_c
     subject { described_class.represent(merge_requests, user_notes_count: user_notes_count).as_json }
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         described_class.represent(merge_requests, user_notes_count: user_notes_count)
-      end.count
+      end
 
       merge_requests << create(:merge_request, :unique_branches)
 
@@ -35,7 +35,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::PullRequestEntity, feature_c
         records: merge_requests, associations: { merge_request_reviewers: :reviewer }
       ).call
 
-      expect { subject }.not_to exceed_query_limit(control_count)
+      expect { subject }.not_to exceed_query_limit(control)
     end
 
     it 'uses counts from user_notes_count' do

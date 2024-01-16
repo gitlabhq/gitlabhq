@@ -1077,8 +1077,6 @@ module API
         end
       end
 
-      helpers Helpers::UserPreferencesHelpers
-
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
       end
@@ -1269,9 +1267,7 @@ module API
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities to a CI job as part of a JSON web token.'
-        optional :code_suggestions, type: Boolean, desc: 'Flag indicating the user allows code suggestions.' \
-                                                         'Argument is experimental and can be removed in the future without notice.'
-        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :code_suggestions
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt
       end
       put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!
@@ -1279,8 +1275,6 @@ module API
         preferences = current_user.user_preference
 
         attrs = declared_params(include_missing: false)
-
-        attrs = update_user_namespace_settings(attrs)
 
         render_api_error!('400 Bad Request', 400) unless attrs
 

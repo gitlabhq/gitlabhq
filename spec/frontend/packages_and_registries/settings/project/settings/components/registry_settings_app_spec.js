@@ -6,6 +6,7 @@ import * as commonUtils from '~/lib/utils/common_utils';
 import component from '~/packages_and_registries/settings/project/components/registry_settings_app.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
+import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 import DependencyProxyPackagesSettings from 'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue';
 import {
   SHOW_SETUP_SUCCESS_ALERT,
@@ -19,6 +20,7 @@ describe('Registry Settings app', () => {
 
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
   const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
+  const findPackagesProtectionRules = () => wrapper.findComponent(PackagesProtectionRules);
   const findDependencyProxyPackagesSettings = () =>
     wrapper.findComponent(DependencyProxyPackagesSettings);
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -29,6 +31,7 @@ describe('Registry Settings app', () => {
     showPackageRegistrySettings: true,
     showDependencyProxySettings: false,
     ...(IS_EE && { showDependencyProxySettings: true }),
+    glFeatures: { packagesProtectedPackages: true },
   };
 
   const mountComponent = (provide = defaultProvide) => {
@@ -95,6 +98,7 @@ describe('Registry Settings app', () => {
 
         expect(findContainerExpirationPolicy().exists()).toBe(showContainerRegistrySettings);
         expect(findPackagesCleanupPolicy().exists()).toBe(showPackageRegistrySettings);
+        expect(findPackagesProtectionRules().exists()).toBe(showPackageRegistrySettings);
       },
     );
 
@@ -108,5 +112,20 @@ describe('Registry Settings app', () => {
         expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
       });
     }
+
+    describe('when feature flag "packagesProtectedPackages" is disabled', () => {
+      it.each([true, false])(
+        'package protection rules settings is hidden if showPackageRegistrySettings is %s',
+        (showPackageRegistrySettings) => {
+          mountComponent({
+            ...defaultProvide,
+            showPackageRegistrySettings,
+            glFeatures: { packagesProtectedPackages: false },
+          });
+
+          expect(findPackagesProtectionRules().exists()).toBe(false);
+        },
+      );
+    });
   });
 });

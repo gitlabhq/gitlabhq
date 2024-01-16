@@ -198,7 +198,6 @@ RSpec/ReturnFromStub:
     - 'spec/services/git/branch_hooks_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'
     - 'spec/services/git/process_ref_changes_service_spec.rb'
-    - 'spec/services/groups/create_service_spec.rb'
     - 'spec/services/groups/nested_create_service_spec.rb'
     - 'spec/services/merge_requests/merge_orchestration_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'

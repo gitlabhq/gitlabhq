@@ -136,15 +136,15 @@ module SearchHelper
     # - group
     # - group: nil, project: nil
     if project
-      html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
         project: link_to(project.full_name, project_path(project), target: '_blank', rel: 'noopener noreferrer').html_safe
       )
     elsif group
-      html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
+      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
         group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
       )
     else
-      html_escape(_("We couldn't find any %{scope} matching %{term}")) % options
+      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term}")) % options
     end
   end
 

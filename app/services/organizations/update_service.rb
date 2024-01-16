@@ -17,6 +17,10 @@ module Organizations
     def execute
       return error_no_permissions unless allowed?
 
+      if params[:organization_detail_attributes].key?(:avatar) && params[:organization_detail_attributes][:avatar].nil?
+        organization.remove_avatar!
+      end
+
       if organization.update(params)
         ServiceResponse.success(payload: { organization: organization })
       else

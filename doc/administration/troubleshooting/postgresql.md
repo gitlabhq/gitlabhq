@@ -103,7 +103,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - Managing PostgreSQL versions on Linux package installations [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
-  - Including [troubleshooting](../postgresql/replication_and_failover.md#troubleshooting)
+  - Including [troubleshooting](../../administration/postgresql/replication_and_failover_troubleshooting.md)
     `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
 - [Developer database documentation](../../development/feature_development.md#database-guides),

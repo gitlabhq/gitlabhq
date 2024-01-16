@@ -93,7 +93,7 @@ To start, create a sample project in GitLab.
 Now you can clone the repository in your project. *Cloning* a repository means you're creating
 a copy on your computer, or wherever you want to store and work with the files.
 
-1. On your project page, select **Clone**. Copy the URL for **Clone with SSH**.
+1. On your project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 
    ![Clone a project with SSH](img/clone_project_v14_9.png)
 

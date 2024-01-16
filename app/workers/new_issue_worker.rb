@@ -15,13 +15,14 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
 
   attr_reader :issuable_class
 
-  def perform(issue_id, user_id, issuable_class = 'Issue')
+  # TODO: Add skip_notifications argument to the invocations of the worker in the next release (16.9)
+  def perform(issue_id, user_id, issuable_class = 'Issue', skip_notifications = false)
     @issuable_class = issuable_class.constantize
 
     return unless objects_found?(issue_id, user_id)
 
     ::EventCreateService.new.open_issue(issuable, user)
-    ::NotificationService.new.new_issue(issuable, user)
+    ::NotificationService.new.new_issue(issuable, user) unless skip_notifications
 
     issuable.create_cross_references!(user)
 

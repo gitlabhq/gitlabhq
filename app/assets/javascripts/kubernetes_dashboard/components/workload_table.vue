@@ -1,9 +1,9 @@
 <script>
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
+import { __ } from '~/locale';
 import {
   WORKLOAD_STATUS_BADGE_VARIANTS,
   PAGE_SIZE,
-  TABLE_HEADING_CLASSES,
   DEFAULT_WORKLOAD_TABLE_FIELDS,
 } from '../constants';
 
@@ -34,7 +34,6 @@ export default {
       return this.fields.map((field) => {
         return {
           ...field,
-          thClass: TABLE_HEADING_CLASSES,
           sortable: true,
         };
       });
@@ -44,6 +43,9 @@ export default {
     selectItem(item) {
       this.$emit('select-item', item);
     },
+  },
+  i18n: {
+    emptyText: __('No results found'),
   },
   PAGE_SIZE,
   WORKLOAD_STATUS_BADGE_VARIANTS,
@@ -58,9 +60,10 @@ export default {
       :fields="tableFields"
       :per-page="$options.PAGE_SIZE"
       :current-page="currentPage"
+      :empty-text="$options.i18n.emptyText"
       tbody-tr-class="gl-hover-cursor-pointer"
+      show-empty
       stacked="md"
-      bordered
       hover
       @row-clicked="selectItem"
     >

@@ -6,13 +6,20 @@ module QA
       include QA::Support::Helpers::Project
 
       let(:group_access_token) { create(:group_access_token) }
-      let(:api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: group_access_token.token) }
+
+      let(:api_client_with_group_token) do
+        Runtime::API::Client.new(:gitlab, personal_access_token: group_access_token.token)
+      end
+
       let(:project) do
         create(:project, name: 'project-for-group-access-token', group: group_access_token.group)
       end
 
       before do
         wait_until_project_is_ready(project)
+        # Associating a group access token to a project requires a job to be processed in sidekiq
+        # We need to be sure that this has happened or else we may get flaky test failures
+        wait_until_token_associated_to_project(project, api_client_with_group_token)
       end
 
       it(
@@ -21,7 +28,7 @@ module QA
       ) do
         expect do
           create(:file,
-            api_client: api_client,
+            api_client: api_client_with_group_token,
             project: project,
             branch: "new_branch_#{SecureRandom.hex(8)}")
         rescue StandardError => e
@@ -36,7 +43,7 @@ module QA
       ) do
         expect do
           create(:commit,
-            api_client: api_client,
+            api_client: api_client_with_group_token,
             project: project,
             branch: "new_branch_#{SecureRandom.hex(8)}",
             start_branch: project.default_branch,

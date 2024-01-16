@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository, :in_group) }
+
   let(:commit) { project.commit }
 
   before do

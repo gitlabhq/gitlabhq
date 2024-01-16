@@ -17,6 +17,9 @@ describe('performance bar app', () => {
         statsUrl: 'https://log.gprd.gitlab.net/app/dashboards#/view/',
         peekUrl: '/-/peek/results',
       },
+      stubs: {
+        GlEmoji: { template: '<div/>' },
+      },
     });
   };
 

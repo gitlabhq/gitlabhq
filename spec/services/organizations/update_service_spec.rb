@@ -32,7 +32,7 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
 
     context 'when user has permission' do
       before_all do
-        create(:organization_user, organization: organization, user: current_user)
+        create(:organization_user, :owner, organization: organization, user: current_user)
       end
 
       shared_examples 'updating an organization' do
@@ -56,6 +56,14 @@ RSpec.describe Organizations::UpdateService, feature_category: :cell do
         let(:avatar_filename) { 'dk.png' }
         let(:avatar) { fixture_file_upload("spec/fixtures/#{avatar_filename}") }
         let(:extra_params) { { avatar: avatar } }
+
+        it_behaves_like 'updating an organization'
+      end
+
+      context 'when avatar is set to nil' do
+        let_it_be(:organization_detail) { create(:organization_detail, organization: organization) }
+        let(:extra_params) { { avatar: nil } }
+        let(:description) { organization_detail.description }
 
         it_behaves_like 'updating an organization'
       end

@@ -30,9 +30,11 @@ module Gitlab
 
           compose_associated_id!(parent_record, associated)
 
-          return if already_imported?(associated) || importer_class::SUPPORTED_EVENTS.exclude?(associated[:event])
+          return if already_imported?(associated) || supported_events.exclude?(associated[:event])
 
-          Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
+          cache_event(parent_record, associated)
+
+          increment_object_counter(associated[:event])
 
           pull_request = parent_record.is_a? MergeRequest
           associated[:issue] = { number: parent_record.iid, pull_request: pull_request }
@@ -62,6 +64,12 @@ module Gitlab
 
         def object_type
           :issue_event
+        end
+
+        def increment_object_counter(event_name)
+          counter_type = importer_class::EVENT_COUNTER_MAP[event_name] if import_settings.extended_events?
+          counter_type ||= object_type
+          Gitlab::GithubImport::ObjectCounter.increment(project, counter_type, :fetched)
         end
 
         def collection_method
@@ -97,6 +105,43 @@ module Gitlab
           return if event[:event] != 'cross-referenced'
 
           event[:id] = "cross-reference##{issuable.iid}-in-#{event.dig(:source, :issue, :id)}"
+        end
+
+        def import_settings
+          @import_settings ||= Gitlab::GithubImport::Settings.new(project)
+        end
+
+        def after_batch_processed(parent)
+          return unless import_settings.extended_events?
+
+          events = events_cache.events(parent)
+
+          return if events.empty?
+
+          hash = Representation::ReplayEvent.new(issuable_type: parent.class.name.to_s, issuable_iid: parent.iid)
+            .to_hash.deep_stringify_keys
+          ReplayEventsWorker.perform_async(project.id, hash, job_waiter.key.to_s)
+          job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
+        end
+
+        def supported_events
+          return importer_class::EXTENDED_SUPPORTED_EVENTS if import_settings.extended_events?
+
+          importer_class::SUPPORTED_EVENTS
+        end
+
+        def cache_event(parent_record, associated)
+          return unless import_settings.extended_events?
+
+          return if Importer::ReplayEventsImporter::SUPPORTED_EVENTS.exclude?(associated[:event])
+
+          representation = representation_class.from_api_response(associated)
+
+          events_cache.add(parent_record, representation)
+        end
+
+        def events_cache
+          @events_cache ||= EventsCache.new(project)
         end
       end
     end

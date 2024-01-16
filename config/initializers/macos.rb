@@ -28,4 +28,12 @@ if RUBY_PLATFORM.include?('darwin')
   time_zone_name = CFTimeZone.CFTimeZoneGetName(default_time_zone)
   CFTimeZone.CFRelease(time_zone_name)
   CFTimeZone.CFRelease(default_time_zone)
+
+  # With curl v8.2.0, the thread unsafe macOS API call to
+  # SCDynamicStoreCopyProxies has been moved to the global init function
+  # (https://github.com/curl/curl/issues/11252). The Elasticsearch
+  # gem uses Typhoeus, which uses Ethon to wrap libcurl.
+  # Init curl to ensure Spring works
+  # (https://github.com/elastic/elasticsearch-ruby/issues/2244).
+  Ethon::Curl.init
 end

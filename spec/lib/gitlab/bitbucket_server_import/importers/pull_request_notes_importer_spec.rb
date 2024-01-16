@@ -17,6 +17,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let_it_be(:pull_request_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
   let_it_be(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
   let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
+  let(:mentions_converter) { Gitlab::BitbucketServerImport::MentionsConverter.new(project) }
 
   let!(:pull_request_author) do
     create(:user, username: 'pull_request_author', email: 'pull_request_author@example.org')
@@ -79,6 +80,10 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
       .to receive(:info).with(include(import_stage: stage, message: message))
   end
 
+  before do
+    allow(Gitlab::BitbucketServerImport::MentionsConverter).to receive(:new).and_return(mentions_converter)
+  end
+
   subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
 
   describe '#execute' do
@@ -113,6 +118,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         end
 
         it 'imports the stand alone comments' do
+          expect(mentions_converter).to receive(:convert).and_call_original
+
           expect { subject.execute }.to change { Note.count }.by(1)
 
           expect(merge_request.notes.count).to eq(1)
@@ -122,6 +129,66 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
             created_at: pr_note.created_at,
             updated_at: pr_note.created_at
           )
+        end
+
+        context 'when the author is not found' do
+          before do
+            allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |user_finder|
+              allow(user_finder).to receive(:uid).and_return(nil)
+            end
+          end
+
+          it 'adds a note with the author username and email' do
+            subject.execute
+
+            expect(Note.first.note).to include("*By #{note_author.username} (#{note_author.email})")
+          end
+        end
+
+        context 'when the note has a parent note' do
+          let(:pr_note) do
+            instance_double(
+              BitbucketServer::Representation::Comment,
+              note: 'Note',
+              author_email: note_author.email,
+              author_username: note_author.username,
+              comments: [],
+              created_at: now,
+              updated_at: now,
+              parent_comment: pr_parent_note
+            )
+          end
+
+          let(:pr_parent_note) do
+            instance_double(
+              BitbucketServer::Representation::Comment,
+              note: 'Parent note',
+              author_email: note_author.email,
+              author_username: note_author.username,
+              comments: [],
+              created_at: now,
+              updated_at: now,
+              parent_comment: nil
+            )
+          end
+
+          it 'adds the parent note before the actual note' do
+            subject.execute
+
+            expect(Note.first.note).to include("> #{pr_parent_note.note}\n\n")
+          end
+        end
+
+        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
+          before do
+            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
+          end
+
+          it 'does not convert mentions' do
+            expect(mentions_converter).not_to receive(:convert)
+
+            subject.execute
+          end
         end
 
         it 'logs its progress' do
@@ -181,6 +248,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
         end
 
         it 'imports the threaded discussion' do
+          expect(mentions_converter).to receive(:convert).and_call_original.twice
+
           expect { subject.execute }.to change { Note.count }.by(2)
 
           expect(merge_request.discussions.count).to eq(1)
@@ -202,6 +271,18 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(reply_note.updated_at).to eq(reply.created_at)
           expect(reply_note.position.old_line).to be_nil
           expect(reply_note.position.new_line).to eq(pr_inline_note.new_pos)
+        end
+
+        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
+          before do
+            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
+          end
+
+          it 'does not convert mentions' do
+            expect(mentions_converter).not_to receive(:convert)
+
+            subject.execute
+          end
         end
 
         it 'logs its progress' do

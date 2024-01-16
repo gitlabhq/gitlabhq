@@ -1,5 +1,5 @@
 .qa-job-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   extends:
     - .default-retry
     - .qa-cache
@@ -27,6 +27,7 @@
     variables:
       - CHROME_VERSION
       - RUBY_VERSION
+      - BUNDLER_VERSION
       - DOCKER_VERSION
       - DEBIAN_VERSION
       - REGISTRY_GROUP
@@ -90,9 +91,9 @@ trigger-omnibus:
     TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
     SECURITY_SOURCES: $SECURITY_SOURCES
     CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
-    USE_OLD_RUBY_VERSION: "true"
-    CACHE_EDITION: "GITLAB_RUBY3_0"
-    NEXT_RUBY_VERSION: "3.1.4"
+    CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
+    USE_SPECIFIED_RUBY_VERSION: "true"
+    RUBY_VERSION: $FULL_RUBY_VERSION
     BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
     SKIP_QA_TEST: "true"
     ee: $EE
@@ -211,3 +212,42 @@ e2e:test-on-gdk:
     DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
+
+e2e:code-suggestions-eval:
+  extends:
+    - .qa:rules:code-suggestions-eval
+  stage: qa
+  needs: ["build-gdk-image"]
+  variables:
+    CS_EVAL_DOWNSTREAM_BRANCH: main
+    GITLAB_SHA: $CI_COMMIT_SHA
+  trigger:
+    strategy: depend
+    forward:
+      yaml_variables: true
+      pipeline_variables: true
+    project: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
+    branch: $CS_EVAL_DOWNSTREAM_BRANCH
+
+e2e:code-suggestions-eval-results:
+  extends:
+    - .default-retry
+    - .qa:rules:code-suggestions-eval-results
+  stage: post-qa
+  needs:
+    - e2e:code-suggestions-eval
+  variables:
+    TRIGGER_JOB_NAME: "e2e:code-suggestions-eval"
+    DOWNSTREAM_PROJECT: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
+    DOWNSTREAM_JOB_NAME: run_scenarios
+    DOWNSTREAM_JOB_ARTIFACT_PATH: scores-DOWNSTREAM_JOB_ID.csv
+    OUTPUT_ARTIFACT_PATH: scores.csv
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/download-downstream-artifact.rb
+  artifacts:
+    expose_as: 'Code Suggestions evaluation results'
+    paths:
+      - scores.csv

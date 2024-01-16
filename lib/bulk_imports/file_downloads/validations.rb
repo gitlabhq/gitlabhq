@@ -38,20 +38,14 @@ module BulkImports
         raise_error 'Invalid downloaded file'
       end
 
-      def validate_content_length
-        validate_size!(response_headers['content-length'])
-      end
-
       def validate_size!(size)
-        if size.blank?
-          raise_error 'Missing content-length header'
-        elsif file_size_limit > 0 && size.to_i > file_size_limit
-          raise_error format(
-            "File size %{size} exceeds limit of %{limit}",
-            size: ActiveSupport::NumberHelper.number_to_human_size(size),
-            limit: ActiveSupport::NumberHelper.number_to_human_size(file_size_limit)
-          )
-        end
+        return unless file_size_limit > 0 && size.to_i > file_size_limit
+
+        raise_error format(
+          "File size %{size} exceeds limit of %{limit}",
+          size: ActiveSupport::NumberHelper.number_to_human_size(size),
+          limit: ActiveSupport::NumberHelper.number_to_human_size(file_size_limit)
+        )
       end
     end
   end

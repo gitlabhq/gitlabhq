@@ -5,9 +5,6 @@ require 'factory_bot'
 
 require_relative '../../qa'
 
-# Require shared test tooling from Rails test suite
-require_relative '../../../spec/support/fast_quarantine'
-
 QA::Specs::QaDeprecationToolkitEnv.configure!
 
 Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
@@ -16,9 +13,11 @@ Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
 QA::Support::GitlabAddress.define_gitlab_address_attribute!
 QA::Runtime::Browser.configure!
 QA::Specs::Helpers::FeatureSetup.configure!
+QA::Specs::Helpers::FastQuarantine.configure!
 QA::Runtime::AllureReport.configure!
-QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 QA::Service::DockerRun::Video.configure!
+
+QA::Runtime::Scenario.from_env(QA::Runtime::Env.runtime_scenario_attributes)
 
 # Enable zero monkey patching mode before loading any other RSpec code.
 RSpec.configure(&:disable_monkey_patching!)

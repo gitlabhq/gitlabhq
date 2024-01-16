@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '~/sidebar/queries/constants';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
+import SibebarColorPicker from '~/sidebar/components/sidebar_color_picker.vue';
 import { DEFAULT_LABEL_COLOR } from '~/sidebar/components/labels/labels_select_widget/constants';
 import {
   mockCreateLabelResponse as createAbuseReportLabelSuccessfulResponse,
@@ -14,15 +15,12 @@ import {
 } from '../../../../admin/abuse_report/mock_data';
 import {
   mockRegularLabel,
-  mockSuggestedColors,
   createLabelSuccessfulResponse,
   workspaceLabelsQueryResponse,
   workspaceLabelsQueryEmptyResponse,
 } from './mock_data';
 
 jest.mock('~/alert');
-
-const colors = Object.keys(mockSuggestedColors);
 
 Vue.use(VueApollo);
 
@@ -51,9 +49,7 @@ const createLabelErrorHandler = jest.fn().mockRejectedValue('Houston, we have a 
 describe('DropdownContentsCreateView', () => {
   let wrapper;
 
-  const findAllColors = () => wrapper.findAllComponents(GlLink);
-  const findSelectedColor = () => wrapper.find('[data-testid="selected-color"]');
-  const findSelectedColorText = () => wrapper.find('[data-testid="selected-color-text"]');
+  const findSibebarColorPicker = () => wrapper.findComponent(SibebarColorPicker);
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
   const findLabelTitleInput = () => wrapper.find('[data-testid="label-title-input"]');
@@ -62,7 +58,7 @@ describe('DropdownContentsCreateView', () => {
 
   const fillLabelAttributes = () => {
     findLabelTitleInput().vm.$emit('input', 'Test title');
-    findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
+    findSibebarColorPicker().vm.$emit('input', '#009966');
   };
 
   const createComponent = ({
@@ -94,38 +90,9 @@ describe('DropdownContentsCreateView', () => {
     });
   };
 
-  beforeEach(() => {
-    gon.suggested_label_colors = mockSuggestedColors;
-  });
-
-  it('renders a palette of 21 colors', () => {
-    createComponent();
-    expect(findAllColors()).toHaveLength(21);
-  });
-
-  it('selects a color after clicking on colored block', async () => {
-    createComponent();
-    expect(findSelectedColorText().attributes('value')).toBe(DEFAULT_LABEL_COLOR);
-
-    findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
-    await nextTick();
-
-    expect(findSelectedColor().attributes('value')).toBe('#009966');
-  });
-
-  it('shows correct color hex code after selecting a color', async () => {
-    createComponent();
-    expect(findSelectedColorText().attributes('value')).toBe(DEFAULT_LABEL_COLOR);
-
-    findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
-    await nextTick();
-
-    expect(findSelectedColorText().attributes('value')).toBe(colors[0]);
-  });
-
   it('disables a Create button if label title is not set', async () => {
     createComponent();
-    findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
+    findSibebarColorPicker().vm.$emit('input', '#fff');
     await nextTick();
 
     expect(findCreateButton().props('disabled')).toBe(true);
@@ -134,7 +101,7 @@ describe('DropdownContentsCreateView', () => {
   it('disables a Create button if color is not set', async () => {
     createComponent();
     findLabelTitleInput().vm.$emit('input', 'Test title');
-    findSelectedColorText().vm.$emit('input', '');
+    findSibebarColorPicker().vm.$emit('input', '');
     await nextTick();
 
     expect(findCreateButton().props('disabled')).toBe(true);

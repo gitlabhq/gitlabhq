@@ -1,3 +1,8 @@
 # frozen_string_literal: true
 
-bulk_database_actions.add_comment_for_bulk_database_action_method_usage
+helper.all_changed_files.each do |filename|
+  next unless filename.end_with?('.rb')
+  next if filename.start_with?('spec/', 'ee/spec/', 'jh/spec/')
+
+  bulk_database_actions.add_suggestions_for(filename)
+end

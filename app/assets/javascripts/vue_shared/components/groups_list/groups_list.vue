@@ -13,6 +13,11 @@ export default {
       required: false,
       default: false,
     },
+    listItemClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
@@ -24,6 +29,7 @@ export default {
       :key="group.id"
       :group="group"
       :show-group-icon="showGroupIcon"
+      :class="listItemClass"
       @delete="$emit('delete', $event)"
     />
   </ul>

@@ -10,7 +10,6 @@ import {
 } from '~/environments/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { s__ } from '~/locale';
 import { mockKasTunnelUrl } from './mock_data';
 
 Vue.use(VueApollo);
@@ -23,6 +22,8 @@ const configuration = {
   },
 };
 const environmentName = 'environment_name';
+const kustomizationResourcePath =
+  'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
 
 describe('~/environments/components/kubernetes_status_bar.vue', () => {
   let wrapper;
@@ -97,7 +98,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
       });
 
       it('renders sync status as Unavailable', () => {
-        expect(findSyncBadge().text()).toBe(s__('Deployment|Unavailable'));
+        expect(findSyncBadge().text()).toBe('Unavailable');
       });
     });
 
@@ -106,8 +107,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
 
       describe('if the provided resource is a Kustomization', () => {
         beforeEach(() => {
-          fluxResourcePath =
-            'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
+          fluxResourcePath = kustomizationResourcePath;
 
           createWrapper({ fluxResourcePath });
         });
@@ -178,6 +178,47 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
         });
       });
 
+      describe('when receives data from the Flux', () => {
+        const createApolloProviderWithKustomizations = (result) => {
+          const mockResolvers = {
+            Query: {
+              fluxKustomizationStatus: jest.fn().mockReturnValue([result]),
+              fluxHelmReleaseStatus: fluxHelmReleaseStatusQuery,
+            },
+          };
+
+          return createMockApollo([], mockResolvers);
+        };
+        const message = 'Message from Flux';
+
+        it.each`
+          status       | type             | reason           | statusText       | statusPopover
+          ${'True'}    | ${'Stalled'}     | ${''}            | ${'Stalled'}     | ${message}
+          ${'True'}    | ${'Reconciling'} | ${''}            | ${'Reconciling'} | ${'Flux sync reconciling'}
+          ${'Unknown'} | ${'Ready'}       | ${'Progressing'} | ${'Reconciling'} | ${message}
+          ${'True'}    | ${'Ready'}       | ${''}            | ${'Reconciled'}  | ${'Flux sync reconciled successfully'}
+          ${'False'}   | ${'Ready'}       | ${''}            | ${'Failed'}      | ${message}
+          ${'Unknown'} | ${'Ready'}       | ${''}            | ${'Unknown'}     | ${'Unable to detect state. How are states detected?'}
+        `(
+          'renders sync status as $statusText when status is $status, type is $type, and reason is $reason',
+          async ({ status, type, reason, statusText, statusPopover }) => {
+            createWrapper({
+              fluxResourcePath: kustomizationResourcePath,
+              apolloProvider: createApolloProviderWithKustomizations({
+                status,
+                type,
+                reason,
+                message,
+              }),
+            });
+            await waitForPromises();
+
+            expect(findSyncBadge().text()).toBe(statusText);
+            expect(findPopover().text()).toBe(statusPopover);
+          },
+        );
+      });
+
       describe('when Flux API errored', () => {
         const error = new Error('Error from the cluster_client API');
         const createApolloProviderWithErrors = () => {
@@ -212,9 +253,7 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
 
         it('renders popover with an API error message', () => {
           expect(findPopover().text()).toBe(error.message);
-          expect(findPopover().props('title')).toBe(
-            s__('Deployment|Flux sync status is unavailable'),
-          );
+          expect(findPopover().props('title')).toBe('Flux sync status is unavailable');
         });
       });
     });

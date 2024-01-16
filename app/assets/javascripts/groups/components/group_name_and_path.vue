@@ -39,6 +39,9 @@ export default {
           'Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
         ),
         invalidFeedback: s__('Groups|Enter a descriptive name for your group.'),
+        warningForUsingDotInName: s__(
+          'Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
+        ),
       },
       path: {
         placeholder: __('my-awesome-group'),
@@ -299,6 +302,14 @@ export default {
         @invalid="handleInvalidName"
       />
     </gl-form-group>
+    <gl-alert
+      class="gl-mb-5"
+      :dismissible="false"
+      variant="warning"
+      data-testid="dot-in-path-alert"
+    >
+      {{ $options.i18n.inputs.name.warningForUsingDotInName }}
+    </gl-alert>
 
     <div :class="newSubgroup && 'row gl-mb-3'">
       <gl-form-group v-if="newSubgroup" class="col-sm-6 gl-pr-0" :label="inputLabels.subgroupPath">
@@ -386,7 +397,12 @@ export default {
     </div>
 
     <template v-if="isEditingGroup">
-      <gl-alert class="gl-mb-5" :dismissible="false" variant="warning">
+      <gl-alert
+        class="gl-mb-5"
+        :dismissible="false"
+        variant="warning"
+        data-testid="changing-url-alert"
+      >
         {{ $options.i18n.changingUrlWarningMessage }}
         <gl-link :href="$options.changingGroupPathHelpPagePath"
           >{{ $options.i18n.learnMore }}

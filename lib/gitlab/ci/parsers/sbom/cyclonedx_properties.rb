@@ -5,7 +5,7 @@ module Gitlab
     module Parsers
       module Sbom
         # Parses GitLab CycloneDX metadata properties which are defined by the taxonomy at
-        # https://gitlab.com/gitlab-org/security-products/gitlab-cyclonedx-property-taxonomy
+        # https://docs.gitlab.com/ee/development/sec/cyclonedx_property_taxonomy.html
         #
         # This parser knows how to process schema version 1 and will not attempt to parse
         # later versions. Each source type has it's own namespace in the property schema,
@@ -14,10 +14,13 @@ module Gitlab
         class CyclonedxProperties
           SUPPORTED_SCHEMA_VERSION = '1'
           GITLAB_PREFIX = 'gitlab:'
+          AQUASECURITY_PREFIX = 'aquasecurity:'
           SOURCE_PARSERS = {
             'dependency_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning,
-            'container_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning
+            'container_scanning' => ::Gitlab::Ci::Parsers::Sbom::Source::ContainerScanning,
+            'trivy' => ::Gitlab::Ci::Parsers::Sbom::Source::Trivy
           }.freeze
+
           SUPPORTED_PROPERTIES = %w[
             meta:schema_version
             dependency_scanning:category
@@ -29,10 +32,24 @@ module Gitlab
             container_scanning:image:tag
             container_scanning:operating_system:name
             container_scanning:operating_system:version
+            trivy:PkgID
+            trivy:PkgType
+            trivy:SrcName
+            trivy:SrcVersion
+            trivy:SrcRelease
+            trivy:SrcEpoch
+            trivy:Modularitylabel
+            trivy:FilePath
+            trivy:LayerDigest
+            trivy:LayerDiffID
           ].freeze
 
           def self.parse_source(...)
             new(...).parse_source
+          end
+
+          def self.parse_trivy_source(...)
+            new(...).parse_trivy_source
           end
 
           def initialize(properties)
@@ -42,6 +59,12 @@ module Gitlab
           def parse_source
             return unless properties.present?
             return unless supported_schema_version?
+
+            source
+          end
+
+          def parse_trivy_source
+            return unless properties.present?
 
             source
           end
@@ -61,11 +84,15 @@ module Gitlab
 
             # The specification permits the name or value to be absent.
             return unless name.present? && value.present?
-            return unless name.start_with?(GITLAB_PREFIX)
 
-            namespaced_name = name.delete_prefix(GITLAB_PREFIX)
+            namespaced_name =
+              if name.start_with?(GITLAB_PREFIX)
+                name.delete_prefix(GITLAB_PREFIX)
+              elsif name.start_with?(AQUASECURITY_PREFIX)
+                name.delete_prefix(AQUASECURITY_PREFIX)
+              end
 
-            return unless SUPPORTED_PROPERTIES.include?(namespaced_name)
+            return unless namespaced_name && SUPPORTED_PROPERTIES.include?(namespaced_name)
 
             parse_name_value_pair(namespaced_name, value, data)
           end

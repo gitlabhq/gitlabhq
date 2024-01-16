@@ -43,7 +43,7 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
-    - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
@@ -717,7 +717,7 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PostgreSQL replication and failover troubleshooting section](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 before proceeding.
 
 <div align="right">
@@ -730,6 +730,10 @@ before proceeding.
 
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
+
+NOTE:
+PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 The following IPs will be used as an example:
 
@@ -830,7 +834,9 @@ NOTE:
 Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
 
 NOTE:
-Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+Redis is primarily single threaded and doesn't significantly benefit from increasing CPU cores.
+For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance at this scale.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
@@ -1505,7 +1511,7 @@ Updates to example must be made at:
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
-the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
@@ -1778,6 +1784,11 @@ NOTE:
 [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 - `10.6.0.101`: Sidekiq 1
 - `10.6.0.102`: Sidekiq 2
 - `10.6.0.103`: Sidekiq 3
@@ -1893,6 +1904,15 @@ Updates to example must be made at:
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
@@ -1908,11 +1928,6 @@ Updates to example must be made at:
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2044,7 +2059,16 @@ On each node perform the following:
      'google_project' => '<gcp-project-name>',
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
+
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the
@@ -2284,7 +2308,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services | 2     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | 7.75 vCPU, 25 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 
@@ -2308,7 +2332,7 @@ services where applicable):
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instances](#provide-your-own-redis-instances) for more information.
-    - Redis is primarily single threaded. It's strongly recommended separating out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+    - Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores. For this size of architecture it's strongly recommended having separate Cache and Persistent instances as specified to achieve optimum performance.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.

@@ -660,6 +660,24 @@ var a = 0;
     );
   });
 
+  it('correctly serializes a task list with inapplicable items', () => {
+    expect(
+      serialize(
+        taskList(
+          taskItem({ checked: true }, paragraph('list item 1')),
+          taskItem({ checked: true, inapplicable: true }, paragraph('list item 2')),
+          taskItem(paragraph('list item 3')),
+        ),
+      ),
+    ).toBe(
+      `
+* [x] list item 1
+* [~] list item 2
+* [ ] list item 3
+    `.trim(),
+    );
+  });
+
   it('correctly serializes bullet task list with different bullet styles', () => {
     expect(
       serialize(
@@ -1074,6 +1092,38 @@ _An elephant at sunset_
       `
 | header | header | header |
 |--------|--------|--------|
+| cell | cell | cell |
+| cell | cell | cell |
+    `.trim(),
+    );
+  });
+
+  it('correctly serializes a table with inline content with alignment', () => {
+    expect(
+      serialize(
+        table(
+          // each table cell must contain at least one paragraph
+          tableRow(
+            tableHeader({ align: 'center' }, paragraph('header')),
+            tableHeader({ align: 'right' }, paragraph('header')),
+            tableHeader({ align: 'left' }, paragraph('header')),
+          ),
+          tableRow(
+            tableCell(paragraph('cell')),
+            tableCell(paragraph('cell')),
+            tableCell(paragraph('cell')),
+          ),
+          tableRow(
+            tableCell(paragraph('cell')),
+            tableCell(paragraph('cell')),
+            tableCell(paragraph('cell')),
+          ),
+        ),
+      ).trim(),
+    ).toBe(
+      `
+| header | header | header |
+|:------:|-------:|--------|
 | cell | cell | cell |
 | cell | cell | cell |
     `.trim(),

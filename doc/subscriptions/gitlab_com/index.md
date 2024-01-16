@@ -1,6 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
+description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -231,13 +232,13 @@ After you dismiss the alert, it doesn't display until another seat is used.
 The alert displays based on the following seat usage. You cannot configure the
 amounts at which the alert displays.
 
-| Seats in subscription | Seat usage                                                             |
-|-----------------------|------------------------------------------------------------------------|
-| 0-15                  | One seat remaining in the subscription.                                |
-| 16-25                 | Two seats remaining in the subscription.                               |
-| 26-99                 | 10% of seats have been used.                                           |
-| 100-999               | 8% of seats have been used.                                            |
-| 1000+                 | 5% of seats have been used                                             |
+| Seats in subscription | Seat usage |
+|-----------------------|------------|
+| 0-15                  | One seat remaining in the subscription. |
+| 16-25                 | Two seats remaining in the subscription. |
+| 26-99                 | 10% of seats have been used. |
+| 100-999               | 8% of seats have been used. |
+| 1000+                 | 5% of seats have been used |
 
 ## Change the linked namespace
 
@@ -272,10 +273,10 @@ Changing the linked namespace is not supported for all subscription types.
 
 You cannot transfer:
 
-- A subscription with compute minutes.
 - An expired or trial subscription.
-- A subscription to a namespace which already has a Premium or Ultimate plan.
-- A subscription from a namespace with multiple subscriptions.
+- A subscription with compute minutes which is already linked to a namespace.
+- A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
+- A subscription with code suggestions to a namespace which already has a subscriptions with code suggestions.
 
 ## Upgrade your GitLab SaaS subscription tier
 
@@ -310,8 +311,9 @@ To renew your subscription:
 Before you renew your subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the **Account details** page, verify or update the invoice contact details.
-1. On the **Payment Methods** page, verify or update the credit card on file.
+1. On the left sidebar, select **Billing account settings**.
+1. Under **Payment methods**, verify or update the credit card on file.
+1. Scroll down to the **Company information** section to verify or update the invoice contact details.
 1. In GitLab, review your list of user accounts and [remove inactive or unwanted users](#remove-users-from-your-subscription).
 
 ### Renew or change a GitLab SaaS subscription
@@ -322,8 +324,8 @@ You can only renew your subscription 15 days before it is due to expire.
 To renew your subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
-The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before
-the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
+   The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before
+   the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 

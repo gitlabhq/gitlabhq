@@ -7,8 +7,9 @@ RSpec.describe Resolvers::Ci::Catalog::Resources::VersionsResolver, feature_cate
 
   include_context 'when there are catalog resources with versions'
 
+  let(:name) { nil }
   let(:sort) { nil }
-  let(:args) { { sort: sort }.compact }
+  let(:args) { { name: name, sort: sort }.compact }
   let(:ctx) { { current_user: current_user } }
 
   subject(:result) { resolve(described_class, ctx: ctx, obj: resource1, args: args) }
@@ -17,6 +18,23 @@ RSpec.describe Resolvers::Ci::Catalog::Resources::VersionsResolver, feature_cate
     context 'when the user is authorized to read project releases' do
       before_all do
         resource1.project.add_guest(current_user)
+      end
+
+      context 'when name argument is provided' do
+        let(:name) { 'v1.0' }
+
+        it 'returns the version that matches the name' do
+          expect(result.items.size).to eq(1)
+          expect(result.items.first.name).to eq('v1.0')
+        end
+
+        context 'when no version matches the name' do
+          let(:name) { 'does_not_exist' }
+
+          it 'returns empty response' do
+            expect(result).to be_empty
+          end
+        end
       end
 
       context 'when sort argument is not provided' do

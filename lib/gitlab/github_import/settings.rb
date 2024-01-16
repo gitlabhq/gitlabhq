@@ -38,8 +38,13 @@ module Gitlab
         }
       }.freeze
 
-      def self.stages_array
-        OPTIONAL_STAGES.map do |stage_name, data|
+      def self.stages_array(current_user)
+        deprecated_options = %i[single_endpoint_issue_events_import]
+
+        OPTIONAL_STAGES.filter_map do |stage_name, data|
+          next if deprecated_options.include?(stage_name) &&
+            Feature.enabled?(:github_import_extended_events, current_user)
+
           {
             name: stage_name.to_s,
             label: s_(format("GitHubImport|%{text}", text: data[:label])),
@@ -61,7 +66,8 @@ module Gitlab
         import_data = project.build_or_assign_import_data(
           data: {
             optional_stages: optional_stages,
-            timeout_strategy: user_settings[:timeout_strategy]
+            timeout_strategy: user_settings[:timeout_strategy],
+            extended_events: user_settings[:extended_events]
           },
           credentials: project.import_data&.credentials
         )
@@ -75,6 +81,10 @@ module Gitlab
 
       def disabled?(stage_name)
         !enabled?(stage_name)
+      end
+
+      def extended_events?
+        !!project.import_data&.data&.dig('extended_events')
       end
 
       private

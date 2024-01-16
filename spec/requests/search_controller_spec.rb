@@ -112,7 +112,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
         control = ActiveRecord::QueryRecorder.new { send_search_request(params_for_one) }
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
 
-        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control.count)
+        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control)
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
         control = ActiveRecord::QueryRecorder.new { send_search_request(params_for_one) }
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
 
-        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control.count)
+        expect { send_search_request(params_for_many) }.not_to exceed_query_limit(control)
         expect(response.body).to include('search-results') # Confirm search results to prevent false positives
       end
     end

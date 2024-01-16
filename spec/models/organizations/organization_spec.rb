@@ -59,8 +59,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:description).to(:organization_detail) }
+    it { is_expected.to delegate_method(:description_html).to(:organization_detail) }
     it { is_expected.to delegate_method(:avatar).to(:organization_detail) }
     it { is_expected.to delegate_method(:avatar_url).to(:organization_detail) }
+    it { is_expected.to delegate_method(:remove_avatar!).to(:organization_detail) }
   end
 
   describe 'nested attributes' do
@@ -195,6 +197,32 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       end
 
       it { is_expected.to eq true }
+    end
+
+    context 'when user is not an organization user' do
+      it { is_expected.to eq false }
+    end
+  end
+
+  describe '#owner?' do
+    let_it_be(:user) { create(:user) }
+
+    subject { organization.owner?(user) }
+
+    context 'when user is an owner' do
+      before do
+        create(:organization_user, :owner, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user is not an owner' do
+      before do
+        create(:organization_user, organization: organization, user: user)
+      end
+
+      it { is_expected.to eq false }
     end
 
     context 'when user is not an organization user' do

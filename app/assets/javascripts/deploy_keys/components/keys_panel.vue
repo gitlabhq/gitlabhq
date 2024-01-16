@@ -10,14 +10,6 @@ export default {
       type: Array,
       required: true,
     },
-    store: {
-      type: Object,
-      required: true,
-    },
-    endpoint: {
-      type: String,
-      required: true,
-    },
     projectId: {
       type: String,
       required: false,
@@ -48,8 +40,6 @@ export default {
         v-for="deployKey in keys"
         :key="deployKey.id"
         :deploy-key="deployKey"
-        :store="store"
-        :endpoint="endpoint"
         :project-id="projectId"
       />
     </template>

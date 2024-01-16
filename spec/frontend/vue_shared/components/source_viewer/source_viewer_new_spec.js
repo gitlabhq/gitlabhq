@@ -42,6 +42,8 @@ describe('Source Viewer component', () => {
   let wrapper;
   let fakeApollo;
   const CHUNKS_MOCK = [CHUNK_1, CHUNK_2];
+  const projectPath = 'test';
+  const currentRef = 'main';
   const hash = '#L142';
 
   const blameDataQueryHandlerSuccess = jest.fn().mockResolvedValue(BLAME_DATA_QUERY_RESPONSE_MOCK);
@@ -57,8 +59,8 @@ describe('Source Viewer component', () => {
       propsData: {
         blob: { ...blob, ...BLOB_DATA_MOCK },
         chunks: CHUNKS_MOCK,
-        projectPath: 'test',
-        currentRef: 'main',
+        projectPath,
+        currentRef,
         showBlame,
       },
     });
@@ -114,6 +116,18 @@ describe('Source Viewer component', () => {
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
         expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+      });
+
+      it('calls the blame data query', async () => {
+        await triggerChunkAppear();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            filePath: BLOB_DATA_MOCK.path,
+            fullPath: projectPath,
+            ref: currentRef,
+          }),
+        );
       });
 
       it('calls the query only once per chunk', async () => {

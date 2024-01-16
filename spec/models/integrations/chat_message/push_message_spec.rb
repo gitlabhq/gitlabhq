@@ -72,7 +72,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
     let(:args) do
       {
         after: 'after',
-        before: Gitlab::Git::BLANK_SHA,
+        before: Gitlab::Git::SHA1_BLANK_SHA,
         project_name: 'project_name',
         ref: 'refs/tags/new_tag',
         user_name: 'test.user',
@@ -112,7 +112,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
   context 'removed tag' do
     let(:args) do
       {
-        after: Gitlab::Git::BLANK_SHA,
+        after: Gitlab::Git::SHA1_BLANK_SHA,
         before: 'before',
         project_name: 'project_name',
         ref: 'refs/tags/new_tag',
@@ -152,7 +152,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
 
   context 'new branch' do
     before do
-      args[:before] = Gitlab::Git::BLANK_SHA
+      args[:before] = Gitlab::Git::SHA1_BLANK_SHA
     end
 
     context 'without markdown' do
@@ -185,7 +185,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
 
   context 'removed branch' do
     before do
-      args[:after] = Gitlab::Git::BLANK_SHA
+      args[:after] = Gitlab::Git::SHA1_BLANK_SHA
     end
 
     context 'without markdown' do

@@ -18,8 +18,15 @@ class Tree
 
     ref = ExtractsRef::RefExtractor.qualify_ref(@sha, ref_type)
 
-    @entries, @cursor = Gitlab::Git::Tree.where(git_repo, ref, @path, recursive, skip_flat_paths, rescue_not_found,
-      pagination_params)
+    @entries, @cursor = Gitlab::Git::Tree.tree_entries(
+      repository: git_repo,
+      sha: ref,
+      path: @path,
+      recursive: recursive,
+      skip_flat_paths: skip_flat_paths,
+      rescue_not_found: rescue_not_found,
+      pagination_params: pagination_params
+    )
 
     @entries.each do |entry|
       entry.ref_type = self.ref_type

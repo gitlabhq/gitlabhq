@@ -49,18 +49,6 @@ module LoginHelpers
     @current_user = user
   end
 
-  def gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: true)
-    if use_mock_admin_mode
-      enable_admin_mode!(user)
-    else
-      visit new_admin_session_path
-      fill_in 'user_password', with: user.password
-      click_button 'Enter admin mode'
-
-      wait_for_requests
-    end
-  end
-
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
     mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
     visit new_user_session_path
@@ -90,8 +78,8 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def gitlab_disable_admin_mode
-    click_on 'Search or go to…'
-    click_on 'Leave admin mode'
+    find_by_testid('user-menu-toggle').click
+    click_on 'Leave Admin Mode'
   end
 
   private
@@ -122,7 +110,7 @@ module LoginHelpers
   def login_via(provider, user, uid, remember_me: false, additional_info: {})
     mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
     visit new_user_session_path
-    expect(page).to have_css('.omniauth-container')
+    expect(page).to have_css('.js-oauth-login')
 
     check 'remember_me_omniauth' if remember_me
 
@@ -157,7 +145,7 @@ module LoginHelpers
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
-  def configure_mock_auth(provider, uid, email, response_object: nil, additional_info: {}, name: 'mockuser')
+  def configure_mock_auth(provider, uid, email, response_object: nil, additional_info: {}, name: 'mockuser', groups: [])
     # The mock_auth configuration allows you to set per-provider (or default)
     # authentication hashes to return during integration testing.
 
@@ -180,7 +168,8 @@ module LoginHelpers
               name: 'mockuser',
               email: email,
               image: 'mock_user_thumbnail_url'
-            }
+            },
+            'groups' => groups
           }
         ),
         response_object: response_object
@@ -188,9 +177,9 @@ module LoginHelpers
     }).merge(additional_info) { |_, old_hash, new_hash| old_hash.merge(new_hash) }
   end
 
-  def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil, name: 'mockuser')
+  def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil, name: 'mockuser', groups: [])
     configure_mock_auth(
-      provider, uid, email, additional_info: additional_info, response_object: response_object, name: name
+      provider, uid, email, additional_info: additional_info, response_object: response_object, name: name, groups: groups
     )
 
     original_env_config_omniauth_auth = Rails.application.env_config['omniauth.auth']

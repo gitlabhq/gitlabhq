@@ -13,6 +13,7 @@ RSpec.describe 'devise/shared/_signup_omniauth_provider_list', feature_category:
     allow(view).to receive(:providers).and_return([provider_label])
     allow(view).to receive(:tracking_label).and_return(tracking_label)
     allow(view).to receive(:glm_tracking_params).and_return({})
+    render
   end
 
   shared_examples 'sso buttons have snowplow tracking' do
@@ -24,37 +25,11 @@ RSpec.describe 'devise/shared/_signup_omniauth_provider_list', feature_category:
     end
   end
 
-  context 'when feature flag is true' do
-    before do
-      stub_feature_flags(restyle_login_page: true)
+  it { is_expected.to have_content(_("Register with:")) }
 
-      render
-    end
+  it_behaves_like 'sso buttons have snowplow tracking'
 
-    it { is_expected.to have_content(_("Register with:")) }
-
-    it_behaves_like 'sso buttons have snowplow tracking'
-  end
-
-  context 'when feature flag is false' do
-    before do
-      stub_feature_flags(restyle_login_page: false)
-
-      render
-    end
-
-    it { is_expected.to have_content(_("Create an account using:")) }
-
-    it_behaves_like 'sso buttons have snowplow tracking'
-  end
-
-  context 'when rendering button' do
-    before do
-      render
-    end
-
-    it 'renders button in form' do
-      expect(rendered).to have_css('form[action="/users/auth/github"]')
-    end
+  it 'renders button in form' do
+    expect(rendered).to have_css('form[action="/users/auth/github"]')
   end
 end

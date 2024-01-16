@@ -24,7 +24,7 @@ For a full list of reference architectures, see
 | Load balancer<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly                     | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Gitaly<sup>5</sup>         | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | Sidekiq<sup>6</sup>        | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
 | Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
@@ -35,7 +35,6 @@ For a full list of reference architectures, see
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-4. Should be run on reputable Cloud Provider or Self Managed solutions. More information can be found in the [Configure the object storage](#configure-the-object-storage) section.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
    Refer to [large monorepos](index.md#large-monorepos) for more information.
@@ -52,7 +51,7 @@ skinparam linetype ortho
 
 card "**External Load Balancer**" as elb #6a9be7
 
-collections "**GitLab Rails** x3" as gitlab #32CD32
+collections "**GitLab Rails** x2" as gitlab #32CD32
 card "**Prometheus**" as monitor #7FFFD4
 card "**Gitaly**" as gitaly #FF8C00
 card "**PostgreSQL**" as postgres #4EA7FF
@@ -340,6 +339,10 @@ are supported and can be added if needed.
 In this section, you'll be guided through configuring an external Redis instance
 to be used with GitLab.
 
+NOTE:
+Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 ### Provide your own Redis instance
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
@@ -603,6 +606,10 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
 1. SSH in to the Sidekiq server.
@@ -687,6 +694,14 @@ Updates to example must be made at:
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
@@ -716,11 +731,6 @@ Updates to example must be made at:
    run: node-exporter: (pid 26864) 92997s; run: log: (pid 26446) 93036s
    run: sidekiq: (pid 26870) 92996s; run: log: (pid 26391) 93042s
    ```
-
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -820,6 +830,15 @@ On each node perform the following:
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
 
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
+   
    ## Uncomment and edit the following options if you have set up NFS
    ##
    ## Prevent GitLab from starting if NFS data mounts are not available
@@ -1098,7 +1117,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services | 2     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | 1.9 vCPU, 5.5 GB memory         |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 

@@ -11,6 +11,7 @@ export const verificationStatuses = {
   SAME_USER_DIFFERENT_EMAIL: 'SAME_USER_DIFFERENT_EMAIL',
   MULTIPLE_SIGNATURES: 'MULTIPLE_SIGNATURES',
   REVOKED_KEY: 'REVOKED_KEY',
+  VERIFIED_SYSTEM: 'VERIFIED_SYSTEM',
 };
 
 export const signatureTypes = {
@@ -28,13 +29,23 @@ const UNVERIFIED_CONFIG = {
   description: __('This commit was signed with an unverified signature.'),
 };
 
+export const VERIFIED_CONFIG = {
+  variant: 'success',
+  label: __('Verified'),
+  title: __('Verified commit'),
+};
+
 export const statusConfig = {
   [verificationStatuses.VERIFIED]: {
-    variant: 'success',
-    label: __('Verified'),
-    title: __('Verified commit'),
+    ...VERIFIED_CONFIG,
     description: __(
       'This commit was signed with a verified signature and the committer email was verified to belong to the same user.',
+    ),
+  },
+  [verificationStatuses.VERIFIED_SYSTEM]: {
+    ...VERIFIED_CONFIG,
+    description: __(
+      'This commit was created in the GitLab UI, and signed with a GitLab-verified signature.',
     ),
   },
   [verificationStatuses.UNVERIFIED]: {

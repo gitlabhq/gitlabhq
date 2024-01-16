@@ -204,7 +204,8 @@ module MergeRequestsHelper
       is_forked: project.forked?.to_s,
       new_comment_template_path: profile_comment_templates_path,
       iid: merge_request.iid,
-      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE
+      per_page: DIFF_BATCH_ENDPOINT_PER_PAGE,
+      pinned_file_url: @pinned_file_url
     }
   end
 
@@ -253,13 +254,13 @@ module MergeRequestsHelper
                 end
 
     branch = if merge_request.for_fork?
-               html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % { fork_icon: fork_icon.html_safe, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+               ERB::Util.html_escape(_('%{fork_icon} %{source_project_path}:%{source_branch}')) % { fork_icon: fork_icon.html_safe, source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
              else
                merge_request.source_branch
              end
 
     branch_title = if merge_request.for_fork?
-                     html_escape(_('%{source_project_path}:%{source_branch}')) % { source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
+                     ERB::Util.html_escape(_('%{source_project_path}:%{source_branch}')) % { source_project_path: merge_request.source_project_path, source_branch: merge_request.source_branch }
                    else
                      merge_request.source_branch
                    end
@@ -275,7 +276,10 @@ module MergeRequestsHelper
 
   def merge_request_header(project, merge_request)
     link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
-    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    copy_action_description = _('Copy branch name')
+    copy_action_shortcut = 'b'
+    copy_button_title = "#{copy_action_description} <kbd class='flat ml-1'>#{copy_action_shortcut}</kbd>"
+    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
@@ -289,6 +293,7 @@ module MergeRequestsHelper
       sourceProjectPath: @merge_request.source_project_path,
       title: markdown_field(@merge_request, :title),
       isFluidLayout: fluid_layout.to_s,
+      blocksMerge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s,
       tabs: [
         ['show', _('Overview'), project_merge_request_path(@project, @merge_request), @merge_request.related_notes.user.count],
         ['commits', _('Commits'), commits_project_merge_request_path(@project, @merge_request), @commits_count],

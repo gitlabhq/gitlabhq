@@ -136,7 +136,7 @@ Now you can get started customizing your `.gitlab-ci.yml` and defining more adva
 
 Here are some tips to get started working with the `.gitlab-ci.yml` file.
 
-For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` keyword reference](../yaml/index.md).
+For the complete `.gitlab-ci.yml` syntax, see the full [CI/CD YAML syntax reference](../yaml/index.md).
 
 - Use the [pipeline editor](../pipeline_editor/index.md) to edit your `.gitlab-ci.yml` file.
 - Each job contains a script section and belongs to a stage:

@@ -115,10 +115,13 @@ module Gitlab
         #        type is used.
         # batch_column_name - option is for tables without primary key, in this
         #        case another unique integer column can be used. Example: :user_id
-        def rename_column_concurrently(table, old_column, new_column, type: nil, batch_column_name: :id)
+        def rename_column_concurrently(table, old_column, new_column, type: nil, batch_column_name: :id, type_cast_function: nil)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          setup_renamed_column(__callee__, table, old_column, new_column, type, batch_column_name)
+          setup_renamed_column(
+            __callee__, table, old_column, new_column,
+            type: type, batch_column_name: batch_column_name, type_cast_function: type_cast_function
+          )
 
           with_lock_retries do
             install_bidirectional_triggers(table, old_column, new_column)
@@ -167,7 +170,10 @@ module Gitlab
         def undo_cleanup_concurrent_column_rename(table, old_column, new_column, type: nil, batch_column_name: :id)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
-          setup_renamed_column(__callee__, table, new_column, old_column, type, batch_column_name)
+          setup_renamed_column(
+            __callee__, table, new_column, old_column,
+            type: type, batch_column_name: batch_column_name
+          )
 
           with_lock_retries do
             install_bidirectional_triggers(table, old_column, new_column)
@@ -198,7 +204,7 @@ module Gitlab
 
         private
 
-        def setup_renamed_column(calling_operation, table, old_column, new_column, type, batch_column_name)
+        def setup_renamed_column(calling_operation, table, old_column, new_column, type:, batch_column_name:, type_cast_function: nil)
           if transaction_open?
             raise "#{calling_operation} can not be run inside a transaction"
           end
@@ -220,7 +226,7 @@ module Gitlab
           check_trigger_permissions!(table)
 
           unless column_exists?(table, new_column)
-            create_column_from(table, old_column, new_column, type: type, batch_column_name: batch_column_name)
+            create_column_from(table, old_column, new_column, type: type, batch_column_name: batch_column_name, type_cast_function: type_cast_function)
           end
         end
 

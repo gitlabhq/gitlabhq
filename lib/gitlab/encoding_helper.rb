@@ -40,7 +40,7 @@ module Gitlab
       "--broken encoding: #{encoding}"
     end
 
-    def detect_encoding(data, limit: CharlockHolmes::EncodingDetector::DEFAULT_BINARY_SCAN_LEN, cache_key: nil)
+    def detect_encoding(data, limit: CharlockHolmes::EncodingDetector::DEFAULT_BINARY_SCAN_LEN)
       return if data.nil?
 
       CharlockHolmes::EncodingDetector.new(limit).detect(data)
@@ -54,8 +54,8 @@ module Gitlab
     # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
     # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
     # which is what we use below to keep a consistent behavior.
-    def detect_libgit2_binary?(data, cache_key: nil)
-      detect = detect_encoding(data, limit: 8000, cache_key: cache_key)
+    def detect_libgit2_binary?(data)
+      detect = detect_encoding(data, limit: 8000)
       detect && detect[:type] == :binary
     end
 

@@ -72,10 +72,10 @@ This section describes how to add new metrics for self-monitoring
    for [Prometheus metric names](https://prometheus.io/docs/practices/naming/#metric-names).
 1. Update the list of [GitLab Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md).
 1. Carefully choose what labels you want to add to your metric. Values with high cardinality,
-like `project_path`, or `project_id` are strongly discouraged because they can affect our services
-availability due to the fact that each set of labels is exposed as a new entry in the `/metrics` endpoint.
-For example, a histogram with 10 buckets and a label with 100 values would generate 1000
-entries in the export endpoint.
+   like `project_path`, or `project_id` are strongly discouraged because they can affect our services
+   availability due to the fact that each set of labels is exposed as a new entry in the `/metrics` endpoint.
+   For example, a histogram with 10 buckets and a label with 100 values would generate 1000
+   entries in the export endpoint.
 1. Trigger the relevant page or code that records the new metric.
 1. Check that the new metric appears at `/-/metrics`.
 

@@ -40,8 +40,8 @@ For example, let's say the following Kubernetes clusters exist in a project:
 | Development | `*`               |
 | Production  | `production`      |
 
-And the following environments are set in
-[`.gitlab-ci.yml`](../../../ci/yaml/index.md):
+And the following environments are set in the
+[`.gitlab-ci.yml` file](../../../ci/index.md#the-gitlab-ciyml-file):
 
 ```yaml
 stages:

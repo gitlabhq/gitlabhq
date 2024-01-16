@@ -15,3 +15,14 @@ export const pageInfoHeadersWithPagination = {
   'X-TOTAL': '21',
   'X-TOTAL-PAGES': '2',
 };
+
+export const generateCatalogSettingsResponse = (isCatalogResource = false) => {
+  return {
+    data: {
+      project: {
+        id: 'gid://gitlab/Project/149',
+        isCatalogResource,
+      },
+    },
+  };
+};

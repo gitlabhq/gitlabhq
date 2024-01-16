@@ -35,6 +35,10 @@
     background-color: transparent;
   }
 
+  th[align] *, td[align] * {
+    text-align: inherit;
+  }
+
   td,
   th,
   li,
@@ -148,6 +152,11 @@
       > label {
         padding: $gl-spacing-scale-1 $gl-spacing-scale-3 0 0;
         margin: 0;
+      }
+
+      &[data-inapplicable] * {
+        text-decoration: line-through;
+        color: $gl-text-color-disabled;
       }
     }
   }

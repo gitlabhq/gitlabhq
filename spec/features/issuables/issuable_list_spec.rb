@@ -16,11 +16,11 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
 
   issuable_types.each do |issuable_type|
     it "avoids N+1 database queries for #{issuable_type.to_s.humanize.pluralize}", quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/231426' } do
-      control_count = ActiveRecord::QueryRecorder.new { visit_issuable_list(issuable_type) }.count
+      control = ActiveRecord::QueryRecorder.new { visit_issuable_list(issuable_type) }
 
       create_issuables(issuable_type)
 
-      expect { visit_issuable_list(issuable_type) }.not_to exceed_query_limit(control_count)
+      expect { visit_issuable_list(issuable_type) }.not_to exceed_query_limit(control)
     end
 
     it "counts upvotes, downvotes and notes count for each #{issuable_type.to_s.humanize}" do

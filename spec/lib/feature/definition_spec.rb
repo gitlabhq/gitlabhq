@@ -30,11 +30,11 @@ RSpec.describe Feature::Definition do
       :name            | 'ALL_CAPS'                 | /Feature flag 'ALL_CAPS' is invalid/
       :name            | nil                        | /Feature flag is missing name/
       :path            | nil                        | /Feature flag 'feature_flag' is missing path/
-      :type            | nil                        | /Feature flag 'feature_flag' is missing type/
+      :type            | nil                        | /Feature flag 'feature_flag' is missing `type`/
       :type            | 'invalid'                  | /Feature flag 'feature_flag' type 'invalid' is invalid/
       :path            | 'development/invalid.yml'  | /Feature flag 'feature_flag' has an invalid path/
-      :path            | 'invalid/feature_flag.yml' | /Feature flag 'feature_flag' has an invalid type/
-      :default_enabled | nil                        | /Feature flag 'feature_flag' is missing default_enabled/
+      :path            | 'invalid/feature_flag.yml' | /Feature flag 'feature_flag' has an invalid path/
+      :default_enabled | nil                        | /Feature flag 'feature_flag' is missing `default_enabled`/
     end
 
     with_them do

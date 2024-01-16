@@ -28,8 +28,6 @@ export default () => ({
   },
   renderWhitespaceInCode: false,
   editorTheme: DEFAULT_THEME,
-  environmentsGuidanceAlertDismissed: false,
-  environmentsGuidanceAlertDetected: false,
   previewMarkdownPath: '',
   userPreferencesPath: '',
 });

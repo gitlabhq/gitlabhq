@@ -48,7 +48,8 @@ can access the website.
 To sign out of your GitLab Pages website, revoke the application access token
 for GitLab Pages:
 
-1. In the top menu, select your profile, and then select **Settings**.
-1. On the left sidebar, select **Applications**.
-1. Scroll to the **Authorized applications** section, find the **GitLab Pages**
-   entry, and select its **Revoke** button.
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Applications**.
+1. In the **Authorized applications** section, find the **GitLab Pages**
+   entry, and select **Revoke**.

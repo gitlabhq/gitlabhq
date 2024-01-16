@@ -10,30 +10,75 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   describe '#sequential_import', :clean_gitlab_redis_cache do
-    let_it_be(:note_1) { create(:note, project: project) }
-    let_it_be(:note_2) { create(:note, project: project) }
-    let_it_be(:system_note) { create(:note, :system, project: project) }
+    let_it_be(:note) { create(:note, project: project) }
 
-    let(:importer_stub) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
-    let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
+    let_it_be(:note_with_attachment) do
+      create(:note,
+        project: project,
+        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+      )
+    end
 
-    it 'imports each project user note' do
-      expect(project.notes).to receive(:id_not_in).with([]).and_call_original
-      expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
-        .with(*importer_attrs).twice.and_return(importer_stub)
-      expect(importer_stub).to receive(:execute).twice
+    let_it_be(:system_note_with_attachment) do
+      create(:note,
+        :system,
+        project: project,
+        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+      )
+    end
+
+    it 'selects only user notes, and selects only properties it needs' do
+      stubbed_collection = class_double(Note, each_batch: [])
+
+      expect(project.notes).to receive(:id_not_in).with([]).and_return(stubbed_collection)
+      expect(stubbed_collection).to receive(:user).and_return(stubbed_collection)
+      expect(stubbed_collection)
+        .to receive(:select).with(:id, :note, :system, :noteable_type)
+        .and_return(stubbed_collection)
 
       importer.sequential_import
     end
 
-    context 'when note is already processed' do
-      it "doesn't import this note" do
-        importer.mark_as_imported(note_1)
+    it 'executes importer only for the note with an attachment' do
+      expect_next_instance_of(
+        Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
+        have_attributes(record_db_id: note_with_attachment.id),
+        project,
+        client
+      ) do |importer|
+        expect(importer).to receive(:execute)
+      end
 
-        expect(project.notes).to receive(:id_not_in).with([note_1.id.to_s]).and_call_original
-        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
-          .with(*importer_attrs).once.and_return(importer_stub)
-        expect(importer_stub).to receive(:execute).once
+      importer.sequential_import
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(github_importer_attachments: false)
+      end
+
+      it 'executes importer for both user notes' do
+        expect_next_instances_of(Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2) do |importer|
+          expect(importer).to receive(:execute)
+        end
+
+        importer.sequential_import
+      end
+    end
+
+    context 'when note has already been processed' do
+      before do
+        importer.mark_as_imported(note_with_attachment)
+      end
+
+      it 'does not select notes that were processed' do
+        expect(project.notes).to receive(:id_not_in).with([note_with_attachment.id.to_s]).and_call_original
+
+        importer.sequential_import
+      end
+
+      it 'does not execute importer for the note with an attachment' do
+        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new)
 
         importer.sequential_import
       end

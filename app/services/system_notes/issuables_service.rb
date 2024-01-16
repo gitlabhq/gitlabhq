@@ -133,6 +133,12 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
     end
 
+    def request_review(user)
+      body = "#{self.class.issuable_events[:review_requested]} #{user.to_reference}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'reviewer'))
+    end
+
     # Called when the contacts of an issuable are changed or removed
     # We intend to reference the contacts but for security we are just
     # going to state how many were added/removed for now. See discussion:
@@ -431,7 +437,7 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
     end
 
-    def add_email_participants(body)
+    def email_participants(body)
       create_note(NoteSummary.new(noteable, project, author, body))
     end
 

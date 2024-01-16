@@ -114,13 +114,13 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         helper.group_title(nested_group)
       end
 
       expect do
         helper.group_title(very_deep_nested_group)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_query_limit(control)
     end
   end
 
@@ -490,6 +490,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           new_project_illustration: including('illustrations/project-create-new-sm'),
           empty_projects_illustration: including('illustrations/empty-state/empty-projects-md'),
           empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
+          empty_search_illustration: including('illustrations/empty-state/empty-search-md'),
           render_empty_state: 'true',
           can_create_subgroups: 'true',
           can_create_projects: 'true'

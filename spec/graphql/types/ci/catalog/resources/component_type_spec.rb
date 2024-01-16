@@ -10,7 +10,7 @@ RSpec.describe Types::Ci::Catalog::Resources::ComponentType, feature_category: :
       id
       inputs
       name
-      path
+      include_path
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

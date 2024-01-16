@@ -23,6 +23,9 @@ author can either retry any failed jobs, or push new commits to fix the failure:
 - If a retried job succeeds on the second try, the merge request is merged.
 - If new commits are added to the merge request, GitLab cancels the request
   to ensure the new changes are reviewed before merge.
+- If new commits are added to the target branch of the merge request and
+  fast-forward only merge request is configured, GitLab cancels the request
+  to prevent merge conflicts.
 
 ## Auto-merge a merge request
 

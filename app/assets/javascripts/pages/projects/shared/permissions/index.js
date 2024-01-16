@@ -14,6 +14,9 @@ export default function initProjectPermissionsSettings() {
 
   const mountPoint = document.querySelector('.js-project-permissions-form');
   const componentPropsEl = document.querySelector('.js-project-permissions-form-data');
+
+  if (!mountPoint) return null;
+
   const componentProps = JSON.parse(componentPropsEl.innerHTML);
 
   const {

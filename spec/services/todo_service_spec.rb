@@ -675,6 +675,8 @@ RSpec.describe TodoService, feature_category: :team_planning do
         service.mark_todo(unassigned_issue, author)
 
         should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+        .not_to receive(:track_work_item_todo_marked_action)
       end
 
       context 'when issue belongs to a group' do
@@ -690,6 +692,8 @@ RSpec.describe TodoService, feature_category: :team_planning do
             project: nil,
             group: group
           )
+          expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+          .not_to receive(:track_work_item_todo_marked_action)
         end
       end
     end
@@ -748,10 +752,13 @@ RSpec.describe TodoService, feature_category: :team_planning do
   end
 
   describe 'Work Items' do
-    let_it_be(:work_item) { create(:work_item, :task, project: project, author: author) }
+    let(:work_item) { create(:work_item, :objective, project: project, author: author) }
+    let(:activity_counter_class) { Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter }
 
     describe '#mark_todo' do
       it 'creates a todo from a work item' do
+        expect(activity_counter_class).to receive(:track_work_item_mark_todo_action).with(author: author)
+
         service.mark_todo(work_item, author)
 
         should_create_todo(user: author, target: work_item, action: Todo::MARKED)
@@ -760,6 +767,9 @@ RSpec.describe TodoService, feature_category: :team_planning do
       context 'when work item belongs to a group' do
         it 'creates a todo from a work item' do
           group_work_item = create(:work_item, :group_level, namespace: group)
+
+          expect(activity_counter_class).to receive(:track_work_item_mark_todo_action).with(author: group_work_item.author)
+
           service.mark_todo(group_work_item, group_work_item.author)
 
           should_create_todo(
@@ -1120,6 +1130,8 @@ RSpec.describe TodoService, feature_category: :team_planning do
         service.mark_todo(unassigned_mr, author)
 
         should_create_todo(user: author, target: unassigned_mr, action: Todo::MARKED)
+        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter)
+        .not_to receive(:track_work_item_todo_marked_action)
       end
     end
 
@@ -1264,9 +1276,9 @@ RSpec.describe TodoService, feature_category: :team_planning do
         # Excluding queries for user permissions because those do execute N+1 queries
         allow_any_instance_of(User).to receive(:can?).and_return(true)
 
-        control_count = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }.count
+        control = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }
 
-        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control_count)
+        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control)
       end
     end
 

@@ -155,7 +155,7 @@ export default {
       :is-swimlanes-on="isSwimlanesOn"
       :filter-params="formattedFilterParams"
       :board-lists="boardLists"
-      :apollo-error="error"
+      :error="error"
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"

@@ -7,7 +7,7 @@ module Gitlab
 
       attr_reader :promise
 
-      delegate :state, to: :promise
+      delegate :state, :complete?, to: :promise
 
       def initialize(promise, path, options, log_info)
         @promise = promise

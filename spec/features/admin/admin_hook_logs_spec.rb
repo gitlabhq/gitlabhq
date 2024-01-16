@@ -9,7 +9,7 @@ RSpec.describe 'Admin::HookLogs', feature_category: :webhooks do
 
   before do
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
   end
 
   it 'show list of hook logs' do

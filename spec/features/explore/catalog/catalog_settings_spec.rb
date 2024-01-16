@@ -5,13 +5,22 @@ require 'spec_helper'
 RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:group) }
-  let_it_be_with_reload(:new_project) { create(:project, :repository, namespace: namespace) }
+  let_it_be_with_reload(:project_with_ci_components) do
+    create(
+      :project,
+      :catalog_resource_with_components,
+      description: "catalog resource description",
+      namespace: namespace
+    )
+  end
 
   context 'when user is not the owner' do
+    before_all do
+      namespace.add_maintainer(user)
+    end
+
     before do
       sign_in(user)
-      visit edit_project_path(new_project)
-      wait_for_requests
     end
 
     it 'does not show the CI/CD toggle settings' do
@@ -29,49 +38,95 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
     end
 
     it 'shows the CI/CD toggle settings' do
-      visit edit_project_path(new_project)
+      visit edit_project_path(project_with_ci_components)
       wait_for_requests
 
       expect(page).to have_content('CI/CD Catalog resource')
     end
 
-    describe 'when setting a project as a Catalog resource' do
+    context 'when a project is not a Catalog resource' do
       before do
-        visit project_path(new_project)
+        visit project_path(project_with_ci_components)
+      end
+
+      it 'does not render the CI/CD resource badge' do
+        expect(page).to have_content(project_with_ci_components.name)
+        expect(page).not_to have_content('CI/CD catalog resource')
+      end
+    end
+
+    describe 'when listing a project as a Catalog resource' do
+      let_it_be(:tag_name) { 'v0.1' }
+
+      before do
+        visit edit_project_path(project_with_ci_components)
+        find('[data-testid="catalog-resource-toggle"] button').click
         wait_for_requests
       end
 
-      it 'adds the project to the CI/CD Catalog' do
-        expect(page).not_to have_content('CI/CD catalog resource')
-
-        visit edit_project_path(new_project)
-
-        find('[data-testid="catalog-resource-toggle"] button').click
-
-        visit project_path(new_project)
+      it 'marks the project as a CI/CD Catalog' do
+        visit project_path(project_with_ci_components)
 
         expect(page).to have_content('CI/CD catalog resource')
+      end
+
+      context 'and there are no releases' do
+        before do
+          visit explore_catalog_index_path
+        end
+
+        it 'does not add the resource to the catalog', :aggregate_failures do
+          expect(page).to have_content("CI/CD Catalog")
+          expect(find_all('[data-testid="catalog-resource-item"]').length).to be(0)
+        end
+      end
+
+      context 'and there is a release' do
+        before do
+          create(:release, :with_catalog_resource_version, tag: tag_name, author: user,
+            project: project_with_ci_components)
+          # This call to `publish` is necessary to simulate what creating a release would really do
+          project_with_ci_components.catalog_resource.publish!
+          visit explore_catalog_index_path
+        end
+
+        it 'adds the resource to the catalog', :aggregate_failures do
+          expect(page).to have_content("CI/CD Catalog")
+          expect(find_all('[data-testid="catalog-resource-item"]').length).to be(1)
+          expect(page).to have_content(tag_name)
+        end
       end
     end
 
     describe 'when unlisting a project from the CI/CD Catalog' do
       before do
-        create(:ci_catalog_resource, project: new_project, state: :published)
-        visit project_path(new_project)
-        wait_for_requests
-      end
+        create(:ci_catalog_resource, project: project_with_ci_components)
+        create(:release, :with_catalog_resource_version, tag: 'v0.1', author: user, project: project_with_ci_components)
+        project_with_ci_components.catalog_resource.publish!
 
-      it 'removes the project to the CI/CD Catalog' do
-        expect(page).to have_content('CI/CD catalog resource')
-
-        visit edit_project_path(new_project)
+        visit edit_project_path(project_with_ci_components)
 
         find('[data-testid="catalog-resource-toggle"] button').click
         click_button 'Remove from the CI/CD catalog'
+      end
 
-        visit project_path(new_project)
+      it 'removes the CI/CD Catalog tag on the project' do
+        visit project_path(project_with_ci_components)
 
         expect(page).not_to have_content('CI/CD catalog resource')
+      end
+
+      it 'removes the resource from the catalog' do
+        visit explore_catalog_index_path
+
+        expect(page).not_to have_content(project_with_ci_components.name)
+        expect(find_all('[data-testid="catalog-resource-item"]').length).to be(0)
+      end
+
+      it 'does not destroy existing releases' do
+        visit project_releases_path(project_with_ci_components)
+
+        expect(page).to have_content(project_with_ci_components.releases.last.name)
       end
     end
   end

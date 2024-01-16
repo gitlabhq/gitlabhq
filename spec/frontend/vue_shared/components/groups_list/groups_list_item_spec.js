@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -7,7 +7,6 @@ import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -112,7 +111,7 @@ describe('GroupsListItem', () => {
   it('renders access role badge', () => {
     createComponent();
 
-    expect(findAvatarLabeled().findComponent(UserAccessRoleBadge).text()).toBe(
+    expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
       ACCESS_LEVEL_LABELS[group.accessLevel.integerValue],
     );
   });

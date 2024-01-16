@@ -1,0 +1,12 @@
+---
+table_name: namespace_descendants
+classes:
+- Namespaces::Descendants
+feature_categories:
+- groups_and_projects
+description: Storing de-normalized descendant ids for Namespace records
+introduced_by_url:
+milestone: '16.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

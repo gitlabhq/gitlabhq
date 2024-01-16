@@ -9,7 +9,7 @@
 
 -# Note this is just for individual members. For groups please see shared/members/_group
 
-%li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member), data: { qa_selector: 'member_row' } }
+%li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
   %span.list-item-name.mb-2.m-md-0
     - if user
       = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
@@ -49,7 +49,7 @@
                 = _("Expires %{preposition} %{expires_at}").html_safe % { expires_at: time_ago_with_tooltip(member.expires_at), preposition: preposition }
 
     - else
-      = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40 flex-shrink-0 flex-grow-0", alt: ''
+      = render Pajamas::AvatarComponent.new(Pajamas::AvatarEmail.new(member.invite_email), size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
       .user-info
         .member= member.invite_email
         .cgray

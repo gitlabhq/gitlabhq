@@ -1603,6 +1603,27 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#owned_by?' do
+    let!(:invited_group_member) { create(:group_member, :owner, :invited, group: group) }
+
+    before do
+      @members = setup_group_members(group)
+    end
+
+    it 'returns true for owner' do
+      expect(group.owned_by?(@members[:owner])).to eq(true)
+    end
+
+    it 'returns false for developer' do
+      expect(group.owned_by?(@members[:developer])).to eq(false)
+    end
+
+    it 'returns false when nil is passed' do
+      expect(invited_group_member.user).to eq(nil)
+      expect(group.owned_by?(invited_group_member.user)).to eq(false)
+    end
+  end
+
   def setup_group_members(group)
     members = {
       owner: create(:user),
@@ -1640,6 +1661,54 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     it { is_expected.to be_valid }
     it { expect(subject.parent).to be_kind_of(described_class) }
+  end
+
+  describe '#has_user?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:invited_group_member) { create(:group_member, :owner, :invited, group: group) }
+
+    subject { group.has_user?(user) }
+
+    context 'when the user is a member' do
+      before_all do
+        group.add_developer(user)
+      end
+
+      it { is_expected.to be_truthy }
+      it { expect(group.has_user?(user2)).to be_falsey }
+
+      it 'returns false for subgroup' do
+        expect(subgroup.has_user?(user)).to be_falsey
+      end
+    end
+
+    context 'when the user is a member with minimal access' do
+      before_all do
+        group.add_member(user, GroupMember::MINIMAL_ACCESS)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the user has requested membership' do
+      before_all do
+        create(:group_member, :developer, :access_request, user: user, source: group)
+      end
+
+      it 'returns false' do
+        expect(subject).to be_falsey
+      end
+    end
+
+    context 'when the user is an invited member' do
+      it 'returns false when nil is passed' do
+        expect(invited_group_member.user).to eq(nil)
+        expect(group.has_user?(invited_group_member.user)).to be_falsey
+      end
+    end
   end
 
   describe '#member?' do
@@ -2442,9 +2511,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
 
     context 'when the user is not a member of any group in the hierarchy' do
-      it 'returns nil' do
-        expect(highest_group_member).to be_nil
+      it { is_expected.to be_nil }
+    end
+
+    context 'when access request to group is pending' do
+      before do
+        create(:group_member, requested_at: Time.current.utc, source: nested_group, user: user)
       end
+
+      it { is_expected.to be_nil }
     end
 
     context 'when the user is only a member of one group in the hierarchy' do
@@ -3165,6 +3240,48 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       new_group_id = create(:group).id
 
       expect(described_class.get_ids_by_ids_or_paths([new_group_id], [group_path])).to match_array([group_id, new_group_id])
+    end
+  end
+
+  describe '.descendant_groups_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, namespace: parent) }
+
+    subject(:descendant_groups_counts) { described_class.id_in(parent).descendant_groups_counts }
+
+    it 'return a hash of group id and descendant groups count without projects' do
+      expect(descendant_groups_counts).to eq({ parent.id => 1 })
+    end
+  end
+
+  describe '.projects_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, namespace: parent) }
+    let_it_be(:archived_project) { create(:project, :archived, namespace: parent) }
+
+    subject(:projects_counts) { described_class.id_in(parent).projects_counts }
+
+    it 'return a hash of group id and projects count without counting archived projects' do
+      expect(projects_counts).to eq({ parent.id => 1 })
+    end
+  end
+
+  describe '.group_members_counts' do
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent) }
+
+    before_all do
+      create(:group_member, group: parent)
+      create(:group_member, group: parent, requested_at: Time.current)
+      create(:group_member, group: group)
+    end
+
+    subject(:group_members_counts) { described_class.id_in(parent).group_members_counts }
+
+    it 'return a hash of group id and approved direct group members' do
+      expect(group_members_counts).to eq({ parent.id => 1 })
     end
   end
 

@@ -99,7 +99,6 @@ Rails/FilePath:
     - 'spec/lib/gitlab/feature_categories_spec.rb'
     - 'spec/lib/gitlab/file_hook_spec.rb'
     - 'spec/lib/gitlab/jwt_authenticatable_spec.rb'
-    - 'spec/lib/gitlab/legacy_http_spec.rb'
     - 'spec/lib/gitlab/mail_room/mail_room_spec.rb'
     - 'spec/lib/gitlab/middleware/multipart/handler_spec.rb'
     - 'spec/lib/gitlab/multi_destination_logger_spec.rb'

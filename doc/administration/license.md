@@ -36,6 +36,22 @@ To activate your instance with an activation code:
 
 The subscription is activated.
 
+### Using one activation code for multiple instances
+
+You can use one activation code or license key for multiple self-managed instances if the users on
+these instances are the same or are a subset of your licensed production instance. This means that if
+you have a licensed production instance of GitLab, and other instances with the same list of users, the
+production activation code applies, even if these users are configured in different groups and projects.
+
+### Uploading licenses for scaled architectures
+
+In a scaled architecture, upload the license file to one application instance only. The license is stored in the
+database and is replicated to all your application instances so that you do not need to upload the license to all instances.
+
+### Uploading licenses for GitLab Geo
+
+When using GitLab Geo, you only need to upload the license to your primary Geo instance. The license is stored in the database and is replicated to all instances.
+
 If you have an offline environment,
 [activate GitLab EE with a license file or key](license_file.md) instead.
 

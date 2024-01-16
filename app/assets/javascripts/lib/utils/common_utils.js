@@ -634,7 +634,7 @@ export const roundDownFloat = (number, precision = 0) => {
  * Represents navigation type constants of the Performance Navigation API.
  * Detailed explanation see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigation.
  */
-export const NavigationType = {
+export const navigationType = {
   TYPE_NAVIGATE: 0,
   TYPE_RELOAD: 1,
   TYPE_BACK_FORWARD: 2,

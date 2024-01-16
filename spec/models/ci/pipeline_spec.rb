@@ -2349,14 +2349,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it 'runs on a branch update push' do
-        expect(pipeline.before_sha).not_to be Gitlab::Git::BLANK_SHA
+        expect(pipeline.before_sha).not_to be Gitlab::Git::SHA1_BLANK_SHA
         expect(pipeline.branch_updated?).to be true
       end
     end
 
     context 'when pipeline does not have before SHA' do
       before do
-        pipeline.update!(before_sha: Gitlab::Git::BLANK_SHA)
+        pipeline.update!(before_sha: Gitlab::Git::SHA1_BLANK_SHA)
       end
 
       it 'does not run on a branch updating push' do
@@ -2384,7 +2384,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when either old or new revision is missing' do
       before do
-        pipeline.update!(before_sha: Gitlab::Git::BLANK_SHA)
+        pipeline.update!(before_sha: Gitlab::Git::SHA1_BLANK_SHA)
       end
 
       it 'returns nil' do
@@ -5724,6 +5724,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           it { is_expected.to be_truthy }
         end
+      end
+    end
+  end
+
+  describe '#auto_cancel_on_new_commit' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
+    subject(:auto_cancel_on_new_commit) { pipeline.auto_cancel_on_new_commit }
+
+    context 'when pipeline_metadata is not present' do
+      it { is_expected.to eq('conservative') }
+    end
+
+    context 'when pipeline_metadata is present' do
+      before_all do
+        create(:ci_pipeline_metadata, project: pipeline.project, pipeline: pipeline)
+      end
+
+      context 'when auto_cancel_on_new_commit is nil' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_new_commit = nil
+        end
+
+        it { is_expected.to eq('conservative') }
+      end
+
+      context 'when auto_cancel_on_new_commit is a valid value' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_new_commit = 'interruptible'
+        end
+
+        it { is_expected.to eq('interruptible') }
       end
     end
   end

@@ -2,14 +2,12 @@ import { shallowMount } from '@vue/test-utils';
 import CiVariableSettings from '~/ci/ci_variable_list/components/ci_variable_settings.vue';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
 import CiVariableDrawer from '~/ci/ci_variable_list/components/ci_variable_drawer.vue';
-
 import {
   ADD_VARIABLE_ACTION,
   EDIT_VARIABLE_ACTION,
   projectString,
 } from '~/ci/ci_variable_list/constants';
-import { mapEnvironmentNames } from '~/ci/ci_variable_list/utils';
-
+import { mapEnvironmentNames } from '~/ci/common/private/ci_environments_dropdown';
 import { mockEnvs, mockVariablesWithScopes, newVariable } from '../mocks';
 
 describe('Ci variable table', () => {

@@ -91,23 +91,43 @@ module QA
       end
 
       def user_commit_to_protected_branch(api_client)
-        create(:commit,
-          api_client: api_client,
-          project: project,
-          branch: 'protected-branch',
-          commit_message: Faker::Lorem.sentence, actions: [
-            { action: 'create', file_path: Faker::File.unique.file_name, content: Faker::Lorem.sentence }
-          ])
+        # Retry is needed due to delays with project authorization updates
+        # Long term solution to accessing the status of a project authorization update
+        # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 1,
+          message: "Commit to protected branch failed",
+          retry_on_exception: true
+        ) do
+          create(:commit,
+            api_client: api_client,
+            project: project,
+            branch: 'protected-branch',
+            commit_message: Faker::Lorem.sentence, actions: [
+              { action: 'create', file_path: Faker::File.unique.file_name, content: Faker::Lorem.sentence }
+            ])
+        end
       end
 
       def create_merge_request(api_client)
-        create(:merge_request,
-          api_client: api_client,
-          project: project,
-          description: Faker::Lorem.sentence,
-          target_new_branch: false,
-          file_name: Faker::File.unique.file_name,
-          file_content: Faker::Lorem.sentence)
+        # Retry is needed due to delays with project authorization updates
+        # Long term solution to accessing the status of a project authorization update
+        # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 1,
+          message: "MR fabrication failed after retry",
+          retry_on_exception: true
+        ) do
+          create(:merge_request,
+            api_client: api_client,
+            project: project,
+            description: Faker::Lorem.sentence,
+            target_new_branch: false,
+            file_name: Faker::File.unique.file_name,
+            file_content: Faker::Lorem.sentence)
+        end
       end
 
       def go_to_pipeline_job(user)

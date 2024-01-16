@@ -15,6 +15,37 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
 
   it_behaves_like "redis_shared_examples"
 
+  describe '.pool' do
+    before do
+      allow(described_class).to receive(:config_file_name).and_call_original
+      allow(fallback_class).to receive(:params).and_return({})
+
+      clear_class_pool(described_class)
+      clear_class_pool(fallback_class)
+    end
+
+    after do
+      clear_class_pool(described_class)
+      clear_class_pool(fallback_class)
+    end
+
+    context 'when not using fallback config' do
+      it 'creates its own connection pool' do
+        expect(fallback_class.pool == described_class.pool).to eq(false)
+      end
+    end
+
+    context 'when using fallback config' do
+      before do
+        allow(described_class).to receive(:params).and_return({})
+      end
+
+      it 'uses the fallback class connection pool' do
+        expect(fallback_class.pool == described_class.pool).to eq(true)
+      end
+    end
+  end
+
   describe '#fetch_config' do
     subject { described_class.new('test').send(:fetch_config) }
 
@@ -80,5 +111,11 @@ RSpec.shared_examples "redis_new_instance_shared_examples" do |name, fallback_cl
         end
       end
     end
+  end
+
+  def clear_class_pool(klass)
+    klass.remove_instance_variable(:@pool)
+  rescue NameError
+    # raised if @pool was not set; ignore
   end
 end

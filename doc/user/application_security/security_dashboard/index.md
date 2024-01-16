@@ -20,6 +20,12 @@ The data provided by the Security Dashboards can be used supply to insight on wh
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=Uo-pDns1OpQ).
 
+## Vulnerability metrics in the Value Streams Dashboard
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
+
+You can view vulnerability metrics also in the [Value Streams Dashboard](../../../user/analytics/value_streams_dashboard.md) comparison panel, which helps you understand security exposure in the context of your organization's software delivery workflows.
+
 ## Prerequisites
 
 To view the Security Dashboards, the following is required:

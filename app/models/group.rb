@@ -37,8 +37,8 @@ class Group < Namespace
 
   has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
-  has_many :group_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
-  has_many :namespace_members, -> { non_request.where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }).unscope(where: %i[source_id source_type]) },
+  has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
@@ -338,6 +338,18 @@ class Group < Namespace
       by_ids_or_paths(ids, paths).pluck(:id)
     end
 
+    def descendant_groups_counts
+      left_joins(:children).group(:id).count(:children_namespaces)
+    end
+
+    def projects_counts
+      left_joins(:non_archived_projects).group(:id).count(:projects)
+    end
+
+    def group_members_counts
+      left_joins(:group_members).group(:id).count(:members)
+    end
+
     private
 
     def public_to_user_arel(user)
@@ -434,7 +446,9 @@ class Group < Namespace
   end
 
   def owned_by?(user)
-    owners.include?(user)
+    return false unless user
+
+    all_owner_members.non_invite.exists?(user: user)
   end
 
   def add_members(users, access_level, current_user: nil, expires_at: nil)
@@ -593,6 +607,14 @@ class Group < Namespace
     end
   end
 
+  # Only for direct and not requested members with higher access level than MIMIMAL_ACCESS
+  # It returns true for non-active users
+  def has_user?(user)
+    return false unless user
+
+    group_members.non_invite.exists?(user: user)
+  end
+
   def direct_members
     GroupMember.active_without_invites_and_requests
                .non_minimal_access
@@ -685,7 +707,11 @@ class Group < Namespace
   end
 
   def highest_group_member(user)
-    GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
+    GroupMember
+      .where(source_id: self_and_ancestors_ids, user_id: user.id)
+      .non_request
+      .order(:access_level)
+      .last
   end
 
   def bots

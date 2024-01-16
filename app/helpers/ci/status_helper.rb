@@ -9,11 +9,6 @@
 #
 module Ci
   module StatusHelper
-    def ci_status_for_statuseable(subject)
-      status = subject.try(:status) || 'not found'
-      status.humanize
-    end
-
     # rubocop:disable Metrics/CyclomaticComplexity
     def ci_icon_for_status(status, size: 24)
       icon_name =
@@ -55,10 +50,6 @@ module Ci
       sprite_icon(icon_name, size: size, css_class: 'gl-icon')
     end
     # rubocop:enable Metrics/CyclomaticComplexity
-
-    def pipeline_status_cache_key(pipeline_status)
-      "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
-    end
 
     def render_commit_status(commit, status, ref: nil, tooltip_placement: 'left')
       project = commit.project

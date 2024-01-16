@@ -20,11 +20,13 @@ describe('WorkItemDescription', () => {
   const createComponent = ({
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
+    disableInlineEditing = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
       propsData: {
         workItemDescription,
         canEdit,
+        disableInlineEditing,
       },
     });
   };
@@ -81,8 +83,8 @@ describe('WorkItemDescription', () => {
   });
 
   describe('Edit button', () => {
-    it('is not visible when canUpdate = false', async () => {
-      await createComponent({
+    it('is not visible when canUpdate = false', () => {
+      createComponent({
         canUpdate: false,
       });
 
@@ -99,6 +101,15 @@ describe('WorkItemDescription', () => {
       await nextTick();
 
       expect(wrapper.emitted('startEditing')).toEqual([[]]);
+    });
+
+    it('is not visible when `disableInlineEditing` is true and the user can edit', () => {
+      createComponent({
+        disableInlineEditing: true,
+        canEdit: true,
+      });
+
+      expect(findEditButton().exists()).toBe(false);
     });
   });
 });

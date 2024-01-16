@@ -53,13 +53,6 @@ module NavHelper
     %w[system_info background_migrations background_jobs health_check]
   end
 
-  def show_super_sidebar?(_user = current_user)
-    # The new navigation is now enabled for everyone.
-    # We are working on cleaning up the use of this helper and other related code.
-    # See https://gitlab.com/groups/gitlab-org/-/epics/11875
-    true
-  end
-
   private
 
   def get_header_links

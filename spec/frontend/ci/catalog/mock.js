@@ -10,8 +10,22 @@ export const emptyCatalogResponseBody = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 0,
       nodes: [],
+    },
+  },
+};
+
+export const catalogResourcesCountResponseBody = {
+  data: {
+    ciCatalogResources: {
+      all: {
+        count: 1,
+        __typename: 'CiCatalogResourceConnection',
+      },
+      namespaces: {
+        count: 7,
+        __typename: 'CiCatalogResourceConnection',
+      },
     },
   },
 };
@@ -28,7 +42,6 @@ export const catalogResponseBody = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 41,
       nodes: [
         {
           id: 'gid://gitlab/Ci::Catalog::Resource/129',
@@ -248,7 +261,6 @@ export const catalogSinglePageResponse = {
         hasPreviousPage: false,
         __typename: 'PageInfo',
       },
-      count: 3,
       nodes: [
         {
           id: 'gid://gitlab/Ci::Catalog::Resource/132',
@@ -298,8 +310,8 @@ export const catalogSharedDataMock = {
       latestVersion: {
         __typename: 'Release',
         id: '3',
-        tagName: '1.0.0',
-        tagPath: 'path/to/release',
+        name: '1.0.0',
+        path: 'path/to/release',
         releasedAt: Date.now(),
         author: { id: 1, webUrl: 'profile/1', name: 'username' },
       },
@@ -344,7 +356,7 @@ export const catalogAdditionalDetailsMock = {
                 ],
               },
             },
-            tagName: 'v1.0.2',
+            name: 'v1.0.2',
             releasedAt: '2022-08-23T17:19:09Z',
           },
         ],
@@ -366,8 +378,8 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       latestVersion: {
         __typename: 'Release',
         id: '3',
-        tagName: '1.0.0',
-        tagPath: 'path/to/release',
+        name: '1.0.0',
+        path: 'path/to/release',
         releasedAt: Date.now(),
         author: { id: 1, webUrl: 'profile/1', name: 'username' },
       },
@@ -387,14 +399,14 @@ const componentsMockData = {
       id: 'gid://gitlab/Ci::Component/1',
       name: 'Ruby gal',
       description: 'This is a pretty amazing component that does EVERYTHING ruby.',
-      path: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      includePath: 'gitlab.com/gitlab-org/ruby-gal@~latest',
       inputs: [{ name: 'version', default: '1.0.0', required: true }],
     },
     {
       id: 'gid://gitlab/Ci::Component/2',
       name: 'Javascript madness',
       description: 'Adds some spice to your life.',
-      path: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      includePath: 'gitlab.com/gitlab-org/javascript-madness@~latest',
       inputs: [
         { name: 'isFun', default: 'true', required: true },
         { name: 'RandomNumber', default: '10', required: false },
@@ -404,7 +416,7 @@ const componentsMockData = {
       id: 'gid://gitlab/Ci::Component/3',
       name: 'Go go go',
       description: 'When you write Go, you gotta go go go.',
-      path: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      includePath: 'gitlab.com/gitlab-org/go-go-go@~latest',
       inputs: [{ name: 'version', default: '1.0.0', required: true }],
     },
   ],

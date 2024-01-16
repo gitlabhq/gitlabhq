@@ -21,7 +21,7 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby3_1" || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME =~ /^ruby\d+(_\d)*$/ || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -59,17 +59,14 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
-.if-merge-request-labels-run-in-ruby3_0: &if-merge-request-labels-run-in-ruby3_0
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
-
-.if-merge-request-labels-run-in-ruby3_1: &if-merge-request-labels-run-in-ruby3_1
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
-
-.if-merge-request-labels-run-in-ruby3_2: &if-merge-request-labels-run-in-ruby3_2
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
+.if-merge-request-labels-run-in-ruby: &if-merge-request-labels-run-in-ruby
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
+
+.if-merge-request-labels-as-if-foss-cross-project: &if-merge-request-labels-as-if-foss-cross-project
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss-cross-project/'
 
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
@@ -94,6 +91,9 @@
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+
+.if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
 
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
@@ -125,8 +125,8 @@
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
-.if-ruby3_1-branch-schedule-nightly: &if-ruby3_1-branch-schedule-nightly
-  if: '$CI_COMMIT_BRANCH == "ruby3_1" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+.if-ruby-branch-schedule-nightly: &if-ruby-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -161,8 +161,8 @@
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
-.if-ruby3_1-branch: &if-ruby3_1-branch
-  if: '$CI_COMMIT_BRANCH == "ruby3_1" || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
+.if-ruby-branch: &if-ruby-branch
+  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/'
 
 ####################
 # Changes patterns #
@@ -873,6 +873,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_BUILD_QA_IMAGE == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-review-app
@@ -911,13 +912,12 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".build-images:rules:build-qa-image-merge-requests", "rules"]
     - <<: *if-default-branch-schedule-nightly
       variables:
@@ -947,12 +947,13 @@
     # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
     # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
     # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-merge-request-labels-run-cs-evaluation
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -977,9 +978,10 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - <<: *if-default-refs
@@ -1073,8 +1075,10 @@
 ######################
 .ci-templates:rules:shellcheck:
   rules:
-    - changes: *ci-templates-patterns
-    - changes:
+    - <<: *if-default-refs
+      changes: *ci-templates-patterns
+    - <<: *if-default-refs
+      changes:
         - scripts/lint_templates_bash.rb
 
 ######################
@@ -1198,11 +1202,12 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
@@ -1227,6 +1232,7 @@
 
 .frontend:rules:compile-test-assets:
   rules:
+    - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
@@ -1250,6 +1256,12 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_JEST_INTEGRATION == "true"'
+    - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
+    - if: '$ENABLE_ESLINT == "true"'
+    - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
+    - if: '$ENABLE_GRAPHQL_SCHEMA_DUMP == "true"'
+    - if: '$ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
@@ -1300,6 +1312,7 @@
       when: never
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_JEST == "true"'
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
@@ -1475,11 +1488,13 @@
 
 .qa:rules:internal:
   rules:
+    - if: '$ENABLE_QA_INTERNAL == "true"'
     - <<: *if-default-refs
       changes: *qa-patterns
 
-.qa:rules:ee-and-foss:
+.qa:rules:selectors:
   rules:
+    - if: '$ENABLE_QA_SELECTORS == "true"'
     - <<: *if-default-refs
       changes: *code-qa-patterns
 
@@ -1514,7 +1529,7 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
     # Rules to support .qa:rules:package-and-test-ee
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1543,10 +1558,7 @@
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-ruby3_1-branch
-      variables:
-        USE_OLD_RUBY_VERSION: 'false'
-        CACHE_EDITION: 'GITLAB_RUBY3_1'
+    - <<: *if-ruby-branch
     - <<: *if-merge-request
       changes: *dependency-patterns
       variables:
@@ -1588,10 +1600,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
-    - <<: *if-ruby3_1-branch
-      variables:
-        USE_OLD_RUBY_VERSION: 'false'
-        CACHE_EDITION: 'GITLAB_RUBY3_1'
+    - <<: *if-ruby-branch
       allow_failure: true
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1639,10 +1648,7 @@
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-    - <<: *if-ruby3_1-branch
-      variables:
-        USE_OLD_RUBY_VERSION: 'false'
-        CACHE_EDITION: 'GITLAB_RUBY3_1'
+    - <<: *if-ruby-branch
     - <<: *if-merge-request
       # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
       changes: *gdk-component-patterns
@@ -1681,6 +1687,27 @@
 .qa:rules:e2e-schedule-blocking:
   rules:
     - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+
+.qa:rules:code-suggestions-eval-base:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-cs-evaluation
+
+.qa:rules:code-suggestions-eval:
+  rules:
+    - !reference [".qa:rules:code-suggestions-eval-base", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+
+.qa:rules:code-suggestions-eval-results:
+  rules:
+    - !reference [".qa:rules:code-suggestions-eval-base", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
 
 # Note: If any changes are made to this rule, the following should also be updated:
 # 1) .qa:rules:manual-omnibus-and-follow-up-e2e
@@ -1758,7 +1785,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       when: never
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
       when: never
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1805,7 +1832,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       when: never
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
       when: never
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1844,7 +1871,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       when: never
-    - <<: *if-ruby3_1-branch
+    - <<: *if-ruby-branch
       when: never
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1892,6 +1919,7 @@
 ###############
 .rails:rules:setup-test-env:
   rules:
+    - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1911,6 +1939,12 @@
       changes: *redis-patterns
     - <<: *if-default-branch-schedule-nightly
 
+.rails:rules:single-redis-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-redis", "rules"]
+
 .rails:rules:single-db:
   rules:
     - <<: *if-merge-request-labels-run-single-db
@@ -1921,6 +1955,12 @@
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:single-db-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db", "rules"]
 
 .rails:rules:single-db-as-if-foss:
   rules:
@@ -1947,6 +1987,12 @@
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
     - <<: *if-default-branch-schedule-nightly
+
+.rails:rules:single-db-ci-connection-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:single-db-ci-connection-as-if-foss:
   rules:
@@ -1995,6 +2041,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_MIGRATION == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *core-backend-patterns
@@ -2026,6 +2073,7 @@
 
 .rails:rules:ee-and-foss-background-migration:
   rules:
+    - if: '$ENABLE_RSPEC_BACKGROUND_MIGRATION == "true"'
     - !reference [".rails:rules:ee-and-foss-migration", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
@@ -2050,16 +2098,33 @@
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_UNIT == "true"'
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
     - <<: *if-default-refs
       changes: *backstage-patterns
 
+.rails:rules:clickhouse-changes:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - if: '$ENABLE_RSPEC_UNIT == "true"'
+    - !reference [".rails:rules:ee-and-foss-default-rules", rules]
+    - <<: *if-default-refs
+      changes: *backend-patterns
+
+.rails:rules:ee-only-clickhouse-changes:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:clickhouse-changes", rules]
+
 .rails:rules:ee-and-foss-integration:
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_INTEGRATION == "true"'
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
@@ -2068,12 +2133,14 @@
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - if: '$ENABLE_RSPEC_SYSTEM == "true"'
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
 .rails:rules:ee-and-foss-fast_spec_helper:
   rules:
+    - if: '$ENABLE_RSPEC_FAST_SPEC_HELPER == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
@@ -2385,18 +2452,13 @@
       changes: *code-backstage-patterns
       when: always
 
-.rails:rules:clickhouse-changes:
-  rules:
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-    - <<: *if-merge-request
-      changes: *backend-patterns
-
 #########################
 # Static analysis rules #
 #########################
 
 .static-analysis:rules:static-analysis:
   rules:
+    - if: '$ENABLE_STATIC_ANALYSIS == "true"'
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -2625,6 +2687,31 @@
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
+.reports:rules:x-ray:
+  rules:
+    - <<: *if-default-branch-refs
+      changes: *dependency-patterns
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/reports.gitlab-ci.yml"]
+      when: manual
+    - when: never
+
+.reports:rules:pajamas_adoption:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request
+      changes:
+        - '{,ee/}app/**/*.{js,vue,rb,haml}'
+    - <<: *if-default-refs
+
 ################
 # Review rules #
 ################
@@ -2675,7 +2762,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
-        KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
@@ -2785,6 +2871,10 @@
     - when: manual
       allow_failure: true
 
+.setup:rules:clone-gitlab-repo:
+  rules:
+    - if: '$CI_FETCH_REPO_GIT_STRATEGY == "none"'
+
 .setup:rules:gitlab_git_test:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -2794,7 +2884,7 @@
 
 .setup:rules:verify-default-ruby:
   rules:
-    - <<: *if-merge-request-labels-run-in-ruby3_2
+    - <<: *if-merge-request-labels-run-in-ruby
 
 .setup:rules:verify-tests-yml:
   rules:
@@ -2850,6 +2940,7 @@
 #######################
 .test-metadata:rules:retrieve-tests-metadata:
   rules:
+    - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-default-refs
       changes: *code-backstage-patterns
     - <<: *if-default-refs
@@ -2900,6 +2991,33 @@
   rules:
     - <<: *if-default-refs
       changes: *lint-metrics-yaml-patterns
+
+####################
+# as-if-foss rules #
+####################
+.as-if-foss:rules:start-as-if-foss:
+  rules:
+    - if: '$AS_IF_FOSS_TOKEN == null'
+      when: never
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss-cross-project
+
+.as-if-foss:rules:start-as-if-foss:allow-failure:manual:
+  rules:
+    - if: '$AS_IF_FOSS_TOKEN == null'
+      when: never
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss-cross-project
+      when: manual
+      allow_failure: true
+
+.as-if-foss:rules:start-as-if-foss:allow-failure:
+  rules:
+    - if: '$AS_IF_FOSS_TOKEN == null'
+      when: never
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss-cross-project
+      allow_failure: true
 
 ##################
 # as-if-jh rules #
@@ -2972,3 +3090,17 @@
       when: manual
     - <<: *if-merge-request-labels-run-all-rspec
       when: manual
+
+###############################
+# Observability Backend rules #
+###############################
+.observability-backend:rules:
+  rules:
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      when: manual
+      allow_failure: true

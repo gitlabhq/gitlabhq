@@ -8,6 +8,22 @@ RSpec.describe Ci::ProjectMirror do
 
   let!(:project) { create(:project, namespace: group2) }
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:namespace_mirror) }
+    it { is_expected.to have_many(:builds) }
+
+    it 'has a bidirectional relationship with namespace mirror' do
+      expect(described_class.reflect_on_association(:namespace_mirror).has_inverse?).to eq(:project_mirrors)
+      expect(Ci::NamespaceMirror.reflect_on_association(:project_mirrors).has_inverse?).to eq(:namespace_mirror)
+    end
+
+    it 'has a bidirectional relationship with builds' do
+      expect(described_class.reflect_on_association(:builds).has_inverse?).to eq(:project_mirror)
+      expect(Ci::Build.reflect_on_association(:project_mirror).has_inverse?).to eq(:builds)
+    end
+  end
+
   context 'scopes' do
     let_it_be(:another_project) { create(:project, namespace: group1) }
 

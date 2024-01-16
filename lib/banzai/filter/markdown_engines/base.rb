@@ -4,8 +4,10 @@ module Banzai
   module Filter
     module MarkdownEngines
       class Base
+        attr_reader :context
+
         def initialize(context)
-          @context = context
+          @context = context || {}
         end
 
         def render(text)
@@ -15,7 +17,7 @@ module Banzai
         private
 
         def sourcepos_disabled?
-          @context[:no_sourcepos]
+          context[:no_sourcepos]
         end
       end
     end

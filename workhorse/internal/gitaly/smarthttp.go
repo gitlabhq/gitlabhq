@@ -94,7 +94,7 @@ func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.R
 	return nil
 }
 
-func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) error {
+func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Repository, clientRequest io.Reader, clientResponse io.Writer, gitConfigOptions []string, gitProtocol string) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
 	ctx, waiter := client.sidechannelRegistry.Register(ctx, func(conn gitalyclient.SidechannelConn) error {
 		if _, err := io.Copy(conn, clientRequest); err != nil {
 			return fmt.Errorf("copy request body: %w", err)
@@ -118,13 +118,14 @@ func (client *SmartHTTPClient) UploadPack(ctx context.Context, repo *gitalypb.Re
 		GitProtocol:      gitProtocol,
 	}
 
-	if _, err := client.PostUploadPackWithSidechannel(ctx, rpcRequest); err != nil {
-		return fmt.Errorf("PostUploadPackWithSidechannel: %w", err)
+	resp, err := client.PostUploadPackWithSidechannel(ctx, rpcRequest)
+	if err != nil {
+		return nil, fmt.Errorf("PostUploadPackWithSidechannel: %w", err)
 	}
 
-	if err := waiter.Close(); err != nil {
-		return fmt.Errorf("close sidechannel waiter: %w", err)
+	if err = waiter.Close(); err != nil {
+		return nil, fmt.Errorf("close sidechannel waiter: %w", err)
 	}
 
-	return nil
+	return resp, nil
 }

@@ -1,8 +1,0 @@
----
-name: invalid_graphql_auth_401
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132149
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426196
-milestone: '16.5'
-type: development
-group: group::import and integrate
-default_enabled: false

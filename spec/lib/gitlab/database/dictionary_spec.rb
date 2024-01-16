@@ -24,6 +24,25 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     end
   end
 
+  describe '.any_entry' do
+    it 'loads an entry from any scope' do
+      expect(described_class.any_entry('ci_pipelines')).to be_present # Regular table
+      expect(described_class.any_entry('audit_events_archived')).to be_present # Deleted table
+      expect(described_class.any_entry('postgres_constraints')).to be_present # View
+      expect(described_class.any_entry('not_a_table_ever')).to be_nil
+    end
+  end
+
+  describe '.entry' do
+    it 'loads an Entry from the given scope' do
+      expect(described_class.entry('ci_pipelines')).to be_present # Regular table
+      expect(described_class.entry('audit_events_archived')).not_to be_present # Deleted table
+      expect(described_class.entry('postgres_constraints')).not_to be_present # Deleted table
+      expect(described_class.entry('audit_events_archived', 'deleted_tables')).to be_present # Deleted table
+      expect(described_class.entry('postgres_constraints', 'views')).to be_present # View
+    end
+  end
+
   describe '::Entry' do
     subject(:database_dictionary) { described_class::Entry.new(file_path) }
 
@@ -78,6 +97,39 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
           allow(database_dictionary).to receive(:gitlab_schema).and_return(nil)
 
           expect { database_dictionary.validate! }.to raise_error(Gitlab::Database::GitlabSchema::UnknownSchemaError)
+        end
+      end
+
+      context 'with allow_cross_joins' do
+        let(:file_path) { 'db/docs/achievements.yml' }
+
+        describe '#allow_cross_to_schemas' do
+          it 'returns the list of allowed schemas' do
+            expect(database_dictionary.allow_cross_to_schemas(:joins))
+              .to contain_exactly(:gitlab_main_clusterwide)
+          end
+        end
+      end
+
+      context 'with allow_cross_transactions' do
+        let(:file_path) { 'db/docs/activity_pub_releases_subscriptions.yml' }
+
+        describe '#allow_cross_to_schemas' do
+          it 'returns the list of allowed schemas' do
+            expect(database_dictionary.allow_cross_to_schemas(:transactions))
+              .to contain_exactly(:gitlab_main_clusterwide)
+          end
+        end
+      end
+
+      context 'with allow_cross_foreign_keys' do
+        let(:file_path) { 'db/docs/agent_group_authorizations.yml' }
+
+        describe '#allow_cross_to_schemas' do
+          it 'returns the list of allowed schemas' do
+            expect(database_dictionary.allow_cross_to_schemas(:foreign_keys))
+              .to contain_exactly(:gitlab_main_clusterwide)
+          end
         end
       end
     end

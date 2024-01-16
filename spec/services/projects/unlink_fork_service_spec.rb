@@ -70,14 +70,6 @@ RSpec.describe Projects::UnlinkForkService, :use_clean_rails_memory_store_cachin
     subject.execute(refresh_statistics: false)
   end
 
-  it 'does not refresh project statistics when the feature flag is disabled' do
-    stub_feature_flags(refresh_statistics_on_unlink_fork: false)
-
-    expect(ProjectCacheWorker).not_to receive(:perform_async)
-
-    subject.execute
-  end
-
   context 'when the original project was deleted' do
     it 'does not fail when the original project is deleted' do
       source = forked_project.forked_from_project

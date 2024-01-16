@@ -1,0 +1,7 @@
+workflow:
+  auto_cancel:
+    on_job_failure: all
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_job_failure: unexpected_value

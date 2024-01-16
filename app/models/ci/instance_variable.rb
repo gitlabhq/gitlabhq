@@ -13,6 +13,7 @@ module Ci
 
     alias_attribute :secret_value, :value
 
+    validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
       message: -> (object, data) { _("(%{value}) has already been taken") }
     }

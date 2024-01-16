@@ -2,7 +2,12 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { getParameterValues } from '~/lib/utils/url_utility';
+import {
+  getParameterValues,
+  updateHistory,
+  setUrlParams,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import EmptyState from './empty_state.vue';
 import TestSuiteTable from './test_suite_table.vue';
 import TestSummary from './test_summary.vue';
@@ -49,12 +54,28 @@ export default {
     ]),
     summaryBackClick() {
       this.removeSelectedSuiteIndex();
+
+      updateHistory({
+        url: removeParams(['job_name']),
+        title: document.title,
+        replace: true,
+      });
     },
     summaryTableRowClick(index) {
       this.setSelectedSuiteIndex(index);
 
       // Fetch the test suite when the user clicks to see more details
       this.fetchTestSuite(index);
+
+      const urlParams = {
+        job_name: this.getSelectedSuite.name,
+      };
+
+      updateHistory({
+        url: setUrlParams(urlParams),
+        title: document.title,
+        replace: true,
+      });
     },
     beforeEnterTransition() {
       document.documentElement.style.overflowX = 'hidden';

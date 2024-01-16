@@ -44,7 +44,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
 
           more_artifacts
 
-          expect { subject }.not_to exceed_query_limit(control.count)
+          expect { subject }.not_to exceed_query_limit(control)
         end
       end
 

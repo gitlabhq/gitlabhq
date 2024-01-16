@@ -49,7 +49,7 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
     let(:user_has_ssh_key) { false }
 
     it 'shows details' do
-      page.within('.breadcrumbs .breadcrumb-item-text') do
+      page.within('.breadcrumbs .js-breadcrumb-item-text') do
         expect(page).to have_content(project.title)
       end
 

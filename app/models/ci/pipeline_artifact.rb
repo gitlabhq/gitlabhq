@@ -4,6 +4,7 @@
 
 module Ci
   class PipelineArtifact < Ci::ApplicationRecord
+    include Ci::Partitionable
     include UpdateProjectStatistics
     include Artifactable
     include FileStoreMounter
@@ -30,6 +31,8 @@ module Ci
     validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
     validates :size, presence: true, numericality: { less_than_or_equal_to: FILE_SIZE_LIMIT }
     validates :file_type, presence: true
+
+    partitionable scope: :pipeline
 
     mount_file_store_uploader Ci::PipelineArtifactUploader
 

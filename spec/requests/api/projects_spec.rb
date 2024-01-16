@@ -1152,7 +1152,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect do
           request
-        end.not_to exceed_all_query_limit(control.count)
+        end.not_to exceed_all_query_limit(control)
       end
     end
 
@@ -3799,7 +3799,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect do
         post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
 
     it 'returns 200 when it successfully imports members from another project' do

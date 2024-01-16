@@ -215,6 +215,7 @@ export default {
       this.$emit('reset');
     },
     onShowModal() {
+      this.$emit('shown');
       if (this.usersLimitDataset.reachedLimit) {
         this.track('render', { category: 'default', label: ON_SHOW_TRACK_LABEL });
       }

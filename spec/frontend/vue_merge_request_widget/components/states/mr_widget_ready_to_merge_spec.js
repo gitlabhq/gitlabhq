@@ -212,6 +212,19 @@ describe('ReadyToMerge', () => {
       expect(findMergeButton().text()).toBe('Set to auto-merge');
       expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
     });
+
+    it('should show merge help text when pipeline has failed and has an auto merge strategy', () => {
+      createComponent({
+        mr: {
+          pipeline: { status: 'FAILED' },
+          availableAutoMergeStrategies: MWPS_MERGE_STRATEGY,
+          hasCI: true,
+        },
+      });
+
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
+      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
+    });
   });
 
   describe('merge immediately dropdown', () => {
@@ -855,6 +868,42 @@ describe('ReadyToMerge', () => {
     it("doesn't show auto-merge hint when auto merge is not set", () => {
       createComponent({ mr: { autoMergeEnabled: false } });
       expect(wrapper.text()).not.toContain('Auto-merge enabled');
+    });
+  });
+
+  describe('only allow merge if pipeline succeeds', () => {
+    beforeEach(() => {
+      const response = JSON.parse(JSON.stringify(readyToMergeResponse));
+      response.data.project.onlyAllowMergeIfPipelineSucceeds = true;
+      response.data.project.mergeRequest.headPipeline = {
+        id: 1,
+        active: true,
+        status: '',
+        path: '',
+      };
+
+      readyToMergeResponseSpy = jest.fn().mockResolvedValueOnce(response);
+    });
+
+    it('hides merge immediately dropdown when subscription returns', async () => {
+      createComponent({ mr: { id: 1 } });
+
+      await waitForPromises();
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
+
+      mockedSubscription.next({
+        data: {
+          mergeRequestMergeStatusUpdated: {
+            ...readyToMergeResponse.data.project.mergeRequest,
+            headPipeline: { id: 1, active: true, status: '', path: '' },
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findMergeImmediatelyDropdown().exists()).toBe(false);
     });
   });
 

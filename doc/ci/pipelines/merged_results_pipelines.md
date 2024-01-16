@@ -28,7 +28,7 @@ and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-re
 
 To use merged results pipelines:
 
-- Your project's [CI/CD configuration file](../yaml/index.md) must be configured to
+- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured to
   [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
 - Your repository must be a GitLab repository, not an
   [external repository](../ci_cd_for_external_repos/index.md).

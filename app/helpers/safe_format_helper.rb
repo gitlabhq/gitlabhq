@@ -3,8 +3,8 @@
 module SafeFormatHelper
   # Returns a HTML-safe String.
   #
-  # @param [String] format is escaped via `html_escape_once`
-  # @param [Array<Hash>] args are escaped via `html_escape` if they are not marked as HTML-safe
+  # @param [String] format is escaped via `ERB::Util.html_escape_once`
+  # @param [Array<Hash>] args are escaped via `ERB::Util.html_escape` if they are not marked as HTML-safe
   #
   # @example
   #   safe_format('See %{user_input}', user_input: '<b>bold</b>')

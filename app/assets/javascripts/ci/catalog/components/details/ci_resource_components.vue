@@ -106,7 +106,7 @@ export default {
         <div class="gl-display-flex">
           <pre
             class="gl-w-85p gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0 gl-border-r-none"
-          ><span>{{ generateSnippet(component.path) }}</span>
+          ><span>{{ generateSnippet(component.includePath) }}</span>
         </pre>
           <div class="gl--flex-center gl-bg-gray-10 gl-border gl-border-l-none">
             <gl-button
@@ -115,7 +115,7 @@ export default {
               icon="copy-to-clipboard"
               size="small"
               :title="$options.i18n.copyText"
-              :data-clipboard-text="generateSnippet(component.path)"
+              :data-clipboard-text="generateSnippet(component.includePath)"
               data-testid="copy-to-clipboard"
               :aria-label="$options.i18n.copyAriaText"
             />

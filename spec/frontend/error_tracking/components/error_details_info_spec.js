@@ -47,6 +47,13 @@ describe('ErrorDetails', () => {
     expect(wrapper.findByTestId('user-count-card').text()).toMatchInterpolatedText('Users 2');
   });
 
+  it('should not render a card with user counts if integrated error tracking', () => {
+    mountComponent({
+      integrated: true,
+    });
+    expect(wrapper.findByTestId('user-count-card').exists()).toBe(false);
+  });
+
   describe('first seen card', () => {
     it('if firstSeen is missing, does not render a card', () => {
       mountComponent({

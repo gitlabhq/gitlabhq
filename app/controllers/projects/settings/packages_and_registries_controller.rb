@@ -7,6 +7,7 @@ module Projects
 
       before_action :authorize_admin_project!
       before_action :packages_and_registries_settings_enabled!
+      before_action :set_feature_flag_packages_protected_packages, only: :show
 
       feature_category :package_registry
       urgency :low
@@ -29,6 +30,10 @@ module Projects
       def registry_settings_enabled!
         render_404 unless Gitlab.config.registry.enabled &&
           can?(current_user, :admin_container_image, project)
+      end
+
+      def set_feature_flag_packages_protected_packages
+        push_frontend_feature_flag(:packages_protected_packages, project)
       end
     end
   end

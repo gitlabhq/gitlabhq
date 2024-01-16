@@ -1,10 +1,9 @@
 <script>
-import { GlAvatarLabeled, GlIcon, GlTooltipDirective, GlTruncateText } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlTooltipDirective, GlTruncateText, GlBadge } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
-import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -20,15 +19,12 @@ export default {
     showMore: __('Show more'),
     showLess: __('Show less'),
   },
-  avatarSize: { default: 32, md: 48 },
-  safeHtmlConfig: {
-    ADD_TAGS: ['gl-emoji'],
-  },
+  truncateTextToggleButtonProps: { class: 'gl-font-sm!' },
   components: {
     GlAvatarLabeled,
     GlIcon,
-    UserAccessRoleBadge,
     GlTruncateText,
+    GlBadge,
     ListActions,
     DangerConfirmModal,
   },
@@ -76,7 +72,7 @@ export default {
       return this.group.parent ? 'subgroup' : 'group';
     },
     statsPadding() {
-      return this.showGroupIcon ? 'gl-pl-11' : 'gl-pl-8';
+      return this.showGroupIcon ? 'gl-pl-12' : 'gl-pl-10';
     },
     descendantGroupsCount() {
       return numberToMetricPrefix(this.group.descendantGroupsCount);
@@ -113,21 +109,22 @@ export default {
 </script>
 
 <template>
-  <li class="groups-list-item gl-py-5 gl-border-b gl-display-flex gl-align-items-flex-start">
-    <div class="gl-md-display-flex gl-align-items-center gl-flex-grow-1">
+  <li class="groups-list-item gl-py-5 gl-border-b gl-display-flex">
+    <div class="gl-md-display-flex gl-flex-grow-1">
       <div class="gl-display-flex gl-flex-grow-1">
-        <gl-icon
+        <div
           v-if="showGroupIcon"
-          class="gl-mr-3 gl-mt-3 gl-md-mt-5 gl-flex-shrink-0 gl-text-secondary"
-          :name="groupIconName"
-        />
+          class="gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-h-9 gl-mr-3"
+        >
+          <gl-icon class="gl-text-secondary" :name="groupIconName" />
+        </div>
         <gl-avatar-labeled
           :entity-id="group.id"
           :entity-name="group.fullName"
           :label="group.fullName"
           :label-link="group.webUrl"
           shape="rect"
-          :size="$options.avatarSize"
+          :size="48"
         >
           <template #meta>
             <div class="gl-px-2">
@@ -141,9 +138,9 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <user-access-role-badge v-if="shouldShowAccessLevel">{{
+                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
                     accessLevelLabel
-                  }}</user-access-role-badge>
+                  }}</gl-badge>
                 </div>
               </div>
             </div>
@@ -154,57 +151,57 @@ export default {
             :mobile-lines="2"
             :show-more-text="$options.i18n.showMore"
             :show-less-text="$options.i18n.showLess"
-            class="gl-mt-2"
+            :toggle-button-props="$options.truncateTextToggleButtonProps"
+            class="gl-mt-2 gl-max-w-88"
           >
             <div
-              v-safe-html:[$options.safeHtmlConfig]="group.descriptionHtml"
-              class="gl-font-sm md"
+              v-safe-html="group.descriptionHtml"
+              class="gl-font-sm gl-text-secondary md"
               data-testid="group-description"
             ></div>
           </gl-truncate-text>
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0 gl-md-ml-3"
+        class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0 gl-md-ml-3 gl-md-h-9"
         :class="statsPadding"
       >
-        <div class="gl-display-flex gl-align-items-center gl-gap-x-3">
-          <div
-            v-gl-tooltip="$options.i18n.subgroups"
-            :aria-label="$options.i18n.subgroups"
-            class="gl-text-secondary"
-            data-testid="subgroups-count"
-          >
-            <gl-icon name="subgroup" />
-            <span>{{ descendantGroupsCount }}</span>
-          </div>
-          <div
-            v-gl-tooltip="$options.i18n.projects"
-            :aria-label="$options.i18n.projects"
-            class="gl-text-secondary"
-            data-testid="projects-count"
-          >
-            <gl-icon name="project" />
-            <span>{{ projectsCount }}</span>
-          </div>
-          <div
-            v-gl-tooltip="$options.i18n.directMembers"
-            :aria-label="$options.i18n.directMembers"
-            class="gl-text-secondary"
-            data-testid="members-count"
-          >
-            <gl-icon name="users" />
-            <span>{{ groupMembersCount }}</span>
-          </div>
+        <div
+          v-gl-tooltip="$options.i18n.subgroups"
+          :aria-label="$options.i18n.subgroups"
+          class="gl-text-secondary"
+          data-testid="subgroups-count"
+        >
+          <gl-icon name="subgroup" />
+          <span>{{ descendantGroupsCount }}</span>
+        </div>
+        <div
+          v-gl-tooltip="$options.i18n.projects"
+          :aria-label="$options.i18n.projects"
+          class="gl-text-secondary"
+          data-testid="projects-count"
+        >
+          <gl-icon name="project" />
+          <span>{{ projectsCount }}</span>
+        </div>
+        <div
+          v-gl-tooltip="$options.i18n.directMembers"
+          :aria-label="$options.i18n.directMembers"
+          class="gl-text-secondary"
+          data-testid="members-count"
+        >
+          <gl-icon name="users" />
+          <span>{{ groupMembersCount }}</span>
         </div>
       </div>
     </div>
-    <list-actions
-      v-if="hasActions"
-      class="gl-ml-3 gl-md-align-self-center"
-      :actions="actions"
-      :available-actions="group.availableActions"
-    />
+    <div class="gl-display-flex gl-align-items-center gl-h-9 gl-ml-3">
+      <list-actions
+        v-if="hasActions"
+        :actions="actions"
+        :available-actions="group.availableActions"
+      />
+    </div>
 
     <danger-confirm-modal
       v-if="hasActionDelete"

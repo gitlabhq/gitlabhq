@@ -37,7 +37,7 @@ module Gitlab
       return unless expire
 
       with_redis do |redis|
-        redis.set(key_for(jid), 1, ex: expire)
+        redis.set(key_for(jid), 1, ex: expire.to_i)
       end
     end
 
@@ -56,7 +56,7 @@ module Gitlab
     # expire - The expiration time of the Redis key.
     def self.expire(jid, expire = DEFAULT_EXPIRATION)
       with_redis do |redis|
-        redis.expire(key_for(jid), expire)
+        redis.expire(key_for(jid), expire.to_i)
       end
     end
 

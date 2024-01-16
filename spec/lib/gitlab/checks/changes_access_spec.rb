@@ -78,13 +78,13 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
       end
 
       context 'with oldrev' do
-        let(:changes) { [{ oldrev: oldrev, newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
+        let(:changes) { [{ oldrev: oldrev, newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::SHA1_BLANK_SHA }] }
 
         it_behaves_like 'returns only commits with non empty revisions'
       end
 
       context 'without oldrev' do
-        let(:changes) { [{ newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::BLANK_SHA }] }
+        let(:changes) { [{ newrev: newrev }, { newrev: '' }, { newrev: Gitlab::Git::SHA1_BLANK_SHA }] }
 
         it_behaves_like 'returns only commits with non empty revisions'
       end
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
   describe '#commits_for' do
     let(:new_commits) { [] }
     let(:expected_commits) { [] }
-    let(:oldrev) { Gitlab::Git::BLANK_SHA }
+    let(:oldrev) { Gitlab::Git::SHA1_BLANK_SHA }
 
     shared_examples 'a listing of new commits' do
       it 'returns expected commits' do

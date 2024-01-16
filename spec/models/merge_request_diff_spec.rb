@@ -53,6 +53,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
     it { expect(subject.patch_id_sha).to eq('1e05e04d4c2a6414d9d4ab38208511a3bbe715f2') }
 
+    it 'calls GraphqlTriggers.merge_request_diff_generated' do
+      merge_request = create(:merge_request, :skip_diff_creation)
+
+      expect(GraphqlTriggers).to receive(:merge_request_diff_generated).with(merge_request)
+
+      merge_request.create_merge_request_diff
+    end
+
+    context 'when merge_request_diff_generated_subscription flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_generated_subscription: false)
+      end
+
+      it 'does not call GraphqlTriggers.merge_request_diff_generated' do
+        merge_request = create(:merge_request, :skip_diff_creation)
+
+        expect(GraphqlTriggers).not_to receive(:merge_request_diff_generated)
+
+        merge_request.create_merge_request_diff
+      end
+    end
+
     context 'when diff_type is merge_head' do
       let_it_be(:merge_request) { create(:merge_request) }
 
@@ -488,6 +510,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
       end
 
+      shared_examples_for 'perform generated files check' do
+        context 'when collapse_generated option is given' do
+          let(:diff_options) do
+            super().merge(collapse_generated: true)
+          end
+
+          it 'checks generated files' do
+            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+            expect(diffs.diff_files.first.generated?).to be false
+          end
+        end
+
+        context 'when collapse_generated option is not given' do
+          it 'does not check generated files' do
+            diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
+
+            expect(diffs.diff_files.first.generated?).to be nil
+          end
+        end
+      end
+
       context 'when no persisted files available' do
         before do
           diff_with_commits.clean!
@@ -501,6 +545,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it_behaves_like 'fetching full diffs'
+          it_behaves_like 'perform generated files check'
         end
       end
 
@@ -540,6 +585,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
             { ignore_whitespace_change: true }
           end
 
+          it_behaves_like 'perform generated files check'
+
           it 'returns pagination data from MergeRequestDiffBatch' do
             diffs = diff_with_commits.diffs_in_batch(1, 10, diff_options: diff_options)
             file_count = diff_with_commits.merge_request_diff_files.count
@@ -561,10 +608,34 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
 
     describe '#paginated_diffs' do
+      shared_examples 'diffs with generated files check' do
+        context 'when collapse_generated_diff_files FF is enabled' do
+          it 'checks generated files' do
+            diffs = diff_with_commits.paginated_diffs(1, 10)
+
+            expect(diffs.diff_files.first.generated?).not_to be_nil
+          end
+        end
+
+        context 'when collapse_generated_diff_files FF is disabled' do
+          before do
+            stub_feature_flags(collapse_generated_diff_files: false)
+          end
+
+          it 'does not check generated files' do
+            diffs = diff_with_commits.paginated_diffs(1, 10)
+
+            expect(diffs.diff_files.first.generated?).to be_nil
+          end
+        end
+      end
+
       context 'when no persisted files available' do
         before do
           diff_with_commits.clean!
         end
+
+        it_behaves_like 'diffs with generated files check'
 
         it 'returns a Gitlab::Diff::FileCollection::Compare' do
           diffs = diff_with_commits.paginated_diffs(1, 10)
@@ -575,6 +646,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       context 'when persisted files available' do
+        it_behaves_like 'diffs with generated files check'
+
         it 'returns paginated diffs' do
           diffs = diff_with_commits.paginated_diffs(1, 10)
 
@@ -911,11 +984,19 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       context 'handling generated files' do
-        let(:project) { create(:project, :repository) }
+        let(:project) do
+          create(:project, :custom_repo, files: {
+            '.gitattributes' => '*.txt gitlab-generated'
+          })
+        end
+
+        let(:generated_file_name_manual) { 'generated.txt' }
+        let(:generated_file_name_auto) { 'package-lock.json' }
+        let(:regular_file_name) { 'regular.rb' }
+
         let(:target_branch) { project.default_branch }
         let(:source_branch) { 'test-generated-diff-file' }
-        let(:generated_file_name) { 'generated.txt' }
-        let(:regular_file_name) { 'regular.rb' }
+
         let(:merge_request) do
           create(
             :merge_request,
@@ -931,20 +1012,34 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
 
         before do
-          project.repository.update_file(
-            project.creator,
-            '.gitattributes',
-            '*.txt gitlab-generated',
-            message: 'Update',
-            branch_name: target_branch)
+          project.repository.create_branch(source_branch, target_branch)
 
-          create_file_in_repo(project, target_branch, source_branch, generated_file_name, "generated text\n")
-          create_file_in_repo(project, source_branch, source_branch, regular_file_name, "something else\n")
+          project.repository.create_file(
+            project.creator,
+            generated_file_name_manual,
+            'updated generated content',
+            message: 'Update generated file',
+            branch_name: source_branch)
+
+          project.repository.create_file(
+            project.creator,
+            generated_file_name_auto,
+            'updated generated content',
+            message: 'Update generated file',
+            branch_name: source_branch)
+
+          project.repository.create_file(
+            project.creator,
+            regular_file_name,
+            'updated regular content',
+            message: "Update regular file",
+            branch_name: source_branch)
         end
 
         context 'with collapse_generated_diff_files feature flag' do
           it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name)).to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_manual)).to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_auto)).to be_generated
             expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
           end
         end
@@ -955,7 +1050,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           end
 
           it 'sets generated field correctly' do
-            expect(diff_files.find_by(new_path: generated_file_name)).not_to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_auto)).not_to be_generated
+            expect(diff_files.find_by(new_path: generated_file_name_manual)).not_to be_generated
             expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
           end
         end
@@ -1206,7 +1302,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     it 'returns false if passed commits do not exist' do
       expect(subject.includes_any_commits?([])).to eq(false)
-      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to eq(false)
+      expect(subject.includes_any_commits?([Gitlab::Git::SHA1_BLANK_SHA])).to eq(false)
     end
 
     it 'returns true if passed commits exists' do

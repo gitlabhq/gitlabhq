@@ -11,6 +11,7 @@ module Sidebars
           add_item(infrastructure_registry_menu_item)
           add_item(harbor_registry_menu_item)
           add_item(model_experiments_menu_item)
+          add_item(model_registry_menu_item)
           true
         end
 
@@ -47,7 +48,7 @@ module Sidebars
         end
 
         def container_registry_menu_item
-          if !::Gitlab.config.registry.enabled || !can?(context.current_user, :read_container_image, context.project)
+          if container_registry_unavailable?
             return ::Sidebars::NilMenuItem.new(item_id: :container_registry)
           end
 
@@ -103,11 +104,32 @@ module Sidebars
           )
         end
 
+        def model_registry_menu_item
+          unless can?(context.current_user, :read_model_registry, context.project)
+            return ::Sidebars::NilMenuItem.new(item_id: :model_registry)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Model registry'),
+            link: project_ml_models_path(context.project),
+            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
+            active_routes: { controller: %w[projects/ml/models] },
+            item_id: :model_registry
+          )
+        end
+
         def packages_registry_disabled?
           !::Gitlab.config.packages.enabled ||
             !can?(context.current_user, :read_package, context.project&.packages_policy_subject)
+        end
+
+        def container_registry_unavailable?
+          !::Gitlab.config.registry.enabled ||
+            !can?(context.current_user, :read_container_image, context.project)
         end
       end
     end
   end
 end
+
+Sidebars::Projects::Menus::PackagesRegistriesMenu.prepend_mod_with('Sidebars::Projects::Menus::PackagesRegistriesMenu')

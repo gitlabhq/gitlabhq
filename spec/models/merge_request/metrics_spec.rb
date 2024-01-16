@@ -93,12 +93,4 @@ RSpec.describe MergeRequest::Metrics do
       end
     end
   end
-
-  it_behaves_like 'database events tracking', feature_category: :service_ping do
-    let(:merge_request) { create(:merge_request) }
-
-    let(:record) { merge_request.metrics }
-    let(:namespace) { nil }
-    let(:update_params) { { pipeline_id: 1, updated_at: Date.tomorrow } }
-  end
 end

@@ -13,12 +13,14 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
       current_user: current_user,
       cascade_to_children: cascade_to_children,
       auto_canceled_by_pipeline: auto_canceled_by_pipeline,
-      execute_async: execute_async)
+      execute_async: execute_async,
+      safe_cancellation: safe_cancellation)
   end
 
   let(:cascade_to_children) { true }
   let(:auto_canceled_by_pipeline) { nil }
   let(:execute_async) { true }
+  let(:safe_cancellation) { false }
 
   shared_examples 'force_execute' do
     context 'when pipeline is not cancelable' do
@@ -30,9 +32,14 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
     context 'when pipeline is cancelable' do
       before do
-        create(:ci_build, :running, pipeline: pipeline)
-        create(:ci_build, :created, pipeline: pipeline)
-        create(:ci_build, :success, pipeline: pipeline)
+        create(:ci_build, :running, pipeline: pipeline, name: 'build1')
+        create(:ci_build, :created, pipeline: pipeline, name: 'build2')
+        create(:ci_build, :success, pipeline: pipeline, name: 'build3')
+        create(:ci_build, :pending, :interruptible, pipeline: pipeline, name: 'build4')
+
+        create(:ci_bridge, :running, pipeline: pipeline, name: 'bridge1')
+        create(:ci_bridge, :running, :interruptible, pipeline: pipeline, name: 'bridge2')
+        create(:ci_bridge, :success, :interruptible, pipeline: pipeline, name: 'bridge3')
       end
 
       it 'logs the event' do
@@ -55,7 +62,15 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
       it 'cancels all cancelable jobs' do
         expect(response).to be_success
-        expect(pipeline.all_jobs.pluck(:status)).to match_array(%w[canceled canceled success])
+        expect(pipeline.all_jobs.pluck(:name, :status)).to match_array([
+          %w[build1 canceled],
+          %w[build2 canceled],
+          %w[build3 success],
+          %w[build4 canceled],
+          %w[bridge1 canceled],
+          %w[bridge2 canceled],
+          %w[bridge3 success]
+        ])
       end
 
       context 'when auto_canceled_by_pipeline is provided' do
@@ -74,6 +89,28 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
         end
       end
 
+      context 'when cascade_to_children: false and safe_cancellation: true' do
+        # We are testing the `safe_cancellation: true`` case with only `cascade_to_children: false`
+        # because `safe_cancellation` is passed as `true` only when `cascade_to_children` is `false`
+        # from `CancelRedundantPipelinesService`.
+
+        let(:cascade_to_children) { false }
+        let(:safe_cancellation) { true }
+
+        it 'cancels only interruptible jobs' do
+          expect(response).to be_success
+          expect(pipeline.all_jobs.pluck(:name, :status)).to match_array([
+            %w[build1 running],
+            %w[build2 created],
+            %w[build3 success],
+            %w[build4 canceled],
+            %w[bridge1 running],
+            %w[bridge2 canceled],
+            %w[bridge3 success]
+          ])
+        end
+      end
+
       context 'when pipeline has child pipelines' do
         let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
         let!(:child_job) { create(:ci_build, :running, pipeline: child_pipeline) }
@@ -81,8 +118,8 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
         let!(:grandchild_job) { create(:ci_build, :running, pipeline: grandchild_pipeline) }
 
         before do
-          child_pipeline.source_bridge.update!(status: :running)
-          grandchild_pipeline.source_bridge.update!(status: :running)
+          child_pipeline.source_bridge.update!(name: 'child_pipeline_bridge', status: :running)
+          grandchild_pipeline.source_bridge.update!(name: 'grandchild_pipeline_bridge', status: :running)
         end
 
         context 'when execute_async: false' do
@@ -91,8 +128,15 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
           it 'cancels the bridge jobs and child jobs' do
             expect(response).to be_success
 
-            expect(pipeline.bridges.pluck(:status)).to be_all('canceled')
-            expect(child_pipeline.bridges.pluck(:status)).to be_all('canceled')
+            expect(pipeline.bridges.pluck(:name, :status)).to match_array([
+              %w[bridge1 canceled],
+              %w[bridge2 canceled],
+              %w[bridge3 success],
+              %w[child_pipeline_bridge canceled]
+            ])
+            expect(child_pipeline.bridges.pluck(:name, :status)).to match_array([
+              %w[grandchild_pipeline_bridge canceled]
+            ])
             expect(child_job.reload).to be_canceled
             expect(grandchild_job.reload).to be_canceled
           end
@@ -110,7 +154,12 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
             expect(response).to be_success
 
-            expect(pipeline.bridges.pluck(:status)).to be_all('canceled')
+            expect(pipeline.bridges.pluck(:name, :status)).to match_array([
+              %w[bridge1 canceled],
+              %w[bridge2 canceled],
+              %w[bridge3 success],
+              %w[child_pipeline_bridge canceled]
+            ])
           end
         end
 
@@ -124,7 +173,12 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
 
             expect(response).to be_success
 
-            expect(pipeline.bridges.pluck(:status)).to be_all('canceled')
+            expect(pipeline.bridges.pluck(:name, :status)).to match_array([
+              %w[bridge1 canceled],
+              %w[bridge2 canceled],
+              %w[bridge3 success],
+              %w[child_pipeline_bridge canceled]
+            ])
             expect(child_job.reload).to be_running
           end
         end

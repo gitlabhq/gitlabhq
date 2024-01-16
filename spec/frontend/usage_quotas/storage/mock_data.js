@@ -6,3 +6,5 @@ export const mockEmptyResponse = { data: { project: null } };
 export const defaultProjectProvideValues = {
   projectPath: '/project-path',
 };
+
+export const defaultNamespaceProvideValues = {};

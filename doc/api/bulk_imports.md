@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
-[group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+[group migration by direct transfer](../user/group/import/index.md).
 
 WARNING:
 Migrating projects with this API is in [Beta](../policy/experiment-beta-support.md#beta). This feature is not

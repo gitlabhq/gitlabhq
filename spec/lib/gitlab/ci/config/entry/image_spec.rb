@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
         end
       end
 
-      context "when docker specifies an option" do
+      context "when docker specifies platform" do
         let(:config) { { name: 'image:1.0', docker: { platform: 'amd64' } } }
 
         it 'is valid' do
@@ -129,15 +129,73 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
             )
           end
         end
+
+        context "when invalid data type is specified for platform option" do
+          let(:config) { { name: 'image:1.0', docker: { platform: 1 } } }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors.first)
+              .to match %r{image executor opts '/docker/platform' must be a valid 'string'}
+          end
+        end
+      end
+
+      context "when docker specifies user" do
+        let(:config) { { name: 'image:1.0', docker: { user: 'dave' } } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'image:1.0',
+              executor_opts: {
+                docker: { user: 'dave' }
+              }
+            )
+          end
+        end
+
+        context "when user is a UID" do
+          let(:config) { { name: 'image:1.0', docker: { user: '1001' } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+
+          describe '#value' do
+            it "returns value" do
+              expect(entry.value).to eq(
+                name: 'image:1.0',
+                executor_opts: {
+                  docker: { user: '1001' }
+                }
+              )
+            end
+          end
+        end
+
+        context "when invalid data type is specified for user option" do
+          let(:config) { { name: 'image:1.0', docker: { user: 1 } } }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors.first)
+              .to match %r{image executor opts '/docker/user' must be a valid 'string'}
+          end
+        end
       end
 
       context "when docker specifies an invalid option" do
-        let(:config) { { name: 'image:1.0', docker: { platform: 1 } } }
+        let(:config) { { name: 'image:1.0', docker: { unknown_key: 'foo' } } }
 
         it 'is not valid' do
           expect(entry).not_to be_valid
           expect(entry.errors.first)
-            .to match %r{image executor opts '/docker/platform' must be a valid 'string'}
+            .to match %r{image executor opts '/docker/unknown_key' must be a valid 'schema'}
         end
       end
     end

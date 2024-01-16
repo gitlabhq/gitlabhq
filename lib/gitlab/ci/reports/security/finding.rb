@@ -7,7 +7,6 @@ module Gitlab
         class Finding
           include ::VulnerabilityFindingHelpers
 
-          attr_reader :compare_key
           attr_reader :confidence
           attr_reader :identifiers
           attr_reader :flags
@@ -34,10 +33,7 @@ module Gitlab
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          alias_method :cve, :compare_key
-
-          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists
-            @compare_key = compare_key
+          def initialize(identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists
             @confidence = confidence
             @identifiers = identifiers
             @flags = flags
@@ -65,7 +61,6 @@ module Gitlab
 
           def to_hash
             %i[
-              compare_key
               confidence
               identifiers
               flags
@@ -84,7 +79,6 @@ module Gitlab
               details
               signatures
               description
-              cve
               solution
             ].index_with do |key|
               public_send(key) # rubocop:disable GitlabSecurity/PublicSend
@@ -141,7 +135,7 @@ module Gitlab
 
           def <=>(other)
             if severity == other.severity
-              compare_key <=> other.compare_key
+              uuid <=> other.uuid
             else
               ::Enums::Vulnerability.severity_levels[other.severity] <=>
                 ::Enums::Vulnerability.severity_levels[severity]
@@ -200,7 +194,7 @@ module Gitlab
           private
 
           def generate_project_fingerprint
-            Digest::SHA1.hexdigest(compare_key)
+            Digest::SHA1.hexdigest(uuid.to_s)
           end
 
           def location_fingerprints

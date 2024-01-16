@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     gitlab-safe_request_store (0.1.0)
+      rack (~> 2.2.8)
       request_store
 
 GEM
@@ -35,7 +36,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.6.2)
-    rack (3.0.4.1)
+    rack (2.2.8)
     rainbow (3.1.1)
     regexp_parser (2.7.0)
     request_store (1.5.1)

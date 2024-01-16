@@ -135,4 +135,4 @@ DEPENDENCIES
   rails (~> 6.1.6.1)
 
 BUNDLED WITH
-   2.3.22
+   2.5.4

@@ -56,6 +56,8 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       let(:scope_attrs) { { project: project } }
       let(:usage) { :deployments }
     end
+
+    it { is_expected.to include_module(EachBatch) }
   end
 
   describe '.stoppable' do
@@ -878,7 +880,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
     context 'when the SHA for the deployment does not exist in the repo' do
       it 'returns false' do
-        deployment.update!(sha: Gitlab::Git::BLANK_SHA)
+        deployment.update!(sha: Gitlab::Git::SHA1_BLANK_SHA)
         commit = project.commit
 
         expect(deployment.includes_commit?(commit.id)).to be false
@@ -1536,6 +1538,18 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       other_deployments.each do |deployment|
         expect(project.commit(deployment.ref_path)).not_to be_nil
       end
+    end
+
+    it 'does not trigger N+1 queries' do
+      project = create(:project, :repository)
+      environment = create(:environment, project: project)
+      create(:deployment, environment: environment, project: project)
+
+      control = ActiveRecord::QueryRecorder.new { project.deployments.fast_destroy_all }
+
+      create_list(:deployment, 2, environment: environment, project: project)
+
+      expect { project.deployments.fast_destroy_all }.not_to exceed_query_limit(control)
     end
   end
 

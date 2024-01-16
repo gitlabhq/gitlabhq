@@ -17,11 +17,7 @@ module Projects
 
     override :schedule_repository_storage_update_worker
     def schedule_repository_storage_update_worker
-      Projects::UpdateRepositoryStorageWorker.perform_async(
-        project_id,
-        destination_storage_name,
-        id
-      )
+      Projects::UpdateRepositoryStorageWorker.perform_async(id)
     end
 
     private

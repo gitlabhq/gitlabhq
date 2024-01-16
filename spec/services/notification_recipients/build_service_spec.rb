@@ -21,13 +21,13 @@ RSpec.describe NotificationRecipients::BuildService, feature_category: :team_pla
 
         service.build_new_note_recipients(note)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           service.build_new_note_recipients(note)
         end
 
         create_user
 
-        expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control_count).with_threshold(threshold)
+        expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control).with_threshold(threshold)
       end
     end
 
@@ -76,13 +76,15 @@ RSpec.describe NotificationRecipients::BuildService, feature_category: :team_pla
 
         service.build_new_review_recipients(review)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           service.build_new_review_recipients(review)
         end
 
         create_user
 
-        expect { service.build_new_review_recipients(review) }.not_to exceed_query_limit(control_count).with_threshold(threshold)
+        expect do
+          service.build_new_review_recipients(review)
+        end.not_to exceed_query_limit(control).with_threshold(threshold)
       end
     end
 
@@ -130,13 +132,13 @@ RSpec.describe NotificationRecipients::BuildService, feature_category: :team_pla
 
         service.build_requested_review_recipients(note)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           service.build_requested_review_recipients(note)
         end
 
         create_user
 
-        expect { service.build_requested_review_recipients(note) }.not_to exceed_query_limit(control_count)
+        expect { service.build_requested_review_recipients(note) }.not_to exceed_query_limit(control)
       end
     end
   end

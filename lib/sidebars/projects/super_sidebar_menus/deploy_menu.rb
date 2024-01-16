@@ -20,7 +20,8 @@ module Sidebars
             :releases,
             :feature_flags,
             :packages_registry,
-            :container_registry
+            :container_registry,
+            :model_registry
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

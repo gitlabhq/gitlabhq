@@ -203,6 +203,8 @@ RSpec.configure do |config|
   config.include PendingDirectUploadHelpers, :direct_uploads
   config.include LabelsHelper, type: :feature
   config.include UnlockPipelinesHelpers, :unlock_pipelines
+  config.include UserWithNamespaceShim
+  config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -320,9 +322,6 @@ RSpec.configure do |config|
 
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
-
-      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/431041
-      stub_feature_flags(vite: false)
     else
       unstub_all_feature_flags
     end
@@ -423,7 +422,7 @@ RSpec.configure do |config|
 
   config.after do
     Fog.unmock! if Fog.mock?
-    Gitlab::CurrentSettings.clear_in_memory_application_settings!
+    Gitlab::ApplicationSettingFetcher.clear_in_memory_application_settings!
 
     # Reset all feature flag stubs to default for testing
     stub_all_feature_flags

@@ -2,10 +2,11 @@
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category: :package_registry do
-  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:namespace) { create(:group) }
   let_it_be(:project) { create(:project, namespace: namespace) }
   let_it_be(:user) { create(:user) }
   let_it_be(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
+  let_it_be(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
 
   let(:overrides) { {} }
 
@@ -36,10 +37,72 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
 
     context 'package already exists elsewhere' do
       let(:project2) { create(:project, namespace: namespace) }
-      let!(:existing_package) { create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0') }
+      let!(:existing_package) do
+        create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0')
+      end
 
-      it { expect(subject[:http_status]).to eq 403 }
-      it { expect(subject[:message]).to be 'Access Denied' }
+      context 'when duplicates not allowed' do
+        it { expect(subject.reason).to eq :forbidden }
+        it { expect(subject.message).to be 'A package with the same name already exists in the namespace' }
+      end
+
+      context 'when duplicates allowed' do
+        before do
+          package_settings.update_column(:terraform_module_duplicates_allowed, true)
+        end
+
+        it_behaves_like 'creating a package'
+      end
+
+      context 'with duplicate regex exception' do
+        before do
+          package_settings.update_columns(
+            terraform_module_duplicates_allowed: false,
+            terraform_module_duplicate_exception_regex: regex
+          )
+        end
+
+        context 'when regex matches' do
+          let(:regex) { ".*#{existing_package.name.last(3)}.*" }
+
+          it_behaves_like 'creating a package'
+        end
+
+        context 'when regex does not match' do
+          let(:regex) { '.*not-a-match.*' }
+
+          it { expect(subject.reason).to eq :forbidden }
+          it { expect(subject.message).to be 'A package with the same name already exists in the namespace' }
+        end
+      end
+
+      context 'for ancestor namespace' do
+        let_it_be(:package_settings) { create(:namespace_package_setting, :group) }
+        let_it_be(:parent_namespace) { package_settings.namespace }
+
+        before do
+          namespace.update!(parent: parent_namespace)
+        end
+
+        context 'when duplicates allowed in an ancestor' do
+          before do
+            package_settings.update_column(:terraform_module_duplicates_allowed, true)
+          end
+
+          it_behaves_like 'creating a package'
+        end
+
+        context 'when duplicates allowed in an ancestor with exception' do
+          before do
+            package_settings.update_columns(
+              terraform_module_duplicates_allowed: false,
+              terraform_module_duplicate_exception_regex: ".*#{existing_package.name.last(3)}.*"
+            )
+          end
+
+          it_behaves_like 'creating a package'
+        end
+      end
 
       context 'marked as pending_destruction' do
         before do
@@ -53,7 +116,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
     context 'version already exists' do
       let!(:existing_version) { create(:terraform_module_package, project: project, name: 'foo/bar', version: '1.0.1') }
 
-      it { expect(subject[:http_status]).to eq 403 }
+      it { expect(subject[:reason]).to eq :forbidden }
       it { expect(subject[:message]).to be 'Package version already exists.' }
 
       context 'marked as pending_destruction' do
@@ -68,7 +131,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
     context 'with empty version' do
       let(:overrides) { { module_version: '' } }
 
-      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:reason]).to eq :bad_request }
       it { expect(subject[:message]).to eq 'Version is empty.' }
     end
   end

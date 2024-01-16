@@ -7,9 +7,18 @@ module Projects
     include Avatarable
     include Gitlab::SQL::Pattern
 
+    SLUG_ALLOWED_REGEX = %r{\A[a-zA-Z0-9_\-.]+\z}
+
     validates :name, presence: true, length: { maximum: 255 }
     validates :name, uniqueness: { case_sensitive: false }, if: :name_changed?
     validate :validate_name_format, if: :name_changed?
+
+    validates :slug,
+      length: { maximum: 255 },
+      uniqueness: { case_sensitive: false },
+      format: { with: SLUG_ALLOWED_REGEX, message: "can contain only letters, digits, '_', '-', '.'" },
+      if: :slug_changed?
+
     validates :title, presence: true, length: { maximum: 255 }, on: :create
     validates :description, length: { maximum: 1024 }
 

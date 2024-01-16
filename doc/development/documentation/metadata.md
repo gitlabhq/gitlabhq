@@ -32,11 +32,48 @@ To populate the metadata, include this information:
 - `info`: How to find the Technical Writer associated with the page's stage and
   group.
 
+### Exceptions
+
+Documents in the `/development` directory get this metadata:
+
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+---
+```
+
+Documents in the `/solutions` directory get this metadata:
+
+```yaml
+---
+stage: Solutions Architecture
+group: Solutions Architecture
+info: This page is owned by the Solutions Architecture team.
+---
+```
+
+## Description metadata
+
+The `description` tag:
+
+- Is used to populate text on the docs home page.
+- Is shown in social media previews.
+- Can be used in search result snippets.
+
+For the top-level pages, like **Use GitLab** and one level underneath,
+the descriptions are lists of nouns. For example, for **Set up your organization**,
+the description is `Users, groups, namespaces, SSH keys.`
+
+For other pages, descriptions are not actively maintained. However, if you want to add one,
+use a short description of what the page is about.
+See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips. 
+
 ## Additional metadata
 
 The following metadata is optional and is not actively maintained.
 
-- `description`: A short description of what the page is about. See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for writing tips. This content can be used in search result snippets and is shown in social media previews.
 - `feedback`: Set to `false` to not include the "Help & Feedback" footer.
 - `noindex`: Set to `false` to prevent the page from being indexed by search engines.
 - `redirect_to`: Used to control redirects. For more information, see [Redirects in GitLab documentation](redirects.md).

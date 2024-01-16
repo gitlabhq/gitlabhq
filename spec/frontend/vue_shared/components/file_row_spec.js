@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { file } from 'jest/ide/helpers';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
@@ -152,5 +153,17 @@ describe('File row component', () => {
     });
 
     expect(wrapper.findComponent(FileIcon).props('submodule')).toBe(submodule);
+  });
+
+  it('renders pinned icon', () => {
+    createComponent({
+      file: {
+        ...file(),
+        pinned: true,
+      },
+      level: 0,
+    });
+
+    expect(wrapper.findComponent(GlIcon).props('name')).toBe('thumbtack');
   });
 });

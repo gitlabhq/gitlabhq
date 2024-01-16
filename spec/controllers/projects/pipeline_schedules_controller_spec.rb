@@ -108,11 +108,11 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     end
 
     it 'avoids N + 1 queries', :request_store do
-      control_count = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }.count
+      control = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }
 
       create_list(:ci_pipeline_schedule, 2, project: project)
 
-      expect { visit_pipelines_schedules }.not_to exceed_query_limit(control_count)
+      expect { visit_pipelines_schedules }.not_to exceed_query_limit(control)
     end
 
     context 'when the scope is set to active' do

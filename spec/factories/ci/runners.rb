@@ -14,6 +14,7 @@ FactoryBot.define do
       groups { [] }
       projects { [] }
       token_expires_at { nil }
+      creator { nil }
     end
 
     after(:build) do |runner, evaluator|
@@ -24,6 +25,8 @@ FactoryBot.define do
       evaluator.groups.each do |group|
         runner.runner_namespaces << build(:ci_runner_namespace, runner: runner, namespace: group)
       end
+
+      runner.creator = evaluator.creator if evaluator.creator
     end
 
     after(:create) do |runner, evaluator|

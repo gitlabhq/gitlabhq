@@ -76,7 +76,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
 
         expect(worker.class)
           .to receive(:perform_in)
-          .with(15, project.id, { 'number' => 2 }, '123')
+          .with(15.012, project.id, { 'number' => 2 }, '123')
 
         worker.perform(project.id, { 'number' => 2 }, '123')
       end
@@ -97,6 +97,15 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
         .to receive(:import)
         .with(10, 20)
         .and_raise(Gitlab::GithubImport::RateLimitError)
+
+      expect(worker.try_import(10, 20)).to eq(false)
+    end
+
+    it 'returns false when the import fails due to the FailedToObtainLockError' do
+      expect(worker)
+        .to receive(:import)
+        .with(10, 20)
+        .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
 
       expect(worker.try_import(10, 20)).to eq(false)
     end

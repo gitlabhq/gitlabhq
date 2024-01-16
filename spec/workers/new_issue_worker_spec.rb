@@ -99,6 +99,14 @@ RSpec.describe NewIssueWorker, feature_category: :team_planning do
             expect(Event.last).to have_attributes(target_id: issue.id, target_type: 'WorkItem')
           end
         end
+
+        context 'when skip_notifications is true' do
+          it 'does not call NotificationService' do
+            expect(NotificationService).not_to receive(:new)
+
+            worker.perform(issue.id, user.id, issue.class.name, true)
+          end
+        end
       end
     end
   end

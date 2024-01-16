@@ -433,16 +433,16 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
     end
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         subject.send(:store_dev_info, project: project, merge_requests: merge_requests)
-      end.count
+      end
 
       merge_requests << create(:merge_request, :unique_branches, source_project: project)
 
       expect do
         subject.send(:store_dev_info, project: project,
                                       merge_requests: merge_requests)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_query_limit(control)
     end
   end
 

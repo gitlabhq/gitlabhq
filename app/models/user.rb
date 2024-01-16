@@ -151,7 +151,7 @@ class User < MainClusterwide::ApplicationRecord
   # Namespace for personal projects
   has_one :namespace,
     -> { where(type: Namespaces::UserNamespace.sti_name) },
-    required: true,
+    required: false,
     dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
     foreign_key: :owner_id,
     inverse_of: :owner,
@@ -270,7 +270,8 @@ class User < MainClusterwide::ApplicationRecord
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users
+  has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
+    disable_joins: true
 
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
@@ -283,8 +284,6 @@ class User < MainClusterwide::ApplicationRecord
   has_one :banned_user, class_name: '::Users::BannedUser'
 
   has_many :reviews, foreign_key: :author_id, inverse_of: :author
-
-  has_many :in_product_marketing_emails, class_name: '::Users::InProductMarketingEmail'
 
   has_many :timelogs
 
@@ -304,6 +303,10 @@ class User < MainClusterwide::ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
+  validates :username,
+    presence: true,
+    exclusion: { in: Gitlab::PathRegex::TOP_LEVEL_ROUTES, message: N_('%{value} is a reserved name') }
+  validates :username, uniqueness: true, unless: :namespace
   validates :name, presence: true, length: { maximum: 255 }
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
@@ -314,10 +317,9 @@ class User < MainClusterwide::ApplicationRecord
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
-  validates :username, presence: true
   validate  :check_password_weakness, if: :encrypted_password_changed?
 
-  validates :namespace, presence: true
+  validates :namespace, presence: true, unless: :optional_namespace?
   validate :namespace_move_dir_allowed, if: :username_changed?, unless: :new_record?
 
   validate :unique_email, if: :email_changed?
@@ -591,6 +593,8 @@ class User < MainClusterwide::ApplicationRecord
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
   scope :order_oldest_last_activity, -> { reorder(arel_table[:last_activity_on].asc.nulls_first, arel_table[:id].desc) }
+  scope :ordered_by_id_desc, -> { reorder(arel_table[:id].desc) }
+
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
@@ -845,6 +849,25 @@ class User < MainClusterwide::ApplicationRecord
           )
         ])
       scope.reorder(order)
+    end
+
+    # This should be kept in sync with the frontend filtering in
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L68 and
+    # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L1053
+    def gfm_autocomplete_search(query)
+      where(
+        "REPLACE(users.name, ' ', '') ILIKE :pattern OR users.username ILIKE :pattern",
+        pattern: "%#{sanitize_sql_like(query)}%"
+      ).order(
+        Arel.sql(sanitize_sql(
+          [
+            "CASE WHEN starts_with(REPLACE(users.name, ' ', ''), :pattern) OR starts_with(users.username, :pattern) THEN 1 ELSE 2 END",
+            { pattern: query }
+          ]
+        )),
+        :username,
+        :id
+      )
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.
@@ -1302,7 +1325,13 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def can_create_project?
-    projects_limit_left > 0
+    projects_limit_left > 0 && allow_user_to_create_group_and_project?
+  end
+
+  def allow_user_to_create_group_and_project?
+    return true if Gitlab::CurrentSettings.allow_project_creation_for_guest_and_below
+
+    highest_role > Gitlab::Access::GUEST
   end
 
   def can_create_group?
@@ -1596,12 +1625,6 @@ class User < MainClusterwide::ApplicationRecord
     if namespace
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
-    elsif Feature.disabled?(:create_personal_ns_outside_model, Feature.current_request)
-      # TODO: we should no longer need the `type` parameter once we can make the
-      #       the `has_one :namespace` association use the correct class.
-      #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-      namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
-      namespace.build_namespace_settings
     end
   end
 
@@ -1623,6 +1646,9 @@ class User < MainClusterwide::ApplicationRecord
       self.errors.add(:base, :username_exists_as_a_different_namespace)
     else
       namespace_path_errors.each do |msg|
+        # Already handled by username validation.
+        next if msg.ends_with?('is a reserved name')
+
         self.errors.add(:username, msg)
       end
     end
@@ -2299,6 +2325,10 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   private
+
+  def optional_namespace?
+    Feature.enabled?(:optional_personal_namespace, self)
+  end
 
   def block_or_ban
     user_scores = Abuse::UserTrustScore.new(self)

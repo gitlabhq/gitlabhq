@@ -24,19 +24,23 @@ const getRangeFromSourcePos = (sourcePos) => {
 export const getMarkdownSource = (element) => {
   if (!element.dataset.sourcepos) return undefined;
 
-  const source = getFullSource(element);
-  const range = getRangeFromSourcePos(element.dataset.sourcepos);
-  let elSource = '';
+  try {
+    const source = getFullSource(element);
+    const range = getRangeFromSourcePos(element.dataset.sourcepos);
+    let elSource = '';
 
-  if (!source.length) return undefined;
+    if (!source.length) return undefined;
 
-  for (let i = range.start.row; i <= range.end.row; i += 1) {
-    if (i === range.start.row) {
-      elSource += source[i].substring(range.start.col);
-    } else {
-      elSource += `\n${source[i]}` || '';
+    for (let i = range.start.row; i <= range.end.row; i += 1) {
+      if (i === range.start.row) {
+        elSource += source[i].substring(range.start.col);
+      } else {
+        elSource += `\n${source[i]}` || '';
+      }
     }
-  }
 
-  return elSource.trim();
+    return elSource.trim();
+  } catch {
+    return undefined;
+  }
 };

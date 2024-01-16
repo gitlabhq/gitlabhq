@@ -92,7 +92,7 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_DIFF_DATA_BATCH_DATA', () => {
+  describe('SET_DIFF_DATA_BATCH', () => {
     it('should set diff data batch type properly', () => {
       const mockFile = getDiffFileMock();
       const state = {
@@ -108,6 +108,39 @@ describe('DiffsStoreMutations', () => {
       expect(state.diffFiles[0].collapsed).toEqual(false);
       expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
     });
+
+    it('should update diff position by default', () => {
+      const mockFile = getDiffFileMock();
+      const state = {
+        diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
+        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
+      };
+      const diffMock = {
+        diff_files: [mockFile],
+      };
+
+      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
+
+      expect(state.diffFiles[1].file_hash).toBe(mockFile.file_hash);
+      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+    });
+
+    it('should not update diff position', () => {
+      const mockFile = getDiffFileMock();
+      const state = {
+        diffFiles: [mockFile, { ...mockFile, file_hash: 'foo', file_path: 'foo' }],
+        treeEntries: { [mockFile.file_path]: { fileHash: mockFile.file_hash } },
+      };
+      const diffMock = {
+        diff_files: [mockFile],
+        updatePosition: false,
+      };
+
+      mutations[types.SET_DIFF_DATA_BATCH](state, diffMock);
+
+      expect(state.diffFiles[0].file_hash).toBe(mockFile.file_hash);
+      expect(state.treeEntries[mockFile.file_path].diffLoaded).toBe(true);
+    });
   });
 
   describe('SET_COVERAGE_DATA', () => {
@@ -119,6 +152,17 @@ describe('DiffsStoreMutations', () => {
 
       expect(state.coverageFiles).toEqual(coverage);
       expect(state.coverageLoaded).toEqual(true);
+    });
+  });
+
+  describe('SET_DIFF_TREE_ENTRY', () => {
+    it('should set tree entry', () => {
+      const file = getDiffFileMock();
+      const state = { treeEntries: { [file.file_path]: {} } };
+
+      mutations[types.SET_DIFF_TREE_ENTRY](state, file);
+
+      expect(state.treeEntries[file.file_path].diffLoaded).toBe(true);
     });
   });
 
@@ -1074,6 +1118,17 @@ describe('DiffsStoreMutations', () => {
       mutations[types.SET_FILE_FORCED_OPEN](state, { filePath: 'abc', force: true });
 
       expect(state.diffFiles[0].viewer.forceOpen).toBe(true);
+    });
+  });
+
+  describe('SET_PINNED_FILE_HASH', () => {
+    it('set pinned file hash', () => {
+      const state = {};
+      const file = getDiffFileMock();
+
+      mutations[types.SET_PINNED_FILE_HASH](state, file.file_hash);
+
+      expect(state.pinnedFileHash).toBe(file.file_hash);
     });
   });
 });

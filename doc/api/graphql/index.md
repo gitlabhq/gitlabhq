@@ -1,6 +1,7 @@
 ---
 stage: Manage
 group: Import and Integrate
+description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -42,6 +43,77 @@ You can work with sample queries that pull data from public projects on GitLab.c
 - [Use custom emoji](custom_emoji.md)
 
 The [get started](getting_started.md) page includes different methods to customize GraphQL queries.
+
+### Authentication
+
+Some queries can be accessed anonymously without the request needing to be authenticated,
+but others require it. Mutations always require authentication.
+
+Authentication can happen by:
+
+- [Token](#token-authentication)
+- [Session cookie](#session-cookie-authentication)
+
+If the authentication information is not valid, GitLab returns an error message with a status code of 401:
+
+{"errors":[{"message":"Invalid token"}]}
+
+#### Token authentication
+
+Use any of the following tokens to authenticate with the GraphQL API:
+
+- [OAuth 2.0 tokens](../../api/oauth2.md)
+- [Personal access tokens](../../user/profile/personal_access_tokens.md)
+- [Project access tokens](../../user/project/settings/project_access_tokens.md)
+- [Group access tokens](../../user/group/settings/group_access_tokens.md)
+
+Authenticate with a token by passing it through in a [request header](#header-authentication) or as a [parameter](#parameter-authentication).
+
+Tokens require the correct [scope](#token-scopes).
+
+##### Header authentication
+
+Example of token authentication using an `Authorization: Bearer <token>` request header:
+
+```shell
+curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer <token>" \
+     --header "Content-Type: application/json" --request POST \
+     --data "{\"query\": \"query {currentUser {name}}\"}"
+```
+
+##### Parameter authentication
+
+Alternatively, OAuth 2.0 tokens can be passed in using the `access_token` parameter:
+
+```shell
+curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
+     --header "Content-Type: application/json" --request POST \
+     --data "{\"query\": \"query {currentUser {name}}\"}"
+```
+
+Personal, project, or group access tokens can be passed in using the `private_token` parameter:
+
+```shell
+curl "https://gitlab.com/api/graphql?private_token=<access_token>" \
+     --header "Content-Type: application/json" --request POST \
+     --data "{\"query\": \"query {currentUser {name}}\"}"
+```
+
+##### Token scopes
+
+Tokens must have the correct scope to access the GraphQL API, either:
+
+| Scope      | Access  |
+|------------|---------|
+| `read_api` | Grants read access to the API. Sufficient for queries. |
+| `api`      | Grants read and write access to the API. Required by mutations. |
+
+#### Session cookie authentication
+
+Signing in to the main GitLab application sets a `_gitlab_session` session cookie.
+
+The [interactive GraphQL explorer](#interactive-graphql-explorer) and the web frontend of
+GitLab itself use this method of authentication.
 
 ### Global IDs
 

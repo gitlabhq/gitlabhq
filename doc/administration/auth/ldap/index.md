@@ -1210,10 +1210,9 @@ For more information on synchronizing users and groups between LDAP and GitLab, 
 
 ## Move from LDAP to SAML
 
-1. [Configure SAML](../../../integration/saml.md). Add `auto_link_ldap_user` to:
+1. [Add SAML configuration](../../../integration/saml.md) to:
    - [`gitlab.rb` for Linux package installations](../../../integration/saml.html?tab=Linux+package+%28Omnibus%29).
    - [`values.yml` for Helm chart installations](../../../integration/saml.html?tab=Helm+chart+%28Kubernetes%29).
-   For more information, see the [initial settings for all providers](../../../integration/omniauth.md#configure-initial-settings).
 
 1. Optional. [Disable the LDAP auth from the sign-in page](#disable-ldap-web-sign-in).
 

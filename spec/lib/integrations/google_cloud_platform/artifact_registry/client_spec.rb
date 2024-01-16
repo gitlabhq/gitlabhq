@@ -26,6 +26,10 @@ RSpec.describe Integrations::GoogleCloudPlatform::ArtifactRegistry::Client, feat
 
   describe '#list_docker_images' do
     let(:page_token) { nil }
+    let(:expected_url) do
+      "#{described_class::GLGO_BASE_URL}/gcp/ar/projects/#{gcp_project_id}/" \
+        "locations/#{gcp_location}/repositories/#{gcp_repository}/docker"
+    end
 
     subject(:list) { client.list_docker_images(page_token: page_token) }
 
@@ -36,6 +40,13 @@ RSpec.describe Integrations::GoogleCloudPlatform::ArtifactRegistry::Client, feat
     it 'calls glgo list docker images API endpoint' do
       stub_list_docker_image(body: dummy_list_body)
       expect(client).to receive(:encoded_jwt).with(wlif: gcp_wlif)
+      expect(::Gitlab::HTTP).to receive(:get).with(
+        expected_url,
+        headers: an_instance_of(Hash),
+        query: an_instance_of(Hash),
+        format: :plain,
+        extra_allowed_uris: [URI(described_class::GLGO_BASE_URL)]
+      ).and_call_original
 
       expect(list).to include(images: an_instance_of(Array), next_page_token: an_instance_of(String))
     end

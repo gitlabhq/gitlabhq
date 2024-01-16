@@ -433,6 +433,10 @@ NOTE:
 Multi-node Redis must be deployed in an odd number of 3 nodes or more to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally,
 such as a cloud provider service.
 
+NOTE:
+Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
 information. We recommend using a combination of a Redis password and tight
@@ -977,7 +981,7 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PostgreSQL replication and failover troubleshooting section](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 before proceeding.
 
 <div align="right">
@@ -990,6 +994,10 @@ before proceeding.
 
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
+
+NOTE:
+PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
+Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
 The following IPs will be used as an example:
 
@@ -1415,7 +1423,7 @@ Updates to example must be made at:
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
-the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
@@ -1692,6 +1700,10 @@ NOTE:
 [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+
 The following IPs will be used as an example:
 
 - `10.6.0.71`: Sidekiq 1
@@ -1800,6 +1812,15 @@ Updates to example must be made at:
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
@@ -1830,11 +1851,6 @@ Updates to example must be made at:
    run: node-exporter: (pid 30134) 77353s; run: log: (pid 29706) 77372s
    run: sidekiq: (pid 30142) 77351s; run: log: (pid 29638) 77386s
    ```
-
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -1969,6 +1985,14 @@ On each node perform the following:
      'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
+   gitlab_rails['ci_secure_files_object_store_enabled'] = true
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+
+   gitlab_rails['ci_secure_files_object_store_connection'] = {
+      'provider' => 'Google',
+      'google_project' => '<gcp-project-name>',
+      'google_json_key_location' => '<path-to-gcp-service-account-key>'
+   }
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the
@@ -2250,7 +2274,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services | 2     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | 3.9 vCPU, 11.8 GB memory        |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 

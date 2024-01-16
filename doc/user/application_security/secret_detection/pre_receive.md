@@ -29,7 +29,9 @@ Prerequisites:
 
 ## Limitations
 
-This feature only scans non-binary blobs under 1 MiB in size. Binary blobs and blobs larger than 1 MiB are not scanned.
+- This feature only scans non-binary blobs under 1 MiB in size. Binary blobs and blobs larger than 1 MiB are not scanned.
+- The scan does not analyze the content of a commit if it is identical to the content of another file already present in the source code. 
+- The scan skips analyzing files that are renamed, deleted, or moved, unless their content is modified in the same commit.
 
 ## Resolve a blocked push
 
@@ -53,15 +55,7 @@ If the blocked secret appears earlier in your Git history:
 
 ## Skip secret detection
 
-In some cases, it may be necessary to skip pre-receive secret detection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout. To skip secret detection for a particular secret, add `# gitleaks:allow` to the end of the line. To skip secret detection for all commits in a push, add `[skip secret detection]` to one of the commit messages. For example:
-
-```ruby
-# This secret will be skipped due to gitleaks:allow.
-FAKE_TOKEN = allowfaketoken123 # gitleaks:allow
-
-# This secret will be scanned, and the push will be rejected.
-REAL_TOKEN = rejectrealtoken123
-```
+In some cases, it may be necessary to skip pre-receive secret detection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout. To skip secret detection for all commits in a push, add `[skip secret detection]` to one of the commit messages. For example:
 
 ```shell
 # These commits are in the same push. Both will not be scanned.

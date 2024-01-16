@@ -56,7 +56,7 @@ module QA
             pat.user = user
             # importing very large project can take multiple days
             # token must not expire while we still poll for import result
-            pat.expires_at = (Time.now.to_date + 5)
+            pat.expires_at = (Time.now.to_date + 6)
           end.token
         )
       end
@@ -85,7 +85,7 @@ module QA
 
       # Imported objects
       #
-      let(:imported_project) { imported_group.projects(auto_paginate: true, attempts: 3).find { |project| project.name == gitlab_source_project }.reload! }
+      let(:imported_project) { imported_group.projects(auto_paginate: true).find { |project| project.name == gitlab_source_project }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true, attempts: 3).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true, attempts: 3).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true, attempts: 3).map { |l| l.except(:id, :description_html) } }

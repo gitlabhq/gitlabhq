@@ -187,7 +187,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
-    it { is_expected.to have_many(:in_product_marketing_emails) }
     it { is_expected.to have_many(:timelogs) }
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
@@ -221,6 +220,17 @@ RSpec.describe User, feature_category: :user_profile do
 
     it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
+    end
+
+    describe 'organizations association' do
+      it 'does not create a cross-database query' do
+        user = create(:user)
+        create(:organization_user, user: user)
+
+        with_cross_joins_prevented do
+          expect(user.organizations.count).to eq(1)
+        end
+      end
     end
 
     describe 'default values' do
@@ -616,38 +626,33 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe 'username' do
+    shared_examples 'username validations' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)
       end
 
-      it 'rejects denied names' do
-        user = build(:user, username: 'dashboard')
+      context 'when username is reserved' do
+        let(:username) { 'dashboard' }
 
-        expect(user).not_to be_valid
-        expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
+        it 'rejects denied names' do
+          expect(user).not_to be_valid
+          expect(user.errors.messages[:username]).to eq ['dashboard is a reserved name']
+        end
       end
 
-      it 'allows child names' do
-        user = build(:user, username: 'avatar')
+      context 'when username is a child' do
+        let(:username) { 'avatar' }
 
-        expect(user).to be_valid
+        it 'allows child names' do
+          expect(user).to be_valid
+        end
       end
 
-      it 'allows wildcard names' do
-        user = build(:user, username: 'blob')
+      context 'when username is a wildcard' do
+        let(:username) { 'blob' }
 
-        expect(user).to be_valid
-      end
-
-      context 'when username is changed' do
-        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
-
-        it 'validates move_dir is allowed for the namespace' do
-          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
-          user.username = 'new_path'
-          expect(user).to be_invalid
-          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
+        it 'allows wildcard names' do
+          expect(user).to be_valid
         end
       end
 
@@ -656,25 +661,59 @@ RSpec.describe User, feature_category: :user_profile do
         let!(:other_user) { create(:user, username: username) }
 
         it 'is invalid' do
-          user = build(:user, username: username)
-
           expect(user).not_to be_valid
           expect(user.errors.full_messages).to eq(['Username has already been taken'])
         end
       end
 
-      it 'validates format' do
-        Mime::EXTENSION_LOOKUP.keys.each do |type|
-          user = build(:user, username: "test.#{type}")
+      Mime::EXTENSION_LOOKUP.keys.each do |type|
+        context 'with extension format' do
+          let(:username) { "test.#{type}" }
 
-          expect(user).not_to be_valid
-          expect(user.errors.full_messages).to include('Username ending with a reserved file extension is not allowed.')
-          expect(build(:user, username: "test#{type}")).to be_valid
+          it do
+            expect(user).not_to be_valid
+            expect(user.errors.full_messages).to include('Username ending with a reserved file extension is not allowed.')
+          end
+        end
+
+        context 'when suffixed by extension type' do
+          let(:username) { "test#{type}" }
+
+          it do
+            expect(user).to be_valid
+          end
         end
       end
+    end
 
-      it 'validates format on updated record' do
-        expect(create(:user).update(username: 'profile.html')).to be_falsey
+    context 'when creating user' do
+      let(:user) { build(:user, username: username) }
+
+      include_examples 'username validations'
+    end
+
+    context 'when updating user' do
+      let(:user) { create(:user) }
+
+      before do
+        user.username = username if defined?(username)
+      end
+
+      include_examples 'username validations'
+
+      context 'when personal project has container registry tags' do
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
+
+        before do
+          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
+        end
+
+        it 'validates move_dir is allowed for the namespace' do
+          user.username = 'new_path'
+
+          expect(user).to be_invalid
+          expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
+        end
       end
     end
 
@@ -1431,6 +1470,20 @@ RSpec.describe User, feature_category: :user_profile do
       it 'sorts users by current_sign_in_at in ascending order' do
         expect(described_class.order_oldest_sign_in.to_sql).to include(
           'ORDER BY "users"."current_sign_in_at" ASC NULLS LAST')
+      end
+    end
+
+    describe '.ordered_by_id_desc' do
+      let_it_be(:first_user) { create(:user) }
+      let_it_be(:second_user) { create(:user) }
+
+      it 'generates the order SQL in descending order' do
+        expect(described_class.ordered_by_id_desc.to_sql).to include(
+          'ORDER BY "users"."id" DESC')
+      end
+
+      it 'sorts users correctly' do
+        expect(described_class.ordered_by_id_desc).to eq([second_user, first_user])
       end
     end
 
@@ -3368,6 +3421,27 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '.gfm_autocomplete_search' do
+    let_it_be(:user_1) { create(:user, username: 'someuser', name: 'John Doe') }
+    let_it_be(:user_2) { create(:user, username: 'userthomas', name: 'Thomas Person') }
+
+    it 'returns partial matches on username' do
+      expect(described_class.gfm_autocomplete_search('some')).to eq([user_1])
+    end
+
+    it 'returns matches on name across multiple words' do
+      expect(described_class.gfm_autocomplete_search('johnd')).to eq([user_1])
+    end
+
+    it 'prioritizes sorting of matches that start with the query' do
+      expect(described_class.gfm_autocomplete_search('user')).to eq([user_2, user_1])
+    end
+
+    it 'falls back to sorting by username' do
+      expect(described_class.gfm_autocomplete_search('ser')).to eq([user_1, user_2])
+    end
+  end
+
   describe '.user_search_minimum_char_limit' do
     it 'returns true' do
       expect(described_class.user_search_minimum_char_limit).to be(true)
@@ -3621,6 +3695,66 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(project_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
       expect(group_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
+    end
+  end
+
+  describe '#can_create_project?' do
+    let(:user) { create(:user) }
+
+    context "when projects_limit_left is 0" do
+      before do
+        allow(user).to receive(:projects_limit_left).and_return(0)
+      end
+
+      it "returns false" do
+        expect(user.can_create_project?).to be_falsey
+      end
+    end
+
+    context "when projects_limit_left is > 0" do
+      before do
+        allow(user).to receive(:projects_limit_left).and_return(1)
+      end
+
+      context "with allow_project_creation_for_guest_and_below default value of true" do
+        it "returns true" do
+          expect(user.can_create_project?).to be_truthy
+        end
+      end
+
+      context "when Gitlab::CurrentSettings.allow_project_creation_for_guest_and_below is false" do
+        before do
+          stub_application_setting(allow_project_creation_for_guest_and_below: false)
+        end
+
+        [
+          Gitlab::Access::NO_ACCESS,
+          Gitlab::Access::MINIMAL_ACCESS,
+          Gitlab::Access::GUEST
+        ].each do |role|
+          context "when users highest role is #{role}" do
+            it "returns false" do
+              allow(user).to receive(:highest_role).and_return(role)
+              expect(user.can_create_project?).to be_falsey
+            end
+          end
+        end
+
+        [
+          Gitlab::Access::REPORTER,
+          Gitlab::Access::DEVELOPER,
+          Gitlab::Access::MAINTAINER,
+          Gitlab::Access::OWNER,
+          Gitlab::Access::ADMIN
+        ].each do |role|
+          context "when users highest role is #{role}" do
+            it "returns true" do
+              allow(user).to receive(:highest_role).and_return(role)
+              expect(user.can_create_project?).to be_truthy
+            end
+          end
+        end
+      end
     end
   end
 
@@ -4468,13 +4602,13 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'avoids N+1 queries' do
           fresh_user = described_class.find(user.id)
-          control_count = ActiveRecord::QueryRecorder.new do
+          control = ActiveRecord::QueryRecorder.new do
             fresh_user.solo_owned_groups
-          end.count
+          end
 
           create(:group).add_owner(user)
 
-          expect { solo_owned_groups }.not_to exceed_query_limit(control_count)
+          expect { solo_owned_groups }.not_to exceed_query_limit(control)
         end
       end
     end
@@ -5692,27 +5826,6 @@ RSpec.describe User, feature_category: :user_profile do
         user.valid?
 
         expect(user.namespace).to be_nil
-      end
-
-      context 'when create_personal_ns_outside_model feature flag is disabled' do
-        before do
-          stub_feature_flags(create_personal_ns_outside_model: false)
-        end
-
-        it 'creates the namespace' do
-          expect(user.namespace).to be_nil
-
-          user.save!
-
-          expect(user.namespace).to be_present
-          expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
-        end
-
-        it 'creates the namespace setting' do
-          user.save!
-
-          expect(user.namespace.namespace_settings).to be_persisted
-        end
       end
     end
 

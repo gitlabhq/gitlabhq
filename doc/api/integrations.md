@@ -98,17 +98,17 @@ Parameters:
 | `app_store_private_key` | string | true | Apple App Store Connect private key. |
 | `app_store_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
 
-### Disable Apple App Store
+### Disable Apple App Store Connect
 
-Disable the Apple App Store integration for a project. Integration settings are reset.
+Disable the Apple App Store Connect integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/apple_app_store
 ```
 
-### Get Apple App Store settings
+### Get Apple App Store Connect settings
 
-Get the Apple App Store integration settings for a project.
+Get the Apple App Store Connect integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/apple_app_store
@@ -198,8 +198,8 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `bamboo_url` | string | true | Bamboo root URL (for example, `https://bamboo.example.com`). |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_key` | string | true | Bamboo build plan key like `KEY`. |
-| `username` | string | true | A user with API access, if applicable. |
+| `build_key` | string | true | Bamboo build plan key (for example, `KEY`). |
+| `username` | string | true | User with API access to the Bamboo server. |
 | `password` | string | true | Password of the user. |
 
 ### Disable Atlassian Bamboo
@@ -232,9 +232,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New issue URL. |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `new_issue_url` | string | true |  URL of the new issue. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable Bugzilla
 
@@ -303,9 +303,9 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | Campfire API token. To find it, sign in to Campfire and select **My info**.                 |
-| `subdomain`   | string  | false    | Campfire subdomain. Text between `https://` and `.campfirenow.com` when you're logged in.   |
-| `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
+| `token`       | string  | true     | API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**. |
+| `subdomain`   | string  | false    | `.campfirenow.com` subdomain when you're signed in. |
+| `room`        | string  | false    | ID portion of the Campfire room URL. |
 
 ### Disable Campfire
 
@@ -339,8 +339,8 @@ Parameters:
 
 | Parameter     | Type   | Required | Description    |
 | ------------- | ------ | -------- | -------------- |
-| `issues_url`  | string | true     | Issue URL.     |
-| `project_url` | string | true     | Project URL.   |
+| `issues_url`  | string | true     | URL of the issue.     |
+| `project_url` | string | true     | URL of the project.   |
 
 ### Disable ClickUp
 
@@ -372,7 +372,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `confluence_url` | string | true | The URL of the Confluence Workspace hosted on `atlassian.net`. |
+| `confluence_url` | string | true | URL of the Confluence Workspace hosted on `atlassian.net`. |
 
 ### Disable Confluence Workspace
 
@@ -404,9 +404,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  New issue URL. |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `new_issue_url` | string | true |  URL of the new issue. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable a custom issue tracker
 
@@ -462,6 +462,40 @@ Get the Datadog integration settings for a project.
 GET /projects/:id/integrations/datadog
 ```
 
+## Diffblue Cover
+
+### Set up Diffblue Cover
+
+Set up the Diffblue Cover integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/diffblue-cover
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `diffblue_license_key` | string | true | Diffblue Cover license key. |
+| `diffblue_access_token_name` | string | true | Access token name used by Diffblue Cover in pipelines. |
+| `diffblue_access_token_secret` | string  | true | Access token secret used by Diffblue Cover in pipelines. |
+
+### Disable Diffblue Cover
+
+Disable the Diffblue Cover integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/diffblue-cover
+```
+
+### Get Diffblue Cover settings
+
+Get the Diffblue Cover integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/diffblue-cover
+```
+
 ## Discord Notifications
 
 ### Set up Discord Notifications
@@ -478,7 +512,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/…`). |
+| `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/...`). |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
 | `confidential_issue_channel` | string | false | The webhook override to receive notifications for confidential issue events. |
@@ -610,9 +644,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | The URL to create an issue in EWM. |
-| `project_url`   | string | true | The URL to the project in EWM. |
-| `issues_url`    | string | true | The URL to view an issue in EWM. Must contain `:id`. |
+| `new_issue_url` | string | true | URL of the new issue. |
+| `project_url`   | string | true | URL of the project. |
+| `issues_url`    | string | true | URL of the issue. |
 
 ### Disable EWM
 
@@ -644,7 +678,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `external_wiki_url` | string | true | The URL of the external wiki. |
+| `external_wiki_url` | string | true | URL of the external wiki. |
 
 ### Disable an external wiki
 
@@ -696,69 +730,6 @@ Get the GitHub integration settings for a project.
 GET /projects/:id/integrations/github
 ```
 
-## GitLab for Slack app
-
-### Set up the GitLab for Slack app
-
-Set up the GitLab for Slack app for a project.
-
-```plaintext
-PUT /projects/:id/integrations/slack
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | `https://hooks.slack.com/services/...`. |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
-| `alert_events` | boolean | false | Enable notifications for alert events. |
-| `commit_events` | boolean | false | Enable notifications for commit events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
-| `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `job_events` | boolean | false | Enable notifications for job events. |
-| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-
-### Disable the GitLab for Slack app
-
-Disable the GitLab for Slack app for a project. Integration settings are reset.
-
-```plaintext
-DELETE /projects/:id/integrations/slack
-```
-
-### Get the GitLab for Slack app settings
-
-Get the GitLab for Slack app settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/slack
-```
-
 ## Google Chat
 
 ### Set up Google Chat
@@ -801,6 +772,76 @@ Get the Google Chat integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/hangouts-chat
+```
+
+## Google Play
+
+### Set up Google Play
+
+Set up the Google Play integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/google-play
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `package_name` | string | true | Package name of the app in Google Play. |
+| `service_account_key` | string | true | Google Play service account key. |
+| `service_account_key_file_name` | string | true | File name of the Google Play service account key. |
+| `google_play_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
+
+### Disable Google Play
+
+Disable the Google Play integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/google-play
+```
+
+### Get Google Play settings
+
+Get the Google Play integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/google-play
+```
+
+## Harbor
+
+### Set up Harbor
+
+Set up the Harbor integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/harbor
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `url` | string | true | The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`. |
+| `project_name` | string | true | The name of the project in the Harbor instance. For example, `testproject`. |
+| `username` | string | true | The username created in the Harbor interface. |
+| `password` | string | true | The password of the user. |
+
+### Disable Harbor
+
+Disable the Harbor integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/harbor
+```
+
+### Get Harbor settings
+
+Get the Harbor integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/harbor
 ```
 
 ## irker (IRC gateway)
@@ -977,12 +1018,14 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Mattermost webhook (for example, `http://mattermost_host/hooks/...`). |
-| `username` | string | false | username. |
-| `channel` | string | false | Default channel to use if others are not configured. |
+| `webhook` | string | true | Mattermost notifications webhook (for example, `http://mattermost.example.com/hooks/...`). |
+| `username` | string | false | Mattermost notifications username. |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
 | `push_events` | boolean | false | Enable notifications for push events. |
 | `issues_events` | boolean | false | Enable notifications for issue events. |
 | `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
@@ -1329,9 +1372,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | New issue URL. |
-| `project_url` | string | true | Project URL. |
-| `issues_url` | string | true | Issue URL. |
+| `new_issue_url` | string | true | URL of the new issue. |
+| `project_url` | string | true | URL of the project. |
+| `issues_url` | string | true | URL of the issue. |
 
 ### Disable Redmine
 
@@ -1347,6 +1390,71 @@ Get the Redmine integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/redmine
+```
+
+## Slack notifications
+
+### Set up Slack notifications
+
+Set up Slack notifications for a project.
+
+```plaintext
+PUT /projects/:id/integrations/slack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
+| `username` | string | false | Slack notifications username. |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
+| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
+| `alert_events` | boolean | false | Enable notifications for alert events. |
+| `commit_events` | boolean | false | Enable notifications for commit events. |
+| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
+| `deployment_events` | boolean | false | Enable notifications for deployment events. |
+| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
+| `incidents_events` | boolean | false | Enable notifications for incident events. |
+| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `job_events` | boolean | false | Enable notifications for job events. |
+| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable Slack notifications
+
+Disable Slack notifications for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/slack
+```
+
+### Get Slack notifications settings
+
+Get the Slack notifications settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/slack
 ```
 
 ## Slack slash commands
@@ -1423,7 +1531,7 @@ Parameters:
 | Parameter               | Type   | Required | Description                   |
 |-------------------------|--------|----------|-------------------------------|
 | `url`                   | string | yes      | URL of the Squash TM webhook. |
-| `token`                 | string | no       | Optional token.               |
+| `token`                 | string | no       | Secret token.                 |
 
 ### Disable Squash TM
 
@@ -1585,8 +1693,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `issues_url` | string | true | Issue URL. |
-| `project_url` | string | true | Project URL. |
+| `issues_url` | string | true | URL of the issue. |
+| `project_url` | string | true | URL of the project. |
 
 ### Disable YouTrack
 

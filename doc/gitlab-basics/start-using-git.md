@@ -117,7 +117,7 @@ Clone with SSH when you want to authenticate only one time.
 
 1. Authenticate with GitLab by following the instructions in the [SSH documentation](../user/ssh.md).
 1. On the left sidebar, select **Search or go to** and find the project you want to clone.
-1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with SSH**.
+1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 1. Open a terminal and go to the directory where you want to clone the files.
    Git automatically creates a folder with the repository name and downloads the files there.
 1. Run this command:
@@ -142,7 +142,7 @@ between your computer and GitLab.
 [OAuth credential helpers](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease the number of times you must manually authenticate, making HTTPS a seamless experience.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to clone.
-1. On the right-hand side of the page, select **Clone**, then copy the URL for **Clone with HTTPS**.
+1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
 1. Open a terminal and go to the directory where you want to clone the files.
 1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
 
@@ -254,6 +254,47 @@ existing branch. You can create additional named remotes and branches as necessa
 
 You can learn more on how Git manages remote repositories in the
 [Git Remote documentation](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes).
+
+## Add another URL to a remote
+
+Add another URL to a remote, so both remotes get updated on each push:
+
+```shell
+git remote set-url --add <remote_name> <remote_url>
+```
+
+## Show the log of reference changes to HEAD
+
+```shell
+git reflog
+```
+
+## Check the Git history of a file
+
+The basic command to check the Git history of a file:
+
+```shell
+git log <file>
+```
+
+If you get this error message:
+
+```plaintext
+fatal: ambiguous argument <file_name>: unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+```
+
+Use this to check the Git history of the file:
+
+```shell
+git log -- <file>
+```
+
+## Check the content of each change to a file
+
+```shell
+gitk <file>
+```
 
 ## Branches
 
@@ -423,6 +464,20 @@ In GitLab, you typically use a [merge request](../user/project/merge_requests/in
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).
 
+## Reuse recorded resolutions
+
+To _reuse_ recorded resolutions:
+
+```shell
+git rerere
+```
+
+To enable `rerere` functionality:
+
+```shell
+git config --global rerere.enabled true
+```
+
 ## Advanced use of Git through the command line
 
 For an introduction of more advanced Git techniques, see [Git rebase, force-push, and merge conflicts](../topics/git/git_rebase.md).
@@ -439,15 +494,3 @@ changes from the original repository. It is common to call this remote repositor
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`
 to [push local changes](#send-changes-to-gitlab) and create merge requests.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

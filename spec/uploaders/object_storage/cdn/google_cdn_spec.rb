@@ -19,7 +19,7 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
   subject { described_class.new(options) }
 
   before do
-    WebMock.stub_request(:get, GoogleCloud::FetchGoogleIpListService::GOOGLE_IP_RANGES_URL)
+    WebMock.stub_request(:get, CloudSeed::GoogleCloud::FetchGoogleIpListService::GOOGLE_IP_RANGES_URL)
       .to_return(status: 200, body: google_cloud_ips, headers: headers)
   end
 

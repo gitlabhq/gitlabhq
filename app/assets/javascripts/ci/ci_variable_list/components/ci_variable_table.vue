@@ -15,13 +15,13 @@ import {
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { convertEnvironmentScope } from '~/ci/common/private/ci_environments_dropdown';
 import {
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
   EXCEEDS_VARIABLE_LIMIT_TEXT,
   MAXIMUM_VARIABLE_LIMIT_REACHED,
   variableTypes,
 } from '../constants';
-import { convertEnvironmentScope } from '../utils';
 
 export default {
   defaultFields: [

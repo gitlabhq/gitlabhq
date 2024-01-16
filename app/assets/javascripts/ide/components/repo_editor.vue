@@ -1,6 +1,5 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import {
@@ -29,7 +28,7 @@ import { viewerInformationForPath } from '~/vue_shared/components/content_viewer
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import { readFileAsDataURL } from '~/lib/utils/file_utility';
-import { isDefaultCiConfig, hasCiConfigExtension } from '~/lib/utils/common_utils';
+import { hasCiConfigExtension } from '~/lib/utils/common_utils';
 
 import {
   leftSidebarViews,
@@ -43,7 +42,6 @@ import mapRulesToMonaco from '../lib/editorconfig/rules_mapper';
 import { getFileEditorOrDefault } from '../stores/modules/editor/utils';
 import { extractMarkdownImagesFromEntries } from '../stores/utils';
 import { getPathParent, registerSchema, isTextFile } from '../utils';
-import FileAlert from './file_alert.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
 
 const MARKDOWN_FILE_TYPE = 'markdown';
@@ -53,7 +51,6 @@ export default {
   components: {
     GlTabs,
     GlTab,
-    FileAlert,
     ContentViewer,
     DiffViewer,
     FileTemplatesBar,
@@ -93,7 +90,6 @@ export default {
       'previewMarkdownPath',
     ]),
     ...mapGetters([
-      'getAlert',
       'currentMergeRequest',
       'getStagedFile',
       'isEditModeActive',
@@ -102,9 +98,6 @@ export default {
       'getJsonSchemaForPath',
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
-    alertKey() {
-      return this.getAlert(this.file);
-    },
     fileEditor() {
       return getFileEditorOrDefault(this.fileEditors, this.file.path);
     },
@@ -159,16 +152,6 @@ export default {
     },
   },
   watch: {
-    'file.name': {
-      handler() {
-        this.stopWatchingCiYaml();
-
-        if (isDefaultCiConfig(this.file.name)) {
-          this.startWatchingCiYaml();
-        }
-      },
-      immediate: true,
-    },
     file(newVal, oldVal) {
       if (oldVal.pending) {
         this.removePendingTab(oldVal);
@@ -235,7 +218,6 @@ export default {
       'removePendingTab',
       'triggerFilesChange',
       'addTempImage',
-      'detectGitlabCiFileAlerts',
     ]),
     ...mapActions('editor', ['updateFileEditor']),
     initEditor() {
@@ -498,18 +480,6 @@ export default {
 
       this.updateFileEditor({ path: this.file.path, data });
     },
-    startWatchingCiYaml() {
-      this.unwatchCiYaml = this.$watch(
-        'file.content',
-        debounce(this.detectGitlabCiFileAlerts, 500),
-      );
-    },
-    stopWatchingCiYaml() {
-      if (this.unwatchCiYaml) {
-        this.unwatchCiYaml();
-        this.unwatchCiYaml = null;
-      }
-    },
   },
   viewerTypes,
   FILE_VIEW_MODE_EDITOR,
@@ -531,7 +501,6 @@ export default {
         @click="updateEditor({ viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
       />
     </gl-tabs>
-    <file-alert v-if="alertKey" :alert-key="alertKey" />
     <file-templates-bar v-else-if="showFileTemplatesBar(file.name)" />
     <div
       v-show="showEditor"

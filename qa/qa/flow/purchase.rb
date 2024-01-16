@@ -7,7 +7,7 @@ module QA
 
       extend self
 
-      def upgrade_subscription(plan: PREMIUM)
+      def upgrade_subscription(plan: PREMIUM, skip_contact: false)
         Page::Group::Menu.perform(&:go_to_billing)
         Gitlab::Page::Group::Settings::Billing.perform do |billing|
           billing.send("upgrade_to_#{plan[:name].downcase}")
@@ -15,15 +15,12 @@ module QA
 
         Gitlab::Page::Subscriptions::New.perform do |new_subscription|
           new_subscription.continue_to_billing
-
-          fill_in_customer_info
-          fill_in_payment_info
-
+          fill_in_default_info(skip_contact)
           new_subscription.purchase
         end
       end
 
-      def purchase_compute_minutes(quantity: 1)
+      def purchase_compute_minutes(quantity: 1, skip_contact: false)
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
           usage_quota.pipelines_tab
@@ -34,14 +31,13 @@ module QA
           compute_minutes.quantity = quantity
           compute_minutes.continue_to_billing
 
-          fill_in_customer_info
-          fill_in_payment_info
+          fill_in_default_info(skip_contact)
 
           compute_minutes.purchase
         end
       end
 
-      def purchase_storage(quantity: 1)
+      def purchase_storage(quantity: 1, skip_contact: false)
         Page::Group::Menu.perform(&:go_to_usage_quotas)
         Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quota|
           usage_quota.storage_tab
@@ -56,8 +52,7 @@ module QA
           storage.quantity = quantity
           storage.continue_to_billing
 
-          fill_in_customer_info
-          fill_in_payment_info
+          fill_in_default_info(skip_contact)
 
           storage.purchase
         end
@@ -71,7 +66,6 @@ module QA
           subscription.city = user_billing_info[:city]
           subscription.state = user_billing_info[:state]
           subscription.zip_code = user_billing_info[:zip]
-          subscription.continue_to_payment
         end
       end
 
@@ -83,6 +77,14 @@ module QA
           subscription.expiration_year = credit_card_info[:year]
           subscription.cvv = credit_card_info[:cvv]
           subscription.review_your_order
+        end
+      end
+
+      def fill_in_default_info(skip_contact)
+        Gitlab::Page::Subscriptions::New.perform do |subscription|
+          fill_in_customer_info unless skip_contact
+          subscription.continue_to_payment
+          fill_in_payment_info
         end
       end
 

@@ -7,12 +7,20 @@ module Organizations
 
       organization = Organization.create(params)
 
-      return error_creating(organization) unless organization.persisted?
+      if organization.persisted?
+        add_organization_owner(organization)
 
-      ServiceResponse.success(payload: { organization: organization })
+        ServiceResponse.success(payload: { organization: organization })
+      else
+        error_creating(organization)
+      end
     end
 
     private
+
+    def add_organization_owner(organization)
+      organization.organization_users.create(user: current_user, access_level: :owner)
+    end
 
     def error_no_permissions
       ServiceResponse.error(message: [_('You have insufficient permissions to create organizations')])

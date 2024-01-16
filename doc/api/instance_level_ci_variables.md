@@ -22,6 +22,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 [
     {
         "key": "TEST_VARIABLE_1",
+        "description": null,
         "variable_type": "env_var",
         "value": "TEST_1",
         "protected": false,
@@ -30,6 +31,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     },
     {
         "key": "TEST_VARIABLE_2",
+        "description": null,
         "variable_type": "env_var",
         "value": "TEST_2",
         "protected": false,
@@ -58,6 +60,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```json
 {
     "key": "TEST_VARIABLE_1",
+    "description": null,
     "variable_type": "env_var",
     "value": "TEST_1",
     "protected": false,
@@ -93,6 +96,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 ```json
 {
     "key": "NEW_VARIABLE",
+    "description": null,
     "value": "new value",
     "variable_type": "env_var",
     "protected": false,
@@ -126,6 +130,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 ```json
 {
     "key": "NEW_VARIABLE",
+    "description": null,
     "value": "updated value",
     "variable_type": "env_var",
     "protected": true,

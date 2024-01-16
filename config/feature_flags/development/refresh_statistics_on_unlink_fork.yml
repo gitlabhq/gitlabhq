@@ -1,8 +1,0 @@
----
-name: refresh_statistics_on_unlink_fork
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137197
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432177
-milestone: '16.7'
-type: development
-group: group::utilization
-default_enabled: false

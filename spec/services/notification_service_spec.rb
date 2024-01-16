@@ -3179,6 +3179,22 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
+  describe '#invite_member' do
+    let_it_be(:group_member) { create(:group_member) }
+
+    subject(:invite_member) { notification.invite_member(group_member, 'token') }
+
+    it 'sends exactly one email' do
+      expect(Notify)
+        .to receive(:member_invited_email).with('Group', group_member.id, 'token').at_least(:once).and_call_original
+
+      invite_member
+
+      expect_delivery_jobs_count(1)
+      expect_enqueud_email('Group', group_member.id, 'token', mail: 'member_invited_email')
+    end
+  end
+
   describe '#new_instance_access_request', :deliver_mails_inline do
     let_it_be(:user) { create(:user, :blocked_pending_approval) }
     let_it_be(:admins) { create_list(:admin, 12, :with_sign_ins) }
@@ -3276,43 +3292,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       it_behaves_like 'declines the invite' do
         let(:source) { group }
-      end
-    end
-
-    describe '#new_group_member' do
-      let(:group) { create(:group) }
-
-      it 'sends a notification' do
-        group.add_guest(added_user)
-        should_only_email(added_user)
-      end
-
-      describe 'when notifications are disabled' do
-        before do
-          create_global_setting_for(added_user, :disabled)
-        end
-
-        it 'does not send a notification' do
-          group.add_guest(added_user)
-          should_not_email_anyone
-        end
-      end
-
-      it_behaves_like 'group emails are disabled' do
-        let(:notification_target)  { group }
-        let(:notification_trigger) { group.add_guest(added_user) }
-      end
-    end
-
-    describe '#updated_group_member_expiration' do
-      let_it_be(:group_member) { create(:group_member) }
-
-      it 'emails the user that their group membership expiry has changed' do
-        expect_next_instance_of(NotificationService) do |notification|
-          allow(notification).to receive(:updated_group_member_expiration).with(group_member)
-        end
-
-        group_member.update!(expires_at: 5.days.from_now)
       end
     end
   end
@@ -3444,29 +3423,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
-    describe '#new_project_member' do
-      it do
-        create_member!
-        should_only_email(added_user)
-      end
-
-      it_behaves_like 'project emails are disabled' do
-        let(:notification_target)  { project }
-        let(:notification_trigger) { create_member! }
-      end
-
-      context 'when notifications are disabled' do
-        before do
-          create_global_setting_for(added_user, :disabled)
-        end
-
-        it do
-          create_member!
-          should_not_email_anyone
-        end
-      end
-    end
-
     describe '#member_about_to_expire' do
       let_it_be(:group_member) { create(:group_member, expires_at: 7.days.from_now.to_date) }
       let_it_be(:project_member) { create(:project_member, expires_at: 7.days.from_now.to_date) }
@@ -3487,9 +3443,92 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
       end
     end
+  end
 
-    def create_member!
-      create(:project_member, user: added_user, project: project)
+  describe '#new_member', :deliver_mails_inline do
+    let_it_be(:source) { create(:group) }
+    let_it_be(:added_user) { create(:user) }
+
+    subject(:new_member) { notification.new_member(member) }
+
+    shared_examples_for 'new member added' do |source_type|
+      it 'triggers a notification about about the added access', deliver_mails_inline: false do
+        new_member
+
+        expect_delivery_jobs_count(1)
+        expect_enqueud_email(source_type, member.id, mail: 'member_access_granted_email')
+      end
+    end
+
+    context 'when source is a Group' do
+      it_behaves_like 'new member added', 'Group' do
+        let_it_be(:member) { create(:group_member, source: source) }
+      end
+
+      it_behaves_like 'group emails are disabled' do
+        let(:notification_target) { source }
+        let(:notification_trigger) { notification_target.add_guest(added_user) }
+      end
+    end
+
+    context 'when source is a Project' do
+      let_it_be(:source) { create(:project) }
+
+      it_behaves_like 'new member added', 'Project' do
+        let_it_be(:member) { create(:project_member, source: project) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let_it_be(:notification_target) { source }
+        let(:notification_trigger) { source.add_guest(added_user) }
+      end
+    end
+
+    context 'when notifications are disabled' do
+      before do
+        create_global_setting_for(added_user, :disabled)
+      end
+
+      it 'does not send a notification' do
+        source.add_guest(added_user)
+        should_not_email_anyone
+      end
+    end
+  end
+
+  describe '#updated_member_expiration' do
+    subject(:updated_member_expiration) { notification.updated_member_expiration(member) }
+
+    context 'for group member' do
+      let_it_be(:member) { create(:group_member) }
+
+      it 'triggers a notification about the expiration change' do
+        updated_member_expiration
+
+        expect_delivery_jobs_count(1)
+        expect_enqueud_email('Group', member.id, mail: 'member_expiration_date_updated_email')
+      end
+    end
+
+    context 'for project member' do
+      let_it_be(:member) { create(:project_member) }
+
+      it 'does not trigger a notification' do
+        updated_member_expiration
+
+        expect_delivery_jobs_count(0)
+      end
+    end
+  end
+
+  describe '#updated_member_access_level' do
+    let_it_be(:member) { create(:group_member) }
+
+    it 'triggers a notification about the access_level change' do
+      notification.updated_member_access_level(member)
+
+      expect_delivery_jobs_count(1)
+      expect_enqueud_email('Group', member.id, mail: 'member_access_granted_email')
     end
   end
 

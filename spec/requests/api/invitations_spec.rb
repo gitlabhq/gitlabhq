@@ -412,7 +412,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
 
     it 'does not exceed expected queries count for user_ids', :request_store, :use_sql_query_cache do
@@ -430,7 +430,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       expect do
         post invitations_url(project, maintainer), params: { user_id: users.map(&:id).join(','), access_level: Member::DEVELOPER }
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
 
     it 'does not exceed expected queries count with secondary emails', :request_store, :use_sql_query_cache do
@@ -453,7 +453,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
   end
 
@@ -491,7 +491,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       expect do
         post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
 
     it 'does not exceed expected queries count for secondary emails', :request_store, :use_sql_query_cache do
@@ -514,7 +514,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       expect do
         post invitations_url(group, maintainer), params: { email: emails, access_level: Member::DEVELOPER }
-      end.not_to exceed_all_query_limit(control.count).with_threshold(unresolved_n_plus_ones)
+      end.not_to exceed_all_query_limit(control).with_threshold(unresolved_n_plus_ones)
     end
   end
 

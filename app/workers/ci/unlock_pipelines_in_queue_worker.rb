@@ -11,6 +11,7 @@ module Ci
     feature_category :build_artifacts
     idempotent!
 
+    MAX_RUNNING_EXTRA_LOW = 10
     MAX_RUNNING_LOW = 50
     MAX_RUNNING_MEDIUM = 500
     MAX_RUNNING_HIGH = 1500
@@ -44,6 +45,8 @@ module Ci
         MAX_RUNNING_HIGH
       elsif ::Feature.enabled?(:ci_unlock_pipelines_medium, type: :ops)
         MAX_RUNNING_MEDIUM
+      elsif ::Feature.enabled?(:ci_unlock_pipelines_extra_low, type: :ops)
+        MAX_RUNNING_EXTRA_LOW
       elsif ::Feature.enabled?(:ci_unlock_pipelines, type: :ops)
         # This is the default enabled flag
         MAX_RUNNING_LOW

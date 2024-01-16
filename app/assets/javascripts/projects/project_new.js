@@ -70,7 +70,8 @@ const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingPr
 };
 
 const selectedNamespaceId = () => document.querySelector('[name="project[selected_namespace_id]"]');
-const dropdownButton = () => document.querySelector('.js-group-namespace-dropdown > button');
+const dropdownButton = () =>
+  document.querySelector('.js-group-namespace-dropdown .gl-new-dropdown-custom-toggle > button');
 const namespaceButton = () => document.querySelector('.js-group-namespace-button');
 const namespaceError = () => document.querySelector('.js-group-namespace-error');
 

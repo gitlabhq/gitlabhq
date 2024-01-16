@@ -236,7 +236,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/kas/client_spec.rb'
     - 'spec/lib/gitlab/kubernetes/kube_client_spec.rb'
     - 'spec/lib/gitlab/kubernetes/kubeconfig/template_spec.rb'
-    - 'spec/lib/gitlab/legacy_http_spec.rb'
     - 'spec/lib/gitlab/memory/instrumentation_spec.rb'
     - 'spec/lib/gitlab/memory/jemalloc_spec.rb'
     - 'spec/lib/gitlab/metrics/boot_time_tracker_spec.rb'

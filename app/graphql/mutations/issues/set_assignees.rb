@@ -8,7 +8,7 @@ module Mutations
       include Assignable
 
       def assign!(issue, users, mode)
-        permitted, forbidden = users.partition { |u| u.can?(:read_issue, issue) }
+        permitted, forbidden = users.partition { |u| u.can?(:read_issue, issue.resource_parent) }
 
         super(issue, permitted, mode)
 

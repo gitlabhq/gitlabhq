@@ -471,15 +471,15 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
-        end.count
+        end
 
         create_list(:ci_build, 3, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
 
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
-        end.not_to exceed_all_query_limit(control_count)
+        end.not_to exceed_all_query_limit(control)
       end
 
       context 'pipeline has retried jobs' do
@@ -671,15 +671,15 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
-        end.count
+        end
 
         3.times { create_bridge(pipeline) }
 
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
-        end.not_to exceed_all_query_limit(control_count)
+        end.not_to exceed_all_query_limit(control)
       end
     end
 

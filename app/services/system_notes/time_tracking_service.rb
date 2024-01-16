@@ -43,18 +43,11 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_time_estimate
-      parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
-      body = if noteable.time_estimate == 0
-               "removed time estimate"
-             else
-               "changed time estimate to #{parsed_time}"
-             end
-
       if noteable.is_a?(Issue)
         issue_activity_counter.track_issue_time_estimate_changed_action(author: author, project: project)
       end
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
+      create_note(NoteSummary.new(noteable, project, author, time_estimate_system_note, action: 'time_tracking'))
     end
 
     # Called when the spent time of a Noteable is changed
@@ -159,6 +152,20 @@ module SystemNotes
 
     def work_item_activity_counter
       Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter
+    end
+
+    def time_estimate_system_note
+      parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
+      previous_estimate = noteable.previous_changes['time_estimate']&.at(0) || 0
+      parsed_previous_restimate = Gitlab::TimeTrackingFormatter.output(previous_estimate)
+
+      if previous_estimate == 0
+        "added time estimate of #{parsed_time}"
+      elsif noteable.time_estimate == 0
+        "removed time estimate of #{parsed_previous_restimate}"
+      else
+        "changed time estimate to #{parsed_time} from #{parsed_previous_restimate}"
+      end
     end
   end
 end

@@ -68,7 +68,7 @@ To add a story with API access:
    If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
 
 1. Create an `.env` file in the `storybook` directory. Use the `storybook/.env.template` file as
-a starting point.
+   a starting point.
 
 1. Set the `API_ACCESS_TOKEN` variable to the access token that you created.
 

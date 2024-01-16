@@ -18,7 +18,7 @@
         "run_id",
         "status",
         "status_message",
-        "metadata",
+        "tags",
         "run_link",
         "aliases"
       ],
@@ -56,9 +56,22 @@
         "status_message": {
           "type": "string"
         },
-        "metadata": {
+        "tags": {
           "type": "array",
           "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "value"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
           }
         },
         "run_link": {

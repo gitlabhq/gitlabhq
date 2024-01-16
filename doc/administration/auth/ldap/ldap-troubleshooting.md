@@ -774,10 +774,10 @@ If a connection can't be established, it is likely either because of a problem
 with your configuration or a firewall blocking the connection.
 
 - Ensure you don't have a firewall blocking the
-connection, and that the LDAP server is accessible to the GitLab host.
+  connection, and that the LDAP server is accessible to the GitLab host.
 - Look for an error message in the Rake check output, which may lead to your LDAP configuration to
-confirm that the configuration values (specifically `host`, `port`, `bind_dn`, and
-`password`) are correct.
+  confirm that the configuration values (specifically `host`, `port`, `bind_dn`, and
+  `password`) are correct.
 - Look for [errors](#connection) in [the logs](#gitlab-logs) to further debug connection failures.
 
 If GitLab can successfully connect to LDAP but doesn't return any

@@ -1,9 +1,16 @@
-import { GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
-import { FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_PATH } from '~/organizations/shared/constants';
+import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_ID,
+  FORM_FIELD_PATH,
+  FORM_FIELD_AVATAR,
+} from '~/organizations/shared/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('NewEditForm', () => {
@@ -12,6 +19,7 @@ describe('NewEditForm', () => {
   const defaultProvide = {
     organizationsPath: '/-/organizations',
     rootUrl: 'http://127.0.0.1:3000/',
+    previewMarkdownPath: '/-/organizations/preview_markdown',
   };
 
   const defaultPropsData = {
@@ -32,6 +40,8 @@ describe('NewEditForm', () => {
   const findNameField = () => wrapper.findByLabelText('Organization name');
   const findIdField = () => wrapper.findByLabelText('Organization ID');
   const findUrlField = () => wrapper.findComponent(OrganizationUrlField);
+  const findDescriptionField = () => wrapper.findByLabelText('Organization description (optional)');
+  const findAvatarField = () => wrapper.findComponent(AvatarUploadDropzone);
 
   const setUrlFieldValue = async (value) => {
     findUrlField().vm.$emit('input', value);
@@ -51,6 +61,56 @@ describe('NewEditForm', () => {
     createComponent();
 
     expect(findUrlField().exists()).toBe(true);
+  });
+
+  it('renders `Organization avatar` field', () => {
+    createComponent();
+
+    expect(findAvatarField().props()).toMatchObject({
+      value: null,
+      entity: { [FORM_FIELD_NAME]: '', [FORM_FIELD_PATH]: '', [FORM_FIELD_AVATAR]: null },
+      label: 'Organization avatar',
+    });
+  });
+
+  it('renders `Organization description` field as markdown editor', () => {
+    createComponent();
+
+    expect(findDescriptionField().exists()).toBe(true);
+    expect(wrapper.findComponent(MarkdownField).props()).toMatchObject({
+      markdownPreviewPath: defaultProvide.previewMarkdownPath,
+      markdownDocsPath: helpPagePath('user/organization/index', {
+        anchor: 'organization-description-supported-markdown',
+      }),
+      textareaValue: '',
+      restrictedToolBarItems: [
+        'code',
+        'quote',
+        'bullet-list',
+        'numbered-list',
+        'task-list',
+        'collapsible-section',
+        'table',
+        'attach-file',
+        'full-screen',
+      ],
+    });
+  });
+
+  describe('when `Organization avatar` field is changed', () => {
+    const file = new File(['foo'], 'foo.jpg', {
+      type: 'text/plain',
+    });
+
+    beforeEach(() => {
+      window.URL.revokeObjectURL = jest.fn();
+      createComponent();
+      findAvatarField().vm.$emit('input', file);
+    });
+
+    it('updates `value` prop', () => {
+      expect(findAvatarField().props('value')).toEqual(file);
+    });
   });
 
   it('requires `Organization URL` field to be a minimum of two characters', async () => {
@@ -121,11 +181,14 @@ describe('NewEditForm', () => {
 
       await findNameField().setValue('Foo bar');
       await setUrlFieldValue('foo-bar');
+      await findDescriptionField().setValue('Foo bar description');
       await submitForm();
     });
 
     it('emits `submit` event with form values', () => {
-      expect(wrapper.emitted('submit')).toEqual([[{ name: 'Foo bar', path: 'foo-bar' }]]);
+      expect(wrapper.emitted('submit')).toEqual([
+        [{ name: 'Foo bar', path: 'foo-bar', description: 'Foo bar description', avatar: null }],
+      ]);
     });
   });
 
@@ -186,7 +249,7 @@ describe('NewEditForm', () => {
     });
 
     it('shows button with loading icon', () => {
-      expect(wrapper.findComponent(GlButton).props('loading')).toBe(true);
+      expect(wrapper.findByTestId('submit-button').props('loading')).toBe(true);
     });
   });
 

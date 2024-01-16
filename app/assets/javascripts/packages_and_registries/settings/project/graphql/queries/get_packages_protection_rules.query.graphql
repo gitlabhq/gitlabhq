@@ -1,0 +1,13 @@
+query getProjectPackageProtectionRules($projectPath: ID!, $first: Int) {
+  project(fullPath: $projectPath) {
+    id
+    packagesProtectionRules(first: $first) {
+      nodes {
+        id
+        packageNamePattern
+        packageType
+        pushProtectedUpToAccessLevel
+      }
+    }
+  }
+}

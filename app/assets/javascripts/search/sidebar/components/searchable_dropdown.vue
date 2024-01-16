@@ -185,6 +185,7 @@ export default {
     :searching="loading"
     :reset-button-label="$options.i18n.reset"
     :toggle-aria-labelled-by="labelId"
+    fluid-width
     searchable
     block
     @shown="openDropdown"

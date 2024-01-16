@@ -19,7 +19,7 @@ RSpec.describe 'Usage stats consent', feature_category: :service_ping do
       end
 
       gitlab_sign_in(user)
-      gitlab_enable_admin_mode_sign_in(user)
+      enable_admin_mode!(user)
     end
 
     shared_examples 'dismissible banner' do |button_text|

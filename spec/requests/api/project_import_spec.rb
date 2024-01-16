@@ -62,9 +62,9 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it_behaves_like 'requires import source to be enabled'
 
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
-      control_count = ActiveRecord::QueryRecorder.new { subject }.count
+      control = ActiveRecord::QueryRecorder.new { subject }
 
-      expect(control_count).to be <= 111
+      expect(control.count).to be <= 111
     end
 
     it 'schedules an import using a namespace' do

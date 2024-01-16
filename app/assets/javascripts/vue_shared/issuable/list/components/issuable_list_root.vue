@@ -406,9 +406,7 @@ export default {
             <slot name="timeframe" :issuable="issuable"></slot>
           </template>
           <template #status>
-            <gl-badge size="sm" variant="info">
-              <slot name="status" :issuable="issuable"></slot>
-            </gl-badge>
+            <slot name="status" :issuable="issuable"></slot>
           </template>
           <template #statistics>
             <slot name="statistics" :issuable="issuable"></slot>

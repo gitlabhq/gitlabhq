@@ -8,8 +8,6 @@ module Gitlab
     include EnforcesTwoFactorAuthentication
     include SessionsHelper
 
-    before_action :limit_session_time, if: -> { !current_user }
-
     helper_method :can?
   end
 end

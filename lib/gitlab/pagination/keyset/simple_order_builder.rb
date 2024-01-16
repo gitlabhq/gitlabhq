@@ -34,18 +34,18 @@ module Gitlab
                   elsif ordered_by_primary_key?
                     primary_key_order
                   # Ordered by one non-primary table column. Ex. 'ORDER BY created_at'.
-                  elsif ordered_by_other_column?
-                    column_with_tie_breaker_order
+                  elsif ordered_by_other_columns?
+                    columns_with_tie_breaker_order(order_values)
                   # Ordered by two table columns with the last column as a tie breaker. Ex. 'ORDER BY created, id ASC'.
-                  elsif ordered_by_other_column_with_tie_breaker?
-                    tie_breaker_attribute = order_values.second
+                  elsif ordered_by_other_columns_with_tie_breaker?
+                    tie_breaker_attribute = order_values.last
 
                     tie_breaker_column_order = Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                       attribute_name: model_class.primary_key,
                       order_expression: tie_breaker_attribute
                     )
 
-                    column_with_tie_breaker_order(tie_breaker_column_order)
+                    columns_with_tie_breaker_order(order_values[0...-1], tie_breaker_column_order)
                   end
 
           order ? [scope.reorder!(order), true] : [scope, false] # [scope, success]
@@ -120,10 +120,12 @@ module Gitlab
             ])
         end
 
-        def column_with_tie_breaker_order(tie_breaker_column_order = default_tie_breaker_column_order)
+        def columns_with_tie_breaker_order(order_values, tie_breaker_column_order = default_tie_breaker_column_order)
+          other_columns = order_values.map { |order_value| column(order_value) }
+
           Gitlab::Pagination::Keyset::Order.build(
             [
-              column(order_values.first),
+              *other_columns,
               tie_breaker_column_order
             ])
         end
@@ -175,19 +177,25 @@ module Gitlab
           attribute && primary_key?(attribute)
         end
 
-        def ordered_by_other_column?
-          return unless order_values.one?
+        def ordered_by_other_columns?
+          return unless order_values.size >= 1 && !has_tie_breaker?
 
-          supported_column?(order_values.first)
+          supported_columns?(order_values)
         end
 
-        def ordered_by_other_column_with_tie_breaker?
-          return unless order_values.size == 2
+        def ordered_by_other_columns_with_tie_breaker?
+          return unless order_values.size >= 2 && supported_columns?(order_values[0...-1])
 
-          return unless supported_column?(order_values.first)
+          has_tie_breaker?
+        end
 
-          tie_breaker_attribute = order_values.second.try(:expr)
+        def has_tie_breaker?
+          tie_breaker_attribute = order_values.last.try(:expr)
           tie_breaker_attribute && primary_key?(tie_breaker_attribute)
+        end
+
+        def supported_columns?(order_values)
+          order_values.all? { |order_value| supported_column?(order_value) }
         end
 
         def default_tie_breaker_column_order

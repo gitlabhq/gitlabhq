@@ -1,5 +1,5 @@
 <script>
-import { GlTabs, GlTab, GlSearchBoxByType, GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlTabs, GlTab, GlSearchBoxByType, GlSorting } from '@gitlab/ui';
 import { isString, debounce } from 'lodash';
 import { __ } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -30,7 +30,6 @@ export default {
     GroupsApp,
     GlSearchBoxByType,
     GlSorting,
-    GlSortingItem,
     SubgroupsAndProjectsEmptyState,
     SharedProjectsEmptyState,
     ArchivedProjectsEmptyState,
@@ -83,6 +82,9 @@ export default {
     },
     sortQueryStringValue() {
       return this.isAscending ? this.sort.asc : this.sort.desc;
+    },
+    activeTabSortOptions() {
+      return this.activeTab.sortingItems.map(({ label }) => ({ value: label, text: label }));
     },
   },
   mounted() {
@@ -178,12 +180,14 @@ export default {
 
       this.handleSearchOrSortChange();
     },
-    handleSortingItemClick(sortingItem) {
-      if (sortingItem === this.sort) {
+    handleSortingItemClick(value) {
+      const selectedSortingItem = this.activeTab.sortingItems.find((item) => item.label === value);
+
+      if (selectedSortingItem === this.sort) {
         return;
       }
 
-      this.sort = sortingItem;
+      this.sort = selectedSortingItem;
 
       this.handleSearchOrSortChange();
     },
@@ -239,16 +243,11 @@ export default {
               data-testid="group_sort_by_dropdown"
               :text="sort.label"
               :is-ascending="isAscending"
+              :sort-options="activeTabSortOptions"
+              :sort-by="sort.label"
+              @sortByChange="handleSortingItemClick"
               @sortDirectionChange="handleSortDirectionChange"
-            >
-              <gl-sorting-item
-                v-for="sortingItem in activeTab.sortingItems"
-                :key="sortingItem.label"
-                :active="sortingItem === sort"
-                @click="handleSortingItemClick(sortingItem)"
-                >{{ sortingItem.label }}</gl-sorting-item
-              >
-            </gl-sorting>
+            />
           </div>
         </div>
       </li>

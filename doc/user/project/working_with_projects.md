@@ -61,7 +61,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
-1. In the **Project description** text box, enter your project description. The description is limited to 500 characters.
+1. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 1. Under **Project avatar**, to change your project avatar, select **Choose file**.
 
 ## Star a project
@@ -121,7 +121,7 @@ You can [view projects that are pending deletion](#view-projects-pending-deletio
 and use the Rails console to
 [find projects that are pending deletion](#find-projects-that-are-pending-deletion).
 
-### Delete a project immediately
+### Delete a project immediately **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
 > - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -144,7 +144,7 @@ To immediately delete a project marked for deletion:
 1. In the **Delete this project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-### View projects pending deletion
+### View projects pending deletion **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -309,7 +309,7 @@ Prerequisites:
 1. [Create a group](../group/index.md#create-a-group) to track membership of your project.
 1. [Set up LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md) for that group.
 1. To use LDAP groups to manage access to a project,
-[add the LDAP-synchronized group as a member](../group/manage.md) to the project.
+   [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
 
 ## Troubleshooting
 

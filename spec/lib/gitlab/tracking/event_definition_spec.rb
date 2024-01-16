@@ -31,10 +31,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
     File.write(path, content)
   end
 
-  it 'has all definitions valid' do
-    expect { described_class.definitions }.not_to raise_error
-  end
-
   it 'has no duplicated actions in InternalEventTracking events', :aggregate_failures do
     definitions_by_action = described_class.definitions
                                            .select { |d| d.category == 'InternalEventTracking' }
@@ -85,10 +81,8 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
         attributes[attribute] = value
       end
 
-      it 'raise exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once).with(instance_of(Gitlab::Tracking::InvalidEventError))
-
-        described_class.new(path, attributes).validate!
+      it 'has validation errors' do
+        expect(described_class.new(path, attributes).validation_errors).not_to be_empty
       end
     end
   end

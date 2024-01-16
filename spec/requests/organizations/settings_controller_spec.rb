@@ -21,13 +21,13 @@ RSpec.describe Organizations::SettingsController, feature_category: :cell do
     end
 
     context 'when the user is signed in' do
+      let_it_be(:user) { create(:user) }
+
       before do
         sign_in(user)
       end
 
       context 'with no association to an organization' do
-        let_it_be(:user) { create(:user) }
-
         it_behaves_like 'organization - not found response'
         it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
@@ -39,11 +39,18 @@ RSpec.describe Organizations::SettingsController, feature_category: :cell do
         it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
       end
 
-      context 'as an organization user' do
-        let_it_be(:user) { create :user }
+      context 'as a default organization user' do
+        before_all do
+          create(:organization_user, organization: organization, user: user)
+        end
 
-        before do
-          create :organization_user, organization: organization, user: user
+        it_behaves_like 'organization - not found response'
+        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      end
+
+      context 'as an owner of an organization' do
+        before_all do
+          create(:organization_user, :owner, organization: organization, user: user)
         end
 
         it_behaves_like 'organization - successful response'

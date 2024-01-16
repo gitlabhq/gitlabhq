@@ -191,7 +191,7 @@ module ProjectsHelper
   end
 
   def autodeploy_flash_notice(branch_name)
-    html_escape(_("Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}")) %
+    ERB::Util.html_escape(_("Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}")) %
       { branch_name: tag.strong(truncate(sanitize(branch_name))), link_to_autodeploy_doc: link_to_autodeploy_doc }
   end
 
@@ -252,7 +252,7 @@ module ProjectsHelper
                 _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
               end
 
-    html_escape(message) % {
+    ERB::Util.html_escape(message) % {
       push_pull_link_start: push_pull_link_start,
       protocol: gitlab_config.protocol.upcase,
       clone_with_https_link_start: clone_with_https_link_start,
@@ -768,7 +768,7 @@ module ProjectsHelper
       message = _("You're about to reduce the visibility of the project %{strong_start}%{project_name}%{strong_end} in %{strong_start}%{group_name}%{strong_end}.")
     end
 
-    html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
+    ERB::Util.html_escape(message) % { strong_start: strong_start, strong_end: strong_end, project_name: project.name, group_name: project.group ? project.group.name : nil }
   end
 
   def visibility_confirm_modal_data(project, target_form_id = nil)
@@ -789,15 +789,15 @@ module ProjectsHelper
 
     push_to_schema_breadcrumb(project_name, project_path(project))
 
-    link_to project_path(project) do
+    link_to project_path(project), class: 'gl-display-inline-flex!' do
       icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
-      [icon, content_tag("span", project_name, class: "breadcrumb-item-text js-breadcrumb-item-text")].join.html_safe
+      [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
     end
   end
 
   def build_namespace_breadcrumb_link(project)
     if project.group
-      group_title(project.group, nil, nil)
+      group_title(project.group)
     else
       owner = project.namespace.owner
       name = simple_sanitize(owner.name)

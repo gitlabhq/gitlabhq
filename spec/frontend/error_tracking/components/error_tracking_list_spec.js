@@ -146,6 +146,28 @@ describe('ErrorTrackingList', () => {
       expect(findErrorListRows().length).toEqual(store.state.list.errors.length);
     });
 
+    describe('user count', () => {
+      it('shows user count', () => {
+        mountComponent({
+          integratedErrorTrackingEnabled: false,
+          stubs: {
+            GlTable: false,
+          },
+        });
+        expect(findErrorListTable().find('thead').text()).toContain('Users');
+      });
+
+      it('does not show user count', () => {
+        mountComponent({
+          integratedErrorTrackingEnabled: true,
+          stubs: {
+            GlTable: false,
+          },
+        });
+        expect(findErrorListTable().find('thead').text()).not.toContain('Users');
+      });
+    });
+
     describe.each([
       ['/test-project/-/error_tracking'],
       ['/test-project/-/error_tracking/'], // handles leading '/' https://gitlab.com/gitlab-org/gitlab/-/issues/430211

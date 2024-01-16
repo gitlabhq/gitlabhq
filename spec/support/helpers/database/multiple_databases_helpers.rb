@@ -85,7 +85,7 @@ module Database
     # The usage of this method switches temporarily used `connection_handler`
     # allowing full manipulation of ActiveRecord::Base connections without
     # having side effects like:
-    # - misaligned transactions since this is managed by `BeforeAllAdapter`
+    # - misaligned transactions since this is managed by `TestProf::BeforeAll::Adapters::ActiveRecord`
     # - removal of primary connections
     #
     # The execution within a block ensures safe cleanup of all allocated resources.

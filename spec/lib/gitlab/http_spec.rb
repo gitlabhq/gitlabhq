@@ -55,8 +55,19 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       end
 
       context 'when there is a DB call in the concurrent thread' do
-        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432145' do
+        before do
+          # Simulating Sentry is active and configured.
+          # More info: https://gitlab.com/gitlab-org/gitlab/-/issues/432145#note_1671305713
+          stub_sentry_settings
+          allow(Gitlab::ErrorTracking).to receive(:sentry_configurable?).and_return(true)
+          Gitlab::ErrorTracking.configure
+        end
+
+        after do
+          clear_sentry_settings
+        end
+
+        it 'raises Gitlab::Utils::ConcurrentRubyThreadIsUsedError error' do
           stub_request(:get, 'http://example.org').to_return(status: 200, body: 'hello world')
 
           result = described_class.get('http://example.org', async: true) do |_fragment|
@@ -101,42 +112,6 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
         expect do
           described_class.perform_request(Net::HTTP::Lock, '/path', {})
         end.to raise_error(ArgumentError, "Unsupported HTTP method: 'lock'.")
-      end
-    end
-  end
-
-  context 'when the FF use_gitlab_http_v2 is disabled' do
-    before do
-      stub_feature_flags(use_gitlab_http_v2: false)
-    end
-
-    describe '.get' do
-      it 'calls Gitlab::LegacyHTTP.get with default options' do
-        expect(Gitlab::LegacyHTTP).to receive(:get).with('/path', {})
-
-        described_class.get('/path')
-      end
-    end
-
-    describe '.try_get' do
-      it 'calls .get' do
-        expect(described_class).to receive(:get).with('/path', {})
-
-        described_class.try_get('/path')
-      end
-
-      it 'returns nil when .get raises an error' do
-        expect(described_class).to receive(:get).and_raise(SocketError)
-
-        expect(described_class.try_get('/path')).to be_nil
-      end
-    end
-
-    describe '.perform_request' do
-      it 'calls Gitlab::LegacyHTTP.perform_request with default options' do
-        expect(Gitlab::LegacyHTTP).to receive(:perform_request).with(Net::HTTP::Get, '/path', {})
-
-        described_class.perform_request(Net::HTTP::Get, '/path', {})
       end
     end
   end

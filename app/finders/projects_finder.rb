@@ -29,7 +29,7 @@
 #     repository_storage: string
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
-#     organization_id: int
+#     organization: Scope the groups to the Organizations::Organization
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -96,7 +96,7 @@ class ProjectsFinder < UnionFinder
     collection = by_language(collection)
     collection = by_feature_availability(collection)
     collection = by_updated_at(collection)
-    collection = by_organization_id(collection)
+    collection = by_organization(collection)
     by_repository_storage(collection)
   end
 
@@ -173,7 +173,7 @@ class ProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def by_full_paths(items)
-    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], use_includes: false) : items
+    params[:full_paths].present? ? items.where_full_path_in(params[:full_paths], preload_routes: false) : items
   end
 
   def union(items)
@@ -295,8 +295,11 @@ class ProjectsFinder < UnionFinder
     items
   end
 
-  def by_organization_id(items)
-    params[:organization_id].present? ? items.in_organization(params[:organization_id]) : items
+  def by_organization(items)
+    organization = params[:organization]
+    return items unless organization
+
+    items.in_organization(organization)
   end
 
   def finder_params

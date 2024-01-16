@@ -9,11 +9,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   before_action :commit
   before_action :define_diff_vars
   before_action :define_diff_comment_vars, except: [:diffs_batch, :diffs_metadata]
-  before_action :update_diff_discussion_positions!
+  before_action :update_diff_discussion_positions!, except: [:diff_by_file_hash]
 
   around_action :allow_gitaly_ref_name_caching
 
-  after_action :track_viewed_diffs_events, only: [:diffs_batch, :diff_for_path]
+  after_action :track_viewed_diffs_events, only: [:diffs_batch, :diff_for_path, :diff_by_file_hash]
 
   urgency :low, [
     :show,
@@ -23,6 +23,14 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   ]
 
   def show
+    render_diffs
+  end
+
+  def diff_by_file_hash
+    diff_file = @compare.diffs.diff_files.find { |file| file.file_hash == params[:file_hash] }
+    params[:old_path] = diff_file&.old_path
+    params[:new_path] = diff_file&.new_path
+
     render_diffs
   end
 

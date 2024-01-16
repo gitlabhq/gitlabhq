@@ -213,6 +213,21 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
     end
   end
 
+  describe '#request_review' do
+    subject(:request_review) { service.request_review(reviewer) }
+
+    let_it_be(:reviewer) { create(:user) }
+    let_it_be(:noteable) { create(:merge_request, :simple, source_project: project, reviewers: [reviewer]) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'reviewer' }
+    end
+
+    it 'builds a correct phrase when a reviewer has been requested from a reviewer' do
+      expect(request_review.note).to eq "requested review from #{reviewer.to_reference}"
+    end
+  end
+
   describe '#change_issuable_contacts' do
     subject { service.change_issuable_contacts(1, 1) }
 
@@ -768,6 +783,14 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue" }
     end
+  end
+
+  describe '#email_participants' do
+    let(:body) { "added user@example.com" }
+
+    subject(:system_note) { service.email_participants(body) }
+
+    it { expect(system_note.note).to eq(body) }
   end
 
   describe '#discussion_lock' do

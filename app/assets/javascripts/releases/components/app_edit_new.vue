@@ -55,6 +55,7 @@ export default {
       'groupId',
       'groupMilestonesAvailable',
       'tagNotes',
+      'isFetchingTagNotes',
     ]),
     ...mapGetters('editNew', ['isValid', 'formattedReleaseNotes']),
     showForm() {
@@ -113,7 +114,7 @@ export default {
       return this.isExistingRelease ? __('Save changes') : __('Create release');
     },
     isFormSubmissionDisabled() {
-      return this.isUpdatingRelease || !this.isValid;
+      return this.isUpdatingRelease || !this.isValid || this.isFetchingTagNotes;
     },
     milestoneComboboxExtraLinks() {
       return [

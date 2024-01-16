@@ -28,7 +28,15 @@ requestIdleCallback(() => {
 
   if (el) {
     const { data } = el.dataset;
-    const { iid, projectPath, title, tabs, isFluidLayout, sourceProjectPath } = JSON.parse(data);
+    const {
+      iid,
+      projectPath,
+      title,
+      tabs,
+      isFluidLayout,
+      sourceProjectPath,
+      blocksMerge,
+    } = JSON.parse(data);
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -42,6 +50,7 @@ requestIdleCallback(() => {
         title,
         tabs,
         isFluidLayout: parseBoolean(isFluidLayout),
+        blocksMerge: parseBoolean(blocksMerge),
         sourceProjectPath,
       },
       render(h) {

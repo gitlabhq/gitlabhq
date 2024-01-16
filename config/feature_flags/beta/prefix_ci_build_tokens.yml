@@ -1,0 +1,9 @@
+---
+name: prefix_ci_build_tokens
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426137
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140159
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17299
+milestone: '16.8'
+group: group::pipeline security
+type: beta
+default_enabled: false

@@ -59,17 +59,15 @@ module Gitlab
         attributes[:value_type] == 'object' && attributes[:value_json_schema].present?
       end
 
-      def validate!
-        errors.each do |error|
-          error_message = <<~ERROR_MSG
+      def validation_errors
+        errors.map do |error|
+          <<~ERROR_MSG
+            --------------- VALIDATION ERROR ---------------
+            Metric file: #{path}
             Error type: #{error['type']}
             Data: #{error['data']}
             Path: #{error['data_pointer']}
-            Details: #{error['details']}
-            Metric file: #{path}
           ERROR_MSG
-
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(error_message))
         end
       end
 

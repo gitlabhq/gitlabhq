@@ -68,6 +68,16 @@ module SidebarsHelper
       name: user.name,
       username: user.username,
       admin_url: admin_root_url,
+      admin_mode: {
+        admin_mode_feature_enabled: Gitlab::CurrentSettings.admin_mode,
+        admin_mode_active: current_user_mode.admin_mode?,
+        enter_admin_mode_url: new_admin_session_path,
+        leave_admin_mode_url: destroy_admin_session_path,
+        # Usually, using current_user.admin? is discouraged because it does not
+        # check for admin mode, but since here we want to check admin? and admin mode
+        # separately, we'll have to ignore the cop rule.
+        user_is_admin: user.admin? # rubocop: disable Cop/UserAdmin
+      },
       avatar_url: user.avatar_url,
       has_link_to_profile: current_user_menu?(:profile),
       link_to_profile: user_path(user),
@@ -353,37 +363,11 @@ module SidebarsHelper
       ({ title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' } if current_user)
     ]
 
-    # Usually, using current_user.admin? is discouraged because it does not
-    # check for admin mode, but since here we want to check admin? and admin mode
-    # separately, we'll have to ignore the cop rule.
-    # rubocop: disable Cop/UserAdmin
     if current_user&.can_admin_all_resources?
       links.append(
         { title: s_('Navigation|Admin Area'), link: admin_root_path, icon: 'admin' }
       )
     end
-
-    if Gitlab::CurrentSettings.admin_mode
-      if header_link?(:admin_mode)
-        links.append(
-          {
-            title: s_('Navigation|Leave admin mode'),
-            link: destroy_admin_session_path,
-            icon: 'lock-open',
-            data_method: 'post'
-          }
-        )
-      elsif current_user&.admin?
-        links.append(
-          {
-            title: s_('Navigation|Enter admin mode'),
-            link: new_admin_session_path,
-            icon: 'lock'
-          }
-        )
-      end
-    end
-    # rubocop: enable Cop/UserAdmin
 
     links.compact
   end

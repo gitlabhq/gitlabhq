@@ -4,12 +4,10 @@ lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
 require 'attr_encrypted/version'
-require 'date'
 
 Gem::Specification.new do |s|
   s.name    = 'attr_encrypted'
   s.version = AttrEncrypted::Version.string
-  s.date    = Date.today
 
   s.summary     = 'GitLab fork of attr_encrypted'
   s.description = "Generates attr_accessors that encrypt and decrypt attributes transparently.\n\n

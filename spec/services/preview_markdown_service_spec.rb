@@ -126,7 +126,7 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
 
         result = service.execute
 
-        expect(result[:text]).to eq "Please do it\n\n/assign #{user.to_reference}"
+        expect(result[:text]).to eq "Please do it\n<p>/assign #{user.to_reference}</p>"
       end
     end
 

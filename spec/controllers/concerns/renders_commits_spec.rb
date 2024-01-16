@@ -46,15 +46,15 @@ RSpec.describe RendersCommits do
     it 'avoids N + 1', :request_store do
       stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 5)
 
-      control_count = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new do
         go
-      end.count
+      end
 
       stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 15)
 
       expect do
         go
-      end.not_to exceed_all_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control)
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe RendersCommits do
       expect do
         subject.prepare_commits_for_rendering(merge_request.commits)
         merge_request.commits.each(&:latest_pipeline)
-      end.not_to exceed_all_query_limit(control.count)
+      end.not_to exceed_all_query_limit(control)
     end
   end
 end

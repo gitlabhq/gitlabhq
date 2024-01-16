@@ -14,6 +14,10 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
   let(:next_partition_if) { double('next_partition_if') }
   let(:detach_partition_if) { double('detach_partition_if') }
 
+  after do
+    model.reset_column_information
+  end
+
   subject(:strategy) do
     described_class.new(
       model,

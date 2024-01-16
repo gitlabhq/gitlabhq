@@ -18,6 +18,9 @@ describe('Pipelines CI Templates', () => {
         showJenkinsCiPrompt: false,
         ...propsData,
       },
+      components: {
+        GlEmoji: { template: '<img/>' },
+      },
       stubs,
     });
   };

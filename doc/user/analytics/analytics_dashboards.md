@@ -55,7 +55,7 @@ With custom dashboards, you can design and create visualizations for the metrics
 You can create custom dashboards with the dashboard designer.
 
 - Each project can have an unlimited number of dashboards.
-The only limitation might be the [repository size limit](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
+  The only limitation might be the [repository size limit](../project/repository/reducing_the_repo_size_using_git.md#storage-limits).
 - Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
 - Visualizations are shared across dashboards.
 
@@ -122,12 +122,11 @@ To view the Value Streams Dashboard as an analytics dashboard for a project:
 
 ## View group dashboards
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. On GitLab.com, this feature is available.
 
 Prerequisites:
 
@@ -226,7 +225,7 @@ You can define different charts, and add visualization options to some of them:
 
 - Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
 - Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Data table, with the only option to render `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
+- Data table.
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
 
 To define a chart for your dashboards:
@@ -304,5 +303,5 @@ If a dashboard panel displays a message that the visualization configuration is 
 If a dashboard panel displays an error message:
 
 - Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
-configurations, and make sure they are set up correctly.
+  configurations, and make sure they are set up correctly.
 - For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.

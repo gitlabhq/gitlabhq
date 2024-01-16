@@ -5,7 +5,6 @@ PATH
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
-      nokogiri (~> 1.15.2)
       rake (~> 13.0)
 
 GEM
@@ -81,7 +80,7 @@ GEM
     excon (0.92.4)
     factory_bot (6.3.0)
       activesupport (>= 5.0.0)
-    faker (3.2.2)
+    faker (3.2.3)
       i18n (>= 1.8.11, < 2)
     faraday (2.5.2)
       faraday-net_http (>= 2.0, < 3.1)
@@ -129,7 +128,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (1.9.0)
+    gitlab_quality-test_tooling (1.11.0)
       activesupport (>= 6.1, < 7.2)
       amatch (~> 0.4.1)
       gitlab (~> 4.19)
@@ -214,7 +213,7 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     netrc (0.11.0)
-    nokogiri (1.15.5)
+    nokogiri (1.16.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     octokit (8.0.0)
@@ -222,7 +221,7 @@ GEM
       sawyer (~> 0.9)
     os (1.1.4)
     parallel (1.24.0)
-    parallel_tests (4.3.0)
+    parallel_tests (4.4.0)
       parallel
     parser (3.2.2.1)
       ast (~> 2.4.1)
@@ -273,7 +272,7 @@ GEM
     rspec-expectations (3.12.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-mocks (3.12.0)
+    rspec-mocks (3.12.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-parameterized (1.0.0)
@@ -355,19 +354,19 @@ DEPENDENCIES
   chemlab-library-www-gitlab-com (~> 0.1, >= 0.1.1)
   deprecation_toolkit (~> 2.0.4)
   factory_bot (~> 6.3.0)
-  faker (~> 3.2, >= 3.2.2)
+  faker (~> 3.2, >= 3.2.3)
   faraday-retry (~> 2.2)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
   gitlab-qa (~> 13, >= 13.1.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 1.9.0)
+  gitlab_quality-test_tooling (~> 1.11.0)
   influxdb-client (~> 3.0)
   knapsack (~> 4.0)
-  nokogiri (~> 1.15, >= 1.15.5)
+  nokogiri (~> 1.16)
   octokit (~> 8.0.0)
   parallel (~> 1.24)
-  parallel_tests (~> 4.3)
+  parallel_tests (~> 4.4)
   pry-byebug (~> 3.10.1)
   rainbow (~> 3.1.1)
   rake (~> 13, >= 13.1.0)
@@ -385,4 +384,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.12)
 
 BUNDLED WITH
-   2.5.1
+   2.5.4

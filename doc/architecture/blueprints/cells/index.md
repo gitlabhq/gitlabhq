@@ -305,8 +305,7 @@ It is expected that initial iterations will be rather slow, because they require
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [Stateless Router That Uses a Cache to Pick Cell and Is Redirected When Wrong Cell Is Reached](proposal-stateless-router-with-buffering-requests.md)
-- [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/internal/cells/learn`](proposal-stateless-router-with-routes-learning.md)
+- [Routing Service](routing-service.md)
 
 ## Impacted features
 

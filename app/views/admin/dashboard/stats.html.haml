@@ -8,7 +8,7 @@
 %p.gl-font-weight-bold.gl-mt-8
   = s_('AdminArea|Totals')
 
-%table.gl-table.gl-text-gray-500
+%table.gl-table.gl-text-gray-500.gl-w-full
   = render_if_exists 'admin/dashboard/stats_active_users_row', users_statistics: @users_statistics
 
   %tr.bg-gray-light.gl-text-gray-900

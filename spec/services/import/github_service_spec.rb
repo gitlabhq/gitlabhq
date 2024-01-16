@@ -21,16 +21,24 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     }
   end
 
+  let(:headers) do
+    {
+      'x-oauth-scopes' => 'read:org'
+    }
+  end
+
   let(:client) { Gitlab::GithubImport::Client.new(token) }
   let(:project_double) { instance_double(Project, persisted?: true) }
 
   subject(:github_importer) { described_class.new(client, user, params) }
 
   before do
+    allow(client).to receive_message_chain(:octokit, :last_response, :headers).and_return(headers)
     allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
     allow(settings)
       .to receive(:write)
       .with(
+        extended_events: true,
         optional_stages: optional_stages,
         timeout_strategy: timeout_strategy
       )
@@ -92,6 +100,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         expect(settings)
           .to have_received(:write)
           .with(optional_stages: nil,
+            extended_events: true,
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -117,6 +126,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: nil,
+            extended_events: true,
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -149,6 +159,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             .to have_received(:write)
             .with(
               optional_stages: nil,
+              extended_events: true,
               timeout_strategy: timeout_strategy
             )
           expect_snowplow_event(
@@ -185,8 +196,27 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
+            extended_events: true,
             timeout_strategy: timeout_strategy
           )
+      end
+    end
+
+    context 'validates scopes when collaborator import is true' do
+      let(:optional_stages) do
+        {
+          collaborators_import: true
+        }
+      end
+
+      let(:headers) do
+        {
+          'x-oauth-scopes' => 'read:user'
+        }
+      end
+
+      it 'returns error when scope is not adequate' do
+        expect(subject.execute(access_params, :github)).to include(scope_error)
       end
     end
 
@@ -200,6 +230,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
+            extended_events: true,
             timeout_strategy: timeout_strategy
           )
       end
@@ -213,8 +244,23 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
+            extended_events: true,
             timeout_strategy: timeout_strategy
           )
+      end
+    end
+
+    context 'when `github_import_extended_events`` feature flag is disabled' do
+      before do
+        stub_feature_flags(github_import_extended_events: false)
+      end
+
+      it 'saves extend_events to import_data' do
+        expect(settings)
+          .to receive(:write)
+          .with(a_hash_including(extended_events: false))
+
+        subject.execute(access_params, :github)
       end
     end
   end
@@ -306,6 +352,14 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       status: :error,
       http_status: :unprocessable_entity,
       message: '"repository" size (101 B) is larger than the limit of 100 B.'
+    }
+  end
+
+  def scope_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: 'Your GitHub access token does not have the correct scope to import collaborators.'
     }
   end
 

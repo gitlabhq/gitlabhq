@@ -93,7 +93,8 @@ class GenerateRspecPipeline
   def erb_binding
     {
       rspec_files_per_test_level: rspec_files_per_test_level,
-      test_suite_prefix: test_suite_prefix
+      test_suite_prefix: test_suite_prefix,
+      repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none'
     }
   end
 

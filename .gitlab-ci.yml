@@ -27,18 +27,25 @@ default:
   # Default job timeout doesn't work: https://gitlab.com/gitlab-org/gitlab/-/issues/387528
   timeout: 90m
 
-.default-ruby-variables: &default-ruby-variables
+.old-ruby-variables: &old-ruby-variables
   RUBY_VERSION: "3.0"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_0"
+
+.default-ruby-variables: &default-ruby-variables
+  RUBY_VERSION: "3.1"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_1"
 
 .next-ruby-variables: &next-ruby-variables
-  RUBY_VERSION: "3.1"
+  RUBY_VERSION: "3.2"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
-  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
   CREATE_RAILS_SLOW_TEST_ISSUES: "true"
+  CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
 
-.default-merge-request-slow-tests-variables: &default-merge-request-slow-tests-variables
+.default-merge-request-variables: &default-merge-request-variables
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
+  CREATE_RAILS_FLAKY_TEST_ISSUES: "true"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -51,12 +58,17 @@ workflow:
   rules:
     - if: '$CI_PROJECT_PATH == "gitlab-org/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
       variables:
+        <<: *default-ruby-variables
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION forced pipeline'
+    - if: '$START_AS_IF_FOSS'
+      variables:
+        <<: *default-ruby-variables
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION as-if-foss pipeline'
     # As part of the process of creating RCs automatically, we update stable
     # branches with the changes of the most recent production deployment. The
     # merge requests used for this merge a branch release-tools/X into a stable
@@ -64,27 +76,36 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    # For merge requests running exclusively in Ruby 3.0
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
+      variables:
+        <<: *old-ruby-variables
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        NO_SOURCEMAPS: 'true'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
       variables:
         <<: *next-ruby-variables
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        NO_SOURCEMAPS: 'true'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
+      variables:
+        <<: *default-ruby-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
         NO_SOURCEMAPS: 'true'
     - <<: *if-merge-request-security-canonical-sync
       variables:
+        <<: *default-ruby-variables
         PIPELINE_NAME: '$CI_DEFAULT_BRANCH security->canonical sync'
         SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
-        <<: *next-ruby-variables
-        <<: *default-merge-request-slow-tests-variables
+        <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
     # For the scheduled pipelines, we set specific variables.
@@ -93,12 +114,15 @@ workflow:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
-    # Run pipelines for ruby3_1 branch
-    - if: '$CI_COMMIT_BRANCH == "ruby3_1" && $CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_COMMIT_BRANCH == "ruby3_0" && $CI_PIPELINE_SOURCE == "schedule"'
+      variables:
+        <<: *old-ruby-variables
+        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+    - if: '$CI_COMMIT_BRANCH == "ruby3_2" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
-    # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
+    # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
@@ -155,11 +179,14 @@ variables:
   GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
+  # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
+  CI_FETCH_REPO_GIT_STRATEGY: "none"
   DEBIAN_VERSION: "bullseye"
   UBI_VERSION: "8.6"
-  CHROME_VERSION: "113"
+  CHROME_VERSION: "119"
   DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
+  BUNDLER_VERSION: "2.5"
   GO_VERSION: "1.20"
   RUST_VERSION: "1.73"
 

@@ -24,7 +24,7 @@ reasons are:
   [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-146-to-152),
-  and you might need to enable a feature flag to used the updated system.
+  and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
 
@@ -220,7 +220,7 @@ end
 ### List projects by total size of job artifacts stored
 
 List the top 20 projects, sorted by the total size of job artifacts stored, by
-running the following code in the Rails console (`sudo gitlab-rails console`):
+running the following code in the [Rails console](operations/rails_console.md):
 
 ```ruby
 include ActionView::Helpers::NumberHelper
@@ -235,7 +235,7 @@ number you want.
 ### List largest artifacts in a single project
 
 List the 50 largest job artifacts in a single project by running the following
-code in the Rails console (`sudo gitlab-rails console`):
+code in the [Rails console](operations/rails_console.md):
 
 ```ruby
 include ActionView::Helpers::NumberHelper
@@ -272,8 +272,11 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 WARNING:
 These commands remove data permanently from database and storage. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-If you need to manually remove job artifacts associated with multiple jobs while
-**retaining their job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
+You can manually remove job artifacts associated with multiple completed jobs while
+**retaining their job logs** from the [Rails console](operations/rails_console.md).
+A completed job is any job with the status of success, failed, canceled, or skipped.
+
+To delete jobs completed before a specific date:
 
 1. Select jobs to be deleted:
 
@@ -297,7 +300,7 @@ If you need to manually remove job artifacts associated with multiple jobs while
    ["keep"](../ci/jobs/job_artifacts.md#download-job-artifacts).
 
    ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
    builds_to_clear.find_each do |build|
      Ci::JobArtifacts::DeleteService.new(build).execute
      build.update!(artifacts_expire_at: Time.now)
@@ -307,19 +310,16 @@ If you need to manually remove job artifacts associated with multiple jobs while
    In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
 
    ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
    builds_to_clear.find_each do |build|
      build.artifacts_expire_at = Time.now
      build.erase_erasable_artifacts!
    end
    ```
 
-   `1.week.ago` is a Rails `ActiveSupport::Duration` method which calculates a new
-   date or time in the past. Other valid examples are:
-
-   - `7.days.ago`
-   - `3.months.ago`
-   - `1.year.ago`
+   `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
+   Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
+   Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
 
    `erase_erasable_artifacts!` is a synchronous method, and upon execution the artifacts are immediately removed;
    they are not scheduled by a background queue.
@@ -329,8 +329,11 @@ If you need to manually remove job artifacts associated with multiple jobs while
 WARNING:
 These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-If you need to manually remove **all** job artifacts associated with multiple jobs,
-**including job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
+You can manually remove job artifacts associated with multiple completed jobs while
+**retaining their job logs** from the [Rails console](operations/rails_console.md).
+A completed job is any job with the status of success, failed, canceled, or skipped.
+
+To delete jobs completed before a specific date:
 
 1. Select the jobs to be deleted:
 
@@ -371,7 +374,7 @@ If you need to manually remove **all** job artifacts associated with multiple jo
 1. Erase the job artifacts and logs older than a specific date:
 
    ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
+   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
    builds_to_clear.find_each do |build|
      print "Ci::Build ID #{build.id}... "
 
@@ -387,12 +390,9 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
    `Ci::BuildEraseService.new(build, admin_user).execute` with `build.erase(erased_by: admin_user)`.
 
-   `1.week.ago` is a Rails `ActiveSupport::Duration` method which calculates a new
-   date or time in the past. Other valid examples are:
-
-   - `7.days.ago`
-   - `3.months.ago`
-   - `1.year.ago`
+   `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
+   Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
+   Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
 
 ## Job artifact upload fails with error 500
 

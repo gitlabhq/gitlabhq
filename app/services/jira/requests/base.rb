@@ -12,7 +12,8 @@ module Jira
         jira_ruby: JIRA::HTTPError,
         ssl: OpenSSL::SSL::SSLError,
         timeout: [Timeout::Error, Errno::ETIMEDOUT],
-        uri: [URI::InvalidURIError, SocketError]
+        uri: [URI::InvalidURIError, SocketError],
+        url_blocked: Gitlab::HTTP::BlockedUrlError
       }.freeze
       ALL_ERRORS = ERRORS.values.flatten.freeze
 
@@ -63,12 +64,21 @@ module Jira
 
       def auth_docs_link_start
         auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/index', anchor: 'authentication-in-jira')
-        '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auth_docs_link_url }
+        link_start(auth_docs_link_url)
       end
 
       def config_docs_link_start
         config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
-        '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url }
+        link_start(config_docs_link_url)
+      end
+
+      def config_integration_link_start
+        config_jira_integration_url = Rails.application.routes.url_helpers.edit_project_settings_integration_path(project, jira_integration)
+        link_start(config_jira_integration_url)
+      end
+
+      def link_start(url)
+        '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: url }
       end
 
       def error_message(error)
@@ -89,6 +99,8 @@ module Jira
           s_('JiraRequest|A timeout error occurred while connecting to Jira. Try your request again.')
         when *ERRORS[:connection]
           s_('JiraRequest|A connection error occurred while connecting to Jira. Try your request again.')
+        when ERRORS[:url_blocked]
+          s_('JiraRequest|Unable to connect to the Jira URL. Please verify your %{config_link_start}Jira integration URL%{config_link_end} and attempt the connection again.').html_safe % { config_link_start: config_integration_link_start, config_link_end: '</a>'.html_safe }
         end
       end
 

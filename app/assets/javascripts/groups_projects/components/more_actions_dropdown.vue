@@ -2,6 +2,7 @@
 import {
   GlButton,
   GlDisclosureDropdownItem,
+  GlDisclosureDropdownGroup,
   GlDisclosureDropdown,
   GlIcon,
   GlTooltipDirective,
@@ -13,6 +14,7 @@ export default {
   components: {
     GlButton,
     GlDisclosureDropdownItem,
+    GlDisclosureDropdownGroup,
     GlDisclosureDropdown,
     GlIcon,
   },
@@ -31,6 +33,9 @@ export default {
   computed: {
     namespaceType() {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
+    },
+    hasPath() {
+      return this.leavePath || this.withdrawPath || this.requestAccessPath;
     },
     leaveTitle() {
       return this.isGroup
@@ -143,12 +148,12 @@ export default {
       </div>
     </template>
 
-    <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />
-
-    <gl-disclosure-dropdown-item v-else-if="withdrawPath" :item="withdrawItem" />
-
-    <gl-disclosure-dropdown-item v-else-if="requestAccessPath" :item="requestAccessItem" />
-
     <gl-disclosure-dropdown-item v-if="id" :item="copyIdItem" :data-clipboard-text="id" />
+
+    <gl-disclosure-dropdown-group v-if="hasPath" bordered>
+      <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />
+      <gl-disclosure-dropdown-item v-else-if="withdrawPath" :item="withdrawItem" />
+      <gl-disclosure-dropdown-item v-else-if="requestAccessPath" :item="requestAccessItem" />
+    </gl-disclosure-dropdown-group>
   </gl-disclosure-dropdown>
 </template>

@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker, feature_category: :importers do
   let_it_be(:project) { create(:project) }
-  let_it_be(:import_state) { create(:import_state, project: project) }
-  let(:options) { { state: 'all', sort: 'number', direction: 'desc', per_page: '1' } }
 
-  let(:worker) { described_class.new }
+  let(:options) { { state: 'all', sort: 'number', direction: 'desc', per_page: '1' } }
   let(:importer) { double(:importer) }
   let(:client) { double(:client) }
+
+  subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 

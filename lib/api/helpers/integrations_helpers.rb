@@ -7,35 +7,6 @@ module API
     # The data structures inside this model are returned using class methods,
     # allowing EE to extend them where necessary.
     module IntegrationsHelpers
-      def self.chat_notification_settings
-        [
-          {
-            required: true,
-            name: :webhook,
-            type: String,
-            desc: 'The chat webhook'
-          },
-          {
-            required: false,
-            name: :username,
-            type: String,
-            desc: 'The chat username'
-          },
-          {
-            required: false,
-            name: :channel,
-            type: String,
-            desc: 'The default chat channel'
-          },
-          {
-            required: false,
-            name: :branches_to_be_notified,
-            type: String,
-            desc: 'Branches for which notifications are to be sent'
-          }
-        ].freeze
-      end
-
       def self.chat_notification_flags
         [
           {
@@ -129,58 +100,8 @@ module API
           'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
           'asana' => ::Integrations::Asana.api_fields,
           'assembla' => ::Integrations::Assembla.api_fields,
-          'bamboo' => [
-            {
-              required: true,
-              name: :bamboo_url,
-              type: String,
-              desc: 'Bamboo root URL like https://bamboo.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :build_key,
-              type: String,
-              desc: 'Bamboo build plan key like'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'A user with API access, if applicable'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'Password of the user'
-            }
-          ],
-          'bugzilla' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New issue URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            }
-          ],
+          'bamboo' => ::Integrations::Bamboo.api_fields,
+          'bugzilla' => ::Integrations::Bugzilla.api_fields,
           'buildkite' => [
             {
               required: true,
@@ -201,54 +122,9 @@ module API
               desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
             }
           ],
-          'campfire' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'Campfire token'
-            },
-            {
-              required: false,
-              name: :subdomain,
-              type: String,
-              desc: 'Campfire subdomain'
-            },
-            {
-              required: false,
-              name: :room,
-              type: String,
-              desc: 'Campfire room'
-            }
-          ],
-          'confluence' => [
-            {
-              required: true,
-              name: :confluence_url,
-              type: String,
-              desc: 'The URL of the Confluence Cloud Workspace hosted on atlassian.net'
-            }
-          ],
-          'custom-issue-tracker' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New issue URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            }
-          ],
+          'campfire' => ::Integrations::Campfire.api_fields,
+          'confluence' => ::Integrations::Confluence.api_fields,
+          'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_fields,
           'datadog' => [
             {
               required: true,
@@ -293,19 +169,9 @@ module API
               desc: 'Custom tags in Datadog. Specify one tag per line in the format: "key:value\nkey2:value2"'
             }
           ],
+          'diffblue-cover' => ::Integrations::DiffblueCover.api_fields,
           'discord' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'Discord webhook. For example, https://discord.com/api/webhooks/…'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            },
+            ::Integrations::Discord.api_fields,
             chat_notification_flags,
             chat_notification_channels
           ].flatten,
@@ -355,40 +221,8 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ],
-          'external-wiki' => [
-            {
-              required: true,
-              name: :external_wiki_url,
-              type: String,
-              desc: 'The URL of the external wiki'
-            }
-          ],
-          'google-play' => [
-            {
-              required: true,
-              name: :package_name,
-              type: String,
-              desc: 'The package name of the app in Google Play'
-            },
-            {
-              required: true,
-              name: :service_account_key,
-              type: String,
-              desc: 'The Google Play service account key'
-            },
-            {
-              required: true,
-              name: :service_account_key_file_name,
-              type: String,
-              desc: 'The filename of the Google Play service account key'
-            },
-            {
-              required: false,
-              name: :google_play_protected_refs,
-              type: ::Grape::API::Boolean,
-              desc: 'Only enable for protected refs'
-            }
-          ],
+          'external-wiki' => ::Integrations::ExternalWiki.api_fields,
+          'google-play' => ::Integrations::GooglePlay.api_fields,
           'hangouts-chat' => [
             {
               required: true,
@@ -403,32 +237,7 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ].flatten,
-          'harbor' => [
-            {
-              required: true,
-              name: :url,
-              type: String,
-              desc: 'The base URL to the Harbor instance which is being linked to this GitLab project. For example, https://demo.goharbor.io.'
-            },
-            {
-              required: true,
-              name: :project_name,
-              type: String,
-              desc: 'The Project name to the Harbor instance. For example, testproject.'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'The username created from Harbor interface.'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'The password of the user.'
-            }
-          ],
+          'harbor' => ::Integrations::Harbor.api_fields,
           'irker' => [
             {
               required: true,
@@ -555,14 +364,7 @@ module API
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
             }
           ],
-          'mattermost-slash-commands' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Mattermost token'
-            }
-          ],
+          'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
           'slack-slash-commands' => [
             {
               required: true,
@@ -697,77 +499,12 @@ module API
               desc: 'The sound of the notification'
             }
           ],
-          'redmine' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'The new issue URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
-          'ewm' => [
-            {
-              required: true,
-              name: :new_issue_url,
-              type: String,
-              desc: 'New Issue URL'
-            },
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'Project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'Issues URL'
-            }
-          ],
-          'youtrack' => [
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
-          'clickup' => [
-            {
-              required: true,
-              name: :project_url,
-              type: String,
-              desc: 'The project URL'
-            },
-            {
-              required: true,
-              name: :issues_url,
-              type: String,
-              desc: 'The issues URL'
-            }
-          ],
+          'redmine' => ::Integrations::Redmine.api_fields,
+          'ewm' => ::Integrations::Ewm.api_fields,
+          'youtrack' => ::Integrations::Youtrack.api_fields,
+          'clickup' => ::Integrations::Clickup.api_fields,
           'slack' => [
-            chat_notification_settings,
-            chat_notification_flags,
+            ::Integrations::Slack.api_fields,
             chat_notification_channels
           ].flatten,
           'microsoft-teams' => [
@@ -786,8 +523,7 @@ module API
             chat_notification_flags
           ].flatten,
           'mattermost' => [
-            chat_notification_settings,
-            chat_notification_flags,
+            ::Integrations::Mattermost.api_fields,
             chat_notification_channels
           ].flatten,
           'teamcity' => [
@@ -879,20 +615,7 @@ module API
               desc: 'The product ID of ZenTao project'
             }
           ],
-          'squash-tm' => [
-            {
-              required: true,
-              name: :url,
-              type: String,
-              desc: 'The Squash TM webhook URL'
-            },
-            {
-              required: false,
-              name: :token,
-              type: String,
-              desc: 'The secret token'
-            }
-          ]
+          'squash-tm' => ::Integrations::SquashTm.api_fields
         }
       end
 
@@ -909,6 +632,7 @@ module API
           ::Integrations::Confluence,
           ::Integrations::CustomIssueTracker,
           ::Integrations::Datadog,
+          ::Integrations::DiffblueCover,
           ::Integrations::Discord,
           ::Integrations::DroneCi,
           ::Integrations::EmailsOnPush,

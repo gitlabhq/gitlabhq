@@ -5,9 +5,9 @@ module QA
     module Search
       class Results < QA::Page::Base
         view 'app/views/search/results/_blob_data.html.haml' do
-          element :result_item_content
-          element :file_title_content
-          element :file_text_content
+          element 'result-item-content'
+          element 'file-title-content'
+          element 'file-text-content'
         end
 
         view 'app/views/shared/projects/_project.html.haml' do
@@ -23,19 +23,19 @@ module QA
         end
 
         def has_project_in_search_result?(project_name)
-          has_element?(:result_item_content, text: project_name)
+          has_element?('result-item-content', text: project_name)
         end
 
         def has_file_in_project?(file_name, project_name)
-          within_element(:result_item_content, text: project_name) do
-            has_element?(:file_title_content, text: file_name)
+          within_element('result-item-content', text: project_name) do
+            has_element?('file-title-content', text: file_name)
           end
         end
 
         def has_file_in_project_with_content?(file_text, file_path)
-          within_element(:result_item_content,
+          within_element('result-item-content',
             text: file_path) do
-            has_element?(:file_text_content, text: file_text)
+            has_element?('file-text-content', text: file_text)
           end
         end
 

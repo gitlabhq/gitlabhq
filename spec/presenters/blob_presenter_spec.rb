@@ -312,13 +312,13 @@ RSpec.describe BlobPresenter do
     let(:git_blob) { blob.__getobj__ }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob)
 
       presenter.highlight
     end
 
     it 'returns plain content when :plain is true' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby')
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: 'ruby', used_on: :blob)
 
       presenter.highlight(plain: true)
     end
@@ -331,7 +331,7 @@ RSpec.describe BlobPresenter do
       end
 
       it 'returns limited highlighted content' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby')
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: 'ruby', used_on: :blob)
 
         presenter.highlight(to: 1)
       end
@@ -343,9 +343,17 @@ RSpec.describe BlobPresenter do
       end
 
       it 'passes language to inner call' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :blob)
 
         presenter.highlight
+      end
+    end
+
+    context 'when used_on param is present' do
+      it 'returns highlighted content' do
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby', used_on: :diff)
+
+        presenter.highlight(used_on: :diff)
       end
     end
   end

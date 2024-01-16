@@ -115,8 +115,8 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
         let(:issue_params) { { filters: { or: { assignee_usernames: [user.username, another_user.username] } } } }
 
         it 'returns correctly filtered issues' do
-          issue1.assignee_ids = user.id
-          issue2.assignee_ids = another_user.id
+          IssueAssignee.create!(issue_id: issue1.id, user_id: user.id)
+          IssueAssignee.create!(issue_id: issue2.id, user_id: another_user.id)
 
           subject
 

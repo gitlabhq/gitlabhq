@@ -6,7 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Labels administration **(FREE SELF)**
 
-To manage labels for the GitLab instance, in the Admin Area, on the left sidebar, select **Labels**. For more details on how to manage labels, see [Labels](../user/project/labels.md).
+To manage labels for the GitLab instance:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Labels**.
+
+For more details on how to manage labels, see [Labels](../user/project/labels.md).
 
 Labels created in the Admin Area are automatically added to new projects.
 They are not available to new groups.

@@ -12,7 +12,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
     # TODO: This used to use gitlab_sign_in, instead of sign_in, but that is buggy.  See
     #   this issue to look into why: https://gitlab.com/gitlab-org/gitlab/-/issues/331851
     sign_in(user)
-    gitlab_enable_admin_mode_sign_in(user, use_mock_admin_mode: false)
+    enable_admin_mode!(user, use_ui: true)
     visit admin_root_path
   end
 
@@ -21,7 +21,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
     expect(page).to have_current_path root_path, ignore_query: true
 
-    click_button 'Search or go to…'
+    find_by_testid('user-menu-toggle').click
 
     expect(page).to have_link(href: new_admin_session_path)
   end
@@ -42,7 +42,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
 
       expect(page).to have_current_path root_path, ignore_query: true
 
-      click_button 'Search or go to…'
+      find_by_testid('user-menu-toggle').click
 
       expect(page).to have_link(href: new_admin_session_path)
     end

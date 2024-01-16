@@ -1,21 +1,25 @@
 <script>
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
 import { debounce } from 'lodash';
-
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { isSafeURL } from '~/lib/utils/url_utility';
+
 import { highlighter } from 'ee_else_ce/gfm_auto_complete';
 
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
+import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
 import {
   WORK_ITEMS_TYPE_MAP,
   I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   I18N_WORK_ITEM_SEARCH_ERROR,
+  I18N_WORK_ITEM_NO_MATCHES_FOUND,
   sprintfWorkItem,
 } from '../../constants';
+import { isReference } from '../../utils';
 
 export default {
   components: {
@@ -55,26 +59,39 @@ export default {
     },
   },
   apollo: {
-    availableWorkItems: {
+    workspaceWorkItems: {
       query() {
         return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {
-        return {
-          fullPath: this.fullPath,
-          searchTerm: '',
-          types: this.childrenType ? [this.childrenType] : [],
-          isNumber: false,
-        };
+        return this.queryVariables;
       },
       skip() {
-        return !this.searchStarted;
+        return !this.searchStarted || this.isSearchingByReference;
       },
       update(data) {
         return [
           ...this.filterItems(data.workspace.workItemsByIid?.nodes),
-          ...this.filterItems(data.workspace.workItems.nodes),
+          ...this.filterItems(data.workspace.workItems?.nodes),
         ];
+      },
+      error() {
+        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
+      },
+    },
+    workItemsByReference: {
+      query: workItemsByReferencesQuery,
+      variables() {
+        return {
+          contextNamespacePath: this.fullPath,
+          refs: [this.searchTerm],
+        };
+      },
+      skip() {
+        return !this.isSearchingByReference;
+      },
+      update(data) {
+        return data.workItemsByReference.nodes;
       },
       error() {
         this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
@@ -83,13 +100,22 @@ export default {
   },
   data() {
     return {
-      availableWorkItems: [],
-      query: '',
+      workspaceWorkItems: [],
+      searchTerm: '',
       searchStarted: false,
       error: '',
+      textInputAttrs: {
+        class: 'gl-min-w-fit-content!',
+      },
     };
   },
   computed: {
+    availableWorkItems() {
+      return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
+    },
+    isSearchingByReference() {
+      return isReference(this.searchTerm) || isSafeURL(this.searchTerm);
+    },
     workItemsToAdd: {
       get() {
         return this.value;
@@ -99,10 +125,10 @@ export default {
       },
     },
     isLoading() {
-      return this.$apollo.queries.availableWorkItems.loading;
-    },
-    addInputPlaceholder() {
-      return sprintfWorkItem(I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER, this.childrenTypeName);
+      return (
+        this.$apollo.queries.workspaceWorkItems.loading ||
+        this.$apollo.queries.workItemsByReference.loading
+      );
     },
     childrenTypeName() {
       return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
@@ -110,31 +136,25 @@ export default {
     tokenSelectorContainerClass() {
       return !this.areWorkItemsToAddValid ? 'gl-inset-border-1-red-500!' : '';
     },
+    queryVariables() {
+      return {
+        fullPath: this.fullPath,
+        searchTerm: this.searchTerm,
+        types: this.childrenType ? [this.childrenType] : [],
+        in: this.searchTerm ? 'TITLE' : undefined,
+        iid: isNumeric(this.searchTerm) ? this.searchTerm : null,
+        searchByIid: isNumeric(this.searchTerm),
+        searchByText: true,
+      };
+    },
   },
   created() {
     this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
     getIdFromGraphQLId,
-    setSearchKey(value) {
-      this.query = value;
-
-      // Query parameters for searching by text
-      const variables = {
-        searchTerm: value,
-        in: value ? 'TITLE' : undefined,
-        iid: null,
-        isNumber: false,
-      };
-
-      // Check if it is a number, add iid as query parameter
-      if (isNumeric(value) && value) {
-        variables.iid = value;
-        variables.isNumber = true;
-      }
-
-      // Fetch combined results of search by iid and search by title.
-      this.$apollo.queries.availableWorkItems.refetch(variables);
+    async setSearchKey(value) {
+      this.searchTerm = value;
     },
     handleFocus() {
       this.searchStarted = true;
@@ -154,16 +174,16 @@ export default {
     focusInputText() {
       this.$nextTick(() => {
         if (this.areWorkItemsToAddValid) {
-          this.$refs.tokenSelector.$el.querySelector('input[type="text"]').focus();
+          this.$refs.tokenSelector.focusTextInput();
         }
       });
     },
     formatResults(input) {
-      if (!this.query) {
+      if (!this.searchTerm) {
         return input;
       }
 
-      return highlighter(`<span class="gl-text-black-normal">${input}</span>`, this.query);
+      return highlighter(`<span class="gl-text-black-normal">${input}</span>`, this.searchTerm);
     },
     unsetError() {
       this.error = '';
@@ -175,6 +195,10 @@ export default {
         ) || []
       );
     },
+  },
+  i18n: {
+    noMatchesFoundMessage: I18N_WORK_ITEM_NO_MATCHES_FOUND,
+    addInputPlaceholder: I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
   },
 };
 </script>
@@ -188,10 +212,11 @@ export default {
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
-      :placeholder="addInputPlaceholder"
+      :placeholder="$options.i18n.addInputPlaceholder"
       menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
       :container-class="tokenSelectorContainerClass"
       data-testid="work-item-token-select-input"
+      :text-input-attrs="textInputAttrs"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
       @mouseover.native="handleMouseOver"
@@ -209,6 +234,11 @@ export default {
           ></div>
           <div v-safe-html="formatResults(dropdownItem.title)" class="gl-text-truncate"></div>
         </div>
+      </template>
+      <template #no-results-content>
+        <span data-testid="no-match-found-namespace-message">{{
+          $options.i18n.noMatchesFoundMessage
+        }}</span>
       </template>
     </gl-token-selector>
   </div>

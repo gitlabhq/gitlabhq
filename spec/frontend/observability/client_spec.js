@@ -279,6 +279,38 @@ describe('buildClient', () => {
             '&attr_name=name1&attr_value=value1',
         );
       });
+      describe('date range time filter', () => {
+        it('handles custom date range period filter', async () => {
+          await client.fetchTraces({
+            filters: {
+              period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+            },
+          });
+          expect(getQueryParam()).not.toContain('period=');
+          expect(getQueryParam()).toContain(
+            'start_time=2023-01-01T00:00:00.000Z&end_time=2023-02-01T00:00:00.000Z',
+          );
+        });
+
+        it.each([
+          'invalid - 2023-02-01',
+          '2023-02-01 - invalid',
+          'invalid - invalid',
+          '2023-01-01 / 2023-02-01',
+          '2023-01-01 2023-02-01',
+          '2023-01-01 - 2023-02-01 - 2023-02-01',
+        ])('ignore invalid values', async (val) => {
+          await client.fetchTraces({
+            filters: {
+              period: [{ operator: '=', value: val }],
+            },
+          });
+
+          expect(getQueryParam()).not.toContain('start_time=');
+          expect(getQueryParam()).not.toContain('end_time=');
+          expect(getQueryParam()).not.toContain('period=');
+        });
+      });
 
       it('handles repeated params', async () => {
         await client.fetchTraces({

@@ -14,8 +14,7 @@ export default {
     item: {
       type: Object,
       required: true,
-      validator: (item) =>
-        ['name', 'kind', 'labels', 'annotations', 'status'].every((key) => item[key]),
+      validator: (item) => ['name', 'kind', 'labels', 'annotations'].every((key) => item[key]),
     },
   },
   computed: {
@@ -51,7 +50,7 @@ export default {
 <template>
   <ul class="gl-list-style-none">
     <workload-details-item :label="$options.i18n.name">
-      {{ item.name }}
+      <span class="gl-word-break-word"> {{ item.name }}</span>
     </workload-details-item>
     <workload-details-item :label="$options.i18n.kind">
       {{ item.kind }}
@@ -63,7 +62,7 @@ export default {
         </gl-badge>
       </div>
     </workload-details-item>
-    <workload-details-item :label="$options.i18n.status">
+    <workload-details-item v-if="item.status" :label="$options.i18n.status">
       <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
         item.status
       }}</gl-badge></workload-details-item

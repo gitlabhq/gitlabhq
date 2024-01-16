@@ -285,7 +285,7 @@
   canonical: |
     <p><em>-</em></p>
   static: |-
-    <p data-sourcepos="1:2-1:4" dir="auto"><em>-</em></p>
+    <p data-sourcepos="1:2-1:4" dir="auto"><em data-sourcepos="1:2-1:4">-</em></p>
   wysiwyg: |-
     <p dir="auto"><em>-</em></p>
 04_01_00__leaf_blocks__thematic_breaks__015:
@@ -428,14 +428,14 @@
     <h1>foo <em>bar</em> *baz*</h1>
   static: |-
     <h1 data-sourcepos="1:1-1:19" dir="auto">
-    <a id="user-content-foo-bar-baz" class="anchor" href="#foo-bar-baz" aria-hidden="true"></a>foo <em>bar</em> *baz*</h1>
+    <a id="user-content-foo-bar-baz" class="anchor" href="#foo-bar-baz" aria-hidden="true"></a>foo <em data-sourcepos="1:7-1:11">bar</em> *baz*</h1>
   wysiwyg: |-
     <h1 dir="auto">foo <em>bar</em> *baz*</h1>
 04_02_00__leaf_blocks__atx_headings__006:
   canonical: |
     <h1>foo</h1>
   static: |-
-    <h1 data-sourcepos="1:1-1:22" dir="auto">
+    <h1 data-sourcepos="1:1-1:43" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h1>
   wysiwyg: |-
     <h1 dir="auto">foo</h1>
@@ -481,9 +481,9 @@
     <h2>foo</h2>
     <h3>bar</h3>
   static: |-
-    <h2 data-sourcepos="1:1-1:6" dir="auto">
+    <h2 data-sourcepos="1:1-1:9" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h2>
-    <h3 data-sourcepos="2:3-2:11" dir="auto">
+    <h3 data-sourcepos="2:3-2:18" dir="auto">
     <a id="user-content-bar" class="anchor" href="#bar" aria-hidden="true"></a>bar</h3>
   wysiwyg: |-
     <h2 dir="auto">foo</h2>
@@ -493,9 +493,9 @@
     <h1>foo</h1>
     <h5>foo</h5>
   static: |-
-    <h1 data-sourcepos="1:1-1:5" dir="auto">
+    <h1 data-sourcepos="1:1-1:40" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h1>
-    <h5 data-sourcepos="2:1-2:9" dir="auto">
+    <h5 data-sourcepos="2:1-2:12" dir="auto">
     <a id="user-content-foo-1" class="anchor" href="#foo-1" aria-hidden="true"></a>foo</h5>
   wysiwyg: |-
     <h1 dir="auto">foo</h1>
@@ -504,7 +504,7 @@
   canonical: |
     <h3>foo</h3>
   static: |-
-    <h3 data-sourcepos="1:1-1:7" dir="auto">
+    <h3 data-sourcepos="1:1-1:16" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h3>
   wysiwyg: |-
     <h3 dir="auto">foo</h3>
@@ -577,7 +577,7 @@
   static: |-
     <h2 data-sourcepos="1:1-1:3" dir="auto"></h2>
     <h1 data-sourcepos="2:1-2:1" dir="auto"></h1>
-    <h3 data-sourcepos="3:1-3:3" dir="auto"></h3>
+    <h3 data-sourcepos="3:1-3:7" dir="auto"></h3>
   wysiwyg: |-
     <h2 dir="auto"></h2>
     <h1 dir="auto"></h1>
@@ -588,10 +588,10 @@
     <h2>Foo <em>bar</em></h2>
   static: |-
     <h1 data-sourcepos="1:1-3:0" dir="auto">
-    <a id="user-content-foo-bar" class="anchor" href="#foo-bar" aria-hidden="true"></a>Foo <em>bar</em>
+    <a id="user-content-foo-bar" class="anchor" href="#foo-bar" aria-hidden="true"></a>Foo <em data-sourcepos="1:5-1:9">bar</em>
     </h1>
     <h2 data-sourcepos="4:1-5:9" dir="auto">
-    <a id="user-content-foo-bar-1" class="anchor" href="#foo-bar-1" aria-hidden="true"></a>Foo <em>bar</em>
+    <a id="user-content-foo-bar-1" class="anchor" href="#foo-bar-1" aria-hidden="true"></a>Foo <em data-sourcepos="4:5-4:9">bar</em>
     </h2>
   wysiwyg: |-
     <h1 dir="auto">Foo <em>bar</em></h1>
@@ -602,7 +602,7 @@
     baz</em></h1>
   static: |-
     <h1 data-sourcepos="1:1-3:4" dir="auto">
-    <a id="user-content-foo-barbaz" class="anchor" href="#foo-barbaz" aria-hidden="true"></a>Foo <em>bar
+    <a id="user-content-foo-barbaz" class="anchor" href="#foo-barbaz" aria-hidden="true"></a>Foo <em data-sourcepos="1:5-2:4">bar
     baz</em>
     </h1>
   wysiwyg: |-
@@ -614,7 +614,7 @@
     baz</em></h1>
   static: |-
     <h1 data-sourcepos="1:3-3:4" dir="auto">
-    <a id="user-content-foo-barbaz" class="anchor" href="#foo-barbaz" aria-hidden="true"></a>Foo <em>bar
+    <a id="user-content-foo-barbaz" class="anchor" href="#foo-barbaz" aria-hidden="true"></a>Foo <em data-sourcepos="1:7-2:6">bar
     baz</em>
     </h1>
   wysiwyg: |-
@@ -1174,7 +1174,7 @@
   canonical: |
     <p><code>foo</code></p>
   static: |-
-    <p data-sourcepos="1:1-3:2" dir="auto"><code>foo</code></p>
+    <p data-sourcepos="1:1-3:2" dir="auto"><code data-sourcepos="1:3-3:0">foo</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo</code></p>
 04_05_00__leaf_blocks__fenced_code_blocks__004:
@@ -1404,7 +1404,7 @@
     <p><code> </code>
     aaa</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto"><code> </code>
+    <p data-sourcepos="1:1-2:3" dir="auto"><code data-sourcepos="1:4-1:4"> </code>
     aaa</p>
   wysiwyg: |-
     <p dir="auto">
@@ -1508,7 +1508,7 @@
     <p><code>aa</code>
     foo</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto"><code>aa</code>
+    <p data-sourcepos="1:1-2:3" dir="auto"><code data-sourcepos="1:4-1:7">aa</code>
     foo</p>
   wysiwyg: |-
     <p dir="auto"><code>aa</code>
@@ -1547,7 +1547,7 @@
     <table dir="auto"><tr><td>
     <pre>
     **Hello**,
-    <p data-sourcepos="5:1-6:6"><em>world</em>.
+    <p data-sourcepos="5:1-6:6"><em data-sourcepos="5:1-5:7">world</em>.
     </p></pre>
     </td></tr></table>
   wysiwyg: |-
@@ -1609,7 +1609,7 @@
     </DIV>
   static: |-
     <div>
-    <p data-sourcepos="3:1-3:10"><em>Markdown</em></p>
+    <p data-sourcepos="3:1-3:10"><em data-sourcepos="3:1-3:10">Markdown</em></p>
     </div>
   wysiwyg: |-
     <div><p dir="auto"><em>Markdown</em></p></div>
@@ -1641,7 +1641,7 @@
   static: |-
     <div>
     *foo*
-    <p data-sourcepos="4:1-4:5"><em>bar</em></p>
+    <p data-sourcepos="4:1-4:5"><em data-sourcepos="4:1-4:5">bar</em></p>
     </div>
   wysiwyg: |-
     <div><p dir="auto">
@@ -1774,7 +1774,7 @@
     </del>
   static: |-
     <del>
-    <p data-sourcepos="3:1-3:5"><em>foo</em></p>
+    <p data-sourcepos="3:1-3:5"><em data-sourcepos="3:1-3:5">foo</em></p>
     </del>
   wysiwyg: |-
     <p dir="auto"><em><s>foo</s></em></p>
@@ -1782,7 +1782,7 @@
   canonical: |
     <p><del><em>foo</em></del></p>
   static: |-
-    <p data-sourcepos="1:1-1:16" dir="auto"><del><em>foo</em></del></p>
+    <p data-sourcepos="1:1-1:16" dir="auto"><del><em data-sourcepos="1:6-1:10">foo</em></del></p>
   wysiwyg: |-
     <p dir="auto"><em><s>foo</s></em></p>
 04_06_00__leaf_blocks__html_blocks__022:
@@ -1900,7 +1900,7 @@
     <p><em>foo</em></p>
   static: |-
     p{color:red;}
-    <p data-sourcepos="2:1-2:5" dir="auto"><em>foo</em></p>
+    <p data-sourcepos="2:1-2:5" dir="auto"><em data-sourcepos="2:1-2:5">foo</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em></p>
 04_06_00__leaf_blocks__html_blocks__029:
@@ -1909,7 +1909,7 @@
     <p><em>baz</em></p>
   static: |-
     *bar*
-    <p data-sourcepos="2:1-2:5" dir="auto"><em>baz</em></p>
+    <p data-sourcepos="2:1-2:5" dir="auto"><em data-sourcepos="2:1-2:5">baz</em></p>
   wysiwyg: |-
     <p dir="auto">*bar*
     </p>
@@ -2058,7 +2058,7 @@
     </div>
   static: |-
     <div>
-    <p data-sourcepos="3:1-3:18"><em>Emphasized</em> text.</p>
+    <p data-sourcepos="3:1-3:18"><em data-sourcepos="3:1-3:12">Emphasized</em> text.</p>
     </div>
   wysiwyg: |-
     <div><p dir="auto"><em>Emphasized</em> text.</p></div>
@@ -2126,7 +2126,7 @@
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="3:1-3:5" dir="auto"><a data-sourcepos="3:1-3:5" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url "title"</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
@@ -2134,7 +2134,7 @@
   canonical: |
     <p><a href="/url" title="the title">foo</a></p>
   static: |-
-    <p data-sourcepos="5:1-5:5" dir="auto"><a href="/url" title="the title">foo</a></p>
+    <p data-sourcepos="5:1-5:5" dir="auto"><a data-sourcepos="5:1-5:5" href="/url" title="the title">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url "the title"</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="the title">foo</a></p>
@@ -2142,7 +2142,7 @@
   canonical: |
     <p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:11" dir="auto"><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
+    <p data-sourcepos="3:1-3:11" dir="auto"><a data-sourcepos="3:1-3:11" href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
   wysiwyg: |-
     <pre>[foo*bar\]]: my_(url) "title (with parens)"</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
@@ -2150,7 +2150,7 @@
   canonical: |
     <p><a href="my%20url" title="title">Foo bar</a></p>
   static: |-
-    <p data-sourcepos="5:1-5:9" dir="auto"><a href="my%20url" title="title">Foo bar</a></p>
+    <p data-sourcepos="5:1-5:9" dir="auto"><a data-sourcepos="5:1-5:9" href="my%20url" title="title">Foo bar</a></p>
   wysiwyg: |-
     <pre>[foo bar]: my url "title"</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="my%20url" title="title">Foo bar</a></p>
@@ -2162,7 +2162,7 @@
     line2
     ">foo</a></p>
   static: |-
-    <p data-sourcepos="7:1-7:5" dir="auto"><a href="/url" title="
+    <p data-sourcepos="7:1-7:5" dir="auto"><a data-sourcepos="7:1-7:5" href="/url" title="
     title
     line1
     line2
@@ -2195,7 +2195,7 @@
   canonical: |
     <p><a href="/url">foo</a></p>
   static: |-
-    <p data-sourcepos="4:1-4:5" dir="auto"><a href="/url">foo</a></p>
+    <p data-sourcepos="4:1-4:5" dir="auto"><a data-sourcepos="4:1-4:5" href="/url">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
@@ -2213,7 +2213,7 @@
   canonical: |
     <p><a href="">foo</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:5" dir="auto"><a href="">foo</a></p>
+    <p data-sourcepos="3:1-3:5" dir="auto"><a data-sourcepos="3:1-3:5" href="">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: </pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="">foo</a></p>
@@ -2231,7 +2231,7 @@
   canonical: |
     <p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url%5Cbar*baz" title='foo"bar\baz'>foo</a></p>
+    <p data-sourcepos="3:1-3:5" dir="auto"><a data-sourcepos="3:1-3:5" href="/url%5Cbar*baz" title='foo"bar\baz'>foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url\bar*baz "foo"bar\baz"</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
@@ -2239,7 +2239,7 @@
   canonical: |
     <p><a href="url">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="url">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="url">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="url">foo</a></p>
     <pre>[foo]: url</pre>
@@ -2247,7 +2247,7 @@
   canonical: |
     <p><a href="first">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="first">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="first">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="first">foo</a></p>
     <pre>[foo]: first</pre>
@@ -2256,7 +2256,7 @@
   canonical: |
     <p><a href="/url">Foo</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:5" dir="auto"><a href="/url">Foo</a></p>
+    <p data-sourcepos="3:1-3:5" dir="auto"><a data-sourcepos="3:1-3:5" href="/url">Foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Foo</a></p>
@@ -2264,7 +2264,7 @@
   canonical: |
     <p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:8" dir="auto"><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
+    <p data-sourcepos="3:1-3:8" dir="auto"><a data-sourcepos="3:1-3:8" href="/%CF%86%CE%BF%CF%85">αγω</a></p>
   wysiwyg: |-
     <pre>[αγω]: /φου</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/%CF%86%CE%BF%CF%85">αγω</a></p>
@@ -2345,7 +2345,7 @@
     </blockquote>
   static: |-
     <h1 data-sourcepos="1:1-1:7" dir="auto">
-    <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a><a href="/url">Foo</a>
+    <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a><a data-sourcepos="1:3-1:7" href="/url">Foo</a>
     </h1>
     <blockquote data-sourcepos="3:1-3:5" dir="auto">
     <p data-sourcepos="3:3-3:5">bar</p>
@@ -2361,7 +2361,7 @@
   static: |-
     <h1 data-sourcepos="1:1-4:5" dir="auto">
     <a id="user-content-bar" class="anchor" href="#bar" aria-hidden="true"></a>bar</h1>
-    <p data-sourcepos="4:1-4:5" dir="auto"><a href="/url">foo</a></p>
+    <p data-sourcepos="4:1-4:5" dir="auto"><a data-sourcepos="4:1-4:5" href="/url">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <h1 dir="auto">bar</h1>
@@ -2372,7 +2372,7 @@
     <a href="/url">foo</a></p>
   static: |-
     <p data-sourcepos="1:1-3:5" dir="auto">===
-    <a href="/url">foo</a></p>
+    <a data-sourcepos="2:1-2:5" href="/url">foo</a></p>
   wysiwyg: |-
     <pre>[foo]: /url</pre>
     <p dir="auto">===
@@ -2383,9 +2383,9 @@
     <a href="/bar-url" title="bar">bar</a>,
     <a href="/baz-url">baz</a></p>
   static: |-
-    <p data-sourcepos="6:1-8:5" dir="auto"><a href="/foo-url" title="foo">foo</a>,
-    <a href="/bar-url" title="bar">bar</a>,
-    <a href="/baz-url">baz</a></p>
+    <p data-sourcepos="6:1-8:5" dir="auto"><a data-sourcepos="6:1-6:5" href="/foo-url" title="foo">foo</a>,
+    <a data-sourcepos="7:1-7:5" href="/bar-url" title="bar">bar</a>,
+    <a data-sourcepos="8:1-8:5" href="/baz-url">baz</a></p>
   wysiwyg: |-
     <pre>[foo]: /foo-url "foo"</pre>
     <pre>[bar]: /bar-url "bar"</pre>
@@ -2399,7 +2399,7 @@
     <blockquote>
     </blockquote>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="/url">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="/url">foo</a></p>
     <blockquote data-sourcepos="3:1-3:13" dir="auto">
     </blockquote>
   wysiwyg: |-
@@ -2498,7 +2498,7 @@
     <p>aaa<br />
     bbb</p>
   static: |-
-    <p data-sourcepos="1:1-2:8" dir="auto">aaa<br>
+    <p data-sourcepos="1:1-2:8" dir="auto">aaa<br data-sourcepos="1:9-1:9">
     bbb</p>
   wysiwyg: |-
     <p dir="auto">aaa<br>
@@ -2567,14 +2567,14 @@
     <table data-sourcepos="1:1-3:9" dir="auto">
     <thead>
     <tr data-sourcepos="1:1-1:16">
-    <th align="center" data-sourcepos="1:2-1:6">abc</th>
-    <th align="right" data-sourcepos="1:8-1:15">defghi</th>
+    <th data-sourcepos="1:2-1:6" align="center">abc</th>
+    <th data-sourcepos="1:8-1:15" align="right">defghi</th>
     </tr>
     </thead>
     <tbody>
     <tr data-sourcepos="3:1-3:9">
-    <td align="center" data-sourcepos="3:1-3:4">bar</td>
-    <td align="right" data-sourcepos="3:6-3:9">baz</td>
+    <td data-sourcepos="3:1-3:4" align="center">bar</td>
+    <td data-sourcepos="3:6-3:9" align="right">baz</td>
     </tr>
     </tbody>
     </table>
@@ -2606,10 +2606,10 @@
     </thead>
     <tbody>
     <tr data-sourcepos="3:1-3:13">
-    <td data-sourcepos="3:2-3:12">b <code>|</code> az</td>
+    <td data-sourcepos="3:2-3:12">b <code data-sourcepos="3:6-3:6">|</code> az</td>
     </tr>
     <tr data-sourcepos="4:1-4:15">
-    <td data-sourcepos="4:2-4:14">b <strong>|</strong> im</td>
+    <td data-sourcepos="4:2-4:14">b <strong data-sourcepos="4:5-4:9">|</strong> im</td>
     </tr>
     </tbody>
     </table>
@@ -2691,7 +2691,7 @@
     </tr>
     <tr data-sourcepos="4:1-4:3">
     <td data-sourcepos="4:1-4:3">bar</td>
-    <td data-sourcepos="4:0-4:0"></td>
+    <td data-sourcepos="4:3-4:0"></td>
     </tr>
     </tbody>
     </table>
@@ -2743,7 +2743,7 @@
     <tbody>
     <tr data-sourcepos="3:1-3:7">
     <td data-sourcepos="3:2-3:6">bar</td>
-    <td data-sourcepos="3:0-3:0"></td>
+    <td data-sourcepos="3:6-3:0"></td>
     </tr>
     <tr data-sourcepos="4:1-4:19">
     <td data-sourcepos="4:2-4:6">bar</td>
@@ -3449,7 +3449,7 @@
     <li>ok</li>
     </ol>
   static: |-
-    <ol start="123456789" data-sourcepos="1:1-1:13" dir="auto">
+    <ol data-sourcepos="1:1-1:13" start="123456789" dir="auto">
     <li data-sourcepos="1:1-1:13">ok</li>
     </ol>
   wysiwyg: |-
@@ -3467,7 +3467,7 @@
     <li>ok</li>
     </ol>
   static: |-
-    <ol start="0" data-sourcepos="1:1-1:5" dir="auto">
+    <ol data-sourcepos="1:1-1:5" start="0" dir="auto">
     <li data-sourcepos="1:1-1:5">ok</li>
     </ol>
   wysiwyg: |-
@@ -3478,7 +3478,7 @@
     <li>ok</li>
     </ol>
   static: |-
-    <ol start="3" data-sourcepos="1:1-1:7" dir="auto">
+    <ol data-sourcepos="1:1-1:7" start="3" dir="auto">
     <li data-sourcepos="1:1-1:7">ok</li>
     </ol>
   wysiwyg: |-
@@ -3521,7 +3521,7 @@
     </li>
     </ol>
   static: |-
-    <ol start="10" data-sourcepos="1:3-3:14" dir="auto">
+    <ol data-sourcepos="1:3-3:14" start="10" dir="auto">
     <li data-sourcepos="1:3-3:14">
     <p data-sourcepos="1:8-1:10">foo</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
@@ -4055,7 +4055,7 @@
     </li>
     </ol>
   static: |-
-    <ol start="10" data-sourcepos="1:1-2:9" dir="auto">
+    <ol data-sourcepos="1:1-2:9" start="10" dir="auto">
     <li data-sourcepos="1:1-2:9">foo
     <ul data-sourcepos="2:5-2:9">
     <li data-sourcepos="2:5-2:9">bar</li>
@@ -4073,7 +4073,7 @@
     <li>bar</li>
     </ul>
   static: |-
-    <ol start="10" data-sourcepos="1:1-1:7" dir="auto">
+    <ol data-sourcepos="1:1-1:7" start="10" dir="auto">
     <li data-sourcepos="1:1-1:7">foo</li>
     </ol>
     <ul data-sourcepos="2:4-2:8" dir="auto">
@@ -4119,7 +4119,7 @@
     <li data-sourcepos="1:1-1:11">
     <ul data-sourcepos="1:4-1:11">
     <li data-sourcepos="1:4-1:11">
-    <ol start="2" data-sourcepos="1:6-1:11">
+    <ol data-sourcepos="1:6-1:11" start="2">
     <li data-sourcepos="1:6-1:11">foo</li>
     </ol>
     </li>
@@ -4186,7 +4186,7 @@
     <li data-sourcepos="1:1-1:6">foo</li>
     <li data-sourcepos="2:1-2:6">bar</li>
     </ol>
-    <ol start="3" data-sourcepos="3:1-3:6" dir="auto">
+    <ol data-sourcepos="3:1-3:6" start="3" dir="auto">
     <li data-sourcepos="3:1-3:6">baz</li>
     </ol>
   wysiwyg: |-
@@ -4770,7 +4770,7 @@
   canonical: |
     <p><code>hi</code>lo`</p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><code>hi</code>lo`</p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><code data-sourcepos="1:2-1:3">hi</code>lo`</p>
   wysiwyg: |-
     <p dir="auto"><code>hi</code>lo`</p>
 06_02_00__inlines__backslash_escapes__001:
@@ -4798,7 +4798,7 @@
   static: |-
     <p data-sourcepos="1:1-9:51" dir="auto">*not emphasized*
     &lt;br/&gt; not a tag
-    <a href="/foo">not a link</a>
+    <a data-sourcepos="1:1-1:18" href="/foo">not a link</a>
     `not code`
     1. not a list
     * not a list
@@ -4819,7 +4819,7 @@
   canonical: |
     <p>\<em>emphasis</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto">\<em>emphasis</em></p>
+    <p data-sourcepos="1:1-1:12" dir="auto">\<em data-sourcepos="1:3-1:12">emphasis</em></p>
   wysiwyg: |-
     <p dir="auto">\<em>emphasis</em></p>
 06_02_00__inlines__backslash_escapes__005:
@@ -4827,7 +4827,7 @@
     <p>foo<br />
     bar</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:3" dir="auto">foo<br data-sourcepos="1:4-1:5">
     bar</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -4836,7 +4836,7 @@
   canonical: |
     <p><code>\[\`</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><code>\[\`</code></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><code data-sourcepos="1:3-1:8">\[\`</code></p>
   wysiwyg: |-
     <p dir="auto"><code>\[\`</code></p>
 06_02_00__inlines__backslash_escapes__007:
@@ -4865,7 +4865,7 @@
   canonical: |
     <p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><a href="http://example.com?find=%5C*" rel="nofollow noreferrer noopener" target="_blank">http://example.com?find=\*</a></p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><a data-sourcepos="1:2-1:29" href="http://example.com?find=%5C*" rel="nofollow noreferrer noopener" target="_blank">http://example.com?find=\*</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 06_02_00__inlines__backslash_escapes__010:
@@ -4879,14 +4879,14 @@
   canonical: |
     <p><a href="/bar*" title="ti*tle">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto"><a href="/bar*" title="ti*tle">foo</a></p>
+    <p data-sourcepos="1:1-1:23" dir="auto"><a data-sourcepos="1:1-1:23" href="/bar*" title="ti*tle">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/bar*" title="ti*tle">foo</a></p>
 06_02_00__inlines__backslash_escapes__012:
   canonical: |
     <p><a href="/bar*" title="ti*tle">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="/bar*" title="ti*tle">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="/bar*" title="ti*tle">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/bar*" title="ti*tle">foo</a></p>
     <pre>[foo]: /bar* "ti*tle"</pre>
@@ -4969,14 +4969,14 @@
   canonical: |
     <p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:37" dir="auto"><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+    <p data-sourcepos="1:1-1:37" dir="auto"><a data-sourcepos="1:1-1:37" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
 06_03_00__inlines__entity_and_numeric_character_references__009:
   canonical: |
     <p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
     <pre>[foo]: /föö "föö"</pre>
@@ -4995,7 +4995,7 @@
   canonical: |
     <p><code>f&amp;ouml;&amp;ouml;</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><code>f&amp;ouml;&amp;ouml;</code></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><code data-sourcepos="1:2-1:14">f&amp;ouml;&amp;ouml;</code></p>
   wysiwyg: |-
     <p dir="auto"><code>f&amp;ouml;&amp;ouml;</code></p>
 06_03_00__inlines__entity_and_numeric_character_references__012:
@@ -5015,7 +5015,7 @@
     <em>foo</em></p>
   static: |-
     <p data-sourcepos="1:1-2:5" dir="auto">*foo*
-    <em>foo</em></p>
+    <em data-sourcepos="2:1-2:5">foo</em></p>
   wysiwyg: |-
     <p dir="auto">*foo*
     <em>foo</em></p>
@@ -5054,49 +5054,49 @@
   canonical: |
     <p>[a](url &quot;tit&quot;)</p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto"><a href="url" title="tit">a</a></p>
+    <p data-sourcepos="1:1-1:24" dir="auto"><a data-sourcepos="1:1-1:14" href="url" title="tit">a</a></p>
   wysiwyg: |-
     <p dir="auto">[a](url "tit")</p>
 06_04_00__inlines__code_spans__001:
   canonical: |
     <p><code>foo</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><code>foo</code></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><code data-sourcepos="1:2-1:4">foo</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo</code></p>
 06_04_00__inlines__code_spans__002:
   canonical: |
     <p><code>foo ` bar</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><code>foo ` bar</code></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><code data-sourcepos="1:3-1:13">foo ` bar</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo ` bar</code></p>
 06_04_00__inlines__code_spans__003:
   canonical: |
     <p><code>``</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><code>``</code></p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><code data-sourcepos="1:2-1:5">``</code></p>
   wysiwyg: |-
     <p dir="auto"><code>``</code></p>
 06_04_00__inlines__code_spans__004:
   canonical: |
     <p><code> `` </code></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><code> `` </code></p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><code data-sourcepos="1:2-1:7"> `` </code></p>
   wysiwyg: |-
     <p dir="auto"><code> `` </code></p>
 06_04_00__inlines__code_spans__005:
   canonical: |
     <p><code> a</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:4" dir="auto"><code> a</code></p>
+    <p data-sourcepos="1:1-1:4" dir="auto"><code data-sourcepos="1:2-1:3"> a</code></p>
   wysiwyg: |-
     <p dir="auto"><code> a</code></p>
 06_04_00__inlines__code_spans__006:
   canonical: |
     <p><code> b </code></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><code> b </code></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><code data-sourcepos="1:2-1:6"> b </code></p>
   wysiwyg: |-
     <p dir="auto"><code>&nbsp;b&nbsp;</code></p>
 06_04_00__inlines__code_spans__007:
@@ -5104,71 +5104,71 @@
     <p><code> </code>
     <code>  </code></p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto"><code> </code>
-    <code>  </code></p>
+    <p data-sourcepos="1:1-2:4" dir="auto"><code data-sourcepos="1:2-1:3"> </code>
+    <code data-sourcepos="2:2-2:3">  </code></p>
   wysiwyg: |-
     <p dir="auto"></p>
 06_04_00__inlines__code_spans__008:
   canonical: |
     <p><code>foo bar   baz</code></p>
   static: |-
-    <p data-sourcepos="1:1-5:2" dir="auto"><code>foo bar   baz</code></p>
+    <p data-sourcepos="1:1-5:2" dir="auto"><code data-sourcepos="1:3-5:0">foo bar   baz</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo bar   baz</code></p>
 06_04_00__inlines__code_spans__009:
   canonical: |
     <p><code>foo </code></p>
   static: |-
-    <p data-sourcepos="1:1-3:2" dir="auto"><code>foo </code></p>
+    <p data-sourcepos="1:1-3:2" dir="auto"><code data-sourcepos="1:3-3:0">foo </code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo </code></p>
 06_04_00__inlines__code_spans__010:
   canonical: |
     <p><code>foo   bar  baz</code></p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto"><code>foo   bar  baz</code></p>
+    <p data-sourcepos="1:1-2:4" dir="auto"><code data-sourcepos="1:2-2:3">foo   bar  baz</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo   bar  baz</code></p>
 06_04_00__inlines__code_spans__011:
   canonical: |
     <p><code>foo\</code>bar`</p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><code>foo\</code>bar`</p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><code data-sourcepos="1:2-1:5">foo\</code>bar`</p>
   wysiwyg: |-
     <p dir="auto"><code>foo\</code>bar`</p>
 06_04_00__inlines__code_spans__012:
   canonical: |
     <p><code>foo`bar</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><code>foo`bar</code></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><code data-sourcepos="1:3-1:9">foo`bar</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo`bar</code></p>
 06_04_00__inlines__code_spans__013:
   canonical: |
     <p><code>foo `` bar</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><code>foo `` bar</code></p>
+    <p data-sourcepos="1:1-1:14" dir="auto"><code data-sourcepos="1:2-1:13">foo `` bar</code></p>
   wysiwyg: |-
     <p dir="auto"><code>foo `` bar</code></p>
 06_04_00__inlines__code_spans__014:
   canonical: |
     <p>*foo<code>*</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto">*foo<code>*</code></p>
+    <p data-sourcepos="1:1-1:7" dir="auto">*foo<code data-sourcepos="1:6-1:6">*</code></p>
   wysiwyg: |-
     <p dir="auto">*foo<code>*</code></p>
 06_04_00__inlines__code_spans__015:
   canonical: |
     <p>[not a <code>link](/foo</code>)</p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto">[not a <code>link](/foo</code>)</p>
+    <p data-sourcepos="1:1-1:20" dir="auto">[not a <code data-sourcepos="1:9-1:18">link](/foo</code>)</p>
   wysiwyg: |-
     <p dir="auto">[not a <code>link](/foo</code>)</p>
 06_04_00__inlines__code_spans__016:
   canonical: |
     <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><code>&lt;a href="</code>"&gt;`</p>
+    <p data-sourcepos="1:1-1:14" dir="auto"><code data-sourcepos="1:2-1:10">&lt;a href="</code>"&gt;`</p>
   wysiwyg: |-
     <p dir="auto"><code>&lt;a href="</code>"&gt;`</p>
 06_04_00__inlines__code_spans__017:
@@ -5182,14 +5182,14 @@
   canonical: |
     <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto"><code>&lt;http://foo.bar.</code>baz&gt;`</p>
+    <p data-sourcepos="1:1-1:23" dir="auto"><code data-sourcepos="1:2-1:17">&lt;http://foo.bar.</code>baz&gt;`</p>
   wysiwyg: |-
     <p dir="auto"><code>&lt;http://foo.bar.</code>baz&gt;`</p>
 06_04_00__inlines__code_spans__019:
   canonical: |
     <p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
   static: |-
-    <p data-sourcepos="1:1-1:22" dir="auto"><a href="http://foo.bar.%60baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.`baz</a>`</p>
+    <p data-sourcepos="1:1-1:22" dir="auto"><a data-sourcepos="1:2-1:22" href="http://foo.bar.%60baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.`baz</a>`</p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
 06_04_00__inlines__code_spans__020:
@@ -5210,14 +5210,14 @@
   canonical: |
     <p>`foo<code>bar</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto">`foo<code>bar</code></p>
+    <p data-sourcepos="1:1-1:11" dir="auto">`foo<code data-sourcepos="1:7-1:9">bar</code></p>
   wysiwyg: |-
     <p dir="auto">`foo<code>bar</code></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__001:
   canonical: |
     <p><em>foo bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><em>foo bar</em></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><em data-sourcepos="1:1-1:9">foo bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__002:
@@ -5245,21 +5245,21 @@
   canonical: |
     <p>foo<em>bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">foo<em>bar</em></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">foo<em data-sourcepos="1:4-1:8">bar</em></p>
   wysiwyg: |-
     <p dir="auto">foo<em>bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__006:
   canonical: |
     <p>5<em>6</em>78</p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto">5<em>6</em>78</p>
+    <p data-sourcepos="1:1-1:6" dir="auto">5<em data-sourcepos="1:2-1:4">6</em>78</p>
   wysiwyg: |-
     <p dir="auto">5<em>6</em>78</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__007:
   canonical: |
     <p><em>foo bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><em>foo bar</em></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><em data-sourcepos="1:1-1:9">foo bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__008:
@@ -5308,7 +5308,7 @@
   canonical: |
     <p>foo-<em>(bar)</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto">foo-<em>(bar)</em></p>
+    <p data-sourcepos="1:1-1:11" dir="auto">foo-<em data-sourcepos="1:5-1:11">(bar)</em></p>
   wysiwyg: |-
     <p dir="auto">foo-<em>(bar)</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__015:
@@ -5346,14 +5346,14 @@
   canonical: |
     <p><em>(<em>foo</em>)</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><em>(<em>foo</em>)</em></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><em data-sourcepos="1:1-1:9">(<em data-sourcepos="1:3-1:7">foo</em>)</em></p>
   wysiwyg: |-
     <p dir="auto"><em>(foo</em>)</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__020:
   canonical: |
     <p><em>foo</em>bar</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><em>foo</em>bar</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><em data-sourcepos="1:1-1:5">foo</em>bar</p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em>bar</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__021:
@@ -5374,7 +5374,7 @@
   canonical: |
     <p><em>(<em>foo</em>)</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><em>(<em>foo</em>)</em></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><em data-sourcepos="1:1-1:9">(<em data-sourcepos="1:3-1:7">foo</em>)</em></p>
   wysiwyg: |-
     <p dir="auto"><em>(foo</em>)</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__024:
@@ -5395,21 +5395,21 @@
   canonical: |
     <p><em>foo_bar_baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><em>foo_bar_baz</em></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><em data-sourcepos="1:1-1:13">foo_bar_baz</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo_bar_baz</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__027:
   canonical: |
     <p><em>(bar)</em>.</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><em>(bar)</em>.</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><em data-sourcepos="1:1-1:7">(bar)</em>.</p>
   wysiwyg: |-
     <p dir="auto"><em>(bar)</em>.</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__028:
   canonical: |
     <p><strong>foo bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo bar</strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong data-sourcepos="1:1-1:11">foo bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__029:
@@ -5430,14 +5430,14 @@
   canonical: |
     <p>foo<strong>bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto">foo<strong>bar</strong></p>
+    <p data-sourcepos="1:1-1:10" dir="auto">foo<strong data-sourcepos="1:4-1:10">bar</strong></p>
   wysiwyg: |-
     <p dir="auto">foo<strong>bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__032:
   canonical: |
     <p><strong>foo bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo bar</strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong data-sourcepos="1:1-1:11">foo bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__033:
@@ -5489,14 +5489,14 @@
   canonical: |
     <p><strong>foo, <strong>bar</strong>, baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><strong>foo, bar, baz</strong></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><strong data-sourcepos="1:1-1:21">foo, bar, baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo, bar</strong>, baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__040:
   canonical: |
     <p>foo-<strong>(bar)</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">foo-<strong>(bar)</strong></p>
+    <p data-sourcepos="1:1-1:13" dir="auto">foo-<strong data-sourcepos="1:5-1:13">(bar)</strong></p>
   wysiwyg: |-
     <p dir="auto">foo-<strong>(bar)</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__041:
@@ -5517,7 +5517,7 @@
   canonical: |
     <p><em>(<strong>foo</strong>)</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><em>(<strong>foo</strong>)</em></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><em data-sourcepos="1:1-1:11">(<strong data-sourcepos="1:3-1:9">foo</strong>)</em></p>
   wysiwyg: |-
     <p dir="auto"><em>(</em><strong><em>foo</em></strong><em>)</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__044:
@@ -5525,8 +5525,8 @@
     <p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
     <em>Asclepias physocarpa</em>)</strong></p>
   static: |-
-    <p data-sourcepos="1:1-2:25" dir="auto"><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
-    <em>Asclepias physocarpa</em>)</strong></p>
+    <p data-sourcepos="1:1-2:25" dir="auto"><strong data-sourcepos="1:1-2:25">Gomphocarpus (<em data-sourcepos="1:17-1:42">Gomphocarpus physocarpus</em>, syn.
+    <em data-sourcepos="2:1-2:22">Asclepias physocarpa</em>)</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
     <em>Asclepias physocarpa</em>)</strong></p>
@@ -5534,14 +5534,14 @@
   canonical: |
     <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo "<em>bar</em>" foo</strong></p>
+    <p data-sourcepos="1:1-1:19" dir="auto"><strong data-sourcepos="1:1-1:19">foo "<em data-sourcepos="1:8-1:12">bar</em>" foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo "<em>bar</em>" foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__046:
   canonical: |
     <p><strong>foo</strong>bar</p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><strong>foo</strong>bar</p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><strong data-sourcepos="1:1-1:7">foo</strong>bar</p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong>bar</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__047:
@@ -5562,7 +5562,7 @@
   canonical: |
     <p><em>(<strong>foo</strong>)</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><em>(<strong>foo</strong>)</em></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><em data-sourcepos="1:1-1:11">(<strong data-sourcepos="1:3-1:9">foo</strong>)</em></p>
   wysiwyg: |-
     <p dir="auto"><em>(</em><strong><em>foo</em></strong><em>)</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__050:
@@ -5583,21 +5583,21 @@
   canonical: |
     <p><strong>foo__bar__baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><strong>foo__bar__baz</strong></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><strong data-sourcepos="1:1-1:17">foo__bar__baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo__bar__baz</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__053:
   canonical: |
     <p><strong>(bar)</strong>.</p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><strong>(bar)</strong>.</p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><strong data-sourcepos="1:1-1:9">(bar)</strong>.</p>
   wysiwyg: |-
     <p dir="auto"><strong>(bar)</strong>.</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__054:
   canonical: |
     <p><em>foo <a href="/url">bar</a></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><em>foo <a href="/url">bar</a></em></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><em data-sourcepos="1:1-1:17">foo <a data-sourcepos="1:6-1:16" href="/url">bar</a></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><em>bar</em></a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__055:
@@ -5605,7 +5605,7 @@
     <p><em>foo
     bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto"><em>foo
+    <p data-sourcepos="1:1-2:4" dir="auto"><em data-sourcepos="1:1-2:4">foo
     bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo
@@ -5614,98 +5614,98 @@
   canonical: |
     <p><em>foo <strong>bar</strong> baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><em>foo <strong>bar</strong> baz</em></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><em data-sourcepos="1:1-1:17">foo <strong data-sourcepos="1:6-1:12">bar</strong> baz</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><strong><em>bar</em></strong><em> baz</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__057:
   canonical: |
     <p><em>foo <em>bar</em> baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><em>foo <em>bar</em> baz</em></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><em data-sourcepos="1:1-1:15">foo <em data-sourcepos="1:6-1:10">bar</em> baz</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo bar</em> baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__058:
   canonical: |
     <p><em><em>foo</em> bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><em><em>foo</em> bar</em></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><em data-sourcepos="1:1-1:11"><em data-sourcepos="1:1-1:6">foo</em> bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em> bar</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__059:
   canonical: |
     <p><em>foo <em>bar</em></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><em>foo <em>bar</em></em></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><em data-sourcepos="1:1-1:11">foo <em data-sourcepos="1:6-1:11">bar</em></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__060:
   canonical: |
     <p><em>foo <strong>bar</strong> baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><em>foo <strong>bar</strong> baz</em></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><em data-sourcepos="1:1-1:17">foo <strong data-sourcepos="1:6-1:12">bar</strong> baz</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><strong><em>bar</em></strong><em> baz</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__061:
   canonical: |
     <p><em>foo<strong>bar</strong>baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><em>foo<strong>bar</strong>baz</em></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><em data-sourcepos="1:1-1:15">foo<strong data-sourcepos="1:5-1:11">bar</strong>baz</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em><strong><em>bar</em></strong><em>baz</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__062:
   canonical: |
     <p><em>foo**bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><em>foo**bar</em></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><em data-sourcepos="1:1-1:10">foo**bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo**bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__063:
   canonical: |
     <p><em><strong>foo</strong> bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><em><strong>foo</strong> bar</em></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><em data-sourcepos="1:1-1:13"><strong data-sourcepos="1:1-1:8">foo</strong> bar</em></p>
   wysiwyg: |-
     <p dir="auto"><strong><em>foo</em></strong><em> bar</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__064:
   canonical: |
     <p><em>foo <strong>bar</strong></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><em>foo <strong>bar</strong></em></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><em data-sourcepos="1:1-1:13">foo <strong data-sourcepos="1:6-1:13">bar</strong></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><strong><em>bar</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__065:
   canonical: |
     <p><em>foo<strong>bar</strong></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><em>foo<strong>bar</strong></em></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><em data-sourcepos="1:1-1:12">foo<strong data-sourcepos="1:5-1:12">bar</strong></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em><strong><em>bar</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__066:
   canonical: |
     <p>foo<em><strong>bar</strong></em>baz</p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto">foo<em><strong>bar</strong></em>baz</p>
+    <p data-sourcepos="1:1-1:15" dir="auto">foo<em data-sourcepos="1:4-1:12"><strong data-sourcepos="1:4-1:12">bar</strong></em>baz</p>
   wysiwyg: |-
     <p dir="auto">foo<strong><em>bar</em></strong>baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__067:
   canonical: |
     <p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto">foo<strong>bar</strong>***baz</p>
+    <p data-sourcepos="1:1-1:24" dir="auto">foo<strong data-sourcepos="1:4-1:21">bar</strong>***baz</p>
   wysiwyg: |-
     <p dir="auto">foo<strong>bar</strong>***baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__068:
   canonical: |
     <p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto"><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
+    <p data-sourcepos="1:1-1:27" dir="auto"><em data-sourcepos="1:1-1:27">foo <strong data-sourcepos="1:6-1:22">bar <em data-sourcepos="1:12-1:16">baz</em> bim</strong> bop</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><strong><em>bar baz</em> bim</strong> bop</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__069:
   canonical: |
     <p><em>foo <a href="/url"><em>bar</em></a></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto"><em>foo <a href="/url"><em>bar</em></a></em></p>
+    <p data-sourcepos="1:1-1:19" dir="auto"><em data-sourcepos="1:1-1:19">foo <a data-sourcepos="1:6-1:18" href="/url"><em data-sourcepos="1:7-1:11">bar</em></a></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><em>bar</em></a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__070:
@@ -5726,7 +5726,7 @@
   canonical: |
     <p><strong>foo <a href="/url">bar</a></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo <a href="/url">bar</a></strong></p>
+    <p data-sourcepos="1:1-1:19" dir="auto"><strong data-sourcepos="1:1-1:19">foo <a data-sourcepos="1:7-1:17" href="/url">bar</a></strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><strong>bar</strong></a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__073:
@@ -5734,7 +5734,7 @@
     <p><strong>foo
     bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-2:5" dir="auto"><strong>foo
+    <p data-sourcepos="1:1-2:5" dir="auto"><strong data-sourcepos="1:1-2:5">foo
     bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo
@@ -5743,56 +5743,56 @@
   canonical: |
     <p><strong>foo <em>bar</em> baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><strong>foo <em>bar</em> baz</strong></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><strong data-sourcepos="1:1-1:17">foo <em data-sourcepos="1:7-1:11">bar</em> baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo <em>bar</em> baz</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__075:
   canonical: |
     <p><strong>foo <strong>bar</strong> baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:19" dir="auto"><strong>foo bar baz</strong></p>
+    <p data-sourcepos="1:1-1:19" dir="auto"><strong data-sourcepos="1:1-1:19">foo bar baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo bar</strong> baz</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__076:
   canonical: |
     <p><strong><strong>foo</strong> bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo bar</strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong data-sourcepos="1:1-1:15">foo bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong> bar</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__077:
   canonical: |
     <p><strong>foo <strong>bar</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo bar</strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong data-sourcepos="1:1-1:15">foo bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__078:
   canonical: |
     <p><strong>foo <em>bar</em> baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><strong>foo <em>bar</em> baz</strong></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><strong data-sourcepos="1:1-1:17">foo <em data-sourcepos="1:7-1:11">bar</em> baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo <em>bar</em> baz</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__079:
   canonical: |
     <p><strong>foo<em>bar</em>baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo<em>bar</em>baz</strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong data-sourcepos="1:1-1:15">foo<em data-sourcepos="1:6-1:10">bar</em>baz</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo<em>bar</em>baz</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__080:
   canonical: |
     <p><strong><em>foo</em> bar</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><strong><em>foo</em> bar</strong></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><strong data-sourcepos="1:1-1:13"><em data-sourcepos="1:1-1:7">foo</em> bar</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong><em>foo</em> bar</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__081:
   canonical: |
     <p><strong>foo <em>bar</em></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><strong>foo <em>bar</em></strong></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><strong data-sourcepos="1:1-1:13">foo <em data-sourcepos="1:7-1:13">bar</em></strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo <em>bar</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__082:
@@ -5800,7 +5800,7 @@
     <p><strong>foo <em>bar <strong>baz</strong>
     bim</em> bop</strong></p>
   static: |-
-    <p data-sourcepos="1:1-2:10" dir="auto"><strong>foo <em>bar <strong>baz</strong>
+    <p data-sourcepos="1:1-2:10" dir="auto"><strong data-sourcepos="1:1-2:10">foo <em data-sourcepos="1:7-2:4">bar <strong data-sourcepos="1:12-1:18">baz</strong>
     bim</em> bop</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo <em>bar baz</em></strong><em>
@@ -5809,7 +5809,7 @@
   canonical: |
     <p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><strong>foo <a href="/url"><em>bar</em></a></strong></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><strong data-sourcepos="1:1-1:21">foo <a data-sourcepos="1:7-1:19" href="/url"><em data-sourcepos="1:8-1:12">bar</em></a></strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo </strong><a target="_blank" rel="noopener noreferrer nofollow" href="/url"><strong><em>bar</em></strong></a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__084:
@@ -5837,14 +5837,14 @@
   canonical: |
     <p>foo <em>*</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">foo <em>*</em></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">foo <em data-sourcepos="1:5-1:8">*</em></p>
   wysiwyg: |-
     <p dir="auto">foo <em>*</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__088:
   canonical: |
     <p>foo <em>_</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto">foo <em>_</em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto">foo <em data-sourcepos="1:5-1:7">_</em></p>
   wysiwyg: |-
     <p dir="auto">foo <em>_</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__089:
@@ -5858,56 +5858,56 @@
   canonical: |
     <p>foo <strong>*</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto">foo <strong>*</strong></p>
+    <p data-sourcepos="1:1-1:10" dir="auto">foo <strong data-sourcepos="1:5-1:10">*</strong></p>
   wysiwyg: |-
     <p dir="auto">foo <strong>*</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__091:
   canonical: |
     <p>foo <strong>_</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto">foo <strong>_</strong></p>
+    <p data-sourcepos="1:1-1:9" dir="auto">foo <strong data-sourcepos="1:5-1:9">_</strong></p>
   wysiwyg: |-
     <p dir="auto">foo <strong>_</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__092:
   canonical: |
     <p>*<em>foo</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto">*<em>foo</em></p>
+    <p data-sourcepos="1:1-1:6" dir="auto">*<em data-sourcepos="1:1-1:6">foo</em></p>
   wysiwyg: |-
     <p dir="auto">*<em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__093:
   canonical: |
     <p><em>foo</em>*</p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><em>foo</em>*</p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><em data-sourcepos="1:1-1:6">foo</em>*</p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em>*</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__094:
   canonical: |
     <p>*<strong>foo</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">*<strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">*<strong data-sourcepos="1:1-1:8">foo</strong></p>
   wysiwyg: |-
     <p dir="auto">*<strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__095:
   canonical: |
     <p>***<em>foo</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">***<em>foo</em></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">***<em data-sourcepos="1:1-1:8">foo</em></p>
   wysiwyg: |-
     <p dir="auto">***<em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__096:
   canonical: |
     <p><strong>foo</strong>*</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><strong>foo</strong>*</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><strong data-sourcepos="1:1-1:8">foo</strong>*</p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong>*</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__097:
   canonical: |
     <p><em>foo</em>***</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><em>foo</em>***</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><em data-sourcepos="1:1-1:8">foo</em>***</p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em>***</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__098:
@@ -5921,14 +5921,14 @@
   canonical: |
     <p>foo <em>_</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:29" dir="auto">foo <em>_</em></p>
+    <p data-sourcepos="1:1-1:29" dir="auto">foo <em data-sourcepos="1:5-1:29">_</em></p>
   wysiwyg: |-
     <p dir="auto">foo <em>_</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__100:
   canonical: |
     <p>foo <em>*</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto">foo <em>*</em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto">foo <em data-sourcepos="1:5-1:7">*</em></p>
   wysiwyg: |-
     <p dir="auto">foo <em>*</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__101:
@@ -5942,161 +5942,161 @@
   canonical: |
     <p>foo <strong>_</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:31" dir="auto">foo <strong>_</strong></p>
+    <p data-sourcepos="1:1-1:31" dir="auto">foo <strong data-sourcepos="1:5-1:31">_</strong></p>
   wysiwyg: |-
     <p dir="auto">foo <strong>_</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__103:
   canonical: |
     <p>foo <strong>*</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto">foo <strong>*</strong></p>
+    <p data-sourcepos="1:1-1:9" dir="auto">foo <strong data-sourcepos="1:5-1:9">*</strong></p>
   wysiwyg: |-
     <p dir="auto">foo <strong>*</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__104:
   canonical: |
     <p>_<em>foo</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto">_<em>foo</em></p>
+    <p data-sourcepos="1:1-1:6" dir="auto">_<em data-sourcepos="1:1-1:6">foo</em></p>
   wysiwyg: |-
     <p dir="auto">_<em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__105:
   canonical: |
     <p><em>foo</em>_</p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><em>foo</em>_</p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><em data-sourcepos="1:1-1:6">foo</em>_</p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em>_</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__106:
   canonical: |
     <p>_<strong>foo</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">_<strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">_<strong data-sourcepos="1:1-1:8">foo</strong></p>
   wysiwyg: |-
     <p dir="auto">_<strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__107:
   canonical: |
     <p>___<em>foo</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto">___<em>foo</em></p>
+    <p data-sourcepos="1:1-1:8" dir="auto">___<em data-sourcepos="1:1-1:8">foo</em></p>
   wysiwyg: |-
     <p dir="auto">___<em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__108:
   canonical: |
     <p><strong>foo</strong>_</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><strong>foo</strong>_</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><strong data-sourcepos="1:1-1:8">foo</strong>_</p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong>_</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__109:
   canonical: |
     <p><em>foo</em>___</p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><em>foo</em>___</p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><em data-sourcepos="1:1-1:8">foo</em>___</p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em>___</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__110:
   canonical: |
     <p><strong>foo</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><strong data-sourcepos="1:1-1:7">foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__111:
   canonical: |
     <p><em><em>foo</em></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><em><em>foo</em></em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><em data-sourcepos="1:1-1:7"><em data-sourcepos="1:2-1:6">foo</em></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__112:
   canonical: |
     <p><strong>foo</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><strong data-sourcepos="1:1-1:7">foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__113:
   canonical: |
     <p><em><em>foo</em></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><em><em>foo</em></em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><em data-sourcepos="1:1-1:7"><em data-sourcepos="1:2-1:6">foo</em></em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__114:
   canonical: |
     <p><strong><strong>foo</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong data-sourcepos="1:1-1:11">foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__115:
   canonical: |
     <p><strong><strong>foo</strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><strong data-sourcepos="1:1-1:11">foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__116:
   canonical: |
     <p><strong><strong><strong>foo</strong></strong></strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><strong>foo</strong></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><strong data-sourcepos="1:1-1:15">foo</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>foo</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__117:
   canonical: |
     <p><em><strong>foo</strong></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><em><strong>foo</strong></em></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><em data-sourcepos="1:1-1:9"><strong data-sourcepos="1:1-1:9">foo</strong></em></p>
   wysiwyg: |-
     <p dir="auto"><strong><em>foo</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__118:
   canonical: |
     <p><em><strong><strong>foo</strong></strong></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><em><strong>foo</strong></em></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><em data-sourcepos="1:1-1:13"><strong data-sourcepos="1:1-1:13">foo</strong></em></p>
   wysiwyg: |-
     <p dir="auto"><strong><em>foo</em></strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__119:
   canonical: |
     <p><em>foo _bar</em> baz_</p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><em>foo _bar</em> baz_</p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><em data-sourcepos="1:1-1:10">foo _bar</em> baz_</p>
   wysiwyg: |-
     <p dir="auto"><em>foo _bar</em> baz_</p>
 06_05_00__inlines__emphasis_and_strong_emphasis__120:
   canonical: |
     <p><em>foo <strong>bar *baz bim</strong> bam</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:26" dir="auto"><em>foo <strong>bar *baz bim</strong> bam</em></p>
+    <p data-sourcepos="1:1-1:26" dir="auto"><em data-sourcepos="1:1-1:26">foo <strong data-sourcepos="1:6-1:21">bar *baz bim</strong> bam</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo </em><strong><em>bar *baz bim</em></strong><em> bam</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__121:
   canonical: |
     <p>**foo <strong>bar baz</strong></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">**foo <strong>bar baz</strong></p>
+    <p data-sourcepos="1:1-1:17" dir="auto">**foo <strong data-sourcepos="1:7-1:17">bar baz</strong></p>
   wysiwyg: |-
     <p dir="auto">**foo <strong>bar baz</strong></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__122:
   canonical: |
     <p>*foo <em>bar baz</em></p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto">*foo <em>bar baz</em></p>
+    <p data-sourcepos="1:1-1:14" dir="auto">*foo <em data-sourcepos="1:6-1:14">bar baz</em></p>
   wysiwyg: |-
     <p dir="auto">*foo <em>bar baz</em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__123:
   canonical: |
     <p>*<a href="/url">bar*</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">*<a href="/url">bar*</a></p>
+    <p data-sourcepos="1:1-1:13" dir="auto">*<a data-sourcepos="1:2-1:13" href="/url">bar*</a></p>
   wysiwyg: |-
     <p dir="auto">*<a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar*</a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__124:
   canonical: |
     <p>_foo <a href="/url">bar_</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">_foo <a href="/url">bar_</a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto">_foo <a data-sourcepos="1:6-1:17" href="/url">bar_</a></p>
   wysiwyg: |-
     <p dir="auto">_foo <a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar_</a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__125:
@@ -6124,35 +6124,35 @@
   canonical: |
     <p><em>a <code>*</code></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><em>a <code>*</code></em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><em data-sourcepos="1:1-1:7">a <code data-sourcepos="1:5-1:5">*</code></em></p>
   wysiwyg: |-
     <p dir="auto"><em>a <code>*</code></em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__129:
   canonical: |
     <p><em>a <code>_</code></em></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><em>a <code>_</code></em></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><em data-sourcepos="1:1-1:7">a <code data-sourcepos="1:5-1:5">_</code></em></p>
   wysiwyg: |-
     <p dir="auto"><em>a <code>_</code></em></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__130:
   canonical: |
     <p>**a<a href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:25" dir="auto">**a<a href="http://foo.bar/?q=**" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=**</a></p>
+    <p data-sourcepos="1:1-1:25" dir="auto">**a<a data-sourcepos="1:5-1:26" href="http://foo.bar/?q=**" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=**</a></p>
   wysiwyg: |-
     <p dir="auto">**a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
 06_05_00__inlines__emphasis_and_strong_emphasis__131:
   canonical: |
     <p>__a<a href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:25" dir="auto">__a<a href="http://foo.bar/?q=__" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=__</a></p>
+    <p data-sourcepos="1:1-1:25" dir="auto">__a<a data-sourcepos="1:5-1:26" href="http://foo.bar/?q=__" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar/?q=__</a></p>
   wysiwyg: |-
     <p dir="auto">__a<a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
 06_06_00__inlines__strikethrough_extension__001:
   canonical: |
     <p><del>Hi</del> Hello, world!</p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><del data-sourcepos="1:1-1:6">Hi</del> Hello, world!</p>
   wysiwyg: |-
     <p dir="auto"><s>Hi</s> Hello, world!</p>
 06_06_00__inlines__strikethrough_extension__002:
@@ -6169,42 +6169,42 @@
   canonical: |
     <p><a href="/uri" title="title">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a href="/uri" title="title">link</a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a data-sourcepos="1:1-1:20" href="/uri" title="title">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri" title="title">link</a></p>
 06_07_00__inlines__links__002:
   canonical: |
     <p><a href="/uri">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><a href="/uri">link</a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><a data-sourcepos="1:1-1:12" href="/uri">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link</a></p>
 06_07_00__inlines__links__003:
   canonical: |
     <p><a href="">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><a href="">link</a></p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><a data-sourcepos="1:1-1:8" href="">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="">link</a></p>
 06_07_00__inlines__links__004:
   canonical: |
     <p><a href="">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><a href="">link</a></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><a data-sourcepos="1:1-1:10" href="">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="">link</a></p>
 06_07_00__inlines__links__005:
   canonical: |
     <p>[link](/my uri)</p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="/my%20uri">link</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:17" href="/my%20uri">link</a></p>
   wysiwyg: |-
     <p dir="auto">[link](/my uri)</p>
 06_07_00__inlines__links__006:
   canonical: |
     <p><a href="/my%20uri">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><a href="/my%20uri">link</a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><a data-sourcepos="1:1-1:17" href="/my%20uri">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/my%20uri">link</a></p>
 06_07_00__inlines__links__007:
@@ -6229,14 +6229,14 @@
   canonical: |
     <p><a href="b)c">a</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><a href="b)c">a</a></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><a data-sourcepos="1:1-1:10" href="b)c">a</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="b)c">a</a></p>
 06_07_00__inlines__links__010:
   canonical: |
     <p>[link](&lt;foo&gt;)</p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><a href="%3Cfoo%3E">link</a></p>
+    <p data-sourcepos="1:1-1:14" dir="auto"><a data-sourcepos="1:1-1:19" href="%3Cfoo%3E">link</a></p>
   wysiwyg: |-
     <p dir="auto">[link](&lt;foo&gt;)</p>
 06_07_00__inlines__links__011:
@@ -6245,8 +6245,8 @@
     [a](&lt;b)c&gt;
     [a](<b>c)</p>
   static: |-
-    <p data-sourcepos="1:1-3:9" dir="auto"><a href="%3Cb">a</a>c
-    <a href="%3Cb">a</a>c&gt;
+    <p data-sourcepos="1:1-3:9" dir="auto"><a data-sourcepos="1:1-1:10" href="%3Cb">a</a>c
+    <a data-sourcepos="1:1-1:10" href="%3Cb">a</a>c&gt;
     [a](<b>c)</b></p>
   wysiwyg: |-
     <p dir="auto">[a](&lt;b)c
@@ -6256,35 +6256,35 @@
   canonical: |
     <p><a href="(foo)">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="(foo)">link</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:15" href="(foo)">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="(foo)">link</a></p>
 06_07_00__inlines__links__013:
   canonical: |
     <p><a href="foo(and(bar))">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><a href="foo(and(bar))">link</a></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><a data-sourcepos="1:1-1:21" href="foo(and(bar))">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar))">link</a></p>
 06_07_00__inlines__links__014:
   canonical: |
     <p><a href="foo(and(bar)">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto"><a href="foo(and(bar)">link</a></p>
+    <p data-sourcepos="1:1-1:23" dir="auto"><a data-sourcepos="1:1-1:23" href="foo(and(bar)">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar)">link</a></p>
 06_07_00__inlines__links__015:
   canonical: |
     <p><a href="foo(and(bar)">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:22" dir="auto"><a href="foo(and(bar)">link</a></p>
+    <p data-sourcepos="1:1-1:22" dir="auto"><a data-sourcepos="1:1-1:22" href="foo(and(bar)">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo(and(bar)">link</a></p>
 06_07_00__inlines__links__016:
   canonical: |
     <p><a href="foo):">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a>link</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:15">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo):">link</a></p>
 06_07_00__inlines__links__017:
@@ -6293,9 +6293,9 @@
     <p><a href="http://example.com#fragment">link</a></p>
     <p><a href="http://example.com?foo=3#frag">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><a href="#fragment">link</a></p>
-    <p data-sourcepos="3:1-3:35" dir="auto"><a href="http://example.com#fragment" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
-    <p data-sourcepos="5:1-5:37" dir="auto"><a href="http://example.com?foo=3#frag" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><a data-sourcepos="1:1-1:17" href="#fragment">link</a></p>
+    <p data-sourcepos="3:1-3:35" dir="auto"><a data-sourcepos="3:1-3:35" href="http://example.com#fragment" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
+    <p data-sourcepos="5:1-5:37" dir="auto"><a data-sourcepos="5:1-5:37" href="http://example.com?foo=3#frag" rel="nofollow noreferrer noopener" target="_blank">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="#fragment">link</a></p>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com#fragment">link</a></p>
@@ -6304,21 +6304,21 @@
   canonical: |
     <p><a href="foo%5Cbar">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="foo%5Cbar">link</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:15" href="foo%5Cbar">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo%5Cbar">link</a></p>
 06_07_00__inlines__links__019:
   canonical: |
     <p><a href="foo%20b%C3%A4">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><a href="foo%20b%C3%A4">link</a></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><a data-sourcepos="1:1-1:21" href="foo%20b%C3%A4">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="foo%20b%C3%A4">link</a></p>
 06_07_00__inlines__links__020:
   canonical: |
     <p><a href="%22title%22">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="%22title%22">link</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:15" href="%22title%22">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="%22title%22">link</a></p>
 06_07_00__inlines__links__021:
@@ -6327,23 +6327,23 @@
     <a href="/url" title="title">link</a>
     <a href="/url" title="title">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-3:20" dir="auto"><a href="/url" title="title">link</a>
-    <a href="/url" title="title">link</a>
-    <a href="/url" title="title">link</a></p>
+    <p data-sourcepos="1:1-3:20" dir="auto"><a data-sourcepos="1:1-1:20" href="/url" title="title">link</a>
+    <a data-sourcepos="2:1-2:20" href="/url" title="title">link</a>
+    <a data-sourcepos="3:1-3:20" href="/url" title="title">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">linklinklink</a></p>
 06_07_00__inlines__links__022:
   canonical: |
     <p><a href="/url" title="title &quot;&quot;">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:29" dir="auto"><a href="/url" title='title ""'>link</a></p>
+    <p data-sourcepos="1:1-1:29" dir="auto"><a data-sourcepos="1:1-1:29" href="/url" title='title ""'>link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title &quot;&quot;">link</a></p>
 06_07_00__inlines__links__023:
   canonical: |
     <p><a href="/url%C2%A0%22title%22">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><a href="/url%C2%A0%22title%22">link</a></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><a data-sourcepos="1:1-1:21" href="/url%C2%A0%22title%22">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url%C2%A0%22title%22">link</a></p>
 06_07_00__inlines__links__024:
@@ -6357,14 +6357,14 @@
   canonical: |
     <p><a href="/url" title="title &quot;and&quot; title">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:32" dir="auto"><a href="/url" title='title "and" title'>link</a></p>
+    <p data-sourcepos="1:1-1:32" dir="auto"><a data-sourcepos="1:1-1:32" href="/url" title='title "and" title'>link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title &quot;and&quot; title">link</a></p>
 06_07_00__inlines__links__026:
   canonical: |
     <p><a href="/uri" title="title">link</a></p>
   static: |-
-    <p data-sourcepos="1:1-2:12" dir="auto"><a href="/uri" title="title">link</a></p>
+    <p data-sourcepos="1:1-2:12" dir="auto"><a data-sourcepos="1:1-1:25" href="/uri" title="title">link</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri" title="title">link</a></p>
 06_07_00__inlines__links__027:
@@ -6378,7 +6378,7 @@
   canonical: |
     <p><a href="/uri">link [foo [bar]]</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto"><a href="/uri">link [foo [bar]]</a></p>
+    <p data-sourcepos="1:1-1:24" dir="auto"><a data-sourcepos="1:1-1:24" href="/uri">link [foo [bar]]</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [foo [bar]]</a></p>
 06_07_00__inlines__links__029:
@@ -6392,70 +6392,70 @@
   canonical: |
     <p>[link <a href="/uri">bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">[link <a href="/uri">bar</a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto">[link <a data-sourcepos="1:7-1:17" href="/uri">bar</a></p>
   wysiwyg: |-
     <p dir="auto">[link <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a></p>
 06_07_00__inlines__links__031:
   canonical: |
     <p><a href="/uri">link [bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:18" dir="auto"><a href="/uri">link [bar</a></p>
+    <p data-sourcepos="1:1-1:18" dir="auto"><a data-sourcepos="1:1-1:18" href="/uri">link [bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [bar</a></p>
 06_07_00__inlines__links__032:
   canonical: |
     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
   static: |-
-    <p data-sourcepos="1:1-1:30" dir="auto"><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
+    <p data-sourcepos="1:1-1:30" dir="auto"><a data-sourcepos="1:1-1:30" href="/uri">link <em data-sourcepos="1:7-1:23">foo <strong data-sourcepos="1:12-1:18">bar</strong> <code data-sourcepos="1:21-1:21">#</code></em></a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
 06_07_00__inlines__links__033:
   canonical: |
     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
   static: |-
-    <p data-sourcepos="1:1-1:25" dir="auto"><a href="/uri"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
+    <p data-sourcepos="1:1-1:25" dir="auto"><a data-sourcepos="1:1-1:25" href="/uri"><img data-sourcepos="1:2-1:18" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><img src="moon.jpg" alt="moon"></a></p>
 06_07_00__inlines__links__034:
   canonical: |
     <p>[foo <a href="/uri">bar</a>](/uri)</p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto">[foo <a href="/uri">bar</a>](/uri)</p>
+    <p data-sourcepos="1:1-1:23" dir="auto">[foo <a data-sourcepos="1:6-1:16" href="/uri">bar</a>](/uri)</p>
   wysiwyg: |-
     <p dir="auto">[foo <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a>](/uri)</p>
 06_07_00__inlines__links__035:
   canonical: |
     <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
   static: |-
-    <p data-sourcepos="1:1-1:37" dir="auto">[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
+    <p data-sourcepos="1:1-1:37" dir="auto">[foo <em data-sourcepos="1:6-1:30">[bar <a data-sourcepos="1:12-1:22" href="/uri">baz</a>](/uri)</em>](/uri)</p>
   wysiwyg: |-
     <p dir="auto">[foo <em>[bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><em>baz</em></a><em>](/uri)</em>](/uri)</p>
 06_07_00__inlines__links__036:
   canonical: |
     <p><img src="uri3" alt="[foo](uri2)" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><a class="no-attachment-icon" href="uri3" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="[foo](uri2)" decoding="async" class="lazy" data-src="uri3"></a></p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><a class="no-attachment-icon" href="uri3" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:28" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="[foo](uri2)" decoding="async" class="lazy" data-src="uri3"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="uri3" alt="[foo](uri2)"></p>
 06_07_00__inlines__links__037:
   canonical: |
     <p>*<a href="/uri">foo*</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">*<a href="/uri">foo*</a></p>
+    <p data-sourcepos="1:1-1:13" dir="auto">*<a data-sourcepos="1:2-1:13" href="/uri">foo*</a></p>
   wysiwyg: |-
     <p dir="auto">*<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo*</a></p>
 06_07_00__inlines__links__038:
   canonical: |
     <p><a href="baz*">foo *bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:16" dir="auto"><a href="baz*">foo *bar</a></p>
+    <p data-sourcepos="1:1-1:16" dir="auto"><a data-sourcepos="1:1-1:16" href="baz*">foo *bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="baz*">foo *bar</a></p>
 06_07_00__inlines__links__039:
   canonical: |
     <p><em>foo [bar</em> baz]</p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><em>foo [bar</em> baz]</p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><em data-sourcepos="1:1-1:10">foo [bar</em> baz]</p>
   wysiwyg: |-
     <p dir="auto"><em>foo [bar</em> baz]</p>
 06_07_00__inlines__links__040:
@@ -6469,21 +6469,21 @@
   canonical: |
     <p>[foo<code>](/uri)</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">[foo<code>](/uri)</code></p>
+    <p data-sourcepos="1:1-1:13" dir="auto">[foo<code data-sourcepos="1:6-1:12">](/uri)</code></p>
   wysiwyg: |-
     <p dir="auto">[foo<code>](/uri)</code></p>
 06_07_00__inlines__links__042:
   canonical: |
     <p>[foo<a href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:39" dir="auto">[foo<a href="http://example.com/?search=%5D(uri)" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=](uri)</a></p>
+    <p data-sourcepos="1:1-1:39" dir="auto">[foo<a data-sourcepos="1:6-1:40" href="http://example.com/?search=%5D(uri)" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=](uri)</a></p>
   wysiwyg: |-
     <p dir="auto">[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
 06_07_00__inlines__links__043:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><a data-sourcepos="1:1-1:10" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[bar]: /url "title"</pre>
@@ -6491,7 +6491,7 @@
   canonical: |
     <p><a href="/uri">link [foo [bar]]</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:23" dir="auto"><a href="/uri">link [foo [bar]]</a></p>
+    <p data-sourcepos="1:1-1:23" dir="auto"><a data-sourcepos="1:1-1:23" href="/uri">link [foo [bar]]</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [foo [bar]]</a></p>
     <pre>[ref]: /uri</pre>
@@ -6499,7 +6499,7 @@
   canonical: |
     <p><a href="/uri">link [bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><a href="/uri">link [bar</a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><a data-sourcepos="1:1-1:17" href="/uri">link [bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link [bar</a></p>
     <pre>[ref]: /uri</pre>
@@ -6507,7 +6507,7 @@
   canonical: |
     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
   static: |-
-    <p data-sourcepos="1:1-1:29" dir="auto"><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
+    <p data-sourcepos="1:1-1:29" dir="auto"><a data-sourcepos="1:1-1:29" href="/uri">link <em data-sourcepos="1:7-1:23">foo <strong data-sourcepos="1:12-1:18">bar</strong> <code data-sourcepos="1:21-1:21">#</code></em></a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">link <em>foo </em><strong><em>bar<code>#</code></em></strong></a></p>
     <pre>[ref]: /uri</pre>
@@ -6515,7 +6515,7 @@
   canonical: |
     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto"><a href="/uri"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
+    <p data-sourcepos="1:1-1:24" dir="auto"><a data-sourcepos="1:1-1:24" href="/uri"><img data-sourcepos="1:2-1:18" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="moon" decoding="async" class="lazy" data-src="moon.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><img src="moon.jpg" alt="moon"></a></p>
     <pre>[ref]: /uri</pre>
@@ -6523,7 +6523,7 @@
   canonical: |
     <p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:22" dir="auto">[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
+    <p data-sourcepos="1:1-1:22" dir="auto">[foo <a data-sourcepos="1:6-1:16" href="/uri">bar</a>]<a data-sourcepos="1:18-1:22" href="/uri">ref</a></p>
   wysiwyg: |-
     <p dir="auto">[foo <a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar</a>]<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">ref</a></p>
     <pre>[ref]: /uri</pre>
@@ -6531,7 +6531,7 @@
   canonical: |
     <p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto">[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
+    <p data-sourcepos="1:1-1:27" dir="auto">[foo <em data-sourcepos="1:6-1:21">bar <a data-sourcepos="1:11-1:20" href="/uri">baz</a></em>]<a data-sourcepos="1:23-1:27" href="/uri">ref</a></p>
   wysiwyg: |-
     <p dir="auto">[foo <em>bar </em><a target="_blank" rel="noopener noreferrer nofollow" href="/uri"><em>baz</em></a>]<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">ref</a></p>
     <pre>[ref]: /uri</pre>
@@ -6539,7 +6539,7 @@
   canonical: |
     <p>*<a href="/uri">foo*</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto">*<a href="/uri">foo*</a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto">*<a data-sourcepos="1:2-1:12" href="/uri">foo*</a></p>
   wysiwyg: |-
     <p dir="auto">*<a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo*</a></p>
     <pre>[ref]: /uri</pre>
@@ -6547,7 +6547,7 @@
   canonical: |
     <p><a href="/uri">foo *bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="/uri">foo *bar</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:15" href="/uri">foo *bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo *bar</a></p>
     <pre>[ref]: /uri</pre>
@@ -6563,7 +6563,7 @@
   canonical: |
     <p>[foo<code>][ref]</code></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto">[foo<code>][ref]</code></p>
+    <p data-sourcepos="1:1-1:12" dir="auto">[foo<code data-sourcepos="1:6-1:11">][ref]</code></p>
   wysiwyg: |-
     <p dir="auto">[foo<code>][ref]</code></p>
     <pre>[ref]: /uri</pre>
@@ -6571,7 +6571,7 @@
   canonical: |
     <p>[foo<a href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:39" dir="auto">[foo<a href="http://example.com/?search=%5D%5Bref%5D" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=][ref]</a></p>
+    <p data-sourcepos="1:1-1:39" dir="auto">[foo<a data-sourcepos="1:6-1:40" href="http://example.com/?search=%5D%5Bref%5D" rel="nofollow noreferrer noopener" target="_blank">http://example.com/?search=][ref]</a></p>
   wysiwyg: |-
     <p dir="auto">[foo<a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
     <pre>[ref]: /uri</pre>
@@ -6579,7 +6579,7 @@
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><a data-sourcepos="1:1-1:10" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[bar]: /url "title"</pre>
@@ -6587,7 +6587,7 @@
   canonical: |
     <p><a href="/url">Толпой</a> is a Russian word.</p>
   static: |-
-    <p data-sourcepos="1:1-1:47" dir="auto"><a href="/url">Толпой</a> is a Russian word.</p>
+    <p data-sourcepos="1:1-1:47" dir="auto"><a data-sourcepos="1:1-1:28" href="/url">Толпой</a> is a Russian word.</p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Толпой</a> is a Russian word.</p>
     <pre>[толпой]: /url</pre>
@@ -6595,7 +6595,7 @@
   canonical: |
     <p><a href="/url">Baz</a></p>
   static: |-
-    <p data-sourcepos="4:1-4:14" dir="auto"><a href="/url">Baz</a></p>
+    <p data-sourcepos="4:1-4:14" dir="auto"><a data-sourcepos="4:1-4:14" href="/url">Baz</a></p>
   wysiwyg: |-
     <pre>[foo bar]: /url</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">Baz</a></p>
@@ -6603,7 +6603,7 @@
   canonical: |
     <p>[foo] <a href="/url" title="title">bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto">[foo] <a href="/url" title="title">bar</a></p>
+    <p data-sourcepos="1:1-1:11" dir="auto">[foo] <a data-sourcepos="1:7-1:11" href="/url" title="title">bar</a></p>
   wysiwyg: |-
     <p dir="auto">[foo] <a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">bar</a></p>
     <pre>[bar]: /url "title"</pre>
@@ -6613,7 +6613,7 @@
     <a href="/url" title="title">bar</a></p>
   static: |-
     <p data-sourcepos="1:1-2:5" dir="auto">[foo]
-    <a href="/url" title="title">bar</a></p>
+    <a data-sourcepos="2:1-2:5" href="/url" title="title">bar</a></p>
   wysiwyg: |-
     <p dir="auto">[foo]
     <a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">bar</a></p>
@@ -6622,7 +6622,7 @@
   canonical: |
     <p><a href="/url1">bar</a></p>
   static: |-
-    <p data-sourcepos="5:1-5:10" dir="auto"><a href="/url1">bar</a></p>
+    <p data-sourcepos="5:1-5:10" dir="auto"><a data-sourcepos="5:1-5:10" href="/url1">bar</a></p>
   wysiwyg: |-
     <pre>[foo]: /url1</pre>
     <pre>[foo]: /url2</pre>
@@ -6669,7 +6669,7 @@
   canonical: |
     <p><a href="/uri">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><a href="/uri">foo</a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><a data-sourcepos="1:1-1:12" href="/uri">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">foo</a></p>
     <pre>[ref\[]: /uri</pre>
@@ -6677,7 +6677,7 @@
   canonical: |
     <p><a href="/uri">bar\</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:7" dir="auto"><a href="/uri">bar\</a></p>
+    <p data-sourcepos="3:1-3:7" dir="auto"><a data-sourcepos="3:1-3:7" href="/uri">bar\</a></p>
   wysiwyg: |-
     <pre>[bar\\]: /uri</pre>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uri">bar\</a></p>
@@ -6711,7 +6711,7 @@
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><a data-sourcepos="1:1-1:7" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -6719,7 +6719,7 @@
   canonical: |
     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><a href="/url" title="title"><em>foo</em> bar</a></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><a data-sourcepos="1:1-1:13" href="/url" title="title"><em data-sourcepos="1:2-1:6">foo</em> bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a></p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -6727,7 +6727,7 @@
   canonical: |
     <p><a href="/url" title="title">Foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url" title="title">Foo</a></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><a data-sourcepos="1:1-1:7" href="/url" title="title">Foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">Foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -6736,7 +6736,7 @@
     <p><a href="/url" title="title">foo</a>
     []</p>
   static: |-
-    <p data-sourcepos="1:1-2:2" dir="auto"><a href="/url" title="title">foo</a>
+    <p data-sourcepos="1:1-2:2" dir="auto"><a data-sourcepos="1:1-1:5" href="/url" title="title">foo</a>
     []</p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a>
@@ -6746,7 +6746,7 @@
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -6754,7 +6754,7 @@
   canonical: |
     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><a href="/url" title="title"><em>foo</em> bar</a></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><a data-sourcepos="1:1-1:11" href="/url" title="title"><em data-sourcepos="1:2-1:6">foo</em> bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a></p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -6762,7 +6762,7 @@
   canonical: |
     <p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
+    <p data-sourcepos="1:1-1:13" dir="auto">[<a data-sourcepos="1:2-1:12" href="/url" title="title"><em data-sourcepos="1:3-1:7">foo</em> bar</a>]</p>
   wysiwyg: |-
     <p dir="auto">[<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a>]</p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -6770,7 +6770,7 @@
   canonical: |
     <p>[[bar <a href="/url">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto">[[bar <a href="/url">foo</a></p>
+    <p data-sourcepos="1:1-1:11" dir="auto">[[bar <a data-sourcepos="1:7-1:11" href="/url">foo</a></p>
   wysiwyg: |-
     <p dir="auto">[[bar <a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a></p>
     <pre>[foo]: /url</pre>
@@ -6778,7 +6778,7 @@
   canonical: |
     <p><a href="/url" title="title">Foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:5" dir="auto"><a href="/url" title="title">Foo</a></p>
+    <p data-sourcepos="1:1-1:5" dir="auto"><a data-sourcepos="1:1-1:5" href="/url" title="title">Foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">Foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -6786,7 +6786,7 @@
   canonical: |
     <p><a href="/url">foo</a> bar</p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><a href="/url">foo</a> bar</p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><a data-sourcepos="1:1-1:5" href="/url">foo</a> bar</p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo</a> bar</p>
     <pre>[foo]: /url</pre>
@@ -6802,7 +6802,7 @@
   canonical: |
     <p>*<a href="/url">foo*</a></p>
   static: |-
-    <p data-sourcepos="3:1-3:7" dir="auto">*<a href="/url">foo*</a></p>
+    <p data-sourcepos="3:1-3:7" dir="auto">*<a data-sourcepos="3:2-3:7" href="/url">foo*</a></p>
   wysiwyg: |-
     <pre>[foo*]: /url</pre>
     <p dir="auto">*<a target="_blank" rel="noopener noreferrer nofollow" href="/url">foo*</a></p>
@@ -6810,7 +6810,7 @@
   canonical: |
     <p><a href="/url2">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:10" dir="auto"><a href="/url2">foo</a></p>
+    <p data-sourcepos="1:1-1:10" dir="auto"><a data-sourcepos="1:1-1:10" href="/url2">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url2">foo</a></p>
     <pre>[foo]: /url1</pre>
@@ -6819,7 +6819,7 @@
   canonical: |
     <p><a href="/url1">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><a href="/url1">foo</a></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><a data-sourcepos="1:1-1:7" href="/url1">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">foo</a></p>
     <pre>[foo]: /url1</pre>
@@ -6827,7 +6827,7 @@
   canonical: |
     <p><a href="">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><a href="">foo</a></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><a data-sourcepos="1:1-1:7" href="">foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="">foo</a></p>
     <pre>[foo]: /url1</pre>
@@ -6835,7 +6835,7 @@
   canonical: |
     <p><a href="/url1">foo</a>(not a link)</p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><a href="/url1">foo</a>(not a link)</p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><a data-sourcepos="1:1-1:5" href="/url1">foo</a>(not a link)</p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">foo</a>(not a link)</p>
     <pre>[foo]: /url1</pre>
@@ -6843,7 +6843,7 @@
   canonical: |
     <p>[foo]<a href="/url">bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a href="/url">bar</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a data-sourcepos="1:6-1:15" href="/url">bar</a></p>
   wysiwyg: |-
     <p dir="auto">[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="/url">bar</a></p>
     <pre>[baz]: /url</pre>
@@ -6851,7 +6851,7 @@
   canonical: |
     <p><a href="/url2">foo</a><a href="/url1">baz</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto"><a href="/url2">foo</a><a href="/url1">baz</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto"><a data-sourcepos="1:1-1:10" href="/url2">foo</a><a data-sourcepos="1:11-1:15" href="/url1">baz</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/url2">foo</a><a target="_blank" rel="noopener noreferrer nofollow" href="/url1">baz</a></p>
     <pre>[baz]: /url1</pre>
@@ -6860,7 +6860,7 @@
   canonical: |
     <p>[foo]<a href="/url1">bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a href="/url1">bar</a></p>
+    <p data-sourcepos="1:1-1:15" dir="auto">[foo]<a data-sourcepos="1:6-1:15" href="/url1">bar</a></p>
   wysiwyg: |-
     <p dir="auto">[foo]<a target="_blank" rel="noopener noreferrer nofollow" href="/url1">bar</a></p>
     <pre>[baz]: /url1</pre>
@@ -6869,14 +6869,14 @@
   canonical: |
     <p><img src="/url" alt="foo" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:20" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo" title="title"></p>
 06_08_00__inlines__images__002:
   canonical: |
     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:12" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
     <pre>[foo *bar*]: train.jpg "train &amp; tracks"</pre>
@@ -6884,21 +6884,21 @@
   canonical: |
     <p><img src="/url2" alt="foo bar" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:26" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
+    <p data-sourcepos="1:1-1:26" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:26" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url2" alt="foo bar"></p>
 06_08_00__inlines__images__004:
   canonical: |
     <p><img src="/url2" alt="foo bar" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:25" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
+    <p data-sourcepos="1:1-1:25" dir="auto"><a class="no-attachment-icon" href="/url2" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:25" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" decoding="async" class="lazy" data-src="/url2"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url2" alt="foo bar"></p>
 06_08_00__inlines__images__005:
   canonical: |
     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
+    <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:14" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
     <pre>[foo *bar*]: train.jpg "train &amp; tracks"</pre>
@@ -6906,7 +6906,7 @@
   canonical: |
     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:20" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="train &amp; tracks" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="train.jpg" alt="foo bar" title="train &amp; tracks"></p>
     <pre>[foobar]: train.jpg "train &amp; tracks"</pre>
@@ -6914,35 +6914,35 @@
   canonical: |
     <p><img src="train.jpg" alt="foo" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="train.jpg"></a></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><a class="no-attachment-icon" href="train.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:17" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="train.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="train.jpg" alt="foo"></p>
 06_08_00__inlines__images__008:
   canonical: |
     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:45" dir="auto">My <a class="no-attachment-icon" href="/path/to/train.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/path/to/train.jpg"></a></p>
+    <p data-sourcepos="1:1-1:45" dir="auto">My <a class="no-attachment-icon" href="/path/to/train.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:4-1:45" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/path/to/train.jpg"></a></p>
   wysiwyg: |-
     <p dir="auto">My <img src="/path/to/train.jpg" alt="foo bar" title="title"></p>
 06_08_00__inlines__images__009:
   canonical: |
     <p><img src="url" alt="foo" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto"><a class="no-attachment-icon" href="url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="url"></a></p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><a class="no-attachment-icon" href="url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:13" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="url" alt="foo"></p>
 06_08_00__inlines__images__010:
   canonical: |
     <p><img src="/url" alt="" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:9" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt=""></p>
 06_08_00__inlines__images__011:
   canonical: |
     <p><img src="/url" alt="foo" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:11" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo"></p>
     <pre>[bar]: /url</pre>
@@ -6950,7 +6950,7 @@
   canonical: |
     <p><img src="/url" alt="foo" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:11" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:11" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo"></p>
     <pre>[bar]: /url</pre>
@@ -6958,7 +6958,7 @@
   canonical: |
     <p><img src="/url" alt="foo" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:8" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo" title="title"></p>
     <pre>[foo]: /url "title"</pre>
@@ -6966,7 +6966,7 @@
   canonical: |
     <p><img src="/url" alt="foo bar" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:14" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:14" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo bar" title="title"></p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -6974,7 +6974,7 @@
   canonical: |
     <p><img src="/url" alt="Foo" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:8" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="Foo" title="title"></p>
     <pre>[foo]: /url "title"</pre>
@@ -6983,7 +6983,7 @@
     <p><img src="/url" alt="foo" title="title" />
     []</p>
   static: |-
-    <p data-sourcepos="1:1-2:2" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a>
+    <p data-sourcepos="1:1-2:2" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:6" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a>
     []</p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo" title="title">
@@ -6993,7 +6993,7 @@
   canonical: |
     <p><img src="/url" alt="foo" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:6" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo" title="title"></p>
     <pre>[foo]: /url "title"</pre>
@@ -7001,7 +7001,7 @@
   canonical: |
     <p><img src="/url" alt="foo bar" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:12" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="foo bar" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="foo bar" title="title"></p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -7019,7 +7019,7 @@
   canonical: |
     <p><img src="/url" alt="Foo" title="title" /></p>
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><a class="no-attachment-icon" href="/url" target="_blank" rel="noopener noreferrer"><img data-sourcepos="1:1-1:6" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Foo" title="title" decoding="async" class="lazy" data-src="/url"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/url" alt="Foo" title="title"></p>
     <pre>[foo]: /url "title"</pre>
@@ -7035,7 +7035,7 @@
   canonical: |
     <p>!<a href="/url" title="title">foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><span data-escaped-char>!</span><a href="/url" title="title">foo</a></p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><span data-escaped-char>!</span><a data-sourcepos="1:24-1:28" href="/url" title="title">foo</a></p>
   wysiwyg: |-
     <p dir="auto">!<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title">foo</a></p>
     <pre>[foo]: /url "title"</pre>
@@ -7043,56 +7043,56 @@
   canonical: |
     <p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a href="http://foo.bar.baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz</a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a data-sourcepos="1:2-1:21" href="http://foo.bar.baz" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz">http://foo.bar.baz</a></p>
 06_09_00__inlines__autolinks__002:
   canonical: |
     <p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:47" dir="auto"><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+    <p data-sourcepos="1:1-1:47" dir="auto"><a data-sourcepos="1:2-1:48" href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean" rel="nofollow noreferrer noopener" target="_blank">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
 06_09_00__inlines__autolinks__003:
   canonical: |
     <p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto"><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+    <p data-sourcepos="1:1-1:24" dir="auto"><a data-sourcepos="1:2-1:25" href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow">irc://foo.bar:2233/baz</a></p>
 06_09_00__inlines__autolinks__004:
   canonical: |
     <p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a href="mailto:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a data-sourcepos="1:2-1:21" href="mailto:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
 06_09_00__inlines__autolinks__005:
   canonical: |
     <p><a href="a+b+c:d">a+b+c:d</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:9" dir="auto"><a href="a+b+c:d">a+b+c:d</a></p>
+    <p data-sourcepos="1:1-1:9" dir="auto"><a data-sourcepos="1:2-1:10" href="a+b+c:d">a+b+c:d</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow">a+b+c:d</a></p>
 06_09_00__inlines__autolinks__006:
   canonical: |
     <p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:26" dir="auto"><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+    <p data-sourcepos="1:1-1:26" dir="auto"><a data-sourcepos="1:2-1:27" href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow">made-up-scheme://foo,bar</a></p>
 06_09_00__inlines__autolinks__007:
   canonical: |
     <p><a href="http://../">http://../</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:12" dir="auto"><a href="http://../" rel="nofollow noreferrer noopener" target="_blank">http://../</a></p>
+    <p data-sourcepos="1:1-1:12" dir="auto"><a data-sourcepos="1:2-1:13" href="http://../" rel="nofollow noreferrer noopener" target="_blank">http://../</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://../">http://../</a></p>
 06_09_00__inlines__autolinks__008:
   canonical: |
     <p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:20" dir="auto"><a href="localhost:5001/foo">localhost:5001/foo</a></p>
+    <p data-sourcepos="1:1-1:20" dir="auto"><a data-sourcepos="1:2-1:21" href="localhost:5001/foo">localhost:5001/foo</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow">localhost:5001/foo</a></p>
 06_09_00__inlines__autolinks__009:
@@ -7106,21 +7106,21 @@
   canonical: |
     <p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:24" dir="auto"><a href="http://example.com/%5C%5B%5C" rel="nofollow noreferrer noopener" target="_blank">http://example.com/\[\</a></p>
+    <p data-sourcepos="1:1-1:24" dir="auto"><a data-sourcepos="1:2-1:25" href="http://example.com/%5C%5B%5C" rel="nofollow noreferrer noopener" target="_blank">http://example.com/\[\</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
 06_09_00__inlines__autolinks__011:
   canonical: |
     <p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:21" dir="auto"><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+    <p data-sourcepos="1:1-1:21" dir="auto"><a data-sourcepos="1:2-1:22" href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 06_09_00__inlines__autolinks__012:
   canonical: |
     <p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:30" dir="auto"><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
+    <p data-sourcepos="1:1-1:30" dir="auto"><a data-sourcepos="1:2-1:31" href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
 06_09_00__inlines__autolinks__013:
@@ -7460,7 +7460,7 @@
     <p>foo<br />
     baz</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:3" dir="auto">foo<br data-sourcepos="1:6-1:6">
     baz</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -7470,7 +7470,7 @@
     <p>foo<br />
     baz</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:3" dir="auto">foo<br data-sourcepos="1:4-1:5">
     baz</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -7480,7 +7480,7 @@
     <p>foo<br />
     baz</p>
   static: |-
-    <p data-sourcepos="1:1-2:3" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:3" dir="auto">foo<br data-sourcepos="1:11-1:11">
     baz</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -7490,7 +7490,7 @@
     <p>foo<br />
     bar</p>
   static: |-
-    <p data-sourcepos="1:1-2:8" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:8" dir="auto">foo<br data-sourcepos="1:6-1:6">
     bar</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -7500,7 +7500,7 @@
     <p>foo<br />
     bar</p>
   static: |-
-    <p data-sourcepos="1:1-2:8" dir="auto">foo<br>
+    <p data-sourcepos="1:1-2:8" dir="auto">foo<br data-sourcepos="1:4-1:5">
     bar</p>
   wysiwyg: |-
     <p dir="auto">foo<br>
@@ -7510,7 +7510,7 @@
     <p><em>foo<br />
     bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto"><em>foo<br>
+    <p data-sourcepos="1:1-2:4" dir="auto"><em data-sourcepos="1:1-2:4">foo<br data-sourcepos="1:7-1:7">
     bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo<br>
@@ -7520,7 +7520,7 @@
     <p><em>foo<br />
     bar</em></p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto"><em>foo<br>
+    <p data-sourcepos="1:1-2:4" dir="auto"><em data-sourcepos="1:1-1:10">foo<br data-sourcepos="1:5-1:6">
     bar</em></p>
   wysiwyg: |-
     <p dir="auto"><em>foo<br>
@@ -7529,14 +7529,14 @@
   canonical: |
     <p><code>code   span</code></p>
   static: |-
-    <p data-sourcepos="1:1-2:5" dir="auto"><code>code   span</code></p>
+    <p data-sourcepos="1:1-2:5" dir="auto"><code data-sourcepos="1:2-2:4">code   span</code></p>
   wysiwyg: |-
     <p dir="auto"><code>code   span</code></p>
 06_13_00__inlines__hard_line_breaks__009:
   canonical: |
     <p><code>code\ span</code></p>
   static: |-
-    <p data-sourcepos="1:1-2:5" dir="auto"><code>code\ span</code></p>
+    <p data-sourcepos="1:1-2:5" dir="auto"><code data-sourcepos="1:2-2:4">code\ span</code></p>
   wysiwyg: |-
     <p dir="auto"><code>code\ span</code></p>
 06_13_00__inlines__hard_line_breaks__010:
@@ -7579,7 +7579,7 @@
   canonical: |
     <h3>foo</h3>
   static: |-
-    <h3 data-sourcepos="1:1-1:7" dir="auto">
+    <h3 data-sourcepos="1:1-1:9" dir="auto">
     <a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"></a>foo</h3>
   wysiwyg: |-
     <h3 dir="auto">foo</h3>
@@ -7639,7 +7639,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> incomplete</li>
     </ul>
   wysiwyg: |-
-    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">incomplete</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">incomplete</p></div></li></ul>
 07_01_00__gitlab_official_specification_markdown__task_list_items__002:
   canonical: |
     <ul>
@@ -7822,7 +7822,7 @@
     <p>[[<em>TOC</em>]]text</p>
     <p>text[TOC]</p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto">[[<em>TOC</em>]]
+    <p data-sourcepos="1:1-2:4" dir="auto">[[<em data-sourcepos="1:3-1:7">TOC</em>]]
     text</p>
     <p data-sourcepos="4:1-5:5" dir="auto">text
     [TOC]</p>
@@ -7880,12 +7880,12 @@
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+    <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__002:
   canonical: |
     <p><a href="projects-test-file">projects-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
+    <p data-sourcepos="1:1-1:40" dir="auto"><a data-sourcepos="1:1-1:40" href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__003:
   canonical: |
     <p>This project snippet ID reference IS filtered: $88888</p>
@@ -7900,57 +7900,57 @@
   canonical: |
     <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
+    <p data-sourcepos="1:1-1:50" dir="auto"><a data-sourcepos="1:1-1:50" href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__006:
   canonical: |
     <p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:46" dir="auto"><a href="/groups/glfm_group/-/wikis/group-wikis-test-file" data-canonical-src="group-wikis-test-file">group-wikis-test-file</a></p>
+    <p data-sourcepos="1:1-1:46" dir="auto"><a data-sourcepos="1:1-1:46" href="/groups/glfm_group/-/wikis/group-wikis-test-file" data-canonical-src="group-wikis-test-file">group-wikis-test-file</a></p>
 08_04_01__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_group__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:27" dir="auto"><a class="no-attachment-icon" href="/glfm_group/glfm_project/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png"><img alt="test-file" decoding="async" class="lazy" data-src="/glfm_group/glfm_project/-/wikis/test-file.png" data-canonical-src="test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:27" dir="auto"><a class="no-attachment-icon" href="/glfm_group/glfm_project/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png"><img data-sourcepos="1:1-1:27" alt="test-file" decoding="async" class="lazy" data-src="/glfm_group/glfm_project/-/wikis/test-file.png" data-canonical-src="test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="test-file.png" alt="test-file"></p>
 08_04_04__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:26" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
+    <p data-sourcepos="1:1-1:26" dir="auto"><a data-sourcepos="1:1-1:26" href="/glfm_group/glfm_project/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
 08_04_07__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:26" dir="auto"><a href="/groups/glfm_group/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
+    <p data-sourcepos="1:1-1:26" dir="auto"><a data-sourcepos="1:1-1:26" href="/groups/glfm_group/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="test-file.zip">test-file</a></p>
 08_04_08__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio__001:
@@ -8001,7 +8001,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+    <p data-sourcepos="1:1-1:8" dir="auto"><strong data-sourcepos="1:1-1:8">bold</strong></p>
   wysiwyg: |-
     <p dir="auto"><strong>bold</strong></p>
 08_04_12__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_1__001:
@@ -8081,15 +8081,15 @@
     TODO: Write canonical HTML for this example
   static: |-
     <ul data-sourcepos="1:1-9:25" dir="auto">
-    <li data-sourcepos="1:1-1:8"><code>#F00<span class="gfm-color_chip"><span style="background-color: #F00;"></span></span></code></li>
-    <li data-sourcepos="2:1-2:9"><code>#F00A<span class="gfm-color_chip"><span style="background-color: #F00A;"></span></span></code></li>
-    <li data-sourcepos="3:1-3:11"><code>#FF0000<span class="gfm-color_chip"><span style="background-color: #FF0000;"></span></span></code></li>
-    <li data-sourcepos="4:1-4:13"><code>#FF0000AA<span class="gfm-color_chip"><span style="background-color: #FF0000AA;"></span></span></code></li>
-    <li data-sourcepos="5:1-5:16"><code>RGB(0,255,0)<span class="gfm-color_chip"><span style="background-color: RGB(0,255,0);"></span></span></code></li>
-    <li data-sourcepos="6:1-6:19"><code>RGB(0%,100%,0%)<span class="gfm-color_chip"><span style="background-color: RGB(0%,100%,0%);"></span></span></code></li>
-    <li data-sourcepos="7:1-7:21"><code>RGBA(0,255,0,0.3)<span class="gfm-color_chip"><span style="background-color: RGBA(0,255,0,0.3);"></span></span></code></li>
-    <li data-sourcepos="8:1-8:20"><code>HSL(540,70%,50%)<span class="gfm-color_chip"><span style="background-color: HSL(540,70%,50%);"></span></span></code></li>
-    <li data-sourcepos="9:1-9:25"><code>HSLA(540,70%,50%,0.3)<span class="gfm-color_chip"><span style="background-color: HSLA(540,70%,50%,0.3);"></span></span></code></li>
+    <li data-sourcepos="1:1-1:8"><code data-sourcepos="1:4-1:7">#F00<span class="gfm-color_chip"><span style="background-color: #F00;"></span></span></code></li>
+    <li data-sourcepos="2:1-2:9"><code data-sourcepos="2:4-2:8">#F00A<span class="gfm-color_chip"><span style="background-color: #F00A;"></span></span></code></li>
+    <li data-sourcepos="3:1-3:11"><code data-sourcepos="3:4-3:10">#FF0000<span class="gfm-color_chip"><span style="background-color: #FF0000;"></span></span></code></li>
+    <li data-sourcepos="4:1-4:13"><code data-sourcepos="4:4-4:12">#FF0000AA<span class="gfm-color_chip"><span style="background-color: #FF0000AA;"></span></span></code></li>
+    <li data-sourcepos="5:1-5:16"><code data-sourcepos="5:4-5:15">RGB(0,255,0)<span class="gfm-color_chip"><span style="background-color: RGB(0,255,0);"></span></span></code></li>
+    <li data-sourcepos="6:1-6:19"><code data-sourcepos="6:4-6:18">RGB(0%,100%,0%)<span class="gfm-color_chip"><span style="background-color: RGB(0%,100%,0%);"></span></span></code></li>
+    <li data-sourcepos="7:1-7:21"><code data-sourcepos="7:4-7:20">RGBA(0,255,0,0.3)<span class="gfm-color_chip"><span style="background-color: RGBA(0,255,0,0.3);"></span></span></code></li>
+    <li data-sourcepos="8:1-8:20"><code data-sourcepos="8:4-8:19">HSL(540,70%,50%)<span class="gfm-color_chip"><span style="background-color: HSL(540,70%,50%);"></span></span></code></li>
+    <li data-sourcepos="9:1-9:25"><code data-sourcepos="9:4-9:24">HSLA(540,70%,50%,0.3)<span class="gfm-color_chip"><span style="background-color: HSLA(540,70%,50%,0.3);"></span></span></code></li>
     </ul>
   wysiwyg: |-
     <ul dir="auto" bullet="*"><li dir="auto"><p dir="auto"><code>#F00</code></p></li><li dir="auto"><p dir="auto"><code>#F00A</code></p></li><li dir="auto"><p dir="auto"><code>#FF0000</code></p></li><li dir="auto"><p dir="auto"><code>#FF0000AA</code></p></li><li dir="auto"><p dir="auto"><code>RGB(0,255,0)</code></p></li><li dir="auto"><p dir="auto"><code>RGB(0%,100%,0%)</code></p></li><li dir="auto"><p dir="auto"><code>RGBA(0,255,0,0.3)</code></p></li><li dir="auto"><p dir="auto"><code>HSL(540,70%,50%)</code></p></li><li dir="auto"><p dir="auto"><code>HSLA(540,70%,50%,0.3)</code></p></li></ul>
@@ -8108,7 +8108,7 @@
     <dt>Color</dt>
     <dt>Colour</dt>
     <dd>
-    <p data-sourcepos="13:1-13:35">Any hue except <em>white</em> or <strong>black</strong></p>
+    <p data-sourcepos="13:1-13:35">Any hue except <em data-sourcepos="13:16-13:22">white</em> or <strong data-sourcepos="13:27-13:35">black</strong></p>
     </dd>
     </dl>
   wysiwyg: |-
@@ -8186,7 +8186,7 @@
   static: |-
     <div>plain text</div>
     <div>
-    <p data-sourcepos="4:1-4:43">just a plain ol' div, not much to <em>expect</em>!</p>
+    <p data-sourcepos="4:1-4:43">just a plain ol' div, not much to <em data-sourcepos="4:35-4:42">expect</em>!</p>
     </div>
   wysiwyg: |-
     <div><p dir="auto">plain text</p></div>
@@ -8204,7 +8204,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto"><em>emphasized text</em></p>
+    <p data-sourcepos="1:1-1:17" dir="auto"><em data-sourcepos="1:1-1:17">emphasized text</em></p>
   wysiwyg: |-
     <p dir="auto"><em>emphasized text</em></p>
 08_04_27__gitlab_internal_extension_markdown__migrated_golden_master_examples__figure__001:
@@ -8212,13 +8212,13 @@
     TODO: Write canonical HTML for this example
   static: |-
     <figure>
-    <p data-sourcepos="3:1-3:42"><a class="no-attachment-icon" href="elephant-sunset.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Elephant at sunset" decoding="async" class="lazy" data-src="elephant-sunset.jpg"></a></p>
+    <p data-sourcepos="3:1-3:42"><a class="no-attachment-icon" href="elephant-sunset.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="3:1-3:42" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Elephant at sunset" decoding="async" class="lazy" data-src="elephant-sunset.jpg"></a></p>
     <figcaption>An elephant at sunset</figcaption>
     </figure>
     <figure>
-    <p data-sourcepos="9:1-9:44"><a class="no-attachment-icon" href="croc-crocs.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A crocodile wearing crocs" decoding="async" class="lazy" data-src="croc-crocs.jpg"></a></p>
+    <p data-sourcepos="9:1-9:44"><a class="no-attachment-icon" href="croc-crocs.jpg" target="_blank" rel="noopener noreferrer"><img data-sourcepos="9:1-9:44" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A crocodile wearing crocs" decoding="async" class="lazy" data-src="croc-crocs.jpg"></a></p>
     <figcaption>
-    <p data-sourcepos="13:1-13:28">A crocodile wearing <em>crocs</em>!</p>
+    <p data-sourcepos="13:1-13:28">A crocodile wearing <em data-sourcepos="13:21-13:27">crocs</em>!</p>
     </figcaption>
     </figure>
   wysiwyg: |-
@@ -8227,14 +8227,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:46" dir="auto">A footnote reference tag looks like this: <sup class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup></p>
-    <p data-sourcepos="3:1-3:63" dir="auto">This reference tag is a mix of letters and numbers. <sup class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup></p>
-    <section data-footnotes class="footnotes">
+    <p data-sourcepos="1:1-1:46" dir="auto">A footnote reference tag looks like this: <sup data-sourcepos="1:43-1:46" class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="3:1-3:63" dir="auto">This reference tag is a mix of letters and numbers. <sup data-sourcepos="3:53-3:63" class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup></p>
+    <section data-sourcepos="5:1-6:0" data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-42">
+    <li data-sourcepos="5:1-6:0" id="fn-1-42">
     <p data-sourcepos="5:7-5:41">This is the text inside a footnote. <a href="#fnref-1-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
-    <li id="fn-footnote-42">
+    <li data-sourcepos="7:1-7:38" id="fn-footnote-42">
     <p data-sourcepos="7:14-7:38">This is another footnote. <a href="#fnref-footnote-42" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
@@ -8282,7 +8282,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-2:10" dir="auto">This is a line after a<br>
+    <p data-sourcepos="1:1-2:10" dir="auto">This is a line after a<br data-sourcepos="1:23-1:24">
     hard break</p>
   wysiwyg: |-
     <p dir="auto">This is a line after a<br>
@@ -8321,9 +8321,9 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: "<ul data-sourcepos=\"1:1-15:130\" dir=\"auto\">\n<li data-sourcepos=\"1:1-1:48\">Content
-    editor is <del>great</del><ins>amazing</ins>.</li>\n<li data-sourcepos=\"2:1-2:126\">If
-    the changes <abbr title=\"Looks good to merge\">LGTM</abbr>, please <abbr title=\"Merge
-    when pipeline succeeds\">MWPS</abbr>.</li>\n<li data-sourcepos=\"3:1-3:288\">The
+    editor is <del data-sourcepos=\"1:21-1:29\">great</del><ins>amazing</ins>.</li>\n<li
+    data-sourcepos=\"2:1-2:126\">If the changes <abbr title=\"Looks good to merge\">LGTM</abbr>,
+    please <abbr title=\"Merge when pipeline succeeds\">MWPS</abbr>.</li>\n<li data-sourcepos=\"3:1-3:288\">The
     English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew:
     <span dir=\"rtl\">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory,
     this is stored as <bdo dir=\"ltr\">אה, אני אוהב להיות ליד חוף הים</bdo>.</li>\n<li
@@ -8342,7 +8342,7 @@
     of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the
     base, and <var>h</var> is the vertical height.</li>\n<li data-sourcepos=\"13:1-13:35\"><ruby>漢<rt>ㄏㄢˋ</rt></ruby></li>\n<li
     data-sourcepos=\"14:1-14:79\">C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> \t CO<sub>2</sub>
-    + H<sub>2</sub>O</li>\n<li data-sourcepos=\"15:1-15:130\">The <strong>Pythagorean
+    + H<sub>2</sub>O</li>\n<li data-sourcepos=\"15:1-15:130\">The <strong data-sourcepos=\"15:7-15:29\">Pythagorean
     theorem</strong> is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var>
     = <var>c<sup>2</sup></var>\n</li>\n</ul>"
   wysiwyg: "<ul dir=\"auto\" bullet=\"*\"><li dir=\"auto\"><p dir=\"auto\">Content
@@ -8370,14 +8370,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:40" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="alt text" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+    <p data-sourcepos="1:1-1:40" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:40" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="alt text" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="https://gitlab.com/logo.png" alt="alt text"></p>
 08_04_37__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_code__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:6" dir="auto"><code>code</code></p>
+    <p data-sourcepos="1:1-1:6" dir="auto"><code data-sourcepos="1:2-1:5">code</code></p>
   wysiwyg: |-
     <p dir="auto"><code>code</code></p>
 08_04_38__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_diff__001:
@@ -8401,14 +8401,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:28" dir="auto"><a href="https://gitlab.com" rel="nofollow noreferrer noopener" target="_blank">GitLab</a></p>
+    <p data-sourcepos="1:1-1:28" dir="auto"><a data-sourcepos="1:1-1:28" href="https://gitlab.com" rel="nofollow noreferrer noopener" target="_blank">GitLab</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="https://gitlab.com">GitLab</a></p>
 08_04_41__gitlab_internal_extension_markdown__migrated_golden_master_examples__math__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-math-style="inline" class="code math js-render-math">a^2+b^2=c^2</code>.</p>
+    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-sourcepos="1:23-1:33" data-math-style="inline" class="code math js-render-math">a^2+b^2=c^2</code>.</p>
     <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="5:1-7:3" data-canonical-lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" lang="math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
@@ -8433,7 +8433,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <ol start="134" data-sourcepos="1:1-3:16" dir="auto">
+    <ol data-sourcepos="1:1-3:16" start="134" dir="auto">
     <li data-sourcepos="1:1-1:16">list item 1</li>
     <li data-sourcepos="2:1-2:16">list item 2</li>
     <li data-sourcepos="3:1-3:16">list item 3</li>
@@ -8468,7 +8468,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <ol start="4893" data-sourcepos="1:1-3:17" class="task-list" dir="auto">
+    <ol data-sourcepos="1:1-3:17" start="4893" class="task-list" dir="auto">
     <li data-sourcepos="1:1-1:15" class="task-list-item">
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
     <li data-sourcepos="2:1-2:15" class="task-list-item">
@@ -8477,7 +8477,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
     </ol>
   wysiwyg: |-
-    <ol dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">hello</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">world</p></div></li><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">example</p></div></li></ol>
+    <ol dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">hello</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">world</p></div></li><li dir="auto" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">example</p></div></li></ol>
 08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8489,7 +8489,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:7" dir="auto"><del>del</del></p>
+    <p data-sourcepos="1:1-1:7" dir="auto"><del data-sourcepos="1:1-1:7">del</del></p>
   wysiwyg: |-
     <p dir="auto"><s>del</s></p>
 08_04_48__gitlab_internal_extension_markdown__migrated_golden_master_examples__table__001:
@@ -8505,13 +8505,13 @@
     </thead>
     <tbody>
     <tr data-sourcepos="3:1-3:31">
-    <td data-sourcepos="3:2-3:9"><code>code</code></td>
-    <td data-sourcepos="3:11-3:30">cell with <strong>bold</strong>
+    <td data-sourcepos="3:2-3:9"><code data-sourcepos="3:4-3:7">code</code></td>
+    <td data-sourcepos="3:11-3:30">cell with <strong data-sourcepos="3:22-3:29">bold</strong>
     </td>
     </tr>
     <tr data-sourcepos="4:1-4:35">
-    <td data-sourcepos="4:2-4:13"><del>strike</del></td>
-    <td data-sourcepos="4:15-4:34">cell with <em>italic</em>
+    <td data-sourcepos="4:2-4:13"><del data-sourcepos="4:3-4:12">strike</del></td>
+    <td data-sourcepos="4:15-4:34">cell with <em data-sourcepos="4:26-4:33">italic</em>
     </td>
     </tr>
     </tbody>
@@ -8596,27 +8596,27 @@
   canonical: |
     <p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
   static: |-
-    <p data-sourcepos="1:1-1:58" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+    <p data-sourcepos="1:1-1:58" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:32" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
 08_05_00__gitlab_internal_extension_markdown__image_attributes__002:
   canonical: |
     <p><img src="https://gitlab.com/logo.png" width="100%"></p>
   static: |-
-    <p data-sourcepos="1:1-1:46" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100%" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+    <p data-sourcepos="1:1-1:46" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:32" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100%" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
 08_05_00__gitlab_internal_extension_markdown__image_attributes__003:
   canonical: |
     <p><img src="https://gitlab.com/logo.png" height="100px"></p>
   static: |-
-    <p data-sourcepos="1:1-1:48" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" height="100px" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+    <p data-sourcepos="1:1-1:48" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:32" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" height="100px" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
 08_05_00__gitlab_internal_extension_markdown__image_attributes__004:
   canonical: |
     <p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
   static: |-
-    <p data-sourcepos="1:1-1:60" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+    <p data-sourcepos="1:1-1:60" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:32" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
 08_05_00__gitlab_internal_extension_markdown__image_attributes__005:
   canonical: |
     <p><img src="https://gitlab.com/logo.png"> {width="100" height="100"}</p>
   static: |-
-    <p data-sourcepos="1:1-1:59" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a> {width="100" height="100"}</p>
+    <p data-sourcepos="1:1-1:59" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img data-sourcepos="1:1-1:32" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a> {width="100" height="100"}</p>
 08_06_00__gitlab_internal_extension_markdown__footnotes__001:
   canonical: |
     <p>
@@ -8639,10 +8639,10 @@
     </ol>
     </section>
   static: |-
-    <p data-sourcepos="1:1-1:34" dir="auto">footnote reference tag <sup class="footnote-ref"><a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref>1</a></sup></p>
-    <section data-footnotes class="footnotes">
+    <p data-sourcepos="1:1-1:34" dir="auto">footnote reference tag <sup data-sourcepos="1:24-1:34" class="footnote-ref"><a href="#fn-fortytwo-42" id="fnref-fortytwo-42" data-footnote-ref>1</a></sup></p>
+    <section data-sourcepos="3:1-3:26" data-footnotes class="footnotes">
     <ol>
-    <li id="fn-fortytwo-42">
+    <li data-sourcepos="3:1-3:26" id="fn-fortytwo-42">
     <p data-sourcepos="3:14-3:26">footnote text <a href="#fnref-fortytwo-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
@@ -8681,17 +8681,17 @@
     </ol>
     </section>
   static: |-
-    <p data-sourcepos="1:1-1:47" dir="auto">This is some text!<sup class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup>. Other text.<sup class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup>.</p>
-    <p data-sourcepos="3:1-3:28" dir="auto">Here's a thing<sup class="footnote-ref"><a href="#fn-other-note-42" id="fnref-other-note-42" data-footnote-ref>3</a></sup>.</p>
-    <p data-sourcepos="5:1-5:35" dir="auto">And another thing<sup class="footnote-ref"><a href="#fn-codeblock-note-42" id="fnref-codeblock-note-42" data-footnote-ref>4</a></sup>.</p>
+    <p data-sourcepos="1:1-1:47" dir="auto">This is some text!<sup data-sourcepos="1:19-1:22" class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup>. Other text.<sup data-sourcepos="1:36-1:46" class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup>.</p>
+    <p data-sourcepos="3:1-3:28" dir="auto">Here's a thing<sup data-sourcepos="3:15-3:27" class="footnote-ref"><a href="#fn-other-note-42" id="fnref-other-note-42" data-footnote-ref>3</a></sup>.</p>
+    <p data-sourcepos="5:1-5:35" dir="auto">And another thing<sup data-sourcepos="5:18-5:34" class="footnote-ref"><a href="#fn-codeblock-note-42" id="fnref-codeblock-note-42" data-footnote-ref>4</a></sup>.</p>
     <p data-sourcepos="7:1-7:36" dir="auto">This doesn't have a referent[^nope].</p>
     <p data-sourcepos="17:1-17:3" dir="auto">Hi!</p>
-    <section data-footnotes class="footnotes">
+    <section data-sourcepos="15:1-16:0" data-footnotes class="footnotes">
     <ol>
-    <li id="fn-1-42">
-    <p data-sourcepos="15:7-15:40">Some <em>bolded</em> footnote definition. <a href="#fnref-1-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    <li data-sourcepos="15:1-16:0" id="fn-1-42">
+    <p data-sourcepos="15:7-15:40">Some <em data-sourcepos="15:12-15:19">bolded</em> footnote definition. <a href="#fnref-1-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
-    <li id="fn-footnote-42">
+    <li data-sourcepos="19:1-25:0" id="fn-footnote-42">
     <blockquote data-sourcepos="20:5-20:39">
     <p data-sourcepos="20:7-20:39">Blockquotes can be in a footnote.</p>
     </blockquote>
@@ -8701,10 +8701,10 @@
     </div>
     <p data-sourcepos="24:5-24:37">or, naturally, simple paragraphs. <a href="#fnref-footnote-42" data-footnote-backref data-footnote-backref-idx="2" aria-label="Back to reference 2" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
-    <li id="fn-other-note-42">
+    <li data-sourcepos="10:1-11:0" id="fn-other-note-42">
     <p data-sourcepos="10:22-10:66">no code block here (spaces are stripped away) <a href="#fnref-other-note-42" data-footnote-backref data-footnote-backref-idx="3" aria-label="Back to reference 3" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
-    <li id="fn-codeblock-note-42">
+    <li data-sourcepos="12:1-14:0" id="fn-codeblock-note-42">
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="13:9-14:0" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">this is now a code block (8 spaces indentation)</span></code></pre>
     <copy-code></copy-code>
@@ -8734,11 +8734,11 @@
     </ol>
     </section>
   static: |-
-    <p data-sourcepos="1:1-1:50" dir="auto">This is some text. It has a footnote<sup class="footnote-ref"><a href="#fn-a-footnote-42" id="fnref-a-footnote-42" data-footnote-ref>1</a></sup>.</p>
-    <p data-sourcepos="3:1-3:98" dir="auto">This footnote is referenced<sup><a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref>1</a></sup> multiple times, in lots of different places.<sup><a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref>1</a></sup></p>
-    <section data-footnotes class="footnotes">
+    <p data-sourcepos="1:1-1:50" dir="auto">This is some text. It has a footnote<sup data-sourcepos="1:37-1:49" class="footnote-ref"><a href="#fn-a-footnote-42" id="fnref-a-footnote-42" data-footnote-ref>1</a></sup>.</p>
+    <p data-sourcepos="3:1-3:98" dir="auto">This footnote is referenced<sup data-sourcepos="3:28-3:40"><a href="#fn-a-footnote" id="fnref-a-footnote-2" data-footnote-ref>1</a></sup> multiple times, in lots of different places.<sup data-sourcepos="3:86-3:98"><a href="#fn-a-footnote" id="fnref-a-footnote-3" data-footnote-ref>1</a></sup></p>
+    <section data-sourcepos="5:1-5:67" data-footnotes class="footnotes">
     <ol>
-    <li id="fn-a-footnote-42">
+    <li data-sourcepos="5:1-5:67" id="fn-a-footnote-42">
     <p data-sourcepos="5:16-5:67">This footnote definition should have three backrefs. <a href="#fnref-a-footnote-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a> <a href="#fnref-a-footnote-2" data-footnote-backref data-footnote-backref-idx="1-2" aria-label="Back to reference 1-2"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji><sup>2</sup></a> <a href="#fnref-a-footnote-3" data-footnote-backref data-footnote-backref-idx="1-3" aria-label="Back to reference 1-3"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji><sup>3</sup></a></p>
     </li>
     </ol>
@@ -8758,10 +8758,10 @@
     </ol>
     </section>
   static: |-
-    <p data-sourcepos="1:1-1:35" dir="auto">Hello<sup class="footnote-ref"><a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" data-footnote-ref>1</a></sup></p>
-    <section data-footnotes class="footnotes">
+    <p data-sourcepos="1:1-1:35" dir="auto">Hello<sup data-sourcepos="1:6-1:35" class="footnote-ref"><a href="#fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" id="fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" data-footnote-ref>1</a></sup></p>
+    <section data-sourcepos="3:1-3:37" data-footnotes class="footnotes">
     <ol>
-    <li id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42">
+    <li data-sourcepos="3:1-3:37" id="fn-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42">
     <p data-sourcepos="3:33-3:37">pwned <a href="#fnref-%22%3E%3Cscript%3Ealert(1)%3C/script%3E-42" data-footnote-backref data-footnote-backref-idx="1" aria-label="Back to reference 1" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
     </li>
     </ol>
@@ -8774,8 +8774,8 @@
     <p><del><a href="http://www.google.com">www.google.com</a></del></p>
     <p><del><a href="http://google.com">http://google.com</a></del></p>
   static: |-
-    <p data-sourcepos="1:1-1:18" dir="auto"><del><a href="http://www.google.com" rel="nofollow noreferrer noopener" target="_blank">www.google.com</a></del></p>
-    <p data-sourcepos="3:1-3:21" dir="auto"><del><a href="http://google.com" rel="nofollow noreferrer noopener" target="_blank">http://google.com</a></del></p>
+    <p data-sourcepos="1:1-1:18" dir="auto"><del data-sourcepos="1:1-1:18"><a href="http://www.google.com" rel="nofollow noreferrer noopener" target="_blank">www.google.com</a></del></p>
+    <p data-sourcepos="3:1-3:21" dir="auto"><del data-sourcepos="3:1-3:21"><a href="http://google.com" rel="nofollow noreferrer noopener" target="_blank">http://google.com</a></del></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.google.com"><s>www.google.com</s></a></p>
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://google.com"><s>http://google.com</s></a></p>
@@ -8828,7 +8828,7 @@
     <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> bar</li>
     </ul>
   wysiwyg: |-
-    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">foo</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">bar</p></div></li></ul>
+    <ul dir="auto" start="1" parens="false" bullet="*" data-type="taskList"><li dir="auto" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p dir="auto">foo</p></div></li><li dir="auto" data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p dir="auto">bar</p></div></li></ul>
 09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__002:
   canonical: |
     <ul>

@@ -17,12 +17,12 @@ RSpec.shared_examples 'snippets views' do
       project = create(:project, namespace: user.namespace)
       create(:project_snippet, project: project, author: user)
 
-      control_count = ActiveRecord::QueryRecorder.new { get(:index, params: params) }.count
+      control = ActiveRecord::QueryRecorder.new { get(:index, params: params) }
 
       project = create(:project, namespace: user.namespace)
       create(:project_snippet, project: project, author: user)
 
-      expect { get(:index, params: params) }.not_to exceed_query_limit(control_count)
+      expect { get(:index, params: params) }.not_to exceed_query_limit(control)
     end
   end
 end

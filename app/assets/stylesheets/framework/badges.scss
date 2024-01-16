@@ -12,3 +12,56 @@
     color: $green;
   }
 }
+
+// FF :simplified_badges
+//
+// Temporarily override badge styles
+// globally
+//
+// Once verified we will update the
+// badge component in GitLab UI
+// refactor GitLab and remove this
+// custom code
+//
+// see https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3307
+.ff-simplified-badges-enabled {
+  // These changes will be moved to
+  // GitLab UI's badge component
+  .gl-badge,
+  .gl-badge.sm,
+  .gl-badge.md,
+  .gl-badge.lg {
+    @include gl-font-sm;
+    padding-block: $gl-spacing-scale-1;
+    padding-inline: calc(#{$gl-spacing-scale-3} - 2px);
+
+    > .gl-icon {
+      @include gl-ml-0;
+    }
+  }
+
+  // These changes will be moved to
+  // GitLab UI's button component
+  .gl-button .gl-badge {
+    @include gl-py-0;
+  }
+
+  // These changes will be moved to
+  // app/assets/stylesheets/framework/super_sidebar.scss
+  .super-sidebar-nav-item .gl-badge {
+    vertical-align: 2px;
+  }
+
+  // These changes will be moved to
+  // GitLab UI's tab component
+  .gl-tab-nav-item .gl-badge {
+    margin-block: -2px;
+  }
+
+  // Temporarily needed because of the
+  // speciality this FF adds
+  // the utility class gets overriden
+  .gl-badge.ci-icon {
+    @include gl-p-2;
+  }
+}

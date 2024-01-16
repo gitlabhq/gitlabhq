@@ -452,7 +452,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/api/container_repositories.rb'
     - 'lib/api/entities/basic_project_details.rb'
     - 'lib/api/helpers/authentication.rb'
-    - 'lib/api/terraform/modules/v1/packages.rb'
     - 'lib/api/unleash.rb'
     - 'lib/atlassian/jira_connect/jwt/asymmetric.rb'
     - 'lib/atlassian/jira_connect/jwt/symmetric.rb'

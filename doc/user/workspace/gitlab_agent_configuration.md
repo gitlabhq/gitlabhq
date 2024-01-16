@@ -20,12 +20,14 @@ provided that the agent is properly configured for remote development.
 
 ## Remote development settings
 
-| Setting                                               | Description                                                          |
-|-------------------------------------------------------|:---------------------------------------------------------------------|
-| [`enabled`](#enabled)                                 | Indicates whether remote development is enabled for the GitLab agent |
-| [`dns_zone`](#dns_zone)                               | DNS zone where workspaces are available                              |
-| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy) | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed                   |
-| [`network_policy`](#network_policy)                   | Firewall rules for workspaces                                        |
+| Setting                                                                                   | Description                                                                                                                         |
+|-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
+| [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent.                                                               |
+| [`dns_zone`](#dns_zone)                                                                   | DNS zone where workspaces are available.                                                                                            |
+| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed. |
+| [`network_policy`](#network_policy)                                                       | Firewall rules for workspaces.                                                                                                      |
+| [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | Default requests and limits for CPU and memory per workspace container.                                                             |
+| [`max_resources_per_workspace`](#max_resources_per_workspace)                             | Maximum requests and limits for CPU and memory per workspace.                                                                       |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
@@ -85,6 +87,7 @@ The default value is:
 ```yaml
 remote_development:
   network_policy:
+    enabled: true
     egress:
       - allow: "0.0.0.0/0"
         except:
@@ -140,6 +143,64 @@ In this example, traffic from the workspace is allowed if:
 
 - The destination IP is any range except `10.0.0.0/8`, `172.16.0.0/12`, or `192.168.0.0/16`.
 - The destination IP is `172.16.123.1/32`.
+
+### `default_resources_per_workspace_container`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+
+Use this setting to define the default [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
+for CPU and memory per workspace container.
+Any resources you define in your [devfile](index.md#devfile) override this setting.
+
+For `default_resources_per_workspace_container`, `requests` and `limits` are required.
+For more information about possible CPU and memory values, see [Resource units in Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes).
+
+When you change any of these values, existing workspaces restart immediately for the changes to take effect.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  default_resources_per_workspace_container:
+    requests:
+      cpu: "0.5"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+```
+
+### `max_resources_per_workspace`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+
+Use this setting to define the maximum [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
+for CPU and memory per workspace.
+
+For `max_resources_per_workspace`, `requests` and `limits` are required.
+For more information about possible CPU and memory values, see:
+
+- [Resource units in Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes)
+- [Resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+
+When you change any of these values, existing workspaces restart immediately for the changes to take effect.
+Workspaces fail when they exceed the values you set for `requests` and `limits`.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  max_resources_per_workspace:
+    requests:
+      cpu: "1"
+      memory: "1Gi"
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+```
+
+The maximum resources you define must include any resources required for init containers
+to perform bootstrapping operations such as cloning the project repository.
 
 ## Configuring user access with remote development
 

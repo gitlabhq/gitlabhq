@@ -21,7 +21,7 @@ variables:
 dast:
   stage: dast
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION"
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
   allow_failure: true
@@ -30,3 +30,10 @@ dast:
   artifacts:
     reports:
       dast: gl-dast-report.json
+  rules:
+    - if: $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
+    - if: $CI_GITLAB_FIPS_MODE != "true"
+      variables:
+        DAST_IMAGE_SUFFIX: ""

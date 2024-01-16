@@ -13,7 +13,7 @@ export function initPortraitLogoDetection() {
       const isPortrait = img.height > img.width;
       if (isPortrait) {
         // Limit the width when the logo has portrait format
-        img.classList.replace('gl-h-9', 'gl-w-10');
+        img.classList.replace('gl-h-10', 'gl-w-10');
       }
       img.classList.remove('gl-visibility-hidden');
     },

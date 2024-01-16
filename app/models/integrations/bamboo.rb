@@ -8,12 +8,14 @@ module Integrations
     field :bamboo_url,
       title: -> { s_('BambooService|Bamboo URL') },
       placeholder: -> { s_('https://bamboo.example.com') },
-      help: -> { s_('BambooService|Bamboo service root URL.') },
+      help: -> { s_('BambooService|Bamboo root URL.') },
+      description: -> { s_('Bamboo root URL (for example, `https://bamboo.example.com`).') },
       exposes_secrets: true,
       required: true
 
     field :build_key,
       help: -> { s_('BambooService|Bamboo build plan key.') },
+      description: -> { s_('Bamboo build plan key (for example, `KEY`).') },
       non_empty_password_title: -> { s_('BambooService|Enter new build key') },
       non_empty_password_help: -> { s_('BambooService|Leave blank to use your current build key.') },
       placeholder: -> { _('KEY') },
@@ -21,12 +23,16 @@ module Integrations
       is_secret: true
 
     field :username,
-      help: -> { s_('BambooService|The user with API access to the Bamboo server.') }
+      help: -> { s_('BambooService|User with API access to the Bamboo server.') },
+      description: -> { s_('User with API access to the Bamboo server.') },
+      required: true
 
     field :password,
       type: :password,
       non_empty_password_title: -> { s_('ProjectService|Enter new password') },
-      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') },
+      description: -> { s_('Password of the user.') },
+      required: true
 
     with_options if: :activated? do
       validates :bamboo_url, presence: true, public_url: true

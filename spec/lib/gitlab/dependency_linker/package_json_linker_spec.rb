@@ -100,5 +100,21 @@ RSpec.describe Gitlab::DependencyLinker::PackageJsonLinker do
     it 'does not link scripts with the same key as a package' do
       expect(subject).not_to include(link('karma start config/karma.config.js --single-run', 'https://github.com/karma start config/karma.config.js --single-run'))
     end
+
+    context 'when dependency is not a string' do
+      let(:file_content) do
+        <<-CONTENT.strip_heredoc
+        {
+          "dependencies": {
+            "wrong": {}
+          }
+        }
+        CONTENT
+      end
+
+      it 'does not link it' do
+        expect(subject).not_to include(%(<a href))
+      end
+    end
   end
 end

@@ -118,20 +118,20 @@ Some validation examples:
 - Branches must start with `JIRA-`.
 
   ```plaintext
-  `^JIRA-`
+  ^JIRA-
   ```
 
 - Branches must end with `-JIRA`.
 
   ```plaintext
-  `-JIRA$`
+  -JIRA$
   ```
 
 - Branches must be between `4` and `15` characters long,
   accepting only lowercase letters, numbers and dashes.
 
   ```plaintext
-  `^[a-z0-9\\-]{4,15}$`
+  ^[a-z0-9\\-]{4,15}$
   ```
 
 ## Prevent unintended consequences

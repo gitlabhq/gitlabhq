@@ -16,6 +16,7 @@ PATH
   remote: ../gitlab-safe_request_store
   specs:
     gitlab-safe_request_store (0.1.0)
+      rack (~> 2.2.8)
       request_store
 
 PATH
@@ -25,7 +26,6 @@ PATH
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
-      nokogiri (~> 1.15.2)
       rake (~> 13.0)
 
 PATH

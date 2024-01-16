@@ -17,8 +17,8 @@ when developing new features or instrumenting existing ones.
 <div class="video-fallback">
   See the video about <a href="https://www.youtube.com/watch?v=GtFNXbjygWo">the concepts of events and metrics.</a>
 </div>
-<figure class="video_container">
-  <iframe src="https://www.youtube-nocookie.com/embed/GtFNXbjygWo" frameborder="0" allowfullscreen="true"> </iframe>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/GtFNXbjygWo" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
 Events and metrics are the foundation of the internal analytics system.
@@ -95,7 +95,6 @@ SELECT
   COUNT(*) as event_occurences
 FROM common_mart.mart_behavior_structured_event
 WHERE event_action = 'feature_used'
-AND event_category = 'InternalEventTracking'
 AND behavior_date > '2023-08-01' --restricted minimum date for performance
 AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
 GROUP BY 1 ORDER BY 1 desc

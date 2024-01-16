@@ -321,20 +321,14 @@ To access your **Followers** and **Following** tabs:
 ## Enable Code Suggestions **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. Available to a percentage of users.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. UI user setting removed.
 
-A percentage of users can use Code Suggestions without any additional configuration.
+If Code Suggestions is
+[enabled for your top-level group](../group/manage.md#enable-code-suggestions-for-a-group),
+you can use Code Suggestions after you
+[configure a supported IDE extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
 
-If the following options are available to you, it means you are **not** part of the percentage of users
-and you must manually enable Code Suggestions for your account:
-
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. Select the **Enable Code Suggestions** checkbox.
-1. Select **Save changes**.
-
-NOTE:
-If Code Suggestions are disabled [for any groups that you belong to](../../user/group/manage.md#enable-code-suggestions-for-a-group), then you cannot enable them for yourself. (Your setting has no effect.)
+If Code Suggestions are disabled [for all the groups that you belong to](../../user/group/manage.md#enable-code-suggestions-for-a-group), then you cannot enable them for yourself.
 
 ## Integrate your GitLab instance with third-party services
 

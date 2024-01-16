@@ -12,6 +12,8 @@ module Namespaces
                               maven_package_requests_forwarding
                               nuget_duplicates_allowed
                               nuget_duplicate_exception_regex
+                              terraform_module_duplicates_allowed
+                              terraform_module_duplicate_exception_regex
                               npm_package_requests_forwarding
                               pypi_package_requests_forwarding
                               lock_maven_package_requests_forwarding

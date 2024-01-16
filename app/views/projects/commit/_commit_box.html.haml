@@ -18,7 +18,6 @@
         = commit_committer_link(@commit, avatar: true, size: 24)
       #{time_ago_with_tooltip(@commit.committed_date)}
 
-  #js-commit-comments-button{ data: { comments_count: @notes_count.to_i } }
   = link_button_to _('Browse files'), project_tree_path(@project, @commit), class: 'gl-mr-3 gl-w-full gl-sm-w-auto gl-mb-3 gl-sm-mb-0'
   #js-commit-options-dropdown{ data: commit_options_dropdown_data(@project, @commit) }
 
@@ -36,7 +35,7 @@
     %span.cgray= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-    #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.short_id } }
+  #js-commit-branches-and-tags{ data: { full_path: @project.full_path, commit_sha: @commit.short_id } }
 
   .well-segment.merge-request-info
     .icon-container

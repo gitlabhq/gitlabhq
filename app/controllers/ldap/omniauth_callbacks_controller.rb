@@ -28,7 +28,7 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   define_providers!
 
   override :set_remember_me
-  def set_remember_me(user)
+  def set_remember_me(user, _auth_user)
     user.remember_me = params[:remember_me] if user.persisted?
   end
 

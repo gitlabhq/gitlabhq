@@ -18,6 +18,7 @@ module Ci
 
           versions = params[:latest] ? get_latest_versions : get_versions
           versions = versions.preloaded
+          versions = by_name(versions)
           sort(versions)
         end
 
@@ -44,6 +45,12 @@ module Ci
           catalog_resources.select { |resource| authorized?(resource.project) }
         end
         strong_memoize_attr :authorized_catalog_resources
+
+        def by_name(versions)
+          return versions unless params[:name]
+
+          versions.by_name(params[:name])
+        end
 
         def sort(versions)
           versions.order_by(params[:sort] || DEFAULT_SORT)

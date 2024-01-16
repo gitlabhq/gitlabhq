@@ -87,7 +87,6 @@ start-review-app-pipeline:
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
   inherit:
     variables:
-      - CHROME_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
       - REVIEW_APPS_DOMAIN
@@ -96,6 +95,9 @@ start-review-app-pipeline:
       - REVIEW_APPS_IMAGE
       - RUBY_VERSION
       - DEBIAN_VERSION
+      - DOCKER_VERSION
+      - CHROME_VERSION
+      - BUNDLER_VERSION
 
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.

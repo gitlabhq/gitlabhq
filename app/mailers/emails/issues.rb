@@ -37,8 +37,10 @@ module Emails
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_ids, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
-      @previous_assignees = []
-      @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+      previous_assignees = []
+      previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+      @added_assignees = @issue.assignees.map(&:name) - previous_assignees.map(&:name)
+      @removed_assignees = previous_assignees.map(&:name) - @issue.assignees.map(&:name)
 
       mail_answer_thread(
         @issue,

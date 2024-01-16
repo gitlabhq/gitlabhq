@@ -40,11 +40,11 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
       it 'returns multiple links without N + 1' do
         perform_request(user)
 
-        control_count = ActiveRecord::QueryRecorder.new { perform_request(user) }.count
+        control = ActiveRecord::QueryRecorder.new { perform_request(user) }
 
         create(:issue_link, source: issue, target: create(:issue, project: project))
 
-        expect { perform_request(user) }.not_to exceed_query_limit(control_count)
+        expect { perform_request(user) }.not_to exceed_query_limit(control)
       end
     end
   end

@@ -100,7 +100,7 @@ LIMIT 1
 ## Store merge request data in ClickHouse
 
 Several other use cases exist for storing and querying merge request data in
-ClickHouse. In this document, we focus on this particular feature.
+[ClickHouse](../../../integration/clickhouse.md). In this document, we focus on this particular feature.
 
 The core data exists in the `merge_request_metrics` and in the `merge_requests`
 database tables. Some filters require extra tables to be joined:

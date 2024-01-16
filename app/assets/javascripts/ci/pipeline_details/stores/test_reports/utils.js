@@ -1,6 +1,6 @@
 import { __, sprintf } from '~/locale';
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
-import { TestStatus } from '../../constants';
+import { testStatus } from '../../constants';
 
 /**
  * Removes `./` from the beginning of a file path so it can be appended onto a blob path
@@ -13,15 +13,15 @@ export function formatFilePath(file) {
 
 export function iconForTestStatus(status) {
   switch (status) {
-    case TestStatus.SUCCESS:
+    case testStatus.SUCCESS:
       return 'status_success';
-    case TestStatus.FAILED:
+    case testStatus.FAILED:
       return 'status_failed';
-    case TestStatus.ERROR:
+    case testStatus.ERROR:
       return 'status_warning';
-    case TestStatus.SKIPPED:
+    case testStatus.SKIPPED:
       return 'status_skipped';
-    case TestStatus.UNKNOWN:
+    case testStatus.UNKNOWN:
     default:
       return 'status_notfound';
   }

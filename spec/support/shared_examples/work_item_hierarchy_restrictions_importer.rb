@@ -7,12 +7,23 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
     end
   end
 
+  shared_examples 'clears type reactive cache' do
+    specify do
+      expect_next_found_instances_of(WorkItems::Type, 7) do |instance|
+        expect(instance).to receive(:clear_reactive_cache!)
+      end
+
+      subject
+    end
+  end
+
   context 'when restrictions are missing' do
     before do
       WorkItems::HierarchyRestriction.delete_all
     end
 
     it_behaves_like 'adds restrictions'
+    it_behaves_like 'clears type reactive cache'
   end
 
   context 'when base types are missing' do
@@ -41,6 +52,8 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
         change { restriction.maximum_depth }.from(depth + 1).to(depth)
       )
     end
+
+    it_behaves_like 'clears type reactive cache'
   end
 
   context 'when some restrictions are missing' do
@@ -55,6 +68,8 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
       )
       expect(WorkItems::HierarchyRestriction.count).to eq(7)
     end
+
+    it_behaves_like 'clears type reactive cache'
   end
 
   context 'when restrictions contain attributes not present in the table' do
@@ -70,5 +85,7 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
 
       subject
     end
+
+    it_behaves_like 'clears type reactive cache'
   end
 end

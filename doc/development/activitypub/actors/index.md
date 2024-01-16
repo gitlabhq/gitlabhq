@@ -72,7 +72,7 @@ render json: ActivityPub::ReleasesActorSerializer.new.represent(project, opts)
 ```
 
 - `outbox` is the endpoint where to find the activities feed for this
-actor.
+  actor.
 - `inbox` is where to POST to subscribe to the feed. Not yet implemented, so pass `nil`.
 
 ## Outbox page

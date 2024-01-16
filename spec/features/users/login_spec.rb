@@ -789,7 +789,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         visit new_user_session_path
 
         image = find('img.js-portrait-logo-detection')
-        expect(image['class']).to include('gl-h-9')
+        expect(image['class']).to include('gl-h-10')
       end
 
       it 'renders link to sign up path' do

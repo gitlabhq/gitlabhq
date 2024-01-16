@@ -25,13 +25,20 @@ describe('ProjectsView', () => {
     newProjectPath: '/projects/new',
   };
 
+  const defaultPropsData = {
+    listItemClass: 'gl-px-5',
+  };
+
   const createComponent = ({ mockResolvers = resolvers, propsData = {} } = {}) => {
     mockApollo = createMockApollo([], mockResolvers);
 
     wrapper = shallowMountExtended(ProjectsView, {
       apolloProvider: mockApollo,
       provide: defaultProvide,
-      propsData,
+      propsData: {
+        ...defaultPropsData,
+        ...propsData,
+      },
     });
   };
 
@@ -115,6 +122,7 @@ describe('ProjectsView', () => {
         expect(wrapper.findComponent(ProjectsList).props()).toEqual({
           projects: formatProjects(organizationProjects.nodes),
           showProjectIcon: true,
+          listItemClass: defaultPropsData.listItemClass,
         });
       });
     });

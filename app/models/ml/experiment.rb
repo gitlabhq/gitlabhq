@@ -3,6 +3,7 @@
 module Ml
   class Experiment < ApplicationRecord
     include AtomicInternalId
+    include Sortable
 
     PACKAGE_PREFIX = 'ml_experiment_'
 
@@ -15,6 +16,8 @@ module Ml
     has_many :candidates, class_name: 'Ml::Candidate'
     has_many :metadata, class_name: 'Ml::ExperimentMetadata'
 
+    scope :including_project, -> { includes(:project) }
+    scope :by_project, ->(project) { where(project: project) }
     scope :with_candidate_count, -> {
       left_outer_joins(:candidates)
         .select("ml_experiments.*, count(ml_candidates.id) as candidate_count")

@@ -78,18 +78,18 @@ Execute a standard migration (not a post-migration):
   - Add a note in the Engineering Week-in-Review document: `table_name` is going to be renamed in N.M. Modifications to this table are not allowed in release N.M and N.M+1.
 - The helper method uses the standard `rename_table` helper from Rails for renaming the table.
 - The helper renames the sequence and the indexes. Sometimes it diverges from the standard Rails convention
-when naming indexes, so there is a possibility that not all indexes are properly renamed. After running
-the migration locally, check if there are inconsistently named indexes (`db/structure.sql`). Those can be
-renamed manually in a separate migration, which can be also part of the release M.N+1.
+  when naming indexes, so there is a possibility that not all indexes are properly renamed. After running
+  the migration locally, check if there are inconsistently named indexes (`db/structure.sql`). Those can be
+  renamed manually in a separate migration, which can be also part of the release M.N+1.
 - Foreign key columns might still contain the old table name. For smaller tables, follow our
   [standard column rename process](avoiding_downtime_in_migrations.md#renaming-columns)
 - Avoid renaming database tables which are using with triggers.
 - Table modifications (add or remove columns) are not allowed during the rename process. Make sure that all changes to the table happen before the rename migration is started (or in the next release).
 - As the index names might change, verify that the model does not use bulk insert
-(for example, `insert_all` and `upsert_all`) with the `unique_by: index_name` option.
-Renaming an index while using these methods may break functionality.
+  (for example, `insert_all` and `upsert_all`) with the `unique_by: index_name` option.
+  Renaming an index while using these methods may break functionality.
 - Modify the model code to point to the new database table. Do this by
-renaming the model directly or setting the `self.table_name` variable.
+  renaming the model directly or setting the `self.table_name` variable.
 
 At this point, we don't have applications using the old database table name in their queries.
 
@@ -107,7 +107,7 @@ At this point, we don't have applications using the old database table name in t
 
 1. Additionally the table definition from `TABLES_TO_BE_RENAMED` **must** be removed.
 
-To do so, edit the `TABLES_TO_BE_RENAMED` constant in `lib/gitlab/database.rb`:
+   To do so, edit the `TABLES_TO_BE_RENAMED` constant in `lib/gitlab/database.rb`:
 
    From:
 

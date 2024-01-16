@@ -16,43 +16,8 @@
     top: 8px;
   }
 
-  .brand-holder {
-    font-size: 18px;
-    line-height: 1.5;
-
-    p {
-      font-size: 16px;
-      color: $login-brand-holder-color;
-    }
-
-    h3 {
-      font-size: 22px;
-    }
-
-    img {
-      max-width: 100%;
-      margin-bottom: 30px;
-    }
-
-    a {
-      font-weight: $gl-font-weight-bold;
-    }
-  }
-
-  p {
-    font-size: 13px;
-  }
-
-  .signin-text {
-    p {
-      margin-bottom: 0;
-      line-height: 1.5;
-    }
-  }
-
   .borderless {
-    .login-box,
-    .omniauth-container {
+    .login-box {
       box-shadow: none;
     }
   }
@@ -61,67 +26,6 @@
     > div {
       margin-left: auto;
       margin-right: auto;
-    }
-  }
-
-  .login-box,
-  .omniauth-container {
-    box-shadow: 0 0 0 1px $border-color;
-    border-radius: $border-radius;
-
-    .login-heading h3 {
-      font-weight: $gl-font-weight-normal;
-      line-height: 1.5;
-      margin: 0 0 10px;
-    }
-
-    .login-footer {
-      margin-top: 10px;
-
-      p:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    a.forgot {
-      float: right;
-      padding-top: 6px;
-    }
-
-    .nav .active a {
-      background: transparent;
-    }
-
-    // Styles the glowing border of focused input for username async validation
-    .login-body {
-      font-size: 13px;
-
-      .username .validation-success {
-        color: $green-600;
-      }
-
-      .username .validation-error {
-        color: $red-500;
-      }
-
-      .terms .gl-form-checkbox {
-        @include gl-reset-font-size;
-      }
-    }
-  }
-
-  .omniauth-container {
-    border-radius: $border-radius;
-    font-size: 13px;
-
-    p {
-      margin: 0;
-    }
-
-    form {
-      padding: 0;
-      border: 0;
-      background: none;
     }
   }
 
@@ -142,30 +46,6 @@
     box-shadow: 0 0 0 1px $border-color;
     border-top-right-radius: $border-radius-default;
     border-top-left-radius: $border-radius-default;
-
-    // Ldap configurations may need more tabs & the tab labels are user generated (arbitrarily long).
-    // These styles prevent this from breaking the layout, and only applied when providers are configured.
-    &.custom-provider-tabs {
-      flex-wrap: wrap;
-
-      li {
-        min-width: 85px;
-        flex-basis: auto;
-
-        // This styles tab elements that have wrapped to a second line. We cannot easily predict when this will happen.
-        // We are making somewhat of an assumption about the configuration here: that users do not have more than
-        // 3 LDAP servers configured (in addition to standard login) and they are not using especially long names for any
-        // of them. If either condition is false, this will work as expected. If both are true, there may be a missing border
-        // above one of the bottom row elements. If you know a better way, please implement it!
-        &:nth-child(n+5) {
-          border-top: 1px solid $border-color;
-        }
-      }
-
-      a {
-        font-size: 16px;
-      }
-    }
 
     li {
       flex: 1;
@@ -230,11 +110,8 @@
   height: 100%;
 
   body {
-    padding-top: 48px; // Remove this line when the restyle_login_page feature flag is deleted. Instead, add self-align `center` to container, and maybe a top margin.
-
     &.with-system-header {
       padding-top: $system-header-height;
-      padding-top: calc(#{$system-header-height} + 48px); // Remove this line when the restyle_login_page feature flag is deleted
     }
 
     &.with-system-footer {

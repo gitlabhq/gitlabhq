@@ -1,54 +1,70 @@
 shared_examples 'a Sidekiq fetcher' do
   let(:queues) { ['assigned'] }
+  let(:options) { { queues: queues } }
+  let(:config) { Sidekiq::Config.new(options) }
+  let(:capsule) { Sidekiq::Capsule.new("default", config) }
 
-  before { Sidekiq.redis(&:flushdb) }
+  before do
+    config.queues = queues
+    Sidekiq.redis(&:flushdb)
+  end
 
   describe '#retrieve_work' do
     let(:job) { Sidekiq.dump_json(class: 'Bob', args: [1, 2, 'foo']) }
-    let(:fetcher) { described_class.new(queues: queues) }
+    let(:fetcher) { described_class.new(capsule) }
 
     it 'does not clean up orphaned jobs more than once per cleanup interval' do
-      Sidekiq.redis = Sidekiq::RedisConnection.create(url: REDIS_URL, size: 10)
+      Sidekiq::Client.via(Sidekiq::RedisConnection.create(url: REDIS_URL, size: 10)) do
+        expect(fetcher).to receive(:clean_working_queues!).once
 
-      expect(fetcher).to receive(:clean_working_queues!).once
-
-      threads = 10.times.map do
-        Thread.new do
-          fetcher.retrieve_work
+        threads = 10.times.map do
+          Thread.new do
+            fetcher.retrieve_work
+          end
         end
-      end
 
-      threads.map(&:join)
+        threads.map(&:join)
+      end
     end
 
-    it 'retrieves by order when strictly order is enabled' do
-      fetcher = described_class.new(strict: true, queues: ['first', 'second'])
+    context 'when strictly order is enabled' do
+      let(:queues) { ['first', 'second'] }
+      let(:options) { { strict: true, queues: queues } }
 
-      Sidekiq.redis do |conn|
-        conn.rpush('queue:first', ['msg3', 'msg2', 'msg1'])
-        conn.rpush('queue:second', 'msg4')
+      it 'retrieves by order' do
+        fetcher = described_class.new(capsule)
+
+        Sidekiq.redis do |conn|
+          conn.rpush('queue:first', ['msg3', 'msg2', 'msg1'])
+          conn.rpush('queue:second', 'msg4')
+        end
+
+        jobs = (1..4).map { fetcher.retrieve_work.job }
+
+        expect(jobs).to eq ['msg1', 'msg2', 'msg3', 'msg4']
       end
-
-      jobs = (1..4).map { fetcher.retrieve_work.job }
-
-      expect(jobs).to eq ['msg1', 'msg2', 'msg3', 'msg4']
     end
 
-    it 'does not starve any queue when queues are not strictly ordered' do
-      fetcher = described_class.new(queues: ['first', 'second'])
+    context 'when queues are not strictly ordered' do
+      let(:queues) { ['first', 'second'] }
 
-      Sidekiq.redis do |conn|
-        conn.rpush('queue:first', (1..200).map { |i| "msg#{i}" })
-        conn.rpush('queue:second', 'this_job_should_not_stuck')
+      it 'does not starve any queue' do
+        fetcher = described_class.new(capsule)
+
+        Sidekiq.redis do |conn|
+          conn.rpush('queue:first', (1..200).map { |i| "msg#{i}" })
+          conn.rpush('queue:second', 'this_job_should_not_stuck')
+        end
+
+        jobs = (1..100).map { fetcher.retrieve_work.job }
+
+        expect(jobs).to include 'this_job_should_not_stuck'
       end
-
-      jobs = (1..100).map { fetcher.retrieve_work.job }
-
-      expect(jobs).to include 'this_job_should_not_stuck'
     end
 
     shared_examples "basic queue handling" do |queue|
-      let (:fetcher) { described_class.new(queues: [queue]) }
+      let(:queues) { [queue] }
+      let(:fetcher) { described_class.new(capsule) }
 
       it 'retrieves the job and puts it to working queue' do
         Sidekiq.redis { |conn| conn.rpush("queue:#{queue}", job) }
@@ -150,7 +166,8 @@ shared_examples 'a Sidekiq fetcher' do
 
     context 'with short cleanup interval' do
       let(:short_interval) { 1 }
-      let(:fetcher) { described_class.new(queues: queues, lease_interval: short_interval, cleanup_interval: short_interval) }
+      let(:options) { { queues: queues, lease_interval: short_interval, cleanup_interval: short_interval } }
+      let(:fetcher) { described_class.new(capsule) }
 
       it 'requeues when there is no heartbeat' do
         Sidekiq.redis { |conn| conn.rpush('queue:assigned', job) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
+RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, feature_category: :importers do
   let_it_be(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:client) { double }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
@@ -82,12 +82,6 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
         expect(issue.attributes.fetch(:assignee_ids)).to be_empty
       end
 
-      it 'returns GitLab user id associated with GitHub id as assignee_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
-
-        expect(issue.attributes.fetch(:assignee_ids)).to eq [gl_user.id]
-      end
-
       it 'returns GitLab user id associated with GitHub email as assignee_id' do
         gl_user = create(:user, email: octocat[:email])
 
@@ -117,12 +111,6 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
         expect(issue.attributes.fetch(:author_id)).to eq project.creator_id
       end
 
-      it 'returns GitLab user id associated with GitHub id as author_id' do
-        gl_user = create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
-
-        expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
-      end
-
       it 'returns GitLab user id associated with GitHub email as author_id' do
         gl_user = create(:user, email: octocat[:email])
 
@@ -130,7 +118,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter do
       end
 
       it 'returns description without created at tag line' do
-        create(:omniauth_user, extern_uid: octocat[:id], provider: 'github')
+        create(:user, email: octocat[:email])
 
         expect(issue.attributes.fetch(:description)).to eq("I'm having a problem with this.")
       end

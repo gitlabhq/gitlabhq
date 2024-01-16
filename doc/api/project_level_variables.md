@@ -94,12 +94,12 @@ POST /projects/:id/variables
 | `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `key`               | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
 | `value`             | string         | Yes      | The `value` of a variable |
-| `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`         | boolean        | No       | Whether the variable is protected. Default: `false` |
-| `masked`            | boolean        | No       | Whether the variable is masked. Default: `false` |
-| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
-| `environment_scope` | string         | No       | The `environment_scope` of the variable. Default: `*` |
 | `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
+| `environment_scope` | string         | No       | The `environment_scope` of the variable. Default: `*` |
+| `masked`            | boolean        | No       | Whether the variable is masked. Default: `false` |
+| `protected`         | boolean        | No       | Whether the variable is protected. Default: `false` |
+| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -133,13 +133,13 @@ PUT /projects/:id/variables/:key
 | `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `key`               | string         | Yes      | The `key` of a variable |
 | `value`             | string         | Yes      | The `value` of a variable |
-| `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
-| `protected`         | boolean        | No       | Whether the variable is protected |
-| `masked`            | boolean        | No       | Whether the variable is masked |
-| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
 | `environment_scope` | string         | No       | The `environment_scope` of the variable |
 | `filter`            | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
-| `description`       | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
+| `masked`            | boolean        | No       | Whether the variable is masked |
+| `protected`         | boolean        | No       | Whether the variable is protected |
+| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \

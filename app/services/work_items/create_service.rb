@@ -73,3 +73,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::CreateService.prepend_mod

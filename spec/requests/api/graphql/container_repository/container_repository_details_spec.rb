@@ -430,6 +430,85 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         it_behaves_like 'returning an invalid value error'
       end
+
+      context 'with referrers' do
+        let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
+        let(:raw_tags_response) do
+          [
+            {
+              name: 'latest',
+              digest: 'sha256:1234567892',
+              config_digest: 'sha256:3332132331',
+              media_type: 'application/vnd.oci.image.manifest.v1+json',
+              size_bytes: 1234509876,
+              created_at: 10.minutes.ago,
+              updated_at: 10.minutes.ago,
+              referrers: [
+                {
+                  artifactType: 'application/vnd.example+type',
+                  digest: 'sha256:57d3be92c2f857566ecc7f9306a80021c0a7fa631e0ef5146957235aea859961'
+                },
+                {
+                  artifactType: 'application/vnd.example+type+2',
+                  digest: 'sha256:01db72e42d61b8d2183d53475814cce2bfb9c8a254e97539a852441979cd5c90'
+                }
+              ]
+            },
+            {
+              name: 'latest',
+              digest: 'sha256:1234567893',
+              config_digest: 'sha256:3332132331',
+              media_type: 'application/vnd.oci.image.manifest.v1+json',
+              size_bytes: 1234509877,
+              created_at: 9.minutes.ago,
+              updated_at: 9.minutes.ago
+            }
+          ]
+        end
+
+        let(:query) do
+          <<~GQL
+            query($id: ContainerRepositoryID!, $n: String) {
+              containerRepository(id: $id) {
+                tags(name: $n, referrers: true) {
+                  edges {
+                    node {
+                      #{all_graphql_fields_for('ContainerRepositoryTag')}
+                    }
+                  }
+                }
+              }
+            }
+          GQL
+        end
+
+        let(:url) { URI('/gitlab/v1/repositories/group1/proj1/tags/list/?before=tag1&referrers=true') }
+
+        let(:response_body) do
+          {
+            pagination: { previous: { uri: url }, next: { uri: url } },
+            response_body: ::Gitlab::Json.parse(raw_tags_response.to_json)
+          }
+        end
+
+        it 'includes referrers in response' do
+          subject
+
+          refs = tags_response.map { |tag| tag.dig('node', 'referrers') }
+
+          expect(refs.first.size).to eq(2)
+          expect(refs.first.first).to include({
+            'artifactType' => 'application/vnd.example+type',
+            'digest' => 'sha256:57d3be92c2f857566ecc7f9306a80021c0a7fa631e0ef5146957235aea859961'
+          })
+          expect(refs.first.second).to include({
+            'artifactType' => 'application/vnd.example+type+2',
+            'digest' => 'sha256:01db72e42d61b8d2183d53475814cce2bfb9c8a254e97539a852441979cd5c90'
+          })
+
+          expect(refs.second).to be_empty
+        end
+      end
     end
 
     it_behaves_like 'handling graphql network errors with the container registry'

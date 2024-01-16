@@ -165,7 +165,7 @@ Transferring groups moves them from one place to another in the same GitLab inst
 - Convert a subgroup into a top-level group by transferring it out of its current group.
 
 If you need to copy a group to a different GitLab instance,
-[migrate the group by direct transfer](import/index.md#migrate-groups-by-direct-transfer-recommended).
+[migrate the group by direct transfer](import/index.md).
 
 When transferring groups, note:
 
@@ -448,11 +448,6 @@ for the ability to set merge request approval rules for groups is tracked in
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
-
-WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
-Beta users should read about the [known limitations](../project/repository/code_suggestions/index.md#known-limitations).
-We look forward to hearing your [feedback](../project/repository/code_suggestions/index.md#feedback).
 
 You can give all users in a group and its subgroups access to
 [Code Suggestions](../project/repository/code_suggestions/index.md). This setting

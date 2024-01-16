@@ -17,6 +17,8 @@ module Projects
       expire_repository_caches
       expire_wiki_caches
       project.statistics.refresh!(only: statistics)
+
+      record_onboarding_progress
     end
 
     private
@@ -45,6 +47,12 @@ module Projects
       strong_memoize(:statistics) do
         params[:statistics]&.map(&:to_sym)
       end
+    end
+
+    def record_onboarding_progress
+      return unless repository.commit_count > 1 || repository.branch_count > 1
+
+      Onboarding::ProgressService.new(project.namespace).execute(action: :code_added)
     end
   end
 end

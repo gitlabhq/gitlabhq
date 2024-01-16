@@ -108,7 +108,7 @@ The following are example projects that demonstrate review app configuration:
 Other examples of review apps:
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
+  [Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
 - [Review apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route Maps

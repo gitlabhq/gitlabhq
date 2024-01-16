@@ -30,6 +30,11 @@ export default {
   mounted() {
     const updateRemainingTime = () => {
       const remainingMilliseconds = calculateRemainingMilliseconds(this.endDateString);
+
+      if (remainingMilliseconds < 1) {
+        this.$emit('timer-expired');
+      }
+
       this.remainingTime = formatTime(remainingMilliseconds);
     };
 

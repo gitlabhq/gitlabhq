@@ -18,20 +18,32 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
     let(:fields) do
       <<~QUERY
         nodes {
-          #{all_graphql_fields_for('CiRunner', excluded: %w[createdBy ownerProject])}
-          createdBy {
-            username
-            webPath
-            webUrl
-          }
-          ownerProject {
-            id
-            path
-            fullPath
-            webUrl
-          }
+          #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
         }
       QUERY
+    end
+
+    let(:query) do
+      %(
+         query {
+           runners {
+             #{fields}
+           }
+         }
+       )
+    end
+
+    # Exclude fields from deeper objects which are problematic:
+    # - ownerProject.pipeline: Needs arguments (iid or sha)
+    # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
+    let(:excluded_fields) { %w[pipeline productAnalyticsState] }
+
+    it 'returns expected runners' do
+      post_graphql(query, current_user: current_user)
+
+      expect(runners_graphql_data['nodes']).to contain_exactly(
+        *Ci::Runner.all.map { |expected_runner| a_graphql_entity_for(expected_runner) }
+      )
     end
 
     context 'with filters' do
@@ -48,31 +60,6 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           expect(runners_graphql_data['nodes']).to contain_exactly(
             *Array(expected_runners).map { |expected_runner| a_graphql_entity_for(expected_runner) }
           )
-        end
-
-        it 'does not execute more queries per runner', :aggregate_failures do
-          # warm-up license cache and so on:
-          personal_access_token = create(:personal_access_token, user: current_user)
-          args = { current_user: current_user, token: { personal_access_token: personal_access_token } }
-          post_graphql(query, **args)
-          expect(graphql_data_at(:runners, :nodes)).not_to be_empty
-
-          admin2 = create(:admin)
-          personal_access_token = create(:personal_access_token, user: admin2)
-          args = { current_user: admin2, token: { personal_access_token: personal_access_token } }
-          control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
-
-          runner2 = create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: admin2)
-          runner3 = create(:ci_runner, :project, version: '14.0.1', projects: [project], tag_list: %w[tag3 tag8],
-            creator: current_user)
-
-          create(:ci_build, :failed, runner: runner2)
-          create(:ci_runner_machine, runner: runner2, version: '16.4.1')
-
-          create(:ci_build, :failed, runner: runner3)
-          create(:ci_runner_machine, runner: runner3, version: '16.4.0')
-
-          expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
         end
       end
 
@@ -178,53 +165,126 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           end
         end
       end
-    end
 
-    context 'without filters' do
-      context 'with managers requested for multiple runners' do
-        let(:fields) do
-          <<~QUERY
-            nodes {
-              managers {
-                nodes {
-                  #{all_graphql_fields_for('CiRunnerManager', max_depth: 1)}
-                }
-              }
-            }
-          QUERY
-        end
+      context 'when filtered by creator' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:runner_created_by_user) { create(:ci_runner, :project, creator: user) }
 
         let(:query) do
           %(
             query {
-              runners {
+              runners(creatorId: "#{creator.to_global_id}") {
                 #{fields}
               }
             }
           )
         end
 
-        it 'does not execute more queries per runner', :aggregate_failures do
-          # warm-up license cache and so on:
-          personal_access_token = create(:personal_access_token, user: current_user)
-          args = { current_user: current_user, token: { personal_access_token: personal_access_token } }
-          post_graphql(query, **args)
-          expect(graphql_data_at(:runners, :nodes)).not_to be_empty
+        context 'when existing user id given' do
+          let(:creator) { user }
 
-          admin2 = create(:admin)
-          personal_access_token = create(:personal_access_token, user: admin2)
-          args = { current_user: admin2, token: { personal_access_token: personal_access_token } }
-          control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
+          before do
+            create(:ci_runner, :project, creator: create(:user)) # Should not be returned
+          end
 
-          create(:ci_runner, :instance, :with_runner_manager, version: '14.0.0', tag_list: %w[tag5 tag6],
-            creator: admin2)
-          create(:ci_runner, :project, :with_runner_manager, version: '14.0.1', projects: [project],
-            tag_list: %w[tag3 tag8],
-            creator: current_user)
+          it_behaves_like 'a working graphql query returning expected runners' do
+            let(:expected_runners) { runner_created_by_user }
+          end
+        end
 
-          expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
+        context 'when non existent user id given' do
+          let(:creator) { User.new(id: non_existing_record_id) }
+
+          it 'does not return any runners' do
+            post_graphql(query, current_user: current_user)
+
+            expect(graphql_data_at(:runners, :nodes)).to be_empty
+          end
         end
       end
+    end
+  end
+
+  describe 'Runner query limits' do
+    let_it_be(:user) { create(:user, :admin) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:user3) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:tag_list) { %w[n_plus_1_test some_tag] }
+    let_it_be(:args) do
+      { current_user: user, token: { personal_access_token: create(:personal_access_token, user: user) } }
+    end
+
+    let_it_be(:runner1) { create(:ci_runner, tag_list: tag_list, creator: user) }
+    let_it_be(:runner2) do
+      create(:ci_runner, :group, groups: [group], tag_list: tag_list, creator: user)
+    end
+
+    let_it_be(:runner3) do
+      create(:ci_runner, :project, projects: [project], tag_list: tag_list, creator: user)
+    end
+
+    let(:runner_fragment) do
+      <<~QUERY
+        #{all_graphql_fields_for('CiRunner', excluded: excluded_fields)}
+        createdBy {
+          id
+          username
+          webPath
+          webUrl
+        }
+      QUERY
+    end
+
+    # Exclude fields that are already hardcoded above (or tested separately),
+    #   and also some fields from deeper objects which are problematic:
+    # - createdBy: Known N+1 issues, but only on exotic fields which we don't normally use
+    # - ownerProject.pipeline: Needs arguments (iid or sha)
+    # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
+    let(:excluded_fields) { %w[createdBy jobs pipeline productAnalyticsState] }
+
+    let(:runners_query) do
+      <<~QUERY
+        {
+          runners {
+            nodes { #{runner_fragment} }
+          }
+        }
+      QUERY
+    end
+
+    it 'avoids N+1 queries', :use_sql_query_cache do
+      personal_access_token = create(:personal_access_token, user: user)
+      args = { current_user: user, token: { personal_access_token: personal_access_token } }
+
+      runners_control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_graphql(runners_query, **args) }
+
+      setup_additional_records
+
+      expect { post_graphql(runners_query, **args) }.not_to exceed_query_limit(runners_control)
+    end
+
+    def setup_additional_records
+      # Add more runners (including owned by other users)
+      runner4 = create(:ci_runner, tag_list: tag_list + %w[tag1 tag2], creator: user2)
+      runner5 = create(:ci_runner, :group, groups: [create(:group)], tag_list: tag_list + %w[tag2 tag3], creator: user3)
+      # Add one more project to runner
+      runner3.assign_to(create(:project))
+
+      # Add more runner managers (including to existing runners)
+      runner_manager1 = create(:ci_runner_machine, runner: runner1)
+      create(:ci_runner_machine, runner: runner1)
+      create(:ci_runner_machine, runner: runner2, system_xid: runner_manager1.system_xid)
+      create(:ci_runner_machine, runner: runner3)
+      create(:ci_runner_machine, runner: runner4, version: '16.4.1')
+      create(:ci_runner_machine, runner: runner5, version: '16.4.0', system_xid: runner_manager1.system_xid)
+      create(:ci_runner_machine, runner: runner3)
+
+      create(:ci_build, :failed, runner: runner4)
+      create(:ci_build, :failed, runner: runner5)
+
+      [runner4, runner5]
     end
   end
 

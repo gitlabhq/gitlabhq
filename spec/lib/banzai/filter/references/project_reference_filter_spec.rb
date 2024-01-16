@@ -115,17 +115,17 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
       # warm up first
       reference_filter(markdown)
 
-      max_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
-      end.count
+      end
 
-      expect(max_count).to eq 2
+      expect(control.count).to eq 2
 
       markdown = "#{normal_project_reference} #{invalidate_reference(normal_project_reference)} #{group_project_reference} #{nested_project_reference}"
 
       expect do
         reference_filter(markdown)
-      end.not_to exceed_all_query_limit(max_count)
+      end.not_to exceed_all_query_limit(control)
     end
   end
 end

@@ -1,4 +1,0 @@
-# invalid workflow:auto-cancel:on-job-failure
-workflow:
-  auto_cancel:
-    on_job_failure: unexpected_value

@@ -22,7 +22,7 @@ module Gitlab
             @table_name = table_name
             @parent_table_name = parent_table_name
             @partitioning_column = partitioning_column
-            @zero_partition_value = zero_partition_value
+            @zero_partition_value = Array.wrap(zero_partition_value)
           end
 
           def prepare_for_partitioning(async: false)
@@ -126,10 +126,11 @@ module Gitlab
                                       .check_constraints
                                       .including_column(partitioning_column)
 
-            check_body = "CHECK ((#{partitioning_column} = #{zero_partition_value}))"
+            array_prefix = "CHECK ((#{partitioning_column} = ANY "
+            single_prefix = "CHECK ((#{partitioning_column} = #{zero_partition_value.join(',')}))"
 
             constraints_on_column.find do |constraint|
-              constraint.definition.start_with?(check_body)
+              constraint.definition.start_with?(array_prefix, single_prefix)
             end
           end
 
@@ -138,14 +139,14 @@ module Gitlab
 
             raise UnableToPartition, <<~MSG
             Table #{table_name} is not ready for partitioning.
-            Before partitioning, a check constraint must enforce that (#{partitioning_column} = #{zero_partition_value})
+            Before partitioning, a check constraint must enforce that (#{partitioning_column} IN (#{zero_partition_value.join(',')}))
             MSG
           end
 
           def add_partitioning_check_constraint(async: false)
             return validate_partitioning_constraint_synchronously if partitioning_constraint.present?
 
-            check_body = "#{partitioning_column} = #{connection.quote(zero_partition_value)}"
+            check_body = "#{partitioning_column} IN (#{zero_partition_value.join(',')})"
             # Any constraint name would work. The constraint is found based on its definition before partitioning
             migration_context.add_check_constraint(
               table_name, check_body, PARTITIONING_CONSTRAINT_NAME,
@@ -214,7 +215,7 @@ module Gitlab
             <<~SQL
               ALTER TABLE #{quote_table_name(parent_table_name)}
               ATTACH PARTITION #{table_name}
-              FOR VALUES IN (#{zero_partition_value})
+              FOR VALUES IN (#{zero_partition_value.join(',')})
             SQL
           end
 

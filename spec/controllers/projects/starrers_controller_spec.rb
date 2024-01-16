@@ -40,11 +40,11 @@ RSpec.describe Projects::StarrersController do
       it 'avoids N+1s loading users', :request_store do
         get_starrers
 
-        control_count = ActiveRecord::QueryRecorder.new { get_starrers }.count
+        control = ActiveRecord::QueryRecorder.new { get_starrers }
 
         create_list(:user, 5).each { |user| user.toggle_star(project) }
 
-        expect { get_starrers }.not_to exceed_query_limit(control_count)
+        expect { get_starrers }.not_to exceed_query_limit(control)
       end
     end
 

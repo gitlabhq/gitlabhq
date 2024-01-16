@@ -135,14 +135,9 @@ class IssuableFinder
       strong_memoize(:projects) do
         next Array.wrap(project) if project?
 
-        projects =
-          if current_user && params[:authorized_only].presence && !current_user_related?
-            current_user.authorized_projects(min_access_level)
-          else
-            projects_public_or_visible_to_user
-          end
-
-        projects.with_feature_available_for_user(klass.base_class, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
+        projects_public_or_visible_to_user
+          .with_feature_available_for_user(klass.base_class, current_user)
+          .without_order
       end
     end
 

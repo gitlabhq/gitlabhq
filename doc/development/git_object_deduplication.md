@@ -42,7 +42,7 @@ repositories that depend on the object pool.
 
 The danger lies in `git prune`, and `git gc` calls `git prune`. The
 problem is that `git prune`, when running in a pool repository, cannot
-reliable decide if an object is no longer needed.
+reliably decide if an object is no longer needed.
 
 ### Git alternates in GitLab: pool repositories
 
@@ -51,7 +51,7 @@ which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project
 repositories a pool. Pools form star-shaped networks of repositories
-that borrow from a single pool, which resemble (but not be
+that borrow from a single pool, which resemble (but are not 
 identical to) the fork networks that get formed when users fork
 projects.
 

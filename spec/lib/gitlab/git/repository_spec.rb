@@ -566,7 +566,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           [
             {
               old_sha: sha,
-              new_sha: Gitlab::Git::BLANK_SHA,
+              new_sha: Gitlab::Git::SHA1_BLANK_SHA,
               reference: tmp_ref
             }
           ]
@@ -1155,7 +1155,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'blank revisions' do
-      let(:revisions) { [::Gitlab::Git::BLANK_SHA] }
+      let(:revisions) { [::Gitlab::Git::SHA1_BLANK_SHA] }
       let(:expected_blobs) { 0 }
 
       before do
@@ -1278,7 +1278,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with partially blank revisions' do
-      let(:newrevs) { [nil, commit, Gitlab::Git::BLANK_SHA] }
+      let(:newrevs) { [nil, commit, Gitlab::Git::SHA1_BLANK_SHA] }
       let(:expected_newrevs) { ['--not', '--all', '--not', commit] }
       let(:expected_blobs) do
         [
@@ -1326,7 +1326,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with a single zero newrev' do
-      let(:newrevs) { Gitlab::Git::BLANK_SHA }
+      let(:newrevs) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it_behaves_like '#new_blobs without revisions'
     end
@@ -1338,7 +1338,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     context 'with array containing only empty refs' do
-      let(:newrevs) { [nil, Gitlab::Git::BLANK_SHA] }
+      let(:newrevs) { [nil, Gitlab::Git::SHA1_BLANK_SHA] }
 
       it_behaves_like '#new_blobs without revisions'
     end
@@ -1400,7 +1400,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
     context 'initial commit' do
-      let(:old_rev) { Gitlab::Git::BLANK_SHA }
+      let(:old_rev) { Gitlab::Git::SHA1_BLANK_SHA }
       let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
 
       it 'returns the changes' do
@@ -1681,11 +1681,11 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       expect(collection.to_a).to be_empty
     end
 
-    it 'returns no Gitaly::DiffStats when there is a BLANK_SHA' do
+    it 'returns no Gitaly::DiffStats when there is a SHA1_BLANK_SHA' do
       expect_any_instance_of(Gitlab::GitalyClient::CommitService)
         .not_to receive(:diff_stats)
 
-      collection = repository.diff_stats(Gitlab::Git::BLANK_SHA, 'master')
+      collection = repository.diff_stats(Gitlab::Git::SHA1_BLANK_SHA, 'master')
 
       expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
       expect(collection).to be_a(Enumerable)
@@ -1702,25 +1702,25 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
 
     let(:commit_1_files) do
-      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls")]
+      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls", old_mode: "0", new_mode: "100755")]
     end
 
     let(:commit_2_files) do
-      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "bar/branch-test.txt")]
+      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "bar/branch-test.txt", old_mode: "0", new_mode: "100644")]
     end
 
     let(:commit_3_files) do
       [
-        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: ".gitmodules"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "gitlab-shell")
+        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: ".gitmodules", old_mode: "100644", new_mode: "100644"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "gitlab-shell", old_mode: "0", new_mode: "160000")
       ]
     end
 
     let(:diff_tree_files) do
       [
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: ".gitignore"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "LICENSE"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "README.md")
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: ".gitignore", old_mode: "0", new_mode: "100644"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "LICENSE", old_mode: "0", new_mode: "100644"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "README.md", old_mode: "0", new_mode: "100644")
       ]
     end
 
@@ -2222,7 +2222,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'returns empty for unknown ID' do
-      expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
+      expect(repository.refs_by_oid(oid: Gitlab::Git::SHA1_BLANK_SHA, limit: 0)).to eq([])
     end
 
     it 'returns empty for an empty repo' do
@@ -2822,11 +2822,37 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       })
     end
 
-    let(:repository) { project.repository.raw }
-    let(:rev) { 'master' }
-    let(:paths) { ['file1.txt', 'file2.txt'] }
+    let(:gitattr_content) { "" }
 
-    subject(:generated_files) { repository.detect_generated_files(rev, paths) }
+    let(:repository) { project.repository.raw }
+    let(:base) { project.default_branch }
+    let(:branch) { 'detect-generated-files-test' }
+    let(:head) { branch }
+    let(:paths) do
+      [
+        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: 'file1.txt', old_mode: '100644', new_mode: '100644'),
+        Gitlab::Git::ChangedPath.new(status: :DELETED, path: 'file2.txt', old_mode: '100644', new_mode: '8')
+      ]
+    end
+
+    before do
+      project.repository.create_branch(branch, project.default_branch)
+
+      project.repository.update_file(
+        project.creator,
+        'file1.txt',
+        'updated first file',
+        message: 'Update file',
+        branch_name: branch)
+
+      project.repository.delete_file(
+        project.creator,
+        'file2.txt',
+        message: 'Delete file',
+        branch_name: branch)
+    end
+
+    subject(:generated_files) { repository.detect_generated_files(base, head, paths) }
 
     context 'when the linguist-generated attribute is used' do
       let(:gitattr_content) { "*.txt text\nfile1.txt linguist-generated\n" }
@@ -2852,11 +2878,99 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
-    context 'when the all files are generated' do
+    context 'when the gitlab-generated attribute is used to unset' do
+      let(:gitattr_content) { "file1.txt -gitlab-generated\n" }
+
+      it 'returns an empty set' do
+        expect(generated_files).to eq Set.new
+      end
+    end
+
+    context 'with an automatically detected file' do
+      before do
+        project.repository.create_file(
+          project.creator,
+          'package-lock.json',
+          'generated file content',
+          message: 'Add generated file',
+          branch_name: branch)
+      end
+
+      let(:paths) do
+        [
+          Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: 'file1.txt', old_mode: '100644', new_mode: '100644'),
+          Gitlab::Git::ChangedPath.new(status: :DELETED, path: 'file2.txt', old_mode: '100644', new_mode: '100644'),
+          Gitlab::Git::ChangedPath.new(status: :ADDED, path: 'package-lock.json', old_mode: '0', new_mode: '100644')
+        ]
+      end
+
+      context 'when the manual override is used on non-detectable file' do
+        let(:gitattr_content) { "file1.txt gitlab-generated\n" }
+
+        it 'returns both manually overriden file and the detected file' do
+          expect(generated_files).to contain_exactly('file1.txt', 'package-lock.json')
+        end
+      end
+
+      context 'when the manual override is used on the detectable file' do
+        let(:gitattr_content) { "package-lock.json gitlab-generated\n" }
+
+        it 'returns the overriden file' do
+          expect(generated_files).to contain_exactly('package-lock.json')
+        end
+      end
+
+      context 'when the manual override is used on the detectable file to unset' do
+        let(:gitattr_content) { "package-lock.json -gitlab-generated\n" }
+
+        it 'returns an empty set' do
+          expect(generated_files).to eq Set.new
+        end
+      end
+
+      shared_examples 'an invalid request' do
+        it 'returns an empty set' do
+          expect(generated_files).to eq Set.new
+        end
+
+        it 'reports the exception' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              instance_of(Gitlab::Git::CommandError),
+              gl_project_path: repository.gl_project_path,
+              base: base,
+              head: head,
+              paths: paths.map(&:path)
+            )
+
+          generated_files
+        end
+      end
+
+      context 'when an unknown revision is given' do
+        let(:head) { 'unknownrevision' }
+
+        it_behaves_like 'an invalid request'
+      end
+
+      context 'when an unknown path is given' do
+        let(:paths) do
+          [
+            Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: 'file1.txt', old_mode: '100644', new_mode: '100644'),
+            Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: 'unknownpath', old_mode: '100644', new_mode: '100644')
+          ]
+        end
+
+        it_behaves_like 'an invalid request'
+      end
+    end
+
+    context 'when all files are marked as generated' do
       let(:gitattr_content) { "*.txt gitlab-generated\n" }
 
       it 'returns all generated files' do
-        expect(generated_files).to eq paths.to_set
+        expect(generated_files).to eq paths.map(&:path).to_set
       end
     end
 

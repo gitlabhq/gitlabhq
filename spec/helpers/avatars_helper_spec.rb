@@ -478,7 +478,20 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       let(:resource) { build_stubbed(:group, name: 'foo') }
 
       it 'displays group avatar' do
-        is_expected.to match(%r{<span class="avatar identicon bg\d+ s32">F</span>})
+        expected_pattern = %r{
+          <div\s+
+          alt="foo"\s+
+          class="gl-avatar\s+
+          gl-avatar-s32\s+
+          gl-avatar-circle\s+
+          gl-mr-3\s+
+          gl-avatar-identicon\s+
+          gl-avatar-identicon-bg\d+"\s*>
+          \s*F\s*
+          </div>
+        }x
+
+        is_expected.to match(expected_pattern)
       end
     end
   end

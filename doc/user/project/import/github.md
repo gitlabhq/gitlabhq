@@ -480,6 +480,23 @@ repository to be imported manually. Administrators can manually import the repos
    project.create_import_state if project.import_state.blank?
    # Set state to start
    project.import_state.force_start
+
+   # Optional: If your import had certain optional stages selected or a timeout strategy
+   # set, you can reset them here. Below is an example.
+   # The params follow the format documented in the API:
+   # https://docs.gitlab.com/ee/api/import.html#import-repository-from-github
+   Gitlab::GithubImport::Settings
+   .new(project)
+   .write(
+     timeout_strategy: "optimistic",
+     optional_stages: {
+       single_endpoint_issue_events_import: true,
+       single_endpoint_notes_import: true,
+       attachments_import: true,
+       collaborators_import: true
+     }
+   )
+
    # Trigger import from second step
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```

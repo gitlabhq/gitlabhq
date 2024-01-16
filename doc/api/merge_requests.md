@@ -1107,6 +1107,8 @@ Example response:
 
 ## List merge request diffs
 
+> `generated_file` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+
 List diffs of the files changed in a merge request.
 
 ```plaintext
@@ -1136,6 +1138,7 @@ following response attributes:
 | `new_file`     | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |
+| `generated_file` | boolean | Indicates if the file is marked as generated. |
 
 Example request:
 
@@ -1156,7 +1159,8 @@ Example response:
     "diff": "@@ -1 +1 @@\ -Title\ +README",
     "new_file": false,
     "renamed_file": false,
-    "deleted_file": false
+    "deleted_file": false,
+    "generated_file": false
   },
   {
     "old_path": "VERSION",
@@ -1166,7 +1170,8 @@ Example response:
     "diff": "@@\ -1.9.7\ +1.9.8",
     "new_file": false,
     "renamed_file": false,
-    "deleted_file": false
+    "deleted_file": false,
+    "generated_file": false
   }
 ]
 ```
@@ -2014,7 +2019,9 @@ This API returns specific HTTP status codes:
 | HTTP Status | Message                                    | Reason |
 |-------------|--------------------------------------------|--------|
 | `202`       | *(no message)* | Successfully enqueued. |
-| `403`       | <ul><li>`Source branch does not exist`</li><li>`Cannot push to source branch`</li><li>`Source branch is protected from force push`</li></ul> | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Cannot push to source branch` | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Source branch does not exist` | You don't have permission to push to the merge request's source branch. |
+| `403`       | `Source branch is protected from force push` | You don't have permission to push to the merge request's source branch. |
 | `409`       | `Failed to enqueue the rebase operation` | A long-lived transaction might have blocked your request. |
 
 If the request is enqueued successfully, the response contains:

@@ -104,15 +104,15 @@ When configuring the GitLab for Jira Cloud app on GitLab.com, you might encounte
 
 For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
-### `Failed to link group`
+### Error when connecting the app
 
-After you connect the GitLab for Jira Cloud app, you might get this error:
+When you connect the GitLab for Jira Cloud app, you might get this error:
 
 ```plaintext
 Failed to link group. Please try again.
 ```
 
-`403` status code is returned if the user information cannot be fetched from Jira due to insufficient permissions.
+A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
-To resolve this issue, ensure that the Jira user that installs and configures the GitLab for Jira Cloud app meets certain
+To resolve this issue, ensure the Jira user that installs and configures the app meets certain
 [requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).

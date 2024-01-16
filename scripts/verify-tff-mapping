@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'set'
+require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 require 'test_file_finder'
 
 # These tests run a sanity check on the mapping file `tests.yml`
@@ -229,20 +229,29 @@ tests = [
   },
 
   {
+    explanation: 'New CI templates should run CI template tests: https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/4440#note_1675547256',
+    changed_file: 'lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml',
+    expected: ['spec/lib/gitlab/ci/templates/templates_spec.rb', 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb']
+  },
+
+  {
     explanation: 'Map FOSS rake tasks',
     changed_file: 'lib/tasks/import.rake',
     expected: ['spec/tasks/import_rake_spec.rb']
   },
+
   {
     explanation: 'Map EE rake tasks',
     changed_file: 'ee/lib/tasks/geo.rake',
     expected: ['ee/spec/tasks/geo_rake_spec.rb']
   },
+
   {
     explanation: 'Map controllers to request specs',
     changed_file: 'app/controllers/admin/abuse_reports_controller.rb',
     expected: ['spec/requests/admin/abuse_reports_controller_spec.rb']
   },
+
   {
     explanation: 'Map EE controllers to controller and request specs',
     changed_file: 'ee/app/controllers/users_controller.rb',

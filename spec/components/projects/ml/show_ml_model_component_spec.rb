@@ -35,6 +35,7 @@ RSpec.describe Projects::Ml::ShowMlModelComponent, type: :component, feature_cat
           'latestVersion' => {
             'version' => model1.latest_version.version,
             'description' => model1.latest_version.description,
+            'path' => "/#{project.full_path}/-/ml/models/#{model1.id}/versions/#{model1.latest_version.id}",
             'projectPath' => "/#{project.full_path}",
             'packageId' => model1.latest_version.package_id,
             'candidate' => {

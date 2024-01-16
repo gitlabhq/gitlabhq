@@ -8,7 +8,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   let_it_be(:user) { create(:user) }
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
-  let(:blankrev) { Gitlab::Git::BLANK_SHA }
+  let(:blankrev) { Gitlab::Git::SHA1_BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
   let(:newrev)   { sample_commit.id }
   let(:branch)   { 'master' }

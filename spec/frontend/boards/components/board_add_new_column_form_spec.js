@@ -1,37 +1,17 @@
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
-import defaultState from '~/boards/stores/state';
 import { mockLabelList } from '../mock_data';
-
-Vue.use(Vuex);
 
 describe('BoardAddNewColumnForm', () => {
   let wrapper;
 
-  const createStore = ({ actions = {}, getters = {}, state = {} } = {}) => {
-    return new Vuex.Store({
-      state: {
-        ...defaultState,
-        ...state,
-      },
-      actions,
-      getters,
-    });
-  };
-
-  const mountComponent = ({ searchLabel = '', selectedIdValid = true, actions, slots } = {}) => {
+  const mountComponent = ({ searchLabel = '', selectedIdValid = true, slots } = {}) => {
     wrapper = shallowMountExtended(BoardAddNewColumnForm, {
       propsData: {
         searchLabel,
         selectedIdValid,
       },
       slots,
-      store: createStore({
-        actions,
-      }),
     });
   };
 

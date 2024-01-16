@@ -27,7 +27,7 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
     context "when severity is #{severity}" do
       before do
         sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
+        enable_admin_mode!(admin)
 
         allow_next_instance_of(VersionCheck) do |instance|
           allow(instance).to receive(:response).and_return({ "severity" => severity })

@@ -239,6 +239,48 @@ module Gitlab
           end
         end
 
+        # Adds a value to a list.
+        #
+        # raw_key - The key of the list to add to.
+        # value - The field value to add to the list.
+        # timeout - The new timeout of the key.
+        # limit - The maximum number of members in the set. Older members will be trimmed to this limit.
+        def self.list_add(raw_key, value, timeout: TIMEOUT, limit: nil)
+          validate_redis_value!(value)
+
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.multi do |m|
+              m.rpush(key, value)
+              m.ltrim(key, -limit, -1) if limit
+              m.expire(key, timeout)
+            end
+          end
+        end
+
+        # Returns the values of the given list.
+        #
+        # raw_key - The key of the list.
+        def self.values_from_list(raw_key)
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.lrange(key, 0, -1)
+          end
+        end
+
+        # Deletes a key
+        #
+        # raw_key - Key name
+        def self.del(raw_key)
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.del(key)
+          end
+        end
+
         def self.cache_key_for(raw_key)
           "#{Redis::Cache::CACHE_NAMESPACE}:#{raw_key}"
         end

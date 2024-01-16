@@ -40,12 +40,27 @@ export default {
       type: String,
       required: true,
     },
+    disableInlineEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    editMode: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    updateInProgress: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
     return {
       workItem: {},
-      isEditing: false,
+      isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
       descriptionText: '',
@@ -126,6 +141,26 @@ export default {
     autocompleteDataSources() {
       return autocompleteDataSources(this.fullPath, this.workItem.iid);
     },
+    saveButtonText() {
+      return this.editMode ? __('Save changes') : __('Save');
+    },
+    formGroupClass() {
+      return {
+        'gl-border-t gl-pt-6': !this.disableInlineEditing,
+        'gl-mb-5 common-note-form': true,
+      };
+    },
+  },
+  watch: {
+    updateInProgress(newValue) {
+      this.isSubmitting = newValue;
+    },
+    editMode(newValue) {
+      this.isEditing = newValue;
+      if (newValue) {
+        this.startEditing();
+      }
+    },
   },
   methods: {
     checkForConflicts() {
@@ -159,6 +194,7 @@ export default {
       }
 
       this.isEditing = false;
+      this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
     },
     onInput() {
@@ -173,6 +209,11 @@ export default {
 
       if (key) {
         this.isSubmittingWithKeydown = true;
+      }
+
+      if (this.disableInlineEditing) {
+        this.$emit('updateWorkItem');
+        return;
       }
 
       this.isSubmitting = true;
@@ -210,6 +251,9 @@ export default {
     },
     setDescriptionText(newText) {
       this.descriptionText = newText;
+      if (this.disableInlineEditing) {
+        this.$emit('updateDraft', this.descriptionText);
+      }
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
@@ -224,12 +268,13 @@ export default {
   <div>
     <gl-form v-if="isEditing" @submit.prevent="updateWorkItem" @reset.prevent="cancelEditing">
       <gl-form-group
-        class="gl-mb-5 gl-border-t gl-pt-6 common-note-form"
+        :class="formGroupClass"
         :label="__('Description')"
+        :label-sr-only="disableInlineEditing"
         label-for="work-item-description"
       >
         <markdown-editor
-          class="gl-my-5"
+          class="gl-mb-5"
           :value="descriptionText"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="$options.markdownDocsPath"
@@ -285,9 +330,9 @@ export default {
               :loading="isSubmitting"
               data-testid="save-description"
               type="submit"
-              >{{ __('Save') }}
+              >{{ saveButtonText }}
             </gl-button>
-            <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" type="reset"
+            <gl-button category="secondary" class="gl-ml-3" data-testid="cancel" type="reset"
               >{{ __('Cancel') }}
             </gl-button>
           </template>
@@ -296,13 +341,14 @@ export default {
     </gl-form>
     <work-item-description-rendered
       v-else
+      :disable-inline-editing="disableInlineEditing"
       :work-item-description="workItemDescription"
       :can-edit="canEdit"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />
     <edited-at
-      v-if="lastEditedAt"
+      v-if="lastEditedAt && !editMode"
       :updated-at="lastEditedAt"
       :updated-by-name="lastEditedByName"
       :updated-by-path="lastEditedByPath"

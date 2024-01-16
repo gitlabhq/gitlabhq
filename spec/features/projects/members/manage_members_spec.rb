@@ -93,7 +93,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     end
   end
 
-  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures do
+  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436958' do
     before do
       sign_in(current_user)
 
@@ -265,7 +266,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
 
     it 'shows 2FA badge to admins' do
       sign_in(admin)
-      gitlab_enable_admin_mode_sign_in(admin)
+      enable_admin_mode!(admin)
 
       visit_members_page
 

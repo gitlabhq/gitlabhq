@@ -1,0 +1,13 @@
+---
+table_name: ml_model_version_metadata
+classes:
+- Ml::ModelVersionMetadata
+feature_categories:
+- mlops
+gitlab_schema: gitlab_main_cell
+description: A Model Version Metadata record holds extra information about the model
+  version
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139975/
+milestone: 16.8
+sharding_key:
+  project_id: projects

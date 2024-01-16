@@ -39,7 +39,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
     before do
       stub_container_registry_config(enabled: registry_enabled)
       stub_config(packages: { enabled: packages_enabled })
-      stub_feature_flags(ml_experiment_tracking: false)
+      stub_feature_flags(ml_experiment_tracking: false, model_registry: false)
     end
 
     context 'when Packages Registry is visible' do
@@ -189,6 +189,33 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
 
       context 'when user does not have access model experiments' do
         let(:model_experiments_enabled) { false }
+
+        it 'does not show the menu item' do
+          is_expected.to be_nil
+        end
+      end
+    end
+
+    describe 'Model registry' do
+      let(:item_id) { :model_registry }
+
+      before do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?)
+                            .with(user, :read_model_registry, project)
+                            .and_return(model_registry_enabled)
+      end
+
+      context 'when user can read model registry' do
+        let(:model_registry_enabled) { true }
+
+        it 'shows the menu item' do
+          is_expected.not_to be_nil
+        end
+      end
+
+      context 'when user can not read model registry' do
+        let(:model_registry_enabled) { false }
 
         it 'does not show the menu item' do
           is_expected.to be_nil

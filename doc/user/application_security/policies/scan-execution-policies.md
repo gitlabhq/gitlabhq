@@ -46,6 +46,10 @@ to remove the `test` stage, jobs will run in the `scan-policies` stage instead. 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
+## Requirements and limitations
+
+- The maximum number of scan execution policies is five per security policy project.
+
 ## Scan execution policy editor
 
 NOTE:
@@ -201,27 +205,22 @@ The keys for a schedule rule are:
 
 ## `scan` action type
 
-> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default.
-> - The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`. On GitLab.com, this feature is not available. On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
+> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
 
 This action executes the selected `scan` with additional parameters when conditions for at least one
 rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning`, `custom` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/on-demand_scan.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `ci_configuration` <sup>1</sup> | `string` | | GitLab CI YAML as formatted as string. |
-| `ci_configuration_path` <sup>1</sup> | object | Object with project path and file name pointing to a CI configuration. |
-
-1. For `custom` scans, you must specify one of `ci_configuration` or `ci_configuration_path`.
 
 Note the following:
 
-- You must create the [site profile](../dast/proxy-based.md#site-profile) and [scanner profile](../dast/proxy-based.md#scanner-profile)
+- You must create the [site profile](../dast/on-demand_scan.md#site-profile) and [scanner profile](../dast/on-demand_scan.md#scanner-profile)
   with selected names for each project that is assigned to the selected Security Policy Project.
   Otherwise, the policy is not applied and a job with an error message is created instead.
 - Once you associate the site profile and scanner profile by name in the policy, it is not possible
@@ -237,16 +236,6 @@ Note the following:
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
 - Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
-- `custom` scans are be executed for scheduled rules.
-- Jobs variables and stages definitions from `custom` scans take precedence over the project's CI/CD configuration.
-
-### `ci_configuration_path` object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `project` | `string` | A project namespace path. |
-| `file` | `string` | The filename of the CI/CD YAML file. |
-| `ref` | `string` (optional) | The branch name, tag name, or commit SHA. |
 
 ## Example security policies project
 
@@ -267,12 +256,6 @@ scan_execution_policy:
   - scan: dast
     scanner_profile: Scanner Profile A
     site_profile: Site Profile B
-  - scan: custom
-    ci_configuration: |-
-      test job:
-        stage: test
-        script:
-          - echo "Hello World"
 - name: Enforce DAST and secret detection scans every 10 minutes
   description: This policy enforces DAST and secret detection scans to run every 10 minutes
   enabled: true
@@ -306,7 +289,6 @@ In this example:
 - For every pipeline executed on branches that match the `release/*` wildcard (for example, branch
   `release/v1.2.1`)
   - DAST scans run with `Scanner Profile A` and `Site Profile B`.
-  - A `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 - DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
   and `Site Profile D`.
 - Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
@@ -340,3 +322,155 @@ this case, two SAST jobs run in the pipeline, one with the developer's variables
 If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or disable your
 local jobs by setting `SAST_DISABLED: "true"`. Disabling jobs this way does not prevent the security jobs defined by scan execution
 policies from running.
+
+## Experimental features **(EXPERIMENT)**
+
+These experimental features have limitations:
+
+1. Enforcing pipeline execution using the pipeline execution action in projects
+   without a `.gitlab-ci.yml` is not supported.
+1. The pipeline execution action cannot be used with a scheduled trigger type.
+
+### Pipeline execution policy action
+
+> The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
+On GitLab.com, this feature is available.
+
+The pipeline execution policy action introduces a new scan action type into
+scan execution policies for creating and enforcing custom CI in your target
+development projects.
+
+This custom scan type uses a remote CI configuration file to define the custom
+CI you want enforced. Scan execution policies then merge this file with the
+project's `.gitlab-ci.yml` to execute the compliance jobs for each project
+enforced by the policy.
+
+#### `ci_configuration_path` object
+
+| Field     | Type                | Required | Description |
+|-----------|---------------------|----------|-------------|
+| `project` | `string`            | true     | A project namespace path. |
+| `file`    | `string`            | true     | The file name of the CI/CD YAML file. |
+| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
+
+#### `scan` action type
+
+This action executes the selected `scan` with additional parameters when
+conditions for at least one rule in the defined policy are met.
+
+| Field                   | Type     | Possible values | Description |
+|-------------------------|----------|-----------------|-------------|
+| `scan`                  | `string` | `custom`        | The action's type. |
+| `ci_configuration`      | `string` |                 | GitLab CI YAML as formatted as string. |
+| `ci_configuration_path` | object   |                 | Object with project path and file name pointing to a CI configuration. |
+
+Note the following:
+
+- For `custom` scans, you must specify one of `ci_configuration` or `ci_configuration_path`.
+- `custom` scans are being executed for triggered rules only.
+- Jobs variables and stages definitions from `custom` scans take precedence over the project's CI/CD configuration.
+
+#### Example security policies project
+
+You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
+[security policy project](index.md#security-policy-project):
+
+```yaml
+---
+scan_execution_policy:
+- name: Create a custom scan that injects test job
+  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - release/*
+  actions:
+  - scan: custom
+    ci_configuration: |-
+      test job:
+        stage: test
+        script:
+          - echo "Hello World"
+```
+
+In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
+
+### Security policy scopes
+
+> The `policy_scope` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+an administrator can [disable the feature flag](../../../administration/feature_flags.md)
+named `security_policies_policy_scope`.
+On GitLab.com, this feature is available.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+#### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+#### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `object` |  `ids` | List of IDs of the compliance frameworks in scope of enforcement, in an `ids` array. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an `ids` array. |
+
+#### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+scan_execution_policy:
+- name: Enforce DAST in every release pipeline
+  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - release/*
+  actions:
+  - scan: dast
+    scanner_profile: Scanner Profile A
+    site_profile: Site Profile B
+  policy_scope:
+    compliance_frameworks:
+      ids:
+      - 2
+      - 11
+- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
+  - scan: sast
+    variables:
+      SAST_EXCLUDED_ANALYZERS: brakeman
+  policy_scope:
+    projects:
+      excluding:
+        ids:
+        - 24
+        - 27
+```

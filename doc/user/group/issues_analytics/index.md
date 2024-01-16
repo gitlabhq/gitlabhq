@@ -4,17 +4,18 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue analytics for groups **(PREMIUM ALL)**
+# Issue analytics **(PREMIUM ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
+> - Issue analytics for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
+> - Issue analytics for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in GitLab 12.9.
 
 Issue analytics is a bar graph which illustrates the number of issues created each month.
-The default time span is 13 months, which includes the current month, and the 12 months
-prior.
+The default time span is 13 months, which includes the current month, and the 12 months prior.
+Issue analytics is available for projects and groups.
 
 To access the chart:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Issue analytics**.
 
 You can also access the chart from the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) through the **New issues** drill-down report.
@@ -39,12 +40,11 @@ shows a total of 15 months for the chart in the GitLab.org group.
 
 ## Enhanced issue analytics **(ULTIMATE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437542) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. On GitLab.com, this feature is not
-available. This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. On GitLab.com, this feature is available.
 
 Enhanced issue analytics display the additional metric "Issues closed", which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.

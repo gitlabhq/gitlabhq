@@ -123,7 +123,7 @@ module Gitlab
     end
 
     def add_browsersdk_tracking
-      return unless Gitlab.com? && Feature.enabled?(:browsersdk_tracking) && Feature.enabled?(:gl_analytics_tracking,
+      return unless Gitlab.com? && Feature.enabled?(:gl_analytics_tracking,
 Feature.current_request)
 
       return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?

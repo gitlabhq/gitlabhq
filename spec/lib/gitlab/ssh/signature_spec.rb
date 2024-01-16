@@ -8,7 +8,9 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
   let_it_be(:public_key_text) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHZ8NHEnCIpC4mnot+BRxv6L+fq+TnN1CgsRrHWLmfwb' }
   let_it_be_with_reload(:user) { create(:user, email: committer_email) }
   let_it_be_with_reload(:key) { create(:key, usage_type: :signing, key: public_key_text, user: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, :in_group) }
 
+  let(:commit) { project.commit }
   let(:signed_text) { 'This message was signed by an ssh key' }
   let(:signer) { :SIGNER_USER }
 
@@ -24,12 +26,16 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
     SIG
   end
 
+  before do
+    allow(commit).to receive(:committer_email).and_return(committer_email)
+  end
+
   subject(:signature) do
     described_class.new(
       signature_text,
       signed_text,
       signer,
-      committer_email
+      commit
     )
   end
 
@@ -282,6 +288,31 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
   describe '#key_fingerprint' do
     it 'returns the pubkey sha256 fingerprint' do
       expect(signature.key_fingerprint).to eq('dw7gPSvYtkCBU+BbTolbbckUEX3sL6NsGIJTQ4PYEnM')
+    end
+
+    context 'when a signature has been created with a certificate' do
+      let(:signature_text) do
+        # ssh-keygen -Y sign -n git -f id_test-cert.pub message.txt
+        <<~SIG
+          -----BEGIN SSH SIGNATURE-----
+          U1NIU0lHAAAAAQAAAb0AAAAgc3NoLWVkMjU1MTktY2VydC12MDFAb3BlbnNzaC5jb20AAA
+          AgWbXlnjWbxTzOlRPcnSMlQQnnJTCsEv2y2ij5o7yVbcUAAAAgYAsBVqgfGrvGdSPjqY0H
+          t8yljpOS4VumZHnAh+wCvdEAAAAAAAAAAAAAAAEAAAARYWRtaW5AZXhhbXBsZS5jb20AAA
+          AAAAAAAGV9kqgAAAAAZX7kiwAAAAAAAACCAAAAFXBlcm1pdC1YMTEtZm9yd2FyZGluZwAA
+          AAAAAAAXcGVybWl0LWFnZW50LWZvcndhcmRpbmcAAAAAAAAAFnBlcm1pdC1wb3J0LWZvcn
+          dhcmRpbmcAAAAAAAAACnBlcm1pdC1wdHkAAAAAAAAADnBlcm1pdC11c2VyLXJjAAAAAAAA
+          AAAAAAAzAAAAC3NzaC1lZDI1NTE5AAAAIINudhvW7P4c36bBwlWTaxnCCOaSfMrUbXHcP7
+          7zH6LyAAAAUwAAAAtzc2gtZWQyNTUxOQAAAEBp9J9YQhaz+tNIKtNpZe5sAxcqvMgcYlB+
+          fVaDsYNOj445Bz7TBoFqjrs95yaF6pwARK11IEQTcwtrihLGzGkNAAAAA2dpdAAAAAAAAA
+          AGc2hhNTEyAAAAUwAAAAtzc2gtZWQyNTUxOQAAAECfVh7AzwqRBMbnHBApCnMpu9Y1qpGM
+          sOSL1EeV3SIOlrThNTCerUpcaizcSY9L8WwP2TXlqw2Sq1BGM+PPSN0C
+          -----END SSH SIGNATURE-----
+        SIG
+      end
+
+      it 'returns public key fingerprint' do
+        expect(signature.key_fingerprint).to eq('3dNIFKfIAXZb/JL30KKv95cps+mZwVAuAYQhIWxAb+8')
+      end
     end
   end
 end

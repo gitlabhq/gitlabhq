@@ -81,22 +81,6 @@ RSpec.describe 'devise/shared/_signup_box' do
     end
   end
 
-  context 'using the borderless option' do
-    let(:border_css_classes) { '.gl-border-gray-100.gl-border-1.gl-border-solid.gl-rounded-base' }
-
-    it 'renders with a border by default' do
-      render
-
-      expect(rendered).to have_selector(border_css_classes)
-    end
-
-    it 'renders without a border when borderless is truthy' do
-      render('devise/shared/signup_box', borderless: true)
-
-      expect(rendered).not_to have_selector(border_css_classes)
-    end
-  end
-
   def stub_devise
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:resource).and_return(spy)

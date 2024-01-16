@@ -56,17 +56,17 @@ If you operate a cloud or SaaS product and you're interested in partnering with 
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).
 
-| Capability                                                       | In Free & Premium      | In Ultimate            |
-|:---------------------------------------------------------------- |:-----------------------|:-----------------------|
-| [Configure Secret Detection scanner](#enable-secret-detection)   | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Customize Secret Detection settings](#configure-scan-settings)  | **{check-circle}** Yes | **{check-circle}** Yes |
-| Download [JSON Report](../sast/index.md#reports-json-format)     | **{check-circle}** Yes | **{check-circle}** Yes |
+| Capability                                                                                           | In Free & Premium      | In Ultimate            |
+|:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| [Configure Secret Detection scanner](#enable-secret-detection)                                       | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Customize Secret Detection settings](#configure-scan-settings)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
+| Download [SAST output](../sast/index.md#output)                                                      | **{check-circle}** Yes | **{check-circle}** Yes |
 | [Check text for potential secrets](#warnings-for-potential-leaks-in-text-content) before it's posted | **{check-circle}** Yes | **{check-circle}** Yes |
-| See new findings in the merge request widget                     | **{dotted-circle}** No | **{check-circle}** Yes |
-| View identified secrets in the pipelines' **Security** tab       | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../vulnerability_report/index.md)       | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access the Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Customize Secret Detection rulesets](#custom-rulesets)          | **{dotted-circle}** No | **{check-circle}** Yes |
+| See new findings in the merge request widget                                                         | **{dotted-circle}** No | **{check-circle}** Yes |
+| View identified secrets in the pipelines' **Security** tab                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Manage vulnerabilities](../vulnerability_report/index.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Access the Security Dashboard](../security_dashboard/index.md)                                      | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Customize Secret Detection rulesets](#custom-rulesets)                                              | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Coverage
 
@@ -110,17 +110,13 @@ Secret Detection can detect if a secret was added in one commit and removed in a
   [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md). Secret Detection's
   results are only available after the pipeline is completed.
 
-## Running jobs in merge request pipelines
-
-See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
-
 ## Enable Secret Detection
 
 Prerequisites:
 
 - Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
-shared runners on GitLab.com, this is enabled by default.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
+  shared runners on GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See
@@ -264,6 +260,10 @@ For example:
 ```ruby
  "A personal token for GitLab will look like glpat-JUST20LETTERSANDNUMB" #gitleaks:allow
 ```
+
+### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Available CI/CD variables
 

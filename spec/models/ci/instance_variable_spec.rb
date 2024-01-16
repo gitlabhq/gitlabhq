@@ -113,4 +113,10 @@ RSpec.describe Ci::InstanceVariable do
       end
     end
   end
+
+  describe "description" do
+    it { is_expected.to allow_values('').for(:description) }
+    it { is_expected.to allow_values(nil).for(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
+  end
 end

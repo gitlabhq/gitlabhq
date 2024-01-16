@@ -330,7 +330,7 @@ module API
         mount ::API::Suggestions
         mount ::API::SystemHooks
         mount ::API::Tags
-        mount ::API::Terraform::Modules::V1::Packages
+        mount ::API::Terraform::Modules::V1::NamespacePackages
         mount ::API::Terraform::Modules::V1::ProjectPackages
         mount ::API::Terraform::State
         mount ::API::Terraform::StateVersion

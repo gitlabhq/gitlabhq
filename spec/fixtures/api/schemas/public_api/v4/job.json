@@ -22,7 +22,8 @@
     "artifacts_expire_at",
     "tag_list",
     "runner",
-    "project"
+    "project",
+    "archived"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -70,7 +71,8 @@
     },
     "project": {
       "ci_job_token_scope_enabled": { "type": "boolean" }
-    }
+    },
+    "archived": { "type": "boolean" }
   },
   "additionalProperties":false
 }

@@ -27,6 +27,7 @@ module Ci
       foreign_key: :commit_id,
       partition_foreign_key: :partition_id,
       inverse_of: :builds
+    belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :builds
 
     RUNNER_FEATURES = {
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
@@ -41,6 +42,8 @@ module Ci
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
 
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
+
+    TOKEN_PREFIX = 'glcbt-'
 
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
@@ -98,6 +101,7 @@ module Ci
     delegate :harbor_integration, to: :project
     delegate :apple_app_store_integration, to: :project
     delegate :google_play_integration, to: :project
+    delegate :diffblue_cover_integration, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
@@ -188,6 +192,10 @@ module Ci
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
     scope :with_runner_type, -> (runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
 
+    scope :belonging_to_runner_manager, -> (runner_machine_id) {
+      joins(:runner_manager_build).where(p_ci_runner_machine_builds: { runner_machine_id: runner_machine_id })
+    }
+
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
@@ -204,7 +212,7 @@ module Ci
 
     add_authentication_token_field :token,
       encrypted: :required,
-      format_with_prefix: :partition_id_prefix_in_16_bit_encode
+      format_with_prefix: :prefix_and_partition_for_token
 
     after_save :stick_build_if_status_changed
 
@@ -516,6 +524,7 @@ module Ci
           .concat(harbor_variables)
           .concat(apple_app_store_variables)
           .concat(google_play_variables)
+          .concat(diffblue_cover_variables)
       end
     end
 
@@ -566,6 +575,12 @@ module Ci
       return [] unless google_play_integration.try(:activated?)
 
       Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables(protected_ref: pipeline.protected_ref?))
+    end
+
+    def diffblue_cover_variables
+      return [] unless diffblue_cover_integration.try(:activated?)
+
+      Gitlab::Ci::Variables::Collection.new(diffblue_cover_integration.ci_variables)
     end
 
     def features
@@ -1231,6 +1246,14 @@ module Ci
 
     def partition_id_prefix_in_16_bit_encode
       "#{partition_id.to_s(16)}_"
+    end
+
+    def prefix_and_partition_for_token
+      if Feature.enabled?(:prefix_ci_build_tokens, project, type: :beta)
+        TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+      else
+        partition_id_prefix_in_16_bit_encode
+      end
     end
   end
 end

@@ -7,27 +7,27 @@ module QA
         include QA::Page::Component::ConfirmModal
 
         view 'app/views/profiles/emails/index.html.haml' do
-          element :email_address_field
-          element :add_email_address_button
-          element :email_row_content
-          element :delete_email_link
-          element :toggle_email_address_field
+          element 'email-address-field'
+          element 'add-email-address-button'
+          element 'email-row-content'
+          element 'delete-email-link'
+          element 'toggle-email-address-field'
         end
 
         def expand_email_input
-          click_element(:toggle_email_address_field) if has_no_element?(:email_address_field)
-          has_element?(:email_address_field)
+          click_element('toggle-email-address-field') if has_no_element?('email-address-field')
+          has_element?('email-address-field')
         end
 
         def add_email_address(email_address)
           expand_email_input
-          find_element(:email_address_field).set email_address
-          click_element(:add_email_address_button)
+          find_element('email-address-field').set email_address
+          click_element('add-email-address-button')
         end
 
         def delete_email_address(email_address)
-          within_element(:email_row_content, text: email_address) do
-            click_element(:delete_email_link)
+          within_element('email-row-content', text: email_address) do
+            click_element('delete-email-link')
           end
           click_confirmation_ok_button
         end

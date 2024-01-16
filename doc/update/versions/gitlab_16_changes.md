@@ -17,21 +17,54 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 ## Issues to be aware of when upgrading from 15.11
 
 - [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
-- Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
-  [Long-running user type data change](#long-running-user-type-data-change).
-- Other installations can skip 16.0, 16.1, and 16.2 as the first required stop on the upgrade path is 16.3. Review the notes for those intermediate
-  versions.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
-  Recommended: perform the workaround before upgrading to 16.x.
-  See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
-- Linux package installations must change Gitaly and Praefect configuration structure before upgrading to GitLab 16.
+  Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
+- Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
+  In all cases, you should review the notes for those intermediate versions.
+
+  Some GitLab installations must stop at those intermediate versions depending on which features are used
+  and the size of the environment:
+
+  - 16.0.8: Instances with lots of records in the users table.
+    For more information, see [long-running user type data change](#long-running-user-type-data-change).
+  - [16.1.5](#1610): Instances that use the NPM package registry.
+  - [16.2.8](#1620): Instances with lots of pipeline variables (including historical pipelines).
+
+  If your instance is affected and you skip these stops:
+
+  - The upgrade can take hours to complete.
+  - The instance generates 500 errors until all the database changes are finished, after which
+    Puma and Sidekiq must restarted.
+  - For Linux package installations, a timeout occurs and a
+    [manual workaround to complete the migrations](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)
+    is necessary.
+
+- GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
+  these limits, projects that have reached their limit causes error messages when pushing to unaffected Git
+  repositories in the same group. The errors often refer to exceeding a limit of zero bytes (`limit of 0 B`).
+
+  The pushes succeed, but the errors imply otherwise and might cause issues with automation.
+  [Read more in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416646).
+  The [bug is fixed in GitLab 16.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131122).
+
+### Linux package installations
+
+- Gitaly and Praefect configuration structure must be changed before upgrading to GitLab 16.
   **To avoid data loss** reconfigure Praefect first, and as part of the new configuration, disable metadata verification.
   Read more:
 
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
 
+- If you reconfigure Gitaly to store Git data in a location other than `/var/opt/gitlab/git-data/repositories`,
+  packaged GitLab 16.0 and later does not automatically create the directory structure.
+  [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
+
 ## 16.7.0
+
+- GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
+  in GitLab 16.7 and earlier have been implemented on all self-managed instances. Dependent changes can then be released
+  in GitLab 16.8 and later. [Issue 429611](https://gitlab.com/gitlab-org/gitlab/-/issues/429611) provides more details.
 
 ### Linux package installations
 
@@ -41,14 +74,44 @@ Specific information applies to Linux package installations:
   During a package upgrade, the database isn't upgraded to PostgreSQL 14.
   If you want to upgrade to PostgreSQL 14, [you must do it manually](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
-  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
-  for future releases.
-
   If you want to use PostgreSQL 13, you must set `postgresql['version'] = 13` in `/etc/gitlab/gitlab.rb`.
+
+### Geo installations
+
+- PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. However, due to an [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255), existing Geo secondary sites cannot be upgraded to PostgreSQL version 14. All Geo sites must run the same version of PostgreSQL. If you are adding a new Geo secondary site based on GitLab 16.7 you must take one of the following actions based on your configuration:
+
+  - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
+  - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries:
+    - All sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
+    - All sites are running PostgreSQL 14: No special action is required.
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.6.0
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
+
+### Geo installations
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.5.0
 
@@ -137,6 +200,17 @@ Specific information applies to installations using Geo:
   | 16.4   | All    | None   |
   | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
 
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+
 ## 16.4.0
 
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
@@ -208,8 +282,8 @@ Specific information applies to installations using Geo:
 ### Self-compiled installations
 
 - A new method of configuring paths for the GitLab secret and custom hooks is preferred in GitLab 16.4 and later:
-  1. Update your configuration `[gitlab] secret_file` to [configure the path](../../administration/gitaly/reference.md#gitlab) to the GitLab secret token.
-  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md#custom-hooks) to
+  1. Update your configuration `[gitlab] secret_file` to [configure the path](../../administration/gitaly/reference.md) to the GitLab secret token.
+  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md) to
      server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
 
@@ -275,6 +349,17 @@ Specific information applies to installations using Geo:
   | 16.3   | All    | None   |
   | 16.4   | All    | None   |
   | 16.5   | 16.5.0 - 16.5.1    | 16.5.2   |
+
+- You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
 
 ## 16.3.0
 
@@ -979,7 +1064,7 @@ FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
 Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 ```
 
-[There is a fix-forward workaround for this issue](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
+[There is a fix-forward workaround for this issue](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
 
 While the workaround is completing the database changes, GitLab is likely to be in
 an unusable state, generating `500` errors. The errors are caused by Sidekiq and Puma running

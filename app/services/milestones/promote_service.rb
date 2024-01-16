@@ -63,9 +63,12 @@ module Milestones
     def update_children(group_milestone, milestone_ids)
       issues = Issue.where(project_id: group_project_ids, milestone_id: milestone_ids)
       merge_requests = MergeRequest.where(source_project_id: group_project_ids, milestone_id: milestone_ids)
+      milestone_events = ResourceMilestoneEvent.where(milestone_id: milestone_ids)
 
-      [issues, merge_requests].each do |issuable_collection|
-        issuable_collection.update_all(milestone_id: group_milestone.id)
+      [issues, merge_requests, milestone_events].each do |collection|
+        collection.each_batch do |batch|
+          batch.update_all(milestone_id: group_milestone.id)
+        end
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

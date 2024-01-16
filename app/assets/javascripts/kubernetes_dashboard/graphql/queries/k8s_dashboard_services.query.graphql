@@ -1,0 +1,17 @@
+query getK8sDashboardServices($configuration: LocalConfiguration) {
+  k8sServices(configuration: $configuration) @client {
+    metadata {
+      name
+      namespace
+      creationTimestamp
+      labels
+      annotations
+    }
+    spec {
+      type
+      clusterIP
+      externalIP
+      ports
+    }
+  }
+}

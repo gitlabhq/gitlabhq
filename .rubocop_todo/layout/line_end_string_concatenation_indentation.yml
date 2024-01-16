@@ -293,7 +293,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/services/snippets/create_service_spec.rb'
     - 'spec/services/users/email_verification/validate_token_service_spec.rb'
     - 'spec/services/work_items/parent_links/create_service_spec.rb'
-    - 'spec/support/before_all_adapter.rb'
     - 'spec/support/helpers/database/multiple_databases_helpers.rb'
     - 'spec/support/helpers/redis_without_keys.rb'
     - 'spec/support/matchers/have_gitlab_http_status.rb'

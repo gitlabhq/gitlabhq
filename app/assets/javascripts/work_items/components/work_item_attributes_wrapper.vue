@@ -17,14 +17,16 @@ import {
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
-import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
+import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
 import WorkItemParentInline from './work_item_parent_inline.vue';
 import WorkItemParent from './work_item_parent_with_edit.vue';
 
 export default {
   components: {
     WorkItemLabels,
-    WorkItemMilestone,
+    WorkItemMilestoneInline,
+    WorkItemMilestoneWithEdit,
     WorkItemAssignees,
     WorkItemDueDate,
     WorkItemParent,
@@ -34,7 +36,10 @@ export default {
     WorkItemWeight: () =>
       import('ee_component/work_items/components/work_item_weight_with_edit.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemIterationInline: () =>
+      import('ee_component/work_items/components/work_item_iteration_inline.vue'),
+    WorkItemIteration: () =>
+      import('ee_component/work_items/components/work_item_iteration_with_edit.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
     WorkItemHealthStatusInline: () =>
@@ -137,15 +142,28 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-milestone
-      v-if="workItemMilestone"
-      :full-path="fullPath"
-      :work-item-id="workItem.id"
-      :work-item-milestone="workItemMilestone.milestone"
-      :work-item-type="workItemType"
-      :can-update="canUpdate"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemMilestone">
+      <work-item-milestone-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-milestone="workItemMilestone.milestone"
+        :work-item-type="workItemType"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+      <work-item-milestone-inline
+        v-else
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-milestone="workItemMilestone.milestone"
+        :work-item-type="workItemType"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemWeight">
       <work-item-weight
         v-if="glFeatures.workItemsMvc2"
@@ -177,17 +195,30 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-iteration
-      v-if="workItemIteration"
-      class="gl-mb-5"
-      :full-path="fullPath"
-      :iteration="workItemIteration.iteration"
-      :can-update="canUpdate"
-      :work-item-id="workItem.id"
-      :work-item-iid="workItem.iid"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemIteration">
+      <work-item-iteration
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+      <work-item-iteration-inline
+        v-else
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         v-if="glFeatures.workItemsMvc2"

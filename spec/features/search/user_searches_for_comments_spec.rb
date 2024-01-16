@@ -33,6 +33,14 @@ RSpec.describe 'User searches for comments', :js, :disable_rate_limiter, feature
     end
   end
 
+  it 'shows scopes when there is no search term' do
+    submit_dashboard_search('')
+
+    within_testid('search-filter') do
+      expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+    end
+  end
+
   context 'when a comment is in a snippet' do
     let(:snippet) { create(:project_snippet, :private, project: project, author: user, title: 'Some title') }
     let(:comment) { create(:note, noteable: snippet, author: user, note: 'Supercalifragilisticexpialidocious', project: project) }

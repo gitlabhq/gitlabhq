@@ -836,166 +836,219 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'GET /runners/:id/jobs' do
-    let_it_be(:job_1) { create(:ci_build) }
-    let_it_be(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
-    let_it_be(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
-    let_it_be(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
-    let_it_be(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
-    let(:path) { "/runners/#{project_runner.id}/jobs" }
+    subject(:request) { get api(path, user, **api_params) }
+
+    let_it_be(:shared_runner_manager1) { create(:ci_runner_machine, runner: shared_runner, system_xid: 'id2') }
+    let_it_be(:jobs) do
+      project_runner_manager1 = create(:ci_runner_machine, runner: project_runner, system_xid: 'id1')
+      project_runner_manager2 = create(:ci_runner_machine, runner: two_projects_runner, system_xid: 'id1')
+
+      [
+        create(:ci_build),
+        create(:ci_build, :running, runner_manager: shared_runner_manager1, project: project),
+        create(:ci_build, :failed, runner_manager: shared_runner_manager1, project: project),
+        create(:ci_build, :running, runner_manager: project_runner_manager1, project: project),
+        create(:ci_build, :failed, runner_manager: project_runner_manager1, project: project),
+        create(:ci_build, :running, runner_manager: project_runner_manager2, project: project),
+        create(:ci_build, :running, runner_manager: project_runner_manager2, project: project2)
+      ]
+    end
+
+    let(:api_params) { {} }
+    let(:runner_id) { project_runner.id }
+    let(:query_part) { query_params.merge(system_id_params).map { |param| param.join('=') }.join('&') }
+    let(:path) { "/runners/#{runner_id}/jobs?#{query_part}" }
+    let(:query_params) { {} }
+    let(:system_id_params) { {} }
 
     it_behaves_like 'GET request permissions for admin mode'
 
     context 'admin user' do
+      let(:user) { admin }
+      let(:api_params) { { admin_mode: true } }
+
       context 'when runner exists' do
         context 'when runner is shared' do
+          let(:runner_id) { shared_runner.id }
+          let(:system_id) { 'id2' }
+
           it 'return jobs' do
-            get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
 
-            expect(json_response).to be_an(Array)
-            expect(json_response.length).to eq(2)
+            expect(json_response).to match([
+              a_hash_including('id' => jobs[1].id),
+              a_hash_including('id' => jobs[2].id)
+            ])
+          end
+
+          it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
+            let(:first_record) { jobs[2] }
+            let(:second_record) { jobs[1] }
+            let(:api_call) { api(path, user, **api_params) }
           end
         end
 
         context 'when runner is a project runner' do
           it 'return jobs' do
-            get api(path, admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
 
-            expect(json_response).to be_an(Array)
-            expect(json_response.length).to eq(2)
+            expect(json_response).to match([
+              a_hash_including('id' => jobs[3].id),
+              a_hash_including('id' => jobs[4].id)
+            ])
           end
 
           context 'when user does not have authorization to see all jobs' do
-            it 'shows only jobs it has permission to see' do
-              create(:ci_build, :running, runner: two_projects_runner, project: project)
-              create(:ci_build, :running, runner: two_projects_runner, project: project2)
+            let(:runner_id) { two_projects_runner.id }
+            let(:user) { user2 }
+            let(:api_params) { {} }
 
+            before_all do
               project.add_guest(user2)
               project2.add_maintainer(user2)
-              get api("/runners/#{two_projects_runner.id}/jobs", user2)
+            end
+
+            it 'shows only jobs it has permission to see' do
+              request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
-
-              expect(json_response).to be_an(Array)
-              expect(json_response.length).to eq(1)
+              expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
             end
           end
         end
 
         context 'when valid status is provided' do
+          let(:query_params) { { status: :failed } }
+
           it 'return filtered jobs' do
-            get api("/runners/#{project_runner.id}/jobs?status=failed", admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
 
-            expect(json_response).to be_an(Array)
-            expect(json_response.length).to eq(1)
-            expect(json_response.first).to include('id' => job_5.id)
+            expect(json_response).to match([a_hash_including('id' => jobs[4].id)])
           end
         end
 
         context 'when valid order_by is provided' do
+          let(:query_params) { { order_by: :id } }
+
           context 'when sort order is not specified' do
             it 'return jobs in descending order' do
-              get api("/runners/#{project_runner.id}/jobs?order_by=id", admin, admin_mode: true)
+              request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
 
-              expect(json_response).to be_an(Array)
-              expect(json_response.length).to eq(2)
-              expect(json_response.first).to include('id' => job_5.id)
+              expect(json_response).to match([
+                a_hash_including('id' => jobs[4].id),
+                a_hash_including('id' => jobs[3].id)
+              ])
             end
           end
 
           context 'when sort order is specified as asc' do
+            let(:query_params) { { order_by: :id, sort: :asc } }
+
             it 'return jobs sorted in ascending order' do
-              get api("/runners/#{project_runner.id}/jobs?order_by=id&sort=asc", admin, admin_mode: true)
+              request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
 
-              expect(json_response).to be_an(Array)
-              expect(json_response.length).to eq(2)
-              expect(json_response.first).to include('id' => job_4.id)
+              expect(json_response).to match([
+                a_hash_including('id' => jobs[3].id),
+                a_hash_including('id' => jobs[4].id)
+              ])
             end
           end
         end
 
         context 'when invalid status is provided' do
+          let(:query_params) { { status: 'non-existing' } }
+
           it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?status=non-existing", admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
         context 'when invalid order_by is provided' do
+          let(:query_params) { { order_by: 'non-existing' } }
+
           it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?order_by=non-existing", admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
 
         context 'when invalid sort is provided' do
+          let(:query_params) { { sort: 'non-existing' } }
+
           it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?sort=non-existing", admin, admin_mode: true)
+            request
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
 
-      it 'avoids N+1 DB queries' do
-        get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
+      describe 'eager loading' do
+        let(:runner_id) { shared_runner.id }
 
-        control = ActiveRecord::QueryRecorder.new do
-          get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
+        it 'avoids N+1 DB queries' do
+          get api(path, user, **api_params)
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api(path, user, **api_params)
+          end
+
+          create(:ci_build, :failed, runner: shared_runner, project: project)
+
+          expect do
+            get api(path, user, **api_params)
+          end.not_to exceed_query_limit(control.count)
         end
 
-        create(:ci_build, :failed, runner: shared_runner, project: project)
+        it 'batches loading of commits' do
+          project_with_repo = create(:project, :repository)
+          shared_runner_manager1 = create(:ci_runner_machine, runner: shared_runner, system_xid: 'id1')
 
-        expect do
-          get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
-        end.not_to exceed_query_limit(control.count)
-      end
+          pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b')
+          create(:ci_build, :running, runner_manager: shared_runner_manager1, project: project_with_repo, pipeline: pipeline)
 
-      it 'batches loading of commits' do
-        shared_runner = create(:ci_runner, :instance, description: 'Shared runner')
+          pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
+          create(:ci_build, :failed, runner_manager: shared_runner_manager1, project: project_with_repo, pipeline: pipeline)
 
-        project_with_repo = create(:project, :repository)
+          pipeline = create(:ci_pipeline, project: project_with_repo, sha: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+          create(:ci_build, :failed, runner_manager: shared_runner_manager1, project: project_with_repo, pipeline: pipeline)
 
-        pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'ddd0f15ae83993f5cb66a927a28673882e99100b')
-        create(:ci_build, :running, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
+          expect_next_instance_of(Repository) do |repo|
+            expect(repo).to receive(:commits_by).with(oids:
+              %w[
+                1a0b36b3cdad1d2ee32457c102a8c0b7056fa863
+                c1c67abbaf91f624347bb3ae96eabe3a1b742478
+              ]).once.and_call_original
+          end
 
-        pipeline = create(:ci_pipeline, project: project_with_repo, sha: 'c1c67abbaf91f624347bb3ae96eabe3a1b742478')
-        create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
-
-        pipeline = create(:ci_pipeline, project: project_with_repo, sha: '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
-        create(:ci_build, :failed, runner: shared_runner, project: project_with_repo, pipeline: pipeline)
-
-        expect_next_instance_of(Repository) do |repo|
-          expect(repo).to receive(:commits_by).with(oids:
-            %w[
-              1a0b36b3cdad1d2ee32457c102a8c0b7056fa863
-              c1c67abbaf91f624347bb3ae96eabe3a1b742478
-            ]).once.and_call_original
+          get api(path, admin, admin_mode: true), params: { per_page: 2, order_by: 'id', sort: 'desc' }
         end
-
-        get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true), params: { per_page: 2, order_by: 'id', sort: 'desc' }
       end
 
       context "when runner doesn't exist" do
+        let(:runner_id) { non_existing_record_id }
+
         it 'returns 404' do
-          get api('/runners/0/jobs', admin, admin_mode: true)
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -1004,70 +1057,118 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
     context "runner project's administrative user" do
       context 'when runner exists' do
+        let(:runner_id) { shared_runner.id }
+
         context 'when runner is shared' do
           it 'returns 403' do
-            get api("/runners/#{shared_runner.id}/jobs", user)
+            request
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
         context 'when runner is a project runner' do
+          let(:runner_id) { project_runner.id }
+
           it 'return jobs' do
-            get api(path, user)
+            request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
 
-            expect(json_response).to be_an(Array)
-            expect(json_response.length).to eq(2)
+            expect(json_response).to match([
+              a_hash_including('id' => jobs[3].id),
+              a_hash_including('id' => jobs[4].id)
+            ])
           end
-        end
 
-        context 'when valid status is provided' do
-          it 'return filtered jobs' do
-            get api("/runners/#{project_runner.id}/jobs?status=failed", user)
+          context 'when valid status is provided' do
+            let(:query_params) { { status: :failed } }
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
+            it 'return filtered jobs' do
+              request
 
-            expect(json_response).to be_an(Array)
-            expect(json_response.length).to eq(1)
-            expect(json_response.first).to include('id' => job_5.id)
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+
+              expect(json_response).to match([
+                a_hash_including('id' => jobs[4].id)
+              ])
+            end
           end
-        end
 
-        context 'when invalid status is provided' do
-          it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?status=non-existing", user)
+          context 'when invalid status is provided' do
+            let(:query_params) { { status: 'non-existing' } }
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+            it 'return 400' do
+              request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
           end
         end
       end
 
       context "when runner doesn't exist" do
+        let(:runner_id) { non_existing_record_id }
+
         it 'returns 404' do
-          get api('/runners/0/jobs', user)
+          request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
-    end
 
-    context 'other authorized user' do
-      it 'does not return jobs' do
-        get api(path, user2)
+      context 'other authorized user' do
+        let(:user) { user2 }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it 'does not return jobs' do
+          request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'unauthorized user' do
+        let(:user) { nil }
+
+        it 'does not return jobs' do
+          request
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
     end
 
-    context 'unauthorized user' do
-      it 'does not return jobs' do
-        get api(path)
+    context 'with system_id param' do
+      let(:system_id_params) { { system_id: system_id } }
+      let(:system_id) { 'id1' }
+      let(:user) { admin }
+      let(:api_params) { { admin_mode: true } }
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+      it 'returns jobs from the runner manager' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+        expect(response.headers).not_to include('X-Total', 'X-Total-Pages')
+
+        expect(json_response).to match([
+          a_hash_including('id' => jobs[3].id),
+          a_hash_including('id' => jobs[4].id)
+        ])
+      end
+
+      context 'when system_id does not match runner' do
+        let(:runner_id) { shared_runner.id }
+
+        it 'does not return jobs' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(json_response).to be_empty
+        end
       end
     end
   end

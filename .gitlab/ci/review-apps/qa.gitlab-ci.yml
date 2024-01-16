@@ -2,17 +2,6 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - template: Verify/Browser-Performance.gitlab-ci.yml
 
-.test-variables:
-  variables:
-    QA_GENERATE_ALLURE_REPORT: "true"
-    QA_CAN_TEST_PRAEFECT: "false"
-    GITLAB_USERNAME: "root"
-    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
-    GITLAB_ADMIN_USERNAME: "root"
-    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: "${REVIEW_APPS_ROOT_TOKEN}"
-    GITHUB_ACCESS_TOKEN: "${QA_GITHUB_ACCESS_TOKEN}"
-
 .bundle-base:
   extends:
     - .qa-cache
@@ -20,30 +9,34 @@ include:
   before_script:
     - cd qa && bundle install
 
-.review-qa-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+review-qa-smoke:
   extends:
     - .use-docker-in-docker
     - .bundle-base
-    - .test-variables
+    - .default-retry
+    - .rules:qa-smoke
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   stage: qa
-  needs:
-    - review-deploy
-    - download-knapsack-report
-    - pipeline: $PARENT_PIPELINE_ID
-      job: retrieve-tests-metadata
+  needs: [review-deploy]
   variables:
-    GIT_LFS_SKIP_SMUDGE: 1
-    WD_INSTALL_DIR: /usr/local/bin
     RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml
+    GITLAB_USERNAME: "root"
+    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITLAB_ADMIN_USERNAME: "root"
+    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: "${REVIEW_APPS_ROOT_TOKEN}"
+    GITHUB_ACCESS_TOKEN: "${QA_GITHUB_ACCESS_TOKEN}"
+    COLORIZED_LOGS: "true"
+    QA_GENERATE_ALLURE_REPORT: "true"
+    QA_CAN_TEST_PRAEFECT: "false"
   script:
-    - QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO} ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
+    - QA_COMMAND="bundle exec bin/qa Test::Instance::Smoke ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
     - echo "Running - '${QA_COMMAND}'"
     - eval "$QA_COMMAND"
   after_script:
     - |
       echo "Sentry errors for the current review-app test run can be found via following url:"
-      echo "https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/$(echo "${CI_COMMIT_SHA}" | cut -c1-11)/all-events/."
+      echo "https://new-sentry.gitlab.net/organizations/gitlab/releases/$(echo "${CI_COMMIT_SHA}" | cut -c1-11)/?environment=review&issuesType=all&project=19"
   artifacts:
     paths:
       - qa/tmp
@@ -52,61 +45,18 @@ include:
     expire_in: 7 days
     when: always
 
-# Store knapsack report as artifact so the same report is reused across all jobs
-download-knapsack-report:
-  extends:
-    - .bundle-base
-    - .rules:prepare-report
-  stage: prepare
-  script:
-    - bundle exec rake "knapsack:download[qa]"
-  allow_failure: true
-  artifacts:
-    paths:
-      - qa/knapsack/review-qa-*.json
-    expire_in: 1 day
-
-review-qa-smoke:
-  extends:
-    - .review-qa-base
-    - .rules:qa-smoke
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-
-review-qa-blocking:
-  extends:
-    - .review-qa-base
-    - .rules:qa-blocking
-  variables:
-    QA_SCENARIO: Test::Instance::ReviewBlocking
-  retry: 1
-review-qa-blocking-parallel:
-  extends:
-    - review-qa-blocking
-    - .rules:qa-blocking-parallel
-  parallel: 10
-
-review-qa-non-blocking:
-  extends:
-    - .review-qa-base
-    - .rules:qa-non-blocking
-  variables:
-    QA_SCENARIO: Test::Instance::ReviewNonBlocking
-  when: manual
-  allow_failure: true
-review-qa-non-blocking-parallel:
-  extends:
-    - review-qa-non-blocking
-    - .rules:qa-non-blocking-parallel
-  parallel: 5
-
 browser_performance:
   extends:
     - .default-retry
     - .review:rules:review-performance
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}docker:${DOCKER_VERSION}-git
+  services:
+    - docker:${DOCKER_VERSION}-dind
   stage: qa
   needs: ["review-deploy"]
   variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
     URL: environment_url.txt
 
 e2e-test-report:
@@ -114,26 +64,6 @@ e2e-test-report:
   stage: report
   variables:
     ALLURE_RESULTS_GLOB: "qa/tmp/allure-results"
-
-upload-knapsack-report:
-  extends:
-    - .generate-knapsack-report-base
-    - .bundle-base
-  stage: report
-  variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
-
-delete-test-resources:
-  extends:
-    - .bundle-base
-    - .rules:prepare-report
-  stage: report
-  variables:
-    GITLAB_QA_ACCESS_TOKEN: $REVIEW_APPS_ROOT_TOKEN
-  script:
-    - export GITLAB_ADDRESS="$QA_GITLAB_URL"
-    - bundle exec rake "test_resources:delete[$CI_PROJECT_DIR/qa/tmp/test-resources-*.json]"
-  allow_failure: true
 
 notify-slack:
   extends:

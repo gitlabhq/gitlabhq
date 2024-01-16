@@ -717,7 +717,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           end.to change { source.members.count }.by(-1)
         end
 
-        it_behaves_like 'rate limited endpoint', rate_limit_key: :member_delete do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :members_delete do
           let(:current_user) { maintainer }
 
           let(:another_member) { create(:user) }

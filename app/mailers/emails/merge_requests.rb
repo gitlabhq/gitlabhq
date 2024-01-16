@@ -42,8 +42,10 @@ module Emails
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_ids, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      @previous_assignees = []
-      @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+      previous_assignees = []
+      previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+      @added_assignees = @merge_request.assignees.map(&:name) - previous_assignees.map(&:name)
+      @removed_assignees = previous_assignees.map(&:name) - @merge_request.assignees.map(&:name)
 
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end

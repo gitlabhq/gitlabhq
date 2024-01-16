@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.configure do |config|
-  def gitlab_sidekiq_inline(&block)
+  def gitlab_sidekiq_inline
     # We need to cleanup the queues before running jobs in specs because the
     # middleware might have written to redis
     redis_queues_cleanup!
     redis_queues_metadata_cleanup!
-    Sidekiq::Testing.inline!(&block)
+
+    # Scoped inline! is thread-safe which breaks capybara specs
+    # see https://github.com/sidekiq/sidekiq/issues/6069
+    Sidekiq::Testing.inline!
+
+    yield
   ensure
+    Sidekiq::Testing.fake! # fake is the default so we reset it to that
     redis_queues_cleanup!
     redis_queues_metadata_cleanup!
   end

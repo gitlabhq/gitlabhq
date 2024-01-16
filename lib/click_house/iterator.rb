@@ -22,9 +22,10 @@ module ClickHouse
   # builder = ClickHouse::QueryBuilder.new('event_authors').where(type: 'some_type')
   class Iterator
     # rubocop: disable CodeReuse/ActiveRecord -- this is a ClickHouse query builder class usin Arel
-    def initialize(query_builder:, connection:)
+    def initialize(query_builder:, connection:, min_value: nil)
       @query_builder = query_builder
       @connection = connection
+      @min_value = min_value
     end
 
     def each_batch(column: :id, of: 10_000)
@@ -36,18 +37,18 @@ module ClickHouse
       row = connection.select(min_max_query.to_sql).first
       return if row.nil?
 
-      min_value = row['min']
-      max_value = row['max']
-      return if max_value == 0
+      min = min_value || row['min']
+      max = row['max']
+      return if max == 0
 
       loop do
-        break if min_value > max_value
+        break if min > max
 
         yield query_builder
-          .where(table[column].gteq(min_value))
-          .where(table[column].lt(min_value + of))
+          .where(table[column].gteq(min))
+          .where(table[column].lt(min + of))
 
-        min_value += of
+        min += of
       end
     end
 
@@ -55,7 +56,7 @@ module ClickHouse
 
     delegate :table, to: :query_builder
 
-    attr_reader :query_builder, :connection
+    attr_reader :query_builder, :connection, :min_value
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end

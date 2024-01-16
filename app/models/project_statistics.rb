@@ -145,6 +145,11 @@ class ProjectStatistics < ApplicationRecord
     bulk_increment_counter(key, increments)
   end
 
+  # Build artifacts & packages are not included in the project export
+  def export_size
+    storage_size - build_artifacts_size - packages_size
+  end
+
   private
 
   def incrementable_attribute?(key)

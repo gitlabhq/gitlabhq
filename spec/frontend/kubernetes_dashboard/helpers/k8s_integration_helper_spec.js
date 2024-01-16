@@ -3,6 +3,9 @@ import {
   calculateDeploymentStatus,
   calculateStatefulSetStatus,
   calculateDaemonSetStatus,
+  calculateJobStatus,
+  calculateCronJobStatus,
+  generateServicePortsString,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -88,6 +91,83 @@ describe('k8s_integration_helper', () => {
       ${'there are the same amount of numberReady and desiredNumberScheduled'}                         | ${ready}  | ${'Ready'}
     `('returns status as $expected when $condition', ({ item, expected }) => {
       expect(calculateDaemonSetStatus(item)).toBe(expected);
+    });
+  });
+
+  describe('calculateJobStatus', () => {
+    const completed = {
+      status: { failed: 0, succeeded: 2 },
+      spec: { completions: 2 },
+    };
+    const failed = {
+      status: { failed: 1, succeeded: 1 },
+      spec: { completions: 2 },
+    };
+    const anotherFailed = {
+      status: { failed: 0, succeeded: 1 },
+      spec: { completions: 2 },
+    };
+
+    it.each`
+      condition                                                                          | item             | expected
+      ${'there are no failed and succeeded amount is equal to completions number'}       | ${completed}     | ${'Completed'}
+      ${'there are some failed statuses'}                                                | ${failed}        | ${'Failed'}
+      ${'there are some failed and succeeded amount is not equal to completions number'} | ${anotherFailed} | ${'Failed'}
+    `('returns status as $expected when $condition', ({ item, expected }) => {
+      expect(calculateJobStatus(item)).toBe(expected);
+    });
+  });
+
+  describe('calculateCronJobStatus', () => {
+    const ready = {
+      status: { active: 0, lastScheduleTime: '2023-11-21T11:50:59Z' },
+      spec: { suspend: 0 },
+    };
+    const failed = {
+      status: { active: 1, lastScheduleTime: null },
+      spec: { suspend: 0 },
+    };
+    const suspended = {
+      status: { active: 0, lastScheduleTime: '2023-11-21T11:50:59Z' },
+      spec: { suspend: 1 },
+    };
+
+    it.each`
+      condition                                                          | item         | expected
+      ${'there are no active and the lastScheduleTime is present'}       | ${ready}     | ${'Ready'}
+      ${'there are some active and the lastScheduleTime is not present'} | ${failed}    | ${'Failed'}
+      ${'there are some suspend in the spec'}                            | ${suspended} | ${'Suspended'}
+    `('returns status as $expected when $condition', ({ item, expected }) => {
+      expect(calculateCronJobStatus(item)).toBe(expected);
+    });
+  });
+
+  describe('generateServicePortsString', () => {
+    const port = '8080';
+    const protocol = 'TCP';
+    const nodePort = '31732';
+
+    it('returns empty string if no ports provided', () => {
+      expect(generateServicePortsString([])).toBe('');
+    });
+
+    it('returns port and protocol when provided', () => {
+      expect(generateServicePortsString([{ port, protocol }])).toBe(`${port}/${protocol}`);
+    });
+
+    it('returns port, protocol and nodePort when provided', () => {
+      expect(generateServicePortsString([{ port, protocol, nodePort }])).toBe(
+        `${port}:${nodePort}/${protocol}`,
+      );
+    });
+
+    it('returns joined strings of ports if multiple are provided', () => {
+      expect(
+        generateServicePortsString([
+          { port, protocol },
+          { port, protocol, nodePort },
+        ]),
+      ).toBe(`${port}/${protocol}, ${port}:${nodePort}/${protocol}`);
     });
   });
 });

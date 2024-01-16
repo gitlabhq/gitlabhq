@@ -34,7 +34,7 @@ module Resolvers
       def resolve_owner
         return unless runner.project_type?
 
-        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_owner_projects) do |runner_ids, loader|
+        BatchLoader::GraphQL.for(runner.id).batch do |runner_ids, loader|
           # rubocop: disable CodeReuse/ActiveRecord
           runner_and_projects_with_row_number =
             ::Ci::RunnerProject

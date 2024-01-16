@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
@@ -7,6 +7,9 @@ export default {
     unassigned: __('Unassigned'),
   },
   components: { GlButton, GlLoadingIcon },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   inject: {
     canUpdate: {},
     isClassicSidebar: {
@@ -58,6 +61,21 @@ export default {
       required: false,
       default: false,
     },
+    editTooltip: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    editAriaLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    editKeyshortcuts: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -67,6 +85,15 @@ export default {
   computed: {
     editButtonText() {
       return this.isDirty ? __('Apply') : __('Edit');
+    },
+    editTooltipText() {
+      return this.isDirty ? '' : this.editTooltip;
+    },
+    editAriaLabelText() {
+      return this.isDirty ? this.editButtonText : this.editAriaLabel;
+    },
+    editKeyshortcutsText() {
+      return this.isDirty ? __('Escape') : this.editKeyshortcuts;
     },
   },
   destroyed() {
@@ -150,9 +177,13 @@ export default {
       <gl-button
         v-if="canUpdate && !initialLoading && canEdit"
         :id="buttonId"
+        v-gl-tooltip.viewport.html
         category="tertiary"
         size="small"
         class="gl-text-gray-900! gl-ml-auto hide-collapsed gl-mr-n2 shortcut-sidebar-dropdown-toggle"
+        :title="editTooltipText"
+        :aria-label="editAriaLabelText"
+        :aria-keyshortcuts="editKeyshortcutsText"
         data-testid="edit-button"
         :data-track-action="tracking.event"
         :data-track-label="tracking.label"

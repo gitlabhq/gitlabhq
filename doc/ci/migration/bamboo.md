@@ -14,7 +14,7 @@ exported from the Bamboo UI or stored in Spec repositories.
 
 If you are new to GitLab CI/CD, use the [Getting started guide](../index.md) to learn
 the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/index.md).
-If you already have some experience using GitLab CI/CD, you can review [keywords reference documentation](../yaml/index.md)
+If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/index.md)
 to see the full list of available keywords.
 
 You can also take a look at [Auto DevOps](../../topics/autodevops/index.md), which automatically
@@ -77,7 +77,7 @@ Bamboo Specs can also be [repository-stored](https://confluence.atlassian.com/ba
 
 #### `.gitlab-ci.yml` configuration file
 
-GitLab, by default, uses a [`.gitlab-ci.yml` file](../yaml/index.md) for CI/CD configuration.
+GitLab, by default, uses a [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) for CI/CD configuration.
 Alternatively, [Auto DevOps](../../topics/autodevops/index.md) can automatically build,
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 
@@ -754,7 +754,7 @@ Before doing any migration work, you should first:
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md)
      and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploy
      a static site.
-   - Review the [`.gitlab-ci.yml` keyword reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
    - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.

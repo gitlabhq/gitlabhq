@@ -13,7 +13,7 @@ which itself includes files under
 for easier maintenance.
 
 We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/development/principles/#dogfooding)
-GitLab [CI/CD features and best-practices](../../ci/yaml/index.md)
+GitLab [CI/CD features and best-practices](../../ci/index.md)
 as much as possible.
 
 ## Predictive test jobs before a merge request is approved
@@ -268,6 +268,9 @@ the specific list of rules.
 If you want to force `e2e:package-and-test` to run regardless of your changes, you can add the
 `pipeline:run-all-e2e` label to the merge request.
 
+The [`e2e:test-on-gdk`](../testing_guide/end_to_end/index.md#using-the-test-on-gdk-job) child pipeline runs `:reliable`
+E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
+
 Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
 
 ### Review app jobs
@@ -296,6 +299,23 @@ The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They
 set and get the `ee/` folder removed before the tests start running.
 
 The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
+
+#### As-if-FOSS cross project downstream pipeline
+
+As an alternative to the `* as-if-foss` jobs, we can also run a cross project
+FOSS pipeline exactly in the `gitlab-org/gitlab-foss` project. We trigger it
+in the following cases:
+
+- when the `pipeline:run-as-if-foss-cross-project` label is set on the merge request
+
+This is still working-in-progress to replace the `* as-if-foss` jobs. The
+goal is to simplify pipeline rules and make it more clear about the intention.
+
+##### Tokens set in the project variables
+
+- `AS_IF_FOSS_TOKEN`: This is a [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss)
+  project token with `developer` role and `write_repository` permission,
+  to push generated `as-if-foss/*` branch.
 
 ### As-if-JH cross project downstream pipeline
 
@@ -396,7 +416,8 @@ flowchart TD
 - `ADD_JH_FILES_TOKEN`: This is a [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab)
   project token with `read_api` permission, to be able to download JiHu files.
 - `AS_IF_JH_TOKEN`: This is a [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
-  project token with `write_repository` permission, to push generated `as-if-jh/*` branch.
+  project token with `developer` role and `write_repository` permission,
+  to push generated `as-if-jh/*` branch.
 
 ##### How we generate the as-if-JH branch
 
@@ -610,30 +631,30 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.0 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.1.
+We're running Ruby 3.1 on GitLab.com, as well as for the default branch.
+To prepare for the next Ruby version, we will run merge requests in Ruby 3.2,
+starting on February 2024. Please see the roadmap at
+[Ruby 3.2 epic](https://gitlab.com/groups/gitlab-org/-/epics/9684#plan)
+for more details.
 
-This takes effects at the time when
-[Run merge requests in Ruby 3.1 by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134290)
-is merged. See
-[Ruby 3.1 epic](https://gitlab.com/groups/gitlab-org/-/epics/10034)
-for the roadmap to fully make Ruby 3.1 the default.
+To make sure all supported Ruby versions are working, we also run our test
+suite on dedicated 2-hourly scheduled pipelines for each supported versions.
 
-To make sure both Ruby versions are working, we also run our test suite
-against both Ruby 3.0 and Ruby 3.1 on dedicated 2-hourly scheduled pipelines.
+For merge requests, you can add the following labels to run the respective
+Ruby version only:
 
-For merge requests, you can add the `pipeline:run-in-ruby3_0` label to switch
-the Ruby version to 3.0. When you do this, the test suite will no longer run
-in Ruby 3.1 (default for merge requests).
+- `pipeline:run-in-ruby3_0`
+- `pipeline:run-in-ruby3_1`
+- `pipeline:run-in-ruby3_2`
 
-When the pipeline is running in a Ruby version not considered default, an
-additional job `verify-default-ruby` will also run and always fail to remind
-us to remove the label and run in default Ruby before merging the merge
-request. At the moment both Ruby 3.0 and Ruby 3.1 are considered default.
+Note that when you do this, the test suite will no longer run in the default
+Ruby version for merge requests. In this case, an additional job
+`verify-default-ruby` will also run and always fail to remind us to remove
+the label and run in default Ruby before merging the merge request.
 
 This should let us:
 
-- Test changes for Ruby 3.1
+- Test changes for any supported Ruby versions
 - Make sure it will not break anything when it's merged into the default branch
 
 ### PostgreSQL versions testing
@@ -649,24 +670,27 @@ We also run our test suite against PostgreSQL 13 upon specific database library 
 
 | Where?                                                                                           | PostgreSQL version                              | Ruby version          |
 |--------------------------------------------------------------------------------------------------|-------------------------------------------------|-----------------------|
-| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 |
-| `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour)             | 14 (default version), 13 for DB library changes | 3.0 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3_1` branch (every odd-numbered hour), see below. | 14 (default version), 13 for DB library changes | 3.1                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15                    | 3.0 (default version) |
+| Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 (default version) |
+| `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)    | 14 (default version), 13 for DB library changes | 3.1 (default version) |
+| `maintenance` scheduled pipelines for the `ruby3_0` branch (every odd-numbered hour at XX:40)    | 14 (default version), 13 for DB library changes | 3.0                   |
+| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10)    | 14 (default version), 13 for DB library changes | 3.2                   |
+| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15                    | 3.1 (default version) |
 
-There are 2 pipeline schedules used for testing Ruby 3.1. One is triggering a
-pipeline in `ruby3_1-sync` branch, which updates the `ruby3_1` branch with latest
-`master`, and no pipelines will be triggered by this push. The other schedule
-is triggering a pipeline in `ruby3_1` 5 minutes after it, which is considered
-the maintenance schedule to run test suites and update cache.
+For each current Ruby versions we're testing against with, we run
+maintenance scheduled pipelines every 2 hours on their respective `ruby\d_\d`
+branches. All these branches must not have any changes. These branches are
+only there to run pipelines with their respective Ruby versions in the
+scheduled maintenance pipelines.
 
-The `ruby3_1` branch must not have any changes. The branch is only there to set
-`RUBY_VERSION` to `3.1` in the maintenance pipeline schedule.
+Additionally, we have scheduled pipelines running on `ruby-sync` branch also
+every 2 hours, updating all the `ruby\d_\d` branches to be up-to-date with
+the default branch `master`. No pipelines will be triggered by this push.
 
-The `gitlab` job in the `ruby3_1-sync` branch uses a `gitlab-org/gitlab` project
-token with `write_repository` scope and `Maintainer` role with no expiration.
-The token is stored in the `RUBY3_1_SYNC_TOKEN` variable in `gitlab-org/gitlab`.
+The `gitlab` job in the `ruby-sync` branch uses a `gitlab-org/gitlab` project
+token named `RUBY_SYNC` with `write_repository` scope and `Maintainer` role,
+expiring on 2024-12-01. The token is stored in the `RUBY_SYNC_TOKEN` variable
+in the pipeline schedule for `ruby-sync` branch.
 
 ### Redis versions testing
 
@@ -692,9 +716,9 @@ We also run tests with a single database in nightly scheduled pipelines, and in 
 Single database tests run in two modes:
 
 1. **Single database with one connection**. Where GitLab connects to all the tables using one connection pool.
-This runs through all the jobs that end with `-single-db`
+   This runs through all the jobs that end with `-single-db`
 1. **Single database with two connections**. Where GitLab connects to `gitlab_main`, `gitlab_ci` database tables
-using different database connections. This runs through all the jobs that end with `-single-db-ci-connection`.
+   using different database connections. This runs through all the jobs that end with `-single-db-ci-connection`.
 
 If you want to force tests to run with a single database, you can add the `pipeline:run-single-db` label to the merge request.
 
@@ -747,28 +771,29 @@ graph LR
 
 ### Backend pipeline
 
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/433316063).
+[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/1118782302).
 
 ```mermaid
 graph RL;
   classDef criticalPath fill:#f66;
 
-  1-3["compile-test-assets (5.5 minutes)"];
-  class 1-3 criticalPath;
+  1-1["clone-gitlab-repo (1 minute)"];
+  1-3["compile-test-assets (3 minutes)"];
   click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
-  1-6["setup-test-env (3.6 minutes)"];
+  1-6["setup-test-env (4 minutes)"];
+  class 1-6 criticalPath;
   click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
-  1-14["retrieve-tests-metadata"];
+  1-14["retrieve-tests-metadata (50 seconds)"];
   click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
-  1-15["detect-tests"];
+  1-15["detect-tests (1 minute)"];
   click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
 
-  2_5-1["rspec & db jobs (24 minutes)"];
+  2_5-1["rspec & db jobs (30~50 minutes)"];
   class 2_5-1 criticalPath;
   click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
-  2_5-1 --> 1-3 & 1-6 & 1-14 & 1-15;
+  2_5-1 --> 1-1 & 1-3 & 1-6 & 1-14 & 1-15;
 
-  ac-1["rspec:artifact-collector (2 minutes)<br/>(workaround for 'needs' limitation)"];
+  ac-1["rspec:artifact-collector (30 seconds)<br/>(workaround for 'needs' limitation)"];
   class ac-1 criticalPath;
   ac-1 --> 2_5-1;
 
@@ -781,7 +806,6 @@ graph RL;
   class 4_3-1 criticalPath;
   click 4_3-1 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=13446492&udv=1005715"
   4_3-1 --> 3_2-1;
-
 ```
 
 ### Review app pipeline

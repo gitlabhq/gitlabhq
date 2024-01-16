@@ -575,7 +575,7 @@
           left: 1rem;
           width: 1rem;
           height: 1rem;
-          mask-image: asset_url('icons-stacked.svg#check');
+          mask-image: url('icons-stacked.svg#check');
           mask-repeat: no-repeat;
           mask-size: cover;
           mask-position: center center;
@@ -806,28 +806,6 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .navbar-gitlab {
-    li.dropdown {
-      position: static;
-    }
-  }
-
-  header.navbar-gitlab .dropdown {
-    .dropdown-menu {
-      width: 100%;
-      min-width: 100%;
-    }
-  }
-
-  header.navbar-gitlab-new .header-content .dropdown {
-    .dropdown-menu {
-      left: 0;
-      min-width: 100%;
-    }
-  }
-}
-
 .dropdown-content-faded-mask {
   position: relative;
 
@@ -958,4 +936,18 @@
   .dropdown-menu {
     width: 100%;
   }
+}
+
+.group-namespace-dropdown .gl-new-dropdown-custom-toggle {
+  display: flex;
+  flex: auto;
+
+  .gl-button-text {
+    display: flex;
+    @include gl-w-full;
+  }
+}
+
+.group-namespace-dropdown .gl-new-dropdown-item-text-wrapper {
+  word-break: break-word;
 }

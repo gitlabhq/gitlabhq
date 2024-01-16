@@ -406,6 +406,37 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#find_organization!' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:initial_current_user).and_return(user)
+    end
+
+    context 'when user is authenticated' do
+      it 'returns requested organization' do
+        expect(helper.find_organization!(organization.id)).to eq(organization)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      let(:user) { nil }
+
+      it 'returns requested organization' do
+        expect(helper.find_organization!(organization.id)).to eq(organization)
+      end
+    end
+
+    context 'when organization does not exist' do
+      it 'returns nil' do
+        expect(helper).to receive(:render_api_error!).with('404 Organization Not Found', 404)
+        expect(helper.find_organization!(non_existing_record_id)).to be_nil
+      end
+    end
+  end
+
   describe '#find_group!' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }
@@ -457,7 +488,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       end
     end
 
-    context 'support for IDs and paths as arguments' do
+    context 'with support for IDs and paths as arguments' do
       let_it_be(:group) { create(:group) }
 
       let(:user) { group.first_owner }
@@ -501,6 +532,34 @@ RSpec.describe API::Helpers, feature_category: :shared do
         let(:non_existing_id) { -1 }
 
         it_behaves_like 'group finder'
+      end
+    end
+  end
+
+  context 'with support for organization as an argument' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:organization) { create(:organization) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(group.first_owner)
+      allow(helper).to receive(:job_token_authentication?).and_return(false)
+      allow(helper).to receive(:authenticate_non_public?).and_return(false)
+    end
+
+    subject { helper.find_group!(group.id, organization: organization) }
+
+    context 'when group exists in the organization' do
+      before do
+        group.update!(organization: organization)
+      end
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'when group does not exist in the organization' do
+      it 'returns nil' do
+        expect(helper).to receive(:render_api_error!).with('404 Group Not Found', 404)
+        is_expected.to be_nil
       end
     end
   end
@@ -674,23 +733,15 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
     let(:send_authorized_project_scope) { helper.authorized_project_scope?(project) }
 
-    where(:job_token_authentication, :route_setting, :feature_flag, :same_job_project, :expected_result) do
-      false | false | false | false | true
-      false | false | false | true  | true
-      false | false | true  | false | true
-      false | false | true  | true  | true
-      false | true  | false | false | true
-      false | true  | false | true  | true
-      false | true  | true  | false | true
-      false | true  | true  | true  | true
-      true  | false | false | false | true
-      true  | false | false | true  | true
-      true  | false | true  | false | true
-      true  | false | true  | true  | true
-      true  | true  | false | false | false
-      true  | true  | false | true  | false
-      true  | true  | true  | false | false
-      true  | true  | true  | true  | true
+    where(:job_token_authentication, :route_setting, :same_job_project, :expected_result) do
+      false | false | false | true
+      false | false | true  | true
+      false | true  | false | true
+      false | true  | true  | true
+      true  | false | false | true
+      true  | false | true  | true
+      true  | true  | false | false
+      true  | true  | true  | true
     end
 
     with_them do
@@ -699,9 +750,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
         allow(helper).to receive(:route_authentication_setting).and_return(job_token_scope: route_setting ? :project : nil)
         allow(helper).to receive(:current_authenticated_job).and_return(job)
         allow(job).to receive(:project).and_return(same_job_project ? project : other_project)
-
-        stub_feature_flags(ci_job_token_scope: false)
-        stub_feature_flags(ci_job_token_scope: project) if feature_flag
       end
 
       it 'returns the expected result' do

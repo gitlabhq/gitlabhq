@@ -1,16 +1,22 @@
-import { CoreV1Api, WatchApi, AppsV1Api } from '@gitlab/cluster-client';
+import { CoreV1Api, WatchApi, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
 import { resolvers } from '~/kubernetes_dashboard/graphql/resolvers';
 import k8sDashboardPodsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_pods.query.graphql';
 import k8sDashboardDeploymentsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_deployments.query.graphql';
 import k8sDashboardStatefulSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_stateful_sets.query.graphql';
 import k8sDashboardReplicaSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_replica_sets.query.graphql';
 import k8sDashboardDaemonSetsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_daemon_sets.query.graphql';
+import k8sDashboardJobsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_jobs.query.graphql';
+import k8sDashboardCronJobsQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_cron_jobs.query.graphql';
+import k8sDashboardServicesQuery from '~/kubernetes_dashboard/graphql/queries/k8s_dashboard_services.query.graphql';
 import {
   k8sPodsMock,
   k8sDeploymentsMock,
   k8sStatefulSetsMock,
   k8sReplicaSetsMock,
   k8sDaemonSetsMock,
+  k8sJobsMock,
+  k8sCronJobsMock,
+  k8sServicesMock,
 } from '../mock_data';
 
 describe('~/frontend/environments/graphql/resolvers', () => {
@@ -453,6 +459,252 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
       await expect(
         mockResolvers.Query.k8sDaemonSets(null, { configuration }, { client }),
+      ).rejects.toThrow('API error');
+    });
+  });
+
+  describe('k8sJobs', () => {
+    const client = { writeQuery: jest.fn() };
+
+    const mockWatcher = WatchApi.prototype;
+    const mockJobsListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
+
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+      if (eventName === 'data') {
+        callback([]);
+      }
+    });
+
+    const mockJobsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sJobsMock,
+      });
+    });
+
+    const mockAllJobsListFn = jest.fn().mockImplementation(mockJobsListFn);
+
+    describe('when the Jobs data is present', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(BatchV1Api.prototype, 'listBatchV1JobForAllNamespaces')
+          .mockImplementation(mockAllJobsListFn);
+        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockJobsListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+      });
+
+      it('should request all Jobs from the cluster_client library and watch the events', async () => {
+        const Jobs = await mockResolvers.Query.k8sJobs(
+          null,
+          {
+            configuration,
+          },
+          { client },
+        );
+
+        expect(mockAllJobsListFn).toHaveBeenCalled();
+        expect(mockJobsListWatcherFn).toHaveBeenCalled();
+
+        expect(Jobs).toEqual(k8sJobsMock);
+      });
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sJobs(null, { configuration, namespace: '' }, { client });
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sDashboardJobsQuery,
+          variables: { configuration, namespace: '' },
+          data: { k8sJobs: [] },
+        });
+      });
+    });
+
+    it('should not watch Jobs from the cluster_client library when the Jobs data is not present', async () => {
+      jest.spyOn(BatchV1Api.prototype, 'listBatchV1JobForAllNamespaces').mockImplementation(
+        jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            items: [],
+          });
+        }),
+      );
+
+      await mockResolvers.Query.k8sJobs(null, { configuration }, { client });
+
+      expect(mockJobsListWatcherFn).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(BatchV1Api.prototype, 'listBatchV1JobForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sJobs(null, { configuration }, { client }),
+      ).rejects.toThrow('API error');
+    });
+  });
+
+  describe('k8sCronJobs', () => {
+    const client = { writeQuery: jest.fn() };
+
+    const mockWatcher = WatchApi.prototype;
+    const mockCronJobsListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
+
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+      if (eventName === 'data') {
+        callback([]);
+      }
+    });
+
+    const mockCronJobsListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sCronJobsMock,
+      });
+    });
+
+    const mockAllCronJobsListFn = jest.fn().mockImplementation(mockCronJobsListFn);
+
+    describe('when the CronJobs data is present', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(BatchV1Api.prototype, 'listBatchV1CronJobForAllNamespaces')
+          .mockImplementation(mockAllCronJobsListFn);
+        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockCronJobsListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+      });
+
+      it('should request all CronJobs from the cluster_client library and watch the events', async () => {
+        const CronJobs = await mockResolvers.Query.k8sCronJobs(
+          null,
+          {
+            configuration,
+          },
+          { client },
+        );
+
+        expect(mockAllCronJobsListFn).toHaveBeenCalled();
+        expect(mockCronJobsListWatcherFn).toHaveBeenCalled();
+
+        expect(CronJobs).toEqual(k8sCronJobsMock);
+      });
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sCronJobs(null, { configuration, namespace: '' }, { client });
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sDashboardCronJobsQuery,
+          variables: { configuration, namespace: '' },
+          data: { k8sCronJobs: [] },
+        });
+      });
+    });
+
+    it('should not watch CronJobs from the cluster_client library when the CronJobs data is not present', async () => {
+      jest.spyOn(BatchV1Api.prototype, 'listBatchV1CronJobForAllNamespaces').mockImplementation(
+        jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            items: [],
+          });
+        }),
+      );
+
+      await mockResolvers.Query.k8sCronJobs(null, { configuration }, { client });
+
+      expect(mockCronJobsListWatcherFn).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(BatchV1Api.prototype, 'listBatchV1CronJobForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sCronJobs(null, { configuration }, { client }),
+      ).rejects.toThrow('API error');
+    });
+  });
+
+  describe('k8sServices', () => {
+    const client = { writeQuery: jest.fn() };
+
+    const mockWatcher = WatchApi.prototype;
+    const mockServicesListWatcherFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockWatcher);
+    });
+
+    const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
+      if (eventName === 'data') {
+        callback([]);
+      }
+    });
+
+    const mockServicesListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        items: k8sServicesMock,
+      });
+    });
+
+    const mockAllServicesListFn = jest.fn().mockImplementation(mockServicesListFn);
+
+    describe('when the Services data is present', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+          .mockImplementation(mockAllServicesListFn);
+        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockServicesListWatcherFn);
+        jest.spyOn(mockWatcher, 'on').mockImplementation(mockOnDataFn);
+      });
+
+      it('should request all Services from the cluster_client library and watch the events', async () => {
+        const Services = await mockResolvers.Query.k8sServices(
+          null,
+          {
+            configuration,
+          },
+          { client },
+        );
+
+        expect(mockAllServicesListFn).toHaveBeenCalled();
+        expect(mockServicesListWatcherFn).toHaveBeenCalled();
+
+        expect(Services).toEqual(k8sServicesMock);
+      });
+
+      it('should update cache with the new data when received from the library', async () => {
+        await mockResolvers.Query.k8sServices(null, { configuration, namespace: '' }, { client });
+
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          query: k8sDashboardServicesQuery,
+          variables: { configuration, namespace: '' },
+          data: { k8sServices: [] },
+        });
+      });
+    });
+
+    it('should not watch Services from the cluster_client library when the Services data is not present', async () => {
+      jest.spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces').mockImplementation(
+        jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            items: [],
+          });
+        }),
+      );
+
+      await mockResolvers.Query.k8sServices(null, { configuration }, { client });
+
+      expect(mockServicesListWatcherFn).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sServices(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

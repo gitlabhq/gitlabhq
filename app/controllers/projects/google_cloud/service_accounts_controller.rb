@@ -27,7 +27,7 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
   def create
     permitted_params = params.permit(:gcp_project, :ref)
 
-    response = GoogleCloud::CreateServiceAccountsService.new(
+    response = CloudSeed::GoogleCloud::CreateServiceAccountsService.new(
       project,
       current_user,
       google_oauth2_token: token_in_session,

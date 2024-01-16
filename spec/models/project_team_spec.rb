@@ -341,22 +341,60 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     end
   end
 
-  describe "#human_max_access" do
-    it 'returns Maintainer role' do
-      user = create(:user)
-      group = create(:group)
-      project = create(:project, namespace: group)
+  describe '#has_user?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+    let_it_be(:invited_project_member) { create(:project_member, :owner, :invited, project: project) }
 
+    subject { project.team.has_user?(user) }
+
+    context 'when the user is a member' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to be_truthy }
+      it { expect(group.has_user?(user2)).to be_falsey }
+    end
+
+    context 'when user is a member with minimal access' do
+      before_all do
+        project.add_member(user, GroupMember::MINIMAL_ACCESS)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is not a direct member of the project' do
+      before_all do
+        create(:group_member, :developer, user: user, source: group)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the user is an invited member' do
+      it 'returns false when nil is passed' do
+        expect(invited_project_member.user).to eq(nil)
+        expect(project.team.has_user?(invited_project_member.user)).to be_falsey
+      end
+    end
+  end
+
+  describe "#human_max_access" do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+
+    it 'returns Maintainer role' do
       group.add_maintainer(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Maintainer'
     end
 
     it 'returns Owner role' do
-      user = create(:user)
-      group = create(:group)
-      project = create(:project, namespace: group)
-
       group.add_owner(user)
 
       expect(project.team.human_max_access(user.id)).to eq 'Owner'

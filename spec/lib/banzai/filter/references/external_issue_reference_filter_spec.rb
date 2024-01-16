@@ -338,9 +338,9 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
       single_reference = "External Issue #{issue1.to_reference}"
       multiple_references = "External Issues #{issue1.to_reference} and #{issue2.to_reference}"
 
-      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+      control = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }
 
-      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
     end
   end
 end

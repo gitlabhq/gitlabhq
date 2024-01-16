@@ -187,6 +187,7 @@
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",
+    "WorkItemWidgetColor",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetHealthStatus",
@@ -199,6 +200,7 @@
     "WorkItemWidgetNotifications",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
+    "WorkItemWidgetRolledupDates",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",

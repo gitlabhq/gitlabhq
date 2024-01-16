@@ -39,7 +39,7 @@ You can upload a file from the GitLab UI.
 1. Go to the directory where you want to upload the file.
 1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
 1. Complete the fields.
-   - To create a merge request with your changes, enter a branch name
+   To create a merge request with your changes, enter a branch name
    that's not your repository's [default branch](branches/default.md).
 1. Select **Upload file**.
 
@@ -85,7 +85,7 @@ Projects that contain a `.xcodeproj` or `.xcworkspace` directory can be cloned
 into Xcode on macOS.
 
 1. From the GitLab UI, go to the project's overview page.
-1. Select **Clone**.
+1. In the upper-right corner, select **Code**.
 1. Select **Xcode**.
 
 The project is cloned onto your computer and you are
@@ -101,7 +101,7 @@ Visual Studio Code:
 
 - From the GitLab interface:
   1. Go to the project's overview page.
-  1. Select **Clone**.
+  1. In the upper-right corner, select **Code**.
   1. Under **Open in your IDE**, select **Visual Studio Code (SSH)** or **Visual Studio Code (HTTPS)**.
   1. Select a folder to clone the project into.
 
@@ -121,16 +121,15 @@ Prerequisites:
 To do this:
 
 1. Go to the project's overview page.
-1. Select **Clone**.
+1. In the upper-right corner, select **Code**.
 1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
 
 ## Download the code in a repository
 
-> Support for [including Git LFS blobs](../../../topics/git/lfs#lfs-objects-in-project-archives) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
-
 You can download the source code that's stored in a repository.
 
-1. Above the file list, select the download icon (**{download}**).
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Above the file list, select **Code**.
 1. From the options, select the files you want to download.
 
    - **Source code:**

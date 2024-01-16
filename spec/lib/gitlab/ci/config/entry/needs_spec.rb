@@ -52,6 +52,27 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs, feature_category: :pipeline_c
       end
     end
 
+    context 'when config has disallowed keys' do
+      let(:config) { ['some_value'] }
+
+      before do
+        needs.metadata[:allowed_needs] = %i[cross_dependency]
+        needs.compose!
+      end
+
+      describe '#valid?' do
+        it 'returns invalid' do
+          expect(needs.valid?).to be_falsey
+        end
+      end
+
+      describe '#errors' do
+        it 'returns invalid types error' do
+          expect(needs.errors).to include('needs config uses invalid types: job')
+        end
+      end
+    end
+
     context 'when wrong needs type is used' do
       let(:config) { [{ job: 'job_name', artifacts: true, some: :key }] }
 

@@ -152,51 +152,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
           end
         end
 
-        context 'when truncate_ci_merge_request_description feature flag is disabled' do
-          before do
-            stub_feature_flags(truncate_ci_merge_request_description: false)
-          end
-
-          context 'when merge request description hits the limit' do
-            let(:merge_request_description) { 'a' * (MergeRequest::CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH + 1) }
-
-            it 'does not truncate the exposed description' do
-              expect(subject.to_hash)
-                .to include(
-                  'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description
-                )
-              expect(subject.to_hash)
-                .not_to have_key('CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED')
-            end
-          end
-
-          context 'when merge request description fits the length limit' do
-            let(:merge_request_description) { 'a' * (MergeRequest::CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH - 1) }
-
-            it 'does not truncate the exposed description' do
-              expect(subject.to_hash)
-                .to include(
-                  'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description
-                )
-              expect(subject.to_hash)
-               .not_to have_key('CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED')
-            end
-          end
-
-          context 'when merge request description does not exist' do
-            let(:merge_request_description) { nil }
-
-            it 'does not truncate the exposed description' do
-              expect(subject.to_hash)
-                .to include(
-                  'CI_MERGE_REQUEST_DESCRIPTION' => merge_request.description
-                )
-              expect(subject.to_hash)
-               .not_to have_key('CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED')
-            end
-          end
-        end
-
         it 'exposes diff variables' do
           expect(subject.to_hash)
             .to include(

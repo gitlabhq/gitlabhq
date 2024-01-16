@@ -1,9 +1,20 @@
 <script>
-import { GlButton, GlModal, GlModalDirective, GlCard, GlIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlModal,
+  GlModalDirective,
+  GlCard,
+  GlIcon,
+  GlDisclosureDropdown,
+  GlCollapsibleListbox,
+  GlFormGroup,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRule from './components/branch_rule.vue';
 import { I18N, PROTECTED_BRANCHES_ANCHOR, BRANCH_PROTECTION_MODAL_ID } from './constants';
 
@@ -14,12 +25,16 @@ export default {
     BranchRule,
     GlButton,
     GlModal,
+    GlFormGroup,
     GlCard,
     GlIcon,
+    GlCollapsibleListbox,
+    GlDisclosureDropdown,
   },
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   apollo: {
     branchRules: {
       query: branchRulesQuery,
@@ -38,17 +53,86 @@ export default {
   },
   inject: {
     projectPath: { default: '' },
+    branchRulesPath: { default: '' },
   },
   data() {
     return {
       branchRules: [],
+      branchRuleName: '',
+      searchQuery: '',
     };
+  },
+  computed: {
+    addRuleItems() {
+      return [{ text: this.$options.i18n.branchName, action: () => this.openCreateRuleModal() }];
+    },
+    createRuleItems() {
+      return this.isWildcardAvailable ? [this.wildcardItem] : this.filteredOpenBranches;
+    },
+    filteredOpenBranches() {
+      const openBranches = window.gon.open_branches.map((item) => ({
+        text: item.text,
+        value: item.text,
+      }));
+      return openBranches.filter((item) => item.text.includes(this.searchQuery));
+    },
+    wildcardItem() {
+      return { text: this.$options.i18n.createWildcard, value: this.searchQuery };
+    },
+    isWildcardAvailable() {
+      return this.searchQuery.includes('*');
+    },
+    createRuleText() {
+      return this.branchRuleName || this.$options.i18n.branchNamePlaceholder;
+    },
+    branchRuleEditPath() {
+      return `${this.branchRulesPath}?branch=${encodeURIComponent(this.branchRuleName)}`;
+    },
+    primaryProps() {
+      return {
+        text: this.$options.i18n.createProtectedBranch,
+        attributes: {
+          variant: 'confirm',
+          disabled: !this.branchRuleName,
+        },
+      };
+    },
+    cancelProps() {
+      return {
+        text: this.$options.i18n.createBranchRule,
+      };
+    },
   },
   methods: {
     showProtectedBranches() {
       // Protected branches section is on the same page as the branch rules section.
       expandSection(this.$options.protectedBranchesAnchor);
       scrollToElement(this.$options.protectedBranchesAnchor);
+    },
+    openCreateRuleModal() {
+      this.$refs[this.$options.modalId].show();
+    },
+    handleBranchRuleSearch(query) {
+      this.searchQuery = query;
+    },
+    addBranchRule() {
+      this.$apollo
+        .mutate({
+          mutation: createBranchRuleMutation,
+          variables: {
+            projectPath: this.projectPath,
+            name: this.branchRuleName,
+          },
+        })
+        .then(() => {
+          window.location.assign(this.branchRuleEditPath);
+        })
+        .catch(() => {
+          createAlert({ message: this.$options.i18n.createBranchRuleError });
+        });
+    },
+    selectBranchRuleName(branchName) {
+      this.branchRuleName = branchName;
     },
   },
   modalId: BRANCH_PROTECTION_MODAL_ID,
@@ -72,7 +156,15 @@ export default {
           {{ branchRules.length }}
         </div>
       </div>
+      <gl-disclosure-dropdown
+        v-if="glFeatures.addBranchRule"
+        :toggle-text="$options.i18n.addBranchRule"
+        :items="addRuleItems"
+        size="small"
+        no-caret
+      />
       <gl-button
+        v-else
         v-gl-modal="$options.modalId"
         size="small"
         class="gl-ml-3"
@@ -99,6 +191,37 @@ export default {
       </div>
     </ul>
     <gl-modal
+      v-if="glFeatures.addBranchRule"
+      :ref="$options.modalId"
+      :modal-id="$options.modalId"
+      :title="$options.i18n.createBranchRule"
+      :action-primary="primaryProps"
+      :action-cancel="cancelProps"
+      @primary="addBranchRule"
+      @change="searchQuery = ''"
+    >
+      <gl-form-group
+        :label="$options.i18n.branchName"
+        :description="$options.i18n.branchNameDescription"
+      >
+        <gl-collapsible-listbox
+          v-model="branchRuleName"
+          searchable
+          :items="createRuleItems"
+          :toggle-text="createRuleText"
+          block
+          @search="handleBranchRuleSearch"
+          @select="selectBranchRuleName"
+        >
+          <template v-if="isWildcardAvailable" #list-item="{ item }">
+            {{ item.text }}
+            <code>{{ searchQuery }}</code>
+          </template>
+        </gl-collapsible-listbox>
+      </gl-form-group>
+    </gl-modal>
+    <gl-modal
+      v-else
       :ref="$options.modalId"
       :modal-id="$options.modalId"
       :title="$options.i18n.addBranchRule"

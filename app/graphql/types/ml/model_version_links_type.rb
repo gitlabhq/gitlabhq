@@ -11,6 +11,9 @@ module Types
 
       field :show_path, GraphQL::Types::String,
         null: true, description: 'Path to the details page of the model version.', method: :path
+
+      field :package_path, GraphQL::Types::String,
+        null: true, description: 'Path to the package of the model version.', method: :package_path
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

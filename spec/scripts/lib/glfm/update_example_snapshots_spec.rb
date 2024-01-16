@@ -629,21 +629,21 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p><strong>bold</strong></p>
             static: |-
-              <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+              <p data-sourcepos="1:1-1:8" dir="auto"><strong data-sourcepos="1:1-1:8">bold</strong></p>
             wysiwyg: |-
               <p dir="auto"><strong>bold</strong></p>
           02_01_00__inlines__strong__002:
             canonical: |
               <p><strong>bold with more text</strong></p>
             static: |-
-              <p data-sourcepos="1:1-1:23" dir="auto"><strong>bold with more text</strong></p>
+              <p data-sourcepos="1:1-1:23" dir="auto"><strong data-sourcepos="1:1-1:23">bold with more text</strong></p>
             wysiwyg: |-
               <p dir="auto"><strong>bold with more text</strong></p>
           02_03_00__inlines__strikethrough_extension__001:
             canonical: |
               <p><del>Hi</del> Hello, world!</p>
             static: |-
-              <p data-sourcepos="1:1-1:20" dir="auto"><del>Hi</del> Hello, world!</p>
+              <p data-sourcepos="1:1-1:20" dir="auto"><del data-sourcepos="1:1-1:6">Hi</del> Hello, world!</p>
             wysiwyg: |-
               <p dir="auto"><s>Hi</s> Hello, world!</p>
           03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
@@ -678,14 +678,14 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p><a href="groups-test-file">groups-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:45" dir="auto"><a href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+              <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
             wysiwyg: |-
               <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
           06_02_00__api_request_overrides__project_repo_link__001:
             canonical: |
               <p><a href="projects-test-file">projects-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
+              <p data-sourcepos="1:1-1:40" dir="auto"><a data-sourcepos="1:1-1:40" href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
             wysiwyg: |-
               <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
           06_03_00__api_request_overrides__project_snippet_ref__001:
@@ -706,7 +706,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:50" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
+              <p data-sourcepos="1:1-1:50" dir="auto"><a data-sourcepos="1:1-1:50" href="/glfm_group/glfm_project/-/wikis/project-wikis-test-file" data-canonical-src="project-wikis-test-file">project-wikis-test-file</a></p>
             wysiwyg: |-
               <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="project-wikis-test-file">project-wikis-test-file</a></p>
         YAML

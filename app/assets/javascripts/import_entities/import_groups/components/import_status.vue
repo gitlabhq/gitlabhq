@@ -31,11 +31,6 @@ export default {
       required: false,
       default: false,
     },
-    showDetailsLink: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     status: {
       type: String,
       required: true,
@@ -56,7 +51,7 @@ export default {
     },
 
     showDetails() {
-      return this.showDetailsLink && Boolean(this.detailsPathWithId) && this.hasFailures;
+      return Boolean(this.detailsPathWithId) && this.hasFailures;
     },
 
     detailsPathWithId() {

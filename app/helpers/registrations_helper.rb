@@ -11,10 +11,6 @@ module RegistrationsHelper
     }
   end
 
-  def signup_box_template
-    'devise/shared/signup_box'
-  end
-
   # overridden in EE
   def oauth_tracking_label; end
 

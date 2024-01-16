@@ -6,6 +6,7 @@ module Gitlab
       include ForeignKeyHelpers
       include TableManagementHelpers
       include IndexHelpers
+      include UniquenessHelpers
     end
   end
 end

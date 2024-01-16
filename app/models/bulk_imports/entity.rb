@@ -150,9 +150,9 @@ class BulkImports::Entity < ApplicationRecord
     File.join(base_resource_path, 'export_relations')
   end
 
-  def export_relations_url_path(batched: false)
-    if batched && bulk_import.supports_batched_export?
-      Gitlab::Utils.add_url_parameters(export_relations_url_path_base, batched: batched)
+  def export_relations_url_path
+    if bulk_import.supports_batched_export?
+      Gitlab::Utils.add_url_parameters(export_relations_url_path_base, batched: true)
     else
       export_relations_url_path_base
     end

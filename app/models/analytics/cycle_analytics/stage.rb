@@ -7,7 +7,6 @@ module Analytics
 
       self.table_name = :analytics_cycle_analytics_group_stages
 
-      include DatabaseEventTracking
       include Analytics::CycleAnalytics::Stageable
       include Analytics::CycleAnalytics::Parentable
 
@@ -37,22 +36,6 @@ module Analytics
           .where(parent_id: all_namespace_ids)
           .select("DISTINCT ON(stage_event_hash_id) #{quoted_table_name}.*")
       end
-
-      SNOWPLOW_ATTRIBUTES = %i[
-        id
-        created_at
-        updated_at
-        relative_position
-        start_event_identifier
-        end_event_identifier
-        group_id
-        start_event_label_id
-        end_event_label_id
-        hidden
-        custom
-        name
-        group_value_stream_id
-      ].freeze
 
       private
 

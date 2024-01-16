@@ -18,9 +18,16 @@ variables:
 validation:
   stage: dast
   image:
-    name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dast-runner-validation:$DAST_RUNNER_VALIDATION_VERSION"
+    name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dast-runner-validation:$DAST_RUNNER_VALIDATION_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
   allow_failure: false
   script:
     - ~/validate.sh
+  rules:
+    - if: $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
+    - if: $CI_GITLAB_FIPS_MODE != "true"
+      variables:
+        DAST_IMAGE_SUFFIX: ""

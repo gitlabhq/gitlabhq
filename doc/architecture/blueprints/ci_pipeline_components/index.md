@@ -232,7 +232,7 @@ The version of the component can be (in order of highest priority first):
 
 1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
 1. A tag - For example: `gitlab.com/gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
+1. A special moving target version that points to the most recent published release - For example: `gitlab.com/gitlab-org/dast@~latest`
 1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
@@ -243,6 +243,30 @@ As we want to be able to reference any revisions (even those not released), a co
 
 When referencing a component by local path (for example `./path/to/component`), its version is implicit and matches
 the commit SHA of the current pipeline context.
+
+#### The `~latest` version
+
+The use of `~latest` version qualifier is restricted to only those releases that are published in the Catalog.
+
+We debated whether `~latest` should be supported for projects that are not marked as catalog resources.
+
+There are various reasons for this decision:
+
+1. Versions could be unlisted from the Catalog and `~latest` need to reflect that.
+1. The Catalog will support private resources. There are currently no valid requirements for component projects to
+   have releases but not being published in the Catalog.
+1. In the future we will be separating the process of releasing and publishing a release, allowing users to choose
+   what release is published in the catalog.
+1. We could enforce better the use of semantic versioning when publishing a release, rejecting it if not following
+   the standard. We won't be able to enforce semantic versioning on the release model because it won't be backwards
+   compatible.
+1. Latest version will likely be denormalized for a catalog resource data structure for more performant queries both
+   when displaying the Catalog resources and when fetching a component version.
+
+In all the points above, if we were supporting `~latest` for both catalog resources and unpublished component projects we could
+introduce discrepancies and surprising behaviors. Starting with a stricter approach, like supporting
+only published versions, we have the freedom to expand this in the future to support unpublished component projects based on
+user demand.
 
 ### Note about future resource types
 

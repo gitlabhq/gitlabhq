@@ -80,8 +80,8 @@ POST /projects/:id/triggers
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `description` | string         | Yes      | The trigger name |
+| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

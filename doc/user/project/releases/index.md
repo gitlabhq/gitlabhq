@@ -70,7 +70,7 @@ You should create a release as one of the last steps in your CI/CD pipeline.
 Prerequisites:
 
 - You must have at least the Developer role for a project. For more information, read
-[Release permissions](#release-permissions).
+  [Release permissions](#release-permissions).
 
 To create a release in the Releases page:
 

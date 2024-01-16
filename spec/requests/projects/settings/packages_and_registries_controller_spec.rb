@@ -16,6 +16,36 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
     stub_container_registry_config(enabled: container_registry_enabled)
   end
 
+  describe 'GET #show' do
+    context 'when user is authorized' do
+      let(:user) { project.creator }
+
+      subject { get namespace_project_settings_packages_and_registries_path(user.namespace, project) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'pushes the feature flag "packages_protected_packages" to the view' do
+        subject
+
+        expect(response.body).to have_pushed_frontend_feature_flags(packagesProtectedPackages: true)
+      end
+
+      context 'when feature flag "packages_protected_packages" is disabled' do
+        before do
+          stub_feature_flags(packages_protected_packages: false)
+        end
+
+        it 'does not push the feature flag "packages_protected_packages" to the view' do
+          subject
+
+          expect(response.body).not_to have_pushed_frontend_feature_flags(packagesProtectedPackages: true)
+        end
+      end
+    end
+  end
+
   describe 'GET #cleanup_tags' do
     subject { get cleanup_image_tags_namespace_project_settings_packages_and_registries_path(user.namespace, project) }
 

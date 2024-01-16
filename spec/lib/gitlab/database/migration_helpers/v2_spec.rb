@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
+RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :database do
   include Database::TriggerHelpers
   include Database::TableSchemaHelpers
 
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
       context 'when the batch column does exist' do
         it 'passes it when creating the column' do
           expect(migration).to receive(:create_column_from)
-            .with(:_test_table, existing_column, added_column, type: nil, batch_column_name: :status)
+            .with(:_test_table, existing_column, added_column, type: nil, batch_column_name: :status, type_cast_function: nil)
             .and_call_original
 
           migration.public_send(operation, :_test_table, :original, :renamed, batch_column_name: :status)
@@ -493,6 +493,85 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2 do
 
         migration.truncate_tables!('_test_gitlab_main_table')
       end
+    end
+  end
+
+  describe '#change_column_type_concurrently' do
+    let(:table_name) { :_test_change_column_type_concurrently }
+
+    before do
+      migration.connection.execute(<<~SQL)
+        DROP TABLE IF EXISTS #{table_name};
+        CREATE TABLE #{table_name} (
+          id serial NOT NULL PRIMARY KEY,
+          user_id bigint,
+          name character varying
+        );
+        /* at least one record for batching update */
+        INSERT INTO #{table_name} (id, user_id, name)
+          VALUES (1, 9, '{ \"lucky_number\": 8 }')
+      SQL
+    end
+
+    it 'adds a column of the new type and triggers to keep these two columns in sync' do
+      allow(migration).to receive(:transaction_open?).and_return(false)
+      recorder = ActiveRecord::QueryRecorder.new do
+        migration.change_column_type_concurrently(table_name, :name, :text)
+      end
+      expect(recorder.log).to include(/ALTER TABLE "_test_change_column_type_concurrently" ADD "name_for_type_change" text/)
+      expect(recorder.log).to include(/BEGIN\n  IF NEW."name" IS NOT DISTINCT FROM NULL AND NEW."name_for_type_change" IS DISTINCT FROM NULL THEN\n    NEW."name" = NEW."name_for_type_change";\n  END IF;\n\n  IF NEW."name_for_type_change" IS NOT DISTINCT FROM NULL AND NEW."name" IS DISTINCT FROM NULL THEN\n    NEW."name_for_type_change" = NEW."name";\n  END IF;\n\n  RETURN NEW;\nEND/m)
+      expect(recorder.log).to include(/BEGIN\n  NEW."name" := NEW."name_for_type_change";\n  RETURN NEW;\nEND/m)
+      expect(recorder.log).to include(/BEGIN\n  NEW."name_for_type_change" := NEW."name";\n  RETURN NEW;\nEND/m)
+      expect(recorder.log).to include(/ON "_test_change_column_type_concurrently"\nFOR EACH ROW\sEXECUTE FUNCTION/m)
+      expect(recorder.log).to include(/UPDATE .* WHERE "_test_change_column_type_concurrently"."id" >= \d+/)
+    end
+
+    context 'with batch column name' do
+      it 'updates the new column using the batch column' do
+        allow(migration).to receive(:transaction_open?).and_return(false)
+        recorder = ActiveRecord::QueryRecorder.new do
+          migration.change_column_type_concurrently(table_name, :name, :text, batch_column_name: :user_id)
+        end
+        expect(recorder.log).to include(/UPDATE .* WHERE "_test_change_column_type_concurrently"."user_id" >= \d+/)
+      end
+    end
+
+    context 'with type cast function' do
+      it 'updates the new column with casting the value to the given type' do
+        allow(migration).to receive(:transaction_open?).and_return(false)
+        recorder = ActiveRecord::QueryRecorder.new do
+          migration.change_column_type_concurrently(table_name, :name, :text, type_cast_function: 'JSON')
+        end
+        expect(recorder.log).to include(/SET "name_for_type_change" = JSON\("_test_change_column_type_concurrently"\."name"\)/m)
+      end
+    end
+  end
+
+  describe '#undo_change_column_type_concurrently' do
+    let(:table_name) { :_test_undo_change_column_type_concurrently }
+
+    before do
+      migration.connection.execute(<<~SQL)
+        DROP TABLE IF EXISTS #{table_name};
+        CREATE TABLE #{table_name} (
+          id serial NOT NULL PRIMARY KEY,
+          user_id bigint,
+          name character varying
+        );
+        /* at least one record for batching update */
+        INSERT INTO #{table_name} (id, user_id, name)
+          VALUES (1, 9, 'For every young')
+      SQL
+    end
+
+    it 'undoes the column type change' do
+      allow(migration).to receive(:transaction_open?).and_return(false)
+      migration.change_column_type_concurrently(table_name, :name, :text)
+      recorder = ActiveRecord::QueryRecorder.new do
+        migration.undo_change_column_type_concurrently(table_name, :name)
+      end
+      expect(recorder.log).to include(/DROP TRIGGER IF EXISTS .+ON "_test_undo_change_column_type_concurrently"/m)
+      expect(recorder.log).to include(/ALTER TABLE "_test_undo_change_column_type_concurrently" DROP COLUMN "name_for_type_change"/)
     end
   end
 end

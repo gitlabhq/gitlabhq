@@ -6,107 +6,145 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Appearance **(FREE SELF)**
 
-Several options are available for customizing the appearance of a self-managed instance
-of GitLab. To access these settings:
+You can update your settings to change the look and feel of your GitLab self-managed instance.
+
+To open the **Appearance** settings:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Appearance**.
 
-## Navigation bar
+## Customize your homepage button
 
-By default, the navigation bar has the GitLab logo, but this can be customized with
-any image desired. It is optimized for images 28px high (any width), but any image can be
-used (less than 1 MB) and it is automatically resized.
+Customize the appearance of your **Homepage** button.
 
-After you select and upload an image, select **Update appearance settings** at the bottom
-of the page to activate it in the GitLab instance.
+The **Homepage** button is located on the upper-left corner of the left sidebar.
+Replace the default **GitLab logo** **{tanuki}** with any image.
 
-NOTE:
-GitLab pipeline emails also display the custom logo, unless the logo is in SVG format. If the
-custom logo is in SVG format, the default logo is used instead because the SVG format is not
-supported by many email clients.
+- The file should be less than 1 MB.
+- The image should be 28 pixels high. Images more than 28 px high will be resized.
 
-## Favicon
+To customize your **Homepage** icon image:
 
-By default, the favicon (used by the browser as the tab icon and the CI status icon)
-uses the GitLab logo. This can be customized with any icon desired. It must be a
-32x32 `.png` or `.ico` image.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Under **Navigation bar**, select **Choose file**.
+1. At the bottom of the page, select **Update appearance settings**.
 
-After you select and upload an icon, select **Update appearance settings** at the bottom
-of the page to activate it in the GitLab instance.
+Pipeline status emails also show your custom logo. However, some email applications do not support SVG images. If your custom image is in SVG format, pipeline emails show the default logo.
 
-## System header and footer messages
+## Customize the favicon
+
+Customize the appearance of the favicon. A favicon is the icon for a website that shows in your browser tabs. The **GitLab logo** **{tanuki}** is the default browser and CI/CD status favicon. Replace the default icon with any image that is `32 x 32` pixels and in `.png` or `.ico` format.
+
+To change the favicon:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Under **Favicon**, select **Choose file**.
+1. At the bottom of the page, select **Update appearance settings**.
+
+## Add system header and footer messages
 
 > **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
-You can add a small header message, a small footer message, or both, to the interface
-of your GitLab instance. These messages appear on all projects and pages of the
-instance, including the sign-in/sign-up page. The default color is white text on
-an orange background, but this can be customized by selecting **Customize colors**.
+Add a small header message, a small footer message, or both, to the interface of your GitLab instance. These messages show on all projects and pages of the instance, such as the sign-in and register pages.
 
-Limited [Markdown](../user/markdown.md) is supported, such as bold, italics, and links, for
-example. Other Markdown features, including lists, images, and quotes are not supported
-as the header and footer messages can only be a single line.
+- You can italicize, bold, or add links to your message with Markdown.
+- Markdown lists, images, and quotes are not supported because system messages must be a single line. 
 
-You can select **Enable header and footer in emails** to have the text of
-the header and footer added to all emails sent by the GitLab instance.
-
-After you add a message, select **Update appearance settings** at the bottom of the page
-to activate it in the GitLab instance.
-
-## Sign-in / Sign-up pages
-
-You can replace the default message on the sign-in/sign-up page with your own message
-and logo. You can make full use of [Markdown](../user/markdown.md) in the description.
-
-The optimal size for the logo is 128 x 128 pixels, but any image can be used (below 1 MB)
-and it is resized automatically. The logo image appears between the title and
-the description, on the left of the sign-up page.
-
-After you add a message, select **Update appearance settings** at the bottom of the page
-to activate it in the GitLab instance. You can also select **Sign-in page**,
-to review the saved appearance settings:
-
-NOTE:
-You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a Sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
-
-## Progressive Web App
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
-
-GitLab can be installed as a [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) (PWA).
-Use the Progressive Web App settings to customize its appearance, including its name,
-description, and icon.
-
-### Configure the PWA settings
-
-To configure the PWA settings:
+To add a system header, footer message, or both:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Appearance**.
-1. Scroll to the **Progressive Web App (PWA)** section.
+1. Go to the **System header and footer** section.
 1. Complete the fields.
-   - **Icon**: If you use the standard GitLab icon, it is available in sizes 192x192 pixels,
-     512x512 pixels, also as a maskable icon. If you use a custom icon, it must be in either size
-     192x192 pixels, or 512x512 pixels.
-1. Select **Update appearance settings**.
+1. Optional. Select the **Enable header and footer in emails** checkbox. Add your system messages to all emails sent by your GitLab instance.
+1. At the bottom of the page, select **Update appearance settings**.
 
-## New project pages
+By default, the system header and footer text is white text on an orange background. To customize the message colors:
 
-You can add a new project guidelines message to the **New project page** in GitLab.
-You can make full use of [Markdown](../user/markdown.md) in the description:
+- Go to the **System header and footer** section and select **Customize colors**.
 
-The message is displayed below the **New Project** message, on the left side
-of the **New project page**.
+## Customize your sign-in and register pages
 
-After you add a message, select **Update appearance settings** at the bottom of the page
-to activate it in the GitLab instance. You can also select **New project page**,
-which brings you to the new project page so you can review the change.
+Customize the title, description, and logo on the sign-in and register page. By default, the register page logo is located on the left of the page, between the title and the description.
+
+To customize your sign-in and register page titles or descriptions:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Sign in/Sign up pages** section.
+1. Complete the fields. You can format the page **Title** and **Description** with Markdown.
+1. At the bottom of the page, select **Update appearance settings**.
+
+To customize the logo on your sign-in and register pages:
+
+- The file should be less than 1 MB.
+- The image should be 128 pixels high. Images more than 128 px high will be resized.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Sign in/Sign up pages** section.
+1. Under **Logo**, select **Choose file**.
+1. At the bottom of the page, select **Update appearance settings**.
+
+You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
+
+## Customize the Progressive Web App
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
+
+Customize the icon, display name, short name, and description for your Progessive Web App (PWA). For more information, see [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
+
+To add a Progressive Web App name and short name:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Progressive Web App (PWA)** section.
+1. Complete the fields.
+   - **Name** is the display name of your PWA.
+   - **Short name** shows on mobile devices and small screens.
+1. At the bottom of the page, select **Update appearance settings**.
+
+To add a Progressive Web App description:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Progressive Web App (PWA)** section.
+1. Complete the fields. You can format the **Description** with Markdown.
+1. At the bottom of the page, select **Update appearance settings**.
+
+To customize your Progressive Web App icon:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Progressive Web App (PWA)** section.
+1. Under **Icon**, select **Choose file**.
+1. At the bottom of the page, select **Update appearance settings**.
+
+## Add guidelines to the new project page
+
+Add a guideline message to the **New project page**. You can format your message with Markdown. The guideline message shows under the **New Project** message and, on the left side of the **New project page**.
+
+To add a guideline message to the **New project page**:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **New project pages** section.
+1. Complete the fields. You can format your guidelines with Markdown.
+
+## Add profile image guidelines
+
+Add guidelines for profile images.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Appearance**.
+1. Go to the **Profile image guideline** section.
+1. Complete the fields. You can format your text with Markdown.
 
 ## Libravatar
 
-[Libravatar](https://www.libravatar.org) is supported by GitLab for avatar images, but you must
-[manually enable Libravatar support on the GitLab instance](../administration/libravatar.md) to use the service.
+GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](../administration/libravatar.md) to use the service.
 
 <!-- ## Troubleshooting
 

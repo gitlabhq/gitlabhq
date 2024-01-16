@@ -258,8 +258,9 @@ Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
 
    ```shell
    # To download the package metadata exports, an outbound connection to Google Cloud Storage bucket must be allowed.
+   # Skip v1 objects using -y "^v1\/" to only download v2 objects. v1 data is no longer used and deprecated since 16.3.
    mkdir -p "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/$DATA_DIR"
-   gsutil -m rsync -r -d gs://$PKG_METADATA_BUCKET "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/$DATA_DIR"
+   gsutil -m rsync -r -d -y "^v1\/" gs://$PKG_METADATA_BUCKET "$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/$DATA_DIR"
 
    # Alternatively, if the GitLab instance is not allowed to connect to the Google Cloud Storage bucket, the package metadata
    # exports can be downloaded using a machine with the allowed access, and then copied to the root of the GitLab Rails directory.
@@ -293,7 +294,9 @@ PKG_METADATA_MANIFEST_OUTPUT_FILE="/tmp/package_metadata_${DATA_TYPE}_export_man
 PKG_METADATA_DOWNLOADS_OUTPUT_FILE="/tmp/package_metadata_${DATA_TYPE}_object_links.tsv"
 
 # Download the contents of the bucket
-curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/$PKG_METADATA_BUCKET/o?maxResults=7500" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
+# Filter results using `prefix=v2` to only download v2 objects. v1 data is no longer used and deprecated since 16.3.
+# Maximum number of objects returned by the API seems to be 5000 and there are currently (2023-12-21) 2650 objects for V2 dataset.
+curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/$PKG_METADATA_BUCKET/o?prefix=v2%2f&maxResults=5000" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
 
 # Parse the links and names for the bucket objects and output them into a tsv file
 jq -r '.items[] | [.name, .mediaLink] | @tsv' "$PKG_METADATA_MANIFEST_OUTPUT_FILE" > "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
@@ -331,7 +334,7 @@ To automatically update your local copy with the upstream changes, a cron job ca
 For License Scanning:
 
 ```plaintext
-*/30 * * * * gsutil -m rsync -r -d gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses
+*/30 * * * * gsutil -m rsync -r -d -y "^v1\/" gs://prod-export-license-bucket-1a6c642fc4de57d4 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses
 ```
 
 For Dependency Scanning:

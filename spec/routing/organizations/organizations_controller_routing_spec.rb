@@ -29,4 +29,9 @@ RSpec.describe Organizations::OrganizationsController, :routing, feature_categor
     expect(get("/-/organizations/#{organization.path}/users"))
       .to route_to('organizations/organizations#users', organization_path: organization.path)
   end
+
+  it 'routes to #preview_markdown' do
+    expect(post("/-/organizations/preview_markdown"))
+      .to route_to('organizations/organizations#preview_markdown')
+  end
 end

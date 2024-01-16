@@ -8,11 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Projects and groups in GitLab can be private, internal, or public.
 
-The visibility level of the group or project has no influence on whether members within the group or project can see each other.
-A group or project is an object to allow collaborative work. This is only possible if all members know about each other.
+The visibility level of the project or group does not affect whether members of the project or group can see each other.
+Projects and groups are intended for collaborative work. This work is only possible if all members know about each other.
 
-Group or project members can see all members of the group or project they belong to.
-Group or project owners can see the origin of membership (the original group or project) of all members.
+Project or group members can see all members of the project or group they belong to.
+Project or group members can see the origin of membership (the original project or group) of all members for the projects and groups they have access to.
 
 ## Private projects and groups
 
@@ -38,15 +38,9 @@ Only internal members can view internal content.
 
 Internal groups can have internal or private subgroups.
 
-NOTE:
-From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
-and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
-visibility setting keep this setting. For more information, see
-[issue 12388](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
-
 ## Public projects and groups
 
-For public projects, **users who are not authenticated**, including users with the Guest role, can:
+For public projects, **unauthenticated users**, including users with the Guest role, can:
 
 - Clone the project.
 - View the public access directory (`/public`).
@@ -56,7 +50,7 @@ Public groups can have public, internal, or private subgroups.
 NOTE:
 If an administrator restricts the
 [**Public** visibility level](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
-then `/public` is visible only to authenticated users.
+then the public access directory (`/public`) is visible only to authenticated users.
 
 ## Change project visibility
 
@@ -85,7 +79,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. To enable or disable a feature, turn on or off the feature toggle.
+1. To enable or disable a feature, turn on or turn off the feature toggle.
 1. Select **Save changes**.
 
 ## Change group visibility
@@ -95,9 +89,9 @@ You can change the visibility of all projects in a group.
 Prerequisites:
 
 - You must have the Owner role for a group.
-- Subgroups and projects must already have visibility settings that are at least as
+- Projects and subgroups must already have visibility settings that are at least as
   restrictive as the new setting of the parent group. For example, you cannot set a group
-  to private if a subgroup or project in that group is public.
+  to private if a project or subgroup in that group is public.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

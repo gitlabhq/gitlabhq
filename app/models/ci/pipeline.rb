@@ -20,7 +20,6 @@ module Ci
 
     include IgnorableColumns
     ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
-    ignore_column :auto_canceled_by_id_convert_to_bigint, remove_with: '16.6', remove_after: '2023-10-22'
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
@@ -439,7 +438,7 @@ module Ci
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
-    scope :with_only_interruptible_builds, -> do
+    scope :conservative_interruptible, -> do
       where_not_exists(
         Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).not_interruptible
       )
@@ -621,7 +620,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if self.sha == Gitlab::Git::BLANK_SHA
+      if self.sha == Gitlab::Git::SHA1_BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
       end
     end
@@ -675,7 +674,7 @@ module Ci
     end
 
     def before_sha
-      super || Gitlab::Git::BLANK_SHA
+      super || Gitlab::Git::SHA1_BLANK_SHA
     end
 
     def short_sha
@@ -1392,6 +1391,10 @@ module Ci
       return unless merge_request?
 
       merge_request.merge_request_diff_for(merge_request_diff_sha)
+    end
+
+    def auto_cancel_on_new_commit
+      pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
     end
 
     private

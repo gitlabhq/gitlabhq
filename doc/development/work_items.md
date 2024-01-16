@@ -245,7 +245,8 @@ Keep the following in mind when you write your migration:
     necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
     work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
     type. By default a cross-hierarchy (cross group or project) relationship is disabled when creating new restrictions but
-    it can be enabled by specifying a value for `cross_hierarchy_enabled`.
+    it can be enabled by specifying a value for `cross_hierarchy_enabled`. Due to the restrictions being cached for the work item type, it's also
+    required to call `clear_reactive_cache!` on the associated work item types.
 - Optional. Create linked item restrictions.
   - Similarly to the `Hierarchy` widget, the `Linked items` widget also supports rules defining which work item types can be
     linked to other types. A restriction can specify if the source type can be related to or blocking a target type. Current restrictions:

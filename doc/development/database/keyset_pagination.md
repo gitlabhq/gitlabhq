@@ -123,7 +123,7 @@ For the REST API, the `paginate_with_strategies` helper can be used on a relatio
 
 In order for keyset pagination to be used, the following conditions must be met:
 
-1. `params[:keyset]` must return `'keyset'`
+1. `params[:pagination]` must return `'keyset'`
 1. `params[:order_by]` and `params[:sort]` must both appear in the object returned by the
    `supported_keyset_orderings` class method on the model. In the following example, `Thing`
    supports keyset pagination when ordering by ID in either ascending or descending order.

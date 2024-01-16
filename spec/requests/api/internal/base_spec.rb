@@ -1437,7 +1437,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     let(:changes) do
-      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
+      "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
     end
 
     subject { post api('/internal/post_receive'), params: valid_params, headers: gitlab_shell_internal_api_request_header }

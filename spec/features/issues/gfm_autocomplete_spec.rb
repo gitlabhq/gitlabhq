@@ -185,7 +185,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       end
     end
 
-    describe 'assignees' do
+    shared_examples 'autocomplete user mentions' do
       it 'does not wrap with quotes for assignee values' do
         fill_in 'Comment', with: "@#{user.username}"
 
@@ -250,6 +250,16 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
           expect(find_autocomplete_menu).to have_text(user2.username)
         end
       end
+    end
+
+    it_behaves_like 'autocomplete user mentions'
+
+    context 'when mention_autocomplete_backend_filtering is disabled' do
+      before do
+        stub_feature_flags(mention_autocomplete_backend_filtering: false)
+      end
+
+      it_behaves_like 'autocomplete user mentions'
     end
 
     context 'if a selected value has special characters' do

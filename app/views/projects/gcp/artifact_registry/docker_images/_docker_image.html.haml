@@ -11,8 +11,8 @@
               Full name: #{docker_image.name}
             .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
               = sprite_icon('earth', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
-              URI:
-              %a{ href: docker_image.uri, target: 'blank', rel: 'noopener noreferrer' }= docker_image.uri
+              %a{ href: docker_image.details_url, target: 'blank', rel: 'noopener noreferrer' }
+                Artifact Registry details page
             .gl-display-flex.gl-align-items-top.gl-font-monospace.gl-font-sm.gl-word-break-all.gl-p-4.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
               = sprite_icon('doc-code', css_class: 'gl-text-gray-500 gl-mr-3 gl-icon s16')
               Media Type: #{docker_image.media_type}

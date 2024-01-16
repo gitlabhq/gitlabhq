@@ -244,10 +244,10 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       end
 
       create_list(:debian_package, 10, project: project, published_in: project_distribution)
-      control_count = ActiveRecord::QueryRecorder.new { subject2 }.count
+      control = ActiveRecord::QueryRecorder.new { subject2 }
 
       create_list(:debian_package, 10, project: project, published_in: project_distribution)
-      expect { subject3 }.not_to exceed_query_limit(control_count)
+      expect { subject3 }.not_to exceed_query_limit(control)
     end
   end
 

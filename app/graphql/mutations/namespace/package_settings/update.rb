@@ -51,6 +51,16 @@ module Mutations
                 required: false,
                 description: copy_field_description(Types::Namespace::PackageSettingsType, :nuget_duplicate_exception_regex)
 
+        argument :terraform_module_duplicates_allowed,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :terraform_module_duplicates_allowed)
+
+        argument :terraform_module_duplicate_exception_regex,
+                Types::UntrustedRegexp,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :terraform_module_duplicate_exception_regex)
+
         argument :maven_package_requests_forwarding,
                 GraphQL::Types::Boolean,
                 required: false,

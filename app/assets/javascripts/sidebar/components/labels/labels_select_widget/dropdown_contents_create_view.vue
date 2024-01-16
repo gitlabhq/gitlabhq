@@ -1,17 +1,11 @@
 <script>
 import { get } from 'lodash';
-import {
-  GlAlert,
-  GlTooltipDirective,
-  GlButton,
-  GlFormInput,
-  GlLink,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlAlert, GlTooltipDirective, GlButton, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
 import produce from 'immer';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
+import SidebarColorPicker from '../../sidebar_color_picker.vue';
 import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '../../../queries/constants';
 import { DEFAULT_LABEL_COLOR } from './constants';
 
@@ -22,8 +16,8 @@ export default {
     GlAlert,
     GlButton,
     GlFormInput,
-    GlLink,
     GlLoadingIcon,
+    SidebarColorPicker,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -84,15 +78,6 @@ export default {
     },
   },
   methods: {
-    getColorCode(color) {
-      return Object.keys(color).pop();
-    },
-    getColorName(color) {
-      return Object.values(color).pop();
-    },
-    handleColorClick(color) {
-      this.selectedColor = this.getColorCode(color);
-    },
     updateLabelsInCache(store, label) {
       const { query, dataPath } = workspaceLabelsQueries[this.workspaceType];
 
@@ -163,34 +148,7 @@ export default {
         data-testid="label-title-input"
       />
     </div>
-    <div class="dropdown-content gl-px-3">
-      <div class="suggest-colors suggest-colors-dropdown gl-mt-0! gl-mb-3! gl-mb-0">
-        <gl-link
-          v-for="(color, index) in suggestedColors"
-          :key="index"
-          v-gl-tooltip:tooltipcontainer
-          :style="{ backgroundColor: getColorCode(color) }"
-          :title="getColorName(color)"
-          @click.prevent="handleColorClick(color)"
-        />
-      </div>
-      <div class="color-input-container gl-display-flex">
-        <gl-form-input
-          v-model.trim="selectedColor"
-          class="gl-rounded-top-right-none gl-rounded-bottom-right-none gl-mr-n1 gl-mb-2 gl-w-8"
-          type="color"
-          :value="selectedColor"
-          :placeholder="__('Select color')"
-          data-testid="selected-color"
-        />
-        <gl-form-input
-          v-model.trim="selectedColor"
-          class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
-          :placeholder="__('Use custom color #FF0000')"
-          data-testid="selected-color-text"
-        />
-      </div>
-    </div>
+    <sidebar-color-picker v-model.trim="selectedColor" />
     <div class="dropdown-actions gl-display-flex gl-justify-content-space-between gl-pt-3 gl-px-3">
       <gl-button
         :disabled="disableCreate"

@@ -114,3 +114,27 @@ export const emptyCandidateQuery = {
     },
   },
 };
+
+export const createModelResponses = {
+  success: {
+    data: {
+      mlModelCreate: {
+        model: {
+          id: 'gid://gitlab/Ml::Model/1',
+          _links: {
+            showPath: '/some/project/-/ml/models/1',
+          },
+        },
+        errors: [],
+      },
+    },
+  },
+  validationFailure: {
+    data: {
+      mlModelCreate: {
+        model: null,
+        errors: ['Name is invalid', "Name can't be blank"],
+      },
+    },
+  },
+};

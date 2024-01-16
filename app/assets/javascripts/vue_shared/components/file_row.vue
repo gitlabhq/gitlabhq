@@ -1,5 +1,5 @@
 <script>
-import { GlTruncate } from '@gitlab/ui';
+import { GlTruncate, GlIcon } from '@gitlab/ui';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
@@ -10,6 +10,7 @@ export default {
     FileHeader,
     FileIcon,
     GlTruncate,
+    GlIcon,
   },
   props: {
     file: {
@@ -141,6 +142,7 @@ export default {
         data-testid="file-row-name-container"
         :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
       >
+        <gl-icon v-if="file.pinned" name="thumbtack" :size="16" />
         <file-icon
           class="file-row-icon"
           :class="{ 'text-secondary': file.type === 'tree' }"

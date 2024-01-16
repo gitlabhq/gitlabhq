@@ -27,13 +27,16 @@ module API
               desc: 'Register model under this name This field is required.'
             optional :description, type: String,
               desc: 'Optional description for model version.'
+            optional :tags, type: Array, desc: 'Additional metadata for a model version.'
           end
           post 'create', urgency: :low do
             present ::Ml::CreateModelVersionService.new(
               model,
               {
                 model_name: params[:name],
-                description: params[:description]
+                description: params[:description],
+                metadata: params[:tags],
+                version: custom_version
               }
             ).execute,
               with: Entities::Ml::Mlflow::ModelVersion,

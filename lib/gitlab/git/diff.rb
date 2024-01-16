@@ -299,9 +299,9 @@ module Gitlab
         @old_path = encode!(gitaly_diff.from_path.dup)
         @a_mode = gitaly_diff.old_mode.to_s(8)
         @b_mode = gitaly_diff.new_mode.to_s(8)
-        @new_file = gitaly_diff.from_id == BLANK_SHA
+        @new_file = gitaly_diff.from_id == SHA1_BLANK_SHA
         @renamed_file = gitaly_diff.from_path != gitaly_diff.to_path
-        @deleted_file = gitaly_diff.to_id == BLANK_SHA
+        @deleted_file = gitaly_diff.to_id == SHA1_BLANK_SHA
         @too_large = gitaly_diff.too_large if gitaly_diff.respond_to?(:too_large)
         gitaly_overflow = gitaly_diff.try(:overflow_marker)
         @overflow = Diff.collect_patch_overage? && gitaly_overflow

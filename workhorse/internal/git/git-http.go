@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"sync"
 
+	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
+
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
@@ -22,11 +24,11 @@ const (
 )
 
 func ReceivePack(a *api.API) http.Handler {
-	return postRPCHandler(a, "handleReceivePack", handleReceivePack, writeReceivePackError)
+	return postRPCHandler(a, "handleReceivePack", handleReceivePack, sendGitAuditEvent("git-receive-pack"), writeReceivePackError)
 }
 
 func UploadPack(a *api.API) http.Handler {
-	return postRPCHandler(a, "handleUploadPack", handleUploadPack, writeUploadPackError)
+	return postRPCHandler(a, "handleUploadPack", handleUploadPack, sendGitAuditEvent("git-upload-pack"), writeUploadPackError)
 }
 
 func gitConfigOptions(a *api.Response) []string {
@@ -42,7 +44,8 @@ func gitConfigOptions(a *api.Response) []string {
 func postRPCHandler(
 	a *api.API,
 	name string,
-	handler func(*HttpResponseWriter, *http.Request, *api.Response) error,
+	handler func(*HttpResponseWriter, *http.Request, *api.Response) (*gitalypb.PackfileNegotiationStatistics, error),
+	postFunc func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics),
 	errWriter func(io.Writer) error,
 ) http.Handler {
 	return repoPreAuthorizeHandler(a, func(rw http.ResponseWriter, r *http.Request, ar *api.Response) {
@@ -54,7 +57,8 @@ func postRPCHandler(
 			w.Log(r, cr.Count())
 		}()
 
-		if err := handler(w, r, ar); err != nil {
+		stats, err := handler(w, r, ar)
+		if err != nil {
 			handleLimitErr(err, w, errWriter)
 			// If the handler, or handleLimitErr already wrote a response this WriteHeader call is a
 			// no-op. It never reaches net/http because GitHttpResponseWriter calls
@@ -62,6 +66,8 @@ func postRPCHandler(
 			w.WriteHeader(500)
 			log.WithRequest(r).WithError(fmt.Errorf("%s: %v", name, err)).Error()
 		}
+
+		postFunc(a, r, ar, stats)
 	})
 }
 
@@ -69,6 +75,30 @@ func repoPreAuthorizeHandler(myAPI *api.API, handleFunc api.HandleFunc) http.Han
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		handleFunc(w, r, a)
 	}, "")
+}
+
+func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics) {
+	return func(a *api.API, r *http.Request, response *api.Response, stats *gitalypb.PackfileNegotiationStatistics) {
+		if !response.NeedAudit {
+			return
+		}
+
+		ctx := r.Context()
+		err := a.SendGitAuditEvent(ctx, api.GitAuditEventRequest{
+			Action:        action,
+			Protocol:      "http",
+			Repo:          response.GL_REPOSITORY,
+			Username:      response.GL_USERNAME,
+			PackfileStats: stats,
+		})
+		if err != nil {
+			log.WithContextFields(ctx, log.Fields{
+				"repo":     response.GL_REPOSITORY,
+				"action":   action,
+				"username": response.GL_USERNAME,
+			}).WithError(err).Error("failed to send git audit event")
+		}
+	}
 }
 
 func writePostRPCHeader(w http.ResponseWriter, action string) {

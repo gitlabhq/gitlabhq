@@ -50,6 +50,6 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
-    <div v-else v-safe-html="readmeHtml"></div>
+    <div v-else v-safe-html="readmeHtml" class="md"></div>
   </div>
 </template>

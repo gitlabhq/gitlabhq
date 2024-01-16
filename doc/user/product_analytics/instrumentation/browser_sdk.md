@@ -92,7 +92,7 @@ interface GitLabClientSDKOptions {
 ### Plugins
 
 - `Client Hints`: An alternative to tracking the User Agent, which is particularly useful in browsers that are freezing the User Agent string.
-Enabling this plugin will automatically capture the following context:
+  Enabling this plugin will automatically capture the following context:
 
   For example,
   [iglu:org.ietf/http_client_hints/jsonschema/1-0-0](https://github.com/snowplow/iglu-central/blob/master/schemas/org.ietf/http_client_hints/jsonschema/1-0-0)
@@ -163,12 +163,12 @@ glClient.page(eventAttributes);
 
 The `eventAttributes` object supports the following optional properties:
 
-| Property         | Type                        | Description                                                                   |
-| :--------------- | :-------------------------- | :---------------------------------------------------------------------------- |
-| `title`          | `String`                    | Override the default page title. |
-| `contextCallback` | `Function` | A callback that fires on the page view. |
-| `context` | `Object` | Add context (additional information) on the page view. |
-| `timestamp` | `timestamp` | Set the true timestamp or overwrite the device-sent timestamp on an event. |
+| Property          | Type        | Description |
+|:------------------|:------------|:------------|
+| `title`           | `String`    | Override the default page title. |
+| `contextCallback` | `Function`  | A callback that fires on the page view. |
+| `context`         | `Object`    | Add context (additional information) on the page view. |
+| `timestamp`       | `timestamp` | Set the true timestamp or overwrite the device-sent timestamp on an event. |
 
 ### `track`
 

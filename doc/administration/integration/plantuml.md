@@ -91,7 +91,7 @@ server to generate the diagrams:
 To run a PlantUML container in Docker, run this command:
 
 ```shell
-docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat
+docker run -d --name plantuml -p 8005:8080 plantuml/plantuml-server:tomcat
 ```
 
 The **PlantUML URL** is the hostname of the server running the container.
@@ -99,7 +99,7 @@ The **PlantUML URL** is the hostname of the server running the container.
 When running GitLab in Docker, it must have access to the PlantUML container.
 To achieve that, use [Docker Compose](https://docs.docker.com/compose/).
 In this basic `docker-compose.yml` file, PlantUML is accessible to GitLab at the URL
-`http://plantuml:8080/`:
+`http://plantuml:8005/`:
 
 ```yaml
 version: "3"
@@ -108,7 +108,7 @@ services:
     image: 'gitlab/gitlab-ee:12.2.5-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
 
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'
@@ -125,6 +125,8 @@ following:
 
 - `http://plantuml:8080/`
 - `http://localhost:8080/plantuml/`
+- `http://plantuml:8005/`
+- `http://localhost:8005/plantuml/`
 
 If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
@@ -137,7 +139,7 @@ To enable this redirection:
 
    ```ruby
    # Docker deployment
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
    ```
 
 1. To activate the changes, run the following command:

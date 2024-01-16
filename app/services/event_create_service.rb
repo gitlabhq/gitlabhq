@@ -100,8 +100,10 @@ class EventCreateService
     end
   end
 
-  def join_project(project, current_user)
-    create_event(project, current_user, :joined)
+  def join_source(source, current_user)
+    return unless source.is_a?(Project)
+
+    create_event(source, current_user, :joined)
   end
 
   def leave_project(project, current_user)

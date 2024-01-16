@@ -154,22 +154,45 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
     end
 
     context 'when configuration has docker options' do
-      let(:config) { { name: 'postgresql:9.5', docker: { platform: 'amd64' } } }
+      context "with platform option" do
+        let(:config) { { name: 'postgresql:9.5', docker: { platform: 'amd64' } } }
 
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
+        describe '#valid?' do
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5',
+              executor_opts: {
+                docker: { platform: 'amd64' }
+              }
+            )
+          end
         end
       end
 
-      describe '#value' do
-        it "returns value" do
-          expect(entry.value).to eq(
-            name: 'postgresql:9.5',
-            executor_opts: {
-              docker: { platform: 'amd64' }
-            }
-          )
+      context "with user option" do
+        let(:config) { { name: 'postgresql:9.5', docker: { user: 'dave' } } }
+
+        describe '#valid?' do
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5',
+              executor_opts: {
+                docker: { user: 'dave' }
+              }
+            )
+          end
         end
       end
     end

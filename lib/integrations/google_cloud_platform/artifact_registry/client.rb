@@ -15,11 +15,13 @@ module Integrations
         end
 
         def list_docker_images(page_token: nil)
+          url = list_docker_images_url
           response = ::Gitlab::HTTP.get(
-            list_docker_images_url,
+            url,
             headers: headers,
             query: query_params(page_token: page_token),
-            format: :plain # disable httparty json parsing
+            format: :plain, # disable httparty json parsing
+            extra_allowed_uris: [URI(GLGO_BASE_URL)]
           )
 
           if response.success?

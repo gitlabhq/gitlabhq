@@ -141,9 +141,6 @@ Rotate a project access token. Revokes the previous token and creates a new toke
 
 In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
 
-WARNING:
-When you rotate a project access token, the new token retains the expiry date of the old token. For more information, see [issue 423362](https://gitlab.com/gitlab-org/gitlab/-/issues/423362).
-
 ```plaintext
 POST /projects/:id/access_tokens/:token_id/rotate
 ```

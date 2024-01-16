@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Changes do
           ref: 'feature',
           source: source,
           sha: '0b4bc9a4',
-          before_sha: Gitlab::Git::BLANK_SHA,
+          before_sha: Gitlab::Git::SHA1_BLANK_SHA,
           merge_request: merge_request
         )
       end

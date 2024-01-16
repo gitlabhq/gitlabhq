@@ -765,6 +765,7 @@ Timelog:
 - created_at
 - updated_at
 - summary
+- timelog_category_id
 ProjectAutoDevops:
 - id
 - enabled
@@ -1087,3 +1088,9 @@ ApprovalProjectRulesProtectedBranch:
   - branch_name
 WorkItems::Type:
   - base_type
+TimeTracking::TimelogCategories:
+  - id
+  - name
+  - description
+  - billable
+  - billing_rate

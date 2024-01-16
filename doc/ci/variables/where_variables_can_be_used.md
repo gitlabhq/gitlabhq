@@ -16,7 +16,7 @@ This document describes where and how the different types of variables can be us
 
 There are two places defined variables can be used. On the:
 
-1. GitLab side, in the [`.gitlab-ci.yml` file](../yaml/index.md).
+1. GitLab side, in the [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file).
 1. The GitLab Runner side, in `config.toml`.
 
 ### `.gitlab-ci.yml` file
@@ -27,6 +27,7 @@ There are two places defined variables can be used. On the:
 |:----------------------------------------------------------------------|:-----------------|:-----------------------|:------------|
 | [`after_script`](../yaml/index.md#after_script)                       | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment). |
 | [`artifacts:name`](../yaml/index.md#artifactsname)                    | yes              | Runner                 | The variable expansion is made by GitLab Runner's shell environment. |
+| [`artifacts:paths`](../yaml/index.md#artifactspaths)                  | yes              | Runner                 | The variable expansion is made by GitLab Runner's shell environment. |
 | [`before_script`](../yaml/index.md#before_script)                     | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment) |
 | [`cache:key`](../yaml/index.md#cachekey)                              | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`cache:policy`](../yaml/index.md#cachepolicy)                        | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |

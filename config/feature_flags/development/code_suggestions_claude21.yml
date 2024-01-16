@@ -1,0 +1,9 @@
+---
+name: code_suggestions_claude21
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432636
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140436
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436273
+milestone: '16.8'
+group: group::code creation
+type: development
+default_enabled: false

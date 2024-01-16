@@ -15,6 +15,10 @@ class DiffsMetadataEntity < DiffsEntity
     presenter(options[:merge_request]).conflict_resolution_path
   end
 
+  # #cannot_be_merged? is generally indicative of conflicts, and is set via
+  #   MergeRequests::MergeabilityCheckService. However, it can also indicate
+  #   that either #has_no_commits? or #branch_missing? are true.
+  #
   expose :has_conflicts do |_, options|
     options[:merge_request].cannot_be_merged?
   end

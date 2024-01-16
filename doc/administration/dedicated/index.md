@@ -1,8 +1,8 @@
 ---
 stage: SaaS Platforms
 group: GitLab Dedicated
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: 'Learn how to configure your GitLab Dedicated instance.'
+description: IP allowlists, SAML, maintenance.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Configure GitLab Dedicated **(ULTIMATE)**
@@ -14,11 +14,14 @@ The instructions on this page guide you through:
 1. Onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/), the GitLab Dedicated portal.
 1. Configuring your GitLab Dedicated instance including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Panel](../../administration/admin_area.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Area](../../administration/admin_area.md).
 
 Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 These environment settings cannot be changed by tenants.
 GitLab Dedicated Engineers also don't have direct access to tenant environments, except for [break glass situations](../../subscriptions/gitlab_dedicated/index.md#access-controls).
+
+NOTE:
+An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
 
 ## Onboarding to GitLab Dedicated using Switchboard
 
@@ -29,31 +32,33 @@ To create a new GitLab Dedicated environment for your organization, provide the 
 - Email addresses of the users who are responsible to complete the onboarding and create your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/).
 
 If you've been granted access to Switchboard, you receive an email invitation with temporary credentials to sign in.
+Your invitation to Switchboard is valid for seven days. If you are having issues accessing
+Switchboard, or if your invitation has expired, please [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 NOTE:
 The credentials for Switchboard are separate from any other GitLab credentials you may already have to sign in to a GitLab self-managed or GitLab.com instance.
 
-After you first sign in to Switchboard, you must update your password and set up MFA before you can complete your onboarding to create a tenant.
+After you first sign in to Switchboard, you must update your password and set up MFA before you can complete your onboarding to create a new instance.
 
-The following stages guide you through a series of four steps to provide the information required to create your GitLab Dedicated tenant.
+The following stages guide you through a series of four steps to provide the information required to create your GitLab Dedicated instance.
 
 1. Confirm account details: Confirm key attributes of your GitLab Dedicated account:
    - Reference architecture: Corresponds with the number of users you provided to your account team when beginning the onboarding process. For more information, see [reference architectures](../../subscriptions/gitlab_dedicated/index.md#availability-and-scalability).
    - Total repository storage size: Corresponds with the storage size you provided to your account team when beginning the onboarding process.
    - If you need to make changes to these attributes, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
-1. Tenant configuration: Provides the minimum required information needed to create your GitLab Dedicated tenant:
+1. Tenant configuration: Provides the minimum required information needed to create your GitLab Dedicated instance:
    - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from. For example, `customer_name.gitlab-dedicated.com`.
    - Desired primary region: Primary AWS region in which your data is stored. Note the [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
    - Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
    - Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region, or different.
    - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine maintenance and upgrade operations on all tenant instances. For more information, see [maintenance windows](#maintenance-window).
 1. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
-1. Summary: You confirm that the information you've provided in the previous steps is accurate before initiating the creation of your tenant.
+1. Summary: You confirm that the information you've provided in the previous steps is accurate before initiating the creation of your instance.
 
 NOTE:
-Some configuration settings (like the option to bring your own keys and your tenant name) are permanent and cannot be changed once your tenant has been created.
+Some configuration settings (like the option to bring your own keys and your tenant name) are permanent and cannot be changed once your instance has been created.
 
-It can take up to 3 hours to create the GitLab Dedicated tenant. When the setup is complete, you will receive a confirmation email with further instructions on how to access your tenant.
+It can take up to 3 hours to create the GitLab Dedicated instance. When the setup is complete, you will receive a confirmation email with further instructions on how to access your instance.
 
 ### Maintenance window
 
@@ -80,10 +85,11 @@ In an event of a platform outage, degradation or a security event requiring urge
 emergency maintenance will be carried out per
 [the emergency change processes](https://about.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
 
-The emergency maintenance is initiated urgently when urgent actions need to be executed by GitLab
-on a Dedicated tenant instance.
-Communication with the customer will be provided on best effort basis prior to commencing the
-maintenance, and full communication will follow after the immediate action is carried out.
+The emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
+Dedicated tenant instance. Communication with the customer will be provided on best effort basis
+prior to commencing the maintenance, and full communication will follow after the immediate action
+is carried out. The GitLab Support Team will create a new ticket and send a message to the email
+addresses of the users listed in Switchboard during [onboarding](#onboarding-to-gitlab-dedicated-using-switchboard).
 
 For example, when a critical security process is initiated to address an S1 vulnerability in GitLab,
 emergency maintenance is carried out to upgrade GitLab to the non-vulnerable version and that
@@ -218,7 +224,7 @@ Make sure the AWS KMS keys are replicated to your desired primary, secondary and
 
 Configuration changes requested with a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) are batched up and applied during your environment's weekly four-hour maintenance window.
 
-This policy does not apply to configuration changes made by a GitLab Dedicated tenant admin [using Switchboard](#configuration-changes-in-switchboard).
+This policy does not apply to configuration changes made by a GitLab Dedicated instance admin [using Switchboard](#configuration-changes-in-switchboard).
 
 To have a change considered for an upcoming weekly maintenance window, all required information
 must be submitted in full two business days before the start of the window.
@@ -232,7 +238,7 @@ Changes requested with a support ticket cannot be applied outside of a weekly ma
 
 ### Configuration changes in Switchboard
 
-Switchboard empowers the user to make limited configuration changes to their Dedicated Tenant Instance. As Switchboard matures further configuration changes will be made available.
+Switchboard empowers the user to make limited configuration changes to their GitLab Dedicated instance. As Switchboard matures further configuration changes will be made available.
 
 To change or update the configuration of your GitLab Dedicated instance, use Switchboard following the instructions in the relevant section or open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with your request.
 
@@ -271,11 +277,13 @@ Consider the following when using Outbound Private Links:
   and repositories, or use any other GitLab functionality to access private services.
 - You can only establish Private Links between VPCs in the same region. Therefore, you can only establish a connection in the regions you selected for
   your Dedicated instance.
-- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated tenant was
+- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated instance was
   deployed. This is not the user-facing name such as `us-east-1a`, but the underlying [Availability Zone ID](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
   If you did not specify these during onboarding to Dedicated, you must either:
   - Ask for the Availability Zone IDs in the ticket you raise to enable the link and ensure the NLB is enabled in those AZs, or
   - Ensure the NLB has is enabled in every Availability Zone in the region.
+
+You can view the `Reverse Private Link IAM Principal` attribute in the **Tenant Details** section of Switchboard.
 
 To enable an Outbound Private Link:
 
@@ -300,7 +308,7 @@ To enable an Outbound Private Link:
      provide a list of DNS names that should resolve to the Private Link Endpoint. This list can be updated as needed in future.
 
 GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
-connections made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
+connections made from the tenant instance are directed through the PrivateLink into your VPC.
 
 ### Custom certificates
 
@@ -348,7 +356,7 @@ Specify a comma separated list of IP addresses that can access your GitLab Dedic
 ### SAML
 
 NOTE:
-GitLab Dedicated supports a limited number of SAML parameters. Parameters not shown in the configuration below are unavailable for GitLab Dedicated tenant instances.
+GitLab Dedicated supports a limited number of SAML parameters. Parameters not shown in the configuration below are unavailable for GitLab Dedicated instances.
 
 Prerequisites:
 
@@ -415,7 +423,7 @@ To activate SAML for your GitLab Dedicated instance:
 
 #### Request signing
 
-If [SAML request signing](../../integration/saml.md#sign-saml-authentication-requests-optional) is desired, a certificate must be obtained. This certificate can be self-signed which has the advantage of not having to prove ownership of an arbitrary Common Name (CN) to a public Certificate Authority (CA)).
+If [SAML request signing](../../integration/saml.md#sign-saml-authentication-requests-optional) is desired, a certificate must be obtained. This certificate can be self-signed which has the advantage of not having to prove ownership of an arbitrary Common Name (CN) to a public Certificate Authority (CA).
 If you choose to enable SAML request signing, the manual steps below will need to be completed before you are able to use SAML, since it requires certificate signing to happen.
 To enable SAML request signing, indicate on your SAML [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) that you want request signing enabled. GitLab works with you on sending the Certificate Signing Request (CSR) for you to sign. Alternatively, the CSR can be signed with a public CA. After the certificate is signed, GitLab adds the certificate and its associated private key to the `security` section of the SAML configuration. Authentication requests from GitLab to your identity provider can then be signed.
 
@@ -434,12 +442,12 @@ To enable group sync:
 1. Add the [required elements](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync) to the SAML configuration block you provide in your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Configure the [Group Links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 
-### Add users to a tenant instance
+### Add users to an instance
 
-Tenant administrators can add Switchboard users to their tenant instance. There are two types of users:
+Administrators can add Switchboard users to their GitLab Dedicated instance. There are two types of users:
 
-- **Read only**: Users can only view tenant data.
-- **Admin**: Users can edit the tenant configuration and manage users.
+- **Read only**: Users can only view instance data.
+- **Admin**: Users can edit the instance configuration and manage users.
 
 To add a new user to your GitLab Dedicated instance:
 

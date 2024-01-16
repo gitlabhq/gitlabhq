@@ -15,7 +15,8 @@ module Tooling
       changed_files_pathname: nil,
       predictive_tests_pathname: nil,
       frontend_fixtures_mapping_pathname: nil,
-      file_filter: ->(_) { true }
+      file_filter: ->(_) { true },
+      only_new_paths: false
     )
 
       raise ArgumentError, ':from can only be :api or :changed_files' unless
@@ -30,6 +31,7 @@ module Tooling
       @frontend_fixtures_mapping_pathname = frontend_fixtures_mapping_pathname
       @from                               = from
       @file_filter                        = file_filter
+      @api_path_attributes                = only_new_paths ? %w[new_path] : %w[new_path old_path]
     end
 
     def execute
@@ -53,7 +55,7 @@ module Tooling
 
     attr_reader :gitlab_token, :gitlab_endpoint, :mr_project_path,
       :mr_iid, :changed_files_pathname, :predictive_tests_pathname,
-      :frontend_fixtures_mapping_pathname, :file_filter
+      :frontend_fixtures_mapping_pathname, :file_filter, :api_path_attributes
 
     def gitlab
       @gitlab ||= begin
@@ -86,7 +88,7 @@ module Tooling
         case @from
         when :api
           mr_changes.changes.select(&file_filter).flat_map do |change|
-            change.to_h.values_at('old_path', 'new_path')
+            change.to_h.values_at(*api_path_attributes)
           end.uniq
         else
           read_array_from_file(changed_files_pathname)

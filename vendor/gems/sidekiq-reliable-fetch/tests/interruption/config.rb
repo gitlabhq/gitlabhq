@@ -14,6 +14,7 @@ Sidekiq.configure_server do |config|
   # These will be ignored for :basic
   config[:cleanup_interval] = TEST_CLEANUP_INTERVAL
   config[:lease_interval] = TEST_LEASE_INTERVAL
+  config[:queues] = ['default']
 
   Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
 end

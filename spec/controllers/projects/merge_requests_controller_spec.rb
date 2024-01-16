@@ -244,6 +244,24 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           expect(response).to have_gitlab_http_status(:moved_permanently)
         end
       end
+
+      context 'when has pinned file' do
+        let(:file) { merge_request.merge_request_diff.diffs.diff_files.first }
+        let(:file_hash) { file.file_hash }
+
+        it 'adds pinned file url' do
+          go(pin: file_hash)
+
+          expect(assigns['pinned_file_url']).to eq(
+            diff_by_file_hash_namespace_project_merge_request_path(
+              format: 'json',
+              id: merge_request.iid,
+              namespace_id: project.namespace.to_param,
+              project_id: project.path,
+              file_hash: file_hash
+            ))
+        end
+      end
     end
 
     context 'when user is setting notes filters' do

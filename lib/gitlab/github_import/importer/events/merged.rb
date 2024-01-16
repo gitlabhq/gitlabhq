@@ -6,6 +6,8 @@ module Gitlab
       module Events
         class Merged < BaseImporter
           def execute(issue_event)
+            create_note(issue_event) if import_settings.extended_events?
+
             create_event(issue_event)
             create_state_event(issue_event)
           end
@@ -36,6 +38,17 @@ module Gitlab
             }.merge(resource_event_belongs_to(issue_event))
 
             ResourceStateEvent.create!(attrs)
+          end
+
+          def create_note(issue_event)
+            pull_request = Representation::PullRequest.from_json_hash({
+              merged_by: issue_event.actor&.to_hash,
+              merged_at: issue_event.created_at,
+              iid: issue_event.issuable_id,
+              state: :closed
+            })
+
+            PullRequests::MergedByImporter.new(pull_request, project, client).execute
           end
         end
       end

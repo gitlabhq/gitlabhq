@@ -8,6 +8,7 @@ describe('GroupsList', () => {
 
   const defaultPropsData = {
     groups,
+    listItemClass: 'gl-px-5',
   };
 
   const createComponent = () => {
@@ -23,12 +24,18 @@ describe('GroupsList', () => {
     const expectedProps = groupsListItemWrappers.map((groupsListItemWrapper) =>
       groupsListItemWrapper.props(),
     );
+    const expectedClasses = groupsListItemWrappers.map((groupsListItemWrapper) =>
+      groupsListItemWrapper.classes(),
+    );
 
     expect(expectedProps).toEqual(
       defaultPropsData.groups.map((group) => ({
         group,
         showGroupIcon: false,
       })),
+    );
+    expect(expectedClasses).toEqual(
+      defaultPropsData.groups.map(() => [defaultPropsData.listItemClass]),
     );
   });
 

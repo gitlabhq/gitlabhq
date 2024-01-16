@@ -42,23 +42,6 @@ RSpec.describe Ci::VariablesHelper, feature_category: :secrets_management do
     end
   end
 
-  describe '#ci_variable_masked?' do
-    let(:variable) { build_stubbed(:ci_variable, key: 'test_key', value: 'test_value', masked: true) }
-
-    context 'when variable is provided and only_key_value is false' do
-      it 'expect ci_variable_masked? to return true' do
-        expect(helper.ci_variable_masked?(variable, false)).to eq(true)
-      end
-    end
-
-    context 'when variable is not provided / provided and only_key_value is true' do
-      it 'expect ci_variable_masked? to return false' do
-        expect(helper.ci_variable_masked?(nil, true)).to eq(false)
-        expect(helper.ci_variable_masked?(variable, true)).to eq(false)
-      end
-    end
-  end
-
   describe '#ci_variable_maskable_raw_regex' do
     it 'converts to a javascript regex' do
       expect(helper.ci_variable_maskable_raw_regex).to eq("^\\S{8,}$")

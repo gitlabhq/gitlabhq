@@ -5,6 +5,7 @@ import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
+import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import BoardCard from '~/boards/components/board_card.vue';
 import eventHub from '~/boards/eventhub';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
@@ -203,9 +204,38 @@ describe('Board list component', () => {
 
           expect(document.body.classList.contains('is-dragging')).toBe(true);
         });
+
+        it('attaches `keyup` event listener on document', async () => {
+          jest.spyOn(document, 'addEventListener');
+          findDraggable().vm.$emit('start', {
+            item: {
+              dataset: {
+                draggableItemType: DraggableItemTypes.card,
+              },
+            },
+          });
+          await nextTick();
+
+          expect(document.addEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
+        });
       });
 
       describe('handleDragOnEnd', () => {
+        const getDragEndParam = (draggableItemType) => ({
+          oldIndex: 1,
+          newIndex: 0,
+          item: {
+            dataset: {
+              draggableItemType,
+              itemId: mockIssues[0].id,
+              itemIid: mockIssues[0].iid,
+              itemPath: mockIssues[0].referencePath,
+            },
+          },
+          to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
+          from: { dataset: { listId: 'gid://gitlab/List/2' } },
+        });
+
         beforeEach(() => {
           startDrag();
         });
@@ -213,41 +243,38 @@ describe('Board list component', () => {
         it('removes class `is-dragging` from document body', () => {
           document.body.classList.add('is-dragging');
 
-          endDrag({
-            oldIndex: 1,
-            newIndex: 0,
-            item: {
-              dataset: {
-                draggableItemType: DraggableItemTypes.card,
-                itemId: mockIssues[0].id,
-                itemIid: mockIssues[0].iid,
-                itemPath: mockIssues[0].referencePath,
-              },
-            },
-            to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
-            from: { dataset: { listId: 'gid://gitlab/List/2' } },
-          });
+          endDrag(getDragEndParam(DraggableItemTypes.card));
 
           expect(document.body.classList.contains('is-dragging')).toBe(false);
         });
 
         it(`should not handle the event if the dragged item is not a "${DraggableItemTypes.card}"`, () => {
-          endDrag({
-            oldIndex: 1,
-            newIndex: 0,
-            item: {
-              dataset: {
-                draggableItemType: DraggableItemTypes.list,
-                itemId: mockIssues[0].id,
-                itemIid: mockIssues[0].iid,
-                itemPath: mockIssues[0].referencePath,
-              },
-            },
-            to: { children: [], dataset: { listId: 'gid://gitlab/List/1' } },
-            from: { dataset: { listId: 'gid://gitlab/List/2' } },
-          });
+          endDrag(getDragEndParam(DraggableItemTypes.list));
 
           expect(document.body.classList.contains('is-dragging')).toBe(true);
+        });
+
+        it('detaches `keyup` event listener on document', async () => {
+          jest.spyOn(document, 'removeEventListener');
+
+          findDraggable().vm.$emit('end', getDragEndParam(DraggableItemTypes.card));
+          await nextTick();
+
+          expect(document.removeEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
+        });
+      });
+
+      describe('handleKeyUp', () => {
+        it('dispatches `mouseup` event when Escape key is pressed', () => {
+          jest.spyOn(document, 'dispatchEvent');
+
+          document.dispatchEvent(
+            new Event('keyup', {
+              keyCode: ESC_KEY_CODE,
+            }),
+          );
+
+          expect(document.dispatchEvent).toHaveBeenCalledWith(new Event('mouseup'));
         });
       });
     });

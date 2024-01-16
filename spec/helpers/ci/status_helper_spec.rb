@@ -8,19 +8,6 @@ RSpec.describe Ci::StatusHelper do
   let(:success_commit) { double("Ci::Pipeline", status: 'success') }
   let(:failed_commit) { double("Ci::Pipeline", status: 'failed') }
 
-  describe "#pipeline_status_cache_key" do
-    it "builds a cache key for pipeline status" do
-      pipeline_status = Gitlab::Cache::Ci::ProjectPipelineStatus.new(
-        build_stubbed(:project),
-        pipeline_info: {
-          sha: "123abc",
-          status: "success"
-        }
-      )
-      expect(helper.pipeline_status_cache_key(pipeline_status)).to eq("pipeline-status/123abc-success")
-    end
-  end
-
   describe "#render_ci_icon" do
     subject { helper.render_ci_icon("success") }
 

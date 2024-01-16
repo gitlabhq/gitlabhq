@@ -154,6 +154,9 @@
                   "always",
                   "never"
                 ]
+              },
+              "auto_cancel": {
+                "$ref": "#/definitions/workflowAutoCancel"
               }
             },
             "additionalProperties": false
@@ -528,6 +531,12 @@
                   "type": "string",
                   "minLength": 1,
                   "description": "Image architecture to pull."
+                },
+                "user": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "description": "Username or UID to use for the container."
                 }
               }
             },
@@ -603,6 +612,12 @@
                     "type": "string",
                     "minLength": 1,
                     "description": "Image architecture to pull."
+                  },
+                  "user": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Username or UID to use for the container."
                   }
                 }
               },
@@ -735,6 +750,30 @@
                 }
               ]
             },
+            "gcp_secret_manager": {
+              "type": "object",
+              "markdownDescription": "Defines the secret version to be fetched from GCP Secret Manager. Name refers to the secret name in GCP secret manager. Version refers to the desired secret version (defaults to 'latest').",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "default": "version"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
             "azure_key_vault": {
               "type": "object",
               "properties": {
@@ -757,7 +796,7 @@
             },
             "token": {
               "type": "string",
-              "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
+              "description": "Specifies the JWT variable that should be used to authenticate with the secret provider."
             }
           },
           "anyOf": [
@@ -770,8 +809,18 @@
               "required": [
                 "azure_key_vault"
               ]
+            },
+            {
+              "required": [
+                "gcp_secret_manager"
+              ]
             }
           ],
+          "dependencies": {
+            "gcp_secret_manager": [
+              "token"
+            ]
+          },
           "additionalProperties": false
         }
       }
@@ -944,7 +993,8 @@
     },
     "workflowAutoCancel": {
       "type": "object",
-      "markdownDescription": "Define the rules for when pipeline should be automatically cancelled.",
+      "description": "Define the rules for when pipeline should be automatically cancelled.",
+      "additionalProperties": false,
       "properties": {
         "on_job_failure": {
           "markdownDescription": "Define which jobs to stop after a job fails.",
@@ -953,6 +1003,15 @@
           "enum": [
             "none",
             "all"
+          ]
+        },
+        "on_new_commit": {
+          "markdownDescription": "Configure the behavior of the auto-cancel redundant pipelines feature. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#workflowauto_cancelon_new_commit)",
+          "type": "string",
+          "enum": [
+            "conservative",
+            "interruptible",
+            "none"
           ]
         }
       }

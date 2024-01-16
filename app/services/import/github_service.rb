@@ -5,12 +5,17 @@ module Import
     include ActiveSupport::NumberHelper
     include Gitlab::Utils::StrongMemoize
 
+    COLLAB_IMPORT_SCOPES = %w[admin:org read:org].freeze
+
     attr_accessor :client
     attr_reader :params, :current_user
 
     def execute(access_params, provider)
       context_error = validate_context
       return context_error if context_error
+
+      scope_error = validate_collaborators_import_scope
+      return scope_error if scope_error
 
       project = create_project(access_params, provider)
       track_access_level('github')
@@ -87,15 +92,32 @@ module Import
     end
 
     def blocked_url?
-      Gitlab::UrlBlocker.blocked_url?(
+      Gitlab::HTTP_V2::UrlBlocker.blocked_url?(
         url,
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w[http https]
+        schemes: %w[http https],
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       )
     end
 
     private
+
+    def validate_collaborators_import_scope
+      collaborators_import = params.dig(:optional_stages, :collaborators_import)
+      # A value for `collaborators_import` may not be included in POST params
+      # and the default value is `true`
+      return unless collaborators_import == true || collaborators_import.nil?
+
+      # We need to call `#repo` to ensure the `#last_response` from the client has the headers we need.
+      repo
+      scopes = client.octokit.last_response.headers["x-oauth-scopes"]
+      scopes = scopes.split(',').map(&:strip)
+
+      return if (scopes & COLLAB_IMPORT_SCOPES).any?
+
+      log_and_return_error('Invalid scope', _('Your GitHub access token does not have the correct scope to import collaborators.'), :unprocessable_entity)
+    end
 
     def validate_context
       if blocked_url?
@@ -139,7 +161,8 @@ module Import
         .new(project)
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
-          optional_stages: params[:optional_stages]
+          optional_stages: params[:optional_stages],
+          extended_events: Feature.enabled?(:github_import_extended_events, current_user)
         )
     end
   end

@@ -306,9 +306,9 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       single_reference = "Work item #{work_item.to_reference}"
       multiple_references = "Work items #{work_item.to_reference} and #{another_work_item.to_reference}"
 
-      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+      control = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }
 
-      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
     end
   end
 end

@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Checks::LfsCheck, feature_category: :source_code_manageme
 
         context 'with blank newrev' do
           it_behaves_like 'a skipped integrity check' do
-            let(:changes) { [{ oldrev: oldrev, newrev: Gitlab::Git::BLANK_SHA, ref: ref }] }
+            let(:changes) { [{ oldrev: oldrev, newrev: Gitlab::Git::SHA1_BLANK_SHA, ref: ref }] }
           end
         end
       end

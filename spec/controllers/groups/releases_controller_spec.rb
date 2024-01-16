@@ -62,12 +62,12 @@ RSpec.describe Groups::ReleasesController do
 
       context 'N+1 queries' do
         it 'avoids N+1 database queries' do
-          control_count = ActiveRecord::QueryRecorder.new { subject }.count
+          control = ActiveRecord::QueryRecorder.new { subject }
 
           create_list(:release, 5, project: project)
           create_list(:release, 5, project: private_project)
 
-          expect { subject }.not_to exceed_query_limit(control_count)
+          expect { subject }.not_to exceed_query_limit(control)
         end
       end
     end

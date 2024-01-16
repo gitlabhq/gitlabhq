@@ -60,14 +60,14 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   end
 
   it 'can lookahead to eliminate N+1 queries', :use_clean_rails_memory_store_caching do
-    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+    control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
       post_graphql(query, current_user: user)
-    end.count
+    end
 
     achievement2 = create(:achievement, namespace: group)
     create_list(:user_achievement, 2, achievement: achievement2, user: user)
 
-    expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control_count)
+    expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control)
   end
 
   context 'when the achievements feature flag is disabled for a namespace' do

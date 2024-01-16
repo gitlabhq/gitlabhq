@@ -8,6 +8,7 @@ module Ml
       @package = params[:package]
       @description = params[:description]
       @user = params[:user]
+      @metadata = params[:metadata]
     end
 
     def execute
@@ -23,6 +24,8 @@ module Ml
           @model.default_experiment,
           { model_version: model_version }
         ).execute
+
+        model_version.add_metadata(@metadata)
 
         Gitlab::InternalEvents.track_event(
           'model_registry_ml_model_version_created',

@@ -16,7 +16,10 @@ You can define approval rules:
 
 - [As project defaults](#add-an-approval-rule).
 - [Per merge request](#edit-or-override-merge-request-approval-rules).
-- [At the instance level](../../../../administration/admin_area.md)
+
+You can configure approval rules:
+
+- [At the instance level](../../../../administration/merge_requests_approvals.md).
 
 If you don't define a [default approval rule](#add-an-approval-rule),
 any user can approve a merge request. Even if you don't define a rule, you can still
@@ -311,8 +314,18 @@ For more information about this validation error, read
 ### Groups need explicit or inherited Developer role on a project
 
 A group created to handle approvals may be created in a different area of the
-project hierarchy than the project requiring review. If this happens, the approvals group
-isn't recognized as a valid Code Owner for the project, nor does it display in the
-project's **Approvals** list. To fix this problem, add the approval group as a shared group
-high enough in the shared hierarchy so the project requiring review inherits this
-group of users.
+project hierarchy than the project requiring review. If this happens, members of the
+group may not be able to approve the merge request as they do not have access to it.
+
+For example:
+
+In the group structure below, project 1 belongs to subgroup 1 and subgroup 4 has users.
+
+![Example scenario - project and group hierarchy](img/group_access_example_01_v16_8.png)
+
+Project 1 has a project level approval rule which assigns subgroup 4 as approvers.
+When a merge request is created approvers from subgroup 4 appear in the eligible approvers list.
+However, as users from subgroup 4 do not have permission to view the merge request, the `404` error is returned.
+To grant membership, the group must be invited as a project member. It is now possible for users from subgroup 4 to approve.
+
+![Project members page showing subgroup 4 as a member](img/group_access_example_02_v16_8.png)

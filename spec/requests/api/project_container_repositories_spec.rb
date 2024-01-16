@@ -65,7 +65,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
   shared_context 'using job token' do
     before do
       stub_exclusive_lease
-      stub_feature_flags(ci_job_token_scope: true)
     end
 
     subject { public_send(method, api(url), params: params.merge({ job_token: job.token })) }
@@ -74,27 +73,13 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
   shared_context 'using job token from another project' do
     before do
       stub_exclusive_lease
-      stub_feature_flags(ci_job_token_scope: true)
     end
 
     subject { public_send(method, api(url), params: { job_token: job2.token }) }
   end
 
-  shared_context 'using job token while ci_job_token_scope feature flag is disabled' do
-    before do
-      stub_exclusive_lease
-      stub_feature_flags(ci_job_token_scope: false)
-    end
-
-    subject { public_send(method, api(url), params: params.merge({ job_token: job.token })) }
-  end
-
   shared_examples 'rejected job token scopes' do
     include_context 'using job token from another project' do
-      it_behaves_like 'rejected container repository access', :maintainer, :forbidden
-    end
-
-    include_context 'using job token while ci_job_token_scope feature flag is disabled' do
       it_behaves_like 'rejected container repository access', :maintainer, :forbidden
     end
   end

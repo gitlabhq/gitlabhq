@@ -336,6 +336,31 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
             it { is_expected.to eq(nil) }
           end
         end
+
+        describe 'published_at=' do
+          subject do
+            tag.published_at = input
+            tag.published_at
+          end
+
+          context 'with a valid input' do
+            let(:input) { 2.days.ago.iso8601 }
+
+            it { is_expected.to eq(DateTime.iso8601(input)) }
+          end
+
+          context 'with a nil input' do
+            let(:input) { nil }
+
+            it { is_expected.to eq(nil) }
+          end
+
+          context 'with an invalid input' do
+            let(:input) { 'not a timestamp' }
+
+            it { is_expected.to eq(nil) }
+          end
+        end
       end
     end
   end

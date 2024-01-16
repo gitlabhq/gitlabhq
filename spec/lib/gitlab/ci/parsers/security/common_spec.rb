@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
           context 'when name is provided' do
             it 'sets name from the report as a name' do
-              finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
+              finding = report.findings.second
               expected_name = Gitlab::Json.parse(finding.raw_metadata)['name']
 
               expect(finding.name).to eq(expected_name)
@@ -197,7 +197,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
               let(:location) { nil }
 
               it 'returns only identifier name' do
-                finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
+                finding = report.findings.third
+
                 expect(finding.name).to eq("CVE-2017-11429")
               end
             end
@@ -205,21 +206,24 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             context 'when location exists' do
               context 'when CVE identifier exists' do
                 it 'combines identifier with location to create name' do
-                  finding = report.findings.find { |x| x.compare_key == 'CVE-2017-11429' }
+                  finding = report.findings.third
+
                   expect(finding.name).to eq("CVE-2017-11429 in yarn.lock")
                 end
               end
 
               context 'when CWE identifier exists' do
                 it 'combines identifier with location to create name' do
-                  finding = report.findings.find { |x| x.compare_key == 'CWE-2017-11429' }
+                  finding = report.findings.fourth
+
                   expect(finding.name).to eq("CWE-2017-11429 in yarn.lock")
                 end
               end
 
               context 'when neither CVE nor CWE identifier exist' do
                 it 'combines identifier with location to create name' do
-                  finding = report.findings.find { |x| x.compare_key == 'OTHER-2017-11429' }
+                  finding = report.findings.fifth
+
                   expect(finding.name).to eq("other-2017-11429 in yarn.lock")
                 end
               end
@@ -474,6 +478,20 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
               expect(finding.uuid).to eq(Gitlab::UUID.v5(identifiers))
             end
+          end
+        end
+
+        describe 'handling the unicode null characters' do
+          let(:artifact) { build(:ci_job_artifact, :common_security_report_with_unicode_null_character) }
+
+          it 'escapes the unicode null characters while parsing the report' do
+            finding = report.findings.first
+
+            expect(finding.solution).to eq('Upgrade to latest version.\u0000')
+          end
+
+          it 'adds warning to report' do
+            expect(report.warnings).to include({ type: 'Parsing', message: 'Report artifact contained unicode null characters which are escaped during the ingestion.' })
           end
         end
       end

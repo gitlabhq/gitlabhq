@@ -249,15 +249,15 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
 
         RequestStore.clear!
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get :index, params: request_params
-        end.count
+        end
 
         RequestStore.clear!
 
         create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
 
-        expect { get :index, params: request_params }.not_to exceed_query_limit(control_count)
+        expect { get :index, params: request_params }.not_to exceed_query_limit(control)
       end
     end
   end

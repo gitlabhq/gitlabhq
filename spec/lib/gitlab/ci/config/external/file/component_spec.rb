@@ -146,6 +146,16 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
 
         external_resource.content
       end
+
+      context 'when user is missing in a context' do
+        let_it_be(:user) { nil }
+
+        it 'does not track the event' do
+          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+          external_resource.content
+        end
+      end
     end
 
     context 'when component is invalid' do

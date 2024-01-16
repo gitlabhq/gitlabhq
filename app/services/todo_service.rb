@@ -168,7 +168,11 @@ class TodoService
   def mark_todo(target, current_user)
     project = target.project
     attributes = attributes_for_todo(project, target, current_user, Todo::MARKED)
-    create_todos(current_user, attributes, target_namespace(target), project)
+
+    todos = create_todos(current_user, attributes, target_namespace(target), project)
+    work_item_activity_counter.track_work_item_mark_todo_action(author: current_user) if target.is_a?(WorkItem)
+
+    todos
   end
 
   def todo_exist?(issuable, current_user)
@@ -474,6 +478,10 @@ class TodoService
   def target_namespace(target)
     project = target.project
     project&.namespace || target.try(:namespace)
+  end
+
+  def work_item_activity_counter
+    Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter
   end
 end
 

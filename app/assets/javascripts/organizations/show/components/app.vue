@@ -1,11 +1,12 @@
 <script>
 import OrganizationAvatar from './organization_avatar.vue';
+import OrganizationDescription from './organization_description.vue';
 import GroupsAndProjects from './groups_and_projects.vue';
 import AssociationCounts from './association_counts.vue';
 
 export default {
   name: 'OrganizationShowApp',
-  components: { OrganizationAvatar, GroupsAndProjects, AssociationCounts },
+  components: { OrganizationAvatar, OrganizationDescription, GroupsAndProjects, AssociationCounts },
   props: {
     organization: {
       type: Object,
@@ -26,6 +27,7 @@ export default {
 <template>
   <div class="gl-py-6">
     <organization-avatar :organization="organization" />
+    <organization-description :organization="organization" />
     <association-counts
       :association-counts="associationCounts"
       :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"

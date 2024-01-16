@@ -70,7 +70,6 @@ export const initLegacyWebIDE = (el, options = {}) => {
       this.init({
         renderWhitespaceInCode: parseBoolean(el.dataset.renderWhitespaceInCode),
         editorTheme: window.gon?.user_color_scheme || DEFAULT_THEME,
-        environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
         userPreferencesPath: el.dataset.userPreferencesPath,
       });

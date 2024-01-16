@@ -79,7 +79,9 @@ module Users
       vulnerability_report_grouping: 77, # EE-only
       new_nav_for_everyone_callout: 78,
       code_suggestions_ga_non_owner_alert: 79, # EE-only
-      duo_chat_callout: 80 # EE-only
+      duo_chat_callout: 80, # EE-only
+      code_suggestions_ga_owner_alert: 81, # EE-only
+      product_analytics_dashboard_feedback: 82 # EE-only
     }
 
     validates :feature_name,

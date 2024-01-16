@@ -260,5 +260,3 @@ export const getJsonSchemaForPath = (state, getters) => (path) => {
     fileMatch: [`*${path}`],
   };
 };
-
-export * from './getters/alert';

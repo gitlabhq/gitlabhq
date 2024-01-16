@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -174,6 +174,8 @@ type Response struct {
 	MaximumSize int64
 	// A list of permitted hash functions. If empty, then all available are permitted.
 	UploadHashFunctions []string
+	// NeedAudit indicates whether git events should be audited to rails.
+	NeedAudit bool `json:"NeedAudit"`
 }
 
 type GitalyServer struct {
@@ -273,6 +275,42 @@ func (api *API) newRequest(r *http.Request, suffix string) (*http.Request, error
 	authReq.Host = r.Host
 
 	return authReq, nil
+}
+
+type GitAuditEventRequest struct {
+	Action        string                                  `json:"action"`
+	Protocol      string                                  `json:"protocol"`
+	Repo          string                                  `json:"gl_repository"`
+	Username      string                                  `json:"username"`
+	PackfileStats *gitalypb.PackfileNegotiationStatistics `json:"packfile_stats,omitempty"`
+}
+
+func (api *API) SendGitAuditEvent(ctx context.Context, body GitAuditEventRequest) error {
+	b, err := json.Marshal(body)
+	if err != nil {
+		return fmt.Errorf("failed to marshal GitAuditEventRequest: %w", err)
+	}
+
+	auditURL := *api.URL
+	auditURL.Path = "/api/v4/internal/shellhorse/git_audit_event"
+	auditReq, err := http.NewRequest(http.MethodPost, auditURL.String(), bytes.NewReader(b))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+	auditReq.Header.Set("User-Agent", "GitLab-Workhorse")
+	auditReq.Header.Set("Content-Type", "application/json")
+	auditReq = auditReq.WithContext(ctx)
+	httpResponse, err := api.doRequestWithoutRedirects(auditReq)
+	if err != nil {
+		return fmt.Errorf("SendGitAuditEvent: do request: %v", err)
+	}
+	defer httpResponse.Body.Close()
+
+	if httpResponse.StatusCode != http.StatusOK {
+		return fmt.Errorf("SendGitAuditEvent: response status: %s", httpResponse.Status)
+	}
+
+	return nil
 }
 
 // PreAuthorize performs a pre-authorization check against the API for the given HTTP request

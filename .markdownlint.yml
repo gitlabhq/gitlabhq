@@ -1,31 +1,39 @@
 ---
 # Base Markdownlint configuration
 # Extended Markdownlint configuration in doc/.markdownlint/
+# See https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md for explanations of each rule
+# First, set the default
 default: true
-first-header-h1: true
-header-style:
-  style: "atx"
-ul-style:
-  style: "dash"
-no-trailing-spaces: false
-line-length: false
-no-duplicate-header:
-  allow_different_nesting: true
-no-trailing-punctuation:
-  punctuation: ".,;:!。，；：！？"
-ol-prefix:
-  style: "one"
-no-inline-html: false
-hr-style:
-  style: "---"
-no-emphasis-as-heading: false
-first-line-h1: false
-code-block-style:
+
+# Per-rule settings in alphabetical order
+code-block-style:                 # MD046
   style: "fenced"
-emphasis-style: false
-link-fragments: false
-reference-links-images: false
-proper-names:
+emphasis-style: false             # MD049
+first-header-h1: true             # MD002
+first-line-h1: false              # MD041
+header-style:                     # MD003
+  style: "atx"
+hr-style:                         # MD035
+  style: "---"
+line-length: false                # MD013
+link-fragments: false             # MD051
+no-duplicate-header:              # MD024
+  allow_different_nesting: true
+no-emphasis-as-heading: false     # MD036
+no-inline-html: false             # MD033
+no-trailing-punctuation:          # MD026
+  punctuation: ".,;:!。，；：！？"
+no-trailing-spaces: false         # MD009
+ol-prefix:                        # MD029
+  style: "one"
+reference-links-images: false     # MD052
+ul-style:                         # MD004
+  style: "dash"
+
+# Keep this item last due to length
+proper-names:                     # MD044
+  code_blocks: false
+  html_elements: false
   names: [
     "Akismet",
     "Alertmanager",
@@ -150,5 +158,3 @@ proper-names:
     "YAML",
     "YouTrack"
   ]
-  code_blocks: false
-  html_elements: false

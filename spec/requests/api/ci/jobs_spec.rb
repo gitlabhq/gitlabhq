@@ -70,6 +70,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       expect(json_response['artifacts']).to be_an Array
       expect(json_response['artifacts']).to be_empty
       expect(json_response['web_url']).to be_present
+      expect(json_response['archived']).to eq(jobx.archived?)
     end
   end
 
@@ -132,12 +133,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       it 'avoids N+1 queries', :skip_before_request do
-        control_count = ActiveRecord::QueryRecorder.new { perform_request }.count
+        control = ActiveRecord::QueryRecorder.new { perform_request }
 
         running_job = create(:ci_build, :running, project: project, user: user, pipeline: pipeline, artifacts_expire_at: 1.day.since)
         running_job.save!
 
-        expect { perform_request }.not_to exceed_query_limit(control_count)
+        expect { perform_request }.not_to exceed_query_limit(control)
       end
 
       it_behaves_like 'returns common pipeline data' do
@@ -431,7 +432,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         first_build.user = create(:user)
         first_build.save!
 
-        control_count = ActiveRecord::QueryRecorder.new { go }.count
+        control = ActiveRecord::QueryRecorder.new { go }
 
         second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
         second_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: second_pipeline)
@@ -439,7 +440,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         second_build.user = create(:user)
         second_build.save!
 
-        expect { go }.not_to exceed_query_limit(control_count)
+        expect { go }.not_to exceed_query_limit(control)
       end
 
       context 'filter project with one scope element' do

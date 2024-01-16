@@ -3,6 +3,8 @@
 module Gitlab
   module Database
     class Dictionary
+      ALL_SCOPES = ['', 'views', 'deleted_tables'].freeze
+
       def self.entries(scope = '')
         @entries ||= {}
         @entries[scope] ||= Dir.glob(dictionary_path_globs(scope)).map do |file_path|
@@ -10,6 +12,15 @@ module Gitlab
           dictionary.validate!
           dictionary
         end
+      end
+
+      def self.any_entry(name)
+        ALL_SCOPES.each do |scope|
+          e = entry(name, scope)
+          return e if e
+        end
+
+        nil
       end
 
       def self.entry(name, scope = '')
@@ -67,6 +78,10 @@ module Gitlab
 
         def classes
           data['classes']
+        end
+
+        def allow_cross_to_schemas(type)
+          data["allow_cross_#{type}"].to_a.map(&:to_sym)
         end
 
         def schema?(schema_name)

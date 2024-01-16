@@ -82,15 +82,15 @@ RSpec.shared_examples 'routable resource' do
       end
     end
 
-    context 'on the usage of `use_includes` parameter' do
+    context 'on the usage of `preload_routes` parameter' do
       let_it_be(:klass) { record.class.to_s.downcase }
       let_it_be(:record_3) { create(:"#{klass}") }
       let_it_be(:record_4) { create(:"#{klass}") }
 
-      context 'when use_includes: true' do
+      context 'when preload_routes: true' do
         it 'includes route information when loading records' do
-          control_count = ActiveRecord::QueryRecorder.new do
-            described_class.where_full_path_in([record.full_path, record_2.full_path], use_includes: true)
+          control = ActiveRecord::QueryRecorder.new do
+            described_class.where_full_path_in([record.full_path, record_2.full_path], preload_routes: true)
               .map(&:route)
           end
 
@@ -101,16 +101,16 @@ RSpec.shared_examples 'routable resource' do
                 record_2.full_path,
                 record_3.full_path,
                 record_4.full_path
-              ], use_includes: true)
+              ], preload_routes: true)
               .map(&:route)
-          end.to issue_same_number_of_queries_as(control_count)
+          end.to issue_same_number_of_queries_as(control)
         end
       end
 
-      context 'when use_includes: false' do
+      context 'when preload_routes: false' do
         it 'does not include route information when loading records' do
           control_count = ActiveRecord::QueryRecorder.new do
-            described_class.where_full_path_in([record.full_path, record_2.full_path], use_includes: false)
+            described_class.where_full_path_in([record.full_path, record_2.full_path], preload_routes: false)
               .map(&:route)
           end
 
@@ -121,7 +121,7 @@ RSpec.shared_examples 'routable resource' do
                 record_2.full_path,
                 record_3.full_path,
                 record_4.full_path
-              ], use_includes: false)
+              ], preload_routes: false)
               .map(&:route)
           end.not_to issue_same_number_of_queries_as(control_count)
         end
@@ -130,14 +130,6 @@ RSpec.shared_examples 'routable resource' do
   end
 
   it_behaves_like '.where_full_path_in', :aggregate_failures
-
-  context 'when the `optimize_where_full_path_in` feature flag is turned OFF' do
-    before do
-      stub_feature_flags(optimize_where_full_path_in: false)
-    end
-
-    it_behaves_like '.where_full_path_in', :aggregate_failures
-  end
 end
 
 RSpec.shared_examples 'routable resource with parent' do

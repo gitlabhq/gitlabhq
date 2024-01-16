@@ -87,37 +87,27 @@ module Routable
     #     Klass.where_full_path_in(%w{gitlab-org/gitlab-foss gitlab-org/gitlab})
     #
     # Returns an ActiveRecord::Relation.
-    def where_full_path_in(paths, use_includes: true)
+    def where_full_path_in(paths, preload_routes: true)
       return none if paths.empty?
 
-      wheres = paths.map do |path|
+      path_condition = paths.map do |path|
         "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
-      end
+      end.join(' OR ')
 
-      if Feature.enabled?(:optimize_where_full_path_in, Feature.current_request)
-        route_scope = all
-        source_type_condition = { source_type: route_scope.klass.base_class }
+      route_scope = all
+      source_type_condition = { source_type: route_scope.klass.base_class }
 
-        routes_matching_condition = Route.where(source_type_condition).where(wheres.join(' OR '))
+      routes_matching_condition = Route
+        .where(source_type_condition)
+        .where(path_condition)
 
-        result = route_scope.where(id: routes_matching_condition.pluck(:source_id))
+      source_ids = routes_matching_condition.pluck(:source_id)
+      result = route_scope.where(id: source_ids)
 
-        if use_includes
-          result.preload(:route)
-        else
-          result
-        end
+      if preload_routes
+        result.preload(:route)
       else
-        route =
-          if use_includes
-            includes(:route).references(:routes)
-          else
-            joins(:route)
-          end
-
-        route
-          .where(wheres.join(' OR '))
-          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+        result
       end
     end
   end

@@ -17,8 +17,6 @@ Supported clients:
 - `mvn`. Learn how to build a [Maven](../workflows/build_packages.md#maven) package.
 - `gradle`. Learn how to build a [Gradle](../workflows/build_packages.md#gradle) package.
 - `sbt`.
-  - `sbt` can only be used to [pull dependencies](#install-a-package).
-    See this [issue 408479](https://gitlab.com/gitlab-org/gitlab/-/issues/408479) for more details.
 
 ## Publish to the GitLab package registry
 
@@ -255,9 +253,9 @@ credentials += Credentials("GitLab Packages Registry", "<host>", "<name>", "<tok
 In this example:
 
 - `<endpoint url>` is the [endpoint URL](#endpoint-urls).
-Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
+  Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
 - `<host>` is the host present in the `<endpoint url>` without the protocol
-scheme or the port. Example: `gitlab.example.com`.
+  scheme or the port. Example: `gitlab.example.com`.
 - `<name>` and `<token>` are explained in the table above.
 
 ::EndTabs
@@ -289,11 +287,11 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 #### Endpoint URLs
 
-| Endpoint | Endpoint URL for `pom.xml`                                               | Additional information                                                                                                             |
-| -------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Endpoint | Endpoint URL for `pom.xml`                                               | Additional information |
+|----------|--------------------------------------------------------------------------|------------------------|
 | Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your project's homepage. |
-| Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage.      |
-| Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name.                                                                                |
+| Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage. |
+| Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name. |
 
 ### Edit the configuration file for publishing
 
@@ -453,6 +451,35 @@ gradle publish
 ```
 
 Go to your project's **Packages and registries** page and view the published packages.
+
+:::TabTitle `sbt`
+
+Configure the `publishTo` setting in your `build.sbt` file:
+
+```scala
+publishTo := Some("gitlab" at "<endpoint url>")
+```
+
+Ensure the credentials are referenced correctly. See the [`sbt` documentation](https://www.scala-sbt.org/1.x/docs/Publishing.html#Credentials) for more information.
+
+To publish a package using `sbt`:
+
+```shell
+sbt publish
+```
+
+If the deploy is successful, the build success message is displayed:
+
+```shell
+[success] Total time: 1 s, completed Jan 28, 2020 12:08:57 PM
+```
+
+Check the success message to ensure the package was published to the
+correct location:
+
+```shell
+[info]  published my-project_2.12 to https://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/my-project_2.12/0.1.1-SNAPSHOT/my-project_2.12-0.1.1-SNAPSHOT.pom
+```
 
 ::EndTabs
 

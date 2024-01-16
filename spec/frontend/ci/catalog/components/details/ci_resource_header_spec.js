@@ -113,7 +113,7 @@ describe('CiResourceHeader', () => {
         createComponent({
           props: {
             pipelineStatus: status,
-            latestVersion: { tagName: '1.0.0', tagPath: 'path/to/release' },
+            latestVersion: { name: '1.0.0', path: 'path/to/release' },
           },
         });
       });

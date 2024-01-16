@@ -98,7 +98,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       it 'adds a user to members' do
         expect(execute_service[:status]).to eq(:success)
-        expect(source.users).to include member
+        expect(source).to have_user(member)
         expect(Onboarding::Progress.completed?(source, :user_added)).to be(true)
       end
 
@@ -119,14 +119,34 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       before do
         # validations will fail because we try to invite them to the project as a guest
         source.group.add_developer(member)
+        allow(Gitlab::EventStore).to receive(:publish)
       end
 
-      it 'triggers the members added and authorizations changed events' do
+      it 'triggers the authorizations changed events' do
         expect(Gitlab::EventStore)
-          .to receive(:publish)
-                .with(an_instance_of(ProjectAuthorizations::AuthorizationsChangedEvent))
+          .to receive(:publish_group)
+                .with(array_including(an_instance_of(ProjectAuthorizations::AuthorizationsAddedEvent)))
                 .and_call_original
 
+        execute_service
+      end
+
+      context 'when feature flag "add_policy_approvers_to_rules" is disabled' do
+        before do
+          stub_feature_flags(add_policy_approvers_to_rules: false)
+        end
+
+        it 'triggers the authorizations changed event' do
+          expect(Gitlab::EventStore)
+            .to receive(:publish)
+                  .with(an_instance_of(ProjectAuthorizations::AuthorizationsChangedEvent))
+                  .and_call_original
+
+          execute_service
+        end
+      end
+
+      it 'triggers the members added event' do
         expect(Gitlab::EventStore)
           .to receive(:publish)
           .with(an_instance_of(Members::MembersAddedEvent))

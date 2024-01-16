@@ -116,7 +116,7 @@ RSpec.describe Gitlab::Highlight do
 
     it 'links dependencies via DependencyLinker' do
       expect(Gitlab::DependencyLinker).to receive(:link)
-        .with('file.name', 'Contents', anything).and_call_original
+        .with('file.name', 'Contents', anything, used_on: :blob).and_call_original
 
       described_class.highlight('file.name', 'Contents')
     end
@@ -131,6 +131,33 @@ RSpec.describe Gitlab::Highlight do
         expect(Rouge::Lexers::PlainText).to receive(:lex).and_call_original
 
         highlight
+      end
+    end
+
+    it 'increments usage counter', :prometheus do
+      described_class.highlight(file_name, content)
+
+      gitlab_highlight_usage_counter = Gitlab::Metrics.registry.get(:gitlab_highlight_usage)
+
+      expect(gitlab_highlight_usage_counter.get(used_on: :blob)).to eq(1)
+      expect(gitlab_highlight_usage_counter.get(used_on: :diff)).to eq(0)
+    end
+
+    context 'when used_on is specified' do
+      it 'increments usage counter', :prometheus do
+        described_class.highlight(file_name, content, used_on: :diff)
+
+        gitlab_highlight_usage_counter = Gitlab::Metrics.registry.get(:gitlab_highlight_usage)
+
+        expect(gitlab_highlight_usage_counter.get(used_on: :diff)).to eq(1)
+        expect(gitlab_highlight_usage_counter.get(used_on: :blob)).to eq(0)
+      end
+
+      it 'links dependencies via DependencyLinker' do
+        expect(Gitlab::DependencyLinker).to receive(:link)
+          .with(file_name, content, anything, used_on: :diff).and_call_original
+
+        described_class.highlight(file_name, content, used_on: :diff)
       end
     end
   end

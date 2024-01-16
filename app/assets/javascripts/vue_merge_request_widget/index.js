@@ -46,6 +46,7 @@ export default () => {
         gl.mrWidgetData.can_create_pipeline_in_target_project,
       ),
       commitPathTemplate: gl.mrWidgetData.commit_path_template,
+      canAdminVulnerability: gl.mrWidgetData.can_admin_vulnerability,
       dismissalDescriptions,
     },
     ...MrWidgetOptions,

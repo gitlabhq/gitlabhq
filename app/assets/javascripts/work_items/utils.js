@@ -55,3 +55,14 @@ export const markdownPreviewPath = (fullPath, iid) =>
   `${
     gon.relative_url_root || ''
   }/${fullPath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+
+export const isReference = (input) => {
+  /**
+   * The regular expression checks if the `value` is
+   * a project work item or group work item.
+   * e.g., gitlab-org/project-path#101 or gitlab-org&101
+   * or #1234
+   */
+
+  return /^([\w-]+(?:\/[\w-]+)*)?[#&](\d+)$/.test(input);
+};

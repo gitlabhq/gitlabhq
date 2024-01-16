@@ -2,6 +2,7 @@ query getFluxHelmReleaseStatusQuery($configuration: LocalConfiguration, $fluxRes
   fluxHelmReleaseStatus(configuration: $configuration, fluxResourcePath: $fluxResourcePath)
     @client {
     message
+    reason
     status
     type
   }

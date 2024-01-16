@@ -1,11 +1,9 @@
 import Api from '~/api';
 import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
-import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
-import { query, mutate } from './gql';
+import { query } from './gql';
 
 export default {
   getFileData(endpoint) {
@@ -83,18 +81,6 @@ export default {
   pingUsage(projectPath) {
     const url = `${gon.relative_url_root}/${projectPath}/service_ping/web_ide_pipelines_count`;
     return axios.post(url);
-  },
-  getCiConfig(projectPath, content) {
-    return query({
-      query: ciConfig,
-      variables: { projectPath, content },
-    }).then(({ data }) => data.ciConfig);
-  },
-  dismissUserCallout(name) {
-    return mutate({
-      mutation: dismissUserCallout,
-      variables: { input: { featureName: name } },
-    }).then(({ data }) => data);
   },
   getProjectPermissionsData(projectPath) {
     return query({

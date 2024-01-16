@@ -1,4 +1,8 @@
-import { GlDisclosureDropdownItem, GlDisclosureDropdown } from '@gitlab/ui';
+import {
+  GlDisclosureDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+} from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import moreActionsDropdown from '~/groups_projects/components/more_actions_dropdown.vue';
 
@@ -28,6 +32,7 @@ describe('moreActionsDropdown', () => {
   const showDropdown = () => {
     findDropdown().vm.$emit('show');
   };
+  const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
 
   describe('copy id', () => {
     describe('project namespace type', () => {
@@ -69,6 +74,29 @@ describe('moreActionsDropdown', () => {
       it('renders copy group id with correct id', () => {
         expect(wrapper.findByTestId('copy-group-id').text()).toBe('Copy group ID: 11');
       });
+    });
+  });
+
+  describe('dropdown group', () => {
+    it('is not rendered if no path is set', () => {
+      createComponent({
+        provideData: {
+          requestAccessPath: undefined,
+          leavePath: '',
+          withdrawPath: null,
+        },
+      });
+
+      expect(findDropdownGroup().exists()).toBe(false);
+    });
+
+    it('is rendered if path is set', () => {
+      createComponent({
+        provideData: {
+          requestAccessPath: 'path/to/request/access',
+        },
+      });
+      expect(findDropdownGroup().exists()).toBe(true);
     });
   });
 

@@ -27,7 +27,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
-                                  .skipping :'link-in-text-block', :'heading-order'
+                                  .skipping :'heading-order'
     end
 
     it 'shows active tab on sidebar' do

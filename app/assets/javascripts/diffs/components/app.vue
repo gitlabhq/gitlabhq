@@ -144,6 +144,11 @@ export default {
       required: false,
       default: '',
     },
+    pinnedFileUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -153,6 +158,7 @@ export default {
       autoScrolled: false,
       activeProject: undefined,
       hasScannerError: false,
+      pinnedFileStatus: '',
     };
   },
   apollo: {
@@ -215,7 +221,6 @@ export default {
     ...mapState('findingsDrawer', ['activeDrawer']),
     ...mapState('diffs', [
       'isLoading',
-      'diffFiles',
       'diffViewType',
       'commit',
       'renderOverflowWarning',
@@ -245,6 +250,7 @@ export default {
       'isBatchLoading',
       'isBatchLoadingError',
       'flatBlobsList',
+      'diffFiles',
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     ...mapGetters('findingsDrawer', ['activeDrawer']),
@@ -355,7 +361,7 @@ export default {
     const id = window?.location?.hash;
 
     if (id && id.indexOf('#note') !== 0) {
-      this.setHighlightedRow(id.split('diff-content').pop().slice(1));
+      this.setHighlightedRow({ lineCode: id.split('diff-content').pop().slice(1) });
     }
 
     const events = [];
@@ -438,6 +444,7 @@ export default {
       'setFileByFile',
       'disableVirtualScroller',
       'setGenerateTestFilePath',
+      'fetchPinnedFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -509,6 +516,20 @@ export default {
       return !this.diffFiles.length;
     },
     fetchData({ toggleTree = true, fetchMeta = true } = {}) {
+      if (this.pinnedFileUrl && this.pinnedFileStatus !== 'loaded') {
+        this.pinnedFileStatus = 'loading';
+        this.fetchPinnedFile(this.pinnedFileUrl)
+          .then(() => {
+            this.pinnedFileStatus = 'loaded';
+            if (toggleTree) this.setTreeDisplay();
+          })
+          .catch(() => {
+            this.pinnedFileStatus = 'error';
+            createAlert({
+              message: __("Couldn't fetch the pinned file."),
+            });
+          });
+      }
       if (fetchMeta) {
         this.fetchDiffFilesMeta()
           .then((data) => {
@@ -539,7 +560,7 @@ export default {
       }
 
       if (!this.viewDiffsFileByFile) {
-        this.fetchDiffFilesBatch()
+        this.fetchDiffFilesBatch(Boolean(this.pinnedFileUrl))
           .then(() => {
             if (toggleTree) this.setTreeDisplay();
             // Guarantee the discussions are assigned after the batch finishes.
@@ -724,6 +745,9 @@ export default {
             <gl-loading-icon size="lg" />
           </div>
           <template v-else-if="renderDiffFiles">
+            <div v-if="pinnedFileStatus === 'loading'" class="loading">
+              <gl-loading-icon size="lg" />
+            </div>
             <dynamic-scroller
               v-if="isVirtualScrollingEnabled"
               :items="diffs"

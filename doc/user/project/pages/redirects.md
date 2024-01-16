@@ -26,7 +26,7 @@ are supported.
 | Rewrites (other than `200`)            | **{dotted-circle}** No  | `/en/* /en/404.html 404` |
 | Query parameters | **{dotted-circle}** No | `/store id=:id  /blog/:id  301` |
 | Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | **{dotted-circle}** No | `/app/  /app/index.html  200!` |
-| Domain-level redirects | **{dotted-circle}** No | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
+| [Domain-level redirects](#domain-level-redirects) | **{check-circle}** Yes | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
 | Redirect by country or language | **{dotted-circle}** No | `/  /anz     302  Country=au,nz` |
 | Redirect by role | **{dotted-circle}** No | `/admin/*  200!  Role=admin` |
 
@@ -118,6 +118,31 @@ request matches the `from`:
 
 This status code can be used in combination with [splat rules](#splats) to dynamically
 rewrite the URL.
+
+## Domain-level redirects
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
+
+To create a domain-level redirect, add a domain-level path (beginning with `http://`
+or `https://`) to either:
+
+- The `to` path only.
+- The `from` and `to` paths.
+
+The supported [HTTP status codes](#http-status-codes) are `301` and `302`:
+
+```plaintext
+# 301 permanent redirect
+http://blog.example.com/file_1.html https://www.example.com/blog/file_1.html 301
+/file_2.html https://www.example.com/blog/file_2.html 301
+
+# 302 temporary redirect
+http://blog.example.com/file_3.html https://www.example.com/blog/file_3.html 302
+/file_4.html https://www.example.com/blog/file_4.html 302
+```
+
+Domain-level redirects can be used in combination with [splat rules](#splats) (including splat placeholders)
+to dynamically rewrite the URL path.
 
 ## Splats
 

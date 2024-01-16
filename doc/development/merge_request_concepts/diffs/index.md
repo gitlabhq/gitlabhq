@@ -28,6 +28,7 @@ codebase in the future:
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   [Recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek)
+  <!-- Video published on 2019-01-29 -->
 - Slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
 - [PDF slides](https://gitlab.com/gitlab-org/create-stage/uploads/b5ad2f336e0afcfe0f99db0af0ccc71a/)
 
@@ -192,7 +193,7 @@ has been introduced.
 One of the key challenges to deal with when working on merge ref diffs are merge
 conflicts. If the target and source branch contains a merge conflict, the branches
 cannot be automatically merged. The
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=GFXIFA4ZuZw&feature=youtu.be&ab_channel=GitLabUnfiltered)
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=GFXIFA4ZuZw&feature=youtu.be&ab_channel=GitLabUnfiltered) <!-- Video published on 2020-07-24 -->
 is a quick introduction to the problem and the motivation behind the [epic](https://gitlab.com/groups/gitlab-org/-/epics/854).
 
 In 13.5 a solution for both-modified merge

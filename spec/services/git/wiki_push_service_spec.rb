@@ -347,7 +347,7 @@ RSpec.describe Git::WikiPushService, services: true, feature_category: :wiki do
   end
 
   def current_sha
-    repository.commit('master')&.id || Gitlab::Git::BLANK_SHA
+    repository.commit('master')&.id || Gitlab::Git::SHA1_BLANK_SHA
   end
 
   # It is important not to re-use the WikiPage services here, since they create

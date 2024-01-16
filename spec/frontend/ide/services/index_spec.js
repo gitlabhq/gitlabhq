@@ -2,12 +2,10 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import getIdeProject from 'ee_else_ce/ide/queries/get_ide_project.query.graphql';
 import Api from '~/api';
-import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import services from '~/ide/services';
-import { query, mutate } from '~/ide/services/gql';
+import { query } from '~/ide/services/gql';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { projectData } from '../mock_data';
 
 jest.mock('~/api');
@@ -273,35 +271,6 @@ describe('IDE services', () => {
 
       return services.pingUsage(TEST_PROJECT_PATH).then(() => {
         expect(axios.post).toHaveBeenCalledWith(axiosURL);
-      });
-    });
-  });
-  describe('getCiConfig', () => {
-    const TEST_PROJECT_PATH = 'foo/bar';
-    const TEST_CI_CONFIG = 'test config';
-
-    it('queries with the given CI config and project', () => {
-      const result = { data: { ciConfig: { test: 'data' } } };
-      query.mockResolvedValue(result);
-      return services.getCiConfig(TEST_PROJECT_PATH, TEST_CI_CONFIG).then((data) => {
-        expect(data).toEqual(result.data.ciConfig);
-        expect(query).toHaveBeenCalledWith({
-          query: ciConfig,
-          variables: { projectPath: TEST_PROJECT_PATH, content: TEST_CI_CONFIG },
-        });
-      });
-    });
-  });
-  describe('dismissUserCallout', () => {
-    it('mutates the callout to dismiss', () => {
-      const result = { data: { callouts: { test: 'data' } } };
-      mutate.mockResolvedValue(result);
-      return services.dismissUserCallout('test').then((data) => {
-        expect(data).toEqual(result.data);
-        expect(mutate).toHaveBeenCalledWith({
-          mutation: dismissUserCallout,
-          variables: { input: { featureName: 'test' } },
-        });
       });
     });
   });

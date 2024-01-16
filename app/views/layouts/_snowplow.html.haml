@@ -2,7 +2,7 @@
 
 - namespace = @group || @project&.namespace || @namespace
 = webpack_bundle_tag 'tracker'
-- if Gitlab.com? && Feature.enabled?(:browsersdk_tracking) && Feature.enabled?(:gl_analytics_tracking, Feature.current_request)
+- if Gitlab.com? && Feature.enabled?(:gl_analytics_tracking, Feature.current_request)
   = webpack_bundle_tag 'analytics'
 = javascript_tag do
   :plain
@@ -13,7 +13,6 @@
       namespace_id: namespace&.id,
       plan_name: namespace&.actual_plan_name,
       project_id: @project&.id,
-      user_id: current_user&.id,
-      new_nav: show_super_sidebar?
+      user_id: current_user&.id
     ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};

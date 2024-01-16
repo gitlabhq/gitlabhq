@@ -2,9 +2,11 @@
 
 module Organizations
   class OrganizationsController < ApplicationController
+    include PreviewMarkdown
+
     feature_category :cell
 
-    skip_before_action :authenticate_user!, except: [:index, :new, :users]
+    skip_before_action :authenticate_user!, only: [:show, :groups_and_projects]
 
     def index; end
 

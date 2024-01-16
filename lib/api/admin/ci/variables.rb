@@ -54,6 +54,10 @@ module API
                   type: String,
                   desc: 'The key of the variable. Max 255 characters'
 
+                optional :description,
+                  type: String,
+                  desc: 'The description of the variable'
+
                 requires :value,
                   type: String,
                   desc: 'The value of a variable'
@@ -97,6 +101,10 @@ module API
                 optional :key,
                   type: String,
                   desc: 'The key of a variable'
+
+                optional :description,
+                  type: String,
+                  desc: 'The description of the variable'
 
                 optional :value,
                   type: String,

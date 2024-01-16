@@ -173,7 +173,7 @@ export const truncateSha = (sha) => sha.substring(0, 8);
  * @return {String}
  */
 export function capitalizeFirstCharacter(text) {
-  return `${text[0].toUpperCase()}${text.slice(1)}`;
+  return text?.length ? `${text[0].toUpperCase()}${text.slice(1)}` : '';
 }
 
 /**

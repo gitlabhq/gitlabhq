@@ -12,7 +12,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   before do
     sign_in(current_user)
-    gitlab_enable_admin_mode_sign_in(current_user)
+    enable_admin_mode!(current_user)
   end
 
   describe 'GET /admin/users', :js do
@@ -379,6 +379,24 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         wait_for_requests
 
         expect(find_by_testid("user-group-count-#{current_user.id}").text).to eq("2")
+      end
+    end
+
+    context 'user pending approval' do
+      it 'shows user info', :aggregate_failures do
+        user = create(:user, :blocked_pending_approval)
+
+        visit admin_users_path
+        click_link 'Pending approval'
+        click_link user.name
+
+        expect(page).to have_content(user.name)
+        expect(page).to have_content('Pending approval')
+
+        click_user_dropdown_toggle(user.id)
+
+        expect(page).to have_button('Approve')
+        expect(page).to have_button('Reject')
       end
     end
   end

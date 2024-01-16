@@ -85,7 +85,7 @@ To enable Admin Mode through the UI:
 
 To turn on Admin Mode for your current session and access potentially dangerous resources:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select your avatar.
 1. Select **Enter Admin Mode**.
 1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
 
@@ -103,7 +103,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 To turn off Admin Mode for your current session:
 
-1. On the left sidebar, select **Search or go to**.
+1. On the left sidebar, select your avatar.
 1. Select **Leave Admin Mode**.
 
 ### Limitations of Admin Mode

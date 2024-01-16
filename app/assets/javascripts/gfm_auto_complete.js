@@ -3,6 +3,7 @@ import '~/lib/utils/jquery_at_who';
 import { escape as lodashEscape, sortBy, template, escapeRegExp } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
@@ -25,6 +26,8 @@ export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 export const CONTACT_STATE_ACTIVE = 'active';
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
+
+const useMentionsBackendFiltering = window.gon.features?.mentionAutocompleteBackendFiltering;
 
 /**
  * Escapes user input before we pass it to at.js, which
@@ -62,6 +65,8 @@ export function showAndHideHelper($input, alias = '') {
   });
 }
 
+// This should be kept in sync with the backend filtering in
+// `User#gfm_autocomplete_search` and `Namespace#gfm_autocomplete_search`
 function createMemberSearchString(member) {
   return `${member.name.replace(/ /g, '')} ${member.username}`;
 }
@@ -344,6 +349,7 @@ class GfmAutoComplete {
   }
 
   setupMembers($input) {
+    const instance = this;
     const fetchData = this.fetchData.bind(this);
     const MEMBER_COMMAND = {
       ASSIGN: '/assign',
@@ -383,6 +389,7 @@ class GfmAutoComplete {
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${username}',
       limit: 10,
+      delay: useMentionsBackendFiltering ? DEFAULT_DEBOUNCE_AND_THROTTLE_MS : null,
       searchKey: 'search',
       alwaysHighlightFirst: true,
       skipSpecialCharacterTest: true,
@@ -409,14 +416,17 @@ class GfmAutoComplete {
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
         },
-        filter(query, data, searchKey) {
-          if (GfmAutoComplete.isLoading(data)) {
+        filter(query, data) {
+          if (useMentionsBackendFiltering) {
+            if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+              instance.previousQuery = query;
+
+              fetchData(this.$inputor, this.at, query);
+              return data;
+            }
+          } else if (GfmAutoComplete.isLoading(data)) {
             fetchData(this.$inputor, this.at);
             return data;
-          }
-
-          if (data === GfmAutoComplete.defaultLoadingData) {
-            return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
           }
 
           if (command === MEMBER_COMMAND.ASSIGN) {
@@ -988,6 +998,11 @@ GfmAutoComplete.atTypeMap = {
 };
 
 GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
+
+if (useMentionsBackendFiltering) {
+  GfmAutoComplete.typesWithBackendFiltering.push('members');
+}
+
 GfmAutoComplete.isTypeWithBackendFiltering = (type) =>
   GfmAutoComplete.typesWithBackendFiltering.includes(GfmAutoComplete.atTypeMap[type]);
 
@@ -1040,6 +1055,8 @@ GfmAutoComplete.Members = {
     // `member.search` is a name:username string like `MargeSimpson msimpson`
     return member.search.toLowerCase().includes(query);
   },
+  // This should be kept in sync with the backend sorting in
+  // `User#gfm_autocomplete_search` and `Namespace#gfm_autocomplete_search`
   sort(query, members) {
     const lowercaseQuery = query.toLowerCase();
     const { nameOrUsernameStartsWith, nameOrUsernameIncludes } = GfmAutoComplete.Members;

@@ -19,6 +19,14 @@ RSpec.describe 'User searches for commits', :js, :clean_gitlab_redis_rate_limiti
     let(:additional_params) { { project_id: project.id } }
   end
 
+  it 'shows scopes when there is no search term' do
+    submit_dashboard_search('')
+
+    within_testid('search-filter') do
+      expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
+    end
+  end
+
   context 'when searching by SHA' do
     it 'finds a commit and redirects to its page' do
       submit_search(sha)

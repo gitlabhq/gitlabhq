@@ -51,11 +51,11 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
     end
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new { perform(project.id, update_sequence_id) }.count
+      control = ActiveRecord::QueryRecorder.new { perform(project.id, update_sequence_id) }
 
       create(:merge_request, :unique_branches, title: 'TEST-123')
 
-      expect { perform(project.id, update_sequence_id) }.not_to exceed_query_limit(control_count)
+      expect { perform(project.id, update_sequence_id) }.not_to exceed_query_limit(control)
     end
 
     context 'with branches to sync' do

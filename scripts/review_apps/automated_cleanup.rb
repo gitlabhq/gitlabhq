@@ -308,7 +308,7 @@ if $PROGRAM_NAME == __FILE__
   puts
 
   timed('Review Apps cleanup') do
-    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_delete: 3)
+    automated_cleanup.perform_gitlab_environment_cleanup!(days_for_delete: 7)
   end
 
   puts

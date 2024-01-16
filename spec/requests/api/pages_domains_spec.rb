@@ -31,7 +31,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
   let(:route_letsencrypt_domain) { "/projects/#{project.id}/pages/domains/#{pages_domain_with_letsencrypt.domain}" }
 
   before do
-    allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+    stub_pages_setting(enabled: true)
   end
 
   describe 'GET /pages/domains' do

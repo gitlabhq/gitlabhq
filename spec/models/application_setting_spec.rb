@@ -27,6 +27,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
+    it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
+    it { expect(setting.members_delete_limit).to eq(60) }
   end
 
   describe 'validations' do
@@ -56,6 +58,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         }
       }
     end
+
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -101,65 +105,18 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(nil).for(:protected_paths_for_get_request) }
     it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
-    it { is_expected.to allow_value(3).for(:push_event_hooks_limit) }
-    it { is_expected.not_to allow_value('three').for(:push_event_hooks_limit) }
-    it { is_expected.not_to allow_value(nil).for(:push_event_hooks_limit) }
-
-    it { is_expected.to allow_value(3).for(:push_event_activities_limit) }
-    it { is_expected.not_to allow_value('three').for(:push_event_activities_limit) }
-    it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
-
-    it { is_expected.to validate_numericality_of(:container_registry_delete_tags_service_timeout).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_data_repair_detail_worker_max_concurrency).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_inclusion_of(:container_registry_expiration_policies_caching).in_array([true, false]) }
 
-    it { is_expected.to validate_numericality_of(:container_registry_import_max_tags_count).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_import_max_retries).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_import_start_max_retries).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_import_max_step_duration).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_pre_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.to validate_numericality_of(:container_registry_import_timeout).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_pre_import_tags_rate).is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_data_repair_detail_worker_max_concurrency) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_tags_count) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_retries) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_import_start_max_retries) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_import_max_step_duration) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_timeout) }
-    it { is_expected.not_to allow_value(nil).for(:container_registry_import_timeout) }
     it { is_expected.not_to allow_value(nil).for(:container_registry_pre_import_tags_rate) }
     it { is_expected.to allow_value(1.5).for(:container_registry_pre_import_tags_rate) }
 
     it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
     it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
 
-    it { is_expected.to validate_numericality_of(:decompress_archive_file_timeout).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:decompress_archive_file_timeout) }
-
-    it { is_expected.to validate_numericality_of(:dependency_proxy_ttl_group_policy_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:dependency_proxy_ttl_group_policy_worker_capacity) }
-
-    it { is_expected.to validate_numericality_of(:packages_cleanup_package_file_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:packages_cleanup_package_file_worker_capacity) }
-
-    it { is_expected.to validate_numericality_of(:package_registry_cleanup_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
-    it { is_expected.not_to allow_value(nil).for(:package_registry_cleanup_policies_worker_capacity) }
-
-    it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_inclusion_of(:wiki_asciidoc_allow_uri_includes).in_array([true, false]) }
-    it { is_expected.to validate_presence_of(:max_artifacts_size) }
-    it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
-    it { is_expected.to validate_presence_of(:max_yaml_size_bytes) }
-    it { is_expected.to validate_numericality_of(:max_yaml_size_bytes).only_integer.is_greater_than(0) }
-    it { is_expected.to validate_presence_of(:max_yaml_depth) }
-    it { is_expected.to validate_numericality_of(:max_yaml_depth).only_integer.is_greater_than(0) }
     it { is_expected.to validate_presence_of(:max_pages_size) }
-    it { is_expected.to validate_presence_of(:max_pages_custom_domains_per_project) }
-    it { is_expected.to validate_presence_of(:max_terraform_state_size_bytes) }
-    it { is_expected.to validate_numericality_of(:max_terraform_state_size_bytes).only_integer.is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_inclusion_of(:user_defaults_to_private_profile).in_array([true, false]) }
 
@@ -174,39 +131,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
                        .is_less_than(::Gitlab::Pages::MAX_SIZE / 1.megabyte)
     end
 
-    it 'ensures max_pages_custom_domains_per_project is an integer greater than 0 (or equal to 0 to indicate unlimited/maximum)' do
-      is_expected
-        .to validate_numericality_of(:max_pages_custom_domains_per_project)
-        .only_integer
-        .is_greater_than_or_equal_to(0)
-    end
-
-    it { is_expected.to validate_presence_of(:jobs_per_stage_page_size) }
-    it { is_expected.to validate_numericality_of(:jobs_per_stage_page_size).only_integer.is_greater_than_or_equal_to(0) }
-
     it { is_expected.not_to allow_value(7).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(129).for(:minimum_password_length) }
     it { is_expected.not_to allow_value(nil).for(:minimum_password_length) }
     it { is_expected.not_to allow_value('abc').for(:minimum_password_length) }
     it { is_expected.to allow_value(10).for(:minimum_password_length) }
-
-    it { is_expected.to allow_value(300).for(:issues_create_limit) }
-    it { is_expected.not_to allow_value('three').for(:issues_create_limit) }
-    it { is_expected.not_to allow_value(nil).for(:issues_create_limit) }
-    it { is_expected.not_to allow_value(10.5).for(:issues_create_limit) }
-    it { is_expected.not_to allow_value(-1).for(:issues_create_limit) }
-
-    it { is_expected.to allow_value(0).for(:raw_blob_request_limit) }
-    it { is_expected.not_to allow_value('abc').for(:raw_blob_request_limit) }
-    it { is_expected.not_to allow_value(nil).for(:raw_blob_request_limit) }
-    it { is_expected.not_to allow_value(10.5).for(:raw_blob_request_limit) }
-    it { is_expected.not_to allow_value(-1).for(:raw_blob_request_limit) }
-
-    it { is_expected.to allow_value(0).for(:pipeline_limit_per_project_user_sha) }
-    it { is_expected.not_to allow_value('abc').for(:pipeline_limit_per_project_user_sha) }
-    it { is_expected.not_to allow_value(nil).for(:pipeline_limit_per_project_user_sha) }
-    it { is_expected.not_to allow_value(10.5).for(:pipeline_limit_per_project_user_sha) }
-    it { is_expected.not_to allow_value(-1).for(:pipeline_limit_per_project_user_sha) }
 
     it { is_expected.not_to allow_value(false).for(:hashed_storage_enabled) }
 
@@ -218,15 +147,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value('default' => -1).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 101).for(:repository_storages_weighted).with_message("value for 'default' must be between 0 and 100") }
     it { is_expected.not_to allow_value('default' => 100, shouldntexist: 50).for(:repository_storages_weighted).with_message("can't include: shouldntexist") }
-
-    %i[notes_create_limit search_rate_limit search_rate_limit_unauthenticated users_get_by_id_limit
-      projects_api_rate_limit_unauthenticated gitlab_shell_operation_limit].each do |setting|
-      it { is_expected.to allow_value(400).for(setting) }
-      it { is_expected.not_to allow_value('two').for(setting) }
-      it { is_expected.not_to allow_value(nil).for(setting) }
-      it { is_expected.not_to allow_value(5.5).for(setting) }
-      it { is_expected.not_to allow_value(-2).for(setting) }
-    end
 
     def many_usernames(num = 100)
       Array.new(num) { |i| "username#{i}" }
@@ -280,23 +200,132 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:silent_mode_enabled).in_array([true, false]) }
 
-    it { is_expected.to allow_value(0).for(:ci_max_includes) }
-    it { is_expected.to allow_value(200).for(:ci_max_includes) }
-    it { is_expected.not_to allow_value('abc').for(:ci_max_includes) }
-    it { is_expected.not_to allow_value(nil).for(:ci_max_includes) }
-    it { is_expected.not_to allow_value(10.5).for(:ci_max_includes) }
-    it { is_expected.not_to allow_value(-1).for(:ci_max_includes) }
+    context 'for non-null integer attributes starting from 0' do
+      where(:attribute) do
+        %i[
+          bulk_import_max_download_file_size
+          ci_max_includes
+          ci_max_total_yaml_size_bytes
+          container_registry_cleanup_tags_service_max_list_size
+          container_registry_data_repair_detail_worker_max_concurrency
+          container_registry_delete_tags_service_timeout
+          container_registry_expiration_policies_worker_capacity
+          container_registry_import_max_retries
+          container_registry_import_max_step_duration
+          container_registry_import_max_tags_count
+          container_registry_import_start_max_retries
+          container_registry_import_timeout
+          container_registry_pre_import_timeout
+          decompress_archive_file_timeout
+          dependency_proxy_ttl_group_policy_worker_capacity
+          gitlab_shell_operation_limit
+          inactive_projects_min_size_mb
+          issues_create_limit
+          jobs_per_stage_page_size
+          max_decompressed_archive_size
+          max_export_size
+          max_import_remote_file_size
+          max_import_size
+          max_pages_custom_domains_per_project
+          max_terraform_state_size_bytes
+          members_delete_limit
+          notes_create_limit
+          package_registry_cleanup_policies_worker_capacity
+          packages_cleanup_package_file_worker_capacity
+          pipeline_limit_per_project_user_sha
+          projects_api_rate_limit_unauthenticated
+          raw_blob_request_limit
+          search_rate_limit
+          search_rate_limit_unauthenticated
+          session_expire_delay
+          sidekiq_job_limiter_compression_threshold_bytes
+          sidekiq_job_limiter_limit_bytes
+          terminal_max_session_time
+          users_get_by_id_limit
+        ]
+      end
 
-    it { is_expected.to allow_value(0).for(:ci_max_total_yaml_size_bytes) }
-    it { is_expected.to allow_value(200).for(:ci_max_total_yaml_size_bytes) }
-    it { is_expected.not_to allow_value('abc').for(:ci_max_total_yaml_size_bytes) }
-    it { is_expected.not_to allow_value(nil).for(:ci_max_total_yaml_size_bytes) }
-    it { is_expected.not_to allow_value(10.5).for(:ci_max_total_yaml_size_bytes) }
-    it { is_expected.not_to allow_value(-1).for(:ci_max_total_yaml_size_bytes) }
+      with_them do
+        it { is_expected.to validate_numericality_of(attribute).only_integer.is_greater_than_or_equal_to(0) }
+        it { is_expected.not_to allow_value(nil).for(attribute) }
+      end
+    end
+
+    context 'for non-null numerical attributes starting from 0' do
+      where(:attribute) do
+        %i[
+          push_event_hooks_limit
+          push_event_activities_limit
+        ]
+      end
+
+      with_them do
+        it { is_expected.to validate_numericality_of(attribute).is_greater_than_or_equal_to(0) }
+        it { is_expected.not_to allow_value(nil).for(attribute) }
+      end
+    end
+
+    context 'for non-null integer attributes starting from 1' do
+      where(:attribute) do
+        %i[
+          max_attachment_size
+          max_artifacts_size
+          container_registry_token_expire_delay
+          housekeeping_optimize_repository_period
+          bulk_import_concurrent_pipeline_batch_limit
+          snippet_size_limit
+          max_yaml_size_bytes
+          max_yaml_depth
+          namespace_aggregation_schedule_lease_duration_in_seconds
+          throttle_unauthenticated_api_requests_per_period
+          throttle_unauthenticated_api_period_in_seconds
+          throttle_unauthenticated_requests_per_period
+          throttle_unauthenticated_period_in_seconds
+          throttle_unauthenticated_packages_api_requests_per_period
+          throttle_unauthenticated_packages_api_period_in_seconds
+          throttle_unauthenticated_files_api_requests_per_period
+          throttle_unauthenticated_files_api_period_in_seconds
+          throttle_unauthenticated_deprecated_api_requests_per_period
+          throttle_unauthenticated_deprecated_api_period_in_seconds
+          throttle_authenticated_api_requests_per_period
+          throttle_authenticated_api_period_in_seconds
+          throttle_authenticated_git_lfs_requests_per_period
+          throttle_authenticated_git_lfs_period_in_seconds
+          throttle_authenticated_web_requests_per_period
+          throttle_authenticated_web_period_in_seconds
+          throttle_authenticated_packages_api_requests_per_period
+          throttle_authenticated_packages_api_period_in_seconds
+          throttle_authenticated_files_api_requests_per_period
+          throttle_authenticated_files_api_period_in_seconds
+          throttle_authenticated_deprecated_api_requests_per_period
+          throttle_authenticated_deprecated_api_period_in_seconds
+          throttle_protected_paths_requests_per_period
+          throttle_protected_paths_period_in_seconds
+          project_jobs_api_rate_limit
+        ]
+      end
+
+      with_them do
+        it { is_expected.to validate_numericality_of(attribute).only_integer.is_greater_than(0) }
+        it { is_expected.not_to allow_value(nil).for(attribute) }
+      end
+    end
+
+    context 'for null integer attributes starting from 1' do
+      where(:attribute) do
+        %i[
+          failed_login_attempts_unlock_period_in_minutes
+          external_pipeline_validation_service_timeout
+          max_login_attempts
+        ]
+      end
+
+      with_them do
+        it { is_expected.to validate_numericality_of(attribute).only_integer.is_greater_than(0).allow_nil }
+      end
+    end
 
     it { is_expected.to validate_inclusion_of(:remember_me_enabled).in_array([true, false]) }
-
-    it { is_expected.to validate_numericality_of(:namespace_aggregation_schedule_lease_duration_in_seconds).only_integer.is_greater_than(0) }
 
     it { is_expected.to validate_inclusion_of(:instance_level_code_suggestions_enabled).in_array([true, false]) }
 
@@ -586,66 +615,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    it { is_expected.to validate_presence_of(:max_attachment_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:max_attachment_size)
-        .only_integer
-        .is_greater_than(0)
-    end
-
-    it { is_expected.to validate_presence_of(:max_export_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:max_export_size)
-        .only_integer
-        .is_greater_than_or_equal_to(0)
-    end
-
-    it { is_expected.to validate_presence_of(:max_import_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:max_import_size)
-        .only_integer
-        .is_greater_than_or_equal_to(0)
-    end
-
-    it { is_expected.to validate_presence_of(:max_import_remote_file_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:max_import_remote_file_size)
-        .only_integer
-        .is_greater_than_or_equal_to(0)
-    end
-
-    it { is_expected.to validate_presence_of(:bulk_import_max_download_file_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:bulk_import_max_download_file_size)
-       .only_integer
-       .is_greater_than_or_equal_to(0)
-    end
-
-    it { is_expected.to validate_presence_of(:max_decompressed_archive_size) }
-
-    specify do
-      is_expected.to validate_numericality_of(:max_decompressed_archive_size)
-        .only_integer
-        .is_greater_than_or_equal_to(0)
-    end
-
-    specify do
-      is_expected.to validate_numericality_of(:failed_login_attempts_unlock_period_in_minutes)
-                       .only_integer
-                       .is_greater_than(0)
-    end
-
-    specify do
-      is_expected.to validate_numericality_of(:max_login_attempts)
-                       .only_integer
-                       .is_greater_than(0)
-    end
-
     specify do
       is_expected.to validate_numericality_of(:local_markdown_version)
         .only_integer
@@ -879,10 +848,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    context 'housekeeping settings' do
-      it { is_expected.not_to allow_value(0).for(:housekeeping_optimize_repository_period) }
-    end
-
     context 'gitaly timeouts' do
       it "validates that the default_timeout is lower than the max_request_duration" do
         is_expected.to validate_numericality_of(:gitaly_timeout_default)
@@ -1002,8 +967,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it 'the credentials are valid when the private key can be read and matches the certificate' do
           tls_attributes = [:external_auth_client_key_pass,
-                            :external_auth_client_key,
-                            :external_auth_client_cert]
+            :external_auth_client_key,
+            :external_auth_client_cert]
           setting.external_auth_client_key = File.read('spec/fixtures/passphrase_x509_certificate_pk.key')
           setting.external_auth_client_key_pass = '5iveL!fe'
 
@@ -1215,43 +1180,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
-    context 'throttle_* settings' do
-      where(:throttle_setting) do
-        %i[
-          throttle_unauthenticated_api_requests_per_period
-          throttle_unauthenticated_api_period_in_seconds
-          throttle_unauthenticated_requests_per_period
-          throttle_unauthenticated_period_in_seconds
-          throttle_authenticated_api_requests_per_period
-          throttle_authenticated_api_period_in_seconds
-          throttle_authenticated_web_requests_per_period
-          throttle_authenticated_web_period_in_seconds
-          throttle_unauthenticated_packages_api_requests_per_period
-          throttle_unauthenticated_packages_api_period_in_seconds
-          throttle_authenticated_packages_api_requests_per_period
-          throttle_authenticated_packages_api_period_in_seconds
-          throttle_unauthenticated_files_api_requests_per_period
-          throttle_unauthenticated_files_api_period_in_seconds
-          throttle_authenticated_files_api_requests_per_period
-          throttle_authenticated_files_api_period_in_seconds
-          throttle_unauthenticated_deprecated_api_requests_per_period
-          throttle_unauthenticated_deprecated_api_period_in_seconds
-          throttle_authenticated_deprecated_api_requests_per_period
-          throttle_authenticated_deprecated_api_period_in_seconds
-          throttle_authenticated_git_lfs_requests_per_period
-          throttle_authenticated_git_lfs_period_in_seconds
-        ]
-      end
-
-      with_them do
-        it { is_expected.to allow_value(3).for(throttle_setting) }
-        it { is_expected.not_to allow_value(-3).for(throttle_setting) }
-        it { is_expected.not_to allow_value(0).for(throttle_setting) }
-        it { is_expected.not_to allow_value('three').for(throttle_setting) }
-        it { is_expected.not_to allow_value(nil).for(throttle_setting) }
-      end
-    end
-
     context 'sidekiq job limiter settings' do
       it 'has the right defaults', :aggregate_failures do
         expect(setting.sidekiq_job_limiter_mode).to eq('compress')
@@ -1262,8 +1190,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
 
       it { is_expected.to allow_value('track').for(:sidekiq_job_limiter_mode) }
-      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_compression_threshold_bytes).only_integer.is_greater_than_or_equal_to(0) }
-      it { is_expected.to validate_numericality_of(:sidekiq_job_limiter_limit_bytes).only_integer.is_greater_than_or_equal_to(0) }
     end
 
     context 'prometheus settings' do
@@ -1350,13 +1276,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           .is_greater_than_or_equal_to(0)
           .is_less_than_or_equal_to(1)
           .with_message("must be a value between 0 and 1")
-      end
-    end
-
-    describe 'bulk_import_concurrent_pipeline_batch_limit' do
-      it do
-        is_expected.to validate_numericality_of(:bulk_import_concurrent_pipeline_batch_limit)
-         .is_greater_than(0)
       end
     end
   end
@@ -1713,8 +1632,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:inactive_projects_send_warning_email_after_months).is_greater_than(0) }
 
     it { is_expected.to validate_numericality_of(:inactive_projects_delete_after_months).is_greater_than(0) }
-
-    it { is_expected.to validate_numericality_of(:inactive_projects_min_size_mb).is_greater_than_or_equal_to(0) }
 
     it "deletes the redis key used for tracking inactive projects deletion warning emails when setting is updated",
       :clean_gitlab_redis_shared_state do

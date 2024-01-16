@@ -32,7 +32,7 @@ On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can enable the feature flag named `example_flag`.
 On GitLab.com, this feature is not available. This feature is not ready for production use.
 
-Use this great new feature when you need to do this new thing.
+Use this new feature when you need to do this new thing.
 
 This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,

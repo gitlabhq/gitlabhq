@@ -403,11 +403,11 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
         end
 
         it 'does not cause an N+1 when updating the job ownership' do
-          control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { service.execute(job) }.count
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { service.execute(job) }
 
           create_list(:ci_build, 2, :skipped, pipeline: pipeline, ci_stage: deploy_stage)
 
-          expect { service.execute(job) }.not_to exceed_all_query_limit(control_count)
+          expect { service.execute(job) }.not_to exceed_all_query_limit(control)
         end
       end
 

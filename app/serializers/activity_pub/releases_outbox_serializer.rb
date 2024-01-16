@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module ActivityPub
-  class ReleasesOutboxSerializer < ActivityStreamsSerializer
-    include WithPagination
-
+  class ReleasesOutboxSerializer < CollectionSerializer
     entity ReleaseEntity
   end
 end

@@ -69,16 +69,17 @@ module QA
             chrome_options = { args: %w[no-sandbox] }
 
             # Run headless by default unless WEBDRIVER_HEADLESS is false
-            if QA::Runtime::Env.webdriver_headless?
-              chrome_options[:args] << 'headless'
-
-              # Chrome documentation says this flag is needed for now
-              # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-              chrome_options[:args] << 'disable-gpu'
-            end
+            chrome_options[:args] << 'headless=new' if QA::Runtime::Env.webdriver_headless?
 
             # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
             chrome_options[:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
+
+            # Allows chrome to consider all actions as secure when no ssl is used
+            Runtime::Scenario.attributes[:gitlab_address].tap do |address|
+              next unless address.start_with?('http://')
+
+              chrome_options[:args] << "unsafely-treat-insecure-origin-as-secure=#{address}"
+            end
 
             # Set chrome default download path
             # TODO: Set for remote grid as well once Sauce Labs tests are deprecated and Options.chrome is added

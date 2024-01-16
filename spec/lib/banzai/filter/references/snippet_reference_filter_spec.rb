@@ -229,11 +229,11 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
       markdown = "#{reference} $9999990"
 
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         reference_filter(markdown)
-      end.count
+      end
 
-      expect(control_count).to eq 1
+      expect(control.count).to eq 1
 
       markdown = "#{reference} $9999990 $9999991 $9999992 $9999993 #{reference2} something/cool$12"
 
@@ -247,11 +247,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
       # 1x2 for snippets in each project == 2
       # Total = 7
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/330359
-      max_count = control_count + 6
-
       expect do
         reference_filter(markdown)
-      end.not_to exceed_all_query_limit(max_count)
+      end.not_to exceed_all_query_limit(control).with_threshold(6)
     end
   end
 end

@@ -439,6 +439,7 @@ builds:
 - dast_scanner_profile
 - job_annotations
 - job_artifacts_annotations
+- project_mirror
 bridges:
 - user
 - pipeline
@@ -500,6 +501,7 @@ protected_branches:
 - push_access_levels
 - unprotect_access_levels
 - approval_project_rules
+- approval_project_rules_with_unique_policies
 - external_status_checks
 - required_code_owners_sections
 protected_tags:
@@ -588,6 +590,7 @@ project:
 - hangouts_chat_integration
 - unify_circuit_integration
 - buildkite_integration
+- diffblue_cover_integration
 - bamboo_integration
 - teamcity_integration
 - pushover_integration
@@ -848,6 +851,7 @@ timelogs:
 - merge_request
 - user
 - note
+- timelog_category
 push_event_payload:
 - event
 issue_assignees:
@@ -1081,3 +1085,8 @@ approval_project_rules_users:
 approval_project_rules_protected_branches:
   - protected_branch
   - approval_project_rule
+timelog_category:
+  - name
+  - description
+  - billable
+  - billing_rate

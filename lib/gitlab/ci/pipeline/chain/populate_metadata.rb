@@ -35,7 +35,10 @@ module Gitlab
           end
 
           def set_auto_cancel
-            auto_cancel = @command.yaml_processor_result.workflow_auto_cancel
+            auto_cancel_from_config = @command.yaml_processor_result.workflow_auto_cancel || {}
+            auto_cancel_from_rules = @command.workflow_rules_result&.auto_cancel || {}
+
+            auto_cancel = auto_cancel_from_config.merge(auto_cancel_from_rules)
 
             return if auto_cancel.blank?
 

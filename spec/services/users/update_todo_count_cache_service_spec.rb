@@ -44,9 +44,9 @@ RSpec.describe Users::UpdateTodoCountCacheService, feature_category: :team_plann
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new { execute_single }.count
+      control = ActiveRecord::QueryRecorder.new { execute_single }
 
-      expect { execute_all }.not_to exceed_query_limit(control_count)
+      expect { execute_all }.not_to exceed_query_limit(control)
     end
 
     it 'executes one query per batch of users' do

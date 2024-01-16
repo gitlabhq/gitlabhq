@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
     end
 
     context 'when the tag cannot be found' do
-      let(:tag_id) { Gitlab::Git::BLANK_SHA }
+      let(:tag_id) { Gitlab::Git::SHA1_BLANK_SHA }
 
       it 'raises GRPC::Internal' do
         expect { subject }.to raise_error(GRPC::Internal)

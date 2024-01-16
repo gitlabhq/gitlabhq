@@ -79,11 +79,6 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 NOTE:
 The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
 
-There are minor known issues linked in the
-["Geo secondary proxying with separate URLs" epic](https://gitlab.com/groups/gitlab-org/-/epics/6865).
-You can also add feedback in the epic about any use-cases that
-are not possible anymore with proxying enabled.
-
 If you run into issues, to disable this feature, disable the `geo_secondary_proxy_separate_urls` feature flag.
 
 1. SSH into one node running Rails on your primary Geo site and run:
@@ -121,7 +116,7 @@ for details.
   To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
   the certificate, then copy it to all other sites.
 
-- Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
+- Using Geo secondary sites to accelerate runners is experimental and is not recommended for production. It can be configured and tested by following the steps in [secondary proxy runners](runners.md). Progress toward general availability can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779).
 
 - When secondary proxying is used together with separate URLs,
   [signing in the secondary site using SAML](../replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled)
@@ -150,25 +145,21 @@ It does not cover all data types.
 
 In this context, accelerated reads refer to read requests served from the secondary site, provided that the data is up to date for the component on the secondary site. If the data on the secondary site is determined to be out of date, the request is forwarded to the primary site. Read requests for components not listed in the table below are always automatically forwarded to the primary site.
 
-| Feature / component                                 | Accelerated reads?     |
-|:----------------------------------------------------|:-----------------------|
-| Project, wiki, design repository (using the web UI) | **{dotted-circle}** No |
-| Project, wiki repository (using Git)                | **{check-circle}** Yes <sup>1</sup> |
-| Project, Personal Snippet (using the web UI)        | **{dotted-circle}** No |
-| Project, Personal Snippet (using Git)               | **{check-circle}** Yes <sup>1</sup> |
-| Group wiki repository (using the web UI)            | **{dotted-circle}** No |
-| Group wiki repository (using Git)                   | **{check-circle}** Yes <sup>1</sup> |
-| User uploads                                        | **{dotted-circle}** No |
-| LFS objects (using the web UI)                      | **{dotted-circle}** No |
-| LFS objects (using Git)                             | **{check-circle}** Yes |
-| Pages                                               | **{dotted-circle}** No <sup>2</sup> |
-| Advanced search (using the web UI)                  | **{dotted-circle}** No |
-| Container registry                                  | **{dotted-circle}** No <sup>3</sup>|
-
-1. Git reads are served from the local secondary while pushes get proxied to the primary.
-   Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.
-1. Pages can use the same URL (without access control), but must be configured separately and are not proxied.
-1. The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site.
+| Feature / component                                 | Accelerated reads?                  | Notes       |
+|:----------------------------------------------------|:------------------------------------| ------------|
+| Project, wiki, design repository (using the web UI) | **{dotted-circle}** No              |             |
+| Project, wiki repository (using Git)                | **{check-circle}** Yes              | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.|
+| Project, Personal Snippet (using the web UI)        | **{dotted-circle}** No              |             |
+| Project, Personal Snippet (using Git)               | **{check-circle}** Yes              | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error. |
+| Group wiki repository (using the web UI)            | **{dotted-circle}** No              |             |
+| Group wiki repository (using Git)                   | **{check-circle}** Yes              | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.          |
+| User uploads                                        | **{dotted-circle}** No              |             |
+| LFS objects (using the web UI)                      | **{dotted-circle}** No              |             |
+| LFS objects (using Git)                             | **{check-circle}** Yes              |             |
+| Pages                                               | **{dotted-circle}** No              | Pages can use the same URL (without access control), but must be configured separately and are not proxied.|
+| Advanced search (using the web UI)                  | **{dotted-circle}** No              |             |
+| Container registry                                  | **{dotted-circle}** No              | The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site. Accelerating the container registry is planned, please upvote or comment in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) to indicate your interest or ask your GitLab representative to do so on your behalf. |
+| Dependency Proxy                                    | **{dotted-circle}** No              | Read requests to a Geo secondary site's Dependency Proxy are always proxied to the primary site. |
 
 ## Disable Geo proxying
 

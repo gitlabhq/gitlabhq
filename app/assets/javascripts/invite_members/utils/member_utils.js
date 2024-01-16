@@ -6,7 +6,3 @@ export function memberName(member) {
 export function triggerExternalAlert() {
   return false;
 }
-
-export function inviteMembersTrackingOptions(options) {
-  return { label: options.label };
-}

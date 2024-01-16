@@ -128,7 +128,7 @@ RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
         .to receive(:new).with(project_key, repo_slug, anything, project.name, user.namespace, user, anything, timeout_strategy)
         .and_return(double(execute: project))
 
-        allow(Gitlab::UrlBlocker)
+        allow(Gitlab::HTTP_V2::UrlBlocker)
         .to receive(:blocked_url?)
         .and_return(true)
         post api("/import/bitbucket_server", user), params: {

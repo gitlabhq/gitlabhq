@@ -8,7 +8,7 @@ module Projects
           configurationUrl: project_google_cloud_configuration_path(project),
           deploymentsUrl: project_google_cloud_deployments_path(project),
           databasesUrl: project_google_cloud_databases_path(project),
-          serviceAccounts: ::GoogleCloud::ServiceAccountsService.new(project).find_for_project,
+          serviceAccounts: ::CloudSeed::GoogleCloud::ServiceAccountsService.new(project).find_for_project,
           createServiceAccountUrl: project_google_cloud_service_accounts_path(project),
           emptyIllustrationUrl:
             ActionController::Base.helpers.image_path('illustrations/empty-state/empty-pipeline-md.svg'),

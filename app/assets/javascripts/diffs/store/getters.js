@@ -201,3 +201,18 @@ export const isVirtualScrollingEnabled = (state) => {
 
 export const isBatchLoading = (state) => state.batchLoadingState === 'loading';
 export const isBatchLoadingError = (state) => state.batchLoadingState === 'error';
+
+export const diffFiles = (state, getters) => {
+  const { pinnedFile } = getters;
+  if (pinnedFile) {
+    const diffs = state.diffFiles.slice(0);
+    diffs.splice(diffs.indexOf(pinnedFile), 1);
+    return [pinnedFile, ...diffs];
+  }
+  return state.diffFiles;
+};
+
+export const pinnedFile = (state) => {
+  if (!state.pinnedFileHash) return null;
+  return state.diffFiles.find((file) => file.file_hash === state.pinnedFileHash);
+};

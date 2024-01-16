@@ -31,6 +31,13 @@ Triggering an event and thereby updating a metric is slightly different on backe
 
 ### Backend tracking
 
+<div class="video-fallback">
+  Watch the video about <a href="https://www.youtube.com/watch?v=Teid7o_2Mmg">Backend instrumentation using Internal Events</a>
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/Teid7o_2Mmg" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 To trigger an event, call the `Gitlab::InternalEvents.track_event` method with the desired arguments:
 
 ```ruby
@@ -49,6 +56,53 @@ If you have defined a metric with a `unique` property such as `unique: project.i
 It is encouraged to fill out as many of `user`, `namespace` and `project` as possible as it increases the data quality and make it easier to define metrics in the future.
 
 If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
+
+#### Controller and API helpers
+
+There is a helper module `ProductAnalyticsTracking` for controllers you can use to track internal events for particular controller actions by calling `#track_internal_event`:
+
+```ruby
+class Projects::PipelinesController < Projects::ApplicationController
+  include ProductAnalyticsTracking
+
+  track_internal_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
+
+  def charts
+    ...
+  end
+
+  private
+
+  def should_track_ci_cd_pipelines?
+    params[:chart].blank? || params[:chart] == 'pipelines'
+  end
+end
+```
+
+You need to add these two methods to the controller body, so that the helper can get the current project and namespace for the event:
+
+```ruby
+  private
+
+  def tracking_namespace_source
+    project.namespace
+  end
+
+  def tracking_project_source
+    project
+  end
+```
+
+Also, there is an API helper:
+
+```ruby
+track_event(
+  event_name,
+  user: current_user,
+  namespace_id: namespace_id,
+  project_id: project_id
+)
+```
 
 ### Frontend tracking
 

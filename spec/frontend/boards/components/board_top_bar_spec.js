@@ -56,7 +56,6 @@ describe('BoardTopBar', () => {
         isIssueBoard: true,
         isEpicBoard: false,
         isGroupBoard: true,
-        // isApolloBoard: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

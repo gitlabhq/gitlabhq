@@ -1,0 +1,9 @@
+---
+name: update_organization_users
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419366
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139188
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435868
+milestone: '16.8'
+group: group::tenant scale
+type: gitlab_com_derisk
+default_enabled: false

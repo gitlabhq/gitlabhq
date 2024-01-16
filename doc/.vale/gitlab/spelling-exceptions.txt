@@ -284,6 +284,7 @@ devfiles
 DevOps
 Dhall
 dialogs
+Diffblue
 disambiguates
 discoverability
 dismissable

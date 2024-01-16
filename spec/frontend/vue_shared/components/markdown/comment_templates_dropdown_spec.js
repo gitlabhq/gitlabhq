@@ -98,7 +98,7 @@ describe('Comment templates dropdown', () => {
         await selectSavedReply();
 
         expect(trackingSpy).toHaveBeenCalledWith(
-          expect.any(String),
+          undefined,
           TRACKING_SAVED_REPLIES_USE,
           expect.any(Object),
         );
@@ -111,7 +111,7 @@ describe('Comment templates dropdown', () => {
           await selectSavedReply();
 
           expect(trackingSpy).toHaveBeenCalledWith(
-            expect.any(String),
+            undefined,
             TRACKING_SAVED_REPLIES_USE_IN_MR,
             expect.any(Object),
           );
@@ -137,7 +137,7 @@ describe('Comment templates dropdown', () => {
           await selectSavedReply();
 
           expect(trackingSpy).toHaveBeenCalledWith(
-            expect.any(String),
+            undefined,
             TRACKING_SAVED_REPLIES_USE_IN_OTHER,
             expect.any(Object),
           );

@@ -154,6 +154,9 @@ export const SYNC_STATUS_BADGES = {
 
 export const STATUS_TRUE = 'True';
 export const STATUS_FALSE = 'False';
+export const STATUS_UNKNOWN = 'Unknown';
+
+export const REASON_PROGRESSING = 'Progressing';
 
 const ERROR_UNAUTHORIZED = 'unauthorized';
 const ERROR_FORBIDDEN = 'forbidden';

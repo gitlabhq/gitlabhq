@@ -1,0 +1,9 @@
+---
+name: group_hierarchy_optimization
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433478
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141214
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437604
+milestone: '16.8'
+group: group::optimize
+type: beta
+default_enabled: false

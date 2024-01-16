@@ -45,6 +45,10 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_reviewers(old_reviewers)
   end
 
+  def request_review(issuable, project, author, user)
+    ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).request_review(user)
+  end
+
   def change_issuable_contacts(issuable, project, author, added_count, removed_count)
     ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_contacts(added_count, removed_count)
   end
@@ -282,8 +286,8 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).mark_canonical_issue_of_duplicate(duplicate_issue)
   end
 
-  def add_email_participants(noteable, project, author, body)
-    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).add_email_participants(body)
+  def email_participants(noteable, project, author, body)
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).email_participants(body)
   end
 
   def discussion_lock(issuable, author)

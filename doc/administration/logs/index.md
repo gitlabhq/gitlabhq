@@ -15,8 +15,8 @@ This guide talks about how to read and use these system log files.
 Read more about the log system and using the logs:
 
 - [Customize logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
-including adjusting log retention, log forwarding,
-switching logs from JSON to plain text logging, and more.
+  including adjusting log retention, log forwarding,
+  switching logs from JSON to plain text logging, and more.
 - [How to parse and analyze JSON logs](../logs/log_parsing.md).
 
 ## Log Levels
@@ -811,7 +811,7 @@ GraphQL queries are recorded in the file. For example:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
 
 The `clickhouse.log` file logs information related to the
-ClickHouse database client in GitLab.
+[ClickHouse database client](../../integration/clickhouse.md) in GitLab.
 
 ## `migrations.log`
 

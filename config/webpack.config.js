@@ -385,7 +385,7 @@ module.exports = {
         include: /node_modules/,
         loader: 'babel-loader',
         options: {
-          plugins: ['@babel/plugin-proposal-logical-assignment-operators'],
+          plugins: ['@babel/plugin-transform-logical-assignment-operators'],
           ...defaultJsOptions,
         },
       },
@@ -416,7 +416,7 @@ module.exports = {
           ) || /node_modules\/yaml/.test(modulePath),
         loader: 'babel-loader',
         options: {
-          plugins: ['@babel/plugin-proposal-numeric-separator'],
+          plugins: ['@babel/plugin-transform-numeric-separator'],
           ...defaultJsOptions,
         },
       },

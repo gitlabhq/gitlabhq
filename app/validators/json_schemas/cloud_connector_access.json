@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Cloud Connector Access",
+  "type": "object",
+  "available_services": {
+    "type": "array",
+    "items": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

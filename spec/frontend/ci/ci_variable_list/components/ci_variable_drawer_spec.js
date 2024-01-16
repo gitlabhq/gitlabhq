@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import CiEnvironmentsDropdown from '~/ci/ci_variable_list/components/ci_environments_dropdown.vue';
+import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
 import CiVariableDrawer from '~/ci/ci_variable_list/components/ci_variable_drawer.vue';
 import { awsTokenList } from '~/ci/ci_variable_list/components/ci_variable_autocomplete_tokens';
 import {
@@ -112,6 +112,10 @@ describe('CI Variable Drawer', () => {
       expect(findFlagsDocsLink().attributes('href')).toBe(
         helpPagePath('ci/variables/index', { anchor: 'define-a-cicd-variable-in-the-ui' }),
       );
+    });
+
+    it('value field is resizable', () => {
+      expect(findValueField().props('noResize')).toBe(false);
     });
   });
 
@@ -513,7 +517,7 @@ describe('CI Variable Drawer', () => {
 
       it('title and confirm button renders the correct text', () => {
         expect(findTitle().text()).toBe('Edit variable');
-        expect(findConfirmBtn().text()).toBe('Edit variable');
+        expect(findConfirmBtn().text()).toBe('Save changes');
       });
 
       it('dispatches the edit-variable event', async () => {

@@ -279,26 +279,53 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
       allow(importer).to receive(:representation_class).and_return(repr_class)
       allow(importer).to receive(:sidekiq_worker_class).and_return(worker_class)
       allow(repr_class).to receive(:from_api_response).with(object, {})
-        .and_return({ title: 'One' }, { title: 'Two' }, { title: 'Three' })
+        .and_return({ title: 'One' }, { title: 'Two' }, { title: 'Three' }, { title: 'Four' })
     end
 
     it 'imports data in parallel with delays respecting parallel_import_batch definition and return job waiter' do
-      allow(::Gitlab::JobWaiter).to receive(:generate_key).and_return('waiter-key')
-      allow(importer).to receive(:parallel_import_batch).and_return({ size: 2, delay: 1.minute })
+      freeze_time do
+        allow(::Gitlab::JobWaiter).to receive(:generate_key).and_return('waiter-key')
+        allow(importer).to receive(:parallel_import_batch).and_return({ size: 2, delay: 1.minute })
 
-      expect(importer).to receive(:each_object_to_import)
-        .and_yield(object).and_yield(object).and_yield(object)
-      expect(worker_class).to receive(:perform_in)
-        .with(1, project.id, { 'title' => 'One' }, 'waiter-key').ordered
-      expect(worker_class).to receive(:perform_in)
-        .with(1, project.id, { 'title' => 'Two' }, 'waiter-key').ordered
-      expect(worker_class).to receive(:perform_in)
-        .with(61, project.id, { 'title' => 'Three' }, 'waiter-key').ordered
+        expect(importer).to receive(:each_object_to_import)
+          .and_yield(object).and_yield(object).and_yield(object).and_yield(object)
+        expect(worker_class).to receive(:perform_in)
+          .with(1.0, project.id, { 'title' => 'One' }, 'waiter-key').ordered
+        expect(worker_class).to receive(:perform_in)
+          .with(31.0, project.id, { 'title' => 'Two' }, 'waiter-key').ordered
+        expect(worker_class).to receive(:perform_in)
+          .with(61.0, project.id, { 'title' => 'Three' }, 'waiter-key').ordered
+        expect(worker_class).to receive(:perform_in)
+          .with(91.0, project.id, { 'title' => 'Four' }, 'waiter-key').ordered
 
-      job_waiter = importer.parallel_import
+        job_waiter = importer.parallel_import
 
-      expect(job_waiter.key).to eq('waiter-key')
-      expect(job_waiter.jobs_remaining).to eq(3)
+        expect(job_waiter.key).to eq('waiter-key')
+        expect(job_waiter.jobs_remaining).to eq(4)
+      end
+    end
+
+    context 'when job is running for a long time' do
+      it 'deducts the job runtime from the delay' do
+        freeze_time do
+          allow(::Gitlab::JobWaiter).to receive(:generate_key).and_return('waiter-key')
+          allow(importer).to receive(:parallel_import_batch).and_return({ size: 2, delay: 1.minute })
+          allow(importer).to receive(:job_started_at).and_return(45.seconds.ago)
+          allow(importer).to receive(:each_object_to_import)
+            .and_yield(object).and_yield(object).and_yield(object).and_yield(object)
+
+          expect(worker_class).to receive(:perform_in)
+            .with(1.0, project.id, { 'title' => 'One' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(1.0, project.id, { 'title' => 'Two' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(16.0, project.id, { 'title' => 'Three' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(46.0, project.id, { 'title' => 'Four' }, 'waiter-key').ordered
+
+          importer.parallel_import
+        end
+      end
     end
 
     context 'when job restarts due to API rate limit or Sidekiq interruption' do
@@ -313,21 +340,23 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
       end
 
       it "restores job waiter's key and jobs_remaining" do
-        allow(importer).to receive(:parallel_import_batch).and_return({ size: 1, delay: 1.minute })
+        freeze_time do
+          allow(importer).to receive(:parallel_import_batch).and_return({ size: 1, delay: 1.minute })
 
-        expect(importer).to receive(:each_object_to_import).and_yield(object).and_yield(object).and_yield(object)
+          expect(importer).to receive(:each_object_to_import).and_yield(object).and_yield(object).and_yield(object)
 
-        expect(worker_class).to receive(:perform_in)
-          .with(1, project.id, { 'title' => 'One' }, 'waiter-key').ordered
-        expect(worker_class).to receive(:perform_in)
-          .with(61, project.id, { 'title' => 'Two' }, 'waiter-key').ordered
-        expect(worker_class).to receive(:perform_in)
-          .with(121, project.id, { 'title' => 'Three' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(1.0, project.id, { 'title' => 'One' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(61.0, project.id, { 'title' => 'Two' }, 'waiter-key').ordered
+          expect(worker_class).to receive(:perform_in)
+            .with(121.0, project.id, { 'title' => 'Three' }, 'waiter-key').ordered
 
-        job_waiter = importer.parallel_import
+          job_waiter = importer.parallel_import
 
-        expect(job_waiter.key).to eq('waiter-key')
-        expect(job_waiter.jobs_remaining).to eq(6)
+          expect(job_waiter.key).to eq('waiter-key')
+          expect(job_waiter.jobs_remaining).to eq(6)
+        end
       end
     end
   end

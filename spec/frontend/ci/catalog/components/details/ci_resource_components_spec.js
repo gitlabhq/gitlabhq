@@ -115,7 +115,7 @@ describe('CiResourceComponents', () => {
       it('renders the component name and snippet', () => {
         components.forEach((component) => {
           expect(wrapper.text()).toContain(component.name);
-          expect(wrapper.text()).toContain(component.path);
+          expect(wrapper.text()).toContain(component.includePath);
         });
       });
 
@@ -124,7 +124,7 @@ describe('CiResourceComponents', () => {
           const button = findCopyToClipboardButton(i);
 
           expect(button.props().icon).toBe('copy-to-clipboard');
-          expect(button.attributes('data-clipboard-text')).toContain(component.path);
+          expect(button.attributes('data-clipboard-text')).toContain(component.includePath);
         });
       });
 

@@ -111,6 +111,26 @@ Changing the SAML or SCIM configuration or provider can cause the following prob
      the SCIM app.
   1. Use the same SCIM API to update the SCIM `extern_uid` for the user on GitLab.com.
 
+## The member's email address is not allowed for this group
+
+SCIM provisioning may fail with HTTP status `412` and the following error message:
+
+```plaintext
+The member's email address is not allowed for this group. Check with your administrator.
+```
+
+This error occurs when both of the following are true:
+
+- [Restrict group access by domain](../access_and_permissions.md) is configured
+  for the group.
+- The user account being provisioned has an email domain that is not allowed.
+
+To resolve this issue, you can do either of the following:
+
+- Add the user account's email domain to the list of allowed domains.
+- Disable the [Restrict group access by domain](../access_and_permissions.md)
+  feature by removing all domains.
+
 ## Search Rails logs for SCIM requests **(PREMIUM SAAS)**
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
@@ -149,9 +169,9 @@ The first workaround is:
 
 1. Have the end user [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 1. After the user has done this, initiate a SCIM sync from your identity provider.
-If the SCIM sync completes without the same error, GitLab has
-successfully linked the SCIM identity to the existing user account, and the user
-should now be able to sign in using SAML SSO.
+   If the SCIM sync completes without the same error, GitLab has
+   successfully linked the SCIM identity to the existing user account, and the user
+   should now be able to sign in using SAML SSO.
 
 If the error persists, the user most likely already exists, has both a SAML and
 SCIM identity, and a SCIM identity that is set to `active: false`. To resolve
@@ -166,7 +186,7 @@ this:
    If any of this information does not match, [contact GitLab Support](https://support.gitlab.com/).
 1. Use the API to [update the SCIM provisioned user's `active` value to `true`](/ee/development/internal_api/index.md#update-a-single-scim-provisioned-user).
 1. If the update returns a status code `204`, have the user attempt to sign in
-using SAML SSO.
+   using SAML SSO.
 
 ## Azure Active Directory
 

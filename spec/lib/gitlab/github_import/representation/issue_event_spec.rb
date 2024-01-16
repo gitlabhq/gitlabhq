@@ -168,8 +168,8 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
   describe '.from_api_response' do
     let(:response) do
       event_resource = Struct.new(
-        :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone,
-        :source, :assignee, :requested_reviewer, :review_requester, :issue, :created_at,
+        :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone, :state, :body,
+        :source, :assignee, :requested_reviewer, :review_requester, :issue, :created_at, :updated_at, :submitted_at,
         :performed_via_github_app,
         keyword_init: true
       )

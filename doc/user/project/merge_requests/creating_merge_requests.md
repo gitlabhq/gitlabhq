@@ -155,22 +155,49 @@ You can create a merge request by running Git commands on your local machine.
 
 You can create a merge request from your fork to contribute back to the main project.
 
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select your fork of the repository.
-1. On the left sidebar, select **Code > Merge requests**, and select **New merge request**.
-1. In the **Source branch** dropdown list box, select the branch in your forked repository as the source branch.
-1. In the **Target branch** dropdown list box, select the branch from the upstream repository as the target branch.
-   You can set a [default target project](#set-the-default-target-project) to
-   change the default target branch (which can be useful if you are working in a
-   forked project).
-1. Select **Compare branches and continue**.
-1. Select **Create merge request**.
+1. On the left sidebar, select **Search or go to** and find your fork.
+1. Select **Code > Merge requests**, and select **New merge request**.
+1. For **Source branch**, select the branch in your fork that contains your changes.
+1. For **Target branch**:
 
-After your work is merged, if you don't intend to
-make any other contributions to the upstream project, you can
-[unlink your fork](../repository/forking_workflow.md#unlink-a-fork) from its upstream project.
+   1. Select the target project. (Make sure to select the upstream project, rather than your fork.)
+   1. Select a branch from the upstream repository.
+
+   NOTE:
+   If you contribute changes upstream frequently, consider setting a
+   [default target project](#set-the-default-target-project) for your fork.
+
+1. Select **Compare branches and continue**.
+1. Select **Create merge request**. The merge request is created in the target project,
+   not your fork.
+
+After your work merges, [unlink your fork](../repository/forking_workflow.md#unlink-a-fork)
+from its upstream project if you don't intend to make more contributions.
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
+
+### Set the default target project
+
+By default, merge requests originating from a fork target your fork, not the upstream project.
+If you frequently contribute back to the upstream project, and want to target it
+by default, change the default target for your fork.
+
+Prerequisites:
+
+- You're working in a fork.
+- You must have at least the Developer role, or be allowed to create merge requests in the project.
+- The upstream project allows merge requests to be created.
+- The [visibility settings](../../public_access.md#change-project-visibility) for
+  the fork must match, or be less strict than, the upstream repository. For example:
+  this setting isn't shown if your fork is private, but the upstream is public.
+
+To do this:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Target project** section, select the option you want to use for
+   your default target project.
+1. Select **Save changes**.
 
 ## By sending an email
 
@@ -179,60 +206,41 @@ The merge request target branch is the project's default branch.
 
 Prerequisites:
 
+- The merge request must target the current project, not an upstream project.
 - A GitLab administrator must configure [incoming email](../../../administration/incoming_email.md).
 - A GitLab administrator must configure [Reply by email](../../../administration/reply_by_email.md).
+- You must have at least the Developer role, or be allowed to create merge requests in the project.
 
 To create a merge request by sending an email:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
-1. In the upper-right corner, select **Email a new merge request to this project**.
-   An email address is displayed. Copy this address.
-   Ensure you keep this address private.
+1. If the project contains any merge requests, select **Email a new merge request to this project**.
+1. In the dialog, copy the email address shown. Keep this address private. Anyone who
+   has it can create issues or merge requests as if they were you.
 1. Open an email and compose a message with the following information:
 
    - The **To** line is the email address you copied.
-   - The subject line is the source branch name.
-   - The message body is the merge request description.
+   - The **Subject** is the source branch name.
+   - The body of the email is the merge request description.
 
-1. Send the email message.
+1. To add commits, attach `.patch` files to the message.
+1. Send the email.
 
 A merge request is created.
 
 ### Add attachments when creating a merge request by email
 
-You can add commits to a merge request by adding
-patches as attachments to the email. All attachments with a file name ending in `.patch` are considered patches and are processed
-ordered by name.
+Add commits to a merge request by adding patches as attachments to the email.
 
-The combined size of the patches can be 2 MB.
-
-If the source branch from the subject does not exist, it is
-created from the repository's HEAD or the specified target branch.
-You can specify the target branch by using the
-[`/target_branch` quick action](../quick_actions.md). If the source
-branch already exists, the patches are applied on top of it.
-
-## Set the default target project
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58093) in GitLab 13.11.
-
-Merge requests have a source and a target project that are the same, unless
-forking is involved. Creating a fork of the project can cause either of these
-scenarios when you create a new merge request:
-
-- You target an upstream project (the project you forked, and the default
-  option).
-- You target your own fork.
-
-To have merge requests from a fork by default target your own fork
-(instead of the upstream project), you can change the default.
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
-1. In the **Target project** section, select the option you want to use for
-   your default target project.
-1. Select **Save changes**.
+- The combined size of the patches must be 2 MB or less.
+- To be considered a patch, the attachment's file name must end in `.patch`.
+- Patches are processed in order by name.
+- If the source branch from the subject does not exist, it is
+  created from the repository's `HEAD`, or the default target branch.
+  To change the target branch manually, use the
+  [`/target_branch` quick action](../quick_actions.md).
+- If the source branch already exists, patches are applied on top of it.
 
 ## Troubleshooting
 
@@ -249,3 +257,14 @@ To make this button appear, one possible workaround is to
 [remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
+
+### Email message could not be processed
+
+When sending an email to create a merge request, and you attempt to target an
+upstream project, GitLab responds with this error:
+
+```plaintext
+Unfortunately, your email message to GitLab could not be processed.
+
+You are not allowed to perform this action. If you believe this is in error, contact a staff member.
+```

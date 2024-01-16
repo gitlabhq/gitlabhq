@@ -211,6 +211,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
     let(:username) { 'kittens' }
     let(:user) { {} }
     let(:etag) { 'etag' }
+    let(:lease_name) { "gitlab:github_import:user_finder:#{project.id}" }
     let(:cache_key) { described_class::EMAIL_FOR_USERNAME_CACHE_KEY % username }
     let(:etag_cache_key) { described_class::USERNAME_ETAG_CACHE_KEY % username }
     let(:email_fetched_for_project_key) do
@@ -305,6 +306,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
 
           it 'makes an API call' do
             expect(client).to receive(:user).with(username, { headers: {} }).and_return({ email: email }).once
+            expect(finder).to receive(:in_lock).with(
+              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+            ).and_call_original
 
             email_for_github_username
           end
@@ -315,6 +319,14 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
             end
 
             it_behaves_like 'returns and caches the email'
+
+            context 'when retried' do
+              before do
+                allow(finder).to receive(:in_lock).and_yield(true)
+              end
+
+              it_behaves_like 'returns and caches the email'
+            end
           end
 
           context 'if the response does not contain an email' do
@@ -344,6 +356,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
 
           it 'makes a non-rate-limited API call' do
             expect(client).to receive(:user).with(username, { headers: { 'If-None-Match' => etag } }).once
+            expect(finder).to receive(:in_lock).with(
+              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+            ).and_call_original
 
             email_for_github_username
           end
@@ -413,6 +428,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
 
           it 'makes a non-rate-limited API call' do
             expect(client).to receive(:user).with(username, { headers: { 'If-None-Match' => etag } }).once
+            expect(finder).to receive(:in_lock).with(
+              lease_name, ttl: 3.minutes, sleep_sec: 1.second, retries: 30
+            ).and_call_original
 
             email_for_github_username
           end
@@ -442,6 +460,30 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
           end
 
           it_behaves_like 'a user resource not found on GitHub'
+        end
+
+        context 'if the cached etag is nil' do
+          context 'when lock was executed by another process and an email was fetched' do
+            it 'does not fetch user detail' do
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return(email)
+              expect(finder).to receive(:in_lock).and_yield(true)
+              expect(client).not_to receive(:user)
+
+              email_for_github_username
+            end
+          end
+
+          context 'when lock was executed by another process and an email in cache is still blank' do
+            it 'fetch user detail' do
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:in_lock).and_yield(true)
+              expect(client).to receive(:user).with(username, { headers: {} }).and_return({ email: email }).once
+
+              email_for_github_username
+            end
+          end
         end
       end
 

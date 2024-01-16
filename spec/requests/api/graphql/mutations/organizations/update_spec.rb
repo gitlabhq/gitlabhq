@@ -8,7 +8,7 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :cell do
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:organization) do
-    create(:organization) { |org| create(:organization_user, organization: org, user: user) }
+    create(:organization) { |org| create(:organization_user, :owner, organization: org, user: user) }
   end
 
   let(:mutation) { graphql_mutation(:organization_update, params) }

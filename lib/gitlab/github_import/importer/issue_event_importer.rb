@@ -22,6 +22,17 @@ module Gitlab
           unlabeled
         ].freeze
 
+        EXTENDED_SUPPORTED_EVENTS = SUPPORTED_EVENTS + %w[
+          commented
+          reviewed
+        ].freeze
+
+        EVENT_COUNTER_MAP = {
+          'commented' => 'note',
+          'reviewed' => 'pull_request_review',
+          'merged' => 'pull_request_merged_by'
+        }.freeze
+
         # issue_event - An instance of `Gitlab::GithubImport::Representation::IssueEvent`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.
@@ -65,6 +76,10 @@ module Gitlab
             Gitlab::GithubImport::Importer::Events::ChangedReviewer
           when 'merged'
             Gitlab::GithubImport::Importer::Events::Merged
+          when 'commented'
+            Gitlab::GithubImport::Importer::Events::Commented
+          when 'reviewed'
+            Gitlab::GithubImport::Importer::Events::Reviewed
           end
         end
       end

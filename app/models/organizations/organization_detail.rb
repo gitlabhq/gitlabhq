@@ -6,7 +6,7 @@ module Organizations
     include Avatarable
     include WithUploads
 
-    cache_markdown_field :description
+    cache_markdown_field :description, pipeline: :description
 
     belongs_to :organization, inverse_of: :organization_detail
 

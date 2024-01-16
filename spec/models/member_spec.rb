@@ -735,6 +735,30 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     it { is_expected.to respond_to(:user_email) }
   end
 
+  describe 'callbacks' do
+    describe '#send_invite' do
+      context 'with an invited group member' do
+        it 'sends an invite email' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).to receive(:invite_member)
+          end
+
+          create(:group_member, :invited)
+        end
+      end
+
+      context 'with an uninvited member' do
+        it 'does not send an invite email' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).not_to receive(:invite_member)
+          end
+
+          create(:group_member)
+        end
+      end
+    end
+  end
+
   describe '.valid_email?' do
     it 'is a valid email format' do
       expect(described_class.valid_email?('foo')).to eq(false)
@@ -898,6 +922,40 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       expect(member.invite_token).not_to be_nil
       expect_any_instance_of(described_class).not_to receive(:after_accept_invite)
     end
+
+    context 'when after accepting invite' do
+      include NotificationHelpers
+
+      let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
+      let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
+      let_it_be(:email) { member.invite_email }
+      let(:user) { build(:user, email: email) }
+
+      it 'enqueues an email to user' do
+        member.accept_invite!(user)
+
+        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_invite_accepted_email')
+      end
+
+      it 'calls updates the two factor requirement' do
+        expect(user).to receive(:require_two_factor_authentication_from_group).and_call_original
+
+        member.accept_invite!(user)
+
+        expect(user.require_two_factor_authentication_from_group).to be_truthy
+      end
+
+      context 'when member source is a project' do
+        let_it_be(:project) { create(:project, namespace: group) }
+        let_it_be(:member) { create(:project_member, :invited, source: project, invite_email: email) }
+
+        it 'calls updates the two factor requirement' do
+          expect(user).not_to receive(:require_two_factor_authentication_from_group)
+
+          member.accept_invite!(user)
+        end
+      end
+    end
   end
 
   describe '#decline_invite!' do
@@ -1026,6 +1084,110 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  context 'for updating organization_users' do
+    let_it_be(:group) { create(:group, :with_organization) }
+    let(:member) { create(:group_member, source: group) }
+    let(:update_organization_users_enabled) { true }
+
+    before do
+      stub_feature_flags(update_organization_users: update_organization_users_enabled)
+    end
+
+    context 'when update_organization_users is enabled' do
+      it 'inserts new record on member creation' do
+        expect { member }.to change { Organizations::OrganizationUser.count }.by(1)
+        record_attrs = { organization: group.organization, user: member.user, access_level: :default }
+        expect(Organizations::OrganizationUser.exists?(record_attrs)).to be(true)
+      end
+
+      context 'when user already exists in the organization_users' do
+        context 'for an already existing default organization_user' do
+          let_it_be(:project) { create(:project, group: group, organization: group.organization) }
+
+          before do
+            member
+          end
+
+          it 'does not insert a new record in organization_users' do
+            expect do
+              create(:project_member, :owner, source: project, user: member.user)
+            end.not_to change { Organizations::OrganizationUser.count }
+
+            expect(
+              Organizations::OrganizationUser.exists?(
+                organization: project.organization, user: member.user, access_level: :default
+              )
+            ).to be(true)
+          end
+
+          it 'does not update timestamps' do
+            travel_to(1.day.from_now) do
+              expect do
+                create(:project_member, :owner, source: project, user: member.user)
+              end.not_to change { Organizations::OrganizationUser.last.updated_at }
+            end
+          end
+        end
+
+        context 'for an already existing owner organization_user' do
+          let_it_be(:user) { create(:user) }
+          let_it_be(:common_attrs) { { organization: group.organization, user: user } }
+
+          before_all do
+            create(:organization_user, :owner, common_attrs)
+          end
+
+          it 'does not insert a new record in organization_users nor update the access_level' do
+            expect do
+              create(:group_member, :owner, source: group, user: user)
+            end.not_to change { Organizations::OrganizationUser.count }
+
+            expect(
+              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :default))
+            ).to be(false)
+            expect(
+              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :owner))
+            ).to be(true)
+          end
+        end
+      end
+
+      context 'when updating the organization_users is not successful' do
+        it 'rolls back the member creation' do
+          allow(Organizations::OrganizationUser).to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
+
+          expect { member }.to raise_error(ActiveRecord::StatementTimeout)
+          expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
+          expect(group.group_members).to be_empty
+        end
+      end
+    end
+
+    shared_examples_for 'does not create an organization_user entry' do
+      specify do
+        expect { member }.not_to change { Organizations::OrganizationUser.count }
+      end
+    end
+
+    context 'when update_organization_users is disabled' do
+      let(:update_organization_users_enabled) { false }
+
+      it_behaves_like 'does not create an organization_user entry'
+    end
+
+    context 'when member is an invite' do
+      let(:member) { create(:group_member, :invited, source: group) }
+
+      it_behaves_like 'does not create an organization_user entry'
+    end
+
+    context 'when organization does not exist' do
+      let(:member) { create(:group_member) }
+
+      it_behaves_like 'does not create an organization_user entry'
+    end
+  end
+
   context 'when after_commit :update_highest_role' do
     let_it_be(:user) { create(:user) }
 
@@ -1068,6 +1230,132 @@ RSpec.describe Member, feature_category: :groups_and_projects do
           include_examples 'update highest role with exclusive lease'
         end
       end
+    end
+  end
+
+  context 'when after_update :post_update_hook' do
+    let_it_be(:member) { create(:group_member, :developer) }
+
+    context 'when access_level is changed' do
+      it 'calls NotificationService.update_member' do
+        expect(NotificationService).to receive_message_chain(:new, :updated_member_access_level).with(member)
+
+        member.update_attribute(:access_level, Member::MAINTAINER)
+      end
+
+      it 'does not send an email when the access level has not changed' do
+        expect(NotificationService).not_to receive(:new)
+
+        member.touch
+      end
+    end
+
+    context 'when expiration is changed' do
+      it 'calls the notification service when membership expiry has changed' do
+        expect(NotificationService).to receive_message_chain(:new, :updated_member_expiration).with(member)
+
+        member.update!(expires_at: 5.days.from_now)
+      end
+    end
+  end
+
+  context 'when after_create :post_create_hook' do
+    include NotificationHelpers
+
+    let_it_be(:source) { create(:group) }
+    let(:member) { create(:group_member, source: source) }
+
+    subject(:create_member) { member }
+
+    shared_examples_for 'invokes a notification' do
+      it 'enqueues an email to user' do
+        create_member
+
+        expect_delivery_jobs_count(1)
+        expect_enqueud_email(member.real_source_type, member.id, mail: 'member_access_granted_email')
+      end
+    end
+
+    shared_examples_for 'performs all the common hooks' do
+      it_behaves_like 'invokes a notification'
+
+      it 'creates an event' do
+        expect { create_member }.to change { Event.count }.by(1)
+      end
+    end
+
+    it 'calls the system hook service' do
+      expect_next_instance_of(SystemHooksService) do |instance|
+        expect(instance).to receive(:execute_hooks_for).with(an_instance_of(GroupMember), :create)
+      end
+
+      create_member
+    end
+
+    context 'when source is a group' do
+      it_behaves_like 'invokes a notification'
+
+      it 'does not create an event' do
+        expect { create_member }.not_to change { Event.count }
+      end
+    end
+
+    context 'when source is a project' do
+      context 'when source is a personal project' do
+        let_it_be(:namespace) { create(:namespace) }
+
+        context 'when member is the owner of the namespace' do
+          subject(:create_member) { create(:project, namespace: namespace) }
+
+          it 'does not enqueue an email' do
+            create_member
+
+            expect_delivery_jobs_count(0)
+          end
+
+          it 'does not create an event' do
+            expect { create_member }.not_to change { Event.count }
+          end
+        end
+
+        context 'when member is not the namespace owner' do
+          let_it_be(:project) { create(:project, namespace: namespace) }
+          let(:member) { create(:project_member, source: project) }
+
+          subject(:create_member) { member }
+
+          it_behaves_like 'performs all the common hooks'
+        end
+      end
+
+      context 'when source is not a personal project' do
+        let_it_be(:project) { create(:project, namespace: create(:group)) }
+        let(:member) { create(:project_member, source: project) }
+
+        subject(:create_member) { member }
+
+        it_behaves_like 'performs all the common hooks'
+      end
+    end
+  end
+
+  context 'when after_create :update_two_factor_requirement' do
+    it 'calls update_two_factor_requirement after creation' do
+      user = create(:user)
+
+      expect(user).to receive(:update_two_factor_requirement)
+
+      create(:group_member, user: user)
+    end
+  end
+
+  context 'when after_destroy :update_two_factor_requirement' do
+    it 'calls update_two_factor_requirement after deletion' do
+      group_member = create(:group_member)
+
+      expect(group_member.user).to receive(:update_two_factor_requirement)
+
+      group_member.destroy!
     end
   end
 

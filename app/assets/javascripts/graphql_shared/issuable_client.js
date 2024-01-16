@@ -1,6 +1,5 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
-import { defaultDataIdFromObject } from '@apollo/client/core';
 import { concatPagination } from '@apollo/client/utilities';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
@@ -14,13 +13,6 @@ import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_
 export const config = {
   typeDefs,
   cacheConfig: {
-    // included temporarily until Vuex is removed from boards app
-    dataIdFromObject: (object) => {
-      // eslint-disable-next-line no-underscore-dangle
-      return object.__typename === 'BoardList' && !window.gon?.features?.apolloBoards
-        ? object.iid
-        : defaultDataIdFromObject(object);
-    },
     typePolicies: {
       Query: {
         fields: {
@@ -33,6 +25,12 @@ export const config = {
             read(currentState) {
               return currentState ?? [];
             },
+          },
+          boardList: {
+            keyArgs: ['id'],
+          },
+          epicBoardList: {
+            keyArgs: ['id'],
           },
         },
       },
@@ -135,104 +133,80 @@ export const config = {
           nodes: concatPagination(),
         },
       },
-      ...(window.gon?.features?.apolloBoards
-        ? {
-            BoardList: {
-              fields: {
-                issues: {
-                  keyArgs: ['filters'],
-                },
-              },
-            },
-            IssueConnection: {
-              merge(existing = { nodes: [] }, incoming, { args }) {
-                if (!args?.after) {
-                  return incoming;
-                }
-                return {
-                  ...incoming,
-                  nodes: [...existing.nodes, ...incoming.nodes],
-                };
-              },
-            },
-            EpicList: {
-              fields: {
-                epics: {
-                  keyArgs: ['filters'],
-                },
-              },
-            },
-            EpicConnection: {
-              merge(existing = { nodes: [] }, incoming, { args }) {
-                if (!args.after) {
-                  return incoming;
-                }
-                return {
-                  ...incoming,
-                  nodes: [...existing.nodes, ...incoming.nodes],
-                };
-              },
-            },
-            Group: {
-              fields: {
-                projects: {
-                  keyArgs: ['includeSubgroups', 'search'],
-                },
-                descendantGroups: {
-                  keyArgs: ['includeSubgroups', 'search'],
-                },
-              },
-            },
-            ProjectConnection: {
-              fields: {
-                nodes: concatPagination(),
-              },
-            },
-            GroupConnection: {
-              fields: {
-                nodes: concatPagination(),
-              },
-            },
-            Board: {
-              fields: {
-                epics: {
-                  keyArgs: ['boardId'],
-                },
-              },
-            },
-            BoardEpicConnection: {
-              merge(existing = { nodes: [] }, incoming, { args }) {
-                if (!args.after) {
-                  return incoming;
-                }
-                return {
-                  ...incoming,
-                  nodes: [...existing.nodes, ...incoming.nodes],
-                };
-              },
-            },
-            Query: {
-              fields: {
-                boardList: {
-                  keyArgs: ['id'],
-                },
-                epicBoardList: {
-                  keyArgs: ['id'],
-                },
-                isShowingLabels: {
-                  read(currentState) {
-                    return currentState ?? true;
-                  },
-                },
-                selectedBoardItems: {
-                  read(currentState) {
-                    return currentState ?? [];
-                  },
-                },
-              },
-            },
+      BoardList: {
+        fields: {
+          issues: {
+            keyArgs: ['filters'],
+          },
+        },
+      },
+      IssueConnection: {
+        merge(existing = { nodes: [] }, incoming, { args }) {
+          if (!args?.after) {
+            return incoming;
           }
-        : {}),
+          return {
+            ...incoming,
+            nodes: [...existing.nodes, ...incoming.nodes],
+          };
+        },
+      },
+      EpicList: {
+        fields: {
+          epics: {
+            keyArgs: ['filters'],
+          },
+        },
+      },
+      EpicConnection: {
+        merge(existing = { nodes: [] }, incoming, { args }) {
+          if (!args?.after) {
+            return incoming;
+          }
+          return {
+            ...incoming,
+            nodes: [...existing.nodes, ...incoming.nodes],
+          };
+        },
+      },
+      Group: {
+        fields: {
+          projects: {
+            keyArgs: ['includeSubgroups', 'search'],
+          },
+          descendantGroups: {
+            keyArgs: ['includeSubgroups', 'search'],
+          },
+        },
+      },
+      ProjectConnection: {
+        fields: {
+          nodes: concatPagination(),
+        },
+      },
+      GroupConnection: {
+        fields: {
+          nodes: concatPagination(),
+        },
+      },
+      Board: {
+        fields: {
+          epics: {
+            keyArgs: ['boardId'],
+          },
+        },
+      },
+      BoardEpicConnection: {
+        merge(existing = { nodes: [] }, incoming, { args }) {
+          if (!args.after) {
+            return incoming;
+          }
+          return {
+            ...incoming,
+            nodes: [...existing.nodes, ...incoming.nodes],
+          };
+        },
+      },
     },
   },
 };

@@ -284,11 +284,11 @@ not an issue per-se.
 
 New records are created in 2 situations:
 
-- when the runner calls the `POST /api/v4/runners/verify` endpoint as part of the
-`gitlab-runner register` command, if the specified runner token is prefixed with `glrt-`.
-This allows the frontend to determine whether the user has successfully completed the registration and take an
-appropriate action;
-- when GitLab is pinged for new jobs and a record matching the `token`+`system_id` does not already exist.
+- When the runner calls the `POST /api/v4/runners/verify` endpoint as part of the
+  `gitlab-runner register` command, if the specified runner token is prefixed with `glrt-`.
+  This allows the frontend to determine whether the user has successfully completed the registration and take an
+  appropriate action;
+- When GitLab is pinged for new jobs and a record matching the `token`+`system_id` does not already exist.
 
 Due to the time-decaying nature of the `ci_runner_machines` records, they are automatically
 cleaned after 7 days after the last contact from the respective runner.

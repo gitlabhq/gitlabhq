@@ -1,16 +1,14 @@
 <!-- Title suggestion: [Feature flag] Enable <feature-flag-name> -->
 
-[main-issue]: MAIN-ISSUE-LINK
-
 ## Summary
 
-This issue is to roll out [the feature][main-issue] on production,
+This issue is to roll out [the feature](<feature-issue-link>) on production,
 that is currently behind the `<feature-flag-name>` feature flag.
 
 ## Owners
 
-- Most appropriate Slack channel to reach out to: `#g_TEAM_NAME`
-- Best individual to reach out to: GITLAB_USERNAME_OF_DRI
+- Most appropriate Slack channel to reach out to: `#<slack-channel-of-dri-team>`
+- Best individual to reach out to: @<gitlab-username-of-dri>
 
 ## Expectations
 
@@ -52,7 +50,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
 - [ ] Depending on the [type of actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors) you are using, pick one of these options:
   - For **project-actor**: `/chatops run feature set --project=gitlab-org/gitlab,gitlab-org/gitlab-foss,gitlab-com/www-gitlab-com <feature-flag-name> true`
   - For **group-actor**: `/chatops run feature set --group=gitlab-org,gitlab-com <feature-flag-name> true`
-  - For **user-actor**: `/chatops run feature set --user=<your-username> <feature-flag-name> true`
+  - For **user-actor**: `/chatops run feature set --user=<gitlab-username-of-dri> <feature-flag-name> true`
 - [ ] Verify that the feature works for the specific actors.
 
 ### Preparation before global rollout
@@ -64,7 +62,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
 - [ ] Ensure that documentation exists for the feature, and the [version history text](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#add-version-history-text) has been updated.
-- [ ] Leave a comment on [the feature issue][main-issue] announcing estimated time when this feature flag will be enabled on GitLab.com.
+- [ ] Leave a comment on [the feature issue](<feature-issue-link>) announcing estimated time when this feature flag will be enabled on GitLab.com.
 - [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify the [`#support_gitlab-com` Slack channel](https://gitlab.slack.com/archives/C4XFU81LG) and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 - [ ] Ensure that the feature flag rollout plan is reviewed by another developer familiar with the domain.
@@ -72,7 +70,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
 ### Global rollout on production
 
 For visibility, all `/chatops` commands that target production should be executed in the [`#production` Slack channel](https://gitlab.slack.com/archives/C101F3796)
-and cross-posted (with the command results) to the responsible team's Slack channel (`#g_TEAM_NAME`).
+and cross-posted (with the command results) to the responsible team's Slack channel (`#<slack-channel-of-dri-team>`).
 
 - [ ] (Optional) [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature on production environment.
   - Between every step wait for at least 15 minutes and monitor the appropriate graphs on https://dashboards.gitlab.net.
@@ -143,7 +141,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 /chatops run feature set <feature-flag-name> false
 ```
 
-/label ~group::
-/label ~"feature flag"
-/assign me
+/label <group-label>
+/label ~"feature flag" ~C4
+/assign @<gitlab-username-of-dri>
 /due in 2 weeks

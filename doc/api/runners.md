@@ -14,6 +14,7 @@ This page describes endpoints for runners registered to an instance. To create a
 GET /runners
 GET /runners/all
 GET /runners/:id/jobs
+GET /runners/:id/managers/:system_id/jobs
 GET /projects/:id/runners
 GET /groups/:id/runners
 ```
@@ -367,7 +368,7 @@ NOTE:
 The `active` form attribute was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
-## List runner's jobs
+## List jobs processed by a runner
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
 
@@ -378,12 +379,13 @@ to projects where the user has at least the Reporter role.
 GET /runners/:id/jobs
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
-| `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
-| `order_by`| string  | no       | Order jobs by `id` |
-| `sort`    | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). Specify `order_by` as well, including for `id`. |
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `id`        | integer | yes      | The ID of a runner  |
+| `system_id` | string  | no       | System ID of the machine where the runner manager is running |
+| `status`    | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
+| `order_by`  | string  | no       | Order jobs by `id` |
+| `sort`      | string  | no       | Sort jobs in `asc` or `desc` order (default: `desc`). If `sort` is specified, `order_by` must be specified as well |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"

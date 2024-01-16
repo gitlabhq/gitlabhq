@@ -46,12 +46,6 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
         end
       end
 
-      it 'raises error when ordering configuration cannot be automatically determined' do
-        expect do
-          described_class.new(scope: MergeRequestDiffCommit.order(:merge_request_diff_id, :relative_order))
-        end.to raise_error /The order on the scope does not support keyset pagination/
-      end
-
       it 'accepts a custom batch size' do
         count = 0
 

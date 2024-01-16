@@ -68,6 +68,14 @@ class PagesDeployment < ApplicationRecord
     update(deleted_at: Time.now.utc)
   end
 
+  def url
+    base_url = ::Gitlab::Pages::UrlBuilder
+      .new(project)
+      .pages_url(with_unique_domain: true)
+
+    File.join(base_url.to_s, path_prefix.to_s)
+  end
+
   private
 
   def set_size

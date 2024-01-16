@@ -79,6 +79,7 @@ module ApplicationSettingImplementation
         ecdsa_sk_key_restriction: default_min_key_size(:ecdsa_sk),
         ed25519_key_restriction: default_min_key_size(:ed25519),
         ed25519_sk_key_restriction: default_min_key_size(:ed25519_sk),
+        require_admin_two_factor_authentication: false,
         eks_access_key_id: nil,
         eks_account_id: nil,
         eks_integration_enabled: false,
@@ -136,6 +137,7 @@ module ApplicationSettingImplementation
         mirror_available: true,
         notes_create_limit: 300,
         notes_create_limit_allowlist: [],
+        members_delete_limit: 60,
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,
@@ -275,7 +277,8 @@ module ApplicationSettingImplementation
         allow_account_deletion: true,
         gitlab_shell_operation_limit: 600,
         project_jobs_api_rate_limit: 600,
-        security_txt_content: nil
+        security_txt_content: nil,
+        allow_project_creation_for_guest_and_below: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

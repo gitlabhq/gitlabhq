@@ -1121,6 +1121,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
+    it { is_expected.to delegate_method(:has_user?).to(:team) }
+    it { is_expected.to delegate_method(:member?).to(:team) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).allow_nil }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).allow_nil }
     it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).allow_nil }
@@ -2340,11 +2342,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'avoids n + 1', :aggregate_failures do
       create(:prometheus_integration)
       run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
-      control_count = ActiveRecord::QueryRecorder.new { run_test.call }
+      control = ActiveRecord::QueryRecorder.new { run_test.call }
       create(:prometheus_integration)
 
       expect(run_test.call.count).to eq(2)
-      expect { run_test.call }.not_to exceed_query_limit(control_count)
+      expect { run_test.call }.not_to exceed_query_limit(control)
     end
   end
 
@@ -6591,17 +6593,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:subject) { create(:project) }
 
     it 'avoids N+1 database queries' do
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }.count
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
 
-      expect(control_count).to be <= 4
+      expect(control.count).to be <= 4
     end
 
     it 'avoids N+1 database queries with more available integrations' do
       allow(Integration).to receive(:available_integration_names).and_return(%w[pushover])
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integrations }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
-      expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control_count)
+      expect { subject.find_or_initialize_integrations }.not_to exceed_query_limit(control)
     end
 
     context 'with disabled integrations' do
@@ -6648,11 +6650,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'avoids N+1 database queries' do
       allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover])
 
-      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }.count
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
 
-      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control_count)
+      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control)
     end
 
     it 'returns nil if integration is disabled' do
@@ -7978,6 +7980,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
       end
+
+      it 'assigns slug value for new topics' do
+        topic = create(:topic, name: 'old topic', title: 'old topic', slug: nil)
+        project.topic_list = topic.name
+        project.save!
+
+        project.topic_list = 'old topic, new topic'
+        expect { expect(project.save).to be true }.to change { Projects::Topic.count }.by(1)
+
+        topics = project.reset.topics
+        expect(topics.map(&:name)).to match_array(['old topic', 'new topic'])
+
+        old_topic = topics.first
+        new_topic = topics.last
+
+        expect(old_topic.slug).to be_nil
+        expect(new_topic.slug).to eq('newtopic')
+      end
     end
 
     context 'public topics counter' do
@@ -8968,6 +8988,30 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       end
     end
+  end
+
+  describe '#allows_multiple_merge_request_assignees?' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:allows_multiple_merge_request_assignees?) { project.allows_multiple_merge_request_assignees? }
+
+    it { is_expected.to eq(false) }
+  end
+
+  describe '#allows_multiple_merge_request_reviewers?' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:allows_multiple_merge_request_reviewers?) { project.allows_multiple_merge_request_reviewers? }
+
+    it { is_expected.to eq(false) }
+  end
+
+  describe '#on_demand_dast_available?' do
+    let_it_be(:project) { create(:project) }
+
+    subject(:on_demand_dast_available?) { project.on_demand_dast_available? }
+
+    it { is_expected.to be_falsy }
   end
 
   private

@@ -1,8 +1,0 @@
----
-name: manage_project_access_tokens
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430353
-milestone: '16.5'
-type: development
-group: group::authorization
-default_enabled: false

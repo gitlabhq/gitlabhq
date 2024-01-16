@@ -1,8 +1,8 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 
@@ -20,6 +20,7 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
+import { TEST_HOST } from 'spec/test_constants';
 import testAction from '../../__helpers__/vuex_action_helper';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
@@ -73,6 +74,7 @@ describe('DiffFileHeader component', () => {
           setFileCollapsedByUser: jest.fn(),
           setFileForcedOpen: jest.fn(),
           reviewFile: jest.fn(),
+          unpinFile: jest.fn(),
         },
       },
     },
@@ -87,7 +89,7 @@ describe('DiffFileHeader component', () => {
   });
 
   const findHeader = () => wrapper.findComponent({ ref: 'header' });
-  const findTitleLink = () => wrapper.findComponent({ ref: 'titleWrapper' });
+  const findTitleLink = () => wrapper.findByTestId('file-title');
   const findExpandButton = () => wrapper.findComponent({ ref: 'expandDiffToFullFileButton' });
   const findFileActions = () => wrapper.find('.file-actions');
   const findModeChangedLine = () => wrapper.findComponent({ ref: 'fileMode' });
@@ -105,7 +107,7 @@ describe('DiffFileHeader component', () => {
     mockStoreConfig = cloneDeep(defaultMockStoreConfig);
     const store = new Vuex.Store({ ...mockStoreConfig, ...options.store });
 
-    wrapper = shallowMount(DiffFileHeader, {
+    wrapper = shallowMountExtended(DiffFileHeader, {
       propsData: {
         diffFile,
         canCurrentUserFork: false,
@@ -710,5 +712,24 @@ describe('DiffFileHeader component', () => {
     });
 
     expect(wrapper.find('[data-testid="comment-files-button"]').exists()).toEqual(true);
+  });
+
+  describe('pinned file', () => {
+    beforeEach(() => {
+      window.gon.features = { pinnedFile: true };
+    });
+
+    it('has pinned URL search param', () => {
+      createComponent();
+      const url = new URL(TEST_HOST + findTitleLink().attributes('href'));
+      expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
+    });
+
+    it('can unpin file', () => {
+      createComponent({ props: { addMergeRequestButtons: true, pinned: true } });
+      const unpinButton = wrapper.findComponentByTestId('unpin-button');
+      unpinButton.vm.$emit('click');
+      expect(mockStoreConfig.modules.diffs.actions.unpinFile).toHaveBeenCalled();
+    });
   });
 });

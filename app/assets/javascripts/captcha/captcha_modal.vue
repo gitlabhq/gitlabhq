@@ -26,10 +26,21 @@ export default {
       type: String,
       required: true,
     },
+    showModal: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    resetSession: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       modalId: uniqueId('captcha-modal-'),
+      captcha: null,
     };
   },
   watch: {
@@ -37,29 +48,44 @@ export default {
       // If this is true, we need to present the captcha modal to the user.
       // When the modal is shown we will also initialize and render the form.
       if (newNeedsCaptchaResponse) {
-        this.$refs.modal.show();
+        this.renderCaptcha();
       }
+    },
+    resetSession: {
+      immediate: true,
+      handler(reset) {
+        if (reset && this.captcha) {
+          this.resetCaptcha();
+        }
+      },
     },
   },
   mounted() {
     // If this is true, we need to present the captcha modal to the user.
     // When the modal is shown we will also initialize and render the form.
     if (this.needsCaptchaResponse) {
-      this.$refs.modal.show();
+      this.renderCaptcha();
     }
   },
   methods: {
     emitReceivedCaptchaResponse(captchaResponse) {
-      this.$refs.modal.hide();
+      if (this.showModal) this.$refs.modal.hide();
       this.$emit('receivedCaptchaResponse', captchaResponse);
     },
     emitNullReceivedCaptchaResponse() {
       this.emitReceivedCaptchaResponse(null);
     },
+    renderCaptcha() {
+      if (this.showModal) {
+        this.$refs.modal.show();
+      } else {
+        this.initCaptcha();
+      }
+    },
     /**
      * handler for when modal is shown
      */
-    shown() {
+    initCaptcha() {
       const containerRef = this.$refs.captcha;
 
       // NOTE: This is the only bit that is specific to Google's reCAPTCHA captcha implementation.
@@ -72,12 +98,13 @@ export default {
             // TODO: Also need to handle expired-callback and error-callback
             //   See https://gitlab.com/gitlab-org/gitlab/-/issues/217722#future-follow-on-issuesmrs
           });
+
+          this.captcha = grecaptcha;
         })
         .catch((e) => {
           // TODO: flash the error or notify the user some other way
           //   See https://gitlab.com/gitlab-org/gitlab/-/issues/217722#future-follow-on-issuesmrs
           this.emitNullReceivedCaptchaResponse();
-          this.$refs.modal.hide();
 
           // eslint-disable-next-line no-console
           console.error(
@@ -96,6 +123,9 @@ export default {
         this.emitNullReceivedCaptchaResponse();
       }
     },
+    resetCaptcha() {
+      this.captcha.reset();
+    },
   },
 };
 </script>
@@ -104,17 +134,19 @@ export default {
   <!-- there must be at least one button or focusable element, or the gl-modal fails to render. -->
   <!-- We could modify gl-model to remove this requirement.                                     -->
   <gl-modal
+    v-if="showModal"
     ref="modal"
     :modal-id="modalId"
     :title="__('Please solve the captcha')"
     :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
       text: __('Cancel'),
     } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-    @shown="shown"
+    @shown="initCaptcha"
     @hide="hide"
     @hidden="$emit('hidden')"
   >
     <div ref="captcha"></div>
     <p>{{ __('We want to be sure it is you, please confirm you are not a robot.') }}</p>
   </gl-modal>
+  <div v-else ref="captcha" class="gl-display-inline-block"></div>
 </template>

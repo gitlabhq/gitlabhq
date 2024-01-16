@@ -137,6 +137,7 @@ export async function mountIssuesListApp() {
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       initialSort,
       isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
+      isGroup: !parseBoolean(isProject),
       isProject: parseBoolean(isProject),
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),

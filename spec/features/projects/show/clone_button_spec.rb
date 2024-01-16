@@ -19,8 +19,10 @@ RSpec.describe 'Projects > Show > Clone button', feature_category: :groups_and_p
         expect(page).to have_content project.name
       end
 
-      it 'sees clone button' do
+      it 'sees clone button', :js do
+        find_by_testid('clone-dropdown').click
         expect(page).to have_content _('Clone')
+        expect(page).to be_axe_clean.within('.clone-options-dropdown')
       end
     end
 

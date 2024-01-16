@@ -77,6 +77,18 @@ RSpec.describe SystemNoteService, feature_category: :shared do
     end
   end
 
+  describe '.request_review' do
+    let(:reviewer) { double }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:request_review).with(reviewer)
+      end
+
+      described_class.request_review(noteable, project, author, reviewer)
+    end
+  end
+
   describe '.change_issuable_contacts' do
     let(:added_count) { 5 }
     let(:removed_count) { 3 }
@@ -512,6 +524,18 @@ RSpec.describe SystemNoteService, feature_category: :shared do
       end
 
       described_class.mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue)
+    end
+  end
+
+  describe '.email_participants' do
+    let(:body) { 'added user@example.com' }
+
+    it 'calls IssuableService' do
+      expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
+        expect(service).to receive(:email_participants).with(body)
+      end
+
+      described_class.email_participants(noteable, project, author, body)
     end
   end
 

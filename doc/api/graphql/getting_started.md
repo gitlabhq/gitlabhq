@@ -42,8 +42,7 @@ You can run GraphQL queries in a `curl` request on the command line on your
 local computer. The requests `POST` to `/api/graphql`
 with the query as the payload. You can authorize your request by generating a
 [personal access token](../../user/profile/personal_access_tokens.md) to use as
-a bearer token.
-This token requires at least the `read_api` scope.
+a bearer token. Read more about [GraphQL Authentication](index.md#authentication).
 
 Example:
 
@@ -162,10 +161,9 @@ More about queries:
 
 ### Authorization
 
-Authorization uses the same engine as the GitLab application (and GitLab.com).
 If you've signed in to GitLab and use [GraphiQL](#graphiql), all queries are performed as
-you, the authenticated user. For more information, read the
-[GitLab API documentation](../rest/index.md#authentication).
+you, the authenticated user. For more information, read about
+[GraphQL Authentication](index.md#authentication).
 
 ### Mutations
 
@@ -285,10 +283,9 @@ in `CI_JOB_TOKEN` scoping behavior.
 
 ```graphql
 mutation DisableCI_JOB_TOKENscope {
-  projectCiCdSettingsUpdate(input:{fullPath: "<namespace>/<project-name>", inboundJobTokenScopeEnabled: false, jobTokenScopeEnabled: false}) {
+  projectCiCdSettingsUpdate(input:{fullPath: "<namespace>/<project-name>", inboundJobTokenScopeEnabled: false}) {
     ciCdSettings {
       inboundJobTokenScopeEnabled
-      jobTokenScopeEnabled
     }
     errors
   }

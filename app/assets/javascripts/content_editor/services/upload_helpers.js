@@ -133,6 +133,8 @@ export const uploadFile = ({ uploadsPath, renderMarkdown, file }) => {
   });
 };
 
+export const uploadingStates = {};
+
 const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, eventHub }) => {
   // needed to avoid mismatched transaction error
   await Promise.resolve();
@@ -170,6 +172,8 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
       // the position might have changed while uploading, so we need to find it again
       position = findUploadedFilePosition(editor, file.name);
 
+      uploadingStates[file.name] = true;
+
       editor.view.dispatch(
         editor.state.tr.setMeta('preventAutolink', true).setNodeMarkup(position, undefined, {
           uploading: false,
@@ -199,6 +203,8 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
   const objectUrl = URL.createObjectURL(file);
   const { selection } = editor.view.state;
   const currentNode = selection.$to.node();
+
+  uploadingStates[file.name] = true;
 
   let position = selection.to;
   let content = {

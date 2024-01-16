@@ -150,6 +150,16 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         let(:created_record) { create(:user_achievement, awarded_by_user: user, revoked_by_user: user) }
       end
     end
+
+    context 'when user is a bot user and has associated access tokens' do
+      let_it_be(:user) { create(:user, :project_bot) }
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+
+      it "deletes the access token" do
+        service.execute
+        expect(PersonalAccessToken.find_by(id: token.id)).to eq nil
+      end
+    end
   end
 
   context 'on post-migrate cleanups' do

@@ -73,7 +73,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
           page.within '.dropdown-menu-user' do
             expect(page).not_to have_content 'Unassigned'
-            click_button user2.name
           end
 
           find('.participants').click
@@ -82,7 +81,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
           open_assignees_dropdown
 
           page.within('.assignee') do
-            expect(page.all('[data-testid="selected-participant"]').length).to eq(1)
+            expect(page.all('[data-testid="unselected-participant"]').length).to eq(1)
           end
 
           expect(find('[data-testid="user-search-input"]').value).to eq(user2.name)

@@ -139,9 +139,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
       link_identity(identity_linker)
-      set_remember_me(current_user)
 
-      store_idp_two_factor_status(build_auth_user(auth_module::User).bypass_two_factor?)
+      current_auth_user = build_auth_user(auth_module::User)
+      set_remember_me(current_user, current_auth_user)
+
+      store_idp_two_factor_status(current_auth_user.bypass_two_factor?)
 
       if identity_linker.changed?
         redirect_identity_linked
@@ -193,7 +195,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       track_event(@user, oauth['provider'], 'succeeded')
       Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: @user) if new_user
 
-      set_remember_me(@user)
+      set_remember_me(@user, auth_user)
       set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
 
       if @user.two_factor_enabled? && !auth_user.bypass_two_factor?
@@ -278,10 +280,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       .for_authentication.security_event
   end
 
-  def set_remember_me(user)
+  def set_remember_me(user, auth_user)
     return unless remember_me?
 
-    if user.two_factor_enabled?
+    if user.two_factor_enabled? && !auth_user.bypass_two_factor?
       params[:remember_me] = '1'
     else
       remember_me(user)

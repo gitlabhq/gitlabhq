@@ -12,6 +12,10 @@ module Types
 
         implements Types::WorkItems::WidgetInterface
 
+        field :discussion_locked, GraphQL::Types::Boolean,
+          null: true,
+          description: 'Discussion lock attribute of the work item.'
+
         # This field loads user comments, system notes and resource events as a discussion for an work item,
         # raising the complexity considerably. In order to discourage fetching this field as part of fetching
         # a list of issues we raise the complexity

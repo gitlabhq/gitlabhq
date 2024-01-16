@@ -13,7 +13,7 @@ Configure Gitaly in one of two ways:
 :::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add or change the
-   [Gitaly settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/1dd07197c7e5ae23626aad5a4a070a800b670380/files/gitlab-config-template/gitlab.rb.template#L1622-1676).
+   [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 :::TabTitle Self-compiled (source)
@@ -574,7 +574,7 @@ Enabling limits on your environment should be done with caution and only
 in select circumstances, such as to protect against unexpected traffic.
 When reached, limits _do_ result in disconnects that negatively impact users.
 For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
+adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/index.md) or workloads.
 
 When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as
 processes may switch to using that instead of being terminated. This situation could lead to notably compromised
@@ -1019,9 +1019,9 @@ meaning that unique requests do not get written into the cache.
 If you:
 
 - Increase this number, your cache hit rate goes down and the
-cache uses less disk space.
+  cache uses less disk space.
 - Decrease this number, your cache hit
-rate goes up and the cache uses more disk space.
+  rate goes up and the cache uses more disk space.
 
 You should set `min_occurrences` to `1`. On GitLab.com,
 going from 0 to 1 saved us 50% cache disk space while barely affecting
@@ -1088,6 +1088,33 @@ Example:
   "pid": 8813,
 }
 ```
+
+## `cat-file` cache
+
+A lot of Gitaly RPCs need to look up Git objects from repositories.
+Most of the time we use `git cat-file --batch` processes for that. For
+better performance, Gitaly can re-use these `git cat-file` processes
+across RPC calls. Previously used processes are kept around in a
+["Git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
+To control how much system resources this uses, we have a maximum number of
+cat-file processes that can go into the cache.
+
+The default limit is 100 `cat-file`s, which constitute a pair of
+`git cat-file --batch` and `git cat-file --batch-check` processes. If
+you see errors about "too many open files", or an
+inability to create new processes, you may want to lower this limit.
+
+Ideally, the number should be large enough to handle standard
+traffic. If you raise the limit, you should measure the cache hit ratio
+before and after. If the hit ratio does not improve, the higher limit is
+probably not making a meaningful difference. Here is an example
+Prometheus query to see the hit rate:
+
+```plaintext
+sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
+```
+
+Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 
 ## Repository consistency checks
 

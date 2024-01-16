@@ -11,6 +11,7 @@ module Gitlab
           @project = project
           @user_finder = UserFinder.new(project)
           @formatter = Gitlab::ImportFormatter.new
+          @mentions_converter = Gitlab::BitbucketServerImport::MentionsConverter.new(project.id)
           @object = hash.with_indifferent_access
         end
 
@@ -43,7 +44,7 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder
+        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
 
         def import_data_valid?
           project.import_data&.credentials && project.import_data&.data
@@ -192,12 +193,18 @@ module Gitlab
             note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
           end
 
+          comment_note = if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
+                           mentions_converter.convert(comment.note)
+                         else
+                           comment.note
+                         end
+
           note +=
             # Provide some context for replying
             if comment.parent_comment
-              "> #{comment.parent_comment.note.truncate(80)}\n\n#{comment.note}"
+              "> #{comment.parent_comment.note.truncate(80)}\n\n#{comment_note}"
             else
-              comment.note
+              comment_note
             end
 
           {

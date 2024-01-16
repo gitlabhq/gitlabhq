@@ -138,7 +138,7 @@ is planned to add the ability to create a MR from here.
 ### Events
 
 - `done` - Emitted after the file has been committed. Use this to redirect the
-user to the pipeline, for example.
+  user to the pipeline, for example.
 
 ### Template file location
 

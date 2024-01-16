@@ -39,7 +39,7 @@ When removing a cluster integration, you have two options:
 
 - **Remove integration**: remove only the Kubernetes integration.
 - **Remove integration and resources**: remove the cluster integration and
-all GitLab cluster-related resources such as namespaces, roles, and bindings.
+  all GitLab cluster-related resources such as namespaces, roles, and bindings.
 
 To remove the Kubernetes cluster integration:
 

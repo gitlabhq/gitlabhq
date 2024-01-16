@@ -117,6 +117,18 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
     end
 
     context 'for a bot user' do
+      context 'when the MR is merged' do
+        let(:merge_request) { create(:merge_request, :merged, :simple, author: user, source_project: project) }
+
+        it 'returns 401' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+
+          merge_request.reload
+          expect(response).to have_gitlab_http_status(:unauthorized)
+          expect(merge_request.approvals.pluck(:user_id)).to contain_exactly(user2.id)
+        end
+      end
+
       it 'clears approvals of the merge_request' do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
 

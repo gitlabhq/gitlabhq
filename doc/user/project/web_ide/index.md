@@ -17,71 +17,65 @@ The Web IDE is an advanced editor with commit staging.
 You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
 For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
-To pair the Web IDE with a remote development environment, see [remote development](../remote_development/index.md).
+To pair the Web IDE with a remote development environment, see [Remote development](../remote_development/index.md).
 
-## Use the Web IDE
+## Open the Web IDE
 
-To open the Web IDE from the GitLab UI:
+To open the Web IDE:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
-You can also open the Web IDE from:
+### From a file or directory
 
-- A file
-- The repository file list
-- A merge request
+To open the Web IDE from a file or directory:
 
-### From a file or the repository file list
-
-To open the Web IDE from a file or the repository file list:
-
-- In the upper right, select **Edit > Open in Web IDE**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to your file or directory.
+1. Select **Edit > Open in Web IDE**.
 
 ### From a merge request
 
 To open the Web IDE from a merge request:
 
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your merge request.
-1. In the upper-right corner, select **Code > Open in Web IDE**.
+1. In the upper right, select **Code > Open in Web IDE**.
 
-The Web IDE opens new and modified files in separate tabs and displays changes side by side with the original source.
-To optimize loading time, only the top 10 files (by number of lines changed) are opened automatically.
+The Web IDE opens new and modified files in separate tabs and displays changes side by side.
+To reduce load time, only 10 files with the most lines changed are opened automatically.
 
-In the file tree, any new or modified file in the merge request is indicated by an icon next to the filename.
-To view changes to a file, right-click the filename and select **Compare with merge request base**.
+On the left **Explorer** sidebar, any new or modified file is indicated
+by the merge request icon (**{merge-request}**) next to the file name.
+To view changes to a file, right-click the file and select **Compare with merge request base**.
 
-## Open a file in the Web IDE
+## Open a file
 
-To open any file by its name:
+To open a file by name in the Web IDE:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
-1. Enter the name of your file.
+1. In the search box, enter the file name.
 
-## Search across files
+## Search open files
 
-You can use the Web IDE to search all files in the opened folder.
-
-To search across files:
+To search across open files in the Web IDE:
 
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>F</kbd>.
-1. Enter your search term.
+1. In the search box, enter your search term.
 
-In the Web IDE, only partial results from opened files are displayed.
+## View a list of modified files
 
-## View a list of changed files
+To view a list of files you modified in the Web IDE:
 
-To view a list of files you changed in the Web IDE:
-
-- On the activity bar on the left, select **Source Control**,
-  or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+- On the left activity bar, select **Source Control**, or
+  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
 
 ## Restore uncommitted changes
 
-You don't have to manually save any file you modify in the Web IDE.
+You do not have to manually save any file you modify in the Web IDE.
 Modified files are automatically staged and can be [committed](#commit-changes).
 Uncommitted changes are saved in your browser's local storage and persist
 even if you close the browser tab or refresh the Web IDE.
@@ -93,68 +87,67 @@ To restore uncommitted changes in the Web IDE:
 1. In the search box, enter `Local History: Find Entry to Restore`.
 1. Select the file that contains the uncommitted changes.
 
-## Upload a new file
+## Upload a file
 
-To upload a new file in the Web IDE:
+To upload a file in the Web IDE:
 
-1. On the activity bar on the left, select **Explorer** and go to the directory where you want to upload the file.
-1. Optional. For a new directory, go to the path where you want to have the directory and do one of the following:
-   - Right-click the path, and select **New Folder...**. You can create a nested path with `/` (for example, `parentdir/subdir1/subdir2`).
-   - In the upper right of the **Explorer** panel, select **New Folder...** (**{folder-new}**).
-1. Enter the name of the new directory, and press <kbd>Enter</kbd>.
-1. Right-click the path, and select **Upload...**.
-1. Select the file you want to upload, then select **Open**. You can upload multiple files at once.
+1. On the left activity bar, select **Explorer**, or
+   press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
+1. Go to the directory where you want to upload the file.
+   To create a new directory:
 
-The new file is uploaded and automatically added to the repository.
+   - On the left **Explorer** sidebar, in the upper right,
+   select **New Folder** (**{folder-new}**).
+
+1. Right-click the directory and select **Upload**.
+1. Select the file you want to upload.
+
+You can upload multiple files at once.
+The files are uploaded and automatically added to the repository.
 
 ## Switch branches
 
-The Web IDE uses the currently selected branch by default.
+The Web IDE uses the current branch by default.
 To switch branches in the Web IDE:
 
-1. On the status bar, in the lower-left corner, select the current branch name.
-1. In the search box, start typing the branch name.
-1. From the dropdown list, select the branch.
+1. On the bottom status bar, on the left, select the current branch name.
+1. Enter or select an existing branch.
 
 ## Create a branch
 
 To create a branch from the current branch in the Web IDE:
 
-1. On the status bar, in the lower-left corner, select the current branch name.
-1. From the dropdown list, select **Create new branch...**.
-1. Enter the branch name.
-1. Press <kbd>Enter</kbd>.
+1. On the bottom status bar, on the left, select the current branch name.
+1. From the dropdown list, select **Create new branch**.
+1. Enter the new branch name.
 
-If you don't have write access to the repository, **Create new branch...** is not visible.
+If you do not have write access to the repository, **Create new branch** is not visible.
 
 ## Commit changes
 
 To commit changes in the Web IDE:
 
-1. On the activity bar on the left, select **Source Control**,
-   or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. On the left activity bar, select **Source Control**, or
+   press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
-1. Select **Commit & Push**.
-1. Commit to the current branch, or [create a new branch](#create-a-branch).
+1. Commit to the current branch or [create a new branch](#create-a-branch).
 
 ## Create a merge request
 
-To create a merge request in the Web IDE:
+To create a [merge request](../merge_requests/index.md) in the Web IDE:
 
 1. [Commit the changes](#commit-changes).
-1. In the pop-up notification in the lower-right corner, select **Create Merge Request**.
-   A new window opens for you to create the [merge request](../merge_requests/index.md).
+1. In the notification that appears in the lower right, select **Create MR**.
 
-To access missed notifications, see [Access notifications](#access-notifications).
+For more information, see [View missed notifications](#view-missed-notifications).
 
 ## Use the command palette
 
-In the Web IDE, you can access many commands through the command palette.
+You can use the command palette to access many commands.
 To open the command palette and run a command in the Web IDE:
 
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
-1. In the search box, start typing the command name.
-1. From the dropdown list, select the command.
+1. Enter or select the command.
 
 ## Edit settings
 
@@ -168,7 +161,8 @@ In the settings editor, you can search for the settings you want to modify.
 
 ## Edit keyboard shortcuts
 
-You can use the keyboard shortcuts editor to view and modify the default keybindings for all available commands.
+You can use the keyboard shortcuts editor to view and modify
+the default keybindings for all available commands.
 To open the keyboard shortcuts editor in the Web IDE:
 
 - On the top menu bar, select **File > Preferences > Keyboard Shortcuts**,
@@ -179,13 +173,15 @@ In the keyboard shortcuts editor, you can search for:
 - The keybindings you want to change
 - The commands you want to add or remove keybindings for
 
-Keybindings are based on your keyboard layout. If you change your keyboard layout, existing keybindings are updated automatically.
+Keybindings are based on your keyboard layout.
+If you change your keyboard layout, existing keybindings are updated automatically.
 
-## Change themes
+## Change the color theme
 
-You can choose between different themes for the Web IDE. The default theme for the Web IDE is **GitLab Dark**.
+You can choose between different color themes for the Web IDE.
+The default theme is **GitLab Dark**.
 
-To change the Web IDE theme:
+To change the color theme in the Web IDE:
 
 1. On the top menu bar, select **File > Preferences > Theme > Color Theme**,
    or press <kbd>Command</kbd>+<kbd>K</kbd> then <kbd>Command</kbd>+<kbd>T</kbd>.
@@ -194,12 +190,13 @@ To change the Web IDE theme:
 
 The active color theme is stored in the [user settings](#edit-settings).
 
-## Access notifications
+## View missed notifications
 
-When you perform actions in the Web IDE, notifications appear in the lower-right corner. To access missed notifications:
+When you perform actions in the Web IDE, notifications appear in the lower right.
+To view any notification you might have missed:
 
-1. On the status bar, in the lower-right corner, select the bell (**{notifications}**) for a list of notifications.
-1. Select the notification you want to access.
+1. On the bottom status bar, on the right, select the bell icon (**{notifications}**) for a list of notifications.
+1. Select the notification you want to view.
 
 <!-- ## Privacy and data collection for extensions
 
@@ -215,7 +212,7 @@ To protect your privacy and data:
 - Carefully review the permissions requested by an extension before you install the extension.
 - Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly. -->
 
-## Interactive web terminals for the Web IDE **(BETA)**
+## Interactive web terminals **(BETA)**
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
@@ -228,21 +225,25 @@ When you set up a remote development server in the Web IDE, you can use interact
 You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
-For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
+For more information, see [Remote development](../remote_development/index.md).
 
 ## Related topics
 
-- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#web-ide)
+- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 
 When working with the Web IDE, you might encounter the following issues.
 
-### Character offset in the Web IDE
+### Character offset when typing
 
-When you type in the Web IDE, you might get a four-character offset. To resolve the issue, do one of the following:
+When you type in the Web IDE, you might get a four-character offset.
+As a workaround:
 
-- Add `"editor.disableMonospaceOptimizations": true` to your settings.
-- Modify your `"editor.font"` setting.
+1. On the top menu bar, select **File > Preferences > Settings**,
+   or press <kbd>Command</kbd>+<kbd>,</kbd>.
+1. In the upper-right corner, select **Open Settings (JSON)**.
+1. In the `settings.json` file, add `"editor.disableMonospaceOptimizations": true`
+   or modify the `"editor.fontFamily"` setting.
 
 For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).

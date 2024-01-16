@@ -67,12 +67,12 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
       end
 
       it 'does not have N+1 problem' do
-        control_count = ActiveRecord::QueryRecorder.new { subject }
+        control = ActiveRecord::QueryRecorder.new { subject }
 
         create_list(:operations_feature_flag, 3, project: project)
 
         expect { get api("/projects/#{project.id}/feature_flags", user) }
-          .not_to exceed_query_limit(control_count)
+          .not_to exceed_query_limit(control)
       end
 
       it_behaves_like 'check user permission'

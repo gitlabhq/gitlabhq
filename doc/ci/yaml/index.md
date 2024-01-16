@@ -303,7 +303,9 @@ include:
   A `not found or access denied` error may be displayed if the user does not have access to any of the included files.
 - Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger when CI/CD configuration files change.
   From a security perspective, this is similar to pulling a third-party dependency. For the `ref`, consider:
-  - Using a specific SHA hash, which should be the most stable option.
+  - Using a specific SHA hash, which should be the most stable option. Use the
+    full 40-character SHA hash to ensure the desired commit is referenced, because
+    using a short SHA hash for the `ref` might be ambiguous.
   - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
   the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
@@ -479,6 +481,46 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 
 - [`workflow: rules` examples](workflow.md#workflow-rules-examples)
 - [Switch between branch pipelines and merge request pipelines](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+
+#### `workflow:auto_cancel:on_new_commit`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or
+for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
+the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
+
+**Possible inputs**:
+
+- `conservative`: Cancel the pipeline, but only if no jobs with `interruptible: false` have started yet. Default when not defined.
+- `interruptible`: Cancel only jobs with `interruptible: true`.
+- `none`: Do not auto-cancel any jobs.
+
+**Example of `workflow:auto_cancel:on_new_commit`**:
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
+job1:
+  interruptible: true
+  script: sleep 60
+
+job2:
+  interruptible: false  # Default when not defined.
+  script: sleep 60
+```
+
+In this example:
+
+- When a new commit is pushed to a branch, GitLab creates a new pipeline and `job1` and `job2` start.
+- If a new commit is pushed to the branch before the jobs complete, only `job1` is canceled.
 
 #### `workflow:name`
 
@@ -657,6 +699,52 @@ When the branch is something else:
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
     exact variables you want to forward to the downstream pipeline.
 
+#### `workflow:rules:auto_cancel`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or
+for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `workflow:rules:auto_cancel` to configure the behavior of
+the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
+
+**Possible inputs**:
+
+- `on_new_commit`: [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
+
+**Example of `workflow:rules:auto_cancel`**:
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == 'true'
+      auto_cancel:
+        on_new_commit: none
+    - when: always                  # Run the pipeline in other cases
+
+test-job1:
+  script: sleep 10
+  interruptible: false
+
+test-job2:
+  script: sleep 10
+  interruptible: true
+```
+
+In this example, [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
+is set to `interruptible` for all jobs by default. But if a pipeline runs for a protected branch,
+the rule overrides the default with `on_new_commit: none`. For example, if a pipeline
+is running for:
+
+- A non-protected branch and a new commit is pushed, `test-job1` continues to run and `test-job2` is canceled.
+- A protected branch and a new commit is pushed, both `test-job1` and `test-job2` continue to run.
+
 ## Header keywords
 
 Some keywords must be defined in a header section of a YAML configuration file.
@@ -719,12 +807,12 @@ scan-website:
 
 Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
 
-Use `default: null` to have no default value.
+Use `default: ''` to have no default value.
 
 **Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: A string representing the default value, or `null`.
+**Possible inputs**: A string representing the default value, or `''`.
 
 **Example of `spec:inputs:default`**:
 
@@ -735,7 +823,7 @@ spec:
     user:
       default: 'test-user'
     flags:
-      default: null
+      default: ''
 ---
 
 # The pipeline configuration would follow...
@@ -887,7 +975,8 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-Use `after_script` to define an array of commands that run after each job, including failed jobs.
+Use `after_script` to define an array of commands that run after a job's `script` section, including failed jobs with failure type of `script_failure`.
+`after_script` commands do not run after [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1076,6 +1165,8 @@ link outside it.
   - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
     [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
   - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `artifacts:paths`**:
 
@@ -1272,15 +1363,7 @@ job:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Rolled out and removed a feature flag named `non_public_artifacts`
-
-WARNING:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `non_public_artifacts`. On
-GitLab.com, this feature is not available. Due to [issue 413822](https://gitlab.com/gitlab-org/gitlab/-/issues/413822),
-the keyword can be used when the feature flag is disabled, but the feature does not work.
-Do not attempt to use this feature when the feature flag is disabled, and always test
-with non-production data first.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Feature flag `non_public_artifacts` removed.
 
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
@@ -1593,7 +1676,7 @@ use the new cache, instead of rebuilding the dependencies.
 **Additional details**:
 
 - The cache `key` is a SHA computed from the most recent commits
-that changed each listed file.
+  that changed each listed file.
   If neither file is changed in any commits, the fallback key is `default`.
 
 ##### `cache:key:prefix`
@@ -1909,8 +1992,8 @@ to select a specific site profile and scanner profile.
 
 **Related topics**:
 
-- [Site profile](../../user/application_security/dast/proxy-based.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/proxy-based.md#scanner-profile).
+- [Site profile](../../user/application_security/dast/on-demand_scan.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/on-demand_scan.md#scanner-profile).
 
 ### `dependencies`
 
@@ -2468,7 +2551,8 @@ image:
 
 #### `image:docker`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+> - `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907) in GitLab 16.8.
 
 Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
 
@@ -2481,6 +2565,7 @@ A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
     the default is the same platform as the host runner.
+- `user`: Specify the username or UID to use when running the container.
 
 **Example of `image:docker`**:
 
@@ -2491,11 +2576,13 @@ arm-sql-job:
     name: super/sql:experimental
     docker:
       platform: arm64/v8
+      user: dave
 ```
 
 **Additional details**:
 
 - `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+- `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
 
 #### `image:pull_policy`
 
@@ -2620,7 +2707,8 @@ job2:
 
 ### `interruptible`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
+> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
@@ -2685,6 +2773,12 @@ In this example, a new pipeline causes a running pipeline to be:
   a pipeline to allow users to manually prevent a pipeline from being automatically
   cancelled. After a user starts the job, the pipeline cannot be canceled by the
   **Auto-cancel redundant pipelines** feature.
+- When using `interruptible` with a [trigger job](#trigger):
+  - The triggered downstream pipeline is never affected by the trigger job's `interruptible` configuration.
+  - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `conservative`,
+    the trigger job's `interruptible` configuration has no effect.
+  - If [`workflow:auto_cancel`](#workflowauto_cancelon_new_commit) is set to `interruptible`,
+    a trigger job with `interruptible: true` can be automatically cancelled.
 
 ### `needs`
 
@@ -4203,6 +4297,34 @@ job:
       vault: production/db/password@ops  # Translates to secret: `ops/data/production/db`, field: `password`
 ```
 
+#### `secrets:gcp_secret_manager`
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab 16.8 and GitLab Runner 16.8.
+
+Use `secrets:gcp_secret_manager` to specify secrets provided by [GCP Secret Manager](https://cloud.google.com/security/products/secret-manager).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `name`: Name of the secret.
+- `version`: Version of the secret.
+
+**Example of `secrets:gcp_secret_manager`**:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      gcp_secret_manager:
+        name: 'test'
+        version: 2
+```
+
+**Related topics**:
+
+- [Use GCP Secret Manager secrets in GitLab CI/CD](../secrets/gcp_secret_manager.md).
+
 #### `secrets:azure_key_vault`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.
@@ -4350,7 +4472,8 @@ In this example, GitLab launches two containers for the job:
 
 #### `services:docker`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
+> - `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907) in GitLab 16.8.
 
 Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
 
@@ -4363,6 +4486,7 @@ A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
     the default is the same platform as the host runner.
+- `user`: Specify the username or UID to use when running the container.
 
 **Example of `services:docker`**:
 
@@ -4374,11 +4498,13 @@ arm-sql-job:
     - name: super/sql:experimental
       docker:
         platform: arm64/v8
+        user: dave
 ```
 
 **Additional details**:
 
 - `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
+- `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
 
 #### `services:pull_policy`
 

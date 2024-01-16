@@ -21,7 +21,8 @@ RSpec.describe Gitlab::ImportExport::ImportFailureService, feature_category: :im
         relation_key: relation_key,
         relation_index: relation_index,
         exception: exception,
-        retry_count: retry_count)
+        retry_count: retry_count,
+        external_identifiers: { iid: 1234 })
     end
 
     before do

@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3758
 rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1187
 milestone: '14.3'
 type: undefined
-group: 'team::Scalability'
+group: group::scalability
 default_enabled: false

@@ -54,7 +54,7 @@ support the following features:
 - [Scan projects](index.md#supported-languages-and-frameworks)
 - [Multi-project support](index.md#multi-project-support)
 - [Offline support](index.md#running-sast-in-an-offline-environment)
-- [Emits JSON report format](index.md#reports-json-format)
+- [Output results in JSON report format](index.md#output)
 - [SELinux support](index.md#running-sast-in-selinux)
 
 ## Post analyzers

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', feature_category: :fleet_visibility do
+RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', :freeze_time, feature_category: :fleet_visibility do
   subject(:execute) { described_class.new(runner, 'some_token', system_id: system_id).execute }
 
   context 'with runner registered with registration token' do
@@ -21,7 +21,7 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', featur
   context 'with runner created in UI' do
     let!(:runner_manager1) { create(:ci_runner_machine, runner: runner, system_xid: 'system_id_1') }
     let!(:runner_manager2) { create(:ci_runner_machine, runner: runner, system_xid: 'system_id_2') }
-    let!(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+    let!(:runner) { create(:ci_runner, registration_type: :authenticated_user, contacted_at: Time.current) }
 
     context 'with system_id specified' do
       let(:system_id) { runner_manager1.system_xid }
@@ -33,6 +33,24 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', featur
            .and not_change { Ci::Runner.count }
         expect(runner[:errors]).to be_nil
         expect(runner.runner_managers).to contain_exactly(runner_manager2)
+      end
+
+      it 'does not clear runner heartbeat' do
+        expect(runner).not_to receive(:clear_heartbeat)
+
+        expect(execute).to be_success
+      end
+
+      context "when there are no runner managers left after deletion" do
+        let!(:runner_manager2) { nil }
+
+        it 'clears the heartbeat attributes' do
+          expect(runner).to receive(:clear_heartbeat).and_call_original
+
+          expect do
+            expect(execute).to be_success
+          end.to change { runner.reload.read_attribute(:contacted_at) }.from(Time.current).to(nil)
+        end
       end
     end
 

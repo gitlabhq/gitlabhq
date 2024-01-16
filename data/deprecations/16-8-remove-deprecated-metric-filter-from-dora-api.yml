@@ -1,0 +1,9 @@
+- title: "`metric` filter and `value` field for DORA API"
+  announcement_milestone: "16.8"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: hsnir1  # (required) GitLab username of the person reporting the deprecation
+  stage: plan  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393172  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Multiple DORA metrics can now be queried simultaneously using a new metrics field. The `metric` filter and `value` field for Graphql DORA API will be removed in GitLab 17.0.

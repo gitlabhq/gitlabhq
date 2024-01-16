@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
-      expect(subject::ADMIN_SCOPES).to match_array %i[sudo admin_mode]
+      expect(subject::ADMIN_SCOPES).to match_array %i[sudo admin_mode read_service_ping]
     end
 
     it 'REPOSITORY_SCOPES contains all scopes for REPOSITORY access' do
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it 'contains all non-default scopes' do
-      expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode read_observability write_observability create_runner k8s_proxy ai_features]
+      expect(subject.all_available_scopes).to match_array %i[api read_user read_api read_repository read_service_ping write_repository read_registry write_registry sudo admin_mode read_observability write_observability create_runner k8s_proxy ai_features]
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access and without observability scopes' do
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes' do
       user = build_stubbed(:user, admin: true)
 
-      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy ai_features]
+      expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository read_service_ping write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy ai_features]
     end
 
     it 'contains for project all resource bot scopes' do
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it 'optional_scopes contains all non-default scopes' do
-      expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode openid profile email read_observability write_observability create_runner k8s_proxy ai_features]
+      expect(subject.optional_scopes).to match_array %i[read_user read_api read_repository write_repository read_registry read_service_ping write_registry sudo admin_mode openid profile email read_observability write_observability create_runner k8s_proxy ai_features]
     end
 
     context 'with observability_tracing feature flag' do
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it 'contains for admin user all non-default scopes with ADMIN access and without observability scopes' do
           user = build_stubbed(:user, admin: true)
 
-          expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry sudo admin_mode create_runner k8s_proxy ai_features]
+          expect(subject.available_scopes_for(user)).to match_array %i[api read_user read_api read_repository write_repository read_registry write_registry read_service_ping sudo admin_mode create_runner k8s_proxy ai_features]
         end
 
         it 'contains for project all resource bot scopes including observability scopes' do

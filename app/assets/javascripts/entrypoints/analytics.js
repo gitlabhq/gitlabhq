@@ -13,6 +13,10 @@ if (appId && host) {
       performanceTiming: false,
       errorTracking: false,
     },
+    pagePingTracking: {
+      minimumVisitLength: 10,
+      heartbeatDelay: 10,
+    },
   });
 
   const userId = window.gl?.snowplowStandardContext?.data?.user_id;

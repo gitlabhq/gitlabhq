@@ -67,32 +67,37 @@ The devfile is used to automatically configure the development environment with 
 This way, you can create consistent and reproducible development environments
 regardless of the machine or platform you use.
 
-### Relevant schema properties
+### Validation rules
 
-GitLab only supports the `container` and `volume` components in [devfile 2.2.0](https://devfile.io/docs/2.2.0/devfile-schema).
-Use the `container` component to define a container image as the execution environment for a devfile workspace.
+- `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
+- The devfile must have at least one component.
+- For `components`:
+  - Names must not start with `gl-`.
+  - Only [`container`](#container-component-type) and `volume` are supported.
+- For `commands`, IDs must not start with `gl-`.
+- For `events`:
+  - Names must not start with `gl-`.
+  - Only `preStart` is supported.
+- `parent`, `projects`, and `starterProjects` are not supported.
+- For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
+
+### `container` component type
+
+Use the `container` component type to define a container image as the execution environment for a workspace.
 You can specify the base image, dependencies, and other settings.
 
-Only these properties are relevant to the GitLab implementation of the `container` component:
+The `container` component type supports the following schema properties only:
 
-| Properties     | Definition                                                                        |
-|----------------| ----------------------------------------------------------------------------------|
-| `image`        | Name of the container image to use for the workspace.                             |
-| `memoryRequest`| Minimum amount of memory the container can use.                                   |
-| `memoryLimit`  | Maximum amount of memory the container can use.                                   |
-| `cpuRequest`   | Minimum amount of CPU the container can use.                                      |
-| `cpuLimit`     | Maximum amount of CPU the container can use.                                      |
-| `env`          | Environment variables to use in the container.                                    |
-| `endpoints`    | Port mappings to expose from the container.                                       |
-| `volumeMounts` | Storage volume to mount in the container.                                         |
-
-### Using variables in a devfile
-
-You can define variables to use in your devfile.
-The `variables` object is a map of name-value pairs that you can use for string replacement in the devfile.
-
-Variables cannot have names that start with `gl-`, `gl_`, `GL-`, or `GL_`.
-For more information about how and where to use variables, see the [devfile documentation](https://devfile.io/docs/2.2.0/defining-variables).
+| Property       | Description                                                                                                                    |
+|----------------| -------------------------------------------------------------------------------------------------------------------------------|
+| `image`        | Name of the container image to use for the workspace.                                                                          |
+| `memoryRequest`| Minimum amount of memory the container can use.                                                                                |
+| `memoryLimit`  | Maximum amount of memory the container can use.                                                                                |
+| `cpuRequest`   | Minimum amount of CPU the container can use.                                                                                   |
+| `cpuLimit`     | Maximum amount of CPU the container can use.                                                                                   |
+| `env`          | Environment variables to use in the container. Names must not start with `gl-`.                                                |
+| `endpoints`    | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
+| `volumeMounts` | Storage volume to mount in the container.                                                                                      |
 
 ### Example configurations
 

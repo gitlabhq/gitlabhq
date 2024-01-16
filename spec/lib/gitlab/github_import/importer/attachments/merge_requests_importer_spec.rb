@@ -10,35 +10,65 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporte
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   describe '#sequential_import', :clean_gitlab_redis_cache do
-    let_it_be(:merge_request_1) { create(:merge_request, source_project: project, target_branch: 'feature1') }
-    let_it_be(:merge_request_2) { create(:merge_request, source_project: project, target_branch: 'feature2') }
+    let_it_be(:mr) { create(:merge_request, source_project: project, target_branch: 'feature1') }
 
-    let(:importer_stub) { instance_double('Gitlab::GithubImport::Importer::NoteAttachmentsImporter') }
-    let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
+    let_it_be(:mr_with_attachment) do
+      create(:merge_request,
+        source_project: project,
+        target_branch: 'feature2',
+        description: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+      )
+    end
 
-    it 'imports each project merge request attachments' do
-      expect(project.merge_requests).to receive(:id_not_in).with([]).and_return(project.merge_requests)
-      expect(project.merge_requests).to receive(:select).with(:id, :description, :iid).and_call_original
+    it 'selects both merge requests, and selects only properties it needs' do
+      stubbed_collection = class_double(MergeRequest, each_batch: [])
 
-      expect_next_instances_of(
-        Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2, false, *importer_attrs
-      ) do |note_attachments_importer|
-        expect(note_attachments_importer).to receive(:execute)
+      expect(project.merge_requests).to receive(:id_not_in).with([]).and_return(stubbed_collection)
+      expect(stubbed_collection).to receive(:select).with(:id, :description, :iid).and_return(stubbed_collection)
+
+      importer.sequential_import
+    end
+
+    it 'executes importer only for the merge request with an attachment' do
+      expect_next_instance_of(
+        Gitlab::GithubImport::Importer::NoteAttachmentsImporter,
+        have_attributes(record_db_id: mr_with_attachment.id),
+        project,
+        client
+      ) do |importer|
+        expect(importer).to receive(:execute)
       end
 
       importer.sequential_import
     end
 
-    context 'when merge request is already processed' do
-      it "doesn't import this merge request attachments" do
-        importer.mark_as_imported(merge_request_1)
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(github_importer_attachments: false)
+      end
 
-        expect(project.merge_requests).to receive(:id_not_in).with([merge_request_1.id.to_s]).and_call_original
-        expect_next_instance_of(
-          Gitlab::GithubImport::Importer::NoteAttachmentsImporter, *importer_attrs
-        ) do |note_attachments_importer|
-          expect(note_attachments_importer).to receive(:execute)
+      it 'executes importer for both merge requests' do
+        expect_next_instances_of(Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2) do |importer|
+          expect(importer).to receive(:execute)
         end
+
+        importer.sequential_import
+      end
+    end
+
+    context 'when merge request has already been processed' do
+      before do
+        importer.mark_as_imported(mr_with_attachment)
+      end
+
+      it 'does not select merge requests that were processed' do
+        expect(project.merge_requests).to receive(:id_not_in).with([mr_with_attachment.id.to_s]).and_call_original
+
+        importer.sequential_import
+      end
+
+      it 'does not execute importer for the merge request with an attachment' do
+        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new)
 
         importer.sequential_import
       end

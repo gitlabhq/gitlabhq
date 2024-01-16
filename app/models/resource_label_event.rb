@@ -45,7 +45,7 @@ class ResourceLabelEvent < ResourceEvent
   end
 
   def group
-    issuable.group if issuable.respond_to?(:group)
+    issuable.resource_parent if issuable.resource_parent.is_a?(Group)
   end
 
   def outdated_markdown?
@@ -93,7 +93,9 @@ class ResourceLabelEvent < ResourceEvent
   end
 
   def label_url_method
-    issuable.is_a?(MergeRequest) ? :project_merge_requests_url : :project_issues_url
+    return :project_merge_requests_url if issuable.is_a?(MergeRequest)
+
+    issuable.project_id.nil? ? :group_work_items_url : :project_issues_url
   end
 
   def broadcast_notes_changed

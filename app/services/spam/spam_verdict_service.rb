@@ -70,7 +70,8 @@ module Spam
         result = spamcheck_client.spam?(spammable: target, user: user, context: context, extra_features: extra_features)
 
         if result.evaluated?
-          Abuse::TrustScore.create!(user: user, score: result.score, source: :spamcheck)
+          correlation_id = Labkit::Correlation::CorrelationId.current_id || ''
+          Abuse::TrustScoreWorker.perform_async(user.id, :spamcheck, result.score, correlation_id)
         end
 
         result.verdict

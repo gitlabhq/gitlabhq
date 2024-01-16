@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting Jira issue integration **(FREE ALL)**
 
-This page contains a list of common issues you might encounter when working with the [Jira issue integration](configure.md).
+When working with the [Jira issue integration](configure.md), you might encounter the following issues.
 
 ## GitLab cannot link to a Jira issue
 
@@ -70,7 +70,7 @@ If GitLab cannot close a Jira issue:
 
 - Ensure the transition ID you set in the Jira settings matches the one
   your project must have to close an issue. For more information, see
-  [automatic issue transitions](issues.md#automatic-issue-transitions) and [custom issue transitions](issues.md#custom-issue-transitions).
+  [Automatic issue transitions](issues.md#automatic-issue-transitions) and [Custom issue transitions](issues.md#custom-issue-transitions).
 - Make sure the Jira issue is not already marked as resolved:
   - Check the Jira issue resolution field is not set.
   - Check the issue is not struck through in Jira lists.
@@ -122,7 +122,7 @@ To resolve this issue, see
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-### Change all projects on the instance
+### Change all projects on an instance
 
 To change all Jira projects to use instance-level integration settings:
 
@@ -189,7 +189,7 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
   end
   ```
 
-## Update the Jira issue integration password for all projects
+## Update the integration password for all projects
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -212,7 +212,7 @@ When [viewing Jira issues](issues.md#view-jira-issues) in GitLab, you might enco
 ### `500 We're sorry` when accessing a Jira issue in GitLab
 
 When accessing a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
-Check [`production.log`](../../administration/logs/index.md#productionlog) to see if it contains the following exception:
+Check [`production.log`](../../administration/logs/index.md#productionlog) to see if the file contains the following exception:
 
 ```plaintext
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)

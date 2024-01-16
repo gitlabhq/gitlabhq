@@ -5,15 +5,18 @@ require 'spec_helper'
 RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'custom://test') }
-  let_it_be(:oauth_authorization_path) do
-    Gitlab::Routing.url_helpers.oauth_authorization_url(
+
+  let(:params) do
+    {
       client_id: application.uid,
       response_type: 'code',
       scope: application.scopes,
       redirect_uri: application.redirect_uri,
       state: SecureRandom.hex
-    )
+    }
   end
+
+  let(:oauth_authorization_path) { Gitlab::Routing.url_helpers.oauth_authorization_url(params) }
 
   before do
     sign_in(user)
@@ -74,6 +77,24 @@ RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access
 
           expect(response.headers['Content-Security-Policy']).not_to include('form-action')
         end
+      end
+    end
+
+    context 'when the user is not signed in' do
+      before do
+        sign_out(user)
+      end
+
+      it 'sets a lower session expiry and redirects to the sign in page' do
+        get oauth_authorization_path
+
+        expect(request.env['rack.session.options'][:expire_after]).to eq(
+          Settings.gitlab['unauthenticated_session_expire_delay']
+        )
+
+        expect(request.session['user_return_to']).to eq("/oauth/authorize?#{params.to_query}")
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

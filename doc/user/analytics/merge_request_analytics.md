@@ -46,8 +46,8 @@ To view the number of merge requests merged during a specific date range:
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
    1. To adjust the date range:
-       - In the **From** field, select a start date.
-       - In the **To** field, select an end date.
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
 
 The **Throughput** chart shows issues closed or merge requests merged (not closed) over a period of
 time.
@@ -75,4 +75,4 @@ To view **Mean time to merge**:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Merge request analytics**. The **Mean time to merge** number
-is displayed on the dashboard.
+   is displayed on the dashboard.

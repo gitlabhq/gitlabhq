@@ -74,7 +74,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :fleet_v
           status_status: 'active',
           type_type: :group_type,
           tag_name: ['active_runner'],
-          preload: false,
+          preload: {},
           search: 'abc',
           sort: 'contacted_asc',
           project: project

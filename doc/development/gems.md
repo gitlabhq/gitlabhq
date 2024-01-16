@@ -150,6 +150,25 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
    gem '<name-of-gem>', path: 'gems/<name-of-gem>'
    ```
 
+### Specifying dependencies for the Gem
+
+It is important to note that while the gem has its own `Gemfile`, in the
+actual application the top-level `Gemfile` for the monolith GitLab will be
+used instead of the individual `Gemfile` sitting in the directory of the gem.
+
+This means we should be aware that the `Gemfile` for the gem should not use
+any versions of dependencies which might be conflicting with the top-level
+`Gemfile`, and we should try to use the same dependencies if possible.
+
+An example of this is [Rack](https://rubygems.org/gems/rack). If the monolith
+is using Rack 2 and we're in the process of
+[upgrading to Rack 3](https://gitlab.com/gitlab-org/gitlab/-/issues/396273),
+all gems we develop should also be tested against Rack 2, optionally also with
+Rack 3 if a separate `Gemfile` is used in CI. See an
+[example here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140463).
+
+Note that this does not limit to just Rack, but any dependencies.
+
 ### Examples of Gem extractions
 
 The `gitlab-utils` is a Gem containing as of set of class that implement common intrinsic functions
@@ -254,12 +273,12 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
 1. Create a project in the [`gitlab-org/ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) (or in a subgroup of it):
     1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
     1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
-    1. Use the [gem-release CI component](https://gitlab.com/gitlab-org/quality/pipeline-common/-/tree/master/gem-release)
+    1. Use the [`gem-release` CI component](https://gitlab.com/gitlab-org/components/gem-release)
        to release and publish new gem versions by adding the following to their `.gitlab-ci.yml`:
 
        ```yaml
        include:
-         - component: gitlab.com/gitlab-org/quality/pipeline-common/gem-release@<REPLACE WITH LATEST TAG FROM https://gitlab.com/gitlab-org/quality/pipeline-common/-/releases>
+         - component: gitlab.com/gitlab-org/components/gem-release/gem-release@~latest
        ```
 
        This job will handle building and publishing the gem (it uses a `gitlab_rubygems` Rubygems.org

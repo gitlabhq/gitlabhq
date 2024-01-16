@@ -12,11 +12,9 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     let_it_be(:filename) { 'file_download_service_spec' }
     let_it_be(:tmpdir) { Dir.mktmpdir }
     let_it_be(:filepath) { File.join(tmpdir, filename) }
-    let_it_be(:content_length) { 1000 }
 
     let(:headers) do
       {
-        'content-length' => content_length,
         'content-type' => content_type,
         'content-disposition' => content_disposition
       }
@@ -102,48 +100,24 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       end
     end
 
-    context 'when content-length is not valid' do
-      context 'when content-length exceeds limit' do
+    context 'when file size is not valid' do
+      context 'when size exceeds limit' do
         let(:file_size_limit) { 1 }
 
         it 'raises an error' do
           expect { subject.execute }.to raise_error(
             described_class::ServiceError,
-            'File size 1000 B exceeds limit of 1 B'
-          )
-        end
-      end
-
-      context 'when content-length is missing' do
-        let(:content_length) { nil }
-
-        it 'raises an error' do
-          expect { subject.execute }.to raise_error(
-            described_class::ServiceError,
-            'Missing content-length header'
+            'File size 100 B exceeds limit of 1 B'
           )
         end
       end
     end
 
-    context 'when content-length is equals the file size limit' do
-      let(:content_length) { 150 }
-      let(:file_size_limit) { 150 }
+    context 'when size is equals the file size limit' do
+      let(:file_size_limit) { 100 }
 
       it 'does not raise an error' do
         expect { subject.execute }.not_to raise_error
-      end
-    end
-
-    context 'when partially downloaded file exceeds limit' do
-      let(:content_length) { 151 }
-      let(:file_size_limit) { 150 }
-
-      it 'raises an error' do
-        expect { subject.execute }.to raise_error(
-          described_class::ServiceError,
-          'File size 151 B exceeds limit of 150 B'
-        )
       end
     end
 
@@ -203,25 +177,23 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
       context 'on redirect chunk' do
         let(:chunk_code) { 303 }
 
-        it 'does not run content type & length validations' do
+        it 'does not run content type & validation' do
           expect(service).not_to receive(:validate_content_type)
-          expect(service).not_to receive(:validate_content_length)
 
           service.execute
         end
       end
 
       context 'when there is one data chunk' do
-        it 'validates content type & length' do
+        it 'validates content type' do
           expect(service).to receive(:validate_content_type)
-          expect(service).to receive(:validate_content_length)
 
           service.execute
         end
       end
 
       context 'when there are multiple data chunks' do
-        it 'validates content type & length only once' do
+        it 'validates content type only once' do
           data_chunk = double(
             'data chunk',
             size: 1000,
@@ -237,7 +209,6 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
           end
 
           expect(service).to receive(:validate_content_type).once
-          expect(service).to receive(:validate_content_length).once
 
           service.execute
         end

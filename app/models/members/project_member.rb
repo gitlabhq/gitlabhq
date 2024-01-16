@@ -72,10 +72,6 @@ class ProjectMember < Member
     source
   end
 
-  def notifiable_options
-    { project: project }
-  end
-
   def holder_of_the_personal_namespace?
     project.personal_namespace_holder?(user)
   end
@@ -116,32 +112,6 @@ class ProjectMember < Member
     self.member_namespace_id = project&.project_namespace_id
   end
 
-  def send_invite
-    run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }
-
-    super
-  end
-
-  def post_create_hook
-    # The creator of a personal project gets added as a `ProjectMember`
-    # with `OWNER` access during creation of a personal project,
-    # but we do not want to trigger notifications to the same person who created the personal project.
-    unless project.personal_namespace_holder?(user)
-      event_service.join_project(self.project, self.user)
-      run_after_commit_or_now { notification_service.new_project_member(self) }
-    end
-
-    super
-  end
-
-  def post_update_hook
-    if saved_change_to_access_level?
-      run_after_commit { notification_service.update_project_member(self) }
-    end
-
-    super
-  end
-
   def post_destroy_hook
     if expired?
       event_service.expired_leave_project(self.project, self.user)
@@ -151,20 +121,6 @@ class ProjectMember < Member
 
     super
   end
-
-  def after_accept_invite
-    run_after_commit_or_now do
-      notification_service.accept_project_invite(self)
-    end
-
-    super
-  end
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def event_service
-    EventCreateService.new
-  end
-  # rubocop: enable CodeReuse/ServiceClass
 end
 
 ProjectMember.prepend_mod_with('ProjectMember')

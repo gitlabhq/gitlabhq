@@ -50,9 +50,10 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
       let(:name) { existing_model.name }
       let(:project) { existing_model.project }
 
-      it 'raises an error', :aggregate_failures do
-        expect { create_model }.to raise_error(ActiveRecord::RecordInvalid)
+      it 'returns a model with errors', :aggregate_failures do
+        expect(create_model).not_to be_persisted
         expect(Gitlab::InternalEvents).not_to have_received(:track_event)
+        expect(create_model.errors.full_messages).to eq(["Name has already been taken"])
       end
     end
 

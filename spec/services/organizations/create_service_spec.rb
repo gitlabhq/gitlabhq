@@ -29,11 +29,13 @@ RSpec.describe Organizations::CreateService, feature_category: :cell do
       shared_examples 'creating an organization' do
         it 'creates the organization' do
           expect { response }.to change { Organizations::Organization.count }
+                                   .and change { Organizations::OrganizationUser.count }.by(1)
           expect(response).to be_success
           expect(created_organization.name).to eq(params[:name])
           expect(created_organization.path).to eq(params[:path])
           expect(created_organization.description).to eq(params[:description])
           expect(created_organization.avatar.filename).to eq(avatar_filename)
+          expect(created_organization.owner?(current_user)).to be(true)
         end
       end
 

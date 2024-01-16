@@ -116,7 +116,11 @@ export default {
         @pin-remove="onPinRemove(item.id, item.title)"
       />
     </draggable>
-    <li v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">
+    <li
+      v-else
+      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-empty-pinned-text"
+      style="margin-left: 2.5rem"
+    >
       {{ $options.i18n.emptyHint }}
     </li>
   </menu-section>

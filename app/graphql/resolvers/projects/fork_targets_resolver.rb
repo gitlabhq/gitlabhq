@@ -3,7 +3,7 @@
 module Resolvers
   module Projects
     class ForkTargetsResolver < BaseResolver
-      include ResolvesGroups
+      include LooksAhead
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
       type Types::NamespaceType.connection_type, null: true
@@ -17,10 +17,15 @@ module Resolvers
         required: false,
         description: 'Search query for path or name.'
 
+      def resolve_with_lookahead(**args)
+        fork_targets = ForkTargetsFinder.new(project, current_user).execute(args)
+        apply_lookahead(fork_targets)
+      end
+
       private
 
-      def resolve_groups(**args)
-        ForkTargetsFinder.new(project, current_user).execute(args)
+      def preloads
+        ResolvesGroups::PRELOADS
       end
     end
   end

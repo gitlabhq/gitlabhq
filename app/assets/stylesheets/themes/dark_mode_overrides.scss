@@ -1,7 +1,6 @@
 @import './themes/dark';
 @import '@gitlab/ui/dist/tokens/css/tokens.dark';
 @import 'page_bundles/mixins_and_variables_and_functions';
-@import './themes/theme_helper';
 
 :root {
   color-scheme: dark;

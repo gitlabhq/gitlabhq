@@ -182,7 +182,7 @@ For other regular expressions, here are a few guidelines:
 
 - If there's a clean non-regex solution, such as `String#start_with?`, consider using it
 - Ruby supports some advanced regex features like [atomic groups](https://www.regular-expressions.info/atomic.html)
-and [possessive quantifiers](https://www.regular-expressions.info/possessive.html) that eliminate backtracking
+  and [possessive quantifiers](https://www.regular-expressions.info/possessive.html) that eliminate backtracking
 - Avoid nested quantifiers if possible (for example `(a+)+`)
 - Try to be as precise as possible in your regex and avoid the `.` if there's an alternative
   - For example, Use `_[^_]+_` instead of `_.*_` to match `_text here_`

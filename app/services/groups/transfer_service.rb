@@ -236,7 +236,7 @@ module Groups
 
     def ensure_ownership
       return if @new_parent_group
-      return unless @group.owners.empty?
+      return unless @group.all_owner_members.empty?
 
       add_owner_on_transferred_group
     end

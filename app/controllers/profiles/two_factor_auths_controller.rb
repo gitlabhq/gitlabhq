@@ -207,15 +207,19 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def setup_show_page
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
-      two_factor_authentication_reason(
-        global: lambda do
+      two_factor_auth_actions = {
+        global: lambda do |_|
           flash.now[:alert] =
             _('The global settings require you to enable Two-Factor Authentication for your account.')
+        end,
+        admin_2fa: lambda do |_|
+          flash.now[:alert] = _('Administrator users are required to enable Two-Factor Authentication for their account.')
         end,
         group: lambda do |groups|
           flash.now[:alert] = groups_notification(groups)
         end
-      )
+      }
+      execute_action_for_2fa_reason(two_factor_auth_actions)
 
       unless two_factor_grace_period_expired?
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours

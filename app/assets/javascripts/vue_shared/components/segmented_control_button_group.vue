@@ -43,6 +43,7 @@ export default {
       :key="opt.value"
       :disabled="!!opt.disabled"
       :selected="value === opt.value"
+      v-bind="opt.props"
       @click="$emit('input', opt.value)"
     >
       <slot name="button-content" v-bind="opt">{{ opt.text }}</slot>

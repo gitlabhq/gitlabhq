@@ -174,7 +174,7 @@ the Git path:
 
 ### GraphicsMagick
 
-For the [Custom Favicon](../administration/appearance.md#favicon) to work, GraphicsMagick
+For the [Custom Favicon](../administration/appearance.md#customize-the-favicon) to work, GraphicsMagick
 must be installed.
 
 ```shell

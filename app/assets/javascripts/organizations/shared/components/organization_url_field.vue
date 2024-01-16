@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-input-group>
+  <gl-form-input-group class="gl-md-form-input-xl">
     <template #prepend>
       <gl-input-group-text class="organization-root-path">
         <gl-truncate :text="baseUrl" position="middle" />
@@ -50,7 +50,7 @@ export default {
       :id="id"
       :value="value"
       :placeholder="$options.i18n.pathPlaceholder"
-      class="gl-h-auto! gl-md-form-input-lg"
+      class="gl-h-auto!"
       @input="$emit('input', $event)"
       @blur="$emit('blur', $event)"
     />

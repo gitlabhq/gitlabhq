@@ -118,6 +118,7 @@ export default {
       const { data } = await this.$apollo.query({
         query: blameDataQuery,
         variables: {
+          ref: this.currentRef,
           fullPath: this.projectPath,
           filePath: this.blob.path,
           fromLine: chunk.startingFrom + 1,

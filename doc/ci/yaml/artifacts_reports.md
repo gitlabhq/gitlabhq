@@ -322,13 +322,13 @@ The `repository_xray` report collects information about your repository for use 
 
 > [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
-The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md). The collected SAST
-report uploads to GitLab as an artifact.
+The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md).
+The collected SAST report uploads to GitLab as an artifact.
 
-GitLab can display the results of one or more reports in:
+For more information, see:
 
-- The merge request [SAST widget](../../user/application_security/sast/index.md).
-- The [security dashboard](../../user/application_security/security_dashboard/index.md).
+- [View SAST results](../../user/application_security/sast/index.md#view-sast-results)
+- [SAST output](../../user/application_security/sast/index.md#output)
 
 ## `artifacts:reports:secret_detection`
 

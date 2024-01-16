@@ -224,7 +224,7 @@ the application might be fetching this secret from a different file. Your Gitaly
 If that setting is missing, GitLab defaults to using `.gitlab_shell_secret` under
 `/opt/gitlab/embedded/service/gitlab-rails/.gitlab_shell_secret`.
 
-### Repository pushes fail
+### Repository pushes fail with `401 Unauthorized` and `JWT::VerificationError`
 
 When attempting `git push`, you can see:
 
@@ -240,7 +240,7 @@ When attempting `git push`, you can see:
   }
   ```
 
-This error occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
+This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
 
 From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
 You should follow the [recommendations on upgrading external Gitaly](../../update/plan_your_upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab
@@ -440,6 +440,23 @@ To resolve this, remove the `noexec` option from the file system mount. An alter
 ### Commit signing fails with `invalid argument: signing key is encrypted` or `invalid data: tag byte does not have MSB set.`
 
 Because Gitaly commit signing is headless and not associated with a specific user, the GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
+
+### Gitaly logs show errors in `info` messages
+
+Because of a bug [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6201) in GitLab 16.3, additional entries were written to the
+[Gitaly logs](../logs/index.md#gitaly-logs). These log entries contained `"level":"info"` but the `msg` string appeared to contain an error.
+
+For example:
+
+```json
+{"level":"info","msg":"[core] [Server #3] grpc: Server.Serve failed to create ServerTransport: connection error: desc = \"ServerHandshake(\\\"x.x.x.x:x\\\") failed: wrapped server handshake: EOF\"","pid":6145,"system":"system","time":"2023-12-14T21:20:39.999Z"}
+```
+
+The reason for this log entry is that the underlying gRPC library sometimes output verbose transportation logs. These log entries appear to be errors but are, in general,
+safe to ignore.
+
+This bug was [fixed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6513/) in GitLab 16.4.5, 16.5.5, and 16.6.0, which prevents these types of messages from
+being written to the Gitaly logs.
 
 ## Troubleshoot Praefect (Gitaly Cluster)
 

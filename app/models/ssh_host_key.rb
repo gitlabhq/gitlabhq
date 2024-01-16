@@ -137,12 +137,13 @@ class SshHostKey
   end
 
   def normalize_url(url)
-    url, real_hostname = Gitlab::UrlBlocker.validate!(
+    url, real_hostname = Gitlab::HTTP_V2::UrlBlocker.validate!(
       url,
       schemes: %w[ssh],
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
-      dns_rebind_protection: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
+      dns_rebind_protection: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?,
+      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
     )
 
     # When DNS rebinding protection is required, the hostname is replaced by the

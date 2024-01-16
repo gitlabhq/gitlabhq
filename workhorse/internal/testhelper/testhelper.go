@@ -1,6 +1,7 @@
 package testhelper
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -8,8 +9,10 @@ import (
 	"net/http/httptest"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"runtime"
+	"syscall"
 	"testing"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -164,4 +167,75 @@ func SetupStaticFileHelper(t *testing.T, fpath, content, directory string) strin
 	require.NoError(t, os.WriteFile(staticFile, []byte(content), 0666), "write file content")
 
 	return absDocumentRoot
+}
+
+// TempDir is a wrapper around os.MkdirTemp that provides a cleanup function.
+func TempDir(tb testing.TB) string {
+	tmpDir, err := os.MkdirTemp("", "workhorse-tmp-*")
+	require.NoError(tb, err)
+	tb.Cleanup(func() {
+		require.NoError(tb, os.RemoveAll(tmpDir))
+	})
+
+	return tmpDir
+}
+
+// MustClose calls Close() on the Closer and fails the test in case it returns
+// an error. This function is useful when closing via `defer`, as a simple
+// `defer require.NoError(t, closer.Close())` would cause `closer.Close()` to
+// be executed early already.
+func MustClose(tb testing.TB, closer io.Closer) {
+	require.NoError(tb, closer.Close())
+}
+
+// WriteExecutable ensures that the parent directory exists, and writes an executable with provided
+// content. The executable must not exist previous to writing it. Returns the path of the written
+// executable.
+func WriteExecutable(tb testing.TB, path string, content []byte) string {
+	dir := filepath.Dir(path)
+	require.NoError(tb, os.MkdirAll(dir, 0o755))
+	tb.Cleanup(func() {
+		require.NoError(tb, os.RemoveAll(dir))
+	})
+
+	// Open the file descriptor and write the script into it. It may happen that any other
+	// Goroutine forks while we hold this writeable file descriptor, and as a consequence we
+	// leak it into the other process. Subsequently, even if we close the file descriptor
+	// ourselves this other process may still hold on to the writeable file descriptor. The
+	// result is that calls to execve(3P) on our just-written file will fail with ETXTBSY,
+	// which is raised when trying to execute a file which is still open to be written to.
+	//
+	// We thus need to perform file locking to ensure that all writeable references to this
+	// file have been closed before returning.
+	executable, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o700)
+	require.NoError(tb, err)
+	_, err = io.Copy(executable, bytes.NewReader(content))
+	require.NoError(tb, err)
+
+	// We now lock the file descriptor for exclusive access. If there was a forked process
+	// holding the writeable file descriptor at this point in time, then it would refer to the
+	// same file descriptor and thus be locked for exclusive access, as well. If we fork after
+	// creating the lock and before closing the writeable file descriptor, then the dup'd file
+	// descriptor would automatically inherit the lock.
+	//
+	// No matter what, after this step any file descriptors referring to this writeable file
+	// descriptor will be exclusively locked.
+	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_EX))
+
+	// We now close this file. The file will be automatically unlocked as soon as all
+	// references to this file descriptor are closed.
+	MustClose(tb, executable)
+
+	// We now open the file again, but this time only for reading.
+	executable, err = os.Open(path)
+	require.NoError(tb, err)
+
+	// And this time, we try to acquire a shared lock on this file. This call will block until
+	// the exclusive file lock on the above writeable file descriptor has been dropped. So as
+	// soon as we're able to acquire the lock we know that there cannot be any open writeable
+	// file descriptors for this file anymore, and thus we won't get ETXTBSY anymore.
+	require.NoError(tb, syscall.Flock(int(executable.Fd()), syscall.LOCK_SH))
+	MustClose(tb, executable)
+
+	return path
 }

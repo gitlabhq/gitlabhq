@@ -5,6 +5,7 @@ query getFluxHelmKustomizationStatusQuery(
   fluxKustomizationStatus(configuration: $configuration, fluxResourcePath: $fluxResourcePath)
     @client {
     message
+    reason
     status
     type
   }

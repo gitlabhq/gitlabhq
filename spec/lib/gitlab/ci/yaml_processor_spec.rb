@@ -516,6 +516,32 @@ module Gitlab
             })
           end
         end
+
+        context 'with rules and auto_cancel' do
+          let(:config) do
+            <<-YML
+              workflow:
+                rules:
+                  - if: $VAR == "value"
+                    auto_cancel:
+                      on_new_commit: none
+                      on_job_failure: none
+
+              hello:
+                script: echo world
+            YML
+          end
+
+          it 'parses workflow_rules' do
+            expect(subject.workflow_rules).to contain_exactly({
+              if: '$VAR == "value"',
+              auto_cancel: {
+                on_new_commit: 'none',
+                on_job_failure: 'none'
+              }
+            })
+          end
+        end
       end
 
       describe '#warnings' do
@@ -1295,10 +1321,12 @@ module Gitlab
                 name: ruby:2.7
                 docker:
                   platform: linux/amd64
+                  user: dave
               services:
                 - name: postgres:11.9
                   docker:
                     platform: linux/amd64
+                    user: john
             YAML
           end
 
@@ -1313,9 +1341,9 @@ module Gitlab
               options: {
                 script: ["exit 0"],
                 image: { name: "ruby:2.7",
-                         executor_opts: { docker: { platform: 'linux/amd64' } } },
+                         executor_opts: { docker: { platform: 'linux/amd64', user: 'dave' } } },
                 services: [{ name: "postgres:11.9",
-                             executor_opts: { docker: { platform: 'linux/amd64' } } }]
+                             executor_opts: { docker: { platform: 'linux/amd64', user: 'john' } } }]
               },
               allow_failure: false,
               when: "on_success",

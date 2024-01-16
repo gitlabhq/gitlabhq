@@ -338,26 +338,34 @@ To create an iOS distribution with the Apple Store integration and fastlane, you
 
 1. Generate an API Key for App Store Connect API. In the Apple App Store Connect portal,
    [generate a new private key for your project](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
-1. [Enable the Apple App Store integration](#enable-apple-app-store-integration).
+1. [Enable the Apple App Store Connect integration](#enable-the-apple-app-store-connect-integration).
 1. Add the release step to your pipeline and fastlane configuration.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Apple App Store integration demo](https://youtu.be/CwzAWVgJeK8).
+For an overview, see [Apple App Store Connect integration demo](https://youtu.be/CwzAWVgJeK8).
+<!-- Video published on 2023-03-17 -->
 
-#### Enable Apple App Store Integration
+#### Enable the Apple App Store Connect integration
 
-Use the [Apple App Store integration](../user/project/integrations/apple_app_store.md)
-to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/)
-to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS. To enable the integration:
+Prerequisites:
+
+- You must have an Apple ID enrolled in the [Apple Developer Program](https://developer.apple.com/programs/enroll/).
+- You must [generate a new private key](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api) for your project in the Apple App Store Connect portal.
+
+Use the Apple App Store Connect integration to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com).
+With this integration, you can build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
+
+To enable the Apple App Store Connect integration in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **Apple App Store**.
+1. Select **Apple App Store Connect**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Apple App Store Connect configuration information:
-   - **Issuer ID**: You can find the Apple App Store Connect Issuer ID in the **Keys** section under **Users and Access** in the Apple App Store Connect portal.
-   - **Key ID**: The key ID of the new private key that was just generated.
-   - **Private Key**: The private key that was just generated. You can only download this key one time.
+   - **Issuer ID**: The Apple App Store Connect issuer ID.
+   - **Key ID**: The key ID of the generated private key.
+   - **Private key**: The generated private key. You can download this key only once.
+   - **Protected branches and tags only**: Enable to set variables on protected branches and tags only.
 1. Select **Save changes**.
 
 With the integration enabled, you can use fastlane to distribute a build to TestFlight

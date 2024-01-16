@@ -79,9 +79,7 @@ class IssuableBaseService < ::BaseContainerService
     # confidential attribute is a special type of metadata and needs to be allowed to be set
     # by non-members on issues in public projects so that security issues can be reported as confidential.
     params.delete(:confidential) unless can?(current_user, :set_confidentiality, issuable)
-    params.delete(:add_contacts) unless can?(current_user, :set_issue_crm_contacts, issuable)
-    params.delete(:remove_contacts) unless can?(current_user, :set_issue_crm_contacts, issuable)
-
+    filter_contact_params(issuable)
     filter_assignees(issuable)
     filter_labels
     filter_severity(issuable)
@@ -118,9 +116,8 @@ class IssuableBaseService < ::BaseContainerService
     return false unless user
 
     ability_name = :"read_#{issuable.to_ability_name}"
-    resource     = issuable.persisted? ? issuable : project
 
-    can?(user, ability_name, resource)
+    can?(user, ability_name, issuable.resource_parent)
   end
 
   def filter_labels
@@ -643,6 +640,13 @@ class IssuableBaseService < ::BaseContainerService
 
   def filter_widget_params
     params.delete(:widget_params)
+  end
+
+  def filter_contact_params(issuable)
+    return if params.slice(:add_contacts, :remove_contacts).empty?
+    return if can?(current_user, :set_issue_crm_contacts, issuable)
+
+    params.extract!(:add_contacts, :remove_contacts)
   end
 end
 

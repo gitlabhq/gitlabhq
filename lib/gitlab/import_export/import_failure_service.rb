@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def with_retry(action:, relation_key: nil, relation_index: nil)
-        on_retry = -> (exception, retry_count, *_args) do
+        on_retry = ->(exception, retry_count, *_args) do
           log_import_failure(
             source: action,
             relation_key: relation_key,
@@ -27,7 +27,8 @@ module Gitlab
         end
       end
 
-      def log_import_failure(source:, relation_key: nil, relation_index: nil, exception:, retry_count: 0)
+      def log_import_failure(
+        source:, exception:, relation_key: nil, relation_index: nil, retry_count: 0, external_identifiers: {})
         attributes = {
           relation_index: relation_index,
           source: source,
@@ -45,7 +46,8 @@ module Gitlab
             exception_class: exception.class.to_s,
             exception_message: exception.message.truncate(255),
             correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
-            relation_key: relation_key
+            relation_key: relation_key,
+            external_identifiers: external_identifiers
           )
         )
       end

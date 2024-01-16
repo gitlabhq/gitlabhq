@@ -20,7 +20,7 @@ class Projects::GoogleCloud::GcpRegionsController < Projects::GoogleCloud::BaseC
 
   def create
     permitted_params = params.permit(:ref, :gcp_region)
-    GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
+    CloudSeed::GoogleCloud::GcpRegionAddOrReplaceService.new(project).execute(permitted_params[:ref], permitted_params[:gcp_region])
     track_event(:configure_region)
     redirect_to project_google_cloud_configuration_path(project), notice: _('GCP region configured')
   end

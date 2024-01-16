@@ -16,7 +16,8 @@ module Types
             description: 'Name of the component.',
             alpha: { milestone: '16.7' }
 
-          field :path, GraphQL::Types::String, null: true,
+          field :include_path, GraphQL::Types::String, null: true,
+            method: :path,
             description: 'Path used to include the component.',
             alpha: { milestone: '16.7' }
 

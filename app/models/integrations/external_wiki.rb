@@ -7,6 +7,7 @@ module Integrations
     field :external_wiki_url,
       section: SECTION_TYPE_CONNECTION,
       title: -> { s_('ExternalWikiService|External wiki URL') },
+      description: -> { s_('ExternalWikiService|URL of the external wiki.') },
       placeholder: -> { s_('ExternalWikiService|https://example.com/xxx/wiki/...') },
       help: -> { s_('ExternalWikiService|Enter the URL to the external wiki.') },
       required: true

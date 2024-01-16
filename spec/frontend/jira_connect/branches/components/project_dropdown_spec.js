@@ -8,13 +8,15 @@ import ProjectDropdown from '~/jira_connect/branches/components/project_dropdown
 import { PROJECTS_PER_PAGE } from '~/jira_connect/branches/constants';
 import getProjectsQuery from '~/jira_connect/branches/graphql/queries/get_projects.query.graphql';
 
-import { mockProjects } from '../mock_data';
+import { mockProjects, mockProjects2 } from '../mock_data';
 
 const mockProjectsQueryResponse = {
   data: {
     projects: {
+      __typename: 'ProjectsConnection',
       nodes: mockProjects,
       pageInfo: {
+        __typename: 'PageInfo',
         hasNextPage: false,
         hasPreviousPage: false,
         startCursor: '',
@@ -117,6 +119,80 @@ describe('ProjectDropdown', () => {
 
       it('selects the specified item', () => {
         expect(findDropdown().props('selected')).toBe(mockProject.id);
+      });
+    });
+  });
+
+  describe('when projects query succeeds and has pagination', () => {
+    const mockProjectsWithPaginationQueryResponse = {
+      data: {
+        projects: {
+          __typename: 'ProjectsConnection',
+          nodes: mockProjects2,
+          pageInfo: {
+            __typename: 'PageInfo',
+            hasNextPage: true,
+            hasPreviousPage: false,
+            startCursor: '',
+            endCursor: 'end123',
+          },
+        },
+      },
+    };
+    const mockGetProjectsQuery = jest.fn();
+
+    beforeEach(async () => {
+      mockGetProjectsQuery
+        .mockResolvedValueOnce(mockProjectsWithPaginationQueryResponse)
+        .mockResolvedValueOnce(mockProjectsQueryResponse);
+
+      createComponent({
+        mockApollo: createMockApolloProvider({
+          mockGetProjectsQuery,
+        }),
+      });
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      mockGetProjectsQuery.mockReset();
+    });
+
+    it('uses infinite-scroll', () => {
+      expect(findDropdown().props()).toMatchObject({
+        infiniteScroll: true,
+        infiniteScrollLoading: false,
+      });
+    });
+
+    describe('when "bottom-reached" event is emitted', () => {
+      beforeEach(() => {
+        findDropdown().vm.$emit('bottom-reached');
+      });
+
+      it('sets infinite-scroll-loading to true', () => {
+        expect(findDropdown().props('infiniteScrollLoading')).toBe(true);
+      });
+
+      it('calls fetchMore to get next page', () => {
+        expect(mockGetProjectsQuery).toHaveBeenCalledTimes(2);
+        expect(mockGetProjectsQuery).toHaveBeenCalledWith(
+          expect.objectContaining({
+            after: 'end123',
+          }),
+        );
+      });
+
+      it('appends query results to "items"', async () => {
+        const allProjects = [...mockProjects2, ...mockProjects];
+
+        await waitForPromises();
+
+        expect(findDropdown().props('infiniteScrollLoading')).toBe(false);
+
+        const dropdownItems = findDropdown().props('items');
+        expect(dropdownItems).toHaveLength(allProjects.length);
+        expect(dropdownItems).toMatchObject(allProjects);
       });
     });
   });

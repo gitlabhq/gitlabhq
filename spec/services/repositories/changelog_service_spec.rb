@@ -164,7 +164,7 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
 
       RequestStore.clear!
 
-      expect { request.call(sha3) }.not_to exceed_query_limit(control.count)
+      expect { request.call(sha3) }.not_to exceed_query_limit(control)
     end
 
     context 'when one of commits does not exist' do

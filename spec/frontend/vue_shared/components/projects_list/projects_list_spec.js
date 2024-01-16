@@ -9,6 +9,7 @@ describe('ProjectsList', () => {
 
   const defaultPropsData = {
     projects: convertObjectPropsToCamelCase(projects, { deep: true }),
+    listItemClass: 'gl-px-5',
   };
 
   const createComponent = () => {
@@ -24,12 +25,18 @@ describe('ProjectsList', () => {
     const expectedProps = projectsListItemWrappers.map((projectsListItemWrapper) =>
       projectsListItemWrapper.props(),
     );
+    const expectedClasses = projectsListItemWrappers.map((projectsListItemWrapper) =>
+      projectsListItemWrapper.classes(),
+    );
 
     expect(expectedProps).toEqual(
       defaultPropsData.projects.map((project) => ({
         project,
         showProjectIcon: false,
       })),
+    );
+    expect(expectedClasses).toEqual(
+      defaultPropsData.projects.map(() => [defaultPropsData.listItemClass]),
     );
   });
 

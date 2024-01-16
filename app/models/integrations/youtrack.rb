@@ -31,8 +31,8 @@ module Integrations
       'youtrack'
     end
 
-    def fields
-      super.select { _1.name.in?(%w[project_url issues_url]) }
+    def self.fields
+      super.select { %w[project_url issues_url].include?(_1.name) }
     end
   end
 end

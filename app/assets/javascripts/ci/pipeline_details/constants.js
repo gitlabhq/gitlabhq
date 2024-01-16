@@ -5,7 +5,7 @@ export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
 
-export const TestStatus = {
+export const testStatus = {
   FAILED: 'failed',
   SKIPPED: 'skipped',
   SUCCESS: 'success',

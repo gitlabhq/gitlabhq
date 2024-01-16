@@ -42,7 +42,12 @@ module Groups
 
     # rubocop: disable CodeReuse/Finder
     def groups_with_guest_access_plus
-      GroupsFinder.new(current_user, min_access_level: Gitlab::Access::GUEST).execute
+      groups = GroupsFinder.new(current_user, min_access_level: Gitlab::Access::GUEST).execute
+
+      # We move the result into a materialized CTE to improve query performance during text search.
+      union_query = ::Group.from_union([groups])
+      cte = Gitlab::SQL::CTE.new(:my_union_cte, union_query)
+      Group.with(cte.to_arel).from(cte.alias_to(Group.arel_table)) # rubocop: disable CodeReuse/ActiveRecord -- CTE use
     end
     # rubocop: enable CodeReuse/Finder
 

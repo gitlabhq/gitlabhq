@@ -15,7 +15,7 @@ For a scheduled pipeline to run:
 - The schedule owner must have the Developer role. For pipelines on protected branches,
   the schedule owner must be [allowed to merge](../../user/project/protected_branches.md#add-protection-to-existing-branches)
   to the branch.
-- The [CI/CD configuration](../yaml/index.md) must be valid.
+- The [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must have valid syntax.
 
 Otherwise, the pipeline is not created. No error message is displayed.
 

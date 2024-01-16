@@ -93,7 +93,11 @@ export default {
       this.loading = true;
 
       if (this.hasLicense) {
-        Promise.all([this.groups.length ? Promise.resolve({ data: this.groups }) : getSubGroups()])
+        Promise.all([
+          this.groups.length
+            ? Promise.resolve({ data: this.groups })
+            : getSubGroups({ includeParentDescendants: true }),
+        ])
           .then(([groupsResponse]) => {
             this.consolidateData(groupsResponse.data);
             this.setSelected({ initial });

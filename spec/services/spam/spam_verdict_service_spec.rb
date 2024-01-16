@@ -263,11 +263,10 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
       end
 
       context 'if the endpoint is accessible' do
-        let(:user_scores) { Abuse::UserTrustScore.new(user) }
-
         before do
           allow(service).to receive(:spamcheck_client).and_return(spam_client)
           allow(spam_client).to receive(:spam?).and_return(spam_client_result)
+          allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
         end
 
         context 'if the result is a NOOP verdict' do
@@ -275,8 +274,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
           let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::NOOP }
 
           it 'returns the verdict' do
+            expect(Abuse::TrustScoreWorker).not_to receive(:perform_async)
             is_expected.to eq(NOOP)
-            expect(user_scores.spam_score).to eq(0.0)
           end
         end
 
@@ -286,8 +285,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           context 'the result was evaluated' do
             it 'returns the verdict and updates the spam score' do
+              expect(Abuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
               is_expected.to eq(ALLOW)
-              expect(user_scores.spam_score).to be_within(0.000001).of(verdict_score)
             end
           end
 
@@ -295,8 +294,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
             let(:verdict_evaluated) { false }
 
             it 'returns the verdict and does not update the spam score' do
+              expect(Abuse::TrustScoreWorker).not_to receive(:perform_async)
               expect(subject).to eq(ALLOW)
-              expect(user_scores.spam_score).to eq(0.0)
             end
           end
         end
@@ -317,8 +316,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           with_them do
             it "returns expected spam constant and updates the spam score" do
+              expect(Abuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
               is_expected.to eq(expected)
-              expect(user_scores.spam_score).to be_within(0.000001).of(verdict_score)
             end
           end
         end

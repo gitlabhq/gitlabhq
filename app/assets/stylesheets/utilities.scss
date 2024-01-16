@@ -136,3 +136,13 @@
 .gl-last-of-type-border-b-0:last-of-type {
   @include gl-border-b-0;
 }
+
+.gl-md-h-9 {
+  @include gl-media-breakpoint-up(md) {
+    height: $gl-spacing-scale-9;
+  }
+}
+
+.gl-pl-12 {
+  padding-left: $gl-spacing-scale-12;
+}

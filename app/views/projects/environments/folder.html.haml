@@ -3,4 +3,4 @@
 - page_title _("Environments in %{name}") % { name: @folder }
 - add_page_specific_style 'page_bundles/environments'
 
-#environments-folder-list-view{ data: { environments_data: environments_folder_list_view_data, project_path: @project.full_path } }
+#environments-folder-list-view{ data: environments_folder_list_view_data(@project, @folder) }

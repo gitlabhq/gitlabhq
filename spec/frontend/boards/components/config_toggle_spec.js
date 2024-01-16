@@ -1,22 +1,15 @@
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
 import eventHub from '~/boards/eventhub';
-import store from '~/boards/stores';
 import { mockTracking } from 'helpers/tracking_helper';
 
 describe('ConfigToggle', () => {
   let wrapper;
 
-  Vue.use(Vuex);
-
   const createComponent = (provide = {}, props = {}) =>
     shallowMount(ConfigToggle, {
-      store,
       provide: {
         canAdminList: true,
         ...provide,

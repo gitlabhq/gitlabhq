@@ -38,7 +38,7 @@ module Gitlab
       def try_import(...)
         import(...)
         true
-      rescue RateLimitError
+      rescue RateLimitError, UserFinder::FailedToObtainLockError
         false
       end
 

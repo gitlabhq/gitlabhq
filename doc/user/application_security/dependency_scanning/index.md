@@ -69,11 +69,11 @@ WARNING:
 Dependency Scanning does not support runtime installation of compilers and interpreters.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+  For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
+  For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
+  For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Supported languages and package managers
 
@@ -277,7 +277,10 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
-      Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
+      <ul>
+        <li>Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.</li>
+        <li>Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated in GitLab 16.8</a>.</li>
+      </ul>
     </p>
   </li>
 </ol>
@@ -305,21 +308,21 @@ the project first.
 When a supported dependency file is detected, all dependencies, including transitive dependencies
 are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 
-### Dependency analyzers
+### Analyzers
 
-Dependency Scanning supports the following official analyzers:
+Dependency Scanning supports the following official
+[Gemnasium-based](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers:
 
 - `gemnasium`
 - `gemnasium-maven`
 - `gemnasium-python`
 
-Each of these supported Gemnasium-based Dependency Scanning analyzers exist in the following project:
-
-- [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-
-The analyzers are published as Docker images, which Dependency Scanning uses
-to launch dedicated containers for each analysis. You can also integrate a custom
+The analyzers are published as Docker images, which Dependency Scanning uses to launch dedicated
+containers for each analysis. You can also integrate a custom
 [security scanner](../../../development/integrations/secure.md).
+
+Each analyzer is updated as new versions of Gemnasium are released. For more information, see the
+analyzer [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
 
 ### How analyzers obtain dependency information
 
@@ -675,10 +678,6 @@ Support for additional languages, dependency managers, and dependency files are 
 | ------------------- | --------- | --------------- | ---------- | ----- |
 | [Poetry](https://python-poetry.org/) | Python | `pyproject.toml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) | [GitLab#32774](https://gitlab.com/gitlab-org/gitlab/-/issues/32774) |
 
-## Contribute your scanner
-
-The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
-
 ## Configuration
 
 Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
@@ -712,7 +711,10 @@ To enable dependency scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
+   content.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    ```yaml
    include:
@@ -721,14 +723,14 @@ To enable dependency scanning:
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
 
-   Continue if you see the message **Simulation completed successfully**. That indicates the file is
-   valid.
+   The message **Simulation completed successfully** confirms the file is valid.
 1. Select the **Edit** tab.
 1. Complete the fields. Do not use the default branch for the **Branch** field.
-1. Select **Commit changes**.
-1. Select **Code > Merge requests**.
-1. Select the merge request just created.
-1. Review the merge request, then select **Merge**.
+1. Select the **Start a new merge request with these changes** checkbox, then select **Commit
+   changes**.
+1. Complete the fields according to your standard workflow, then select **Create
+   merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
 Pipelines now include a dependency scanning job.
 
@@ -804,10 +806,10 @@ The following variables allow configuration of global dependency scanning settin
 
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
-| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
-| `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](#dependency-analyzers). |
+| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
-| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
+| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
 
@@ -816,29 +818,29 @@ The following variables allow configuration of global dependency scanning settin
 The following variables configure the behavior of specific dependency scanning analyzers.
 
 | CI/CD variable                       | Analyzer           | Default                      | Description |
-|--------------------------------------| ------------------ | ---------------------------- |------------ |
+|--------------------------------------|--------------------|------------------------------|-------------|
 | `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
-| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database (For usage see: [examples](#hosting-a-copy-of-the-gemnasium_db-advisory-database))|
+| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Hosting a copy of the Gemnasium advisory database](#hosting-a-copy-of-the-gemnasium_db-advisory-database). |
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
-| `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                       | Timeout for auto-remediation. |
+| `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
-| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21` |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
+| `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
+| `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
+| `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
+| `GOPRIVATE`                          | `gemnasium`        |                              | A list of glob patterns and prefixes to be fetched from source. For more information, see the Go private modules [documentation](https://go.dev/ref/mod#private-modules). |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21`. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
 | `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning:** Read [the following security consideration](#python-projects) when using this environment variable. |
-| `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. |
+| `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. This is a filename and not a path. When this environment variable is set only the specified file is scanned. |
 | `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | If set, overrides the PyPi index used by Pipenv with a [mirror](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263). |
-| `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12811) in GitLab 12.7) |
-| `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12412) in GitLab 12.2) |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only Composer, NPM, and Poetry projects are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
-| `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
-| `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
-| `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
-| `GOPRIVATE`                          | `gemnasium`        |                              | A list of glob patterns and prefixes to be fetched from source. Read the Go private modules [documentation](https://go.dev/ref/mod#private-modules) for more information. |
+| `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. |
+| `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. |
 
 #### Other variables
 
@@ -869,9 +871,26 @@ If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
 or [contributing to the code](../../../development/index.md) to enable it to be used.
 
-### Using a custom SSL CA certificate authority
+### Custom TLS certificate authority
 
-You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority. The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1). For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+Dependency Scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
+default shipped with the analyzer container image.
+
+Support for custom certificate authorities was introduced in the following versions.
+
+| Analyzer           | Version                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------|
+| `gemnasium`        | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0)        |
+| `gemnasium-maven`  | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0)  |
+| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
+
+#### Using a custom TLS certificate authority
+
+To use a custom TLS certificate authority, assign the
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
+to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
+
+For example, to configure the certificate in the `.gitlab-ci.yml` file:
 
 ```yaml
 variables:
@@ -883,8 +902,6 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
-
 ### Using private Maven repositories
 
 If your private Maven repository requires login credentials,
@@ -892,144 +909,50 @@ you can use the `MAVEN_CLI_OPTS` CI/CD variable.
 
 Read more on [how to use private Maven repositories](../index.md#using-private-maven-repositories).
 
-#### FIPS-enabled images
+### FIPS-enabled images
 
-> Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
+> - Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
+> - Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the Gemnasium images. You can therefore replace standard images with FIPS-enabled images.
-
-Gemnasium scanning jobs automatically use FIPS-enabled image when FIPS mode is enabled in the GitLab instance.
-([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.)
-
-To manually switch to FIPS-enabled images, set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
+versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
+scanning jobs automatically use the FIPS-enabled images. To manually switch to FIPS-enabled images,
+set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
-## Reports JSON format
+## Output
 
-The dependency scanning tool emits a JSON report file. For more information, see the
-[schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
+Dependency Scanning produces the following output:
 
-Here's an example dependency scanning report:
+- **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
+- **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
+  lock or build file detected.
 
-```json
-{
-  "version": "2.0",
-  "vulnerabilities": [
-    {
-      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
-      "category": "dependency_scanning",
-      "name": "Regular Expression Denial of Service",
-      "message": "Regular Expression Denial of Service in debug",
-      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
-      "severity": "Unknown",
-      "solution": "Upgrade to latest versions.",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "debug"
-          },
-          "version": "1.0.5"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://nodesecurity.io/advisories/534"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/issues/501"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/pull/504"
-        }
-      ]
-    },
-    {
-      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-      "category": "dependency_scanning",
-      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
-      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
-      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
-      "severity": "Unknown",
-      "solution": "Upgrade to fixed version.\r\n",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "saml2-js"
-          },
-          "version": "1.5.0"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
-          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
-          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
-        },
-        {
-          "type": "cve",
-          "name": "CVE-2017-11429",
-          "value": "CVE-2017-11429",
-          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
-        },
-        {
-          "url": "https://github.com/Clever/saml2/issues/127"
-        },
-        {
-          "url": "https://www.kb.cert.org/vuls/id/475445"
-        }
-      ]
-    }
-  ],
-  "remediations": [
-    {
-      "fixes": [
-        {
-          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-        }
-      ],
-      "summary": "Upgrade saml2-js",
-      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
-    }
-  ]
-}
-```
+### Dependency scanning report
+
+Dependency scanning outputs a report containing details of all vulnerabilities. The report is
+processed internally and the results are shown in the UI. The report is also output as an artifact
+of the dependency scanning job, named `gl-dependency-scanning-report.json`.
+
+For more details of the dependency scanning report, see:
+
+- [Example dependency scanning report](#example-vulnerability-report).
+- [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Generally available in GitLab 15.7.
 
-In addition to the [JSON report file](#reports-json-format), the [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-Dependency Scanning tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for
-each supported lock or build file it detects. These CycloneDX SBOMs are named
-`gl-sbom-<package-type>-<package-manager>.cdx.json`, and are saved in the same directory
-as the detected lock or build files.
+Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
+for each supported lock or build file it detects.
+
+The CycloneDX SBOMs are:
+
+- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
+- Available as job artifacts of the dependency scanning job.
+- Saved in the same directory as the detected lock or build files.
 
 For example, if your project has the following structure:
 
@@ -1063,12 +986,16 @@ Then the Gemnasium scanner generates the following CycloneDX SBOMs:
     └── gl-sbom-go-go.cdx.json
 ```
 
-You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
+#### Merging multiple CycloneDX SBOMs
 
-### Merging multiple CycloneDX SBOMs
+You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM. GitLab uses
+[CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store) to store
+implementation-specific details in the metadata of each CycloneDX SBOM, such as the location of
+build and lock files. If multiple CycloneDX SBOMs are merged together, this information is removed
+from the resulting merged file.
 
-You can use a CI/CD job to merge multiple CycloneDX SBOMs into a single SBOM.
-For example:
+For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
+merged, and the resulting file validated.
 
 ```yaml
 stages:
@@ -1109,15 +1036,6 @@ merge cyclonedx sboms:
     paths:
       - gl-sbom-all.cdx.json
 ```
-
-GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
-to store implementation-specific details in the metadata of each CycloneDX SBOM,
-such as the location of build and lock files. If multiple CycloneDX SBOMs are merged together,
-this information is removed from the resulting merged file.
-
-## Versioning and release process
-
-Check the [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
 
 ## Contributing to the vulnerability database
 
@@ -1169,16 +1087,6 @@ with new definitions, and you may be able to make occasional updates on your own
 For details on saving and transporting Docker images as a file, see the Docker documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
-
-#### Support for Custom Certificate Authorities
-
-Support for custom certificate authorities was introduced in the following versions.
-
-| Analyzer | Version |
-| -------- | ------- |
-| `gemnasium` | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0) |
-| `gemnasium-maven` | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0) |
-| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
 
 ### Set dependency scanning CI/CD job variables to use local dependency scanning analyzers
 
@@ -1332,3 +1240,114 @@ environment variable due to a possible exploit documented by [CVE-2018-20225](ht
 intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
 requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
 version number).
+
+## Example vulnerability report
+
+The following is an example vulnerability report output by dependency scanning:
+
+```json
+{
+  "version": "2.0",
+  "vulnerabilities": [
+    {
+      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
+      "category": "dependency_scanning",
+      "name": "Regular Expression Denial of Service",
+      "message": "Regular Expression Denial of Service in debug",
+      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest versions.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nodesecurity.io/advisories/534"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/issues/501"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/pull/504"
+        }
+      ]
+    },
+    {
+      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+      "category": "dependency_scanning",
+      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "severity": "Unknown",
+      "solution": "Upgrade to fixed version.\r\n",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
+          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
+          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "value": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
+        },
+        {
+          "url": "https://github.com/Clever/saml2/issues/127"
+        },
+        {
+          "url": "https://www.kb.cert.org/vuls/id/475445"
+        }
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "fixes": [
+        {
+          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+        }
+      ],
+      "summary": "Upgrade saml2-js",
+      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
+    }
+  ]
+}
+```

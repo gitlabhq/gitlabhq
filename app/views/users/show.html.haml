@@ -26,7 +26,7 @@
         = render 'users/view_user_in_admin_area'
         .js-user-profile-actions{ data: user_profile_actions_data(@user) }
 
-      .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?), ('gl-mb-4!' if show_super_sidebar?)] }
+      .profile-header.gl-mx-5.gl-mb-4{ class: [('gl-mb-6' if profile_tabs.empty?)] }
         .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
           .avatar-holder
             = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
@@ -113,9 +113,9 @@
                   = @user.bio
 
       -# TODO: Remove this with the removal of the old navigation.
-      -# See https://gitlab.com/groups/gitlab-org/-/epics/11875.
+      -# See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
       - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
-        .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
+        .scrolling-tabs-container.gl-display-none
           %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
             = sprite_icon('chevron-lg-left', size: 12)
           %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }

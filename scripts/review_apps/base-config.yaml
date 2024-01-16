@@ -94,7 +94,7 @@ gitlab:
         memory: 1500Mi
       limits:
         cpu: 700m
-        memory: 2000Mi
+        memory: 2200Mi
     hpa:
       cpu:
         targetAverageValue: 650m

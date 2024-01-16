@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlLink, GlPopover } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { typeConfig, statusConfig } from '../constants';
+import { typeConfig, statusConfig } from 'ee_else_ce/commit/constants';
 import X509CertificateDetails from './x509_certificate_details.vue';
 
 export default {

@@ -24,7 +24,7 @@ Corresponding test case(s):
 
 ### Stack trace
 
-```
+```ruby
 PUT STACK TRACE HERE
 ```
 

@@ -235,7 +235,9 @@ export default {
             :work-item-id="workItemId"
             :work-item-state="workItemState"
             :work-item-type="workItemType"
+            :has-comment="!!commentText.length"
             can-update
+            @submit-comment="$emit('submitForm', { commentText, isNoteInternal })"
             @error="$emit('error', $event)"
           />
           <gl-button

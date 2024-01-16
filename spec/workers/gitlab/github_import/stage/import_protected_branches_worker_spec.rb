@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker, feature_category: :importers do
   let_it_be(:project) { create(:project) }
-  let_it_be(:import_state) { create(:import_state, project: project) }
 
-  let(:worker) { described_class.new }
   let(:importer) { instance_double('Gitlab::GithubImport::Importer::ProtectedBranchImporter') }
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
+
+  subject(:worker) { described_class.new }
 
   it_behaves_like Gitlab::GithubImport::StageMethods
 

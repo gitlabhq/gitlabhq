@@ -19,6 +19,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     it { is_expected.to belong_to(:model) }
     it { is_expected.to belong_to(:package).class_name('Packages::MlModel::Package') }
     it { is_expected.to have_one(:candidate).class_name('Ml::Candidate') }
+    it { is_expected.to have_many(:metadata) }
   end
 
   describe 'validation' do
@@ -96,6 +97,34 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
         it { expect(errors[:package]).to include(error_message) }
       end
+    end
+  end
+
+  describe '#add_metadata' do
+    it 'accepts an array of metadata and persists it to the model version' do
+      input = [
+        { project_id: base_project.id, key: 'tag1', value: 'value1' },
+        { project_id: base_project.id, key: 'tag2', value: 'value2' }
+      ]
+
+      expect { model_version1.add_metadata(input) }.to change { model_version1.metadata.count }.by(2)
+    end
+
+    it 'raises an error when duplicate key names are supplied' do
+      input = [
+        { project_id: base_project.id, key: 'tag1', value: 'value1' },
+        { project_id: base_project.id, key: 'tag1', value: 'value2' }
+      ]
+
+      expect { model_version1.add_metadata(input) }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'raises an error when validation fails' do
+      input = [
+        { project_id: base_project.id, key: nil, value: 'value1' }
+      ]
+
+      expect { model_version1.add_metadata(input) }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 

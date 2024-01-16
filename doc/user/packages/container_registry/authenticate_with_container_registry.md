@@ -20,9 +20,9 @@ All of these authentication methods require the minimum scope:
 
 To authenticate, run the `docker login` command. For example:
 
-   ```shell
-   docker login registry.example.com -u <username> -p <token>
-   ```
+```shell
+docker login registry.example.com -u <username> -p <token>
+```
 
 ## Use GitLab CI/CD to authenticate
 

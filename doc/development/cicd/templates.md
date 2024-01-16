@@ -13,7 +13,7 @@ we encourage team members to create [CI/CD components](../../ci/components/index
 for the catalog. This transition enhances the modularity and maintainability of our
 shared CI/CD resources, and avoids the complexities of contributing new CI/CD templates.
 If you need to update an existing template, you must also update the matching CI/CD component.
-If no component exists that matches the CI/CD template yet, consider creating the matching component.
+If no component exists that matches the CI/CD template yet, consider [creating the matching component](components.md).
 This ensures that template and component functionality remain in sync, aligning with
 our new development practices.
 

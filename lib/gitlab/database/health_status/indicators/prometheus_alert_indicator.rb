@@ -82,6 +82,7 @@ module Gitlab
           def sli_query
             {
               gitlab_main: prometheus_alert_db_indicators_settings[sli_query_key][:main],
+              gitlab_main_cell: prometheus_alert_db_indicators_settings[sli_query_key][:main_cell],
               gitlab_ci: prometheus_alert_db_indicators_settings[sli_query_key][:ci]
             }.fetch(gitlab_schema)
           end
@@ -90,6 +91,7 @@ module Gitlab
           def slo
             {
               gitlab_main: prometheus_alert_db_indicators_settings[slo_key][:main],
+              gitlab_main_cell: prometheus_alert_db_indicators_settings[slo_key][:main_cell],
               gitlab_ci: prometheus_alert_db_indicators_settings[slo_key][:ci]
             }.fetch(gitlab_schema)
           end

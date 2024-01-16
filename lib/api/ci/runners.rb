@@ -94,6 +94,14 @@ module API
 
           forbidden!("No access granted") unless can?(current_user, :read_builds, runner)
         end
+
+        def preload_job_associations(jobs)
+          jobs.preload( # rubocop: disable CodeReuse/ActiveRecord -- this preload is tightly related to the endpoint
+            :user,
+            { pipeline: { project: [:route, { namespace: :route }] } },
+            { project: [:route, { namespace: :route }] }
+          )
+        end
       end
 
       resource :runners do
@@ -217,25 +225,24 @@ module API
         end
         params do
           requires :id, type: Integer, desc: 'The ID of a runner'
+          optional :system_id, type: String, desc: 'System ID associated with the runner manager'
           optional :status, type: String, desc: 'Status of the job', values: ::Ci::Build::AVAILABLE_STATUSES
           optional :order_by, type: String, desc: 'Order by `id`', values: ::Ci::RunnerJobsFinder::ALLOWED_INDEXED_COLUMNS
           optional :sort, type: String, values: %w[asc desc], default: 'desc', desc: 'Sort by `asc` or `desc` order. ' \
-                          'Specify `order_by` as well, including for `id`'
+            'Specify `order_by` as well, including for `id`'
+          optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
           use :pagination
         end
         get ':id/jobs' do
           runner = get_runner(params[:id])
           authenticate_list_runners_jobs!(runner)
 
+          # Optimize query when filtering by runner managers by not asking for count
+          paginator_params = params[:pagination] == :keyset || params[:system_id].blank? ? {} : { without_count: true }
+
           jobs = ::Ci::RunnerJobsFinder.new(runner, current_user, params).execute
-          jobs = jobs.preload( # rubocop: disable CodeReuse/ActiveRecord
-            [
-              :user,
-              { pipeline: { project: [:route, { namespace: :route }] } },
-              { project: [:route, { namespace: :route }] }
-            ]
-          )
-          jobs = paginate(jobs)
+          jobs = preload_job_associations(jobs)
+          jobs = paginate_with_strategies(jobs, paginator_params: paginator_params)
           jobs.each(&:commit) # batch loads all commits in the page
 
           present jobs, with: Entities::Ci::JobBasicWithProject

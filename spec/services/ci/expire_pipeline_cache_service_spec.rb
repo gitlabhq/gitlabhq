@@ -106,7 +106,7 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       create(:ci_sources_pipeline, pipeline: pipeline)
       create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline))
 
-      expect { subject.execute(pipeline) }.not_to exceed_query_limit(control.count)
+      expect { subject.execute(pipeline) }.not_to exceed_query_limit(control)
     end
   end
 

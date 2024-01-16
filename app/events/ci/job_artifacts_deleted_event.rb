@@ -9,8 +9,8 @@ module Ci
         'properties' => {
           'job_ids' => {
             'type' => 'array',
-            'properties' => {
-              'job_id' => { 'type' => 'integer' }
+            'items' => {
+              'type' => 'integer'
             }
           }
         }

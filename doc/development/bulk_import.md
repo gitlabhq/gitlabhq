@@ -12,7 +12,7 @@ NOTE:
 To use direct transfer, ensure your GitLab installation is accessible from
 [GitLab IP addresses](../user/gitlab_com/index.md#ip-range) and has a public DNS entry.
 
-[Group migration by direct transfer](../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended) is the
+[Group migration by direct transfer](../user/group/import/index.md) is the
 evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,
 including projects, from one GitLab instance to another.
 
@@ -36,8 +36,8 @@ idea is to have one ETL pipeline for each relation to be imported.
 
 ### API
 
-The current [project](../user/project/settings/import_export.md) and
-[group](../user/group/import/index.md#migrate-groups-by-uploading-an-export-file-deprecated) imports are file based, so
+The current [project](../user/project/settings/import_export.md#migrate-projects-by-uploading-an-export-file) and
+[group](../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) imports are file based, so
 they require an export step to generate the file to be imported.
 
 Group migration by direct transfer leverages the [GitLab API](../api/rest/index.md) to speed the migration.

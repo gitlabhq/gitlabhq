@@ -8,5 +8,3 @@ module API
     end
   end
 end
-
-API::Entities::UserPreferences.prepend_mod_with('API::Entities::UserPreferences', with_descendants: true)

@@ -178,7 +178,7 @@ the [`coverage-report`](https://gitlab.com/gitlab-org/ci-sample-projects/coverag
 
 ### JavaScript example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example uses [Mocha](https://mochajs.org/)
+The following `.gitlab-ci.yml` example uses [Mocha](https://mochajs.org/)
 JavaScript testing and [nyc](https://github.com/istanbuljs/nyc) coverage-tooling to
 generate the coverage artifact:
 
@@ -198,7 +198,7 @@ test:
 
 #### Maven example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for Java or Kotlin uses [Maven](https://maven.apache.org/)
+The following `.gitlab-ci.yml` example for Java or Kotlin uses [Maven](https://maven.apache.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -236,7 +236,7 @@ coverage-jdk11:
 
 #### Gradle example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for Java or Kotlin uses [Gradle](https://gradle.org/)
+The following `.gitlab-ci.yml` example for Java or Kotlin uses [Gradle](https://gradle.org/)
 to build the project and [JaCoCo](https://www.eclemma.org/jacoco/) coverage-tooling to
 generate the coverage artifact.
 You can check the [Docker image configuration and scripts](https://gitlab.com/haynes/jacoco2cobertura) if you want to build your own image.
@@ -274,7 +274,7 @@ coverage-jdk11:
 
 ### Python example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data:
+The following `.gitlab-ci.yml` example uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data:
 
 ```yaml
 run tests:
@@ -293,7 +293,7 @@ run tests:
 
 ### PHP example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for PHP uses [PHPUnit](https://phpunit.readthedocs.io/)
+The following `.gitlab-ci.yml` example for PHP uses [PHPUnit](https://phpunit.readthedocs.io/)
 to collect test coverage data and generate the report.
 
 With a minimal [`phpunit.xml`](https://docs.phpunit.de/en/10.2/configuration.html) file (you may reference
@@ -331,7 +331,7 @@ to find Cobertura in the appropriate path.
 
 ### C/C++ example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for C/C++ with
+The following `.gitlab-ci.yml` example for C/C++ with
 `gcc` or `g++` as the compiler uses [`gcovr`](https://gcovr.com/en/stable/) to generate the coverage
 output file in Cobertura XML format.
 
@@ -362,7 +362,7 @@ run tests:
 
 ### Go example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for Go uses:
+The following `.gitlab-ci.yml` example for Go uses:
 
 - [`go test`](https://go.dev/doc/tutorial/add-a-test) to run tests.
 - [`gocover-cobertura`](https://github.com/boumenot/gocover-cobertura) to convert Go's coverage profile into the Cobertura XML format.
@@ -391,7 +391,7 @@ run tests:
 
 ### Ruby example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for Ruby uses
+The following `.gitlab-ci.yml` example for Ruby uses
 
 - [`rspec`](https://rspec.info/) to run tests.
 - [`simplecov`](https://github.com/simplecov-ruby/simplecov) and [`simplecov-cobertura`](https://github.com/dashingrocket/simplecov-cobertura)

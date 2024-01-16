@@ -11,6 +11,7 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
     Timeout::Error | ''       | 'A timeout error occurred'
     URI::InvalidURIError | '' | 'The Jira API URL'
     SocketError | ''          | 'The Jira API URL'
+    Gitlab::HTTP::BlockedUrlError | '' | 'Unable to connect to the Jira URL. Please verify your'
     OpenSSL::SSL::SSLError | 'foo'   | 'An SSL error occurred while connecting to Jira: foo'
     JIRA::HTTPError | 'Unauthorized' | 'The credentials for accessing Jira are not valid'
     JIRA::HTTPError | 'Forbidden'    | 'The credentials for accessing Jira are not allowed'

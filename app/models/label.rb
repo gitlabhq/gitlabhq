@@ -46,7 +46,6 @@ class Label < ApplicationRecord
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :with_lock_on_merge, -> { where(lock_on_merge: true) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
-  scope :on_board, ->(board_id) { with_lists_and_board.where(boards: { id: board_id }) }
   scope :order_name_asc, -> { reorder(title: :asc) }
   scope :order_name_desc, -> { reorder(title: :desc) }
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
@@ -150,10 +149,6 @@ class Label < ApplicationRecord
 
   def self.link_reference_pattern
     nil
-  end
-
-  def self.ids_on_board(board_id)
-    on_board(board_id).pluck(:label_id)
   end
 
   # Searches for labels with a matching title or description.

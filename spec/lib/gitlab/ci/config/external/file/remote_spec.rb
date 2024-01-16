@@ -157,6 +157,40 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     it_behaves_like "#content"
   end
 
+  describe '#preload_content' do
+    context 'when the parallel request queue is full' do
+      let(:location1) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.secret_file1.yml' }
+      let(:location2) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.secret_file2.yml' }
+
+      before do
+        # Makes the parallel queue full easily
+        stub_const("Gitlab::Ci::Config::External::Context::MAX_PARALLEL_REMOTE_REQUESTS", 1)
+
+        # Adding a failing promise to the queue
+        promise = Concurrent::Promise.new do
+          sleep 1.1
+          raise Timeout::Error
+        end
+
+        context.execute_remote_parallel_request(
+          Gitlab::HTTP_V2::LazyResponse.new(promise, location1, {}, nil)
+        )
+
+        stub_full_request(location2).to_return(body: remote_file_content)
+      end
+
+      it 'waits for the queue' do
+        file2 = described_class.new({ remote: location2 }, context)
+
+        start_at = Time.current
+        file2.preload_content
+        end_at = Time.current
+
+        expect(end_at - start_at).to be > 1
+      end
+    end
+  end
+
   describe "#error_message" do
     subject(:error_message) do
       Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([remote_file])

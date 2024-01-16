@@ -67,7 +67,7 @@ Pipelines and their component jobs and stages are defined in the CI/CD pipeline 
 - [Jobs](../jobs/index.md) are the basic configuration component.
 - Stages are defined by using the [`stages`](../yaml/index.md#stages) keyword.
 
-For a list of configuration options in the CI pipeline file, see the [GitLab CI/CD Pipeline Configuration Reference](../yaml/index.md).
+For a list of configuration options in the CI pipeline file, see the [CI/CD YAML syntax reference](../yaml/index.md).
 
 You can also configure specific aspects of your pipelines through the GitLab UI. For example:
 

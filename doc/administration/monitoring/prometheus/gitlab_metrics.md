@@ -180,6 +180,8 @@ The following metrics are available:
 | `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool |
 | `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool |
 | `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process scan result policies |
+| `gitlab_highlight_usage` | Counter | 16.8 | The number of times `Gitlab::Highlight` is used | `used_on` |
+| `dependency_linker_usage` | Counter | 16.8 | The number of times dependency linker is used | `used_on` |
 
 ## Metrics controlled by a feature flag
 

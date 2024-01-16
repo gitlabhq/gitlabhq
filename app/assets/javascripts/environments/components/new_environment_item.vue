@@ -368,6 +368,7 @@ export default {
       </div>
       <div v-if="clusterAgent" :class="$options.kubernetesOverviewClasses">
         <kubernetes-overview
+          :class="{ 'gl-ml-7': inFolder }"
           :cluster-agent="clusterAgent"
           :namespace="kubernetesNamespace"
           :flux-resource-path="fluxResourcePath"

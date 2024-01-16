@@ -2,20 +2,16 @@ import {
   calculateDeploymentStatus,
   calculateStatefulSetStatus,
   calculateDaemonSetStatus,
+  calculateJobStatus,
+  calculateCronJobStatus,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
-import { STATUS_READY, STATUS_FAILED } from '~/kubernetes_dashboard/constants';
+import {
+  STATUS_READY,
+  STATUS_FAILED,
+  STATUS_COMPLETED,
+  STATUS_SUSPENDED,
+} from '~/kubernetes_dashboard/constants';
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '../constants';
-
-export function generateServicePortsString(ports) {
-  if (!ports?.length) return '';
-
-  return ports
-    .map((port) => {
-      const nodePort = port.nodePort ? `:${port.nodePort}` : '';
-      return `${port.port}${nodePort}/${port.protocol}`;
-    })
-    .join(', ');
-}
 
 export function getDeploymentsStatuses(items) {
   const failed = [];
@@ -45,13 +41,14 @@ export function getDeploymentsStatuses(items) {
   };
 }
 
+const isCompleted = (status) => status === STATUS_COMPLETED;
+const isReady = (status) => status === STATUS_READY;
+const isFailed = (status) => status === STATUS_FAILED;
+const isSuspended = (status) => status === STATUS_SUSPENDED;
+
 export function getDaemonSetStatuses(items) {
-  const failed = items.filter((item) => {
-    return calculateDaemonSetStatus(item) === STATUS_FAILED;
-  });
-  const ready = items.filter((item) => {
-    return calculateDaemonSetStatus(item) === STATUS_READY;
-  });
+  const failed = items.filter((item) => isFailed(calculateDaemonSetStatus(item)));
+  const ready = items.filter((item) => isReady(calculateDaemonSetStatus(item)));
 
   return {
     ...(failed.length && { failed }),
@@ -60,12 +57,8 @@ export function getDaemonSetStatuses(items) {
 }
 
 export function getStatefulSetStatuses(items) {
-  const failed = items.filter((item) => {
-    return calculateStatefulSetStatus(item) === STATUS_FAILED;
-  });
-  const ready = items.filter((item) => {
-    return calculateStatefulSetStatus(item) === STATUS_READY;
-  });
+  const failed = items.filter((item) => isFailed(calculateStatefulSetStatus(item)));
+  const ready = items.filter((item) => isReady(calculateStatefulSetStatus(item)));
 
   return {
     ...(failed.length && { failed }),
@@ -74,12 +67,8 @@ export function getStatefulSetStatuses(items) {
 }
 
 export function getReplicaSetStatuses(items) {
-  const failed = items.filter((item) => {
-    return calculateStatefulSetStatus(item) === STATUS_FAILED;
-  });
-  const ready = items.filter((item) => {
-    return calculateStatefulSetStatus(item) === STATUS_READY;
-  });
+  const failed = items.filter((item) => isFailed(calculateStatefulSetStatus(item)));
+  const ready = items.filter((item) => isReady(calculateStatefulSetStatus(item)));
 
   return {
     ...(failed.length && { failed }),
@@ -88,12 +77,8 @@ export function getReplicaSetStatuses(items) {
 }
 
 export function getJobsStatuses(items) {
-  const failed = items.filter((item) => {
-    return item.status.failed > 0 || item.status?.succeeded !== item.spec?.completions;
-  });
-  const completed = items.filter((item) => {
-    return item.status?.succeeded === item.spec?.completions;
-  });
+  const failed = items.filter((item) => isFailed(calculateJobStatus(item)));
+  const completed = items.filter((item) => isCompleted(calculateJobStatus(item)));
 
   return {
     ...(failed.length && { failed }),
@@ -107,11 +92,11 @@ export function getCronJobsStatuses(items) {
   const suspended = [];
 
   items.forEach((item) => {
-    if (item.status?.active > 0 && !item.status?.lastScheduleTime) {
+    if (isFailed(calculateCronJobStatus(item))) {
       failed.push(item);
-    } else if (item.spec?.suspend) {
+    } else if (isSuspended(calculateCronJobStatus(item))) {
       suspended.push(item);
-    } else if (item.status?.lastScheduleTime) {
+    } else if (isReady(calculateCronJobStatus(item))) {
       ready.push(item);
     }
   });

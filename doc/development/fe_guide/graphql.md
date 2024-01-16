@@ -1671,7 +1671,7 @@ When [using Vuex](#using-with-vuex), disable the cache when:
 
 - The data is being cached elsewhere
 - The use case does not need caching
-if the data is being cached elsewhere, or if there is no need for it for the given use case.
+  if the data is being cached elsewhere, or if there is no need for it for the given use case.
 
 ```javascript
 import createDefaultClient from '~/lib/graphql';
@@ -1767,12 +1767,12 @@ To improve performance, sometimes we want to make initial GraphQL queries early.
   ```
 
 - Add startup calls with correct variables to the HAML file that serves as a view
-for your application. To add GraphQL startup calls, we use
-`add_page_startup_graphql_call` helper where the first parameter is a path to the
-query, the second one is an object containing query variables. Path to the query is
-relative to `app/graphql/queries` folder: for example, if we need a
-`app/graphql/queries/repository/files.query.graphql` query, the path is
-`repository/files`.
+  for your application. To add GraphQL startup calls, we use
+  `add_page_startup_graphql_call` helper where the first parameter is a path to the
+  query, the second one is an object containing query variables. Path to the query is
+  relative to `app/graphql/queries` folder: for example, if we need a
+  `app/graphql/queries/repository/files.query.graphql` query, the path is
+  `repository/files`.
 
 ## Troubleshooting
 

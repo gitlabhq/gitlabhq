@@ -1,7 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import {
   BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
@@ -10,8 +7,6 @@ import {
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import { mockList, mockIssue2 } from 'jest/boards/mock_data';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-
-Vue.use(Vuex);
 
 const dropdownOptions = [
   {
@@ -27,15 +22,10 @@ const dropdownOptions = [
 describe('Board Card Move to position', () => {
   let wrapper;
   let trackingSpy;
-  let store;
   const itemIndex = 1;
 
-  const createComponent = (propsData, isApolloBoard = false) => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(BoardCardMoveToPosition, {
-      store,
-      provide: {
-        isApolloBoard,
-      },
       propsData: {
         item: mockIssue2,
         list: mockList,

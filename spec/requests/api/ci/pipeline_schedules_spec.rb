@@ -42,15 +42,15 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         # We need at least two users to trigger a preload for that relation.
         create_pipeline_schedules(1)
 
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
-        end.count
+        end
 
         create_pipeline_schedules(5)
 
         expect do
           get api("/projects/#{project.id}/pipeline_schedules", developer)
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_query_limit(control)
       end
 
       %w[active inactive].each do |target|

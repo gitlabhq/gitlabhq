@@ -19,6 +19,8 @@ module Gitlab
 
         def prepare_name(name, args)
           case name
+          when 'react'
+            'award'
           when 'assign'
             event_name_for_assign(args)
           when 'copy_metadata'
@@ -35,6 +37,8 @@ module Gitlab
             event_name_for_unlabel(args)
           when 'invite_email'
             'invite_email' + event_name_quantifier(args.split)
+          when 'remove_email'
+            'remove_email' + event_name_quantifier(args.split)
           else
             name
           end

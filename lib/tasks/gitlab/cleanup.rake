@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :gitlab do
-  require 'set'
+  require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
   namespace :cleanup do
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
@@ -51,7 +51,7 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | Cleanup | Clean orphan job artifact files'
+    desc 'GitLab | Cleanup | Clean orphan job artifact files in local storage'
     task orphan_job_artifact_files: :gitlab_environment do
       warn_user_is_not_gitlab
 
@@ -60,6 +60,31 @@ namespace :gitlab do
 
       if dry_run?
         logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
+    desc 'GitLab | Cleanup | Clean orphan job artifact files stored in the @final directory in object storage'
+    task :orphan_job_artifact_final_objects, [:provider] => :gitlab_environment do |_, args|
+      warn_user_is_not_gitlab
+
+      force_restart = ENV['FORCE_RESTART'].present?
+
+      begin
+        cleaner = Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner.new(
+          provider: args.provider,
+          force_restart: force_restart,
+          dry_run: dry_run?,
+          logger: logger
+        )
+
+        cleaner.run!
+
+        if dry_run?
+          logger.info "To clean up all orphan files that were found, run this command with DRY_RUN=false".color(:yellow)
+        end
+      rescue Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner::UnsupportedProviderError => e
+        abort %(#{e.message}
+Usage: rake "gitlab:cleanup:orphan_job_artifact_final_objects[provider]")
       end
     end
 
@@ -136,7 +161,7 @@ namespace :gitlab do
             next unless latest_diff_sha
 
             branches_to_delete << { reference: mr.source_branch_ref, old_sha: latest_diff_sha,
-new_sha: Gitlab::Git::BLANK_SHA }
+new_sha: Gitlab::Git::SHA1_BLANK_SHA }
 
             break if number_deleted + branches_to_delete.size >= limit
           end

@@ -23,7 +23,9 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       lock_npm_package_requests_forwarding: true,
       pypi_package_requests_forwarding: true,
       lock_pypi_package_requests_forwarding: true,
-      nuget_symbol_server_enabled: true
+      nuget_symbol_server_enabled: true,
+      terraform_module_duplicates_allowed: true,
+      terraform_module_duplicate_exception_regex: 'foo-.*'
     }
   end
 
@@ -44,6 +46,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
           pypiPackageRequestsForwarding
           lockPypiPackageRequestsForwarding
           nugetSymbolServerEnabled
+          terraformModuleDuplicatesAllowed
+          terraformModuleDuplicateExceptionRegex
         }
         errors
       QL
@@ -73,6 +77,8 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
       expect(package_settings_response['npmPackageRequestsForwarding']).to eq(params[:npm_package_requests_forwarding])
       expect(package_settings_response['lockNpmPackageRequestsForwarding']).to eq(params[:lock_npm_package_requests_forwarding])
       expect(package_settings_response['nugetSymbolServerEnabled']).to eq(params[:nuget_symbol_server_enabled])
+      expect(package_settings_response['terraformModuleDuplicatesAllowed']).to eq(params[:terraform_module_duplicates_allowed])
+      expect(package_settings_response['terraformModuleDuplicateExceptionRegex']).to eq(params[:terraform_module_duplicate_exception_regex])
     end
   end
 
@@ -115,7 +121,9 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         lock_npm_package_requests_forwarding: false,
         pypi_package_requests_forwarding: nil,
         lock_pypi_package_requests_forwarding: false,
-        nuget_symbol_server_enabled: false
+        nuget_symbol_server_enabled: false,
+        terraform_module_duplicates_allowed: false,
+        terraform_module_duplicate_exception_regex: 'foo'
       }, to: {
         maven_duplicates_allowed: false,
         maven_duplicate_exception_regex: 'foo-.*',
@@ -129,7 +137,9 @@ RSpec.describe 'Updating the package settings', feature_category: :package_regis
         lock_npm_package_requests_forwarding: true,
         pypi_package_requests_forwarding: true,
         lock_pypi_package_requests_forwarding: true,
-        nuget_symbol_server_enabled: true
+        nuget_symbol_server_enabled: true,
+        terraform_module_duplicates_allowed: true,
+        terraform_module_duplicate_exception_regex: 'foo-.*'
       }
 
     it_behaves_like 'returning a success'

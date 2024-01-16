@@ -71,7 +71,6 @@ module BulkImports
 
           unless @remote_content_validated
             validate_content_type
-            validate_content_length
 
             @remote_content_validated = true
           end
@@ -130,11 +129,12 @@ module BulkImports
     end
 
     def validate_url
-      ::Gitlab::UrlBlocker.validate!(
+      ::Gitlab::HTTP_V2::UrlBlocker.validate!(
         http_client.resource_url(relative_url),
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w[http https]
+        schemes: %w[http https],
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
       )
     end
 

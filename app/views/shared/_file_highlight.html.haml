@@ -16,7 +16,7 @@
         %a.file-line-num.diff-line-num{ class: line_class, href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
           = i
 
-  .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight, qa_selector: 'file_content' } }
+  .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight } }
     %pre.code.highlight
       %code
         = highlighted_blob

@@ -50,7 +50,8 @@ A release contains the following types of assets:
 ### Source code
 
 GitLab automatically generates `zip`, `tar.gz`, `tar.bz2`, and `tar`
-archived source code from the given Git tag. These are read-only assets.
+archived source code from the given Git tag. These assets are read-only,
+and [can be downloaded](../repository/index.md#download-the-code-in-a-repository).
 
 ### Links
 

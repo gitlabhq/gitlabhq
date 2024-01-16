@@ -693,12 +693,16 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it 'calls GitlabApiClient#tags and passes parameters' do
       allow(repository.gitlab_api_client).to receive(:tags).and_return({})
       expect(repository.gitlab_api_client).to receive(:tags).with(
-        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name)
+        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name, referrers: nil)
 
       subject
     end
 
     context 'with a call to tags' do
+      let_it_be(:created_at) { 15.minutes.ago }
+      let_it_be(:updated_at) { 10.minutes.ago }
+      let_it_be(:published_at) { 5.minutes.ago }
+
       let_it_be(:tags_response) do
         [
           {
@@ -707,8 +711,15 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             config_digest: 'sha256:66b1132a0173910b01ee69583bbf2f7f1e4462c99efbe1b9ab5bf',
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567890,
-            created_at: 5.minutes.ago,
-            updated_at: 5.minutes.ago
+            created_at: created_at,
+            updated_at: updated_at,
+            published_at: published_at,
+            referrers: [
+              {
+                artifactType: 'application/vnd.example+type',
+                digest: 'sha256:57d3be92c2f857566ecc7f9306a80021c0a7fa631e0ef5146957235aea859961'
+              }
+            ]
           },
           {
             name: 'latest',
@@ -716,8 +727,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             config_digest: nil,
             media_type: 'application/vnd.oci.image.manifest.v1+json',
             size_bytes: 1234567892,
-            created_at: 10.minutes.ago,
-            updated_at: 10.minutes.ago
+            created_at: created_at,
+            updated_at: updated_at,
+            published_at: published_at
           }
         ]
       end
@@ -753,8 +765,17 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             revision: expected_revision,
             short_revision: expected_revision[0..8],
             created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
-            updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339)
+            updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339),
+            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339)
           )
+
+          Array(tag.referrers).each_with_index do |ref, ref_index|
+            expect(ref.is_a?(ContainerRegistry::Referrer)).to eq(true)
+            expect(ref).to have_attributes(
+              artifact_type: tags_response[index][:referrers][ref_index][:artifactType],
+              digest: tags_response[index][:referrers][ref_index][:digest]
+            )
+          end
         end
       end
     end
@@ -1148,9 +1169,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe '.find_or_create_from_path' do
+  describe '.find_or_create_from_path!' do
     let(:repository) do
-      described_class.find_or_create_from_path(ContainerRegistry::Path.new(path))
+      described_class.find_or_create_from_path!(ContainerRegistry::Path.new(path))
     end
 
     let(:repository_path) { ContainerRegistry::Path.new(path) }
@@ -1239,7 +1260,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         Thread.new do
           true while wait_for_it
 
-          described_class.find_or_create_from_path(path)
+          described_class.find_or_create_from_path!(path)
         end
       end
       wait_for_it = false

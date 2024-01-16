@@ -208,6 +208,7 @@ class Project < ApplicationRecord
   has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_integration, class_name: 'Integrations::Datadog'
   has_one :container_registry_data_repair_detail, class_name: 'ContainerRegistry::DataRepairDetail'
+  has_one :diffblue_cover_integration, class_name: 'Integrations::DiffblueCover'
   has_one :discord_integration, class_name: 'Integrations::Discord'
   has_one :drone_ci_integration, class_name: 'Integrations::DroneCi'
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
@@ -334,7 +335,7 @@ class Project < ApplicationRecord
   has_many :authorized_users, -> { allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') },
     through: :project_authorizations, source: :user, class_name: 'User'
 
-  has_many :project_members, -> { where(requested_at: nil) },
+  has_many :project_members, -> { non_request },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :project_members
   has_many :namespace_members, ->(project) { where(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -508,6 +509,7 @@ class Project < ApplicationRecord
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?
     delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+    delegate :has_user?
   end
 
   with_options to: :namespace do
@@ -749,6 +751,7 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :with_name, -> (name) { where(name: name) }
   scope :created_by, -> (user) { where(creator: user) }
   scope :imported_from, -> (type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
@@ -3205,6 +3208,21 @@ class Project < ApplicationRecord
   end
   strong_memoize_attr :code_suggestions_enabled?
 
+  # Overridden in EE
+  def allows_multiple_merge_request_assignees?
+    false
+  end
+
+  # Overridden in EE
+  def allows_multiple_merge_request_reviewers?
+    false
+  end
+
+  # Overridden in EE
+  def on_demand_dast_available?
+    false
+  end
+
   private
 
   # overridden in EE
@@ -3226,8 +3244,11 @@ class Project < ApplicationRecord
 
     if @topic_list != self.topic_list
       self.topics.delete_all
-      self.topics = @topic_list.map do |topic|
-        Projects::Topic.where('lower(name) = ?', topic.downcase).order(total_projects_count: :desc).first_or_create(name: topic, title: topic)
+      self.topics = @topic_list.map do |topic_name|
+        Projects::Topic
+          .where('lower(name) = ?', topic_name.downcase)
+          .order(total_projects_count: :desc)
+          .first_or_create(name: topic_name, title: topic_name, slug: Gitlab::Slug::Path.new(topic_name).generate)
       end
     end
 
@@ -3438,7 +3459,7 @@ class Project < ApplicationRecord
   def check_project_export_limit!
     return if Gitlab::CurrentSettings.current_application_settings.max_export_size == 0
 
-    if self.statistics.storage_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
+    if self.statistics.export_size > Gitlab::CurrentSettings.current_application_settings.max_export_size.megabytes
       raise ExportLimitExceeded, _('The project size exceeds the export limit.')
     end
   end

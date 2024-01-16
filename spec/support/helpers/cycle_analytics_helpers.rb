@@ -14,12 +14,14 @@ module CycleAnalyticsHelpers
     page.all('.gl-path-button').collect(&:text).map { |name_with_median| name_with_median.split("\n")[0] }
   end
 
-  def fill_in_custom_stage_fields
+  def fill_in_custom_stage_fields(stage_name = nil)
     index = page.all('[data-testid="value-stream-stage-fields"]').length
     last_stage = page.all('[data-testid="value-stream-stage-fields"]').last
 
+    stage_name = "Cool custom stage - name #{index}" if stage_name.blank?
+
     within last_stage do
-      find('[name*="custom-stage-name-"]').fill_in with: "Cool custom stage - name #{index}"
+      find('[name*="custom-stage-name-"]').fill_in with: stage_name
       select_dropdown_option_by_value "custom-stage-start-event-", 'Merge request created'
       select_dropdown_option_by_value "custom-stage-end-event-", 'Merge request merged'
     end
@@ -94,8 +96,8 @@ module CycleAnalyticsHelpers
     wait_for_requests
   end
 
-  def create_value_stream_aggregation(group_or_project_namespace)
-    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(group_or_project_namespace)
+  def create_value_stream_aggregation(namespace)
+    aggregation = Analytics::CycleAnalytics::Aggregation.safe_create_for_namespace(namespace)
     Analytics::CycleAnalytics::AggregatorService.new(aggregation: aggregation).execute
   end
 
@@ -123,7 +125,7 @@ module CycleAnalyticsHelpers
 
   def create_commit(message, project, user, branch_name, count: 1, commit_time: nil, skip_push_handler: false)
     repository = project.repository
-    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
+    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::SHA1_BLANK_SHA
 
     commit_shas = Array.new(count) do |index|
       commit_sha = repository.create_file(user, generate(:branch), "content", message: message, branch_name: branch_name)

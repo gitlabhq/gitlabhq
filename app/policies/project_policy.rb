@@ -914,6 +914,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:admin_project) }.policy do
     enable :read_usage_quotas
+    enable :view_edit_page
   end
 
   rule { can?(:project_bot_access) }.policy do

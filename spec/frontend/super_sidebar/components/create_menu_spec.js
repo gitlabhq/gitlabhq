@@ -31,6 +31,7 @@ describe('CreateMenu component', () => {
       stubs: {
         InviteMembersTrigger,
         GlDisclosureDropdown,
+        GlEmoji: { template: '<div/>' },
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),

@@ -45,7 +45,7 @@ module Integrations
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('AppleAppStore|Protected branches and tags only') },
       description: -> { s_('AppleAppStore|Set variables on protected branches and tags only.') },
-      checkbox_label: -> { s_('AppleAppStore|Set variables on protected branches and tags only.') }
+      checkbox_label: -> { s_('AppleAppStore|Set variables on protected branches and tags only') }
 
     def self.title
       'Apple App Store Connect'

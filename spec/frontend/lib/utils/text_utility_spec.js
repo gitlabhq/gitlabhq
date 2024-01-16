@@ -42,6 +42,14 @@ describe('text_utility', () => {
     it('returns string with first letter capitalized', () => {
       expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
+
+    it('returns empty string when given string is empty', () => {
+      expect(textUtils.capitalizeFirstCharacter('')).toEqual('');
+    });
+
+    it('returns empty string when given string is invalid', () => {
+      expect(textUtils.capitalizeFirstCharacter(undefined)).toEqual('');
+    });
   });
 
   describe('slugify', () => {

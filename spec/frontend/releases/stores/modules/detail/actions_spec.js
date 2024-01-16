@@ -4,6 +4,7 @@ import testAction from 'helpers/vuex_action_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { getTag } from '~/api/tags_api';
 import { createAlert } from '~/alert';
+import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import AccessorUtilities from '~/lib/utils/accessor';
 import { s__ } from '~/locale';
@@ -103,6 +104,38 @@ describe('Release edit/new actions', () => {
       it('with saved release, loads the release from local storage', () => {
         const release = {
           tagName: 'v1.3',
+          tagMessage: 'hello',
+          name: '',
+          description: '',
+          milestones: [],
+          groupMilestones: [],
+          releasedAt: new Date(),
+          assets: {
+            links: [],
+          },
+        };
+        const createFrom = 'main';
+
+        window.localStorage.setItem(`${state.projectPath}/release/new`, JSON.stringify(release));
+        window.localStorage.setItem(
+          `${state.projectPath}/release/new/createFrom`,
+          JSON.stringify(createFrom),
+        );
+
+        return testAction({
+          action: actions.loadDraftRelease,
+          state,
+          expectedMutations: [
+            { type: types.INITIALIZE_RELEASE, payload: release },
+            { type: types.UPDATE_CREATE_FROM, payload: createFrom },
+          ],
+          expectedActions: [{ type: 'fetchTagNotes', payload: release.tagName }],
+        });
+      });
+
+      it('with no tag name, does not fetch tag information', () => {
+        const release = {
+          tagName: '',
           tagMessage: 'hello',
           name: '',
           description: '',
@@ -988,6 +1021,7 @@ describe('Release edit/new actions', () => {
 
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });
+
     it('creates an alert on error', async () => {
       error = new Error();
       getTag.mockRejectedValue(error);
@@ -1005,6 +1039,24 @@ describe('Release edit/new actions', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: s__('Release|Unable to fetch the tag notes.'),
       });
+      expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
+    });
+
+    it('assumes creating a tag on 404', async () => {
+      error = { response: { status: HTTP_STATUS_NOT_FOUND } };
+      getTag.mockRejectedValue(error);
+
+      await testAction({
+        action: actions.fetchTagNotes,
+        payload: tagName,
+        state,
+        expectedMutations: [
+          { type: types.REQUEST_TAG_NOTES },
+          { type: types.RECEIVE_TAG_NOTES_SUCCESS, payload: {} },
+        ],
+        expectedActions: [{ type: 'setNewTag' }, { type: 'setCreating' }],
+      });
+
       expect(getTag).toHaveBeenCalledWith(state.projectId, tagName);
     });
   });

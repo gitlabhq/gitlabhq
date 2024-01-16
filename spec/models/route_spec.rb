@@ -74,7 +74,7 @@ RSpec.describe Route do
     let!(:another_group) { create(:group, path: 'gittlab', name: 'gitllab') }
     let!(:another_group_nested) { create(:group, path: 'git_lab', name: 'git_lab', parent: another_group) }
 
-    context 'path update' do
+    shared_examples_for 'path update' do
       context 'when route name is set' do
         before do
           route.update!(path: 'bar')
@@ -116,7 +116,7 @@ RSpec.describe Route do
       end
     end
 
-    context 'name update' do
+    shared_examples_for 'name update' do
       it 'updates children routes with new path' do
         route.update!(name: 'bar')
 
@@ -133,6 +133,18 @@ RSpec.describe Route do
         expect { route.update!(name: 'bar') }
           .to change { route.name }.from(nil).to('bar')
       end
+    end
+
+    it_behaves_like 'path update'
+    it_behaves_like 'name update'
+
+    context 'when the feature flag `batch_route_updates` if turned off' do
+      before do
+        stub_feature_flags(batch_route_updates: false)
+      end
+
+      it_behaves_like 'path update'
+      it_behaves_like 'name update'
     end
   end
 

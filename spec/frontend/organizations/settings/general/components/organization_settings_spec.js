@@ -5,7 +5,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import OrganizationSettings from '~/organizations/settings/general/components/organization_settings.vue';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
-import { FORM_FIELD_NAME, FORM_FIELD_ID } from '~/organizations/shared/constants';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_ID,
+  FORM_FIELD_AVATAR,
+  FORM_FIELD_DESCRIPTION,
+} from '~/organizations/shared/constants';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
 import {
   organizationUpdateResponse,
@@ -38,22 +43,33 @@ describe('OrganizationSettings', () => {
     },
   };
 
+  const file = new File(['foo'], 'foo.jpg', {
+    type: 'text/plain',
+  });
+
   const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
 
   const createComponent = ({
     handlers = [[organizationUpdateMutation, successfulResponseHandler]],
+    provide = {},
   } = {}) => {
     mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(OrganizationSettings, {
-      provide: defaultProvide,
+      provide: { ...defaultProvide, ...provide },
       apolloProvider: mockApollo,
     });
   };
 
   const findForm = () => wrapper.findComponent(NewEditForm);
-  const submitForm = async () => {
-    findForm().vm.$emit('submit', { name: 'Foo bar', path: 'foo-bar' });
+  const submitForm = async (data = {}) => {
+    findForm().vm.$emit('submit', {
+      name: 'Foo bar',
+      path: 'foo-bar',
+      description: 'Foo bar description',
+      avatar: file,
+      ...data,
+    });
     await nextTick();
   };
 
@@ -75,7 +91,7 @@ describe('OrganizationSettings', () => {
     expect(findForm().props()).toMatchObject({
       loading: false,
       initialFormValues: defaultProvide.organization,
-      fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID],
+      fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
     });
   });
 
@@ -108,6 +124,8 @@ describe('OrganizationSettings', () => {
           input: {
             id: 'gid://gitlab/Organizations::Organization/1',
             name: 'Foo bar',
+            description: 'Foo bar description',
+            avatar: file,
           },
         });
         expect(visitUrlWithAlerts).toHaveBeenCalledWith(window.location.href, [
@@ -159,6 +177,49 @@ describe('OrganizationSettings', () => {
           expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
             organizationUpdateResponseWithErrors.data.organizationUpdate.errors,
           );
+        });
+      });
+    });
+
+    describe('when organization has avatar', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: { organization: { ...defaultProvide.organization, avatar: 'avatar.jpg' } },
+        });
+      });
+
+      describe('when avatar is explicitly removed', () => {
+        beforeEach(async () => {
+          await submitForm({ avatar: null });
+          await waitForPromises();
+        });
+
+        it('sets `avatar` argument to `null`', () => {
+          expect(successfulResponseHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/Organizations::Organization/1',
+              name: 'Foo bar',
+              description: 'Foo bar description',
+              avatar: null,
+            },
+          });
+        });
+      });
+
+      describe('when avatar is not changed', () => {
+        beforeEach(async () => {
+          await submitForm({ avatar: 'avatar.jpg' });
+          await waitForPromises();
+        });
+
+        it('does not pass `avatar` argument', () => {
+          expect(successfulResponseHandler).toHaveBeenCalledWith({
+            input: {
+              id: 'gid://gitlab/Organizations::Organization/1',
+              name: 'Foo bar',
+              description: 'Foo bar description',
+            },
+          });
         });
       });
     });

@@ -81,9 +81,9 @@ Metric definitions can have one of the following values for `value_type`:
 - `number`
 - `string`
 - `object`: A metric with `value_type: object` must have `value_json_schema` with a link to the JSON schema for the object.
-In general, we avoid complex objects and prefer one of the `boolean`, `number`, or `string` value types.
-An example of a metric that uses `value_type: object` is `topology` (`/config/metrics/settings/20210323120839_topology.yml`),
-which has a related schema in `/config/metrics/objects_schemas/topology_schema.json`.
+  In general, we avoid complex objects and prefer one of the `boolean`, `number`, or `string` value types.
+  An example of a metric that uses `value_type: object` is `topology` (`/config/metrics/settings/20210323120839_topology.yml`),
+  which has a related schema in `/config/metrics/objects_schemas/topology_schema.json`.
 
 ### Metric `time_frame`
 

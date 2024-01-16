@@ -46,6 +46,9 @@ export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
+export const NAMESPACE_GROUP = 'group';
+export const NAMESPACE_PROJECT = 'project';
+
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
 export const i18n = {
@@ -91,10 +94,13 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
-export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__('WorkItem|Search existing items');
+export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
+  'WorkItem|Search existing items, paste URL, or enter reference ID',
+);
 export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
   'WorkItem|Something went wrong while fetching the %{workItemType}. Please try again.',
 );
+export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
   'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
 );
@@ -195,6 +201,8 @@ export const WORK_ITEMS_TYPE_MAP = {
 export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
+  [WORK_ITEM_TYPE_VALUE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
 };
 
 export const WORK_ITEMS_TREE_TEXT_MAP = {
@@ -208,9 +216,14 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
       'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
     ),
   },
+  [WORK_ITEM_TYPE_VALUE_EPIC]: {
+    title: s__('WorkItem|Child items'),
+    empty: s__('WorkItem|No epics or issues are currently assigned.'),
+  },
 };
 
 export const WORK_ITEM_NAME_TO_ICON_MAP = {
+  Epic: 'epic',
   Issue: 'issue-type-issue',
   Task: 'issue-type-task',
   Objective: 'issue-type-objective',

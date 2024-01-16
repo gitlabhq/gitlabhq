@@ -130,6 +130,10 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 
 Use **AI**. Do not spell out **artificial intelligence**.
 
+## AI-powered DevSecOps platform
+
+If preceded by GitLab, capitalize **Platform**. For example, the GitLab AI-powered DevSecOps Platform.
+
 ## air gap, air-gapped
 
 Use **offline environment** to describe installations that have physical barriers or security policies that prevent or limit internet access. Do not use **air gap**, **air gapped**, or **air-gapped**. For example:
@@ -238,6 +242,22 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 Use **text box** to refer to the UI field. Do not use **field** or **box**. For example:
 
 - In the **Variable name** text box, enter a value.
+
+## branch
+
+Use **branch** by itself to describe a branch. For specific branches, use these terms only:
+
+- **default branch**: The primary branch in the repository. Users can use the UI to set the default
+  branch. For examples that use the default branch, use `main` instead of [`master`](#master).
+- **source branch**: The branch you're merging from.
+- **target branch**: The branch you're merging to.
+- **current branch**: The branch you have checked out.
+  This branch might be the default branch, a branch you've created, a source branch, or some other branch.
+
+Do not use the terms **feature branch** or **merge request branch**. Be as specific as possible. For example:
+
+- The branch you have checked out...
+- The branch you added commits to...
 
 ## bullet
 
@@ -428,13 +448,6 @@ Instead of:
 - Data are collected.
 - The data show a performance increase.
 
-## default branch
-
-Use **default branch** to refer generically to the primary branch in the repository.
-Users can set the default branch by using a UI setting.
-
-For examples that use the default branch, use `main` instead of [`master`](#master).
-
 ## delete
 
 Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
@@ -463,6 +476,10 @@ When writing about the Developer role:
   - Instead of: the Developer role or higher
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
+
+## DevSecOps platform
+
+If preceded by GitLab, capitalize **Platform**. For example, the GitLab DevSecOps Platform.
 
 ## dialog
 
@@ -660,6 +677,10 @@ For example, use:
 Instead of:
 
 - Use the merge request feature to incorporate changes into the target branch.
+
+## feature branch
+
+Do not use **feature branch**. See [branch](#branch).
 
 ## field
 
@@ -1083,7 +1104,7 @@ Do not use **manpower**. Use words like **workforce** or **GitLab team members**
 
 ## master
 
-Do not use `master`. Use `main` when you need a sample [default branch name](#default-branch).
+Do not use **master**. Use **main** when you need a sample [default branch name](#branch).
 ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
 ## may, might
@@ -1114,6 +1135,10 @@ For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.c
 
 When you add a [user account](#user-account) to a group or project,
 the user account becomes a **member**.
+
+## merge request branch
+
+Do not use **merge request branch**. See [branch](#branch).
 
 ## merge requests
 
@@ -1570,7 +1595,7 @@ Searching is different from [filtering](#filter).
 When referring to the subscription billing model:
 
 - For GitLab SaaS, use **seats**. Customers purchase seats. Users occupy seats when they are invited
-to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
+  to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
 - For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section

@@ -147,7 +147,7 @@ To add or update variables in the project settings:
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
-After you create a variable, you can use it in the [`.gitlab-ci.yml` configuration](../yaml/index.md)
+After you create a variable, you can use it in the pipeline configuration
 or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 ### For a group
@@ -244,7 +244,7 @@ malicious code can compromise both masked and protected variables.
 
 Variable values are encrypted using [`aes-256-cbc`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 and stored in the database. This data can only be read and decrypted with a
-valid [secrets file](../../administration/backup_restore/backup_gitlab.md#when-the-secrets-file-is-lost).
+valid [secrets file](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Mask a CI/CD variable
 
@@ -638,7 +638,7 @@ To disable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
-> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default.
+> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
 
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines
@@ -967,4 +967,4 @@ As a workaround you can either:
 
 - Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
 - If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
-bring the file to the job through some other mechanism.
+  bring the file to the job through some other mechanism.

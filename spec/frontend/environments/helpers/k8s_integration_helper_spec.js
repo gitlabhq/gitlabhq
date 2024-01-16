@@ -1,5 +1,4 @@
 import {
-  generateServicePortsString,
   getDeploymentsStatuses,
   getDaemonSetStatuses,
   getStatefulSetStatuses,
@@ -12,35 +11,6 @@ import {
 import { CLUSTER_AGENT_ERROR_MESSAGES } from '~/environments/constants';
 
 describe('k8s_integration_helper', () => {
-  describe('generateServicePortsString', () => {
-    const port = '8080';
-    const protocol = 'TCP';
-    const nodePort = '31732';
-
-    it('returns empty string if no ports provided', () => {
-      expect(generateServicePortsString([])).toBe('');
-    });
-
-    it('returns port and protocol when provided', () => {
-      expect(generateServicePortsString([{ port, protocol }])).toBe(`${port}/${protocol}`);
-    });
-
-    it('returns port, protocol and nodePort when provided', () => {
-      expect(generateServicePortsString([{ port, protocol, nodePort }])).toBe(
-        `${port}:${nodePort}/${protocol}`,
-      );
-    });
-
-    it('returns joined strings of ports if multiple are provided', () => {
-      expect(
-        generateServicePortsString([
-          { port, protocol },
-          { port, protocol, nodePort },
-        ]),
-      ).toBe(`${port}/${protocol}, ${port}:${nodePort}/${protocol}`);
-    });
-  });
-
   describe('getDeploymentsStatuses', () => {
     const pending = {
       status: {

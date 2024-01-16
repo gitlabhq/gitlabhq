@@ -14,6 +14,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
+import { ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import { STATUS_CLOSED, TYPE_ISSUE, issuableTypeText } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -195,6 +196,12 @@ export default {
         text: __('Submit as spam'),
         href: this.submitAsSpamPath,
       };
+    },
+    editShortcutKey() {
+      return ISSUABLE_EDIT_DESCRIPTION.defaultKeys[0];
+    },
+    editTooltip() {
+      return `${this.$options.i18n.editTitleAndDescription} <kbd class="glat gl-ml-1" aria-hidden=true>${this.editShortcutKey}</kbd>`;
     },
   },
   created() {
@@ -395,9 +402,10 @@ export default {
 
     <gl-button
       v-if="canUpdateIssue"
-      v-gl-tooltip.bottom
-      :title="$options.i18n.editTitleAndDescription"
+      v-gl-tooltip.viewport.html
+      :title="editTooltip"
       :aria-label="$options.i18n.editTitleAndDescription"
+      :aria-keyshortcuts="editShortcutKey"
       class="js-issuable-edit gl-display-none! gl-md-display-block!"
       data-testid="edit-button"
       @click="edit"

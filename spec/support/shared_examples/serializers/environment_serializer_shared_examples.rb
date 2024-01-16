@@ -12,7 +12,7 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     # See also: https://gitlab.com/gitlab-org/gitlab/-/issues/373151
     relax_count = 4
 
-    expect { serialize(grouping: true) }.not_to exceed_query_limit(control.count + relax_count)
+    expect { serialize(grouping: true) }.not_to exceed_query_limit(control).with_threshold(relax_count)
   end
 
   it 'avoids N+1 database queries without grouping', :request_store do
@@ -27,7 +27,7 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     # See also: https://gitlab.com/gitlab-org/gitlab/-/issues/373151
     relax_count = 5
 
-    expect { serialize(grouping: false) }.not_to exceed_query_limit(control.count + relax_count)
+    expect { serialize(grouping: false) }.not_to exceed_query_limit(control).with_threshold(relax_count)
   end
 
   it 'does not preload for environments that does not exist in the page', :request_store do

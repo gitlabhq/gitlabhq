@@ -12,7 +12,7 @@ RSpec.describe "Gitlab::Experiment", :js, feature_category: :activation do
   before do
     admin = create(:admin)
     sign_in(admin)
-    gitlab_enable_admin_mode_sign_in(admin)
+    enable_admin_mode!(admin)
     stub_experiments(null_hypothesis: :candidate)
   end
 
