@@ -46,7 +46,7 @@
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm }
+              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm, class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if moved_mr_sidebar_enabled?

@@ -225,3 +225,23 @@ HTTP redirects are not followed and omitting `.git` can result in a 301 error:
 ```plaintext
 13:fetch remote: "fatal: unable to access 'https://gitlab.com/group/project': The requested URL returned error: 301\n": exit status 128.
 ```
+
+## Push mirror from GitLab instance to Geo secondary fails: `The requested URL returned error: 302`
+
+Push mirroring of a GitLab repository using the HTTP or HTTPS protocols fails when the destination
+is a Geo secondary node due to the proxying of the push request to the Geo primary node,
+and the following error is displayed:
+
+```plaintext
+13:get remote references: create git ls-remote: exit status 128, stderr: "fatal: unable to access 'https://gitlab.example.com/group/destination.git/': The requested URL returned error: 302".
+```
+
+This occurs when a Geo unified URL is configured and the target host name resolves to the secondary node's IP address.
+
+The error can be avoided by:
+
+- Configuring the push mirror to use the SSH protocol. However, the repository must not contain any
+  LFS objects, which are always transferred over HTTP or HTTPS and are still redirected.
+- Using a reverse proxy to direct all requests from the source instance to the primary Geo node.
+- Adding a local `hosts` file entry on the source to force the target host name to resolve to the Geo primary node's IP address.
+- Configuring a pull mirror on the target instead.

@@ -1,0 +1,34 @@
+# This is a template for a "Whats New" release.
+# A release typically contains multiple entries of features that we'd like to highlight.
+#
+# Below is an example of what a single entry should look like, it's required attributes,
+# and what types we expect those attribute values to be. All attributes are required.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/index.html#create-mr-for-whats-new-entries
+#
+# Please delete this line and above before submitting your merge request.
+
+- name: GCP Secret Manager support # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
+    Secrets stored in GCP Secrets Manager can now be easily retrieved and used in CI/CD jobs. Our new integration simplifies the process of interacting with GCP Secrets Manager through GitLab CI/CD, helping you streamline your build and deploy processes! This is just one of the many ways [GitLab and Google Cloud are better together](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/)!
+  stage: Verify # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true  # Boolean value (true or false)
+  gitlab-com: true # Boolean value (true or false)
+  available_in: [Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/secrets/gcp_secret_manager.html # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://about.gitlab.com/images/16_8/gcp_secrets_mgr.png # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-01-18 # YYYY-MM-DD
+  release: 16.8 # XX.Y
+
+- name: Enforce 2FA for GitLab administrators # Match the release post entry
+  description: |  # Do not modify this line, instead modify the lines below.
+    You can now enforce whether GitLab administrators are required to use two-factor authentication (2FA) in their self-managed instance. It is good security practice to use 2FA for all accounts, especially for privileged accounts like administrators. If this setting is enforced, and an administrator does not already use 2FA, they must set 2FA up on their next sign-in.
+  stage: Govern # String value of the stage that the feature was created in. e.g., Growth
+  self-managed: true # Boolean value (true or false)
+  gitlab-com: false # Boolean value (true or false)
+  available_in: [Free, Premium, Ultimate] # Array of strings. The Array brackets are required here. e.g., [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/security/two_factor_authentication.html#enforce-2fa-for-administrator-users # This is the documentation URL, but can be a URL to a video if there is one
+  image_url: https://img.youtube.com/vi/fHleeXzoB6k/hqdefault.jpg # This should be a full URL, generally taken from the release post content. If a video, use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  published_at: 2024-01-18 # YYYY-MM-DD
+  release: 16.8 # XX.Y

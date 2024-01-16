@@ -38414,7 +38414,7 @@ msgstr ""
 msgid "ProjectSettings|Configure your infrastructure."
 msgstr ""
 
-msgid "ProjectSettings|Connect your instance"
+msgid "ProjectSettings|Configure your instance"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
@@ -38615,7 +38615,7 @@ msgstr ""
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr ""
 
-msgid "ProjectSettings|Override instance analytics configuration for this project"
+msgid "ProjectSettings|Override the instance analytics configuration for this project."
 msgstr ""
 
 msgid "ProjectSettings|Package registry"
@@ -40537,6 +40537,12 @@ msgid "Remote object has no absolute path."
 msgstr ""
 
 msgid "RemoteDevelopment|Workspaces"
+msgstr ""
+
+msgid "RemoteDevelopment|You cannot create a workspace because there are already \"%{count}\" existing workspaces for the given agent with a total quota of \"%{quota}\" workspaces"
+msgstr ""
+
+msgid "RemoteDevelopment|You cannot create a workspace because you already have \"%{count}\" existing workspaces for the given agent with a per user quota of \"%{quota}\" workspaces"
 msgstr ""
 
 msgid "Remove"

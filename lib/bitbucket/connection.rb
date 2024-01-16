@@ -24,13 +24,9 @@ module Bitbucket
     def get(path, extra_query = {})
       refresh! if expired?
 
-      response = if Feature.enabled?(:bitbucket_importer_exponential_backoff)
-                   retry_with_exponential_backoff do
-                     connection.get(build_url(path), params: @default_query.merge(extra_query))
-                   end
-                 else
-                   connection.get(build_url(path), params: @default_query.merge(extra_query))
-                 end
+      response = retry_with_exponential_backoff do
+        connection.get(build_url(path), params: @default_query.merge(extra_query))
+      end
 
       response.parsed
     end

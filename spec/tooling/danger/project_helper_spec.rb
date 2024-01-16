@@ -120,6 +120,7 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
 
       'db/schema.rb'                                                                   | [:database]
       'db/structure.sql'                                                               | [:database]
+      'db/docs/example.yml'                                                            | [:database]
       'db/migrate/foo'                                                                 | [:database]
       'db/post_migrate/foo'                                                            | [:database]
       'ee/db/geo/migrate/foo'                                                          | [:database]

@@ -1086,105 +1086,157 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
   context 'for updating organization_users' do
     let_it_be(:group) { create(:group, :with_organization) }
-    let(:member) { create(:group_member, source: group) }
     let(:update_organization_users_enabled) { true }
 
+    subject(:commit_member) { member }
+
     before do
+      allow(Organizations::OrganizationUser).to receive(:upsert).once.and_call_original
       stub_feature_flags(update_organization_users: update_organization_users_enabled)
-    end
-
-    context 'when update_organization_users is enabled' do
-      it 'inserts new record on member creation' do
-        expect { member }.to change { Organizations::OrganizationUser.count }.by(1)
-        record_attrs = { organization: group.organization, user: member.user, access_level: :default }
-        expect(Organizations::OrganizationUser.exists?(record_attrs)).to be(true)
-      end
-
-      context 'when user already exists in the organization_users' do
-        context 'for an already existing default organization_user' do
-          let_it_be(:project) { create(:project, group: group, organization: group.organization) }
-
-          before do
-            member
-          end
-
-          it 'does not insert a new record in organization_users' do
-            expect do
-              create(:project_member, :owner, source: project, user: member.user)
-            end.not_to change { Organizations::OrganizationUser.count }
-
-            expect(
-              Organizations::OrganizationUser.exists?(
-                organization: project.organization, user: member.user, access_level: :default
-              )
-            ).to be(true)
-          end
-
-          it 'does not update timestamps' do
-            travel_to(1.day.from_now) do
-              expect do
-                create(:project_member, :owner, source: project, user: member.user)
-              end.not_to change { Organizations::OrganizationUser.last.updated_at }
-            end
-          end
-        end
-
-        context 'for an already existing owner organization_user' do
-          let_it_be(:user) { create(:user) }
-          let_it_be(:common_attrs) { { organization: group.organization, user: user } }
-
-          before_all do
-            create(:organization_user, :owner, common_attrs)
-          end
-
-          it 'does not insert a new record in organization_users nor update the access_level' do
-            expect do
-              create(:group_member, :owner, source: group, user: user)
-            end.not_to change { Organizations::OrganizationUser.count }
-
-            expect(
-              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :default))
-            ).to be(false)
-            expect(
-              Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :owner))
-            ).to be(true)
-          end
-        end
-      end
-
-      context 'when updating the organization_users is not successful' do
-        it 'rolls back the member creation' do
-          allow(Organizations::OrganizationUser).to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
-
-          expect { member }.to raise_error(ActiveRecord::StatementTimeout)
-          expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
-          expect(group.group_members).to be_empty
-        end
-      end
     end
 
     shared_examples_for 'does not create an organization_user entry' do
       specify do
-        expect { member }.not_to change { Organizations::OrganizationUser.count }
+        expect { commit_member }.not_to change { Organizations::OrganizationUser.count }
       end
     end
 
-    context 'when update_organization_users is disabled' do
-      let(:update_organization_users_enabled) { false }
+    context 'when creating' do
+      let(:member) { create(:group_member, source: group) }
 
-      it_behaves_like 'does not create an organization_user entry'
+      context 'when update_organization_users is enabled' do
+        it 'inserts new record on member creation' do
+          expect { member }.to change { Organizations::OrganizationUser.count }.by(1)
+          record_attrs = { organization: group.organization, user: member.user, access_level: :default }
+          expect(Organizations::OrganizationUser.exists?(record_attrs)).to be(true)
+        end
+
+        context 'when user already exists in the organization_users' do
+          let_it_be(:user) { create(:user) }
+          let_it_be(:common_attrs) { { organization: group.organization, user: user } }
+          let(:new_member) { create(:group_member, :owner, source: group, user: user) }
+
+          context 'for an already existing default organization_user' do
+            before_all do
+              create(:organization_user, common_attrs)
+            end
+
+            it 'does not insert a new record in organization_users' do
+              expect { new_member }.not_to change { Organizations::OrganizationUser.count }
+              expect(
+                Organizations::OrganizationUser.exists?(
+                  organization: group.organization, user: user, access_level: :default
+                )
+              ).to be(true)
+            end
+
+            it 'does not update timestamps' do
+              travel_to(1.day.from_now) do
+                expect { new_member }.not_to change { Organizations::OrganizationUser.last.updated_at }
+              end
+            end
+          end
+
+          context 'for an already existing owner organization_user' do
+            before_all do
+              create(:organization_user, :owner, common_attrs)
+            end
+
+            it 'does not insert a new record in organization_users nor update the access_level' do
+              expect do
+                create(:group_member, :owner, source: group, user: user)
+              end.not_to change { Organizations::OrganizationUser.count }
+
+              expect(
+                Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :default))
+              ).to be(false)
+              expect(
+                Organizations::OrganizationUser.exists?(common_attrs.merge(access_level: :owner))
+              ).to be(true)
+            end
+          end
+        end
+
+        context 'when updating the organization_users is not successful' do
+          it 'rolls back the member creation' do
+            allow(Organizations::OrganizationUser).to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
+
+            expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+            expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
+            expect(group.group_members).to be_empty
+          end
+        end
+      end
+
+      context 'when update_organization_users is disabled' do
+        let(:update_organization_users_enabled) { false }
+
+        it_behaves_like 'does not create an organization_user entry'
+      end
+
+      context 'when member is an invite' do
+        let(:member) { create(:group_member, :invited, source: group) }
+
+        it_behaves_like 'does not create an organization_user entry'
+      end
+
+      context 'when organization does not exist' do
+        let(:member) { create(:group_member) }
+
+        it_behaves_like 'does not create an organization_user entry'
+      end
     end
 
-    context 'when member is an invite' do
-      let(:member) { create(:group_member, :invited, source: group) }
+    context 'when updating' do
+      context 'when member is an invite' do
+        let_it_be(:member, reload: true) { create(:group_member, :invited, source: group) }
 
-      it_behaves_like 'does not create an organization_user entry'
-    end
+        context 'when accepting the invite' do
+          let_it_be(:user) { create(:user) }
 
-    context 'when organization does not exist' do
-      let(:member) { create(:group_member) }
+          subject(:commit_member) { member.accept_invite!(user) }
 
-      it_behaves_like 'does not create an organization_user entry'
+          context 'when update_organization_users is enabled' do
+            it 'inserts new record on member creation' do
+              expect { commit_member }.to change { Organizations::OrganizationUser.count }.by(1)
+              expect(group.organization.user?(user)).to be(true)
+            end
+
+            context 'when updating the organization_users is not successful' do
+              before do
+                allow(Organizations::OrganizationUser)
+                  .to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
+              end
+
+              it 'rolls back the member creation' do
+                expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
+                expect(group.organization.user?(user)).to be(false)
+                expect(member.reset.user).to be_nil
+              end
+            end
+          end
+
+          context 'when update_organization_users is disabled' do
+            let(:update_organization_users_enabled) { false }
+
+            it_behaves_like 'does not create an organization_user entry'
+          end
+
+          context 'when organization does not exist' do
+            let_it_be(:member) { create(:group_member) }
+
+            it_behaves_like 'does not create an organization_user entry'
+          end
+        end
+      end
+
+      context 'when updating a non user_id attribute' do
+        let_it_be(:member) { create(:group_member, :reporter, source: group) }
+
+        subject(:commit_member) { member.update!(access_level: GroupMember::DEVELOPER) }
+
+        it_behaves_like 'does not create an organization_user entry'
+      end
     end
   end
 

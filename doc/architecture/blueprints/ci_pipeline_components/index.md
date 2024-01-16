@@ -664,6 +664,38 @@ For example: index the content of `spec:` section for CI components.
 
 See an [example of development workflow](dev_workflow.md) for a components repository.
 
+### GitLab-maintained catalog resources
+
+GitLab provides catalog resources for all SaaS projects to use. To communicate a clear ownership
+such projects will be located inside `components` top-level group.
+Additionally, we will mark those projects as `Verified creator` to increase trust.
+
+The `components` group is not just a development space but also a feature of GitLab product.
+Users anywhere in GitLab can reference components located inside this group.
+
+Each project under `components` must be owned explicitly by the team that owns
+the related product category. For example: components related to SAST are owned by the team that
+maintains the SAST product.
+
+Other main alternatives considered were:
+
+- A subgroup `gitlab-org/gitlab-components`.
+  - This had the advantage of clarifying who owns this group (GitLab organization).
+  - The disadvantage where verbose path and the fact that components are also features
+    of the product and deserve a short-hand path. In addition, components from SaaS should
+    be importable on self-managed instances and having a `gitlab-org` origin group makes it
+    confusing and more sensitive to naming conflicts.
+- A new top-level group `gitlab-components`.
+  - This had the advantage of having a less verbose path but the `gitlab-` prefix was redundant.
+  - This requires AppSec to duplicate security and compliance standards that are
+    already applied to existing GitLab groups. We still ended up doing this for the `components`
+    group but the tradeoff was that `components` group is part of GitLab features and deserves
+    a separate dev environment than `gitlab-org`.
+- The existing `gitlab-community/cicd-components` which is used by community contributors.
+  - The advantage was that AppSec already has controls the security and compliance for this group.
+  - The disadvantage is that `gitlab-community` mainly contains forks from `gitlab-org` and
+    this could be confusing.
+
 ## Implementation guidelines
 
 - Start with the smallest user base. Dogfood the feature for `gitlab-org` and
