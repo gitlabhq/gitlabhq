@@ -86,21 +86,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
-  describe '.with_confidentiality_check' do
-    let(:user) { create(:user) }
-    let!(:authored_work_item) { create(:work_item, :confidential, project: reusable_project, author: user) }
-    let!(:assigned_work_item) { create(:work_item, :confidential, project: reusable_project, assignees: [user]) }
-    let!(:public_work_item) { create(:work_item, project: reusable_project) }
-
-    before do
-      create(:work_item, :confidential, project: reusable_project)
-    end
-
-    subject { described_class.with_confidentiality_check(user) }
-
-    it { is_expected.to contain_exactly(public_work_item, authored_work_item, assigned_work_item) }
-  end
-
   describe '#noteable_target_type_name' do
     it 'returns `issue` as the target name' do
       work_item = build(:work_item)

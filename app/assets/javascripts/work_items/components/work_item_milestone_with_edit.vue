@@ -93,6 +93,12 @@ export default {
       }));
     },
   },
+  watch: {
+    workItemMilestone(newVal) {
+      this.localMilestone = newVal;
+      this.selectedMilestoneId = newVal?.id;
+    },
+  },
   apollo: {
     milestones: {
       query: projectMilestonesQuery,

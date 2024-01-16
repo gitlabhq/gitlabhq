@@ -26,17 +26,6 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
-  scope :with_confidentiality_check, ->(user) {
-    confidential_query = <<~SQL
-      issues.confidential = FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)))
-    SQL
-
-    where(confidential_query, user_id: user.id)
-  }
-
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)

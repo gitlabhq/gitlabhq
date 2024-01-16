@@ -130,6 +130,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.new_merge_request_email(user.id, merge_request.id).message
   end
 
+  def new_ssh_key_email
+    cleanup do
+      Notify.new_ssh_key_email(key.id).message
+    end
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, merge_request.id, user.id).message
   end
@@ -418,6 +424,14 @@ class NotifyPreview < ActionMailer::Preview
 
   def member
     @member ||= Member.last
+  end
+
+  def key
+    @key ||= find_or_create_key
+  end
+
+  def find_or_create_key
+    Key.last || Keys::CreateService.new(user).execute
   end
 
   def create_note(params)

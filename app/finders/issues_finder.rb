@@ -113,15 +113,25 @@ class IssuesFinder < IssuableFinder
   def by_parent(items)
     return super unless include_namespace_level_work_items?
 
-    items.in_namespaces(
-      Namespace.from_union(
-        [
-          Group.id_in(params.group).select(:id),
-          params.projects.select(:project_namespace_id)
-        ],
-        remove_duplicates: false
-      )
-    )
+    relations = [group_namespaces, project_namespaces].compact
+
+    namespaces = if relations.one?
+                   relations.first
+                 else
+                   Namespace.from_union(relations, remove_duplicates: false)
+                 end
+
+    items.in_namespaces(namespaces)
+  end
+
+  def group_namespaces
+    return if params[:project_id] || params[:projects]
+
+    Group.id_in(params.group).select(:id)
+  end
+
+  def project_namespaces
+    params.projects.select(:project_namespace_id)
   end
 
   def by_confidential(items)
@@ -174,9 +184,7 @@ class IssuesFinder < IssuableFinder
   end
 
   def include_namespace_level_work_items?
-    params.group? &&
-      Array(params[:issue_types]).map(&:to_s).include?('epic') &&
-      Feature.enabled?(:namespace_level_work_items, params.group)
+    params.group? && Feature.enabled?(:namespace_level_work_items, params.group)
   end
 end
 

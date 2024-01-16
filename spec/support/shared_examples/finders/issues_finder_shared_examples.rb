@@ -22,18 +22,10 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           it 'returns no items' do
             expect(items).to be_empty
           end
-
-          context 'when there are group-level work items' do
-            let!(:group_work_item) { create(:work_item, namespace: create(:group)) }
-
-            it 'returns no items' do
-              expect(items).to be_empty
-            end
-          end
         end
 
         context 'when filtering by group id' do
-          let(:params) { { group_id: group.id } }
+          let(:params) { { group_id: subgroup.id } }
 
           it 'returns no items' do
             expect(items).to be_empty
@@ -216,7 +208,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
         context 'when include_subgroup param not set' do
           it 'returns all group items' do
-            expect(items).to contain_exactly(item1, item5)
+            expect(items).to contain_exactly(item1, item5, group_level_item)
           end
 
           context 'when projects outside the group are passed' do
@@ -247,7 +239,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             let(:params) { { group_id: group.id, release_tag: 'dne-release-tag' } }
 
             it 'ignores the release_tag parameter' do
-              expect(items).to contain_exactly(item1, item5)
+              expect(items).to contain_exactly(item1, item5, group_level_item)
             end
           end
         end
@@ -258,7 +250,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
 
           it 'returns all group and subgroup items' do
-            expect(items).to contain_exactly(item1, item4, item5)
+            expect(items).to contain_exactly(item1, item4, item5, group_level_item)
           end
 
           context 'when mixed projects are passed' do
@@ -270,31 +262,23 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
         end
 
-        context 'when querying group-level items' do
-          let(:params) { { group_id: group.id, issue_types: %w[issue epic] } }
-
-          it 'includes group-level items' do
-            expect(items).to contain_exactly(item1, item5, group_level_item)
+        context 'when user has access to confidential items' do
+          before do
+            group.add_reporter(user)
           end
 
-          context 'when user has access to confidential items' do
-            before do
-              group.add_reporter(user)
-            end
+          it 'includes confidential group-level items' do
+            expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
+          end
+        end
 
-            it 'includes confidential group-level items' do
-              expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
-            end
+        context 'when namespace_level_work_items is disabled' do
+          before do
+            stub_feature_flags(namespace_level_work_items: false)
           end
 
-          context 'when namespace_level_work_items is disabled' do
-            before do
-              stub_feature_flags(namespace_level_work_items: false)
-            end
-
-            it 'only returns project-level items' do
-              expect(items).to contain_exactly(item1, item5)
-            end
+          it 'only returns project-level items' do
+            expect(items).to contain_exactly(item1, item5)
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Mailer previews' do
+RSpec.describe 'Mailer previews', feature_category: :shared do
   # Setup needed for email previews
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :import_failed, group: group, import_last_error: 'some error') }
@@ -14,6 +14,7 @@ RSpec.describe 'Mailer previews' do
   let_it_be(:remote_mirror) { create(:remote_mirror, project: project) }
   let_it_be(:member) { create(:project_member, :maintainer, project: project, created_by: user) }
   let_it_be(:review) { create(:review, project: project, merge_request: merge_request, author: user) }
+  let_it_be(:key) { create(:key, user: user) }
 
   Gitlab.ee do
     let_it_be(:epic) { create(:epic, group: group) }
