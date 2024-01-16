@@ -32,8 +32,6 @@
 - ee/spec/features/groups/analytics/productivity_analytics_spec.rb
 - ee/spec/features/groups/member_roles_spec.rb
 - ee/spec/features/groups/members/list_members_spec.rb
-- ee/spec/features/groups/security/policies_list_spec.rb
-- ee/spec/features/groups/security/policy_editor_spec.rb
 - ee/spec/features/groups/usage_quotas/code_suggestions_usage_tab_spec.rb
 - ee/spec/features/groups/wikis_spec.rb
 - ee/spec/features/incidents/incident_details_spec.rb
@@ -89,8 +87,6 @@
 - ee/spec/features/projects/new_project_spec.rb
 - ee/spec/features/projects/path_locks_spec.rb
 - ee/spec/features/projects/push_rules_spec.rb
-- ee/spec/features/projects/security/policies_list_spec.rb
-- ee/spec/features/projects/security/policy_editor_spec.rb
 - ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb
 - ee/spec/features/projects/settings/merge_requests/user_manages_merge_requests_template_spec.rb
 - ee/spec/features/projects/settings/packages_spec.rb

@@ -16,7 +16,7 @@ Configure insights for your projects and groups to explore data such as:
 
 You can also create custom Insights reports that are relevant for your group.
 
-## View project insights
+## View insights
 
 Prerequisites:
 

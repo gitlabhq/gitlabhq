@@ -68,6 +68,7 @@ describe('import table', () => {
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
+  const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');
   const findAllImportStatuses = () => wrapper.findAllComponents(ImportStatus);
 
   const triggerSelectAllCheckbox = (checked = true) =>
@@ -626,6 +627,50 @@ describe('import table', () => {
       await selectRow(0);
 
       expect(findImportSelectedDropdown().props().disabled).toBe(false);
+    });
+
+    it('does not render import projects warning when target with isProjectCreationAllowed = true is selected', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      await selectRow(0);
+      await nextTick();
+
+      expect(findImportProjectsWarning().exists()).toBe(false);
+    });
+
+    it('renders import projects warning when target with isProjectCreationAllowed = false is selected', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [
+            {
+              ...generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+              lastImportTarget: {
+                id: 1,
+                targetNamespace: AVAILABLE_NAMESPACES[2].fullPath,
+                newName: 'does-not-matter',
+              },
+            },
+          ],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      await selectRow(0);
+      await nextTick();
+
+      expect(findImportProjectsWarning().props('name')).toBe('warning');
+      expect(findImportProjectsWarning().attributes('title')).toBe(
+        'Some groups will be imported without projects.',
+      );
     });
 
     it('does not allow selecting already started groups', async () => {

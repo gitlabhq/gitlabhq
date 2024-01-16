@@ -1931,6 +1931,12 @@ msgstr ""
 msgid "AIAgents|AI Agents"
 msgstr ""
 
+msgid "AIAgents|Agent name"
+msgstr ""
+
+msgid "AIAgents|An error has occurred when saving the agent."
+msgstr ""
+
 msgid "AIAgents|Create agent"
 msgstr ""
 
@@ -9115,6 +9121,9 @@ msgstr ""
 msgid "BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups."
 msgstr ""
 
+msgid "BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "BulkImport|Check that the source instance base URL and the personal access token meet the necessary requirements."
 msgstr ""
 
@@ -9224,6 +9233,9 @@ msgid "BulkImport|Showing %{start}-%{end} of %{total} that you own from %{link}"
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total} that you own matching filter \"%{filter}\" from %{link}"
+msgstr ""
+
+msgid "BulkImport|Some groups will be imported without projects."
 msgstr ""
 
 msgid "BulkImport|Source"
@@ -20196,6 +20208,9 @@ msgid "Expand merge details"
 msgstr ""
 
 msgid "Expand milestones"
+msgstr ""
+
+msgid "Expand project information"
 msgstr ""
 
 msgid "Expand settings section"
@@ -39412,6 +39427,9 @@ msgstr ""
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
+msgid "Prompt"
+msgstr ""
+
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
@@ -43877,6 +43895,12 @@ msgid "SecurityOrchestration|Add new action"
 msgstr ""
 
 msgid "SecurityOrchestration|Add new approver"
+msgstr ""
+
+msgid "SecurityOrchestration|Add protected branches"
+msgstr ""
+
+msgid "SecurityOrchestration|Add regular branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Add rule"

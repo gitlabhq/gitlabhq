@@ -41,6 +41,11 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it { is_expected.to define_enum_for(:state).with_values({ draft: 0, published: 1 }) }
 
+  it do
+    is_expected.to define_enum_for(:verification_level)
+      .with_values({ unverified: 0, gitlab: 1 })
+  end
+
   describe '.for_projects' do
     it 'returns catalog resources for the given project IDs' do
       resources_for_projects = described_class.for_projects(project_a.id)

@@ -16,6 +16,8 @@
  * </div>
  * <button class="js-read-more-trigger">Read more</button>
  *
+ * If data-read-more-height is present it will use it to determine if the button should be shown or not.
+ *
  */
 export default function initReadMore(triggerSelector = '.js-read-more-trigger') {
   const triggerEls = document.querySelectorAll(triggerSelector);
@@ -27,6 +29,24 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
 
     if (!targetEl) {
       return;
+    }
+
+    if (Object.hasOwn(triggerEl.parentNode.dataset, 'readMoreHeight')) {
+      const parentEl = triggerEl.parentNode;
+      const readMoreHeight = Number(parentEl.dataset.readMoreHeight);
+      const readMoreContent = parentEl.querySelector('.read-more-content');
+
+      if (readMoreContent) {
+        parentEl.style.setProperty('--read-more-height', `${readMoreHeight}px`);
+      }
+
+      if (readMoreHeight > readMoreContent.clientHeight) {
+        readMoreContent.classList.remove('read-more-content--has-scrim');
+        triggerEl.remove();
+        return;
+      }
+
+      triggerEl.classList.remove('gl-display-none');
     }
 
     triggerEl.addEventListener(

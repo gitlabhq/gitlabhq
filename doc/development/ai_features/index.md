@@ -458,7 +458,7 @@ module EE
   module IssuePolicy
     extend ActiveSupport::Concern
     prepended do
-      with_scope :subject
+      with_scope :global
       condition(:ai_available) do
         ::Feature.enabled?(:ai_global_switch, type: :ops)
       end

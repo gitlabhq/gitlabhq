@@ -29,6 +29,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 | Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [GitLab Duo Chat](gitlab_duo_chat.md) | **(ULTIMATE BETA)** |
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **(ULTIMATE SAAS EXPERIMENT)** |
 | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **(ULTIMATE ALL EXPERIMENT)** |
+| Processes and responds to your questions about your application's usage data. | [Product Analytics](product_analytics/index.md) | **(ULTIMATE SAAS EXPERIMENT)** |
 
 ## Enable AI/ML features
 

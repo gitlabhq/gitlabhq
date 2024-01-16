@@ -133,7 +133,7 @@ If you do not have an existing SSH key pair, generate a new one:
    Enter file in which to save the key (/home/user/.ssh/id_ed25519):
    ```
 
-1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/index.md)
+1. Accept the suggested file name and directory, unless you are generating a [deploy key](project/deploy_keys/index.md)
    or want to save in a specific directory where you store other keys.
 
    You can also dedicate the SSH key pair to a [specific host](#configure-ssh-to-point-to-a-different-directory).
@@ -254,7 +254,7 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
 1. Touch the button on the hardware security key.
 
-1. Accept the suggested filename and directory:
+1. Accept the suggested file name and directory:
 
    ```plaintext
    Enter file in which to save the key (/home/user/.ssh/id_ed25519_sk):
@@ -279,16 +279,17 @@ A public and private key are generated.
 You can use [1Password](https://1password.com/) and the [1Password browser extension](https://support.1password.com/getting-started-browser/) to either:
 
 - Automatically generate a new SSH key.
-- Use an existing SSH in your 1Password vault to authenticate with GitLab.
+- Use an existing SSH key in your 1Password vault to authenticate with GitLab.
 
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
+1. Select **Add new key**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.
 1. You can then select **Create SSH Key** or select an existing SSH key to fill in the public key.
-1. In the **Title** box, type a description, like `Work Laptop` or
+1. In the **Title** box, enter a description, like `Work Laptop` or
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
@@ -324,7 +325,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    cat ~/.ssh/id_ed25519.pub | clip
    ```
 
-   Replace `id_ed25519.pub` with your filename. For example, use `id_rsa.pub` for RSA.
+   Replace `id_ed25519.pub` with your file name. For example, use `id_rsa.pub` for RSA.
 
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.

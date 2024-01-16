@@ -17,6 +17,10 @@ export function isAvailableForImport(group) {
   return !group.progress || isFinished(group);
 }
 
+export function isProjectCreationAllowed(group) {
+  return Boolean(group.projectCreationLevel) && group.projectCreationLevel !== 'noone';
+}
+
 export function isSameTarget(importTarget) {
   return (target) =>
     target !== importTarget &&

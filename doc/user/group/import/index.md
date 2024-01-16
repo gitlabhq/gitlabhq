@@ -152,6 +152,14 @@ After migration:
 If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
+## Ensure projects can be imported
+
+You cannot import groups with projects when the source instance or group has **Default project creation protection** set to **No one**. If required, this setting can
+be changed:
+
+- For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+- For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
+
 ## Prerequisites
 
 > Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
@@ -217,7 +225,7 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**.
+   - **Import with projects**. If this is not available, see [Ensure projects can be imported](#ensure-projects-can-be-imported).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.

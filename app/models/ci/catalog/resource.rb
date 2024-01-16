@@ -21,6 +21,8 @@ module Ci
       has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
 
+      enum verification_level: { unverified: 0, gitlab: 1 }
+
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
 
       # The `search_vector` column contains a tsvector that has a greater weight on `name` than `description`.

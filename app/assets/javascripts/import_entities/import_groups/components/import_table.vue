@@ -33,7 +33,13 @@ import updateImportStatusMutation from '../graphql/mutations/update_import_statu
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
 import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
-import { isFinished, isAvailableForImport, isNameValid, isSameTarget } from '../utils';
+import {
+  isFinished,
+  isAvailableForImport,
+  isNameValid,
+  isProjectCreationAllowed,
+  isSameTarget,
+} from '../utils';
 import ImportActionsCell from './import_actions_cell.vue';
 import ImportHistoryLink from './import_history_link.vue';
 import ImportSourceCell from './import_source_cell.vue';
@@ -175,6 +181,7 @@ export default {
           isAvailableForImport: isGroupAvailableForImport,
           isAllowedForReimport: false,
           isFinished: isFinished(group),
+          isProjectCreationAllowed: isProjectCreationAllowed(importTarget?.targetNamespace),
         };
 
         return {
@@ -195,6 +202,16 @@ export default {
 
     hasAllAvailableGroupsSelected() {
       return this.selectedGroupsIds.length === this.availableGroupsForImport.length;
+    },
+
+    showImportProjectsWarning() {
+      return (
+        this.hasSelectedGroups &&
+        this.groupsTableData.some(
+          (group) =>
+            this.selectedGroupsIds.includes(group.id) && !group.flags.isProjectCreationAllowed,
+        )
+      );
     },
 
     availableGroupsForImport() {
@@ -362,7 +379,16 @@ export default {
       const newImportTarget = {
         ...group.importTarget,
         ...changes,
+        ...(changes.targetNamespace
+          ? {
+              targetNamespace: {
+                ...(this.availableNamespaces.find((g) => g.id === changes.targetNamespace.id) ||
+                  changes.targetNamespace),
+              },
+            }
+          : {}),
       };
+
       this.$set(this.importTargets, group.id, newImportTarget);
       this.validateImportTarget(newImportTarget);
     },
@@ -734,6 +760,16 @@ export default {
               {{ s__('BulkImport|Import without projects') }}
             </gl-dropdown-item>
           </gl-dropdown>
+          <span v-if="showImportProjectsWarning" class="gl-ml-3">
+            <gl-icon
+              v-gl-tooltip
+              :title="s__('BulkImport|Some groups will be imported without projects.')"
+              name="warning"
+              class="gl-text-orange-500"
+              data-testid="import-projects-warning"
+            />
+          </span>
+
           <span class="gl-ml-3">
             <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
             <gl-sprintf
@@ -814,9 +850,11 @@ export default {
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
+              :id="group.id"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
+              :is-project-creation-allowed="group.flags.isProjectCreationAllowed"
               @import-group="importGroup({ group, extraArgs: $event, index })"
             />
           </template>

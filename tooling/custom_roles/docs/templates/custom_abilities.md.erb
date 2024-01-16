@@ -34,14 +34,14 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 --->
 
-# Available custom abilities
+# Available custom permissions
 
-The following abilities are available. You can add these abilities in any combination
+The following permissions are available. You can add these permissions in any combination
 to a base role to create a custom role.
 
-Some abilities require having other abilities enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
+Some permissions require having other permissions enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
 
-These requirements are documented in the `Required ability` column in the following table.
+These requirements are documented in the `Required permission` column in the following table.
 <% custom_abilities_by_feature_category.sort.each do |category, abilities| %>
 
 ## <%= "#{humanize(category)}" %>

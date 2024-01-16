@@ -22,7 +22,7 @@ You can discuss individual custom role and permission requests in [issue 391760]
 
 ## Available permissions
 
-For more information on available permissions, see [custom abilities](custom_roles/abilities.md).
+For more information on available permissions, see [custom permissions](custom_roles/abilities.md).
 
 ## Create a custom role
 
@@ -41,7 +41,7 @@ You create a custom role by selecting [permissions](#available-permissions) to a
 to a base role.
 
 You can select any number of permissions. For example, you can create a custom role
-with the ability to:
+with the permission to:
 
 - View vulnerability reports.
 - Change the status of vulnerabilities.

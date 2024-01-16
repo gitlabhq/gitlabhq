@@ -6,6 +6,7 @@ query searchNamespacesWhereUserCanImportProjects($search: String) {
         id
         fullPath
         name
+        projectCreationLevel
         visibility
         webUrl
       }
