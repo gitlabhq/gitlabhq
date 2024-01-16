@@ -1544,7 +1544,6 @@
 - './ee/spec/models/concerns/ee/noteable_spec.rb'
 - './ee/spec/models/concerns/ee/participable_spec.rb'
 - './ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
-- './ee/spec/models/concerns/ee/weight_eventable_spec.rb'
 - './ee/spec/models/concerns/elastic/application_versioned_search_spec.rb'
 - './ee/spec/models/concerns/elastic/merge_request_spec.rb'
 - './ee/spec/models/concerns/elastic/milestone_spec.rb'

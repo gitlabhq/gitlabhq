@@ -170,6 +170,32 @@ RSpec.describe Ci::PipelinePresenter do
       end
     end
 
+    context 'with multiple related merge requests' do
+      let(:mr_1) { create(:merge_request) }
+      let(:mr_2) { create(:merge_request) }
+
+      before do
+        allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: [mr_1.id, mr_2.id]))
+      end
+
+      it 'displays the correct amount of links for the related merge requests' do
+        is_expected.to eq("2 related merge requests: <a class=\"mr-iid\" href=\"#{project_merge_request_path(mr_2.project, mr_2)}\">#{mr_2.to_reference} #{mr_2.title}</a>, " \
+                          "<a class=\"mr-iid\" href=\"#{project_merge_request_path(mr_1.project, mr_1)}\">#{mr_1.to_reference} #{mr_1.title}</a>")
+      end
+    end
+
+    context 'with just one merge request' do
+      let(:mr_1) { create(:merge_request) }
+
+      before do
+        allow(pipeline).to receive(:all_merge_requests).and_return(MergeRequest.where(id: mr_1.id))
+      end
+
+      it 'displays the link for the related merge request' do
+        is_expected.to eq("1 related merge request: <a class=\"mr-iid\" href=\"#{project_merge_request_path(mr_1.project, mr_1)}\">#{mr_1.to_reference} #{mr_1.title}</a>")
+      end
+    end
+
     context 'when pipeline is branch pipeline' do
       context 'when ref exists in the repository' do
         before do
@@ -276,6 +302,68 @@ RSpec.describe Ci::PipelinePresenter do
     context 'when the pipeline is not a child ' do
       it 'returns the pipeline path' do
         expect(subject).to eq('')
+      end
+    end
+  end
+
+  describe '#all_related_merge_requests' do
+    subject(:all_related_merge_requests) do
+      presenter.send(:all_related_merge_requests)
+    end
+
+    it 'memoizes the returned relation' do
+      expect(pipeline).to receive(:all_merge_requests_by_recency).exactly(1).time.and_call_original
+      2.times { presenter.send(:all_related_merge_requests).count }
+    end
+
+    context 'for a branch pipeline with two open MRs' do
+      let!(:one) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+      let!(:two) { create(:merge_request, source_project: project, source_branch: pipeline.ref, target_branch: 'fix') }
+
+      it { is_expected.to contain_exactly(one, two) }
+    end
+
+    context 'permissions' do
+      let_it_be_with_refind(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+
+      let(:pipeline) { merge_request.all_pipelines.take }
+
+      shared_examples 'private merge requests' do
+        context 'when not logged in' do
+          let(:current_user) {}
+
+          it { is_expected.to be_empty }
+        end
+
+        context 'when logged in as a non_member' do
+          let(:current_user) { create(:user) }
+
+          it { is_expected.to be_empty }
+        end
+
+        context 'when logged in as a guest' do
+          let(:current_user) { create(:user) }
+
+          before do
+            project.add_guest(current_user)
+          end
+
+          it { is_expected.to be_empty }
+        end
+
+        context 'when logged in as a developer' do
+          it { is_expected.to contain_exactly(merge_request) }
+        end
+
+        context 'when logged in as a maintainer' do
+          let(:current_user) { create(:user) }
+
+          before do
+            project.add_maintainer(current_user)
+          end
+
+          it { is_expected.to contain_exactly(merge_request) }
+        end
       end
     end
   end

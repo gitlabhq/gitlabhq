@@ -847,7 +847,6 @@ Layout/LineLength:
     - 'ee/app/models/concerns/approver_migrate_hook.rb'
     - 'ee/app/models/concerns/ee/ci/artifactable.rb'
     - 'ee/app/models/concerns/ee/issuable_link.rb'
-    - 'ee/app/models/concerns/ee/weight_eventable.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
     - 'ee/app/models/concerns/elastic/repositories_search.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'

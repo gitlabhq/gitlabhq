@@ -15,7 +15,7 @@ in your GitLab CI/CD pipelines.
 Prerequisites:
 
 - Have a [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) on Azure.
-  - Your IAM user must be granted [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
+  - Your IAM user must be [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
     for the **resource group** assigned to the Key Vault. Otherwise, you can't create secrets inside the Key Vault.
 - [Configure OpenID Connect in Azure to retrieve temporary credentials](../../ci/cloud_services/azure/index.md). These
   steps include instructions on how to create an Azure AD application for Key Vault access.

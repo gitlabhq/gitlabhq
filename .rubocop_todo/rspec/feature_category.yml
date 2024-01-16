@@ -964,7 +964,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/concerns/ee/noteable_spec.rb'
     - 'ee/spec/models/concerns/ee/participable_spec.rb'
     - 'ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
-    - 'ee/spec/models/concerns/ee/weight_eventable_spec.rb'
     - 'ee/spec/models/concerns/elastic/milestone_spec.rb'
     - 'ee/spec/models/concerns/elastic/projects_search_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'

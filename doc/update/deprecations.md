@@ -879,6 +879,27 @@ Users are advised to upgrade from sbt 1.0.x.
 
 </div>
 
+<div class="deprecation " data-milestone="17.0">
+
+### Linux packages for Ubuntu 18.04
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.8</span>
+- Removal in GitLab <span class="milestone">17.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8082).
+</div>
+
+Standard support for Ubuntu 18.04 [ended on June 2023](https://wiki.ubuntu.com/Releases).
+
+From GitLab 17.0, we will not provide Linux packages for Ubuntu 18.04.
+
+To prepare for GitLab 17.0 and later:
+
+1. Move servers running GitLab instances from Ubuntu 18.04 to either Ubuntu 20.04 or Ubuntu 22.04.
+1. Upgrade your GitLab instances using Linux package for the version of Ubuntu you're now using.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="17.0">
 
 ### List repository directories Rake task

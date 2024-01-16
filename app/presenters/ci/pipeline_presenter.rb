@@ -82,6 +82,12 @@ module Ci
             link_to_merge_request_source_branch: link_to_merge_request_source_branch,
             link_to_merge_request_target_branch: link_to_merge_request_target_branch
           }
+      elsif all_related_merge_requests.any?
+        (_("%{count} related %{pluralized_subject}: %{links}") % {
+          count: all_related_merge_requests.count,
+          pluralized_subject: n_('merge request', 'merge requests', all_related_merge_requests.count),
+          links: all_related_merge_request_links.join(', ')
+        }).html_safe
       elsif pipeline.ref && pipeline.ref_exists?
         _("For %{link_to_pipeline_ref}")
         .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
@@ -137,6 +143,24 @@ module Ci
       strong_memoize(:merge_request_presenter) do
         if pipeline.merge_request?
           pipeline.merge_request.present(current_user: current_user)
+        end
+      end
+    end
+
+    def all_related_merge_request_links
+      all_related_merge_requests.map do |merge_request|
+        mr_path = project_merge_request_path(merge_request.project, merge_request)
+
+        ApplicationController.helpers.link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid'
+      end
+    end
+
+    def all_related_merge_requests
+      strong_memoize(:all_related_merge_requests) do
+        if pipeline.ref && can?(current_user, :read_merge_request, pipeline.project)
+          pipeline.all_merge_requests_by_recency
+        else
+          []
         end
       end
     end

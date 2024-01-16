@@ -64,12 +64,6 @@ Audit event types belong to the following product categories.
 | [`update_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
 
-### Authorization
-
-| Name | Description | Saved to database | Streamed | Introduced in |
-|:-----|:------------|:------------------|:---------|:--------------|
-| [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | Event triggered when a custom role is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) |
-
 ### Code review
 
 | Name | Description | Saved to database | Streamed | Introduced in |
@@ -331,6 +325,14 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in |
 |:-----|:------------|:------------------|:---------|:--------------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Event triggered on toggling setting for enabling experiment AI features| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) |
+
+### Permissions
+
+| Name | Description | Saved to database | Streamed | Introduced in |
+|:-----|:------------|:------------------|:---------|:--------------|
+| [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | Event triggered when a custom role is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) |
+| [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) |
+| [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | Event triggered when a custom role is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) |
 
 ### Portfolio management
 

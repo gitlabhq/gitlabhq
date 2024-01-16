@@ -577,7 +577,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/compliance_management/framework_spec.rb'
     - 'ee/spec/models/concerns/approval_rule_like_spec.rb'
     - 'ee/spec/models/concerns/ee/packages/downloadable_spec.rb'
-    - 'ee/spec/models/concerns/ee/weight_eventable_spec.rb'
     - 'ee/spec/models/concerns/elastic/projects_search_spec.rb'
     - 'ee/spec/models/concerns/geo/has_replicator_spec.rb'
     - 'ee/spec/models/concerns/geo/replicable_model_spec.rb'
