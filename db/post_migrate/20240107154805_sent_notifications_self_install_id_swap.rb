@@ -13,16 +13,16 @@ class SentNotificationsSelfInstallIdSwap < Gitlab::Database::Migration[2.2]
 
   def up
     return if com_or_dev_or_test_but_not_jh?
-    return if columns_swapped?(TABLE_NAME, :id)
     return if temp_column_removed?(TABLE_NAME, :id)
+    return if columns_swapped?(TABLE_NAME, :id)
 
     swap
   end
 
   def down
     return if com_or_dev_or_test_but_not_jh?
-    return unless columns_swapped?(TABLE_NAME, :id)
     return if temp_column_removed?(TABLE_NAME, :id)
+    return unless columns_swapped?(TABLE_NAME, :id)
 
     swap
   end

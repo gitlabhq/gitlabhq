@@ -18445,6 +18445,12 @@ msgstr ""
 msgid "Edit link"
 msgstr ""
 
+msgid "Edit merge request"
+msgstr ""
+
+msgid "Edit page"
+msgstr ""
+
 msgid "Edit project: %{project_name}"
 msgstr ""
 
@@ -29987,10 +29993,16 @@ msgstr ""
 msgid "MemberRole|Failed to create role."
 msgstr ""
 
+msgid "MemberRole|Failed to create role: %{message}"
+msgstr ""
+
 msgid "MemberRole|Failed to delete the role."
 msgstr ""
 
-msgid "MemberRole|Failed to fetch roles."
+msgid "MemberRole|Failed to delete the role: %{message}"
+msgstr ""
+
+msgid "MemberRole|Failed to fetch roles: %{message}"
 msgstr ""
 
 msgid "MemberRole|ID"

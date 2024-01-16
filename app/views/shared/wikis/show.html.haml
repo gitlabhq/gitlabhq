@@ -13,7 +13,10 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
-      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), button_options: { class: 'js-wiki-edit', data: { testid: 'wiki-edit-button' }}) do
+      - edit_action_description = _('Edit page')
+      - edit_action_shortcut = 'e'
+      - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
+      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: 'has-tooltip js-wiki-edit', data: { html: 'true', testid: 'wiki-edit-button' }, title: edit_button_title }) do
         = _('Edit')
     = render 'shared/wikis/main_links'
 
