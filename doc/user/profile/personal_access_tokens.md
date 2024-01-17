@@ -85,6 +85,14 @@ At any time, you can revoke a personal access token.
 1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
 1. On the confirmation dialog, select **Revoke**.
 
+## Disable personal access tokens **(PREMIUM SELF)**
+
+Prerequisites:
+
+- You must be an administrator.
+
+In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
 ## View the last time a token was used
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33162) in GitLab 13.2. Token usage information is updated every 24 hours.

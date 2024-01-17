@@ -652,4 +652,4 @@ gem 'net-http', '= 0.1.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'duo_api', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'gitlab-sdk', feature_category: :application_instrumentation
+gem 'gitlab-sdk', '~> 0.3.0', feature_category: :application_instrumentation

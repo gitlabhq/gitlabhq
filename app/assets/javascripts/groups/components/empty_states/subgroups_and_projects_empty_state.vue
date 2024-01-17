@@ -16,7 +16,7 @@ export default {
       project: {
         title: s__('GroupsEmptyState|Create new project'),
         description: s__(
-          'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of Gitlab.',
+          'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
         ),
       },
     },

@@ -39,10 +39,12 @@ To create a trigger token:
    - You can only see the first 4 characters for tokens created by other project members.
 
 WARNING:
-It is a security risk to save tokens in plain text in public projects. Potential
-attackers could use a trigger token exposed in the `.gitlab-ci.yml` file to impersonate
-the user that created the token. Use [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
-to improve the security of trigger tokens.
+It is a security risk to save tokens in plain text in public projects, or store them
+in a way that malicious users could access them. A leaked trigger token could be
+used to force an unscheduled deployment, attempt to access CI/CD variables,
+or other malicious uses. [Masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+help improve the security of trigger tokens. For more information about keeping tokens secure,
+see the [security considerations](../../security/token_overview.md#security-considerations).
 
 ## Trigger a pipeline
 

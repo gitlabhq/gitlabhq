@@ -31,8 +31,10 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
   context 'when the current user does not have permission to create members' do
     let(:current_user) { create(:user) }
 
-    it 'raises a Gitlab::Access::AccessDeniedError' do
-      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
+    it 'returns an unauthorized http_status' do
+      expect(execute_service[:status]).to eq(:error)
+      # this is expected by API::Helpers::MembersHelpers#add_single_member_by_user_id
+      expect(execute_service[:http_status]).to eq(:unauthorized)
     end
 
     context 'when a project maintainer attempts to add owners' do
@@ -53,6 +55,15 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
     it 'raises a RuntimeError' do
       expect { execute_service }.to raise_error(RuntimeError, 'Unknown source type: Object!')
+    end
+  end
+
+  context 'when trying to create a Membership with invalid params' do
+    let(:additional_params) { Hash[invite_source: '_invite_source_', expires_at: 3.days.ago] }
+
+    it 'returns an error response' do
+      expect(execute_service[:status]).to eq(:error)
+      expect(execute_service[:http_status]).to be_nil
     end
   end
 
@@ -251,6 +262,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       it 'does not update the member' do
         expect(execute_service[:status]).to eq(:error)
+        expect(execute_service[:http_status]).to eq(:unauthorized)
         expect(execute_service[:message]).to eq("#{project_bot.username}: not authorized to update member")
         expect(Onboarding::Progress.completed?(source.namespace, :user_added)).to be(false)
       end

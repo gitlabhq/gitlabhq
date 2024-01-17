@@ -185,12 +185,17 @@ module Members
     def destroy_member_permission(member)
       case member
       when GroupMember
-        :destroy_group_member
+        destroy_group_member_permission(member)
       when ProjectMember
         :destroy_project_member
       else
         raise "Unknown member type: #{member}!"
       end
+    end
+
+    # overridden in EE::Members::DestroyService
+    def destroy_group_member_permission(_member)
+      :destroy_group_member
     end
 
     def destroy_bot_member_permission(member)

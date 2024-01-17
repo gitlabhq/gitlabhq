@@ -416,6 +416,7 @@ The following table lists group permissions available for each role:
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
 | Manage group-level custom roles                                                         |       |          |           |            | ✓     |
+| Manage [group approval rules](project/merge_requests/approvals/settings.md) (group settings) |          |          |           | ✓          | ✓        |
 
 <!-- markdownlint-disable MD029 -->
 

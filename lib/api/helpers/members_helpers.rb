@@ -85,20 +85,30 @@ module API
         user_id = create_service_params[:user_id]
         user = User.find_by(id: user_id) # rubocop: disable CodeReuse/ActiveRecord
 
-        if user
-          conflict!('Member already exists') if member_already_exists?(source, user_id)
+        not_found!('User') unless user
 
-          instance = ::Members::CreateService.new(current_user, create_service_params)
-          instance.execute
+        conflict!('Member already exists') if member_already_exists?(source, user_id)
 
-          not_allowed! if instance.membership_locked # This currently can only be reached in EE if group membership is locked
+        instance = ::Members::CreateService.new(current_user, create_service_params)
+        result = instance.execute
 
-          member = instance.single_member
-          render_validation_error!(member) if member.invalid?
+        # This currently can only be reached in EE if group membership is locked
+        not_allowed! if instance.membership_locked
 
-          present_members(member)
+        if result[:status] == :error && result[:http_status] == :unauthorized
+          raise Gitlab::Access::AccessDeniedError
+        end
+
+        # prefer responding with model validations, if present
+        member = instance.single_member
+        render_validation_error!(member) if member.invalid?
+
+        # if errors occurred besides model validations or authorization failures,
+        # render those appropriately
+        if result[:status] == :error
+          render_structured_api_error!(result, :bad_request)
         else
-          not_found!('User')
+          present_members(member)
         end
       end
 

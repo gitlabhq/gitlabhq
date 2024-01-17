@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
+  let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
   let_it_be(:new_group_path) { '/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
   let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
@@ -15,6 +16,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
 
   before do
+    allow(organization).to receive(:to_global_id).and_return(organization_gid)
     allow(helper).to receive(:new_group_path).and_return(new_group_path)
     allow(helper).to receive(:new_project_path).and_return(new_project_path)
     allow(helper).to receive(:image_path).with(organizations_empty_state_svg_path)
@@ -41,6 +43,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         )
       ).to eq(
         {
+          'organization_gid' => organization_gid,
           'organization' => {
             'id' => organization.id,
             'name' => organization.name,
@@ -66,10 +69,11 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     it 'returns expected json' do
       expect(
         Gitlab::Json.parse(
-          helper.organization_groups_and_projects_app_data
+          helper.organization_groups_and_projects_app_data(organization)
         )
       ).to eq(
         {
+          'organization_gid' => organization_gid,
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
@@ -139,7 +143,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_user_app_data(organization))).to eq(
         {
-          'organization_gid' => organization.to_global_id.to_s,
+          'organization_gid' => organization_gid,
           'paths' => {
             'admin_user' => admin_user_path(:id)
           }

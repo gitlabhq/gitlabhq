@@ -31,6 +31,7 @@ export default {
     stars: __('Stars'),
     forks: __('Forks'),
     issues: __('Issues'),
+    mergeRequests: __('Merge requests'),
     archived: __('Archived'),
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
@@ -121,20 +122,32 @@ export default {
     starsHref() {
       return `${this.project.webUrl}/-/starrers`;
     },
+    mergeRequestsHref() {
+      return `${this.project.webUrl}/-/merge_requests`;
+    },
     forksHref() {
       return `${this.project.webUrl}/-/forks`;
     },
     issuesHref() {
       return `${this.project.webUrl}/-/issues`;
     },
+    isMergeRequestsEnabled() {
+      return (
+        this.project.mergeRequestsAccessLevel?.toLowerCase() === FEATURABLE_ENABLED &&
+        this.project.openMergeRequestsCount !== undefined
+      );
+    },
     isForkingEnabled() {
       return (
-        this.project.forkingAccessLevel === FEATURABLE_ENABLED &&
+        this.project.forkingAccessLevel?.toLowerCase() === FEATURABLE_ENABLED &&
         this.project.forksCount !== undefined
       );
     },
     isIssuesEnabled() {
-      return this.project.issuesAccessLevel === FEATURABLE_ENABLED;
+      return (
+        this.project.issuesAccessLevel?.toLowerCase() === FEATURABLE_ENABLED &&
+        this.project.openIssuesCount !== undefined
+      );
     },
     hasTopics() {
       return this.project.topics.length;
@@ -147,6 +160,13 @@ export default {
     },
     starCount() {
       return numberToMetricPrefix(this.project.starCount);
+    },
+    openMergeRequestsCount() {
+      if (!this.isMergeRequestsEnabled) {
+        return null;
+      }
+
+      return numberToMetricPrefix(this.project.openMergeRequestsCount);
     },
     forksCount() {
       if (!this.isForkingEnabled) {
@@ -328,6 +348,16 @@ export default {
             <span>{{ forksCount }}</span>
           </gl-link>
           <gl-link
+            v-if="isMergeRequestsEnabled"
+            v-gl-tooltip="$options.i18n.mergeRequests"
+            :href="mergeRequestsHref"
+            :aria-label="$options.i18n.mergeRequests"
+            class="gl-text-secondary"
+          >
+            <gl-icon name="git-merge" />
+            <span>{{ openMergeRequestsCount }}</span>
+          </gl-link>
+          <gl-link
             v-if="isIssuesEnabled"
             v-gl-tooltip="$options.i18n.issues"
             :href="issuesHref"
@@ -360,6 +390,7 @@ export default {
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"
+      :merge-requests-count="openMergeRequestsCount"
       :issues-count="openIssuesCount"
       :forks-count="forksCount"
       :stars-count="starCount"

@@ -8,18 +8,19 @@ module Members
 
     DEFAULT_INVITE_LIMIT = 100
 
-    attr_reader :membership_locked
+    attr_reader :membership_locked, :http_status
 
     def initialize(*args)
       super
 
       @errors = []
+      @http_status = nil
       @invites = invites_from_params
       @source = params[:source]
     end
 
     def execute
-      raise Gitlab::Access::AccessDeniedError unless can?(current_user, create_member_permission(source), source)
+      validate_source_type!
 
       if adding_at_least_one_owner && cannot_assign_owner_responsibilities_to_member_in_project?
         raise Gitlab::Access::AccessDeniedError
@@ -65,6 +66,10 @@ module Members
       params[:user_id].to_s.split(',').uniq
     end
 
+    def validate_source_type!
+      raise "Unknown source type: #{source.class}!" unless source.is_a?(Group) || source.is_a?(Project)
+    end
+
     def validate_invite_source!
       raise ArgumentError, s_('AddMember|No invite source provided.') unless invite_source.present?
     end
@@ -102,6 +107,7 @@ module Members
     end
 
     def process_result(member)
+      @http_status = :unauthorized if member.errors.added? :base, :unauthorized
       existing_errors = member.errors.full_messages
 
       # calling invalid? clears any errors that were added outside of the
@@ -174,7 +180,7 @@ module Members
 
     def result
       if errors.any?
-        error(formatted_errors)
+        error(formatted_errors, http_status)
       else
         success
       end
@@ -193,17 +199,6 @@ module Members
           source_type: source.class.name
         })
       )
-    end
-
-    def create_member_permission(source)
-      case source
-      when Group
-        :admin_group_member
-      when Project
-        :admin_project_member
-      else
-        raise "Unknown source type: #{source.class}!"
-      end
     end
   end
 end

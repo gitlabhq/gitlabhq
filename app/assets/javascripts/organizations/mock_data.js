@@ -33,105 +33,123 @@ export const organizations = [
   },
 ];
 
-export const organizationProjects = {
-  nodes: [
-    {
-      id: 'gid://gitlab/Project/8',
-      nameWithNamespace: 'Twitter / Typeahead.Js',
-      webUrl: 'http://127.0.0.1:3000/twitter/Typeahead.Js',
-      topics: ['JavaScript', 'Vue.js', 'GraphQL', 'Jest', 'CSS', 'HTML'],
-      forksCount: 4,
-      avatarUrl: null,
-      starCount: 0,
-      visibility: 'public',
-      openIssuesCount: 48,
-      descriptionHtml:
-        '<p data-sourcepos="1:1-1:59" dir="auto">Optio et reprehenderit enim doloremque deserunt et commodi. Sed sit amet iaculis neque. Morbi vel convallis elit. Aliquam vitae arcu orci. Aenean sem velit, dapibus eget enim id, tempor lobortis orci. Pellentesque dignissim nec velit eget sagittis. Maecenas lectus sapien, tincidunt ac cursus a, aliquam eu ipsum. Aliquam posuere maximus augue, ut vehicula elit vulputate condimentum. In libero leo, vehicula nec risus in, ullamcorper convallis risus. Phasellus sit amet lectus sit amet sem volutpat cursus. Nullam facilisis nulla nec lacus pretium, in pretium ex aliquam.</p>',
-      issuesAccessLevel: 'enabled',
-      forkingAccessLevel: 'enabled',
-      isForked: true,
-      accessLevel: {
-        integerValue: 30,
-      },
+export const organizationProjects = [
+  {
+    id: 'gid://gitlab/Project/8',
+    nameWithNamespace: 'Twitter / Typeahead.Js',
+    webUrl: 'http://127.0.0.1:3000/twitter/Typeahead.Js',
+    topics: ['JavaScript', 'Vue.js', 'GraphQL', 'Jest', 'CSS', 'HTML'],
+    forksCount: 4,
+    avatarUrl: null,
+    starCount: 0,
+    visibility: 'public',
+    openMergeRequestsCount: 5,
+    openIssuesCount: 48,
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:59" dir="auto">Optio et reprehenderit enim doloremque deserunt et commodi. Sed sit amet iaculis neque. Morbi vel convallis elit. Aliquam vitae arcu orci. Aenean sem velit, dapibus eget enim id, tempor lobortis orci. Pellentesque dignissim nec velit eget sagittis. Maecenas lectus sapien, tincidunt ac cursus a, aliquam eu ipsum. Aliquam posuere maximus augue, ut vehicula elit vulputate condimentum. In libero leo, vehicula nec risus in, ullamcorper convallis risus. Phasellus sit amet lectus sit amet sem volutpat cursus. Nullam facilisis nulla nec lacus pretium, in pretium ex aliquam.</p>',
+    mergeRequestsAccessLevel: {
+      stringValue: 'ENABLED',
     },
-    {
-      id: 'gid://gitlab/Project/7',
-      nameWithNamespace: 'Flightjs / Flight',
-      webUrl: 'http://127.0.0.1:3000/flightjs/Flight',
-      topics: [],
-      forksCount: 0,
-      avatarUrl: null,
-      starCount: 0,
-      visibility: 'private',
-      openIssuesCount: 37,
-      descriptionHtml:
-        '<p data-sourcepos="1:1-1:49" dir="auto">Dolor dicta rerum et ut eius voluptate earum qui.</p>',
-      issuesAccessLevel: 'enabled',
-      forkingAccessLevel: 'enabled',
-      isForked: false,
-      accessLevel: {
-        integerValue: 20,
-      },
+    issuesAccessLevel: {
+      stringValue: 'ENABLED',
     },
-    {
-      id: 'gid://gitlab/Project/6',
-      nameWithNamespace: 'Jashkenas / Underscore',
-      webUrl: 'http://127.0.0.1:3000/jashkenas/Underscore',
-      topics: [],
-      forksCount: 0,
-      avatarUrl: null,
-      starCount: 0,
-      visibility: 'private',
-      openIssuesCount: 34,
-      descriptionHtml:
-        '<p data-sourcepos="1:1-1:52" dir="auto">Incidunt est aliquam autem nihil eveniet quis autem.</p>',
-      issuesAccessLevel: 'enabled',
-      forkingAccessLevel: 'enabled',
-      isForked: false,
-      accessLevel: {
-        integerValue: 40,
-      },
+    forkingAccessLevel: {
+      stringValue: 'ENABLED',
     },
-    {
-      id: 'gid://gitlab/Project/5',
-      nameWithNamespace: 'Commit451 / Lab Coat',
-      webUrl: 'http://127.0.0.1:3000/Commit451/lab-coat',
-      topics: [],
-      forksCount: 0,
-      avatarUrl: null,
-      starCount: 0,
-      visibility: 'internal',
-      openIssuesCount: 49,
-      descriptionHtml:
-        '<p data-sourcepos="1:1-1:34" dir="auto">Sint eos dolorem impedit rerum et.</p>',
-      issuesAccessLevel: 'enabled',
-      forkingAccessLevel: 'enabled',
-      isForked: false,
-      accessLevel: {
-        integerValue: 10,
-      },
+  },
+  {
+    id: 'gid://gitlab/Project/7',
+    nameWithNamespace: 'Flightjs / Flight',
+    webUrl: 'http://127.0.0.1:3000/flightjs/Flight',
+    topics: [],
+    forksCount: 0,
+    avatarUrl: null,
+    starCount: 0,
+    visibility: 'private',
+    openMergeRequestsCount: 10,
+    openIssuesCount: 37,
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:49" dir="auto">Dolor dicta rerum et ut eius voluptate earum qui.</p>',
+    mergeRequestsAccessLevel: {
+      stringValue: 'ENABLED',
     },
-    {
-      id: 'gid://gitlab/Project/1',
-      nameWithNamespace: 'Toolbox / Gitlab Smoke Tests',
-      webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests',
-      topics: [],
-      forksCount: 0,
-      avatarUrl: null,
-      starCount: 0,
-      visibility: 'internal',
-      openIssuesCount: 34,
-      descriptionHtml:
-        '<p data-sourcepos="1:1-1:40" dir="auto">Veritatis error laboriosam libero autem.</p>',
-      issuesAccessLevel: 'enabled',
-      forkingAccessLevel: 'enabled',
-      isForked: false,
-      accessLevel: {
-        integerValue: 30,
-      },
+    issuesAccessLevel: {
+      stringValue: 'ENABLED',
     },
-  ],
-};
+    forkingAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+  },
+  {
+    id: 'gid://gitlab/Project/6',
+    nameWithNamespace: 'Jashkenas / Underscore',
+    webUrl: 'http://127.0.0.1:3000/jashkenas/Underscore',
+    topics: [],
+    forksCount: 0,
+    avatarUrl: null,
+    starCount: 0,
+    visibility: 'private',
+    openMergeRequestsCount: 0,
+    openIssuesCount: 34,
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:52" dir="auto">Incidunt est aliquam autem nihil eveniet quis autem.</p>',
+    mergeRequestsAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    issuesAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    forkingAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+  },
+  {
+    id: 'gid://gitlab/Project/5',
+    nameWithNamespace: 'Commit451 / Lab Coat',
+    webUrl: 'http://127.0.0.1:3000/Commit451/lab-coat',
+    topics: [],
+    forksCount: 0,
+    avatarUrl: null,
+    starCount: 0,
+    visibility: 'internal',
+    openMergeRequestsCount: 3,
+    openIssuesCount: 49,
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:34" dir="auto">Sint eos dolorem impedit rerum et.</p>',
+    mergeRequestsAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    issuesAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    forkingAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+  },
+  {
+    id: 'gid://gitlab/Project/1',
+    nameWithNamespace: 'Toolbox / Gitlab Smoke Tests',
+    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests',
+    topics: [],
+    forksCount: 0,
+    avatarUrl: null,
+    starCount: 0,
+    visibility: 'internal',
+    openMergeRequestsCount: 20,
+    openIssuesCount: 34,
+    descriptionHtml:
+      '<p data-sourcepos="1:1-1:40" dir="auto">Veritatis error laboriosam libero autem.</p>',
+    mergeRequestsAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    issuesAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+    forkingAccessLevel: {
+      stringValue: 'ENABLED',
+    },
+  },
+];
 
 export const organizationGroups = {
   nodes: [

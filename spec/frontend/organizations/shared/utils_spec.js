@@ -5,21 +5,19 @@ import { organizationProjects, organizationGroups } from '~/organizations/mock_d
 
 describe('formatProjects', () => {
   it('correctly formats the projects', () => {
-    const [firstMockProject] = organizationProjects.nodes;
-    const formattedProjects = formatProjects(organizationProjects.nodes);
+    const [firstMockProject] = organizationProjects;
+    const formattedProjects = formatProjects(organizationProjects);
     const [firstFormattedProject] = formattedProjects;
 
     expect(firstFormattedProject).toMatchObject({
       id: getIdFromGraphQLId(firstMockProject.id),
       name: firstMockProject.nameWithNamespace,
-      permissions: {
-        projectAccess: {
-          accessLevel: firstMockProject.accessLevel.integerValue,
-        },
-      },
+      mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
+      issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
+      forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
       availableActions: [ACTION_EDIT, ACTION_DELETE],
     });
-    expect(formattedProjects.length).toBe(organizationProjects.nodes.length);
+    expect(formattedProjects.length).toBe(organizationProjects.length);
   });
 });
 

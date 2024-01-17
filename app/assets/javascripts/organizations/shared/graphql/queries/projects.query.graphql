@@ -1,5 +1,5 @@
-query getOrganizationProjects {
-  organization @client {
+query getOrganizationProjects($id: OrganizationsOrganizationID!) {
+  organization(id: $id) {
     id
     projects {
       nodes {
@@ -11,13 +11,17 @@ query getOrganizationProjects {
         avatarUrl
         starCount
         visibility
+        openMergeRequestsCount
         openIssuesCount
         descriptionHtml
-        issuesAccessLevel
-        forkingAccessLevel
-        isForked
-        accessLevel {
-          integerValue
+        mergeRequestsAccessLevel {
+          stringValue
+        }
+        issuesAccessLevel {
+          stringValue
+        }
+        forkingAccessLevel {
+          stringValue
         }
       }
     }

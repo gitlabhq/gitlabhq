@@ -393,6 +393,12 @@ the rails console.
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
 
+#### Cannot add service account user to group when LDAP sync is enabled
+
+When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
+
+To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/members.md#add-a-member-to-a-group-or-project).
+
 #### Administrator privileges not granted
 
 When [Administrator sync](ldap_synchronization.md#administrator-sync) has been configured

@@ -28,6 +28,7 @@ export const initOrganizationsGroupsAndProjects = () => {
     dataset: { appData },
   } = el;
   const {
+    organizationGid,
     projectsEmptyStateSvgPath,
     groupsEmptyStateSvgPath,
     newGroupPath,
@@ -46,6 +47,7 @@ export const initOrganizationsGroupsAndProjects = () => {
     apolloProvider,
     router,
     provide: {
+      organizationGid,
       projectsEmptyStateSvgPath,
       groupsEmptyStateSvgPath,
       newGroupPath,

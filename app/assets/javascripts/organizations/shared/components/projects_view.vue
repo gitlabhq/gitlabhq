@@ -14,7 +14,7 @@ export default {
     emptyState: {
       title: s__("Organization|You don't have any projects yet."),
       description: s__(
-        'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of Gitlab.',
+        'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
       ),
       primaryButtonText: __('New project'),
     },
@@ -25,6 +25,7 @@ export default {
     GlEmptyState,
   },
   inject: {
+    organizationGid: {},
     projectsEmptyStateSvgPath: {},
     newProjectPath: {
       default: null,
@@ -44,14 +45,26 @@ export default {
   },
   data() {
     return {
-      projects: [],
+      projects: {},
     };
   },
   apollo: {
     projects: {
       query: projectsQuery,
-      update(data) {
-        return formatProjects(data.organization.projects.nodes);
+      variables() {
+        return {
+          id: this.organizationGid,
+        };
+      },
+      update({
+        organization: {
+          projects: { nodes, pageInfo },
+        },
+      }) {
+        return {
+          nodes: formatProjects(nodes),
+          pageInfo,
+        };
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -59,6 +72,9 @@ export default {
     },
   },
   computed: {
+    nodes() {
+      return this.projects.nodes || [];
+    },
     isLoading() {
       return this.$apollo.queries.projects.loading;
     },
@@ -87,8 +103,8 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <projects-list
-    v-else-if="projects.length"
-    :projects="projects"
+    v-else-if="nodes.length"
+    :projects="nodes"
     show-project-icon
     :list-item-class="listItemClass"
   />

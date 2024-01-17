@@ -7,10 +7,13 @@ module RestClient
     module UrlBlocker
       def transmit(uri, req, payload, &block)
         begin
-          ip, hostname_override = Gitlab::UrlBlocker.validate!(uri, allow_local_network: allow_settings_local_requests?,
-                                                                    allow_localhost: allow_settings_local_requests?,
-                                                                    dns_rebind_protection: dns_rebind_protection?,
-                                                                    schemes: %w[http https])
+          ip, hostname_override = Gitlab::HTTP_V2::UrlBlocker.validate!(
+            uri,
+            allow_local_network: allow_settings_local_requests?,
+            allow_localhost: allow_settings_local_requests?,
+            dns_rebind_protection: dns_rebind_protection?,
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            schemes: %w[http https])
 
           self.hostname_override = hostname_override
         rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e

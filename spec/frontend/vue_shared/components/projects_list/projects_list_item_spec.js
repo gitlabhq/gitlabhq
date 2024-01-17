@@ -36,6 +36,8 @@ describe('ProjectsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
+  const findMergeRequestsLink = () =>
+    wrapper.findByRole('link', { name: ProjectsListItem.i18n.mergeRequests });
   const findIssuesLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.issues });
   const findForksLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.forks });
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
@@ -145,6 +147,42 @@ describe('ProjectsListItem', () => {
       });
 
       expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(false);
+    });
+  });
+
+  describe('when merge requests are enabled', () => {
+    it('renders merge requests count', () => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            openMergeRequestsCount: 5,
+          },
+        },
+      });
+
+      const mergeRequestsLink = findMergeRequestsLink();
+      const tooltip = getBinding(mergeRequestsLink.element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe(ProjectsListItem.i18n.mergeRequests);
+      expect(mergeRequestsLink.attributes('href')).toBe(`${project.webUrl}/-/merge_requests`);
+      expect(mergeRequestsLink.text()).toBe('5');
+      expect(mergeRequestsLink.findComponent(GlIcon).props('name')).toBe('git-merge');
+    });
+  });
+
+  describe('when merge requests are not enabled', () => {
+    it('does not render merge requests count', () => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            mergeRequestsAccessLevel: FEATURABLE_DISABLED,
+          },
+        },
+      });
+
+      expect(findMergeRequestsLink().exists()).toBe(false);
     });
   });
 

@@ -176,7 +176,7 @@ module Members
       end
     end
 
-    # overridden in Members::Groups::CreatorService
+    # overridden in EE:Members::Groups::CreatorService
     def member_role_too_high?
       false
     end
@@ -243,7 +243,7 @@ module Members
               _('not authorized to update member')
             end
 
-      member.errors.add(:base, msg)
+      member.errors.add(:base, :unauthorized, message: msg)
     end
 
     def add_member_role_error

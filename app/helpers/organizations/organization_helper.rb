@@ -14,7 +14,7 @@ module Organizations
           projects: 5,
           users: 1050
         }
-      }.merge(shared_groups_and_projects_app_data).to_json
+      }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end
 
     def organization_new_app_data
@@ -28,8 +28,8 @@ module Organizations
       }.merge(shared_new_settings_general_app_data).to_json
     end
 
-    def organization_groups_and_projects_app_data
-      shared_groups_and_projects_app_data.to_json
+    def organization_groups_and_projects_app_data(organization)
+      shared_groups_and_projects_app_data(organization).to_json
     end
 
     def organization_index_app_data
@@ -54,8 +54,9 @@ module Organizations
 
     private
 
-    def shared_groups_and_projects_app_data
+    def shared_groups_and_projects_app_data(organization)
       {
+        organization_gid: organization.to_global_id,
         projects_empty_state_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_group_path,

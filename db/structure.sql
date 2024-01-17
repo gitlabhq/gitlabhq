@@ -33624,6 +33624,8 @@ CREATE INDEX index_et_errors_on_project_id_and_status_first_seen_at_id_desc ON e
 
 CREATE INDEX index_et_errors_on_project_id_and_status_last_seen_at_id_desc ON error_tracking_errors USING btree (project_id, status, last_seen_at DESC, id DESC);
 
+CREATE INDEX index_events_author_id_group_id_action_target_type_created_at ON events USING btree (author_id, group_id, action, target_type, created_at);
+
 CREATE INDEX index_events_author_id_project_id_action_target_type_created_at ON events USING btree (author_id, project_id, action, target_type, created_at);
 
 CREATE INDEX index_events_for_followed_users ON events USING btree (author_id, target_type, action, id);
@@ -36129,12 +36131,6 @@ CREATE INDEX tmp_idx_for_vulnerability_feedback_migration ON vulnerability_feedb
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
-
-CREATE INDEX tmp_idx_protected_branch_merge_access_levels_on_id_with_group ON protected_branch_merge_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
-
-CREATE INDEX tmp_idx_protected_branch_push_access_levels_on_id_with_group ON protected_branch_push_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
-
-CREATE INDEX tmp_idx_protected_tag_create_access_levels_on_id_with_group ON protected_tag_create_access_levels USING btree (id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 

@@ -14,7 +14,7 @@ end
 
 RSpec.shared_examples 'a 403 response when user does not have rights to manage members of a specific access level' do
   it 'returns 403' do
-    route
+    expect { route }.not_to change { Member.count }
 
     expect(response).to have_gitlab_http_status(:forbidden)
   end

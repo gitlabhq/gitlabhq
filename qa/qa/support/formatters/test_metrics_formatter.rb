@@ -107,6 +107,7 @@ module QA
               status: status(example),
               smoke: example.metadata.key?(:smoke).to_s,
               reliable: example.metadata.key?(:reliable).to_s,
+              blocking: example.metadata.key?(:blocking).to_s,
               quarantined: quarantined(example.metadata),
               retried: (retry_attempts(example.metadata) > 0).to_s,
               job_name: job_name,
