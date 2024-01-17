@@ -1,0 +1,6 @@
+- return unless project.import_in_progress?
+
+- content_for :page_level_alert do
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, title: _('Import in progress'), alert_options: { class: 'gl-mb-3' }) do |c|
+    - c.with_body do
+      = s_('Import|This project is being imported. Do not make any changes to the project until the import is complete.')

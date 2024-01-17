@@ -11,3 +11,4 @@ coverage.html
 cover.out
 /*.toml
 /gitaly.pid
+/_support/bin/golangci-*

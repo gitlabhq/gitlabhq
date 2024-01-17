@@ -82,3 +82,8 @@ same email does not exist on GitLab, this can lead to incorrect users being tagg
 
 To get around this, we build a cache containing all users who have access to the Bitbucket
 project and then convert mentions in pull request descriptions and notes.
+
+## Backoff and retry
+
+In order to handle rate limiting, requests are wrapped with `BitbucketServer::RetryWithDelay`.
+This wrapper checks if the response is rate limited and retries once after the delay specified in the response headers.

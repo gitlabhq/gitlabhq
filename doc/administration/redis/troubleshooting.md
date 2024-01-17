@@ -79,8 +79,17 @@ repl_backlog_histlen:0
 
 ## High CPU usage on Redis instance
 
-High CPU usage on Redis instance can be cause by Sidekiq `BRPOP` calls. The `BRPOP` command is expensive and increases CPU usage on Redis.
-Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
+By default, GitLab uses over 600 Sidekiq queues, each stored as a Redis list. Each Sidekiq thread issues a `BRPOP` command with all the queues listed in a long string.
+Redis CPU utilization grows as the number of queues and the rate of `BRPOP` calls increases. If your GitLab instance has many Sidekiq processes, this can cause Redis
+CPU utilization to approach 100%. High CPU utilization degrades GitLab performance significantly.
+
+To reduce CPU usage on Redis caused by Sidekiq you can both:
+
+- Use [routing rules](../sidekiq/processing_specific_job_classes.md#routing-rules) to reduce the number of Sidekiq queues.
+- If you are using GitLab 16.6 and earlier, increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
+  On GitLab 16.7 and later, the [default value is 5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139583), which should be sufficient.
+
+The `SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` option reduces the overhead that tearing down and connecting causes, but increase the shutdown delay of Sidekiq.
 
 ## Troubleshooting Sentinel
 

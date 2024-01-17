@@ -199,6 +199,10 @@ module Types
 
       field :stuck, GraphQL::Types::Boolean, method: :stuck?, null: false, description: "If the pipeline is stuck."
 
+      field :yaml_errors, GraphQL::Types::Boolean, method: :yaml_errors?, null: false, description: "If the pipeline has YAML errors."
+
+      field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
+
       def commit
         BatchLoader::GraphQL.wrap(object.commit)
       end

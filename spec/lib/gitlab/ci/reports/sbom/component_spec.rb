@@ -6,15 +6,17 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
   let(:component_type) { 'library' }
   let(:name) { 'component-name' }
   let(:purl_type) { 'npm' }
-  let(:purl) { Sbom::PackageUrl.new(type: purl_type, name: name, version: version).to_s }
+  let(:purl) { Sbom::PackageUrl.new(type: purl_type, name: name, version: version) }
   let(:version) { 'v0.0.1' }
+  let(:source_package_name) { 'source-component' }
 
   subject(:component) do
     described_class.new(
       type: component_type,
       name: name,
       purl: purl,
-      version: version
+      version: version,
+      source_package_name: source_package_name
     )
   end
 
@@ -23,7 +25,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
       component_type: component_type,
       name: name,
       purl: an_object_having_attributes(type: purl_type),
-      version: version
+      version: version,
+      source_package_name: source_package_name
     )
   end
 
@@ -34,18 +37,10 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
 
     context 'with namespace' do
       let(:purl) do
-        'pkg:maven/org.NameSpace/Name@v0.0.1'
+        Sbom::PackageUrl.new(type: 'maven', namespace: 'org.NameSpace', name: 'Name', version: 'v0.0.1')
       end
 
       it { is_expected.to eq('org.NameSpace/Name') }
-
-      context 'when needing normalization' do
-        let(:purl) do
-          'pkg:pypi/org.NameSpace/Name@v0.0.1'
-        end
-
-        it { is_expected.to eq('org.namespace/name') }
-      end
     end
   end
 
@@ -63,14 +58,18 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
 
   describe '#<=>' do
     where do
+      purl_a = Sbom::PackageUrl.new(type: 'npm', name: 'component-a', version: '1.0.0')
+      purl_b = Sbom::PackageUrl.new(type: 'npm', name: 'component-b', version: '1.0.0')
+      purl_composer = Sbom::PackageUrl.new(type: 'composer', name: 'component-a', version: '1.0.0')
+
       {
         'equal' => {
           a_name: 'component-a',
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_a,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: 0
@@ -80,8 +79,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-b',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-b@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_b,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: -1
@@ -91,8 +90,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-b@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_b,
+          b_purl: purl_a,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: 1
@@ -102,8 +101,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:composer/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_composer,
+          b_purl: purl_a,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: -1
@@ -113,8 +112,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:composer/component-a@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_composer,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: 1
@@ -125,7 +124,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           a_type: 'library',
           b_type: 'library',
           a_purl: nil,
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          b_purl: purl_a,
           a_version: '1.0.0',
           b_version: '1.0.0',
           expected: -1
@@ -135,8 +134,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_a,
           a_version: '1.0.0',
           b_version: '2.0.0',
           expected: -1
@@ -146,8 +145,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_a,
           a_version: '2.0.0',
           b_version: '1.0.0',
           expected: 1
@@ -157,8 +156,8 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
           b_name: 'component-a',
           a_type: 'library',
           b_type: 'library',
-          a_purl: 'pkg:npm/component-a@1.0.0',
-          b_purl: 'pkg:npm/component-a@1.0.0',
+          a_purl: purl_a,
+          b_purl: purl_a,
           a_version: nil,
           b_version: '1.0.0',
           expected: -1

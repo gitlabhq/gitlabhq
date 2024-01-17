@@ -65,6 +65,11 @@ For every issue, a job for the `Gitlab::BitbucketImport::ImportIssueNotesWorker`
 This worker completes the import process by performing some housekeeping
 such as marking the import as completed.
 
+## Backoff and retry
+
+In order to handle rate limiting, requests are wrapped with `Bitbucket::ExponentialBackoff`.
+This wrapper catches rate limit errors and retries after a delay up to three times.
+
 ## Set up Bitbucket authentication on GDK
 
 To set up Bitbucket authentication on GDK:

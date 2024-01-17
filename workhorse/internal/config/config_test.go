@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -150,8 +149,7 @@ func TestRegisterGoCloudGoogleURLOpenersWithApplicationDefault(t *testing.T) {
 	path, err := filepath.Abs("../../testdata/google_dummy_credentials.json")
 	require.NoError(t, err)
 
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", path)
-	defer os.Unsetenv("GOOGLE_APPLICATION_CREDENTIALS")
+	t.Setenv("GOOGLE_APPLICATION_CREDENTIALS", path)
 
 	testRegisterGoCloudURLOpener(t, cfg, "gs")
 }

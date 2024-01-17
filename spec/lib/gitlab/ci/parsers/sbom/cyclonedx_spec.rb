@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
   let(:raw_report_data) { report_data.to_json }
   let(:report_valid?) { true }
   let(:validator_errors) { [] }
-  let(:properties_parser) { class_double('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties') }
+  let(:properties_parser) { Gitlab::Ci::Parsers::Sbom::CyclonedxProperties }
   let(:uuid) { 'c9d550a3-feb8-483b-a901-5aa892d039f9' }
 
   let(:base_report_data) do
@@ -28,8 +28,6 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       allow(validator).to receive(:errors).and_return(validator_errors)
     end
 
-    allow(properties_parser).to receive(:parse_source)
-    stub_const('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties', properties_parser)
     allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
@@ -65,8 +63,9 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     end
   end
 
-  context 'when report has components' do
+  context 'when report has dependency_scanning components' do
     let(:report_data) { base_report_data.merge({ 'components' => components }) }
+
     let(:components) do
       [
         {
@@ -128,8 +127,8 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     context 'when component is trivy type' do
       let(:parsed_properties) do
         {
-          'PkgID' => 'adduser@3.134',
-          'PkgType' => 'debian'
+          'PkgID' => 'activesupport@5.1.4',
+          'PkgType' => 'gem'
         }
       end
 
@@ -144,20 +143,15 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
             "properties" => [
               {
                 "name" => "aquasecurity:trivy:PkgID",
-                "value" => "apt@2.6.1"
+                "value" => "activesupport@5.1.4"
               },
               {
                 "name" => "aquasecurity:trivy:PkgType",
-                "value" => "debian"
+                "value" => "gem"
               }
             ]
           }
         ]
-      end
-
-      before do
-        allow(properties_parser).to receive(:parse_trivy_source).and_return(parsed_properties)
-        stub_const('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties', properties_parser)
       end
 
       it 'adds each component, ignoring unused attributes' do
@@ -165,7 +159,9 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
           .with(
             an_object_having_attributes(
               component_type: "library",
-              properties: parsed_properties,
+              properties: an_object_having_attributes(
+                data: parsed_properties
+              ),
               purl: an_object_having_attributes(
                 type: "gem"
               )
@@ -192,6 +188,74 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
 
         parse!
       end
+    end
+  end
+
+  context 'when report has container_scanning components' do
+    let(:report_data) { base_report_data.merge({ 'components' => components }) }
+
+    let(:parsed_properties) do
+      {
+        'SrcName' => 'alpine-baselayout'
+      }
+    end
+
+    let(:components) do
+      [
+        {
+          "name" => "alpine",
+          "version" => "3.4.3-r1",
+          "purl" => "pkg:apk/alpine/alpine@3.4.3-r1?arch=x86_64&distro=3.18.4",
+          "type" => "library",
+          "bom-ref" => "pkg:apk/alpine/alpine@3.4.3-r1?arch=x86_64&distro=3.18.4"
+        },
+        {
+          "name" => "alpine-baselayout-data",
+          "version" => "3.4.3-r1",
+          "purl" => "pkg:apk/alpine/alpine-baselayout-data@3.4.3-r1?arch=x86_64&distro=3.18.4",
+          "type" => "library",
+          "bom-ref" => "pkg:apk/alpine/alpine-baselayout-data@3.4.3-r1?arch=x86_64&distro=3.18.4",
+          "properties" => [
+            {
+              "name" => "aquasecurity:trivy:SrcName",
+              "value" => "alpine-baselayout"
+            }
+          ]
+        }
+      ]
+    end
+
+    before do
+      allow(report).to receive(:add_component)
+    end
+
+    it 'adds each component, ignoring unused attributes' do
+      expect(report).to receive(:add_component)
+        .with(
+          an_object_having_attributes(
+            name: "alpine/alpine",
+            version: "3.4.3-r1",
+            component_type: "library",
+            purl: an_object_having_attributes(type: "apk"),
+            properties: nil,
+            source_package_name: 'alpine'
+          )
+        )
+      expect(report).to receive(:add_component)
+        .with(
+          an_object_having_attributes(
+            name: "alpine/alpine-baselayout-data",
+            version: "3.4.3-r1",
+            component_type: "library",
+            purl: an_object_having_attributes(type: "apk"),
+            properties: an_object_having_attributes(
+              data: parsed_properties
+            ),
+            source_package_name: 'alpine-baselayout'
+          )
+        )
+
+      parse!
     end
   end
 

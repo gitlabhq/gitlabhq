@@ -10,6 +10,7 @@ FactoryBot.define do
     transient do
       purl_type { 'npm' }
       namespace { nil }
+      source_package_name { nil }
     end
 
     purl do
@@ -18,7 +19,7 @@ FactoryBot.define do
         name: name,
         namespace: namespace,
         version: version
-      ).to_s
+      )
     end
 
     skip_create
@@ -28,7 +29,8 @@ FactoryBot.define do
         type: type,
         name: name,
         purl: purl,
-        version: version
+        version: version,
+        source_package_name: source_package_name
       )
     end
   end
