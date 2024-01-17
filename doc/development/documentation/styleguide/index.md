@@ -735,6 +735,10 @@ For example:
 ```
 
 For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+
+NOTE:
+To format text in footnotes (for example, to use emphasis or links), you must use HTML rather than Markdown.
+
 For example:
 
 ```html

@@ -101,3 +101,23 @@ Warning.process do |warning|
 end
 
 Warning.ignore(/already initialized constant Chemlab::Vendor|previous definition of Vendor was here/)
+
+# TODO: Temporary monkeypatch for broadcast logging
+# Remove once activesupport is upgraded to 7.1
+module Gitlab
+  module QA
+    class TestLogger
+      # Combined logger instance
+      #
+      # @param [<Symbol, String>] level
+      # @param [String] source
+      # @return [ActiveSupport::Logger]
+      def self.logger(level: :info, source: 'Gitlab QA', path: 'tmp')
+        console_log = console_logger(level: level, source: source)
+        file_log = file_logger(source: source, path: path)
+
+        console_log.extend(ActiveSupport::Logger.broadcast(file_log))
+      end
+    end
+  end
+end

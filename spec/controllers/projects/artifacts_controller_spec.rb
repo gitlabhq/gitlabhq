@@ -104,7 +104,8 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
         download_artifact
 
-        expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+        expect(response.headers['Content-Disposition'])
+          .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
       end
     end
 
@@ -135,7 +136,8 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
           download_artifact(file_type: 'archive')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+          expect(response.headers['Content-Disposition'])
+            .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
         end
       end
     end
@@ -168,7 +170,8 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
 
             download_artifact(file_type: file_type)
 
-            expect(response.headers['Content-Disposition']).to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+            expect(response.headers['Content-Disposition'])
+              .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
           end
         end
 
@@ -182,7 +185,8 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
           end
 
           it 'sends the codequality report' do
-            expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+            expect(Gitlab::ApplicationContext)
+              .to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
 
             expect(controller).to receive(:redirect_to).and_call_original
 
@@ -212,7 +216,8 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
             end
 
             it 'redirects to a Google CDN request' do
-              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+              expect(Gitlab::ApplicationContext)
+                .to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
               expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
 
               download_artifact(file_type: file_type)

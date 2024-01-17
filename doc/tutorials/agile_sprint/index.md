@@ -45,7 +45,7 @@ on your issues.
 
 When creating an iteration cadence, you can decide whether to automatically manage the iterations or
 disable the automated scheduling to
-[manually manage the iterations](../../user/group/iterations/index.md#manual-iteration-management).
+[manually manage the iterations](../../user/group/iterations/index.md#create-an-iteration-manually).
 
 Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
 

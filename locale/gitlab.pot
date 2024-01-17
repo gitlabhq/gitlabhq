@@ -35832,6 +35832,12 @@ msgstr ""
 msgid "PipelineSubscriptions|Add new"
 msgstr ""
 
+msgid "PipelineSubscriptions|Add new pipeline subscription"
+msgstr ""
+
+msgid "PipelineSubscriptions|An error occurred while adding a new pipeline subscription."
+msgstr ""
+
 msgid "PipelineSubscriptions|An error occurred while deleting this pipeline subscription."
 msgstr ""
 
@@ -35851,6 +35857,9 @@ msgid "PipelineSubscriptions|Subscribed to this project"
 msgstr ""
 
 msgid "PipelineSubscriptions|Subscription for this project will be removed. Do you want to continue?"
+msgstr ""
+
+msgid "PipelineSubscriptions|Subscription successfully added."
 msgstr ""
 
 msgid "PipelineSubscriptions|Subscription successfully deleted."
@@ -54674,6 +54683,9 @@ msgid "Vulnerability|Scanner Provider"
 msgstr ""
 
 msgid "Vulnerability|Scanner:"
+msgstr ""
+
+msgid "Vulnerability|Search or filter vulnerabilities..."
 msgstr ""
 
 msgid "Vulnerability|Security Audit"

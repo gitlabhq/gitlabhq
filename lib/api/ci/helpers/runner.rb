@@ -140,6 +140,10 @@ module API
           # noop: overridden in EE
         end
 
+        def audit_download(build, filename)
+          # noop: overridden in EE
+        end
+
         def check_if_backoff_required!
           return unless Gitlab::Database::Migrations::RunnerBackoff::Communicator.backoff_runner?
 

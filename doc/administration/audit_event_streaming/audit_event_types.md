@@ -64,6 +64,12 @@ Audit event types belong to the following product categories.
 | [`update_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) |
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) |
 
+### Build artifacts
+
+| Name | Description | Saved to database | Streamed | Introduced in |
+|:-----|:------------|:------------------|:---------|:--------------|
+| [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | Triggered when a user download a job artifact from a project| **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) |
+
 ### Code review
 
 | Name | Description | Saved to database | Streamed | Introduced in |

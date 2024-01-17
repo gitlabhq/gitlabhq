@@ -434,6 +434,12 @@ Use:
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## custom role
+
+Use **custom role** when referring to a role created with specific customized permissions.
+
+When referring to a non-custom role, use [**default role**](#default-role).
+
 ## data
 
 Use **data** as a singular noun.
@@ -447,6 +453,20 @@ Instead of:
 
 - Data are collected.
 - The data show a performance increase.
+
+## default role
+
+Use **default role** when referring to the following predefined roles that have
+no customized permissions added:
+
+- Guest
+- Reporter
+- Developer
+- Maintainer
+- Owner
+- Minimal Access
+
+Do not use **static role**, **built-in role**, or **predefined role**.
 
 ## delete
 
@@ -1522,6 +1542,8 @@ Use lowercase for **review app**.
 ## roles
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+There are two types of roles: [custom](#custom-role) and [default](#default-role).
 
 Roles are not the same as [**access levels**](#access-level).
 

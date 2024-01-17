@@ -414,15 +414,12 @@ You can use the `/promote_to_incident` [quick action](../quick_actions.md) to pr
 
 ## Add an issue to an iteration **(PREMIUM ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.
-> - Moved to GitLab Premium in 13.9.
-
 To add an issue to an [iteration](../../group/iterations/index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
-1. From the dropdown list, select the iteration to associate this issue with.
+1. From the dropdown list, select the iteration to add this issue to.
 1. Select any area outside the dropdown list.
 
 Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#issues-merge-requests-and-epics).

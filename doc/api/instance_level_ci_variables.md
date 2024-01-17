@@ -8,6 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## List all instance variables
 
+> `description` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418331) in GitLab 16.8.
+
 Get the list of all instance-level variables.
 
 ```plaintext
@@ -43,6 +45,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Show instance variable details
 
+> `description` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418331) in GitLab 16.8.
+
 Get the details of a specific instance-level variable.
 
 ```plaintext
@@ -71,6 +75,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create instance variable
 
+> `description` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418331) in GitLab 16.8.
+
 Create a new instance-level variable.
 
 The [maximum number of instance-level variables](../administration/instance_limits.md#number-of-instance-level-variables) can be changed.
@@ -81,12 +87,13 @@ POST /admin/ci/variables
 
 | Attribute       | Type    | Required | Description |
 |-----------------|---------|----------|-------------|
-| `key`           | string  | Yes      | The `key` of a variable. Maximum of 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
-| `value`         | string  | Yes      | The `value` of a variable. Maximum of 10,000 characters. |
-| `variable_type` | string  | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
-| `protected`     | boolean | No       | Whether the variable is protected. |
+| `key`           | string  | Yes      | The `key` of the variable. Maximum of 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
+| `value`         | string  | Yes      | The `value` of the variable. Maximum of 10,000 characters. |
+| `description`   | string  | No       | The description of the variable. Maximum of 255 characters. |
 | `masked`        | boolean | No       | Whether the variable is masked. |
+| `protected`     | boolean | No       | Whether the variable is protected. |
 | `raw`           | boolean | No       | Whether the variable is expandable. |
+| `variable_type` | string  | No       | The type of the variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -107,6 +114,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Update instance variable
 
+> `description` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418331) in GitLab 16.8.
+
 Update an instance-level variable.
 
 ```plaintext
@@ -115,12 +124,13 @@ PUT /admin/ci/variables/:key
 
 | Attribute       | Type    | Required | Description |
 |-----------------|---------|----------|-------------|
-| `key`           | string  | Yes      | The `key` of a variable. Maximum of 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
-| `value`         | string  | Yes      | The `value` of a variable. Maximum of 10,000 characters. |
-| `variable_type` | string  | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
-| `protected`     | boolean | No       | Whether the variable is protected. |
+| `description`   | string  | No       | The description of the variable. Maximum of 255 characters. |
+| `key`           | string  | Yes      | The `key` of the variable. Maximum of 255 characters, only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
 | `masked`        | boolean | No       | Whether the variable is masked. |
+| `protected`     | boolean | No       | Whether the variable is protected. |
 | `raw`           | boolean | No       | Whether the variable is expandable. |
+| `value`         | string  | Yes      | The `value` of the variable. Maximum of 10,000 characters. |
+| `variable_type` | string  | No       | The type of the variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \

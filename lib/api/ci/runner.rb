@@ -386,6 +386,7 @@ module API
         get '/:id/artifacts', feature_category: :build_artifacts do
           authenticate_job_via_dependent_job!
 
+          audit_download(current_job, current_job.artifacts_file&.filename) if current_job.artifacts_file
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end
       end
