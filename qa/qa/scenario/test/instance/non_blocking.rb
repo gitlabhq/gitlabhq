@@ -5,9 +5,7 @@ module QA
     module Test
       module Instance
         class NonBlocking < All
-          tags :"~reliable",
-            :"~smoke",
-            *Specs::Runner::DEFAULT_SKIPPED_TAGS.map { |tag| :"~#{tag}" }
+          tags :"~reliable", :"~blocking", :"~smoke", *Specs::Runner::DEFAULT_SKIPPED_TAGS.map { |tag| :"~#{tag}" }
         end
       end
     end

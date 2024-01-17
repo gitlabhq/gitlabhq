@@ -45,7 +45,7 @@ To import your Bitbucket repositories:
 - Repository description
 - Git repository data
 - Pull requests
-- Pull request comments, reviewers, approvals, and merge events
+- Pull request comments, user mentions, reviewers, approvals, and merge events
 - LFS objects
 
 When importing, repository public access is retained. If a repository is private in Bitbucket, it's
@@ -80,12 +80,24 @@ The following items are changed when they are imported:
 
 ## User assignment
 
-> Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
+> - Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
+> - Matching user mentions with GitLab users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
+
+FLAG:
+On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
+On GitLab.com, this feature is not available.
 
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the
 project creator is set as the author. The importer appends a note in the comment to mark the
 original creator.
+
+`@mentions` on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
+If a user with the same email address is not found on GitLab, the `@mention` is made static.
+For a user to be matched, they must have a GitLab role that provides at least read access to the project.
+
+If the project is public, GitLab only matches users who are invited to the project.
 
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.

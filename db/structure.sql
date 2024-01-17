@@ -18979,6 +18979,29 @@ CREATE SEQUENCE loose_foreign_keys_deleted_records_id_seq
 
 ALTER SEQUENCE loose_foreign_keys_deleted_records_id_seq OWNED BY loose_foreign_keys_deleted_records.id;
 
+CREATE TABLE member_approvals (
+    id bigint NOT NULL,
+    reviewed_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    member_id bigint NOT NULL,
+    member_namespace_id bigint NOT NULL,
+    requested_by_id bigint,
+    reviewed_by_id bigint,
+    new_access_level integer NOT NULL,
+    old_access_level integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE member_approvals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE member_approvals_id_seq OWNED BY member_approvals.id;
+
 CREATE TABLE member_roles (
     id bigint NOT NULL,
     namespace_id bigint,
@@ -27389,6 +27412,8 @@ ALTER TABLE ONLY lists ALTER COLUMN id SET DEFAULT nextval('lists_id_seq'::regcl
 
 ALTER TABLE ONLY loose_foreign_keys_deleted_records ALTER COLUMN id SET DEFAULT nextval('loose_foreign_keys_deleted_records_id_seq'::regclass);
 
+ALTER TABLE ONLY member_approvals ALTER COLUMN id SET DEFAULT nextval('member_approvals_id_seq'::regclass);
+
 ALTER TABLE ONLY member_roles ALTER COLUMN id SET DEFAULT nextval('member_roles_id_seq'::regclass);
 
 ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::regclass);
@@ -29760,6 +29785,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY loose_foreign_keys_deleted_records
     ADD CONSTRAINT loose_foreign_keys_deleted_records_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY member_approvals
+    ADD CONSTRAINT member_approvals_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY member_roles
     ADD CONSTRAINT member_roles_pkey PRIMARY KEY (id);
@@ -34130,6 +34158,14 @@ CREATE INDEX index_manifest_states_on_verification_state ON dependency_proxy_man
 
 CREATE INDEX index_manifest_states_pending_verification ON dependency_proxy_manifest_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_member_approval_on_member_id ON member_approvals USING btree (member_id);
+
+CREATE INDEX index_member_approval_on_member_namespace_id ON member_approvals USING btree (member_namespace_id);
+
+CREATE INDEX index_member_approval_on_requested_by_id ON member_approvals USING btree (requested_by_id);
+
+CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING btree (reviewed_by_id);
+
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
 
 CREATE INDEX index_members_on_access_level ON members USING btree (access_level);
@@ -38129,6 +38165,9 @@ ALTER TABLE ONLY project_pages_metadata
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY member_approvals
+    ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_1485c451e3 FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
 
@@ -38824,6 +38863,9 @@ ALTER TABLE ONLY project_access_tokens
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_b28c28abf1 FOREIGN KEY (scanner_id) REFERENCES vulnerability_scanners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY member_approvals
+    ADD CONSTRAINT fk_b2e4a4b68a FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);

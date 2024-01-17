@@ -14,6 +14,8 @@ module MergeRequests
         trigger_merge_request_reviewers_updated(merge_request)
         create_system_note(merge_request, user)
 
+        remove_approval(merge_request) if Feature.enabled?(:mr_request_changes, current_user)
+
         success
       else
         error("Reviewer not found")

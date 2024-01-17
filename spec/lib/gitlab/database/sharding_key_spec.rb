@@ -108,11 +108,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   end
 
   def tables_missing_sharding_key(starting_from_milestone:)
-    ::Gitlab::Database::Dictionary.entries.select do |entry|
-      entry.sharding_key.blank? &&
+    ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
+      entry.table_name if entry.sharding_key.blank? &&
         entry.milestone.to_f >= starting_from_milestone &&
         ::Gitlab::Database::GitlabSchema.cell_local?(entry.gitlab_schema)
-    end.map(&:table_name)
+    end
   end
 
   def all_tables_to_sharding_key

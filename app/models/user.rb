@@ -299,6 +299,9 @@ class User < MainClusterwide::ApplicationRecord
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
   has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
 
+  has_many :requested_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'requested_by_id'
+  has_many :reviewed_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'reviewed_by_id'
+
   #
   # Validations
   #

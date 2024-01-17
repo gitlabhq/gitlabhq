@@ -176,6 +176,7 @@ project_members:
 - project
 - member_namespace
 - member_role
+- member_approvals
 member_roles:
 - members
 - namespace
@@ -838,6 +839,7 @@ project:
 - organization
 - dora_performance_scores
 - xray_reports
+- member_approvals
 award_emoji:
 - awardable
 - user

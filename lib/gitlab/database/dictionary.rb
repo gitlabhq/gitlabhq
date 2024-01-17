@@ -3,15 +3,35 @@
 module Gitlab
   module Database
     class Dictionary
+      include Enumerable
+
+      delegate :each, to: :@dictionary_entries
+
       ALL_SCOPES = ['', 'views', 'deleted_tables'].freeze
+
+      def initialize(dictionary_entries)
+        @dictionary_entries = dictionary_entries
+      end
+
+      def to_name_and_schema_mapping
+        @dictionary_entries.map(&:name_and_schema).to_h
+      end
+
+      def find_by_table_name(name)
+        @dictionary_entries.find { |entry| entry.key_name == name }
+      end
+
+      def find_all_by_schema(schema_name)
+        @dictionary_entries.select { |entry| entry.schema?(schema_name) }
+      end
 
       def self.entries(scope = '')
         @entries ||= {}
-        @entries[scope] ||= Dir.glob(dictionary_path_globs(scope)).map do |file_path|
-          dictionary = Entry.new(file_path)
-          dictionary.validate!
-          dictionary
-        end
+        @entries[scope] ||= new(
+          Dir.glob(dictionary_path_globs(scope)).map do |file_path|
+            Entry.new(file_path).tap(&:validate!)
+          end
+        )
       end
 
       def self.any_entry(name)
@@ -24,9 +44,7 @@ module Gitlab
       end
 
       def self.entry(name, scope = '')
-        entries(scope).find do |entry|
-          entry.key_name == name
-        end
+        entries(scope).find_by_table_name(name)
       end
 
       private_class_method def self.dictionary_path_globs(scope)

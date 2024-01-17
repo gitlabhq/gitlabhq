@@ -142,7 +142,7 @@ gdk-qa-smoke:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
 
-gdk-qa-reliable:
+gdk-qa-blocking:
   extends:
     - .gdk-qa-base
     - .rules:gdk:qa-parallel
@@ -151,7 +151,7 @@ gdk-qa-reliable:
     QA_RUN_TYPE: gdk-qa-blocking
   parallel: 10
 
-gdk-qa-reliable-selective:
+gdk-qa-blocking-selective:
   extends:
     - .gdk-qa-base
     - .rules:gdk:qa-selective
@@ -179,7 +179,7 @@ gdk-qa-smoke-with-load-balancer:
     - !reference [".rules:test:never-schedule-pipeline", rules]
     - !reference [".rules:test:gdk-load-balancer-changes", rules]
 
-gdk-qa-reliable-with-load-balancer:
+gdk-qa-blocking-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
@@ -205,9 +205,12 @@ gdk-qa-non-blocking:
     QA_SCENARIO: Test::Instance::NonBlocking
     QA_RUN_TYPE: gdk-qa-non-blocking
   parallel: 5
+  allow_failure: true
   rules:
+    # run tests on master pipelines to collect metrics and move tests to `blocking` job until `non-blocking` job
+    # is removed entirely
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     - when: manual
-      allow_failure: true
 
 # ==========================================
 # Post test stage

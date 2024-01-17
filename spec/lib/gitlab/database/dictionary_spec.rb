@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
+  subject(:dictionary) { described_class.entries('') }
+
   describe '.entries' do
     it 'all tables and views are unique' do
-      table_and_view_names = described_class.entries('')
-      table_and_view_names += described_class.entries('views')
+      table_and_view_names = dictionary.to_a
+      table_and_view_names += described_class.entries('views').to_a
 
       # ignore gitlab_internal due to `ar_internal_metadata`, `schema_migrations`
       table_and_view_names = table_and_view_names
@@ -21,6 +23,51 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         "Duplicated table(s) #{duplicated_tables.to_a} found in #{described_class}.views_and_tables_to_schema. " \
         "Any duplicated table must be removed from db/docs/ or ee/db/docs/. " \
         "More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+    end
+
+    it 'builds a Dictionary with validated Entry records' do
+      expect { dictionary }.not_to raise_error
+
+      expect(dictionary).to be_instance_of(described_class)
+      expect(dictionary).to all(be_instance_of(Gitlab::Database::Dictionary::Entry))
+    end
+  end
+
+  describe '#to_name_and_schema_mapping' do
+    it 'returns a hash of name and schema mappings' do
+      expect(dictionary.to_name_and_schema_mapping).to include(
+        {
+          'application_settings' => :gitlab_main_clusterwide,
+          'members' => :gitlab_main_cell
+        }
+      )
+    end
+  end
+
+  describe '#find_by_table_name' do
+    it 'finds an entry by table name' do
+      entry = dictionary.find_by_table_name('application_settings')
+      expect(entry).to be_instance_of(Gitlab::Database::Dictionary::Entry)
+      expect(entry.key_name).to eq('application_settings')
+      expect(entry.gitlab_schema).to eq('gitlab_main_clusterwide')
+    end
+
+    it 'returns nil if the entry is not found' do
+      entry = dictionary.find_by_table_name('non_existent_table')
+      expect(entry).to be_nil
+    end
+  end
+
+  describe '#find_all_by_schema' do
+    it 'returns an array of entries with a given schema' do
+      entries = dictionary.find_all_by_schema('gitlab_main_cell')
+      expect(entries).to all(be_instance_of(Gitlab::Database::Dictionary::Entry))
+      expect(entries).to all(have_attributes(gitlab_schema: 'gitlab_main_cell'))
+    end
+
+    it 'returns an empty array if no entries match the schema' do
+      entries = dictionary.find_all_by_schema('non_existent_schema')
+      expect(entries).to be_empty
     end
   end
 

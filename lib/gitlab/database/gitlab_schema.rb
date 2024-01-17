@@ -134,19 +134,19 @@ module Gitlab
       end
 
       def self.deleted_tables_to_schema
-        @deleted_tables_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_tables').map(&:name_and_schema).to_h
+        @deleted_tables_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_tables').to_name_and_schema_mapping
       end
 
       def self.deleted_views_to_schema
-        @deleted_views_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_views').map(&:name_and_schema).to_h
+        @deleted_views_to_schema ||= ::Gitlab::Database::Dictionary.entries('deleted_views').to_name_and_schema_mapping
       end
 
       def self.tables_to_schema
-        @tables_to_schema ||= ::Gitlab::Database::Dictionary.entries.map(&:name_and_schema).to_h
+        @tables_to_schema ||= ::Gitlab::Database::Dictionary.entries.to_name_and_schema_mapping
       end
 
       def self.views_to_schema
-        @views_to_schema ||= ::Gitlab::Database::Dictionary.entries('views').map(&:name_and_schema).to_h
+        @views_to_schema ||= ::Gitlab::Database::Dictionary.entries('views').to_name_and_schema_mapping
       end
 
       def self.schema_names

@@ -12,7 +12,7 @@ module QA
 
       DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
-      DEFAULT_SKIPPED_TAGS = %w[orchestrated transient sanity_feature_flags].freeze
+      DEFAULT_SKIPPED_TAGS = %w[orchestrated transient].freeze
 
       def initialize
         @tty = false

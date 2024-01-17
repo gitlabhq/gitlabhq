@@ -23,12 +23,5 @@ module MergeRequests
         error("Reviewer not found")
       end
     end
-
-    private
-
-    def remove_approval(merge_request)
-      MergeRequests::RemoveApprovalService.new(project: project, current_user: current_user)
-        .execute(merge_request)
-    end
   end
 end

@@ -82,6 +82,29 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
       it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
         let(:action) { result }
       end
+
+      it 'calls MergeRequests::RemoveApprovalService' do
+        expect_next_instance_of(
+          MergeRequests::RemoveApprovalService,
+          project: project, current_user: current_user
+        ) do |service|
+          expect(service).to receive(:execute).with(merge_request).and_return({ success: true })
+        end
+
+        service.execute(merge_request, user)
+      end
+
+      describe 'mr_request_changes feature flag is disabled' do
+        before do
+          stub_feature_flags(mr_request_changes: false)
+        end
+
+        it 'does not call MergeRequests::RemoveApprovalService' do
+          expect(MergeRequests::RemoveApprovalService).not_to receive(:new)
+
+          service.execute(merge_request, user)
+        end
+      end
     end
   end
 end

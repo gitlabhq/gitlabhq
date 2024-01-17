@@ -225,6 +225,13 @@ groups_visits:
   - table: users
     column: user_id
     on_delete: async_delete
+member_approvals:
+  - table: users
+    column: requested_by_id
+    on_delete: async_nullify
+  - table: users
+    column: reviewed_by_id
+    on_delete: async_nullify
 members:
   - table: users
     column: user_id
