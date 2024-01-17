@@ -206,6 +206,11 @@ gdk-qa-non-blocking:
     QA_RUN_TYPE: gdk-qa-non-blocking
   parallel: 5
   allow_failure: true
+  artifacts:
+    paths:
+      - log
+    reports:
+      dotenv: ""
   rules:
     # run tests on master pipelines to collect metrics and move tests to `blocking` job until `non-blocking` job
     # is removed entirely

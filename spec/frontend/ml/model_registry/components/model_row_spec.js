@@ -34,7 +34,7 @@ describe('ModelRow', () => {
     expect(findVersionLink().text()).toBe(mockModels[1].version);
     expect(findVersionLink().attributes('href')).toBe(mockModels[1].versionPath);
 
-    expect(findMessage('· No other versions').exists()).toBe(true);
+    expect(findMessage('· 1 version').exists()).toBe(true);
   });
 
   it('Shows no version message if model has no versions', () => {

@@ -87,9 +87,9 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
     context 'sorting' do
       def sort_page(by:, direction:)
         within '[data-testid="releases-sort"]' do
-          find('.dropdown-toggle').click
+          find('[data-testid="base-dropdown-toggle"]').click
 
-          click_button(by, class: 'dropdown-item')
+          find('li.gl-new-dropdown-item', text: by).click
 
           find('.sorting-direction-button').click if direction == :ascending
         end

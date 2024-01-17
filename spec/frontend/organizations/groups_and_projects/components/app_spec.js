@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox, GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
 import App from '~/organizations/groups_and_projects/components/app.vue';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
@@ -6,6 +6,7 @@ import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/co
 import {
   SORT_ITEM_CREATED,
   SORT_DIRECTION_DESC,
+  SORT_ITEMS,
 } from '~/organizations/groups_and_projects/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
@@ -84,21 +85,12 @@ describe('GroupsAndProjectsApp', () => {
   it('renders sort dropdown with sort items and correct props', () => {
     createComponent();
 
-    const sortItems = wrapper.findAllComponents(GlSortingItem).wrappers.map((sortItemWrapper) => ({
-      active: sortItemWrapper.attributes('active'),
-      text: sortItemWrapper.text(),
-    }));
-
     expect(findSort().props()).toMatchObject({
       isAscending: true,
       text: SORT_ITEM_CREATED.text,
+      sortBy: SORT_ITEM_CREATED.value,
+      sortOptions: SORT_ITEMS,
     });
-    expect(sortItems).toEqual([
-      {
-        active: 'true',
-        text: SORT_ITEM_CREATED.text,
-      },
-    ]);
   });
 
   describe('when filtered search bar is submitted', () => {
@@ -133,12 +125,12 @@ describe('GroupsAndProjectsApp', () => {
     beforeEach(() => {
       createComponent();
 
-      wrapper.findComponent(GlSortingItem).trigger('click', SORT_ITEM_CREATED);
+      findSort().vm.$emit('sortByChange', SORT_ITEM_CREATED.value);
     });
 
     it('updates `sort_name` query string', () => {
       expect(routerMock.push).toHaveBeenCalledWith({
-        query: { sort_name: SORT_ITEM_CREATED.name, search: 'foo' },
+        query: { sort_name: SORT_ITEM_CREATED.value, search: 'foo' },
       });
     });
   });

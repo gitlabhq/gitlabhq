@@ -1,5 +1,5 @@
 <script>
-import { GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlSorting } from '@gitlab/ui';
 import {
   ASCENDING_ORDER,
   DESCENDING_ORDER,
@@ -17,7 +17,6 @@ export default {
   name: 'ReleasesSort',
   components: {
     GlSorting,
-    GlSortingItem,
   },
   props: {
     value: {
@@ -45,7 +44,7 @@ export default {
       return SORT_OPTIONS;
     },
     sortText() {
-      return this.sortOptions.find((s) => s.orderBy === this.orderBy).label;
+      return this.sortOptions.find((s) => s.value === this.orderBy).text;
     },
     isDirectionAscending() {
       return this.direction === ASCENDING_ORDER;
@@ -56,11 +55,8 @@ export default {
       const direction = this.isDirectionAscending ? DESCENDING_ORDER : ASCENDING_ORDER;
       this.emitInputEventIfChanged(this.orderBy, direction);
     },
-    onSortItemClick(item) {
-      this.emitInputEventIfChanged(item.orderBy, this.direction);
-    },
-    isActiveSortItem(item) {
-      return this.orderBy === item.orderBy;
+    onSortItemClick(orderBy) {
+      this.emitInputEventIfChanged(orderBy, this.direction);
     },
     emitInputEventIfChanged(orderBy, direction) {
       const newSort = SORT_MAP[orderBy][direction];
@@ -76,16 +72,10 @@ export default {
   <gl-sorting
     :text="sortText"
     :is-ascending="isDirectionAscending"
+    :sort-options="sortOptions"
+    :sort-by="orderBy"
     data-testid="releases-sort"
     @sortDirectionChange="onDirectionChange"
-  >
-    <gl-sorting-item
-      v-for="item of sortOptions"
-      :key="item.orderBy"
-      :active="isActiveSortItem(item)"
-      @click="onSortItemClick(item)"
-    >
-      {{ item.label }}
-    </gl-sorting-item>
-  </gl-sorting>
+    @sortByChange="onSortItemClick"
+  />
 </template>

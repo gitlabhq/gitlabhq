@@ -21,7 +21,7 @@ export default {
       if (!this.model.versionCount) return s__('MlModelRegistry|No registered versions');
 
       return n__(
-        'MlModelRegistry|· No other versions',
+        'MlModelRegistry|· %d version',
         'MlModelRegistry|· %d versions',
         this.model.versionCount,
       );

@@ -525,16 +525,17 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '.with_creator_id' do
-    subject { described_class.with_creator_id('1') }
+    let_it_be(:admin) { create(:admin, username: 'root') }
+    let_it_be(:user2) { create(:user, username: 'user2') }
 
-    let_it_be(:runner1) { create(:ci_runner, creator_id: 2) }
-    let_it_be(:runner2) { create(:ci_runner, creator_id: 1) }
-    let_it_be(:runner3) { create(:ci_runner, creator_id: 1) }
-    let_it_be(:runner4) { create(:ci_runner, creator_id: nil) }
+    let_it_be(:user_runner1) { create(:ci_runner, creator: user2) }
+    let_it_be(:admin_runner1) { create(:ci_runner, creator: admin) }
+    let_it_be(:admin_runner2) { create(:ci_runner, creator: admin) }
+    let_it_be(:runner_without_creator) { create(:ci_runner, creator: nil) }
 
-    it "returns runners with creator_id '1'" do
-      is_expected.to contain_exactly(runner2, runner3)
-    end
+    subject { described_class.with_creator_id(admin.id.to_s) }
+
+    it { is_expected.to contain_exactly(admin_runner1, admin_runner2) }
   end
 
   describe '.with_version_prefix' do

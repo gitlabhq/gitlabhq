@@ -5,7 +5,7 @@ module QA
     describe 'Repository tags', :reliable, product_group: :source_code, quarantine: {
       type: :flaky,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/438349",
-      only: { job: 'gdk-qa-reliable' }
+      only: { job: /gdk-qa-.*/ }
     } do
       let(:project) { create(:project, :with_readme, name: 'project-for-tags') }
       let(:developer_user) do

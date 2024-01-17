@@ -57,7 +57,7 @@ class InvitesController < ApplicationController
 
   def member?
     strong_memoize(:is_member) do
-      @member.source.users.include?(current_user)
+      @member.source.has_user?(current_user)
     end
   end
 

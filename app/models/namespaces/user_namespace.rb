@@ -11,7 +11,7 @@ module Namespaces
   # mismatch as it always has been a User (personal) namespace.
   #
   # If you need to make a change here, please ping the
-  # Manage/Workspaces group so we can ensure that the
+  # Tenant Scale group so we can ensure that the
   # changes do not break existing functionality.
   #
   # As Namespaces evolve we may be able to relax this restriction

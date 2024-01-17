@@ -52,11 +52,12 @@ module Integrations
       domain = Resolv::IPv6::Regex.match?(ip_address) ? "[#{ip_address}]" : ip_address
 
       begin
-        Gitlab::UrlBlocker.validate!(
+        Gitlab::HTTP_V2::UrlBlocker.validate!(
           "irc://#{domain}",
           allow_localhost: allow_local_requests?,
           allow_local_network: allow_local_requests?,
-          schemes: ['irc'])
+          schemes: ['irc'],
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
         @socket = TCPSocket.new ip_address, irker_port
       rescue Errno::ECONNREFUSED, Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
         logger.fatal "Can't connect to Irker daemon: #{e}"

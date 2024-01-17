@@ -379,7 +379,7 @@ cause problems on some file systems. In this case, `54771` hashes to
 
 #### Identify repositories on disk
 
-Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subcommand to:
+Use the [`praefect metadata`](troubleshooting_gitaly_cluster.md#view-repository-metadata) subcommand to:
 
 - Retrieve a repository's virtual storage and relative path from the metadata store. After you have the hashed storage path, you can use the Rails
   console to retrieve the project path.

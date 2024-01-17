@@ -45,6 +45,11 @@ module Resolvers
                required: false,
                description: 'Filter runners by creator ID.'
 
+      argument :creator_username, GraphQL::Types::String,
+               required: false,
+               description: 'Filter runners by creator username.',
+               alpha: { milestone: '16.7' }
+
       argument :version_prefix, GraphQL::Types::String,
                required: false,
                description: "Filter runners by version. Runners that contain runner managers with the version at " \
@@ -81,6 +86,7 @@ module Resolvers
           sort: params[:sort]&.to_s,
           creator_id:
             params[:creator_id] ? ::GitlabSchema.parse_gid(params[:creator_id], expected_type: ::User).model_id : nil,
+          creator_username: params[:creator_username],
           version_prefix: params[:version_prefix],
           preload: {} # we'll handle preloading ourselves
         }.compact

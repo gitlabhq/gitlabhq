@@ -263,6 +263,10 @@ describe('buildClient', () => {
               { operator: '!=', value: 'not-service' },
             ],
             period: [{ operator: '=', value: '5m' }],
+            status: [
+              { operator: '=', value: 'ok' },
+              { operator: '!=', value: 'error' },
+            ],
             traceId: [
               { operator: '=', value: 'trace-id' },
               { operator: '!=', value: 'not-trace-id' },
@@ -276,7 +280,8 @@ describe('buildClient', () => {
             '&service_name=service&not[service_name]=not-service' +
             '&period=5m' +
             '&trace_id=trace-id&not[trace_id]=not-trace-id' +
-            '&attr_name=name1&attr_value=value1',
+            '&attr_name=name1&attr_value=value1' +
+            '&status=ok&not[status]=error',
         );
       });
       describe('date range time filter', () => {

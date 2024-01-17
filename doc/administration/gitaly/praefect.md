@@ -197,7 +197,7 @@ The following options are available:
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 Setting up PostgreSQL creates empty Praefect tables. For more information, see the
-[relevant troubleshooting section](troubleshooting.md#relation-does-not-exist-errors).
+[relevant troubleshooting section](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
 
 #### Running GitLab and Praefect databases on the same server
 
@@ -287,7 +287,7 @@ praefect['configuration'] = {
 ```
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
+[troubleshooting steps](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
 
 #### Reads distribution caching
 
@@ -1689,7 +1689,7 @@ To migrate existing clusters:
 
    - If downtime is unacceptable:
 
-      1. Determine which Gitaly node is [the current primary](troubleshooting.md#determine-primary-gitaly-node).
+      1. Determine which Gitaly node is [the current primary](troubleshooting_gitaly_cluster.md#determine-primary-gitaly-node).
 
       1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
       on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election

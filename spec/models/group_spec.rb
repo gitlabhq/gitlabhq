@@ -1241,7 +1241,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#users' do
-    it { expect(group.users).to eq(group.owners) }
+    let(:group_users) { group.users.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
+    let(:group_owners) { group.owners.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
+
+    it { expect(group_users).to eq(group_owners) }
   end
 
   describe '#human_name' do
@@ -1599,7 +1602,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns the owners of a Group' do
       members = setup_group_members(group)
 
-      expect(group.owners).to eq([members[:owner]])
+      expect(
+        group.owners.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662")
+      ).to eq([members[:owner]])
     end
   end
 
@@ -2546,7 +2551,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#bots' do
-    subject { group.bots }
+    subject { group.bots.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
 
     let_it_be(:group) { create(:group) }
     let_it_be(:project_bot) { create(:user, :project_bot) }

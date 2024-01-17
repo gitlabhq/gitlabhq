@@ -104,7 +104,7 @@ class ProjectTeam
   def owners
     @owners ||=
       if group
-        group.owners
+        group.owners.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432606")
       else
         # workaround until we migrate Project#owners to have membership with
         # OWNER access level

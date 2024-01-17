@@ -24,6 +24,7 @@ class PersonalAccessTokensFinder
     tokens = by_last_used_before(tokens)
     tokens = by_last_used_after(tokens)
     tokens = by_search(tokens)
+    tokens = tokens.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436657")
 
     sort(tokens)
   end

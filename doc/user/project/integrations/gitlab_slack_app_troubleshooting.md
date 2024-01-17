@@ -28,7 +28,7 @@ GitLab error: project or alias not found
 To resolve this issue, ensure:
 
 - The project full path is correct.
-- If using a [project alias](gitlab_slack_application.md#create-a-project-alias-for-slash-commands), the alias is correct.
+- If using a [project alias](gitlab_slack_application.md#create-a-project-alias), the alias is correct.
 - The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-project-integration-settings).
 
 ## Slash commands return `dispatch_failed` in Slack
@@ -46,4 +46,4 @@ If you're not receiving notifications to a Slack channel, ensure:
 
 ## App Home does not display properly
 
-If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#update-the-gitlab-for-slack-app).
+If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#reinstall-the-gitlab-for-slack-app).

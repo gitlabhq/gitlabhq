@@ -89,6 +89,8 @@ module HasUserType
 
     return resource.maintainers if resource.is_a?(Project)
 
-    resource.owners
+    resource
+      .owners
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436658")
   end
 end

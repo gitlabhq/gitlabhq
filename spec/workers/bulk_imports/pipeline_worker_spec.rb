@@ -618,43 +618,6 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             end
           end
         end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(bulk_import_limit_concurrent_batches: false)
-          end
-
-          it 'does not limit batches' do
-            expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).exactly(3).times
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2, 3])
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
-
-            worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-            pipeline_tracker.reload
-
-            expect(pipeline_tracker.status_name).to eq(:started)
-            expect(pipeline_tracker.batched).to eq(true)
-            expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
-            expect(described_class.jobs).to be_empty
-          end
-
-          it 'still enqueues only missing pipelines batches' do
-            create(:bulk_import_batch_tracker, tracker: pipeline_tracker, batch_number: 2)
-            expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 3])
-            expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
-
-            worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-            pipeline_tracker.reload
-
-            expect(pipeline_tracker.status_name).to eq(:started)
-            expect(pipeline_tracker.batched).to eq(true)
-            expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
-            expect(described_class.jobs).to be_empty
-          end
-        end
       end
     end
   end

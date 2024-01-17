@@ -168,7 +168,13 @@ RSpec.shared_examples 'PUT resource access tokens available' do
   it 'removes membership of bot user' do
     subject
 
-    expect(resource.reload.bots).not_to include(access_token_user)
+    resource_bots = if resource.is_a?(Project)
+                      resource.bots
+                    elsif resource.is_a?(Group)
+                      User.bots.id_in(resource.all_group_members.non_invite.pluck_primary_key)
+                    end
+
+    expect(resource_bots).not_to include(access_token_user)
   end
 
   it 'creates GhostUserMigration records to handle migration in a worker' do

@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlForm, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 import { s__, __ } from '~/locale';
 
@@ -104,6 +105,9 @@ export default {
       },
     },
   },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
   methods: {
     setSearchKey(value) {
       this.$emit('searchStarted', value);
@@ -174,7 +178,7 @@ export default {
         :selected="localSelectedItem"
         :reset-button-label="resetButton"
         @reset="unassignValue"
-        @search="setSearchKey"
+        @search="debouncedSearchKeyUpdate"
         @select="handleItemClick"
         @shown="onListboxShown"
         @hidden="onListboxHide"

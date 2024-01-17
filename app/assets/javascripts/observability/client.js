@@ -66,6 +66,7 @@ const SUPPORTED_FILTERS = {
   period: ['='],
   traceId: ['=', '!='],
   attribute: ['='],
+  status: ['=', '!='],
   // free-text 'search' temporarily ignored https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2309
 };
 
@@ -79,6 +80,7 @@ const FILTER_TO_QUERY_PARAM = {
   period: 'period',
   traceId: 'trace_id',
   attribute: 'attribute',
+  status: 'status',
 };
 
 const FILTER_OPERATORS_PREFIX = {

@@ -12,46 +12,6 @@ module Gitlab
     end
 
     def calculate
-      if Feature.enabled?(:compare_project_authorization_linear_cte, user)
-        linear_relation = calculate_with_linear_query
-        recursive_relation = calculate_with_recursive_query
-        recursive_set = Set.new(recursive_relation.to_a.pluck(:project_id, :access_level))
-        linear_set = Set.new(linear_relation.to_a.pluck(:project_id, :access_level))
-        if linear_set == recursive_set
-          Gitlab::AppJsonLogger.info(event: 'linear_authorized_projects_check',
-                                     user_id: user.id,
-                                     matching_results: true)
-          return calculate_with_linear_query
-        else
-          Gitlab::AppJsonLogger.warn(event: 'linear_authorized_projects_check',
-                                     user_id: user.id,
-                                     matching_results: false)
-        end
-      end
-
-      Gitlab::AppJsonLogger.info(event: 'linear_authorized_projects_check_with_flag',
-                                 feature_flag_status: Feature.enabled?(:linear_project_authorization, user))
-
-      if Feature.enabled?(:linear_project_authorization, user)
-        calculate_with_linear_query
-      else
-        calculate_with_recursive_query
-      end
-    end
-
-    private
-
-    def calculate_with_linear_query
-      cte = linear_cte
-      cte_alias = cte.table.alias(Group.table_name)
-
-      ProjectAuthorization
-        .unscoped
-        .with(cte.to_arel)
-        .select_from_union(relations(cte_alias: cte_alias))
-    end
-
-    def calculate_with_recursive_query
       cte = recursive_cte
       cte_alias = cte.table.alias(Group.table_name)
 
@@ -61,6 +21,8 @@ module Gitlab
         .recursive(cte.to_arel)
         .select_from_union(relations(cte_alias: cte_alias))
     end
+
+    private
 
     # Builds a recursive CTE that gets all the groups the current user has
     # access to, including any nested groups and any shared groups.
@@ -95,32 +57,6 @@ module Gitlab
         .except(:order)
 
       cte
-    end
-
-    def linear_cte
-      # Groups shared with user and their parent groups
-      shared_groups = Group
-        .select("namespaces.id, MAX(LEAST(members.access_level, group_group_links.group_access)) as access_level")
-        .joins("INNER JOIN group_group_links ON group_group_links.shared_group_id = namespaces.id
-               OR namespaces.traversal_ids @> ARRAY[group_group_links.shared_group_id::int]")
-        .joins("INNER JOIN members ON group_group_links.shared_with_group_id = members.source_id")
-        .merge(user.group_members)
-        .merge(GroupMember.active_state)
-        .group("namespaces.id")
-
-      # Groups the user is a member of and their parent groups.
-      lateral_query = Group.as_ids.where("namespaces.traversal_ids @> ARRAY [members.source_id]")
-      member_groups_with_ancestors = GroupMember.select("namespaces.id, MAX(members.access_level) as access_level")
-        .joins("CROSS JOIN LATERAL (#{lateral_query.to_sql}) as namespaces")
-        .group("namespaces.id")
-        .merge(user.group_members)
-        .merge(GroupMember.active_state)
-
-      union = Namespace
-        .select("namespaces.id, access_level")
-        .from_union([shared_groups, member_groups_with_ancestors])
-
-      Gitlab::SQL::CTE.new(:linear_namespaces_cte, union)
     end
 
     # Builds a LEFT JOIN to join optional memberships onto the CTE.

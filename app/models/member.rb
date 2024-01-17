@@ -173,7 +173,7 @@ class Member < ApplicationRecord
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
 
-  scope :preload_user, -> { preload(:user) }
+  scope :preload_users, -> { preload(:user) }
 
   scope :preload_user_and_notification_settings, -> do
     preload(user: :notification_settings)

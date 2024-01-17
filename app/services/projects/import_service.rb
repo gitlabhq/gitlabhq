@@ -166,14 +166,15 @@ module Projects
     end
 
     def get_resolved_address
-      Gitlab::UrlBlocker
+      Gitlab::HTTP_V2::UrlBlocker
         .validate!(
           project.import_url,
           schemes: Project::VALID_IMPORT_PROTOCOLS,
           ports: Project::VALID_IMPORT_PORTS,
           allow_localhost: allow_local_requests?,
           allow_local_network: allow_local_requests?,
-          dns_rebind_protection: dns_rebind_protection?)
+          dns_rebind_protection: dns_rebind_protection?,
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
         .then do |(import_url, resolved_host)|
           next '' if resolved_host.nil? || !import_url.scheme.in?(%w[http https])
 

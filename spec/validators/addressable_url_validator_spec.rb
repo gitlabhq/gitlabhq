@@ -55,7 +55,7 @@ RSpec.describe AddressableUrlValidator do
         value.is_a?(Proc) ? value.call : value
       end
 
-      expect(Gitlab::UrlBlocker)
+      expect(Gitlab::HTTP_V2::UrlBlocker)
           .to receive(:validate!)
                   .with(badge.link_url, expected_opts)
                   .and_return(true)
@@ -338,7 +338,7 @@ RSpec.describe AddressableUrlValidator do
 
     context 'not given' do
       before do
-        allow(Gitlab::CurrentSettings).to receive(:current_application_settings?).and_return(true)
+        allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
         stub_application_setting(deny_all_requests_except_allowed: app_setting)
       end
 

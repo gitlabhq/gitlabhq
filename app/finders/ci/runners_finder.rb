@@ -29,6 +29,7 @@ module Ci
       items = by_runner_type(items)
       items = by_tag_list(items)
       items = by_creator_id(items)
+      items = by_creator_username(items)
       items = by_version_prefix(items)
       items = request_tag_list(items)
 
@@ -126,6 +127,16 @@ module Ci
     def by_creator_id(items)
       creator_id = @params[:creator_id].presence
       return items unless creator_id
+
+      items.with_creator_id(creator_id)
+    end
+
+    def by_creator_username(items)
+      creator_username = @params[:creator_username].presence
+      return items unless creator_username
+
+      creator_id = User.find_by_username(creator_username)&.id
+      return Ci::Runner.none unless creator_id
 
       items.with_creator_id(creator_id)
     end

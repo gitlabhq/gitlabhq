@@ -22,12 +22,12 @@ export const CREATED_AT = 'created_at';
 
 export const SORT_OPTIONS = [
   {
-    orderBy: RELEASED_AT,
-    label: __('Released date'),
+    value: RELEASED_AT,
+    text: __('Released date'),
   },
   {
-    orderBy: CREATED_AT,
-    label: __('Created date'),
+    value: CREATED_AT,
+    text: __('Created date'),
   },
 ];
 

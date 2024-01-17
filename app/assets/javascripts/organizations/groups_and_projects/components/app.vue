@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
@@ -31,7 +31,7 @@ export default {
     searchInputPlaceholder: s__('Organization|Search or filter list'),
     displayListboxHeaderText: __('Display'),
   },
-  components: { FilteredSearchBar, GlCollapsibleListbox, GlSorting, GlSortingItem },
+  components: { FilteredSearchBar, GlCollapsibleListbox, GlSorting },
   filteredSearch: {
     tokens: [],
     namespace: 'organization_groups_and_projects',
@@ -55,10 +55,10 @@ export default {
       }
     },
     activeSortItem() {
-      return this.$options.sortItems.find((sortItem) => sortItem.name === this.sortName);
+      return this.$options.sortItems.find((sortItem) => sortItem.value === this.sortName);
     },
     sortName() {
-      return this.$route.query.sort_name || SORT_ITEM_CREATED.name;
+      return this.$route.query.sort_name || SORT_ITEM_CREATED.value;
     },
     isAscending() {
       return this.$route.query.sort_direction !== SORT_DIRECTION_DESC;
@@ -97,12 +97,12 @@ export default {
     onDisplayListboxSelect(display) {
       this.pushQuery({ display });
     },
-    onSortItemClick(sortItem) {
-      if (this.$route.query.sort_name === sortItem.name) {
+    onSortItemClick(sortValue) {
+      if (this.$route.query.sort_name === sortValue) {
         return;
       }
 
-      this.pushQuery({ ...this.$route.query, sort_name: sortItem.name });
+      this.pushQuery({ ...this.$route.query, sort_name: sortValue });
     },
     onSortDirectionChange(isAscending) {
       this.pushQuery({
@@ -158,17 +158,11 @@ export default {
             dropdown-class="gl-w-full"
             :text="sortText"
             :is-ascending="isAscending"
+            :sort-options="$options.sortItems"
+            :sort-by="activeSortItem.value"
             @sortDirectionChange="onSortDirectionChange"
-          >
-            <gl-sorting-item
-              v-for="sortItem in $options.sortItems"
-              :key="sortItem.name"
-              :active="activeSortItem.name === sortItem.name"
-              @click="onSortItemClick(sortItem)"
-            >
-              {{ sortItem.text }}
-            </gl-sorting-item>
-          </gl-sorting>
+            @sortByChange="onSortItemClick"
+          />
         </div>
       </div>
     </div>

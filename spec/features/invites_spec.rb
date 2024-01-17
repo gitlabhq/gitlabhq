@@ -256,7 +256,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
       it 'does not accept the pending invitation and does not redirect to the group path' do
         expect(page).not_to have_current_path(group_path(group), ignore_query: true)
-        expect(group.reload.users).not_to include(user)
+        expect(group.reload).not_to have_user(user)
       end
 
       context 'when the secondary email address is confirmed' do
@@ -264,7 +264,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         it 'accepts the pending invitation and redirects to the group path' do
           expect(page).to have_current_path(group_path(group), ignore_query: true)
-          expect(group.reload.users).to include(user)
+          expect(group.reload).to have_user(user)
         end
       end
     end

@@ -104,7 +104,10 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
       select its name.
    1. On the project administration page, get the values in the **Storage name** and **Relative path** fields.
 
-1. On a **Gitaly node on the primary** site and a **Gitaly node on the secondary** site, go to the project's repository directory. If using Gitaly Cluster, [check that it is in a healthy state](../../gitaly/troubleshooting.md#check-cluster-health) prior to running these commands.
+1. On a **Gitaly node on the primary** site and a **Gitaly node on the secondary** site, go to the project's repository
+   directory. If using Gitaly Cluster,
+   [check that it is in a healthy state](../../gitaly/troubleshooting_gitaly_cluster.md#check-cluster-health) before
+   running these commands.
 
    The default path is `/var/opt/gitlab/git-data/repositories`. If `git_data_dirs`
    is customized, check the directory layout on your server to be sure:

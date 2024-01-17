@@ -4,7 +4,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -102,7 +101,6 @@ export default {
   apollo: {
     milestones: {
       query: projectMilestonesQuery,
-      debounce: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       variables() {
         return {
           fullPath: this.fullPath,

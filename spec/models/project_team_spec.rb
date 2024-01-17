@@ -91,15 +91,18 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       let(:project) { create(:project, group: group) }
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }
+      let(:user3) { create(:user) }
 
       before do
         group.add_owner(user1)
         group.add_owner(user2)
+        group.add_developer(user3)
       end
 
       specify { expect(project.team.owners).to contain_exactly(user1, user2) }
       specify { expect(project.team.owner?(user1)).to be_truthy }
       specify { expect(project.team.owner?(user2)).to be_truthy }
+      specify { expect(project.team.owner?(user3)).to be_falsey }
     end
   end
 

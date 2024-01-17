@@ -635,7 +635,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   creating, deleting, and renaming Git repositories.
 
   To identify the replica path,
-  [query the Praefect repository metadata](../../administration/gitaly/troubleshooting.md#view-repository-metadata)
+  [query the Praefect repository metadata](../../administration/gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)
   and pass the `@hashed` storage path to `-relative-path`.
 
   With this information, you can correctly install
