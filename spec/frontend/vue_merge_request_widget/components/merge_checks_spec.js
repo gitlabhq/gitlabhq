@@ -162,4 +162,26 @@ describe('Merge request merge checks component', () => {
 
     expect(wrapper.findByTestId('merge-checks-full').exists()).toBe(true);
   });
+
+  it('sorts merge checks', async () => {
+    mountComponent({
+      mergeabilityChecks: [
+        { identifier: 'discussions', status: 'SUCCESS' },
+        { identifier: 'discussions', status: 'INACTIVE' },
+        { identifier: 'rebase', status: 'FAILED' },
+      ],
+    });
+
+    await waitForPromises();
+
+    await wrapper.findByTestId('widget-toggle').trigger('click');
+
+    const mergeChecks = wrapper.findAllByTestId('merge-check');
+
+    expect(mergeChecks.length).toBe(2);
+    expect(mergeChecks.at(0).props('check')).toEqual(expect.objectContaining({ status: 'FAILED' }));
+    expect(mergeChecks.at(1).props('check')).toEqual(
+      expect.objectContaining({ status: 'SUCCESS' }),
+    );
+  });
 });

@@ -1694,6 +1694,7 @@
 .qa:rules:code-suggestions-eval-base:
   rules:
     - !reference [".strict-ee-only-rules", rules]
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-run-cs-evaluation

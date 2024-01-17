@@ -906,6 +906,9 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker'] ||= {}
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['cron'] ||= "*/45 * * * *"
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['job_class'] = 'ClickHouse::EventNamespacePathsConsistencyCronWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'

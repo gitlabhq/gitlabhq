@@ -98,6 +98,17 @@ export default {
     checks() {
       return this.state.mergeabilityChecks || [];
     },
+    sortedChecks() {
+      return [...this.checks]
+        .sort((a, b) => {
+          if (a.status === 'FAILED' && b.status !== 'FAILED') return -1;
+          if (a.status === 'SUCCESS' && b.status !== 'SUCCESS')
+            return b.status === 'FAILED' ? 1 : -1;
+
+          return 0;
+        })
+        .filter((s) => s.status !== 'INACTIVE');
+    },
     failedChecks() {
       return this.checks.filter((c) => c.status.toLowerCase() === 'failed');
     },
@@ -143,14 +154,15 @@ export default {
       <div class="gl-px-5">
         <component
           :is="checkComponent(check)"
-          v-for="(check, index) in checks"
+          v-for="(check, index) in sortedChecks"
           :key="index"
           :class="{
-            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== checks.length - 1,
+            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== sortedChecks.length - 1,
           }"
           :check="check"
           :mr="mr"
           :service="service"
+          data-testid="merge-check"
         />
       </div>
     </div>

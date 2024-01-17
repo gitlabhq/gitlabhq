@@ -34,7 +34,8 @@ module WorkItems
       award_emoji: 16,
       linked_items: 17,
       color: 18, # EE-only
-      rolledup_dates: 19 # EE-only
+      rolledup_dates: 19, # EE-only
+      participants: 20
     }
 
     def self.available_widgets

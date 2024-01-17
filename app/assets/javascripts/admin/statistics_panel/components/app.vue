@@ -29,13 +29,19 @@ export default {
 
 <template>
   <gl-card>
-    <h4>{{ __('Statistics') }}</h4>
-    <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
-    <template v-else>
-      <p v-for="statistic in getStatistics(statisticsLabels)" :key="statistic.key" class="js-stats">
-        {{ statistic.label }}
-        <span class="light float-right">{{ statistic.value }}</span>
-      </p>
-    </template>
+    <h4 class="gl-heading-4">{{ __('Statistics') }}</h4>
+    <slot name="footer">
+      <gl-loading-icon v-if="isLoading" size="lg" class="my-3" />
+      <template v-else>
+        <p
+          v-for="statistic in getStatistics(statisticsLabels)"
+          :key="statistic.key"
+          class="js-stats"
+        >
+          {{ statistic.label }}
+          <span class="light float-right">{{ statistic.value }}</span>
+        </p>
+      </template>
+    </slot>
   </gl-card>
 </template>

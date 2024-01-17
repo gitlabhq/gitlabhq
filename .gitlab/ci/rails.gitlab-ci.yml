@@ -534,6 +534,13 @@ rspec:undercoverage:
   stage: post-test
   needs: ["rspec:coverage"]
   script:
+    - apt install -y jq
+    - if [[ $(curl "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}" | jq ".labels" | grep "pipeline:skip-undercoverage") ]]; then
+        echo "The 'pipeline:skip-undercoverage' label is set on the MR, exiting early.";
+        exit 0;
+      else
+        echo "The 'pipeline:skip-undercoverage' label is not set on the MR, proceeding.";
+      fi
     - if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_SHA" ]; then
         echo "HEAD is $(git rev-parse HEAD). \$CI_MERGE_REQUEST_TARGET_BRANCH_SHA is ${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}";
       else

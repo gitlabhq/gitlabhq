@@ -29313,6 +29313,17 @@ Represents the notifications widget.
 | <a id="workitemwidgetnotificationssubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to notifications on the work item. |
 | <a id="workitemwidgetnotificationstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetParticipants`
+
+Represents a participants widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetparticipantsparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | Participants in the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetparticipantstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetProgress`
 
 Represents a progress widget.
@@ -32296,6 +32307,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
 | <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
+| <a id="workitemwidgettypeparticipants"></a>`PARTICIPANTS` | Participants widget. |
 | <a id="workitemwidgettypeprogress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettyperequirement_legacy"></a>`REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | <a id="workitemwidgettyperolledup_dates"></a>`ROLLEDUP_DATES` | Rolledup Dates widget. |
@@ -33983,6 +33995,7 @@ Implementations:
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)
+- [`WorkItemWidgetParticipants`](#workitemwidgetparticipants)
 - [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetRolledupDates`](#workitemwidgetrolledupdates)

@@ -30,5 +30,4 @@ if Gitlab.config.gitlab['http_client']
   password = Gitlab.config.gitlab['http_client']['tls_client_cert_password']
 
   Gitlab::HTTP_V2::Client.pem(pem, password)
-  Gitlab::LegacyHTTP.pem(pem, password)
 end

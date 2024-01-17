@@ -35,6 +35,7 @@ module WorkItems
       {
         last_edited_by: :last_edited_by,
         assignees: :assignees,
+        participants: WorkItem.participant_includes,
         parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         labels: :labels,

@@ -79,13 +79,22 @@ available, though the exact requirements [depend on the number of users](../admi
 We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:
 
-| GitLab version | Minimum PostgreSQL version |
-|----------------|----------------------------|
-| 13.0           | 11                         |
-| 14.0           | 12.7                       |
-| 15.0           | 12.10                      |
-| 16.0           | 13.6                       |
-| 17.0 (planned) | 14.8                       |
+| GitLab version | Minimum PostgreSQL version<sup>1</sup> | Maximum PostgreSQL version<sup>2</sup> |
+|----------------|----------------------------------------|----------------------------------------|
+| 13.0           | 11                                     | <sup>2</sup>                                       |
+| 14.0           | 12.7                                   | <sup>2</sup>                                       |
+| 15.0           | 12.10                                  | 13.x (14.x<sup>3</sup>)                |
+| 16.0           | 13.6                                   | 15.x<sup>4</sup>                       |
+| 17.0 (planned) | 14.9                                   | 15.x<sup>4</sup>                       |
+
+1. PostgreSQL minor release upgrades (for example 14.8 to 14.9) [include only bug and security fixes](https://www.postgresql.org/support/versioning/).
+   Patch levels in this table are not prescriptive. Always deploy the most recent patch level
+   to avoid [known bugs in PostgreSQL that might be triggered by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
+1. If you want to run a later major release of PostgreSQL than the specified minimum
+   [check if a more recent version shipped with Linux package (Omnibus) GitLab](http://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
+   `postgresql-new` is a later version that's definitely supported.
+1. PostgreSQL 14.x [tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624).
+1. [Tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344).
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
@@ -135,7 +144,7 @@ exclusive use of GitLab. Do not make direct changes to the database, schemas, us
 properties except when following procedures in the GitLab documentation or following the directions
 of GitLab Support or other GitLab engineers.
 
-- The main GitLab application currently uses three schemas:
+- The main GitLab application uses three schemas:
 
   - The default `public` schema
   - `gitlab_partitions_static` (automatically created)
@@ -253,7 +262,7 @@ The requirements for Redis are as follows:
 
 ## Sidekiq
 
-Sidekiq processes the background jobs with a multithreaded process.
+Sidekiq processes the background jobs with a multi-threaded process.
 This process starts with the entire Rails stack (200 MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 billable users) the Sidekiq process can use 1 GB+ of memory.
 

@@ -118,9 +118,6 @@ sequenceDiagram
     participant GitLab instance
     participant Version Application
     GitLab instance->>Version Application: Is there a version update?
-    loop Version Check
-        Version Application->>Version Application: Record version info
-    end
     Version Application->>GitLab instance: Response (PNG/SVG)
 ```
 

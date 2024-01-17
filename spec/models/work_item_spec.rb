@@ -6,6 +6,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:reusable_project) { create(:project) }
+  let_it_be(:reusable_group) { create(:group) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:namespace) }
@@ -723,6 +724,24 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       expect(item2.linked_items_count).to eq(1)
       expect(item3.linked_items_count).to eq(1)
       expect(item4.linked_items_count).to eq(0)
+    end
+  end
+
+  context 'work item participants' do
+    context 'project level work item' do
+      let_it_be(:work_item) { create(:work_item, project: reusable_project) }
+
+      it 'has participants' do
+        expect(work_item.participants).to match_array([work_item.author])
+      end
+    end
+
+    context 'group level work item' do
+      let_it_be(:work_item) { create(:work_item, namespace: reusable_group) }
+
+      it 'has participants' do
+        expect(work_item.participants).to match_array([work_item.author])
+      end
     end
   end
 end
