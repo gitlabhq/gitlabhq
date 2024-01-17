@@ -7,8 +7,8 @@ module Gitlab
         class Skipped < Status::Extended
           def illustration
             {
-              image: 'illustrations/skipped-job_empty.svg',
-              size: 'svg-430',
+              image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+              size: '',
               title: _('This job has been skipped')
             }
           end

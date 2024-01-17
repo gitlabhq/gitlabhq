@@ -8,7 +8,7 @@ module Gitlab
           def illustration
             {
               image: 'illustrations/empty-state/empty-projects-deleted-md.svg',
-              size: 'svg-150',
+              size: '',
               title: _('Job has been erased')
             }
           end

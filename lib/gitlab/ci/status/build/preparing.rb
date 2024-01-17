@@ -11,8 +11,8 @@ module Gitlab
           #
           def illustration
             {
-              image: 'illustrations/job_not_triggered.svg',
-              size: 'svg-306',
+              image: 'illustrations/empty-state/empty-job-not-triggered-md.svg',
+              size: '',
               title: _('This job is preparing to start'),
               content: _('This job is performing tasks that must complete before it can start')
             }

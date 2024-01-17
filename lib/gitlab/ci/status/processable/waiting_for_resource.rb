@@ -11,8 +11,8 @@ module Gitlab
           #
           def illustration
             {
-              image: 'illustrations/pending_job_empty.svg',
-              size: 'svg-430',
+              image: 'illustrations/empty-state/empty-job-pending-md.svg',
+              size: '',
               title: _('This job is waiting for resource: ') + subject.resource_group.key
             }
           end

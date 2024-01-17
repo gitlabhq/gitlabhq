@@ -255,6 +255,38 @@ To publish the component project in the catalog again, you need to [publish a ne
 
 This section describes some best practices for creating high quality component projects.
 
+### Write a clear `README.md`
+
+Each component project should have clear and comprehensive documentation. To
+write a good `README.md` file:
+
+- The documentation should start with a summary of the capabilities that the components in the project provide.
+- If the project contains multiple components, use a [table of contents](../../user/markdown.md#table-of-contents)
+   to help users quickly jump to a specific component's details.
+- Add a `## Components` section with sub-sections like `### Component A` for each component in the project.
+- In each component section:
+  - Add a description of what the component does.
+  - Add at least one YAML example showing how to use it.
+  - If the component uses inputs, add a table showing all inputs with name, description, type, and default value.
+  - If the component uses any variables or secrets, those should be documented too.
+- A `## Contribute` section is recommended if contributions are welcome.
+
+If a component needs more instructions, add additional documentation in a Markdown file
+in the component directory and link to it from the main `README.md` file. For example:
+
+```plaintext
+README.md    # with links to the specific docs.md
+templates/
+├── component-1/
+│   ├── template.yml
+│   └── docs.md
+└── component-2/
+    ├── template.yml
+    └── docs.md
+```
+
+For an example of a component `README.md`, see the [Deploy to AWS with GitLab CI/CD component's `README.md`](https://gitlab.com/components/aws/-/blob/main/README.md).
+
 ### Test the component
 
 Testing CI/CD components as part of the development workflow is strongly recommended

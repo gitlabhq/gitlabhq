@@ -51,7 +51,7 @@ module QA
         following_user&.remove_via_api!
       end
 
-      it 'can be followed and their activity seen',
+      it 'can be followed and their activity seen', :reliable,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
         Flow::Login.sign_in(as: following_user)
         page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"

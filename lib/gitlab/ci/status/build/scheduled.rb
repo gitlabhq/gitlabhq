@@ -7,8 +7,8 @@ module Gitlab
         class Scheduled < Status::Extended
           def illustration
             {
-              image: 'illustrations/illustrations_scheduled-job_countdown.svg',
-              size: 'svg-394',
+              image: 'illustrations/empty-state/empty-job-scheduled-md.svg',
+              size: '',
               title: _("This is a delayed job to run in %{remainingTime}"),
               content: _("This job will automatically run after its timer finishes. " \
                          "Often they are used for incremental roll-out deploys " \

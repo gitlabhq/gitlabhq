@@ -12584,8 +12584,6 @@ CREATE TABLE application_settings (
     wiki_asciidoc_allow_uri_includes boolean DEFAULT false NOT NULL,
     namespace_aggregation_schedule_lease_duration_in_seconds integer DEFAULT 300 NOT NULL,
     container_registry_data_repair_detail_worker_max_concurrency integer DEFAULT 2 NOT NULL,
-    encrypted_ai_access_token bytea,
-    encrypted_ai_access_token_iv bytea,
     vertex_ai_host text,
     encrypted_vertex_ai_credentials bytea,
     encrypted_vertex_ai_credentials_iv bytea,

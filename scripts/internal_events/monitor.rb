@@ -59,6 +59,7 @@ def extract_standard_context(event)
     next unless context['schema'].start_with?('iglu:com.gitlab/gitlab_standard/jsonschema')
 
     return {
+
       user_id: context["data"]["user_id"],
       namespace_id: context["data"]["namespace_id"],
       project_id: context["data"]["project_id"],
@@ -73,7 +74,7 @@ def generate_snowplow_table
   @initial_max_timestamp ||= events.map { |e| e['rawEvent']['parameters']['dtm'].to_i }.max || 0
 
   rows = []
-  rows << ['Event Name', 'Collector Timestamp', 'user_id', 'namespace_id', 'project_id', 'plan']
+  rows << ['Event Name', 'Collector Timestamp', 'Category', 'user_id', 'namespace_id', 'project_id', 'plan']
   rows << :separator
 
   events.each do |event|
@@ -82,6 +83,7 @@ def generate_snowplow_table
     row = [
       event['event']['se_action'],
       event['event']['collector_tstamp'],
+      event['event']['se_category'],
       standard_context[:user_id],
       standard_context[:namespace_id],
       standard_context[:project_id],

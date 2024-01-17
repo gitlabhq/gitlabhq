@@ -154,7 +154,7 @@ export const environmentsApp = {
               illustration: {
                 image:
                   '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-394',
+                size: 'svg-content svg-394',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -363,7 +363,7 @@ export const resolvedEnvironmentsApp = {
               illustration: {
                 image:
                   '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-394',
+                size: 'svg-content svg-394',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -593,8 +593,8 @@ export const resolvedEnvironment = {
         detailsPath: '/h5bp/html5-boilerplate/-/jobs/1014',
         illustration: {
           image:
-            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
-          size: 'svg-430',
+            '/assets/illustrations/empty-state/empty-job-skipped-md-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: '',
           title: 'This job does not have a trace.',
         },
         favicon:
@@ -665,7 +665,7 @@ export const resolvedEnvironment = {
           illustration: {
             image:
               '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-394',
+            size: 'svg-content svg-394',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -992,8 +992,8 @@ export const resolvedEnvironmentToRollback = {
         icon: 'status_success',
         illustration: {
           image:
-            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
-          size: 'svg-430',
+            '/assets/illustrations/empty-state/empty-job-skipped-md-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: '',
           title: 'This job does not have a trace.',
         },
         label: 'passed',
@@ -1058,7 +1058,7 @@ export const resolvedEnvironmentToRollback = {
           illustration: {
             image:
               '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-394',
+            size: 'svg-content svg-394',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',

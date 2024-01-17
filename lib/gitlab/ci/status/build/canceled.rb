@@ -7,8 +7,8 @@ module Gitlab
         class Canceled < Status::Extended
           def illustration
             {
-              image: 'illustrations/canceled-job_empty.svg',
-              size: 'svg-430',
+              image: 'illustrations/empty-state/empty-job-canceled-md.svg',
+              size: '',
               title: _('This job has been canceled')
             }
           end

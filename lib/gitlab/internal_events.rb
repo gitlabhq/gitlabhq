@@ -10,7 +10,7 @@ module Gitlab
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
 
-      def track_event(event_name, send_snowplow_event: true, **kwargs)
+      def track_event(event_name, category: nil, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
         validate_property!(kwargs, :user, User)
@@ -23,7 +23,7 @@ module Gitlab
         increase_total_counter(event_name)
         increase_weekly_total_counter(event_name)
         update_unique_counter(event_name, kwargs)
-        trigger_snowplow_event(event_name, kwargs) if send_snowplow_event
+        trigger_snowplow_event(event_name, category, kwargs) if send_snowplow_event
 
         if Feature.enabled?(:internal_events_for_product_analytics)
           send_application_instrumentation_event(event_name, kwargs)
@@ -76,7 +76,7 @@ module Gitlab
         UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value)
       end
 
-      def trigger_snowplow_event(event_name, kwargs)
+      def trigger_snowplow_event(event_name, category, kwargs)
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
@@ -93,11 +93,11 @@ module Gitlab
           event: event_name
         ).to_context
 
-        track_struct_event(event_name, contexts: [standard_context, service_ping_context])
+        track_struct_event(event_name, category, contexts: [standard_context, service_ping_context])
       end
 
-      def track_struct_event(event_name, contexts:)
-        category = 'InternalEventTracking'
+      def track_struct_event(event_name, category, contexts:)
+        category ||= 'InternalEventTracking'
         tracker = Gitlab::Tracking.tracker
         tracker.event(category, event_name, context: contexts)
       rescue StandardError => error

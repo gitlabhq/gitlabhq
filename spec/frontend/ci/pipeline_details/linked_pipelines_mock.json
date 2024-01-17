@@ -58,7 +58,7 @@
               "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469032",
               "illustration": {
                 "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                "size": "svg-394",
+                "size": "svg-content svg-394",
                 "title": "This job requires a manual action",
                 "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
               },
@@ -94,7 +94,7 @@
                   "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469032",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -141,8 +141,8 @@
               "has_details": true,
               "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469033",
               "illustration": {
-                "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                "size": "svg-430",
+                "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                "size": "",
                 "title": "This job does not have a trace."
               },
               "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -175,8 +175,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469033",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job does not have a trace."
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -223,7 +223,7 @@
               "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469034",
               "illustration": {
                 "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                "size": "svg-394",
+                "size": "svg-content svg-394",
                 "title": "This job requires a manual action",
                 "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
               },
@@ -258,7 +258,7 @@
                   "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469034",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -398,7 +398,7 @@
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                 "illustration": {
                   "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-394",
+                  "size": "svg-content svg-394",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -433,7 +433,7 @@
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                     "illustration": {
                       "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-394",
+                      "size": "svg-content svg-394",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -462,7 +462,7 @@
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                 "illustration": {
                   "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-394",
+                  "size": "svg-content svg-394",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -497,7 +497,7 @@
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                     "illustration": {
                       "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-394",
+                      "size": "svg-content svg-394",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -526,7 +526,7 @@
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                 "illustration": {
                   "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-394",
+                  "size": "svg-content svg-394",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -561,7 +561,7 @@
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                     "illustration": {
                       "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-394",
+                      "size": "svg-content svg-394",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -608,8 +608,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                  "size": "svg-430",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                  "size": "",
                   "title": "This job does not have a trace."
                 },
                 "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -642,8 +642,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                      "size": "svg-430",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                      "size": "",
                       "title": "This job does not have a trace."
                     },
                     "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -690,8 +690,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                  "size": "svg-430",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                  "size": "",
                   "title": "This job has been skipped"
                 },
                 "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -716,8 +716,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                      "size": "svg-430",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                      "size": "",
                       "title": "This job has been skipped"
                     },
                     "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -737,8 +737,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                  "size": "svg-430",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                  "size": "",
                   "title": "This job has been skipped"
                 },
                 "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -763,8 +763,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                      "size": "svg-430",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                      "size": "",
                       "title": "This job has been skipped"
                     },
                     "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -875,7 +875,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -910,7 +910,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -939,7 +939,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -974,7 +974,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1003,7 +1003,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1038,7 +1038,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1085,8 +1085,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job does not have a trace."
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -1119,8 +1119,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -1167,8 +1167,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1193,8 +1193,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1214,8 +1214,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1240,8 +1240,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1358,7 +1358,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1393,7 +1393,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1422,7 +1422,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1457,7 +1457,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1486,7 +1486,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1521,7 +1521,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1568,8 +1568,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job does not have a trace."
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -1602,8 +1602,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -1650,8 +1650,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1676,8 +1676,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1697,8 +1697,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1723,8 +1723,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -1840,7 +1840,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1875,7 +1875,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1904,7 +1904,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1939,7 +1939,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1968,7 +1968,7 @@
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
                     "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-394",
+                    "size": "svg-content svg-394",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -2003,7 +2003,7 @@
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
                         "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -2050,8 +2050,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job does not have a trace."
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -2084,8 +2084,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114984694",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -2132,8 +2132,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -2158,8 +2158,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982857",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -2179,8 +2179,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                    "size": "svg-430",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                    "size": "",
                     "title": "This job has been skipped"
                   },
                   "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -2205,8 +2205,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982858",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "https://gitlab.com/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -2320,8 +2320,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/526",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2354,8 +2354,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/526",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2382,8 +2382,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/527",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2416,8 +2416,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/527",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2525,8 +2525,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/528",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2559,8 +2559,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/529",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2593,8 +2593,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/530",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2621,8 +2621,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/535",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2655,8 +2655,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/535",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2706,8 +2706,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/531",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2740,8 +2740,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/532",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2774,8 +2774,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/534",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2802,8 +2802,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/536",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2836,8 +2836,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/536",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2864,8 +2864,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/537",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -2898,8 +2898,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/537",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png",
@@ -2947,8 +2947,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/541",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -2981,8 +2981,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/541",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3009,8 +3009,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/538",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3043,8 +3043,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/538",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3071,8 +3071,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/540",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3105,8 +3105,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/540",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3133,8 +3133,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/539",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3167,8 +3167,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/539",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3214,8 +3214,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/544",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -3240,8 +3240,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/544",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job has been skipped"
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -3261,8 +3261,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/542",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job does not have a trace."
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3295,8 +3295,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/542",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job does not have a trace."
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png",
@@ -3323,8 +3323,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/543",
                       "illustration": {
-                        "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                        "size": "svg-430",
+                        "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                        "size": "",
                         "title": "This job has been skipped"
                       },
                       "favicon": "/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -3349,8 +3349,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/543",
                           "illustration": {
-                            "image": "/assets/illustrations/skipped-job_empty-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
-                            "size": "svg-430",
+                            "image": "/assets/illustrations/empty-state/empty-job-skipped-md-8b877955fbf175e42ae65b6cb95346e15282c6fc5b682756c329af3a0055225e.svg",
+                            "size": "",
                             "title": "This job has been skipped"
                           },
                           "favicon": "/assets/ci_favicons/favicon_status_skipped-0b9c5e543588945e8c4ca57786bbf2d0c56631959c9f853300392d0315be829b.png"
@@ -3390,7 +3390,7 @@
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/545",
                       "illustration": {
                         "image": "/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-394",
+                        "size": "svg-content svg-394",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -3426,7 +3426,7 @@
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/545",
                           "illustration": {
                             "image": "/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                            "size": "svg-394",
+                            "size": "svg-content svg-394",
                             "title": "This job requires a manual action",
                             "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                           },

@@ -7,8 +7,8 @@ describe('Empty State', () => {
   let wrapper;
 
   const defaultProps = {
-    illustrationPath: 'illustrations/pending_job_empty.svg',
-    illustrationSizeClass: 'svg-430',
+    illustrationPath: 'illustrations/empty-state/empty-job-pending-md.svg',
+    illustrationSizeClass: '',
     jobId: mockId,
     title: 'This job has not started yet',
     playable: false,

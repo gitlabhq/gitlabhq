@@ -7,8 +7,8 @@ module Gitlab
         class Pending < Status::Extended
           def illustration
             {
-              image: 'illustrations/pending_job_empty.svg',
-              size: 'svg-430',
+              image: 'illustrations/empty-state/empty-job-pending-md.svg',
+              size: '',
               title: _('This job has not started yet'),
               content: _('This job is in pending state and is waiting to be picked by a runner')
             }

@@ -51,8 +51,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect(SnowplowTracker::SelfDescribingJson).to have_received(:new)
       .with(service_ping_context[:schema], service_ping_context[:data]).at_least(:once)
 
-    expect(fake_snowplow).to have_received(:event) do |category, provided_event_name, args|
-      expect(category).to eq('InternalEventTracking')
+    expect(fake_snowplow).to have_received(:event) do |provided_category, provided_event_name, args|
+      expect(provided_category).to eq(category)
       expect(provided_event_name).to eq(event_name)
 
       contexts = args[:context]&.map(&:to_json)
@@ -92,6 +92,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let(:redis) { instance_double('Redis') }
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
+  let(:category) { 'InternalEventTracking' }
   let(:unique_property) { :user }
   let(:unique_value) { user.id }
   let(:redis_arguments) { [event_name, Date.today.strftime('%G-%V')] }
@@ -131,6 +132,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect_redis_tracking
       expect_redis_hll_tracking
       expect_snowplow_tracking(project.namespace)
+    end
+  end
+
+  context 'when category is passed' do
+    let(:category) { 'SomeCategory' }
+
+    it 'is sent to Snowplow' do
+      described_class.track_event(event_name, category: category, user: user, project: project)
+
+      expect_snowplow_tracking
     end
   end
 

@@ -172,8 +172,8 @@ const environment = {
         details_path: '/root/environment-test/-/jobs/892',
         illustration: {
           image:
-            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
-          size: 'svg-430',
+            '/assets/illustrations/empty-state/empty-job-skipped-md-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: '',
           title: 'This job does not have a trace.',
         },
         favicon:
