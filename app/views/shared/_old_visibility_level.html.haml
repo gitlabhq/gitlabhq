@@ -1,5 +1,0 @@
-%fieldset.form-group.gl-form-group
-  %legend.col-form-label.col-form-label
-    = _('Visibility level')
-    = link_to sprite_icon('question-o'), help_page_path('user/public_access'), target: '_blank', rel: 'noopener noreferrer'
-  = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_visibility_level, form_model: form_model, with_label: with_label

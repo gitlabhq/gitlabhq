@@ -53,8 +53,7 @@ module Types
       field :groups, null: true,
                      resolver: ::Resolvers::Ci::RunnerGroupsResolver,
                      description: 'Groups the runner is associated with. For group runners only.'
-      field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
-                                                      description: 'ID of the runner.'
+      field :id, ::Types::GlobalIDType[::Ci::Runner], null: false, description: 'ID of the runner.'
       field :ip_address, GraphQL::Types::String, null: true,
             deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
             description: 'IP address of the runner.'
@@ -77,7 +76,8 @@ module Types
       field :maintenance_note, GraphQL::Types::String, null: true,
                                                        description: 'Runner\'s maintenance notes.'
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
-            description: 'Machines associated with the runner configuration.',
+            description: 'Runner managers associated with the runner configuration.',
+            resolver: Resolvers::Ci::RunnerManagersResolver,
             alpha: { milestone: '15.10' }
       field :maximum_timeout, GraphQL::Types::Int, null: true,
                                                    description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
@@ -170,18 +170,6 @@ module Types
 
           ids.each do |id|
             loader.call(id, counts[id]&.count)
-          end
-        end
-      end
-
-      def managers
-        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_managers) do |runner_ids, loader|
-          runner_managers_by_runner_id =
-            ::Ci::RunnerManager.for_runner(runner_ids).order_id_desc.group_by(&:runner_id)
-
-          runner_ids.each do |runner_id|
-            runner_managers = Array.wrap(runner_managers_by_runner_id[runner_id])
-            loader.call(runner_id, runner_managers)
           end
         end
       end

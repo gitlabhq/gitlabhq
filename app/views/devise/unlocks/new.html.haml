@@ -1,15 +1,14 @@
 = render 'devise/shared/tab_single', tab_title: _('Resend unlock instructions')
 .login-box
-  .login-body
-    = gitlab_ui_form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'gl-p-5 gl-show-field-errors' }) do |f|
-      .devise-errors
-        = render "devise/shared/error_messages", resource: resource
-      .form-group
-        = f.label :email, _('Email')
-        = f.email_field :email, class: 'form-control gl-form-input', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: _('Please provide a valid email address.')
+  = gitlab_ui_form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: 'gl-p-5 gl-show-field-errors' }) do |f|
+    .devise-errors
+      = render "devise/shared/error_messages", resource: resource
+    .form-group
+      = f.label :email, _('Email')
+      = f.email_field :email, class: 'form-control gl-form-input', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', title: _('Please provide a valid email address.')
 
-      = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
-        = _('Resend unlock instructions')
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+      = _('Resend unlock instructions')
 
 = render 'devise/shared/sign_in_link'
 

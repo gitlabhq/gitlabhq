@@ -320,6 +320,7 @@ To add a new custom ability:
 | `milestone` | yes | Milestone in which this custom ability was added. |
 | `group_ability` | yes | Indicate whether this ability is checked on group level. |
 | `project_ability` | yes | Indicate whether this ability is checked on project level. |
+| `requirements` | no | The custom abilities that need to be enabled for this ability. |
 | `skip_seat_consumption` | yes | Indicate wheter this ability should be skiped when counting licensed users. |
 
 ### Privilege escalation consideration

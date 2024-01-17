@@ -16048,7 +16048,6 @@ CI/CD variables for a project.
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
-| <a id="cirunnermanagers"></a>`managers` **{warning-solid}** | [`CiRunnerManagerConnection`](#cirunnermanagerconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Machines associated with the runner configuration. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="cirunnerownerproject"></a>`ownerProject` | [`Project`](#project) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
@@ -16097,6 +16096,27 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnerjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
+
+##### `CiRunner.managers`
+
+Runner managers associated with the runner configuration.
+
+WARNING:
+**Introduced** in 15.10.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CiRunnerManagerConnection`](#cirunnermanagerconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnermanagersstatus"></a>`status` | [`CiRunnerStatus`](#cirunnerstatus) | Filter runner managers by status. |
+| <a id="cirunnermanagerssystemid"></a>`systemId` | [`String`](#string) | Filter runner managers by system ID. |
 
 ##### `CiRunner.projects`
 
@@ -17319,7 +17339,7 @@ Represents a product analytics dashboard visualization.
 | <a id="customizablepermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
 | <a id="customizablepermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
 | <a id="customizablepermissionname"></a>`name` | [`String!`](#string) | Localized name of the permission. |
-| <a id="customizablepermissionrequirement"></a>`requirement` | [`MemberRolePermission`](#memberrolepermission) | Requirement of the permission. |
+| <a id="customizablepermissionrequirements"></a>`requirements` | [`[MemberRolePermission!]`](#memberrolepermission) | Requirements of the permission. |
 | <a id="customizablepermissionvalue"></a>`value` | [`MemberRolePermission!`](#memberrolepermission) | Value of the permission. |
 
 ### `DastPreScanVerification`

@@ -92,11 +92,8 @@ module Gitlab
 
     # This preload is required to:
     #
-    # 1. Convert legacy `database.yml`;
+    # 1. Support providing sensitive DB configuration through an external script;
     # 2. Include Geo post-deployment migrations settings;
-    #
-    # TODO: In 15.0, this preload can be wrapped in a Gitlab.ee block
-    #       since we don't need to convert legacy `database.yml` anymore.
     config.class.prepend(::Gitlab::Patch::DatabaseConfig)
 
     # Settings in config/environments/* take precedence over those specified here.

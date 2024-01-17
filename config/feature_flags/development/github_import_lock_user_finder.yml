@@ -1,0 +1,8 @@
+---
+name: github_import_lock_user_finder
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141826
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438336
+milestone: '16.9'
+type: development
+group: group::import and integrate
+default_enabled: false

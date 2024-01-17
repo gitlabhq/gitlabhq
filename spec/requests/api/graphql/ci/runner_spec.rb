@@ -213,22 +213,126 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       end
     end
 
-    context 'with build running' do
-      let!(:pipeline) { create(:ci_pipeline, project: project1) }
-      let!(:runner_manager) do
+    context 'with runner managers' do
+      let_it_be(:runner) { create(:ci_runner) }
+      let_it_be(:runner_manager) do
         create(:ci_runner_machine,
           runner: runner, ip_address: '127.0.0.1', version: '16.3', revision: 'a', architecture: 'arm', platform: 'osx',
           contacted_at: 1.second.ago, executor_type: 'docker')
       end
 
-      let!(:runner) { create(:ci_runner) }
-      let!(:build) { create(:ci_build, :running, runner: runner, pipeline: pipeline) }
+      describe 'managers' do
+        let_it_be(:runner2) { create(:ci_runner) }
+        let_it_be(:runner_manager2_1) { create(:ci_runner_machine, runner: runner2) }
+        let_it_be(:runner_manager2_2) { create(:ci_runner_machine, runner: runner2) }
 
-      before do
-        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+        context 'when filtering by status' do
+          let!(:offline_runner_manager) { create(:ci_runner_machine, runner: runner2, contacted_at: 2.hours.ago) }
+          let(:query) do
+            %(
+              query {
+                runner(id: "#{runner2.to_global_id}") {
+                  id
+                  managers(status: OFFLINE) { nodes { id } }
+                }
+              }
+            )
+          end
+
+          it 'retrieves expected runner manager' do
+            post_graphql(query, current_user: user)
+
+            expect(graphql_data).to match(a_hash_including(
+              'runner' => a_graphql_entity_for(
+                'managers' => {
+                  'nodes' => [a_graphql_entity_for(offline_runner_manager)]
+                }
+              )
+            ))
+          end
+        end
+
+        context 'fetching by runner ID and runner system ID' do
+          let(:query) do
+            %(
+              query {
+                runner1: runner(id: "#{runner.to_global_id}") {
+                  id
+                  managers(systemId: "#{runner_manager.system_xid}") { nodes { id } }
+                }
+                runner2: runner(id: "#{runner2.to_global_id}") {
+                  id
+                  managers(systemId: "#{runner_manager2_1.system_xid}") { nodes { id } }
+                }
+              }
+            )
+          end
+
+          it 'retrieves expected runner managers' do
+            post_graphql(query, current_user: user)
+
+            expect(graphql_data).to match(a_hash_including(
+              'runner1' => a_graphql_entity_for(runner,
+                'managers' => a_hash_including('nodes' => [a_graphql_entity_for(runner_manager)])),
+              'runner2' => a_graphql_entity_for(runner2,
+                'managers' => a_hash_including('nodes' => [a_graphql_entity_for(runner_manager2_1)]))
+            ))
+          end
+        end
+
+        context 'fetching runner ID and all runner managers' do
+          let(:query) do
+            %(
+              query {
+                runner(id: "#{runner2.to_global_id}") { id managers { nodes { id } } }
+              }
+            )
+          end
+
+          it 'retrieves expected runner managers' do
+            post_graphql(query, current_user: user)
+
+            expect(graphql_data).to match(a_hash_including(
+              'runner' => a_graphql_entity_for(runner2,
+                'managers' => a_hash_including('nodes' => [
+                  a_graphql_entity_for(runner_manager2_2), a_graphql_entity_for(runner_manager2_1)
+                ]))
+            ))
+          end
+        end
+
+        context 'fetching mismatched runner ID and system ID' do
+          let(:query) do
+            %(
+              query {
+                runner(id: "#{runner2.to_global_id}") {
+                  id
+                  managers(systemId: "#{runner_manager.system_xid}") { nodes { id } }
+                }
+              }
+            )
+          end
+
+          it 'retrieves expected runner managers' do
+            post_graphql(query, current_user: user)
+
+            expect(graphql_data).to match(a_hash_including(
+              'runner' => a_graphql_entity_for(runner2, 'managers' => a_hash_including('nodes' => []))
+            ))
+          end
+        end
       end
 
-      it_behaves_like 'runner details fetch'
+      context 'with build running' do
+        let!(:pipeline) { create(:ci_pipeline, project: project1) }
+        let!(:build) { create(:ci_build, :running, runner: runner, pipeline: pipeline) }
+
+        before do
+          create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+        end
+
+        it_behaves_like 'runner details fetch'
+      end
     end
   end
 

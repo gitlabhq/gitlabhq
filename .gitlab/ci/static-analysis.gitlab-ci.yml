@@ -199,7 +199,7 @@ semgrep-appsec-custom-rules:
     - |
       semgrep ci --gitlab-sast --metrics off --config "${CI_BUILDS_DIR}/sast-custom-rules" \
         --include app --include lib --include workhorse \
-        --exclude '*_test.go' --exclude spec --exclude qa > gl-sast-report.json || true
+        --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling > gl-sast-report.json || true
   variables:
     CUSTOM_RULES_REPOSITORY: https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules.git
   artifacts:
