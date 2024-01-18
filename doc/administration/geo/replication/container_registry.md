@@ -11,7 +11,7 @@ You can set up a container registry on your **secondary** Geo site that mirrors 
 NOTE:
 The container registry replication is used only for disaster recovery purposes. We do not recommend
 pulling the container registry data from the secondary. For a feature proposal to implement it in the
-future, see [Geo: Accelerate container images by serving read request from secondary site](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) for details.
+future, see [Geo: Accelerate container images by serving read request from secondary site](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) for details. You or your GitLab representative are encouraged to upvote this feature to register your interest.
 
 ## Supported container registries
 

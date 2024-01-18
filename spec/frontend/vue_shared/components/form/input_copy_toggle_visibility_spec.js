@@ -378,7 +378,7 @@ describe('InputCopyToggleVisibility', () => {
       props: {
         formInputGroupProps: {
           name: 'Foo bar',
-          'data-qa-selector': 'Foo bar',
+          'data-testid': 'Foo bar',
           class: 'Foo bar',
           id: 'Foo bar',
         },
@@ -387,14 +387,14 @@ describe('InputCopyToggleVisibility', () => {
 
     expect(findFormInput().attributes()).toMatchObject({
       name: 'Foo bar',
-      'data-qa-selector': 'Foo bar',
+      'data-testid': 'Foo bar',
       class: expect.stringContaining('Foo bar'),
       id: 'Foo bar',
     });
 
     const attributesInputGroup = findFormInputGroup().attributes();
     expect(attributesInputGroup.name).toBeUndefined();
-    expect(attributesInputGroup['data-qa-selector']).toBeUndefined();
+    expect(attributesInputGroup['data-testid']).toBeUndefined();
     expect(attributesInputGroup.class).not.toContain('Foo bar');
     expect(attributesInputGroup.id).toBeUndefined();
   });

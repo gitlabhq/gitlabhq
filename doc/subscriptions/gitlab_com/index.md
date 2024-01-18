@@ -232,13 +232,13 @@ After you dismiss the alert, it doesn't display until another seat is used.
 The alert displays based on the following seat usage. You cannot configure the
 amounts at which the alert displays.
 
-| Seats in subscription | Seat usage |
-|-----------------------|------------|
-| 0-15                  | One seat remaining in the subscription. |
-| 16-25                 | Two seats remaining in the subscription. |
-| 26-99                 | 10% of seats have been used. |
-| 100-999               | 8% of seats have been used. |
-| 1000+                 | 5% of seats have been used |
+| Seats in subscription | Seat usage           |
+|-----------------------|----------------------|
+| 0-15                  | One seat remains.     |
+| 16-25                 | Two seats remain.    |
+| 26-99                 | 10% of seats remain. |
+| 100-999               | 8% of seats remain.  |
+| 1000+                 | 5% of seats remain.  |
 
 ## Change the linked namespace
 

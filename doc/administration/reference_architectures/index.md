@@ -298,7 +298,7 @@ Additionally, when it comes to other cloud provider services not listed here,
 it's advised to be cautious as each implementation can be notably different
 and should be tested thoroughly before production use.
 
-Through testing and real life usage, the Reference Architectures are validated and supported on the following cloud providers:
+Through testing and real life usage, the Reference Architectures are recommended on the following cloud providers:
 
 <table>
 <thead>
@@ -315,7 +315,7 @@ Through testing and real life usage, the Reference Architectures are validated a
     <td>Linux package</td>
     <td>🟢</td>
     <td>🟢</td>
-    <td>🟡<sup>1</sup></td>
+    <td>🟢<sup>1</sup></td>
     <td>🟢</td>
   </tr>
   <tr>
@@ -328,9 +328,7 @@ Through testing and real life usage, the Reference Architectures are validated a
 </tbody>
 </table>
 
-1. We only recommend smaller setups (up to 2k) at this time on Azure due to performance issues at larger scales. See the [Recommendation Notes for Azure](#recommendation-notes-for-azure) section for more info.
-
-Additionally, the following cloud provider services are validated and supported for use as part of the Reference Architectures:
+Additionally, the following cloud provider services are recommended for use as part of the Reference Architectures:
 
 <table>
 <thead>
@@ -338,6 +336,7 @@ Additionally, the following cloud provider services are validated and supported 
     <th>Cloud Service</th>
     <th>GCP</th>
     <th>AWS</th>
+    <th>Azure</th>
     <th>Bare Metal</th>
   </tr>
 </thead>
@@ -346,18 +345,21 @@ Additionally, the following cloud provider services are validated and supported 
     <td>Object Storage</td>
     <td>🟢 &nbsp; <a href="https://cloud.google.com/storage" target="_blank">Cloud Storage</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/s3/" target="_blank">S3</a></td>
+    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/storage/blobs" target="_blank">Azure Blob Storage</a></td>
     <td>🟢 &nbsp; <a href="https://min.io/" target="_blank">MinIO</a></td>
   </tr>
   <tr>
     <td>Database</td>
     <td>🟢 &nbsp; <a href="https://cloud.google.com/sql" target="_blank" rel="noopener noreferrer">Cloud SQL</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a></td>
+    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/postgresql/" target="_blank" rel="noopener noreferrer">Azure Database for PostgreSQL Flexible Server</a></td>
     <td></td>
   </tr>
   <tr>
     <td>Redis</td>
     <td>🟢 &nbsp; <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
+    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium)</a></td>
     <td></td>
   </tr>
 </tbody>
@@ -372,11 +374,13 @@ If you choose to use a third party external service:
 1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
 1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
 1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
-1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication
+1. Ensure that if a pooler is offered as part of the service that it can handle the total load without bottlenecking.
+   For example, Azure Database for PostgreSQL Flexible Server can optionally deploy a PgBouncer pooler in front of the Database, but PgBouncer is single threaded, so this in turn may cause bottlenecking. However, if using Database Load Balancing, this could be enabled on each node in distributed fashion to compensate.
+1. If [GitLab Geo](../geo/index.md) is to be used the service will need to support Cross Region replication.
 
 ### Recommendation notes for the Redis services
 
-[When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version.
+[When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version. Note that this specifically must not be run in [Cluster mode](../../install/requirements.md#redis) as this is unsupported by GitLab.
 
 Redis is primarily single threaded. For the 10,000 user and above Reference Architectures, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 
@@ -391,20 +395,9 @@ As a general guidance, it's recommended to use a reputable solution that has ful
 Several database cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/versions/gitlab_14_changes.md#1440) for more details.
-- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
+- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported as the service is now deprecated and runs on an unsupported version of PostgreSQL. It was also found to have notable performance and stability issues.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
-
-### Recommendation notes for Azure
-
-Due to performance issues that we found with several key Azure services, we only recommend smaller architectures (up to 2k) to be deployed to Azure. For larger architectures, we recommend using another cloud provider.
-
-In addition to the above, you should be aware of the additional specific guidance for Azure:
-
-- [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported for use due to notable performance / stability issues or missing functionality.
-- A new service, [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/) has been released. [Internal testing](https://gitlab.com/gitlab-org/quality/reference-architectures/-/issues/91) has shown that it does look to perform as expected, but this hasn't been validated in production, so generally isn't recommended at this time. Additionally, as it's a new service, you may find that it's missing some functionality depending on your requirements.
-  - Only standard Postgres authentication is supported at this time with this service. Microsoft Azure Active Directory (Azure AD) is not compatible.
-- [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs/) has been found to have [performance limits that can impact production use at certain times](https://gitlab.com/gitlab-org/gitlab/-/issues/344861). However, this has only been seen in our largest architectures (25k+) so far.
 
 ## Deviating from the suggested reference architectures
 
@@ -729,6 +722,10 @@ Of note, the GitLab application is bundled with [Prometheus as well as various P
 Below is a history of notable updates for the Reference Architectures (2021-01-01 onward, ascending order), which we aim to keep updated at least once per quarter.
 
 You can find a full history of changes [on the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&state=merged&label_name%5B%5D=Reference%20Architecture&label_name%5B%5D=documentation).
+
+**2024:**
+
+- [2024-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140465): Updated recommendations for Azure for all Reference Architecture sizes and latest cloud services.
 
 **2023:**
 

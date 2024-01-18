@@ -116,10 +116,12 @@ Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.git
 
 #### Additional requirements for GitLab Geo
 
-If you're using [GitLab Geo](../administration/geo/index.md), we strongly
-recommend running instances installed by using the Linux package, as we actively develop and
-test based on those. We try to be compatible with most external (not managed by a Linux package installation) databases
-(for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)), but we can't guarantee compatibility.
+If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
+[validated cloud-managed instances](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services),
+as we actively develop and test based on those.
+We cannot guarantee compatibility with other external databases.
+
+It is recommended to review the [full requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
 
 #### Operating system locale compatibility and silent index corruption
 

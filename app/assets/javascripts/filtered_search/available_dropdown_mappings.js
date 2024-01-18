@@ -2,6 +2,7 @@ import { sortMilestonesByDueDate } from '~/milestones/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import {
   TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_MERGE_USER,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -85,6 +86,11 @@ export default class AvailableDropdownMappings {
         reference: null,
         gl: DropdownUser,
         element: this.container.querySelector('#js-dropdown-reviewer'),
+      },
+      [TOKEN_TYPE_MERGE_USER]: {
+        reference: null,
+        gl: DropdownUser,
+        element: this.container.querySelector('#js-dropdown-merge-user'),
       },
       attention: {
         reference: null,

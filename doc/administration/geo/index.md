@@ -124,7 +124,7 @@ The following are required to run Geo:
     across Geo sites to avoid silent corruption of database indexes.
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
-- All sites must run the same GitLab version.
+- All sites must run the exact same GitLab version. The [major, minor, and patch versions](../../policy/maintenance.md#versioning) must all match.
 - All sites must define the same [repository storages](../repository_storage_paths.md).
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),

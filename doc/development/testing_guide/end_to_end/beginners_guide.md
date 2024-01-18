@@ -321,22 +321,22 @@ the **Issue Show** page already exists, add the `closed?` method.
 module Page::Project::Issue
   class Show
     view 'app/views/projects/issues/show.html.haml' do
-      element :closed_status_box
+      element 'closed-status-box'
     end
 
     def closed?
-      has_element?(:closed_status_box)
+      has_element?('closed-status-box')
     end
   end
 end
 ```
 
-Next, define the element `closed_status_box` within your view, so your Page Object
+Next, define the element `closed-status-box` within your view, so your Page Object
 can see it.
 
 ```haml
 -#=> app/views/projects/issues/show.html.haml
-.issuable-status-box.status-box.status-box-issue-closed{ ..., data: { qa_selector: 'closed_status_box' } }
+.issuable-status-box.status-box.status-box-issue-closed{ ..., data: { testid: 'closed-status-box' } }
 ```
 
 ## Run the spec

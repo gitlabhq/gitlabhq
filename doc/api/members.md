@@ -523,6 +523,7 @@ POST /projects/:id/members
 | `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels) |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
+| `member_role_id` | integer | no | The ID of a member role **(ULTIMATE ALL)** |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

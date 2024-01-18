@@ -1,0 +1,9 @@
+#js-dropdown-merge-user.filtered-search-input-dropdown-menu.dropdown-menu
+  %ul{ data: { dropdown: true } }
+    - if current_user
+      = render 'shared/issuable/user_dropdown_item',
+        user: current_user
+  %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+    = render 'shared/issuable/user_dropdown_item',
+      user: User.new(username: '{{username}}', name: '{{name}}'),
+      avatar: { lazy: true, url: '{{avatar_url}}' }

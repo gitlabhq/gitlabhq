@@ -18370,6 +18370,9 @@ msgstr ""
 msgid "Edit %{profileType} profile"
 msgstr ""
 
+msgid "Edit %{ruleName}"
+msgstr ""
+
 msgid "Edit Comment"
 msgstr ""
 
@@ -30716,6 +30719,9 @@ msgstr ""
 msgid "Merged this merge request."
 msgstr ""
 
+msgid "Merged-By"
+msgstr ""
+
 msgid "Merged: %{merged}"
 msgstr ""
 
@@ -33418,6 +33424,9 @@ msgid "ObservabilityMetrics|Error: Failed to load metrics details. Try reloading
 msgstr ""
 
 msgid "ObservabilityMetrics|Failed to load metrics."
+msgstr ""
+
+msgid "ObservabilityMetrics|Last ingested"
 msgstr ""
 
 msgid "ObservabilityMetrics|Metric Details"
@@ -40573,6 +40582,9 @@ msgid "Remove"
 msgstr ""
 
 msgid "Remove %{displayReference}"
+msgstr ""
+
+msgid "Remove %{ruleName}"
 msgstr ""
 
 msgid "Remove Zoom meeting"
@@ -51081,10 +51093,10 @@ msgstr ""
 msgid "Time|s"
 msgstr ""
 
-msgid "Tip: Hover over a job to see the jobs it depends on to run."
+msgid "Tip: Add a %{linkStart}CODEOWNERS%{linkEnd} to automatically add approvers based on file paths and file types."
 msgstr ""
 
-msgid "Tip: add a %{linkStart}CODEOWNERS%{linkEnd} to automatically add approvers based on file paths and file types."
+msgid "Tip: Hover over a job to see the jobs it depends on to run."
 msgstr ""
 
 msgid "Title"

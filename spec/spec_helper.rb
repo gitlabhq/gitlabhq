@@ -223,6 +223,14 @@ RSpec.configure do |config|
       example.metadata[:retry] = 1
     end
 
+    # Gradually stop using rspec-retry
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
+    %i[lib migrations models requests services].each do |type|
+      config.prepend_before(:each, type: type) do |example|
+        example.metadata[:retry] = 1
+      end
+    end
+
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 

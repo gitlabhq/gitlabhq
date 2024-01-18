@@ -44,12 +44,12 @@ Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
 
 ## What data is replicated to a **secondary** site?
 
-We currently replicate project repositories, LFS objects, generated
-attachments and avatars, and the whole database. This means information such as user accounts,
+We currently replicate the whole rails database, project repositories, LFS objects, generated
+attachments, avatars and more. This means information such as user accounts,
 issues, merge requests, groups, and project data are available for
 query.
 
-For more details, see the [supported Geo data types](datatypes.md).
+For a comprehensive list of data replicated by Geo, see the [supported Geo data types page](datatypes.md).
 
 ## Can I `git push` to a **secondary** site?
 
@@ -65,10 +65,26 @@ connectivity between your sites, and your hardware.
 
 That's totally fine. We use HTTP(s) to fetch repository changes from the **primary** site to all **secondary** sites.
 
-## Is this possible to set up a container registry for a **secondary** site that mirrors the one on the **primary** site?
+## Is it possible to set up a container registry for a **secondary** site that mirrors the one on the **primary** site?
 
-Yes. See [container registry for a **secondary** site](container_registry.md).
+Yes, however, we only support this for Disaster Recovery scenarios. See [container registry for a **secondary** site](container_registry.md).
 
 ## Can you sign in to a secondary site?
 
 Yes, but secondary sites receive all authentication data (like user accounts and logins) from the primary instance. This means you are re-directed to the primary for authentication and then routed back.
+
+## Do all Geo sites need to be the same as the primary?
+
+No, Geo sites can be based on different reference architectures. For example, you can have the primary site based on a 3K reference architecture, one secondary site based 3K reference architecture, and another one based on a 1K reference architecture.
+
+## Does Geo replicate archived projects?
+
+Yes, provided they are not excluded through [selective sync](../replication/configuration.md#selective-synchronization).
+
+## Does Geo replicate personal projects?
+
+Yes, provided they are not excluded through [selective sync](../replication/configuration.md#selective-synchronization).
+
+## Are delayed deletion projects replicated to secondary sites?
+
+Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibility_and_access_controls.md#delayed-project-deletion), but are yet to be permanently deleted, are replicated to secondary sites.

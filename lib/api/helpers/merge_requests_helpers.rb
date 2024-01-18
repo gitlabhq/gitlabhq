@@ -108,6 +108,11 @@ module API
         optional :approved, type: String,
                             values: %w[yes no],
                             desc: 'Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests.'
+        optional :merge_user_id, type: Integer,
+                                 desc: "Returns merge requests which have been merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`."
+        optional :merge_user_username, type: String,
+                                       desc: "Returns merge requests which have been merged by the user with the given `username`. Mutually exclusive with `merge_user_id`."
+        mutually_exclusive :merge_user_id, :merge_user_username
       end
 
       params :optional_scope_param do

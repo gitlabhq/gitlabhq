@@ -39,7 +39,7 @@ In addition:
   - An _internal_ group to a _public_ project.
   - A _public_ group to a _public_ project.
 
-- If a group in the project's hierarchy [does not allow sub-projects to be shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups), the option to **Invite a group** is not available.
+- If a group in the project's hierarchy [does not allow projects to be shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups), the option to **Invite a group** is not available.
 - If the project's root ancestor group [does not allow the project to be shared outside the hierarchy](../../group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy), the invited group or subgroup must be in the project's [namespace](../../namespace/index.md).
   For example, a project in the namespace `group/subgroup01/project`:
   - Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.

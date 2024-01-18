@@ -170,6 +170,73 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
       end
 
+      context 'merge_user filtering' do
+        before do
+          merge_request1.update!(state_id: MergeRequest.available_states[:merged])
+          merge_request1.metrics.update!(merged_by_id: user.id)
+          merge_request2.update!(state_id: MergeRequest.available_states[:merged])
+          merge_request2.metrics.update!(merged_by_id: user.id)
+          merge_request3.update!(state_id: MergeRequest.available_states[:merged])
+          merge_request3.metrics.update!(merged_by_id: user2.id)
+          merge_request4.update!(state_id: MergeRequest.available_states[:merged])
+          merge_request4.metrics.update!(merged_by_id: user2.id)
+        end
+
+        subject { described_class.new(user, params).execute }
+
+        context 'when flag `mr_merge_user_filter` is disabled' do
+          before do
+            stub_feature_flags(mr_merge_user_filter: false)
+          end
+
+          describe 'by merge_user_id' do
+            let(:params) { { merge_user_id: user.id } }
+            let(:expected_mr) { [merge_request1, merge_request2, merge_request3, merge_request4, merge_request5] }
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
+
+          describe 'by merge_user_username' do
+            let(:params) { { merge_user_username: user.username } }
+            let(:expected_mr) { [merge_request1, merge_request2, merge_request3, merge_request4, merge_request5] }
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
+        end
+
+        context 'when flag `mr_merge_user_filter` is enabled' do
+          before do
+            stub_feature_flags(mr_merge_user_filter: true)
+          end
+
+          describe 'by merge_user_id' do
+            let(:params) { { merge_user_id: user.id } }
+            let(:expected_mr) { [merge_request1, merge_request2] }
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
+
+          describe 'by merge_user_username' do
+            let(:params) { { merge_user_username: user.username } }
+            let(:expected_mr) { [merge_request1, merge_request2] }
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
+
+          describe 'by merge_user_id with unknown user id' do
+            let(:params) { { merge_user_id: 99999 } }
+
+            it { is_expected.to be_empty }
+          end
+
+          describe 'by merge_user_username with unknown user name' do
+            let(:params) { { merge_user_username: 'does-not-exist' } }
+
+            it { is_expected.to be_empty }
+          end
+        end
+      end
+
       context 'filtering by group' do
         it 'includes all merge requests when user has access excluding merge requests from projects the user does not have access to' do
           private_project = allow_gitaly_n_plus_1 { create(:project, :private, group: group) }

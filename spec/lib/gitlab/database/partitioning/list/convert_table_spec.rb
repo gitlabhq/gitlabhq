@@ -142,18 +142,29 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
   end
 
   describe '#revert_preparation_for_partitioning' do
-    before do
-      converter.prepare_for_partitioning
-    end
-
     shared_examples 'runs #revert_preparation_for_partitioning' do
-      it 'removes a check constraint' do
-        expect { revert_prepare }.to change {
-          Gitlab::Database::PostgresConstraint
-            .check_constraints
-            .by_table_identifier("#{connection.current_schema}.#{table_name}")
-            .count
-        }.from(1).to(0)
+      context 'when check constraint exists' do
+        before do
+          converter.prepare_for_partitioning
+        end
+
+        it 'removes a check constraint' do
+          expect { revert_prepare }.to change {
+            Gitlab::Database::PostgresConstraint
+              .check_constraints
+              .by_table_identifier("#{connection.current_schema}.#{table_name}")
+              .count
+          }.from(1).to(0)
+        end
+      end
+
+      context 'when check constraint does not exist' do
+        it 'returns a message' do
+          expect(Gitlab::AppLogger)
+            .to receive(:warn)
+                  .with(starting_with('The partitioning constraint'))
+          revert_prepare
+        end
       end
     end
 

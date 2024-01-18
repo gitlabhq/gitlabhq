@@ -18,15 +18,9 @@ module StubRequests
   end
 
   def stub_dns(url, ip_address:, port: 80)
-    DebugWithPuts.debug_with_puts "beginning of stub_dns"
     url = parse_url(url)
-    DebugWithPuts.debug_with_puts "before socket = Socket.sockaddr_in"
     socket = Socket.sockaddr_in(port, ip_address)
-    DebugWithPuts.debug_with_puts "after socket = Socket.sockaddr_in"
-
-    DebugWithPuts.debug_with_puts "before addr = Addrinfo.new(socket)"
     addr = Addrinfo.new(socket)
-    DebugWithPuts.debug_with_puts "after addr = Addrinfo.new(socket)"
 
     # See Gitlab::UrlBlocker
     allow(Addrinfo).to receive(:getaddrinfo)

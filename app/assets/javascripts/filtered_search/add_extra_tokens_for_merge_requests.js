@@ -1,8 +1,10 @@
 import { __ } from '~/locale';
 import {
   TOKEN_TITLE_APPROVED_BY,
+  TOKEN_TITLE_MERGE_USER,
   TOKEN_TITLE_REVIEWER,
   TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_MERGE_USER,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_SOURCE_BRANCH,
@@ -173,6 +175,21 @@ export default (
     ...[approvedBy.token, approvedBy.tokenAlternative],
   );
   IssuableTokenKeys.conditions.push(...approvedBy.condition);
+
+  const mergeUserToken = {
+    formattedKey: TOKEN_TITLE_MERGE_USER,
+    key: TOKEN_TYPE_MERGE_USER,
+    type: 'string',
+    param: 'username',
+    symbol: '@',
+    icon: 'merge',
+    tag: '@merge_user',
+    hideNotEqual: true,
+  };
+  if (gon.features.mrMergeUserFilter) {
+    IssuableTokenKeys.tokenKeys.splice(3, 0, mergeUserToken);
+    IssuableTokenKeys.tokenKeysWithAlternative.splice(3, 0, mergeUserToken);
+  }
 
   if (!disableEnvironmentFilter) {
     const environmentToken = {

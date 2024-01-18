@@ -271,6 +271,14 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       }
     }
 
+    /**
+     * Add transition to align with GlButton :hover/:focus transition
+     */
+    .brand-logo,
+    .user-bar-button {
+      @include transition(background-color, border-color, color, box-shadow);
+    }
+
     .btn-default-tertiary {
       mix-blend-mode: normal;
     }

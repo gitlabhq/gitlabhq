@@ -97,7 +97,7 @@ The instructions make the assumption that you are using the email address `incom
    If you receive an error after entering `rcpt to: incoming@localhost`
    then your Postfix `my_network` configuration is not correct. The error will
    say 'Temporary lookup failure'. See
-   [Configure Postfix to receive email from the Internet](#configure-postfix-to-receive-email-from-the-internet)._
+   [Configure Postfix to receive email from the Internet](#configure-postfix-to-receive-email-from-the-internet).
 
 1. Check if the `incoming` user received the email:
 

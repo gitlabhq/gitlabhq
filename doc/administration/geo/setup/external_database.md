@@ -17,9 +17,10 @@ to [avoid version mismatches](../index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
 NOTE:
-We strongly recommend running instances installed using the Linux package as they are actively
-developed and tested. We aim to be compatible with most external
-(not managed by Omnibus) databases but we do not guarantee compatibility.
+If you’re using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
+[validated cloud-managed instances](../../reference_architectures/index.md#recommended-cloud-providers-and-services),
+as we actively develop and test based on those.
+We cannot guarantee compatibility with other external databases. 
 
 ## **Primary** site
 
@@ -80,6 +81,11 @@ cloud providers:
 - Google Cloud SQL - [Creating read replicas](https://cloud.google.com/sql/docs/postgres/replication/create-replica)
 
 When your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
+
+WARNING:
+The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/) 
+or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance, 
+replicate from an on-premise primary database to an RDS secondary are not supported.  
 
 #### Manually configure the primary database for replication
 

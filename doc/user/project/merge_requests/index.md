@@ -82,6 +82,7 @@ or:
 > - Filtering by potential approvers was moved to GitLab Premium in 13.9.
 > - Filtering by `approved-by` moved to GitLab Premium in 13.9.
 > - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
+> - Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
 
 To filter the list of merge requests:
 
@@ -95,6 +96,7 @@ To filter the list of merge requests:
      - **Approved-By**, for merge requests already approved by a user. **(PREMIUM ALL)**.
      - **Approver**, for merge requests that this user is eligible to approve.
        (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM ALL)**
+     - **Merged-By**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

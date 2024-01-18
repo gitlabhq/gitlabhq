@@ -158,20 +158,16 @@ Things to note:
 - The name of the element and the `data-testid` must match and be either snake cased or kebab cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
-- You may see `data-qa-selector` classes in existing Page Objects. We should prefer the [`data-testid`](#data-testid-vs-data-qa-selector)
-  method of definition over the `data-qa-selector` CSS class
+- You should not see `data-qa-selector` classes in Page Objects.
+  We should use the [`data-testid`](#data-testid-vs-data-qa-selector)
+  method of definition
 
 ### `data-testid` vs `data-qa-selector`
 
 > Introduced in GitLab 16.1
 
-There are two supported methods of defining elements within a view.
-
-1. `data-testid`
-1. `data-qa-selector` attribute
-
 Any existing `data-qa-selector` class should be considered deprecated
-and we should prefer the `data-testid` method of definition.
+and we should use the `data-testid` method of definition.
 
 ### Dynamic element selection
 

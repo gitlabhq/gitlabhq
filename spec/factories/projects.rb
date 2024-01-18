@@ -2,10 +2,6 @@
 
 require_relative '../support/helpers/test_env'
 
-# TODO: Remove the debug_with_puts statements below! Used for debugging purposes.
-# TODO: https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/323#note_1688925316
-require_relative '../support/helpers/debug_with_puts'
-
 FactoryBot.define do
   # Project without repository
   #
@@ -70,8 +66,6 @@ FactoryBot.define do
     end
 
     after(:build) do |project, evaluator|
-      DebugWithPuts.debug_with_puts "Beginning of after :build of projects factory in spec/factories/projects.rb"
-
       # Builds and MRs can't have higher visibility level than repository access level.
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
@@ -93,8 +87,6 @@ FactoryBot.define do
         security_and_compliance_access_level: evaluator.security_and_compliance_access_level
       }
 
-      DebugWithPuts.debug_with_puts "During after :build of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       project_namespace_hash = {
         name: evaluator.name,
         path: evaluator.path,
@@ -105,16 +97,10 @@ FactoryBot.define do
 
       project_namespace_hash[:id] = evaluator.project_namespace_id.presence
 
-      DebugWithPuts.debug_with_puts "During after :build of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       project.build_project_namespace(project_namespace_hash)
       project.build_project_feature(project_feature_hash)
 
-      DebugWithPuts.debug_with_puts "During after :build of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
-
-      DebugWithPuts.debug_with_puts "End of after :build of projects factory in spec/factories/projects.rb"
     end
 
     to_create do |project|
@@ -122,7 +108,6 @@ FactoryBot.define do
     end
 
     after(:create) do |project, evaluator|
-      DebugWithPuts.debug_with_puts "Beginning of after :create of projects factory in spec/factories/projects.rb"
       # Normally the class Projects::CreateService is used for creating
       # projects, and this class takes care of making sure the owner and current
       # user have access to the project. Our specs don't use said service class,
@@ -131,15 +116,11 @@ FactoryBot.define do
         project.add_owner(project.first_owner)
       end
 
-      DebugWithPuts.debug_with_puts "During after :create of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       if project.group
         project.run_after_commit_or_now do
           AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
         end
       end
-
-      DebugWithPuts.debug_with_puts "During after :create of projects factory in spec/factories/projects.rb:#{__LINE__}"
 
       # assign the delegated `#ci_cd_settings` attributes after create
       project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
@@ -152,8 +133,6 @@ FactoryBot.define do
       project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
       project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
 
-      DebugWithPuts.debug_with_puts "During after :create of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state
         import_state.status = evaluator.import_status
@@ -163,12 +142,8 @@ FactoryBot.define do
         import_state.save!
       end
 
-      DebugWithPuts.debug_with_puts "During after :create of projects factory in spec/factories/projects.rb:#{__LINE__}"
-
       # simulating ::Projects::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
       project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
-
-      DebugWithPuts.debug_with_puts "End of after :create of projects factory in spec/factories/projects.rb"
     end
 
     trait :public do
@@ -351,7 +326,6 @@ FactoryBot.define do
       end
 
       after :create do |project, evaluator|
-        DebugWithPuts.debug_with_puts "Beginning of after :create of trait :repository do in spec/factories/projects.rb"
         # Specify `lfs: true` to create the LfsObject for the LFS file in the test repo:
         # https://gitlab.com/gitlab-org/gitlab-test/-/blob/master/files/lfs/lfs_object.iso
         if evaluator.lfs
@@ -376,8 +350,6 @@ FactoryBot.define do
             create(:lfs_objects_project, project: project, lfs_object: lfs_object)
           end
         end
-
-        DebugWithPuts.debug_with_puts "During after :create of trait :repository do in spec/factories/projects.rb:#{__LINE__}"
 
         if evaluator.create_templates
           templates_path = "#{evaluator.create_templates}_templates"
@@ -408,8 +380,6 @@ FactoryBot.define do
             branch_name: 'master')
         end
 
-        DebugWithPuts.debug_with_puts "During after :create of trait :repository do in spec/factories/projects.rb:#{__LINE__}"
-
         if evaluator.create_branch
           project.repository.create_file(
             project.creator,
@@ -419,8 +389,6 @@ FactoryBot.define do
             branch_name: evaluator.create_branch)
         end
 
-        DebugWithPuts.debug_with_puts "During after :create of trait :repository do in spec/factories/projects.rb:#{__LINE__}"
-
         if evaluator.create_tag
           project.repository.add_tag(
             project.creator,
@@ -429,7 +397,6 @@ FactoryBot.define do
         end
 
         project.track_project_repository
-        DebugWithPuts.debug_with_puts "End of after :create of trait :repository do in spec/factories/projects.rb"
       end
     end
 
