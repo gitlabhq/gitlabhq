@@ -205,7 +205,7 @@ export default {
     },
     isBlameEnabled() {
       // Blame information within the blob viewer is not yet supported in our fallback (HAML) viewers
-      return this.glFeatures.blobBlameInfo && !this.useFallback;
+      return !this.useFallback;
     },
   },
   watch: {

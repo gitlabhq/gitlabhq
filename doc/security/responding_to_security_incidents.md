@@ -147,7 +147,7 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 Review [system access audit events](../administration/audit_event_streaming/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
-### Misconfigured project or group settings **(ULTIMATE PREMIUM)**
+### Misconfigured project or group settings **(PREMIUM ALL)**
 
 Security incidents can occur as a result of improperly configured project or group settings, potentially leading to unauthorized access to sensitive or proprietary data. These incidents may include but are not limited to:
 

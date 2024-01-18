@@ -183,7 +183,7 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div class="media">
+    <div class="gl-pl-5 gl-pr-4 gl-py-4 gl-display-flex">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
       <div class="media-body gl-display-flex gl-align-items-flex-start gl-flex-direction-row!">
         <div class="js-code-text code-text gl-align-self-center gl-flex-grow-1">

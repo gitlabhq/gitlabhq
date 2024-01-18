@@ -5,14 +5,15 @@ class AddUniqueIndexToSystemNoteMetadataOnIdConvertToBigint < Gitlab::Database::
 
   milestone '16.9'
 
-  TABLE_NAME = :system_note_metadata
-  INDEX_NAME = 'index_system_note_metadata_pkey_on_id_convert_to_bigint'
-
   def up
-    add_concurrent_index TABLE_NAME, :id_convert_to_bigint, unique: true, name: INDEX_NAME
+    # no-op
+    # The index has been created asynchronously for GitLab.com
+    # The index is going to be used to back a primary key and a foreign key.
+    # Dropping the index would require dropping any foreign key associated with the index
+    # thus the index and the foreign key must be added in the same migration.
   end
 
   def down
-    remove_concurrent_index TABLE_NAME, :id_convert_to_bigint, unique: true, name: INDEX_NAME
+    # no-op
   end
 end

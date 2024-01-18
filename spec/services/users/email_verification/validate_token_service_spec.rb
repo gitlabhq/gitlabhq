@@ -43,7 +43,7 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
         end
 
         context 'when expired' do
-          let(:token_generated_at) { 2.hours.ago }
+          let(:token_generated_at) { 5.hours.ago }
 
           it 'returns a failure status' do
             expect(service.execute).to eq(

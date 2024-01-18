@@ -19,7 +19,6 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do
-    push_frontend_feature_flag(:blob_blame_info, @project)
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:encoding_logs_tree)

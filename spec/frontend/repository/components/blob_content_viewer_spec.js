@@ -75,7 +75,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
     inject = {},
-    blobBlameInfo = true,
   } = mockData;
 
   const blobInfo = {
@@ -139,7 +138,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         ...inject,
         glFeatures: {
           highlightJsWorker: false,
-          blobBlameInfo,
         },
       },
     }),
@@ -217,14 +215,6 @@ describe('Blob content viewer component', () => {
 
         expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '0' } });
         expect(findSourceViewerNew().props('showBlame')).toBe(false);
-      });
-
-      describe('blobBlameInfo feature flag disabled', () => {
-        it('does not render a blame toggle', async () => {
-          await createComponent({ blob: simpleViewerMock, blobBlameInfo: false });
-
-          expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
-        });
       });
 
       describe('when viewing rich content', () => {

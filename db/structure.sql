@@ -41090,6 +41090,9 @@ ALTER TABLE ONLY integrations
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_source_project FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY resource_link_events
+    ADD CONSTRAINT fk_system_note_metadata_id_convert_to_bigint FOREIGN KEY (system_note_metadata_id) REFERENCES system_note_metadata(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_issues_issue_id FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 

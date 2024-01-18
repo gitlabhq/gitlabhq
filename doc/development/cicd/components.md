@@ -18,7 +18,7 @@ Components that are for GitLab internal use only, for example specific to `gitla
 implemented under `gitlab-org` group.
 
 Component projects that are expected to be published in the [CI/CD catalog](../../ci/components/index.md#cicd-catalog)
-should first be dogfooded it to ensure we stay on top of the project quality and have first-hand
+should first be dogfooded to ensure we stay on top of the project quality and have first-hand
 experience with it.
 
 ## Define ownership

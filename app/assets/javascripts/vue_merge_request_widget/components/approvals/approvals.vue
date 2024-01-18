@@ -281,6 +281,7 @@ export default {
                 <gl-button
                   v-if="action"
                   :variant="action.variant"
+                  size="small"
                   :category="action.category"
                   :loading="isApproving"
                   class="gl-mr-3"
@@ -296,6 +297,7 @@ export default {
               <gl-button
                 v-if="action"
                 :variant="action.variant"
+                size="small"
                 :category="action.category"
                 :loading="isApproving"
                 class="gl-mr-3"

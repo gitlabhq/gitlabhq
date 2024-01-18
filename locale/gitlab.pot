@@ -12104,6 +12104,9 @@ msgstr ""
 msgid "CodeSuggestions|A user can be assigned a Duo Pro seat only once each billable month."
 msgstr ""
 
+msgid "CodeSuggestions|Boost productivity by using %{linkStart}Code Suggestions%{linkEnd} to write and understand code. Code Suggestions is part of the GitLab Duo Pro add-on, available to Premium and Ultimate users now."
+msgstr ""
+
 msgid "CodeSuggestions|Code Suggestions"
 msgstr ""
 
@@ -12123,6 +12126,9 @@ msgid "CodeSuggestions|Enhance your coding experience with intelligent recommend
 msgstr ""
 
 msgid "CodeSuggestions|Introducing Duo Pro"
+msgstr ""
+
+msgid "CodeSuggestions|Introducing the GitLab Duo Pro add-on"
 msgstr ""
 
 msgid "CodeSuggestions|Manage seat assignments for Duo Pro across your instance."
