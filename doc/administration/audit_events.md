@@ -50,7 +50,7 @@ Group audit events can also be accessed using the [Group Audit Events API](../ap
 
 Project audit events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events). Project audit event queries are limited to a maximum of 30 days.
 
-### Instance audit events **(PREMIUM SAAS)**
+### Instance audit events **(PREMIUM SELF)**
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:

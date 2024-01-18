@@ -3,6 +3,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import NamespaceStorageApp from '~/usage_quotas/storage/components/namespace_storage_app.vue';
 import StorageUsageStatistics from '~/usage_quotas/storage/components/storage_usage_statistics.vue';
 import DependencyProxyUsage from '~/usage_quotas/storage/components/dependency_proxy_usage.vue';
+import ContainerRegistryUsage from '~/usage_quotas/storage/components/container_registry_usage.vue';
 import { defaultNamespaceProvideValues } from '../mock_data';
 
 const defaultProps = {
@@ -13,6 +14,8 @@ const defaultProps = {
   namespace: {
     rootStorageStatistics: {
       storageSize: 1234,
+      containerRegistrySize: 111,
+      containerRegistrySizeIsEstimated: false,
     },
   },
 };
@@ -23,6 +26,7 @@ describe('NamespaceStorageApp', () => {
 
   const findStorageUsageStatistics = () => wrapper.findComponent(StorageUsageStatistics);
   const findDependencyProxy = () => wrapper.findComponent(DependencyProxyUsage);
+  const findContainerRegistry = () => wrapper.findComponent(ContainerRegistryUsage);
   const findBreakdownSubtitle = () => wrapper.findByTestId('breakdown-subtitle');
 
   const createComponent = ({ provide = {}, props = {} } = {}) => {
@@ -73,6 +77,30 @@ describe('NamespaceStorageApp', () => {
         });
 
         expect(findDependencyProxy().exists()).toBe(false);
+      });
+    });
+
+    describe('ContainerRegistryUsage', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('will be rendered', () => {
+        expect(findContainerRegistry().exists()).toBe(true);
+      });
+
+      it('will receive relevant props', () => {
+        const {
+          containerRegistrySize,
+          containerRegistrySizeIsEstimated,
+        } = defaultProps.namespace.rootStorageStatistics;
+
+        expect(findContainerRegistry().props()).toEqual({
+          containerRegistrySize,
+          containerRegistrySizeIsEstimated,
+          loading: false,
+        });
       });
     });
   });

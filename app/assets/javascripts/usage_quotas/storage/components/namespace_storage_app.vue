@@ -1,7 +1,8 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import StorageUsageStatistics from 'ee_else_ce/usage_quotas/storage/components/storage_usage_statistics.vue';
-import DependencyProxyUsage from '~/usage_quotas/storage/components/dependency_proxy_usage.vue';
+import DependencyProxyUsage from './dependency_proxy_usage.vue';
+import ContainerRegistryUsage from './container_registry_usage.vue';
 
 export default {
   name: 'NamespaceStorageApp',
@@ -9,6 +10,7 @@ export default {
     GlAlert,
     StorageUsageStatistics,
     DependencyProxyUsage,
+    ContainerRegistryUsage,
   },
   inject: ['userNamespace'],
   props: {
@@ -45,6 +47,12 @@ export default {
     dependencyProxyTotalSize() {
       return this.namespace.rootStorageStatistics?.dependencyProxySize ?? 0;
     },
+    containerRegistrySize() {
+      return this.namespace.rootStorageStatistics?.containerRegistrySize ?? 0;
+    },
+    containerRegistrySizeIsEstimated() {
+      return this.namespace.rootStorageStatistics?.containerRegistrySizeIsEstimated ?? false;
+    },
   },
 };
 </script>
@@ -73,6 +81,11 @@ export default {
     <dependency-proxy-usage
       v-if="!userNamespace"
       :dependency-proxy-total-size="dependencyProxyTotalSize"
+      :loading="isNamespaceStorageStatisticsLoading"
+    />
+    <container-registry-usage
+      :container-registry-size="containerRegistrySize"
+      :container-registry-size-is-estimated="containerRegistrySizeIsEstimated"
       :loading="isNamespaceStorageStatisticsLoading"
     />
 

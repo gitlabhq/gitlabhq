@@ -217,6 +217,10 @@ GitLab 16.0, 15.0, and 14.0 are supported.
 
 If you see version history items or inline text that refers to unsupported versions, you can remove it.
 
+In the version history, remove information about [features behind feature flags](feature_flags.md)
+only if all events related to the feature flag happened in unsupported versions.
+If the flag hasn't been removed, readers should know when it was introduced.
+
 Historical feature information is available in [release posts](https://about.gitlab.com/releases/)
 or by searching for the issue or merge request where the work was done.
 

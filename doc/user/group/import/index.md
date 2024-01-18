@@ -59,8 +59,8 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 
 ## Known issues
 
-See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of known issues for migrating by direct
-transfer.
+- Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a file name longer than 255 characters are not migrated.
+- For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
 
 ## Estimating migration duration
 
