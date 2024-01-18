@@ -104,42 +104,6 @@ RSpec.describe Release, feature_category: :release_orchestration do
     end
   end
 
-  describe '#update_catalog_resource' do
-    let_it_be(:project) { create(:project) }
-    let_it_be_with_refind(:release) { create(:release, project: project, author: user) }
-
-    context 'when the project is a catalog resource' do
-      before_all do
-        create(:ci_catalog_resource, project: project)
-      end
-
-      context 'when released_at is updated' do
-        it 'calls update_catalog_resource' do
-          expect(release).to receive(:update_catalog_resource).once
-
-          release.update!(released_at: release.released_at + 1.day)
-        end
-      end
-
-      context 'when the release is destroyed' do
-        it 'calls update_catalog_resource' do
-          expect(release).to receive(:update_catalog_resource).once
-
-          release.destroy!
-        end
-      end
-    end
-
-    context 'when the project is not a catalog resource' do
-      it 'does not call update_catalog_resource' do
-        expect(release).not_to receive(:update_catalog_resource)
-
-        release.update!(released_at: release.released_at + 1.day)
-        release.destroy!
-      end
-    end
-  end
-
   describe 'tagged' do
     # We only test for empty string since there's a not null constraint at the database level
     it 'does not return the tagless release' do
@@ -401,5 +365,32 @@ RSpec.describe Release, feature_category: :release_orchestration do
     let_it_be(:release) { create(:release, project: project, milestones: [milestone_1, milestone_2]) }
 
     it { expect(release.milestone_titles).to eq("#{milestone_1.title}, #{milestone_2.title}") }
+  end
+
+  describe 'updating catalog resource version' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+    let_it_be_with_reload(:release) do
+      create(:release, :with_catalog_resource_version, project: project, tag: 'v1', released_at: '2023-01-01T00:00:00Z')
+    end
+
+    let(:version) { release.catalog_resource_version }
+
+    context 'when released_at has changed' do
+      it 'calls sync_with_release! on the catalog resource version' do
+        expect(version).to receive(:sync_with_release!).once
+
+        release.update!(released_at: '2023-02-02T00:00:00Z')
+      end
+    end
+
+    context 'when released_at has not changed' do
+      it 'does not call sync_with_release! on the catalog resource version' do
+        expect(version).not_to receive(:sync_with_release!)
+
+        release.update!(released_at: '2023-01-01T00:00:00Z')
+      end
+    end
   end
 end

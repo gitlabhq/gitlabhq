@@ -635,6 +635,34 @@ RSpec.describe Gitlab::Pagination::Keyset::Order do
           end
         end
       end
+
+      context 'when the cursor attribute is an array' do
+        let(:model) { Group.new(traversal_ids: [1, 2]) }
+        let(:scope) { Group.order(traversal_ids: :asc) }
+        let(:order) do
+          described_class.build(
+            [
+              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+                attribute_name: 'traversal_ids',
+                order_expression: Group.arel_table['traversal_ids'].asc,
+                nullable: :not_nullable,
+                distinct: true
+              )
+            ])
+        end
+
+        describe '#cursor_attributes_for_node' do
+          subject { order.cursor_attributes_for_node(model) }
+
+          it { is_expected.to eq({ traversal_ids: [1, 2] }.with_indifferent_access) }
+        end
+
+        describe '#apply_cursor_conditions' do
+          subject(:sql) { order.apply_cursor_conditions(scope, { 'traversal_ids' => [1, 2] }).to_sql }
+
+          it { is_expected.to include('"namespaces"."traversal_ids" > \'{1,2}\')') }
+        end
+      end
     end
   end
 

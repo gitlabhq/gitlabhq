@@ -25,8 +25,7 @@ class Release < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true
 
   before_create :set_released_at
-  # TODO: Remove this callback after catalog_resource.released_at is denormalized. See https://gitlab.com/gitlab-org/gitlab/-/issues/430117.
-  after_update :update_catalog_resource, if: -> { project.catalog_resource && saved_change_to_released_at? }
+  after_update :update_catalog_resource_version, if: -> { catalog_resource_version && saved_change_to_released_at? }
   after_destroy :update_catalog_resource, if: -> { project.catalog_resource }
 
   validates :project, :tag, presence: true
@@ -182,6 +181,10 @@ class Release < ApplicationRecord
     else
       order_created_desc
     end
+  end
+
+  def update_catalog_resource_version
+    catalog_resource_version.sync_with_release!
   end
 
   def update_catalog_resource

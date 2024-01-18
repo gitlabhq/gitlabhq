@@ -73,7 +73,7 @@
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'new-user-register-button' }}) do
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'new-user-register-button', track_action: 'register', track_label: tracking_label }}) do
     = button_text
 
   = render 'devise/shared/terms_of_service_notice', button_text: button_text

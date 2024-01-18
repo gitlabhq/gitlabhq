@@ -11,8 +11,12 @@ module QA
                          ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
                        end
 
+          logger.info("Fetching group #{group_name}...")
+
           group_search_response = get Runtime::API::Request.new(api_client, "/groups/#{group_name}").url
-          JSON.parse(group_search_response.body)["id"]
+          group = parse_body(group_search_response)
+
+          group[:id].nil? ? logger.warn("Top level group #{group_name} not found") : group[:id]
         end
       end
     end

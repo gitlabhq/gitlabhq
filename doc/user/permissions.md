@@ -16,10 +16,11 @@ GitLab [administrators](../administration/index.md) have all permissions.
 
 ## Roles
 
-The available roles are:
+You can assign users a default role or a [custom role](custom_roles.md).
+
+The available default roles are:
 
 - Guest (This role applies to [private and internal projects](../user/public_access.md) only.)
-- [Custom](custom_roles.md)
 - Reporter
 - Developer
 - Maintainer

@@ -29,6 +29,7 @@ module Ci
 
         delegate :sha, :released_at, :author_id, to: :release
 
+        before_create :sync_with_release
         after_destroy :update_catalog_resource
         after_save :update_catalog_resource
 
@@ -131,7 +132,18 @@ module Ci
           project.repository.tree(sha).readme
         end
 
+        def sync_with_release!
+          sync_with_release
+          save!
+        end
+
         private
+
+        # This column is denormalized from `releases`. It is first synced when a new version
+        # is created. Any updates to the column are synced via Release model callback.
+        def sync_with_release
+          self.released_at = release.released_at
+        end
 
         def update_catalog_resource
           catalog_resource.update_latest_released_at!

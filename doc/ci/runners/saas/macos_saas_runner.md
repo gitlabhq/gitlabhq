@@ -45,14 +45,12 @@ If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 
 ## Image update policy for macOS
 
-macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see the [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
+The images and installed components are updated with each GitLab release, to keep the preinstalled software up-to-date. GitLab typically supports multiple versions of preinstalled software. For more information, see the [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
 
-When Apple releases a new macOS version, GitLab releases a new `stable` image based on the OS in the next release,
-which is in Beta.
+Major and minor releases of macOS and Xcode, are made available within two weeks of Apple's release.
 
-With the release of the first patch to macOS, the `stable` image becomes Generally Available (GA). As only two GA images are supported at a time, the prior OS version becomes deprecated and is deleted after three months in accordance with the [supported image lifecycle](../index.md#supported-image-lifecycle).
-
-The `stable` images and installed components are updated every release, to keep the preinstalled software up-to-date.
+A new major release image is initially made available as Beta, and becomes Generally Available (GA) with the release of the first minor release.
+Because only two GA images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
 
 ## Example `.gitlab-ci.yml` file
 

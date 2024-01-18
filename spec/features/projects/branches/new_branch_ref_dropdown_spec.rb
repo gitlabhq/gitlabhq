@@ -69,6 +69,11 @@ RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :source_code_ma
     expect(toggle).not_to have_content(non_existing_ref)
   end
 
+  it 'passes accessibility tests' do
+    click_button 'master'
+    expect(page).to be_axe_clean.within('.ref-selector')
+  end
+
   def item(ref_name)
     find('li', text: ref_name, match: :prefer_exact)
   end

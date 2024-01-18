@@ -15,16 +15,16 @@ In this context, the terms "permission" and "ability" are often used interchange
 - "Ability" is an action a user can do. These map to [Declarative Policy abilities](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/defining-policies.md#rules) and live in Policy classes in `ee/app/policies/*`.
 - "Permission" is how we refer to an ability [in user-facing documentation](../../user/permissions.md). The documentation of permissions is manually generated so there is not necessarily a 1:1 mapping of the permissions listed in documentation and the abilities defined in Policy classes.
 
-## Custom roles vs static roles
+## Custom roles vs default roles
 
-In GitLab 15.9 and earlier, GitLab only had [static roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These static roles are not customizable by customers.
+In GitLab 15.9 and earlier, GitLab only had [default roles](predefined_roles.md) as a permission system. In this system, there are a few predefined roles that are statically assigned to certain abilities. These default roles are not customizable by customers.
 
 With custom roles, the customers can decide which abilities they want to assign to certain user groups. For example:
 
-- In the static role system, reading of vulnerabilities is limited to a Developer role.
-- In the custom role system, a customer can assign this ability to a new custom role based on any static role.
+- In the default role system, reading of vulnerabilities is limited to a Developer role.
+- In the custom role system, a customer can assign this ability to a new custom role based on any default role.
 
-Like static roles, custom roles are [inherited](../../user/project/members/index.md#inherited-membership) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
+Like default roles, custom roles are [inherited](../../user/project/members/index.md#inherited-membership) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
 
 ## Technical overview
 
@@ -34,7 +34,7 @@ Like static roles, custom roles are [inherited](../../user/project/members/index
 - A Group or project membership can be associated with any custom role that is defined on the root-level group of the group or project.
 - The `member_roles` table includes individual permissions and a `base_access_level` value.
 - The `base_access_level` must be a [valid access level](../../api/access_requests.md#valid-access-levels).
-  The `base_access_level` determines which abilities are included in the custom role. For example, if the `base_access_level` is `10`, the custom role will include any abilities that a static Guest role would receive, plus any additional abilities that are enabled by the `member_roles` record by setting an attribute, such as `read_code`, to true.
+  The `base_access_level` determines which abilities are included in the custom role. For example, if the `base_access_level` is `10`, the custom role will include any abilities that a default Guest role would receive, plus any additional abilities that are enabled by the `member_roles` record by setting an attribute, such as `read_code`, to true.
 - A custom role can enable additional abilities for a `base_access_level` but it cannot disable a permission. As a result, custom roles are "additive only". The rationale for this choice is [in this comment](https://gitlab.com/gitlab-org/gitlab/-/issues/352891#note_1059561579).
 - Custom role abilities are supported at project level and group level.
 

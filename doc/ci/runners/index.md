@@ -38,6 +38,12 @@ When you use SaaS runners:
 NOTE:
 Jobs handled by SaaS runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
 
+## Release cycle for SaaS runner
+
+We aim to update to the latest version of [GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) within a week of its release.
+
+You can find all GitLab Runner breaking changes under [Deprecations and removals](../../update/deprecations.md).
+
 ## Security for SaaS runners
 
 GitLab SaaS runners on Linux and Windows run on Google Compute Platform.
@@ -71,7 +77,7 @@ takes over the task of securely deleting the virtual machine and associated data
 
 ## Supported image lifecycle
 
-For runners on macOS and Windows, you can only run jobs on supported images. You cannot bring your own image. Supported images have the following lifecycle:
+SaaS runners on macOS and Windows can only run jobs on supported images. You cannot bring your own image. Supported images have the following lifecycle:
 
 - Beta
 - Generally Available
@@ -100,33 +106,3 @@ Jobs running on GA images are covered by the defined service-level agreement. Ov
 A maximum of two Generally Available (GA) images are supported at a time. After a new GA image is released,
 the oldest GA image becomes deprecated. A deprecated image is no longer
 updated and is deleted after 3 months in accordance with the [deprecation guidelines](../../development/deprecation_guidelines/index.md).
-
-## Major version changes (breaking)
-
-As GitLab CI/CD and Runner have evolved, certain breaking changes have been necessary.
-
-For GitLab 15.0 and later, all breaking changes are documented on the following page:
-
-- [Deprecations and removals](../../update/deprecations.md)
-
-The breaking changes for GitLab Runner in earlier major version releases are:
-
-- 14.0: No breaking changes.
-- 13.0:
-  - [Remove Backported `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915).
-  - [Remove Fedora 29 package support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158).
-  - [Remove macOS 32-bit support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466).
-  - [Removed `debug/jobs/list?v=1` endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361).
-  - [Remove support for array of strings when defining services for Docker executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922).
-  - [Remove `--docker-services` flag on register command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404).
-  - [Remove legacy build directory caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180).
-  - [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581).
-  - [Remove support for Windows Server 1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553).
-- 12.0:
-  - [Use `refspec` to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
-  - [Old cache configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
-  - [Old metrics server configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
-  - [Remove `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
-  - [Remove Linux distributions that reach EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
-  - [Update command line API for helper images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
-  - [Remove old `git clean` flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).

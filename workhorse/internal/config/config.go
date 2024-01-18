@@ -156,8 +156,14 @@ var DefaultImageResizerConfig = ImageResizerConfig{
 	MaxFilesize:    250 * 1000, // 250kB,
 }
 
+func NewDefaultConfig() *Config {
+	return &Config{
+		ImageResizerConfig: DefaultImageResizerConfig,
+	}
+}
+
 func LoadConfig(data string) (*Config, error) {
-	cfg := &Config{ImageResizerConfig: DefaultImageResizerConfig}
+	cfg := NewDefaultConfig()
 
 	if _, err := toml.Decode(data, cfg); err != nil {
 		return nil, err

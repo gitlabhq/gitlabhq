@@ -604,6 +604,10 @@ Instead of:
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## email address
+
+Use **email address** when referring to addresses used in emails. Do not shorten to **email**, which are messages.
+
 ## emoji
 
 Use **emoji** to refer to the plural form of **emoji**.
@@ -983,6 +987,11 @@ Thereafter, use **Issue description generation** by itself.
 ## issue weights
 
 Use lowercase for **issue weights**.
+
+## IP address
+
+Use **IP address** when refering to addresses used with Internet Protocal (IP). Do not refer to an IP address as an
+**IP**.
 
 ## it
 

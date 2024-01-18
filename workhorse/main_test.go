@@ -772,12 +772,12 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 }
 
 func newUpstreamConfig(authBackend string) *config.Config {
-	return &config.Config{
-		Version:            "123",
-		DocumentRoot:       testDocumentRoot,
-		Backend:            helper.URLMustParse(authBackend),
-		ImageResizerConfig: config.DefaultImageResizerConfig,
-	}
+	defaultConfig := config.NewDefaultConfig()
+	defaultConfig.Version = "123"
+	defaultConfig.DocumentRoot = testDocumentRoot
+	defaultConfig.Backend = helper.URLMustParse(authBackend)
+
+	return defaultConfig
 }
 
 func startWorkhorseServer(authBackend string) *httptest.Server {

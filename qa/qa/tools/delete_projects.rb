@@ -16,16 +16,18 @@ module QA
       include Support::API
       include Lib::Project
       include Lib::Group
+      include Ci::Helpers
 
-      def initialize
+      def initialize(delete_before: (Date.today - 3).to_s)
         raise ArgumentError, "Please provide GITLAB_ADDRESS environment variable" unless ENV['GITLAB_ADDRESS']
         raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN environment variable" unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
+        @delete_before = Date.parse(delete_before)
       end
 
       def run
-        $stdout.puts 'Running...'
+        logger.info("Running...")
 
         # Fetch group's id
         if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS']
@@ -43,14 +45,17 @@ module QA
       private
 
       def delete_selected_projects(group_id)
+        return unless group_id
+
+        logger.info("Fetching projects...")
         projects_head_response = head Runtime::API::Request.new(@api_client, "/groups/#{group_id}/projects", per_page: "100").url
         total_project_pages = projects_head_response.headers[:x_total_pages]
 
         project_ids = fetch_project_ids(group_id, total_project_pages)
-        $stdout.puts "Number of projects to be deleted: #{project_ids.length}"
+        logger.info("Number of projects to be deleted: #{project_ids.length}")
 
         delete_projects(project_ids, @api_client) unless project_ids.empty?
-        $stdout.puts "\nDone"
+        logger.info("\nDone")
       end
 
       def fetch_project_ids(group_id, total_project_pages)
@@ -59,7 +64,7 @@ module QA
         total_project_pages.to_i.times do |page_no|
           projects_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_id}/projects", page: (page_no + 1).to_s, per_page: "100").url
           # Do not delete projects that are less than 4 days old (for debugging purposes)
-          projects_ids.concat(JSON.parse(projects_response.body).select { |project| Date.parse(project["created_at"]) < Date.today - 3 }.pluck("id"))
+          projects_ids.concat(parse_body(projects_response).select { |project| Date.parse(project[:created_at]) < @delete_before }.pluck(:id))
         end
 
         projects_ids.uniq

@@ -23,12 +23,13 @@ module QA
       include Ci::Helpers
       include Lib::Group
 
-      def initialize
+      def initialize(delete_before: (Date.today - 3).to_s)
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
         raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
         @failed_deletion_attempts = []
+        @delete_before = Date.parse(delete_before)
       end
 
       def run
@@ -47,7 +48,7 @@ module QA
       private
 
       def delete_subgroups(group_id)
-        return logger.info('Top level group not found') if group_id.nil?
+        return unless group_id
 
         subgroups = fetch_subgroups(group_id)
         return logger.info('No subgroups available') if subgroups.empty?
@@ -72,8 +73,13 @@ module QA
 
         while page_no.present?
           subgroups_response = get Runtime::API::Request.new(@api_client, api_path, page: page_no, per_page: '100').url
-          # Do not delete subgroups that are less than 4 days old (for debugging purposes)
-          subgroups.concat(JSON.parse(subgroups_response.body).select { |subgroup| Date.parse(subgroup["created_at"]) < Date.today - 3 })
+
+          if subgroups_response.code == HTTP_STATUS_OK
+            # Do not delete subgroups that are less than 4 days old (for debugging purposes)
+            subgroups.concat(parse_body(subgroups_response).select { |subgroup| Date.parse(subgroup[:created_at]) < @delete_before })
+          else
+            logger.error("Request for subgroups returned (#{subgroups_response.code}): `#{subgroups_response}` ")
+          end
 
           page_no = subgroups_response.headers[:x_next_page].to_s
         end
@@ -82,7 +88,7 @@ module QA
       end
 
       def subgroup_request(subgroup, **options)
-        Runtime::API::Request.new(@api_client, "/groups/#{subgroup['id']}", **options).url
+        Runtime::API::Request.new(@api_client, "/groups/#{subgroup[:id]}", **options).url
       end
 
       def process_response_and_subgroup(response, subgroup, opts = {})
@@ -91,7 +97,7 @@ module QA
           opts[:save_successes_to] << subgroup if opts[:save_successes_to]
         else
           logger.error("Failed - #{response}\n")
-          @failed_deletion_attempts << { path: subgroup['full_path'], response: response }
+          @failed_deletion_attempts << { path: subgroup[:full_path], response: response }
         end
       end
 
@@ -101,9 +107,9 @@ module QA
         logger.info("Marking #{subgroups.length} subgroups for deletion...\n")
 
         subgroups.each do |subgroup|
-          path = subgroup['full_path']
+          path = subgroup[:full_path]
 
-          if subgroup['marked_for_deletion_on'].nil?
+          if subgroup[:marked_for_deletion_on].nil?
             logger.info("Marking subgroup #{path} for deletion...")
             response = delete(subgroup_request(subgroup))
 
@@ -121,7 +127,7 @@ module QA
         response = get(subgroup_request(subgroup))
 
         if response.code == 404
-          logger.info("Subgroup #{subgroup['full_path']} is no longer available\n")
+          logger.info("Subgroup #{subgroup[:full_path]} is no longer available\n")
           false
         else
           true
@@ -132,7 +138,7 @@ module QA
         logger.info("Permanently deleting #{subgroups.length} subgroups...\n")
 
         subgroups.each do |subgroup|
-          path = subgroup['full_path']
+          path = subgroup[:full_path]
 
           next unless subgroup_exists?(subgroup)
 

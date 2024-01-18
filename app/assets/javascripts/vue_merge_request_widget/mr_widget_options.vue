@@ -263,11 +263,15 @@ export default {
             'merged',
             'closed',
             'merging',
-            'autoMergeEnabled',
             'shaMismatch',
-          ].includes(this.mr.state) || ['MERGING', 'AUTO_MERGE'].includes(this.mr.machineValue)
+          ].includes(this.mr.state) || this.mr.machineValue === 'MERGING'
         )
       );
+    },
+    autoMergeStateVisible() {
+      if (!window.gon?.features?.mergeBlockedComponent) return false;
+
+      return this.mr.state === 'autoMergeEnabled' || this.mr.machineValue === 'AUTO_MERGE';
     },
   },
   watch: {
@@ -577,6 +581,12 @@ export default {
       </div>
 
       <div class="mr-widget-section" data-testid="mr-widget-content">
+        <mr-widget-auto-merge-enabled
+          v-if="autoMergeStateVisible"
+          :mr="mr"
+          :service="service"
+          class="gl-border-b-1 gl-border-b-solid gl-border-gray-100"
+        />
         <merge-checks v-if="mergeBlockedComponentEnabled" :mr="mr" :service="service" />
         <component :is="componentName" v-else :mr="mr" :service="service" />
         <ready-to-merge

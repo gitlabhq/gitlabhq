@@ -227,7 +227,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
-  describe 'synchronizing denormalized columns with `projects` table', :sidekiq_inline do
+  describe 'synchronizing denormalized columns with `projects` table using SyncEvents processing', :sidekiq_inline do
     let_it_be_with_reload(:project) { create(:project, name: 'Test project', description: 'Test description') }
 
     context 'when the catalog resource is created' do
@@ -272,7 +272,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
-  describe '#update_latest_released_at! triggered in model callbacks' do
+  describe 'updating latest_released_at using model callbacks' do
     let_it_be(:project) { create(:project) }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 

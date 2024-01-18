@@ -264,9 +264,17 @@ module Backup
     def build_backup_information
       return if @metadata.backup_information
 
+      backup_created_at = Time.current
+      backup_id = if options.backup_id.present?
+                    File.basename(options.backup_id)
+                  else
+                    "#{backup_created_at.strftime('%s_%Y_%m_%d_')}#{Gitlab::VERSION}"
+                  end
+
       @metadata.update(
+        backup_id: backup_id,
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.current,
+        backup_created_at: backup_created_at,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -279,10 +287,18 @@ module Backup
     end
 
     def update_backup_information
+      backup_created_at = Time.current
+      backup_id = if options.backup_id.present?
+                    File.basename(options.backup_id)
+                  else
+                    "#{backup_created_at.strftime('%s_%Y_%m_%d_')}#{Gitlab::VERSION}"
+                  end
+
       @metadata.update(
+        backup_id: backup_id,
         full_backup_id: full_backup_id,
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.current,
+        backup_created_at: backup_created_at,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -511,7 +527,12 @@ module Backup
     end
 
     def backup_id
-      if options.backup_id.present?
+      # Eventually the backup ID should only be fetched from
+      # backup_information, but we must have a fallback so that older backups
+      # can still be used.
+      if backup_information[:backup_id].present?
+        backup_information[:backup_id]
+      elsif options.backup_id.present?
         File.basename(options.backup_id)
       else
         "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"

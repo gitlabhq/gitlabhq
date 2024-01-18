@@ -15597,6 +15597,9 @@ msgstr ""
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
 msgstr ""
 
+msgid "DORA4Metrics|This visualization is not supported for project namespaces."
+msgstr ""
+
 msgid "DORA4Metrics|Time to Restore Service"
 msgstr ""
 

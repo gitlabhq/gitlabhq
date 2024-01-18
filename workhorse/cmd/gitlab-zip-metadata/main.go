@@ -26,7 +26,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	if len(os.Args) != 2 {
+	if len(flag.Args()) != 1 {
 		fmt.Fprintf(os.Stderr, "Usage: %s FILE.ZIP\n", progName)
 		os.Exit(1)
 	}
@@ -44,7 +44,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	archive, err := zipartifacts.OpenArchiveWithReaderFunc(ctx, os.Args[1], readerFunc)
+	archive, err := zipartifacts.OpenArchiveWithReaderFunc(ctx, flag.Args()[0], readerFunc)
 	if err != nil {
 		fatalError(err)
 	}

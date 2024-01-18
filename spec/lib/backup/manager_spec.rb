@@ -608,6 +608,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         expect(Kernel).not_to have_received(:system).with(*pack_tar_cmdline)
         expect(subject.send(:backup_information).to_h).to include(
+          backup_id: backup_id,
           backup_created_at: backup_time.localtime,
           db_version: be_a(String),
           gitlab_version: Gitlab::VERSION,
@@ -1033,6 +1034,28 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
         expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
         expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+      end
+
+      context 'backup information mismatches' do
+        let(:backup_id) { 'pineapple' }
+        let(:backup_information) do
+          {
+            backup_id: backup_id,
+            backup_created_at: Time.zone.parse('2019-01-01'),
+            gitlab_version: gitlab_version
+          }
+        end
+
+        it 'unpacks the BACKUP specified file but uses the backup information backup ID' do
+          expect(task1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
+          expect(task2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+
+          subject.restore
+
+          expect(Kernel).to have_received(:system).with(*tar_cmdline)
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        end
       end
 
       context 'tar fails' do

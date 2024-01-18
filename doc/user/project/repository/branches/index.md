@@ -121,6 +121,9 @@ To view and manage your branches in the GitLab user interface:
 On this page, you can:
 
 - See all branches, or filter to see only active or stale branches.
+
+  A branch is considered active if a commit has been made to it in the last three months.
+  Otherwise it is considered stale.
 - Create new branches.
 - [Compare branches](#compare-branches).
 - Delete merged branches.

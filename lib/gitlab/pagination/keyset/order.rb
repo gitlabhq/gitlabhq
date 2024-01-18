@@ -103,6 +103,8 @@ module Gitlab
                                                        nil
                                                      elsif lower_named_function?(column_definition)
                                                        field_value.downcase
+                                                     elsif field_value.is_a?(Array)
+                                                       field_value
                                                      else
                                                        field_value.to_s
                                                      end

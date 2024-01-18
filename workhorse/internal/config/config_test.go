@@ -190,3 +190,9 @@ alt_document_root = "/path/to/documents"
 
 	require.Equal(t, "/path/to/documents", cfg.AltDocumentRoot)
 }
+
+func TestDefaultConfig(t *testing.T) {
+	cfg := NewDefaultConfig()
+
+	require.Equal(t, uint64(250000), cfg.ImageResizerConfig.MaxFilesize)
+}

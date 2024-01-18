@@ -56,7 +56,8 @@ module Quality
         views
         workers
         tooling
-      ],
+        dot_gitlab_ci
+      ], # ^ tooling and dot_gitlab_ci might be worth to move to another level
       integration: %w[
         commands
         controllers

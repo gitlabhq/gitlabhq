@@ -28,6 +28,7 @@ module Backup
       :repositories_paths, # ENV['REPOSITORIES_PATHS'],
       :skip_repositories_paths, # ENV['SKIP_REPOSITORIES_PATHS'],
       :repositories_server_side, # Gitlab::Utils.to_boolean(ENV['REPOSITORIES_SERVER_SIDE'], default: false)
+      :backup_id, # ENV['BACKUP'] or calculated based on backup_created_at and Gitlab::VERSION
       :full_backup_id, # full_backup_id,
       keyword_init: true
     )

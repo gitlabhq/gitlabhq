@@ -37,6 +37,10 @@ mapping:
   - source: 'rubocop/(.+)\.rb'
     test: 'spec/rubocop/%s_spec.rb'
 
+  # .gitlab/ci related specs
+  - source: '.gitlab/ci/(.+)\.gitlab-ci\.yml'
+    test: 'spec/dot_gitlab_ci/%s_spec.rb'
+
   # Initializers should map to respective spec
   - source: 'config/initializers/(.+)\.rb'
     test: 'spec/initializers/%s_spec.rb'
