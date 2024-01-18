@@ -47,7 +47,6 @@ type routeOptions struct {
 
 const (
 	apiPattern           = `^/api/`
-	ciAPIPattern         = `^/ci/api/`
 	gitProjectPattern    = `^/.+\.git/`
 	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
@@ -246,7 +245,6 @@ func configureRoutes(u *upstream) {
 
 		// CI Artifacts
 		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer))),
-		u.route("POST", ciAPIPattern+`v1/builds/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer))),
 
 		// ActionCable websocket
 		u.wsRoute(`^/-/cable\z`, cableProxy),
@@ -260,7 +258,6 @@ func configureRoutes(u *upstream) {
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("", apiPattern+`v4/jobs/request\z`, ciAPILongPolling),
-		u.route("", ciAPIPattern+`v1/builds/register.json\z`, ciAPILongPolling),
 
 		// Not all API endpoints support encoded project IDs
 		// (e.g. `group%2Fproject`), but for the sake of consistency we
@@ -351,7 +348,6 @@ func configureRoutes(u *upstream) {
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
-		u.route("", ciAPIPattern, proxy),
 
 		// Serve assets
 		u.route(

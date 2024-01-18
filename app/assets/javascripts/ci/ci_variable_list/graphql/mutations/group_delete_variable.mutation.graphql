@@ -1,4 +1,5 @@
 #import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+#import "~/ci/ci_variable_list/graphql/fragments/ci_group_variable.fragment.graphql"
 
 mutation deleteGroupVariable($variable: CiVariable!, $endpoint: String!, $fullPath: ID!, $id: ID!) {
   ciVariableMutation: deleteGroupVariable(
@@ -12,12 +13,7 @@ mutation deleteGroupVariable($variable: CiVariable!, $endpoint: String!, $fullPa
       ciVariables {
         nodes {
           ...BaseCiVariable
-          ... on CiGroupVariable {
-            environmentScope
-            masked
-            protected
-            raw
-          }
+          ...BaseCiGroupVariable
         }
       }
     }

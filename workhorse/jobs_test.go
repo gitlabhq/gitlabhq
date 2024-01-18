@@ -18,11 +18,6 @@ func startWorkhorseServerWithLongPolling(authBackend string, pollingDuration tim
 
 type requestJobFunction func(url string, body io.Reader) (*http.Response, error)
 
-func requestJobV1(url string, body io.Reader) (*http.Response, error) {
-	resource := `/ci/api/v1/builds/register.json`
-	return http.Post(url+resource, `application/json`, body)
-}
-
 func requestJobV4(url string, body io.Reader) (*http.Response, error) {
 	resource := `/api/v4/jobs/request`
 	return http.Post(url+resource, `application/json`, body)
@@ -50,11 +45,9 @@ func testJobsLongPollingEndpoint(t *testing.T, requestJob requestJobFunction) {
 }
 
 func TestJobsLongPollingEndpointDisabled(t *testing.T) {
-	testJobsLongPollingEndpointDisabled(t, requestJobV1)
 	testJobsLongPollingEndpointDisabled(t, requestJobV4)
 }
 
 func TestJobsLongPollingEndpoint(t *testing.T) {
-	testJobsLongPollingEndpoint(t, requestJobV1)
 	testJobsLongPollingEndpoint(t, requestJobV4)
 }

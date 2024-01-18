@@ -1,4 +1,5 @@
 #import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+#import "~/ci/ci_variable_list/graphql/fragments/ci_project_variable.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getProjectVariables(
@@ -18,10 +19,7 @@ query getProjectVariables(
       }
       nodes {
         ...BaseCiVariable
-        environmentScope
-        masked
-        protected
-        raw
+        ...BaseCiProjectVariable
       }
     }
   }

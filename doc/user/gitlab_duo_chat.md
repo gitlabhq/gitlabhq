@@ -16,14 +16,27 @@ Here are the examples of use cases:
 
 | Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
 | -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
-| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE   | GitLab.com            |
-| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#explain-code-in-the-ide)       | I want to write a test for this code.                | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to refactor this code.                        | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE <sup>1</sup>   | GitLab.com            |
+| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
+| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#explain-code-in-the-ide)       | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>         | GitLab.com, self-managed, and GitLab Dedicated |
+
+<html>
+<small>Footnotes:
+  <ol>
+    <li>GitLab Duo Chat is not available in Web IDE on self-managed</li>
+  </ol>
+</small>
+</html>
+
+NOTE:
+This is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
+
+## Watch a demo
 
 <div class="video-fallback">
   <a href="https://youtu.be/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_">View how to setup and use GitLab Duo Chat</a>.
@@ -32,10 +45,9 @@ Here are the examples of use cases:
   <iframe src="https://www.youtube-nocookie.com/embed/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-NOTE:
-This is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
+## What GitLab Duo Chat can help with
 
-## Features
+GitLab Duo Chat can help in a variety of areas.
 
 ### Ask about GitLab
 
@@ -199,7 +211,7 @@ To delete all previous conversations:
 
 ## Use GitLab Duo Chat in the Web IDE **(ULTIMATE EXPERIMENT)**
 
-> Introduced in GitLab 16.6 as an [EXPERIMENT](../policy/experiment-beta-support.md#experiment).
+> Introduced in GitLab 16.6 as an [EXPERIMENT](../policy/experiment-beta-support.md#experiment)
 
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
@@ -217,6 +229,9 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 1. In the message box, enter your question and press **Enter** or select **Send**.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
+
+NOTE:
+GitLab Duo Chat is not available in the Web IDE on self-managed.
 
 ## Use GitLab Duo Chat in VS Code **(ULTIMATE EXPERIMENT)**
 

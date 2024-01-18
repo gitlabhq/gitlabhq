@@ -75,8 +75,8 @@ module QA
             click_element 'download-export-link'
           end
 
-          def has_download_export_link?
-            has_element? 'download-export-link'
+          def has_download_export_link?(wait: Capybara.default_max_wait_time)
+            has_element?('download-export-link', wait: wait)
           end
 
           def archive_project

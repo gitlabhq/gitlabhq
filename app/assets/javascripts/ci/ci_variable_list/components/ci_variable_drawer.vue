@@ -44,6 +44,8 @@ export const i18n = {
   cancel: __('Cancel'),
   defaultScope: __('All (default)'),
   deleteVariable: s__('CiVariables|Delete variable'),
+  description: __('Description'),
+  descriptionHelpText: s__("CiVariables|The description of the variable's value or usage."),
   editVariable: s__('CiVariables|Edit variable'),
   saveVariable: __('Save changes'),
   environments: __('Environments'),
@@ -458,6 +460,21 @@ export default {
             </gl-sprintf>
           </p>
         </gl-form-checkbox>
+      </gl-form-group>
+      <gl-form-group
+        label-for="ci-variable-description"
+        :label="$options.i18n.description"
+        class="gl-border-none gl-mb-n5"
+        data-testid="ci-variable-description-label"
+        :description="$options.i18n.descriptionHelpText"
+        optional
+      >
+        <gl-form-input
+          id="ci-variable-description"
+          v-model="variable.description"
+          class="gl-border-none"
+          data-testid="ci-variable-description"
+        />
       </gl-form-group>
       <gl-form-combobox
         v-model="variable.key"

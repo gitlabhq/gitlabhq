@@ -10,13 +10,14 @@ RSpec.shared_examples 'variable list drawer' do
   it 'adds a new CI variable' do
     open_drawer
 
-    fill_variable('NEW_KEY', 'NEW_VALUE')
+    fill_variable('NEW_KEY', 'NEW_VALUE', 'NEW_DESCRIPTION')
     click_add_variable
 
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(first(".js-ci-variable-row td[data-label='#{s_('CiVariables|Key')}']")).to have_content('NEW_KEY')
+      expect(first(".js-ci-variable-row td[data-label='#{s_('CiVariables|Key')}']")).to have_content('NEW_DESCRIPTION')
 
       click_button('Reveal values')
 
@@ -95,7 +96,7 @@ RSpec.shared_examples 'variable list drawer' do
 
     click_button('Edit')
 
-    fill_variable('EDITED_KEY', 'EDITED_VALUE')
+    fill_variable('EDITED_KEY', 'EDITED_VALUE', 'EDITED_DESCRIPTION')
     toggle_protected
     toggle_masked
     toggle_expanded
@@ -105,6 +106,7 @@ RSpec.shared_examples 'variable list drawer' do
 
     page.within('[data-testid="ci-variable-table"]') do
       expect(key_column).to have_content('EDITED_KEY')
+      expect(key_column).to have_content('EDITED_DESCRIPTION')
       expect(key_column).to have_content(s_('CiVariables|Protected'))
       expect(key_column).not_to have_content(s_('CiVariables|Masked'))
       expect(key_column).not_to have_content(s_('CiVariables|Expanded'))
@@ -211,12 +213,13 @@ RSpec.shared_examples 'variable list drawer' do
     end
   end
 
-  def fill_variable(key, value = '')
+  def fill_variable(key, value = '', description = '')
     wait_for_requests
 
     page.within('[data-testid="ci-variable-drawer"]') do
       find('[data-testid="ci-variable-key"] input').set(key)
       find('[data-testid="ci-variable-value"]').set(value) if value.present?
+      find('[data-testid="ci-variable-description"]').set(description) if description.present?
     end
   end
 

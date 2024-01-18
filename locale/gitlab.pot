@@ -10744,6 +10744,9 @@ msgstr ""
 msgid "CiVariables|State"
 msgstr ""
 
+msgid "CiVariables|The description of the variable's value or usage."
+msgstr ""
+
 msgid "CiVariables|The value must have at least %{charsAmount} characters."
 msgstr ""
 

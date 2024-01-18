@@ -111,6 +111,11 @@ describe('WebIDE', () => {
     });
 
     it('persists viewer', async () => {
+      const checkText = async (text) => {
+        const el = await waitForText(text);
+        expect(el).toHaveText(text);
+      };
+
       const markdownPreview = 'test preview_markdown result';
       mockServer.post('/:namespace/:project/preview_markdown', () => ({
         body: markdownPreview,
@@ -119,8 +124,7 @@ describe('WebIDE', () => {
       await ideHelper.openFile('README.md');
       ideHelper.clickPreviewMarkdown();
 
-      const el = await waitForText(markdownPreview);
-      expect(el).toHaveText(markdownPreview);
+      await checkText(markdownPreview);
 
       // Need to wait for monaco editor to load so it doesn't through errors on dispose
       await ideHelper.openFile('.gitignore');
@@ -128,7 +132,7 @@ describe('WebIDE', () => {
       await ideHelper.openFile('README.md');
       await ideHelper.waitForEditorModelChange(editor);
 
-      expect(el).toHaveText(markdownPreview);
+      await checkText(markdownPreview);
     });
 
     describe('when editor position changes', () => {

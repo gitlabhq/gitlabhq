@@ -24,12 +24,6 @@ import (
 
 type uploadArtifactsFunction func(url, contentType string, body io.Reader) (*http.Response, string, error)
 
-func uploadArtifactsV1(url, contentType string, body io.Reader) (*http.Response, string, error) {
-	resource := `/ci/api/v1/builds/123/artifacts`
-	resp, err := http.Post(url+resource, contentType, body)
-	return resp, resource, err
-}
-
 func uploadArtifactsV4(url, contentType string, body io.Reader) (*http.Response, string, error) {
 	resource := `/api/v4/jobs/123/artifacts`
 	resp, err := http.Post(url+resource, contentType, body)
@@ -54,7 +48,6 @@ func testArtifactsUpload(t *testing.T, uploadArtifacts uploadArtifactsFunction) 
 }
 
 func TestArtifactsUpload(t *testing.T) {
-	testArtifactsUpload(t, uploadArtifactsV1)
 	testArtifactsUpload(t, uploadArtifactsV4)
 }
 

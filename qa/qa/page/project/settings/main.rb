@@ -37,6 +37,10 @@ module QA
             click_element 'save-naming-topics-avatar-button'
           end
 
+          def download_export_started?
+            has_text?('Project export started')
+          end
+
           def expand_advanced_settings(&block)
             expand_content('advanced-settings-content') do
               Advanced.perform(&block)

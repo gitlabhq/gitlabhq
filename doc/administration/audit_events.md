@@ -63,6 +63,12 @@ To view instance audit events:
    - Project
    - Date Range
 
+NOTE:
+Because configuring SAML for an entire GitLab instance occurs outside the GitLab UI, no instance-level audit event types
+exist for this action. The
+[`group_saml_provider_create` and `group_saml_provider_update` audit event types](audit_event_streaming/audit_event_types.md#compliance-management)
+generate audit events for group-level configuration of SAML.
+
 ### Sign-in audit events **(FREE ALL)**
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:

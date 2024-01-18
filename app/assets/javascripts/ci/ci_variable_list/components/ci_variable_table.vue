@@ -278,35 +278,40 @@ export default {
           <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
         </template>
         <template #cell(key)="{ item }">
-          <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
-          >
-            <span
-              :id="`ci-variable-key-${item.id}`"
-              class="gl-display-inline-block gl-max-w-full gl-word-break-word"
-              >{{ item.key }}</span
+          <div data-testid="ci-variable-table-row-variable">
+            <div
+              class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
             >
-            <gl-button
-              v-gl-tooltip
-              category="tertiary"
-              icon="copy-to-clipboard"
-              class="gl-my-n2 gl-ml-2"
-              size="small"
-              :title="__('Copy key')"
-              :data-clipboard-text="item.key"
-              :aria-label="__('Copy to clipboard')"
-            />
-          </div>
-          <div data-testid="ci-variable-table-row-attributes" class="gl-mt-2">
-            <gl-badge
-              v-for="attribute in item.attributes"
-              :key="`${item.key}-${attribute}`"
-              class="gl-mr-2"
-              variant="info"
-              size="sm"
-            >
-              {{ attribute }}
-            </gl-badge>
+              <span
+                :id="`ci-variable-key-${item.id}`"
+                class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+                >{{ item.key }}</span
+              >
+              <gl-button
+                v-gl-tooltip
+                category="tertiary"
+                icon="copy-to-clipboard"
+                class="gl-my-n2 gl-ml-2"
+                size="small"
+                :title="__('Copy key')"
+                :data-clipboard-text="item.key"
+                :aria-label="__('Copy to clipboard')"
+              />
+            </div>
+            <div v-if="item.description" class="gl-mt-2 gl-text-secondary gl-font-sm">
+              {{ item.description }}
+            </div>
+            <div data-testid="ci-variable-table-row-attributes" class="gl-mt-2">
+              <gl-badge
+                v-for="attribute in item.attributes"
+                :key="`${item.key}-${attribute}`"
+                class="gl-mr-2"
+                variant="info"
+                size="sm"
+              >
+                {{ attribute }}
+              </gl-badge>
+            </div>
           </div>
         </template>
         <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">

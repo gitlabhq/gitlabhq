@@ -34564,8 +34564,6 @@ CREATE INDEX index_on_pages_metadata_not_migrated ON project_pages_metadata USIN
 
 CREATE UNIQUE INDEX index_on_project_id_escalation_policy_name_unique ON incident_management_escalation_policies USING btree (project_id, name);
 
-CREATE INDEX index_on_projects_lower_path ON projects USING btree (lower((path)::text));
-
 CREATE INDEX index_on_routes_lower_path ON routes USING btree (lower((path)::text));
 
 CREATE INDEX index_on_sbom_sources_package_manager_name ON sbom_sources USING btree ((((source -> 'package_manager'::text) ->> 'name'::text)));

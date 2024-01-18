@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillReleasesAuthorId,
-  :migration, schema: 20221215151822, feature_category: :release_orchestration do
+  :migration, schema: 20230216060333, feature_category: :release_orchestration do
   let(:releases_table) { table(:releases) }
   let(:user_table) { table(:users) }
   let(:date_time) { DateTime.now }

@@ -82,6 +82,7 @@ describe('CI Variable Drawer', () => {
   const findConfirmBtn = () => wrapper.findByTestId('ci-variable-confirm-button');
   const findConfirmDeleteModal = () => wrapper.findComponent(GlModal);
   const findDeleteBtn = () => wrapper.findByTestId('ci-variable-delete-button');
+  const findDescriptionField = () => wrapper.findByTestId('ci-variable-description');
   const findDisabledEnvironmentScopeDropdown = () => wrapper.findComponent(GlFormInput);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
@@ -483,6 +484,7 @@ describe('CI Variable Drawer', () => {
       });
 
       it('dispatches the add-variable event', async () => {
+        await findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
         await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         await findProtectedCheckbox().vm.$emit('input', false);
         await findExpandedCheckbox().vm.$emit('input', true);
@@ -495,6 +497,7 @@ describe('CI Variable Drawer', () => {
           [
             {
               environmentScope: '*',
+              description: 'NEW_DESCRIPTION',
               key: 'NEW_VARIABLE',
               masked: true,
               protected: false,
@@ -522,6 +525,7 @@ describe('CI Variable Drawer', () => {
 
       it('dispatches the edit-variable event', async () => {
         await findValueField().vm.$emit('input', 'EDITED_VALUE');
+        await findDescriptionField().vm.$emit('input', 'EDITED_DESCRIPTION');
 
         findConfirmBtn().vm.$emit('click');
 
@@ -529,6 +533,7 @@ describe('CI Variable Drawer', () => {
           [
             {
               ...mockProjectVariableFileType,
+              description: 'EDITED_DESCRIPTION',
               value: 'EDITED_VALUE',
             },
           ],

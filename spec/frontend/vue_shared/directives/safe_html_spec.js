@@ -113,4 +113,21 @@ describe('safe html directive', () => {
       expect(wrapper.html()).toEqual('<div>click here</div>');
     });
   });
+
+  describe('unbind', () => {
+    it('should clear the text content during unbind', () => {
+      createComponent();
+      wrapper.destroy();
+
+      expect(wrapper.element.textContent).toEqual('');
+    });
+
+    it('should clear the text content with custom HTML during unbind', () => {
+      const customHtml = '<div>custom html</div>';
+      createComponent({ html: customHtml });
+      wrapper.destroy();
+
+      expect(wrapper.element.textContent).toEqual('');
+    });
+  });
 });

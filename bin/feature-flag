@@ -5,6 +5,7 @@
 # Automatically stages the file and amends the previous commit if the `--amend`
 # argument is used.
 
+require_relative '../config/bundler_setup'
 require 'fileutils'
 require 'httparty'
 require 'json'
@@ -13,6 +14,7 @@ require 'readline'
 require 'shellwords'
 require 'uri'
 require 'yaml'
+require 'gitlab/utils/all'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
 require_relative '../lib/gitlab/popen'
@@ -331,6 +333,17 @@ class FeatureFlagOptionParser
       end
     end
 
+    def read_ee
+      $stdout.puts
+      $stdout.puts ">> Is this an EE only feature (enter to skip):"
+
+      loop do
+        ee = Readline.readline('?> ', false)&.strip
+        return if ee.empty?
+        return Gitlab::Utils.to_boolean(ee)
+      end
+    end
+
     def read_url(prompt)
       $stdout.puts
       $stdout.puts ">> #{prompt}"
@@ -404,6 +417,7 @@ class FeatureFlagCreator
     options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
     options.milestone ||= FeatureFlagOptionParser.read_milestone
     options.username ||= FeatureFlagOptionParser.read_username
+    options.ee ||= FeatureFlagOptionParser.read_ee
     options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"

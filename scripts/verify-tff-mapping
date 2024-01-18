@@ -96,8 +96,8 @@ tests = [
   # rubocop:disable Layout/LineLength
   {
     explanation: 'Migration should map to its timestamped spec',
-    changed_file: 'db/post_migrate/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table.rb',
-    expected: ['spec/migrations/20230105172120_sync_new_amount_used_with_amount_used_on_ci_namespace_monthly_usages_table_spec.rb']
+    changed_file: 'db/post_migrate/20231207194620_backfill_catalog_resources_visibility_level.rb',
+    expected: ['spec/migrations/20231207194620_backfill_catalog_resources_visibility_level_spec.rb']
   },
   # rubocop:enable Layout/LineLength
   {
