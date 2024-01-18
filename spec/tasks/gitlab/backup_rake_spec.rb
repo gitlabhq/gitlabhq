@@ -565,7 +565,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
         expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, storages: [], paths: [], skip_paths: [])
+          .with(anything, strategy: anything, options: anything, storages: [], paths: [], skip_paths: [])
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(
           anything,

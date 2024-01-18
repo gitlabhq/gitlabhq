@@ -11,8 +11,8 @@ module Backup
 
     attr_reader :excludes
 
-    def initialize(progress, app_files_dir, excludes: [])
-      super(progress)
+    def initialize(progress, app_files_dir, options:, excludes: [])
+      super(progress, options: options)
 
       @app_files_dir = app_files_dir
       @excludes = [DEFAULT_EXCLUDE].concat(excludes)

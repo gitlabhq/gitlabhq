@@ -9,17 +9,6 @@ module Backup
     # if some of these files are still there, we don't need them in the backup
     LEGACY_PAGES_TMP_PATH = '@pages.tmp'
 
-    LIST_ENVS = {
-      skipped: 'SKIP',
-      repositories_storages: 'REPOSITORIES_STORAGES',
-      repositories_paths: 'REPOSITORIES_PATHS',
-      skip_repositories_paths: 'SKIP_REPOSITORIES_PATHS'
-    }.freeze
-
-    YAML_PERMITTED_CLASSES = [
-      ActiveSupport::TimeWithZone, ActiveSupport::TimeZone, Symbol, Time
-    ].freeze
-
     TaskDefinition = Struct.new(
       :enabled, # `true` if the task can be used. Treated as `true` when not specified.
       :human_name, # Name of the task used for logging.
@@ -34,16 +23,22 @@ module Backup
       end
     end
 
-    attr_reader :progress
+    attr_reader :progress, :remote_storage, :options
 
     def initialize(progress, definitions: nil)
       @progress = progress
-      @incremental = Gitlab::Utils.to_boolean(ENV['INCREMENTAL'], default: false)
       @definitions = definitions
+      @options = Backup::Options.new
+      @metadata = Backup::Metadata.new(manifest_filepath)
+      @options.extract_from_env! # preserve existing behavior
+      @remote_storage = Backup::RemoteStorage.new(progress: progress, options: options)
     end
 
     def create
-      unpack(ENV.fetch('PREVIOUS_BACKUP', ENV['BACKUP'])) if incremental?
+      # Deprecation: Using backup_id (ENV['BACKUP']) to specify previous backup was deprecated in 15.0
+      previous_backup = options.previous_backup || options.backup_id
+
+      unpack(previous_backup) if options.incremental?
       run_all_create_tasks
 
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
@@ -56,6 +51,7 @@ module Backup
       build_backup_information
 
       definition = definitions[task_name]
+      destination_dir = File.join(Gitlab.config.backup.path, definition.destination_path)
 
       unless definition.enabled?
         puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -68,7 +64,7 @@ module Backup
       end
 
       puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.task.dump(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      definition.task.dump(destination_dir, backup_id)
       puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
@@ -76,7 +72,7 @@ module Backup
     end
 
     def restore
-      unpack(ENV['BACKUP'])
+      unpack(options.backup_id)
       run_all_restore_tasks
 
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
@@ -187,35 +183,32 @@ module Backup
     end
 
     def build_db_task
-      force = Gitlab::Utils.to_boolean(ENV['force'], default: false)
-
-      Database.new(progress, force: force)
+      Database.new(progress, options: options, force: options.force?)
     end
 
     def build_repositories_task
-      max_concurrency = ENV['GITLAB_BACKUP_MAX_CONCURRENCY'].presence&.to_i
-      max_storage_concurrency = ENV['GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY'].presence&.to_i
       strategy = Backup::GitalyBackup.new(progress,
-                                          incremental: incremental?,
-                                          max_parallelism: max_concurrency,
-                                          storage_parallelism: max_storage_concurrency,
+                                          incremental: options.incremental?,
+                                          max_parallelism: options.max_parallelism,
+                                          storage_parallelism: options.max_storage_parallelism,
                                           server_side: backup_information[:repositories_server_side]
                                          )
 
       Repositories.new(progress,
-                       strategy: strategy,
-                       storages: list_env(:repositories_storages),
-                       paths: list_env(:repositories_paths),
-                       skip_paths: list_env(:skip_repositories_paths)
-                      )
+        strategy: strategy,
+        options: options,
+        storages: options.repositories_storages,
+        paths: options.repositories_paths,
+        skip_paths: options.skip_repositories_paths
+      )
     end
 
     def build_files_task(app_files_dir, excludes: [])
-      Files.new(progress, app_files_dir, excludes: excludes)
+      Files.new(progress, app_files_dir, options: options, excludes: excludes)
     end
 
     def run_all_create_tasks
-      if incremental?
+      if options.incremental?
         read_backup_information
         verify_backup_version
         update_backup_information
@@ -229,14 +222,14 @@ module Backup
 
       write_backup_information
 
-      unless skipped?('tar')
+      unless options.skippable_operations.archive
         pack
         upload
         remove_old
       end
 
     ensure
-      cleanup unless skipped?('tar')
+      cleanup unless options.skippable_operations.archive
       remove_tmp
     end
 
@@ -254,67 +247,56 @@ module Backup
       Rake::Task['cache:clear'].invoke
 
     ensure
-      cleanup unless skipped?('tar')
+      cleanup unless options.skippable_operations.archive
       remove_tmp
     end
 
-    def incremental?
-      @incremental
-    end
-
     def read_backup_information
-      @backup_information ||= YAML.safe_load_file(
-        File.join(backup_path, MANIFEST_NAME),
-        permitted_classes: YAML_PERMITTED_CLASSES)
+      @metadata.load!
+
+      options.update_from_backup_information!(backup_information)
     end
 
     def write_backup_information
-      # Make sure there is a connection
-      ::Gitlab::Database.database_base_models.each_value do |base_model|
-        base_model.connection.reconnect!
-      end
-
-      Dir.chdir(backup_path) do
-        File.open("#{backup_path}/#{MANIFEST_NAME}", "w+") do |file|
-          file << backup_information.to_yaml.gsub(/^---\n/, '')
-        end
-      end
+      @metadata.save!
     end
 
     def build_backup_information
-      @backup_information ||= {
+      return if @metadata.backup_information
+
+      @metadata.update(
         db_version: ActiveRecord::Migrator.current_version.to_s,
         backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
-        skipped: ENV['SKIP'],
-        repositories_storages: ENV['REPOSITORIES_STORAGES'],
-        repositories_paths: ENV['REPOSITORIES_PATHS'],
-        skip_repositories_paths: ENV['SKIP_REPOSITORIES_PATHS'],
-        repositories_server_side: Gitlab::Utils.to_boolean(ENV['REPOSITORIES_SERVER_SIDE'], default: false)
-      }
+        skipped: options.serialize_skippables,
+        repositories_storages: options.repositories_storages.join(','),
+        repositories_paths: options.repositories_paths.join(','),
+        skip_repositories_paths: options.skip_repositories_paths.join(','),
+        repositories_server_side: options.repositories_server_side_backup
+      )
     end
 
     def update_backup_information
-      @backup_information.merge!(
+      @metadata.update(
         full_backup_id: full_backup_id,
         db_version: ActiveRecord::Migrator.current_version.to_s,
         backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
-        skipped: list_env(:skipped).join(','),
-        repositories_storages: list_env(:repositories_storages).join(','),
-        repositories_paths: list_env(:repositories_paths).join(','),
-        skip_repositories_paths: list_env(:skip_repositories_paths).join(',')
+        skipped: options.serialize_skippables,
+        repositories_storages: options.repositories_storages.join(','),
+        repositories_paths: options.repositories_paths.join(','),
+        skip_repositories_paths: options.skip_repositories_paths.join(',')
       )
     end
 
     def backup_information
-      raise Backup::Error, "#{MANIFEST_NAME} not yet loaded" unless @backup_information
+      raise Backup::Error, "#{MANIFEST_NAME} not yet loaded" unless @metadata.backup_information
 
-      @backup_information
+      @metadata.backup_information
     end
 
     def pack
@@ -333,27 +315,7 @@ module Backup
     end
 
     def upload
-      connection_settings = Gitlab.config.backup.upload.connection
-      if connection_settings.blank? || skipped?('remote') || skipped?('tar')
-        puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
-        return
-      end
-
-      puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue)
-
-      directory = connect_to_remote_directory
-      upload = directory.files.create(create_attributes)
-
-      if upload
-        if upload.respond_to?(:encryption) && upload.encryption
-          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "done (encrypted with #{upload.encryption})".color(:green)
-        else
-          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) + "done".color(:green)
-        end
-      else
-        puts_time "Uploading backup to #{remote_directory} failed".color(:red)
-        raise Backup::Error, 'Backup failed'
-      end
+      remote_storage.upload(backup_information: backup_information)
     end
 
     def cleanup
@@ -460,7 +422,7 @@ module Backup
           # print list of available backups
           puts_available_timestamps
 
-          if incremental?
+          if options.incremental?
             puts_time 'Please specify which one you want to create an incremental backup for:'
             puts_time 'rake gitlab:backup:create INCREMENTAL=true PREVIOUS_BACKUP=timestamp_of_backup'
           else
@@ -499,19 +461,7 @@ module Backup
     end
 
     def skipped?(item)
-      skipped.include?(item)
-    end
-
-    def skipped
-      @skipped ||= list_env(:skipped)
-    end
-
-    def list_env(name)
-      list = ENV.fetch(LIST_ENVS[name], '').split(',')
-      list += backup_information[name].split(',') if backup_information[name]
-      list.uniq!
-      list.compact!
-      list
+      options.skippable_tasks[item]
     end
 
     def enabled_task?(task_name)
@@ -523,7 +473,11 @@ module Backup
     end
 
     def non_tarred_backup?
-      File.exist?(File.join(backup_path, MANIFEST_NAME))
+      File.exist?(manifest_filepath)
+    end
+
+    def manifest_filepath
+      File.join(backup_path, MANIFEST_NAME)
     end
 
     def backup_path
@@ -536,35 +490,6 @@ module Backup
 
     def available_timestamps
       @backup_file_list.map { |item| item.gsub("#{FILE_NAME_SUFFIX}", "") }
-    end
-
-    def object_storage_config
-      @object_storage_config ||= ObjectStorage::Config.new(Gitlab.config.backup.upload)
-    end
-
-    def connect_to_remote_directory
-      connection = ::Fog::Storage.new(object_storage_config.credentials)
-
-      # We only attempt to create the directory for local backups. For AWS
-      # and other cloud providers, we cannot guarantee the user will have
-      # permission to create the bucket.
-      if connection.service == ::Fog::Storage::Local
-        connection.directories.create(key: remote_directory)
-      else
-        connection.directories.new(key: remote_directory)
-      end
-    end
-
-    def remote_directory
-      Gitlab.config.backup.upload.remote_directory
-    end
-
-    def remote_target
-      if ENV['DIRECTORY']
-        File.join(ENV['DIRECTORY'], tar_file)
-      else
-        tar_file
-      end
     end
 
     def backup_contents
@@ -580,50 +505,17 @@ module Backup
 
     def full_backup_id
       full_backup_id = backup_information[:full_backup_id]
-      full_backup_id ||= File.basename(ENV['PREVIOUS_BACKUP']) if ENV['PREVIOUS_BACKUP'].present?
+      full_backup_id ||= File.basename(options.previous_backup) if options.previous_backup.present?
       full_backup_id ||= backup_id
       full_backup_id
     end
 
     def backup_id
-      if ENV['BACKUP'].present?
-        File.basename(ENV['BACKUP'])
+      if options.backup_id.present?
+        File.basename(options.backup_id)
       else
         "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
       end
-    end
-
-    def create_attributes
-      attrs = {
-        key: remote_target,
-        body: File.open(File.join(backup_path, tar_file)),
-        multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-        storage_class: Gitlab.config.backup.upload.storage_class
-      }.merge(encryption_attributes)
-
-      # Google bucket-only policies prevent setting an ACL. In any case, by default,
-      # all objects are set to the default ACL, which is project-private:
-      # https://cloud.google.com/storage/docs/json_api/v1/defaultObjectAccessControls
-      attrs[:public] = false unless google_provider?
-
-      attrs
-    end
-
-    def encryption_attributes
-      return object_storage_config.fog_attributes if object_storage_config.aws_server_side_encryption_enabled?
-
-      # Use customer-managed keys. Also, this preserves
-      # backward-compatibility for existing usages of `SSE-S3` that
-      # don't set `backup.upload.storage_options.server_side_encryption`
-      # to `'AES256'`.
-      {
-        encryption_key: Gitlab.config.backup.upload.encryption_key,
-        encryption: Gitlab.config.backup.upload.encryption
-      }
-    end
-
-    def google_provider?
-      Gitlab.config.backup.upload.connection&.provider&.downcase == 'google'
     end
 
     def puts_time(msg)

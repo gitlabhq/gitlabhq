@@ -2,8 +2,14 @@
 
 module Backup
   class Task
-    def initialize(progress)
+    # Backup creation and restore option flags
+    #
+    # @return [Backup::Options]
+    attr_reader :options
+
+    def initialize(progress, options:)
       @progress = progress
+      @options = options
     end
 
     # dump task backup to `path`

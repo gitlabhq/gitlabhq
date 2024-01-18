@@ -10,11 +10,13 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
   let(:skip_paths) { [] }
   let(:destination) { 'repositories' }
   let(:backup_id) { 'backup_id' }
+  let(:backup_options) { Backup::Options.new }
 
   subject do
     described_class.new(
       progress,
       strategy: strategy,
+      options: backup_options,
       storages: storages,
       paths: paths,
       skip_paths: skip_paths

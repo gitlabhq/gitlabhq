@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
-RSpec.describe Backup::Task do
+RSpec.describe Backup::Task, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
+  let(:backup_options) { build(:backup_options) }
 
-  subject { described_class.new(progress) }
+  subject { described_class.new(progress, options: backup_options) }
 
   describe '#dump' do
     it 'must be implemented by the subclass' do

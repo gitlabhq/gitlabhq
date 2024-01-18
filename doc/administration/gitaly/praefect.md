@@ -941,13 +941,7 @@ You can also appoint an authoritative name server by setting it in this format:
 
 :::TabTitle Linux package (Omnibus)
 
-1. Edit `/etc/gitlab/gitlab.rb` and add:
-
-   ```ruby
-   praefect['consul_service_name'] = 'praefect'
-   ```
-
-1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Add the IP address for each Praefect node to the DNS service discovery address.
 1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
    with Praefect service discovery address, such as `praefect.service.consul`.
@@ -980,6 +974,55 @@ You can also appoint an authoritative name server by setting it in this format:
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
+
+##### Configure service discovery with Consul
+
+If you already have a Consul server in your architecture then you can add
+a Consul agent on each Praefect node and register the `praefect` service to it.
+This registers each node's IP address to `praefect.service.consul` so it can be found
+by service discovery.
+
+Requirements:
+
+- One or more [Consul](../consul.md) servers to keep track of the Consul agents.
+
+1. On each Praefect server, add the following to your `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   praefect['consul_service_name'] = 'praefect'
+
+   # The following must also be added until this issue is addressed:
+   # https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8321
+   consul['monitoring_service_discovery'] = true
+   praefect['configuration'] = {
+     # ...
+     #
+     prometheus_listen_addr: '0.0.0.0:9652',
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Repeat the above steps on each Praefect server to use with
+   service discovery.
+1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+   `/etc/gitlab/gitlab.rb` as follows. Replace `CONSUL_SERVER` with the IP or
+   address of a Consul server. The default Consul DNS port is `8600`.
+
+   ```ruby
+   git_data_dirs({
+     "default" => {
+       "gitaly_address" => 'dns://CONSUL_SERVER:8600/praefect.service.consul:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   })
+   ```
+
+1. Use `dig` from the Praefect clients to confirm that each IP address has been registered to
+   `praefect.service.consul` with `dig A praefect.service.consul @CONSUL_SERVER -p 8600`.
+   Replace `CONSUL_SERVER` with the value configured above and all Praefect node IP addresses
+   should be present in the output.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Gitaly
 

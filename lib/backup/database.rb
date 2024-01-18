@@ -18,8 +18,8 @@ module Backup
     ].freeze
     IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 
-    def initialize(progress, force:)
-      super(progress)
+    def initialize(progress, options:, force:)
+      super(progress, options: options)
       @force = force
     end
 

@@ -12,8 +12,8 @@ module Backup
     # @param [Array<String>] :storages Filter by specified storage names. Empty means all storages.
     # @param [Array<String>] :paths Filter by specified project paths. Empty means all projects, groups, and snippets.
     # @param [Array<String>] :skip_paths Skip specified project paths. Empty means all projects, groups, and snippets.
-    def initialize(progress, strategy:, storages: [], paths: [], skip_paths: [])
-      super(progress)
+    def initialize(progress, strategy:, options:, storages: [], paths: [], skip_paths: [])
+      super(progress, options: options)
 
       @strategy = strategy
       @storages = storages

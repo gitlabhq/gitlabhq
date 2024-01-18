@@ -940,6 +940,7 @@ $tabs-holder-z-index: 250;
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
+    top: 1px;
     margin: 0 $gl-spacing-scale-1;
 
     .dropdown-toggle.gl-button {
