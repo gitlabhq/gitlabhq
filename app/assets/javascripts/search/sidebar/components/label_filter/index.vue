@@ -15,6 +15,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
 import { slugify } from '~/lib/utils/text_utility';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
 
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
@@ -51,6 +52,7 @@ export default {
     return {
       currentFocusIndex: SEARCH_BOX_INDEX,
       isFocused: false,
+      isLoggedIn: isLoggedIn(),
     };
   },
   i18n: I18N,
@@ -72,17 +74,17 @@ export default {
       return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN;
     },
     dropdownResultsDescription() {
-      if (!this.showSearchDropdown) {
+      if (!('showSearchDropdown' in this)) {
         return ''; // This allows aria-live to see register an update when the dropdown is shown
       }
 
-      if (this.showDefaultItems) {
+      if ('showDefaultItems' in this) {
         return sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_DEFAULT, {
           count: this.filteredLabels.length,
         });
       }
 
-      return this.loading
+      return 'loading' in this
         ? this.$options.i18n.SEARCH_RESULTS_LOADING
         : sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_UPDATED, {
             count: this.filteredLabels.length,
@@ -97,7 +99,7 @@ export default {
       )}`;
     },
     defaultIndex() {
-      if (this.showDefaultItems) {
+      if ('showDefaultItems' in this) {
         return SEARCH_BOX_INDEX;
       }
       return FIRST_DROPDOWN_INDEX;

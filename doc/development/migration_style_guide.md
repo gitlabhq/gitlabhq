@@ -1584,3 +1584,21 @@ their corresponding GitLab minor versions. This:
 
 - Simplifies the upgrade process.
 - Alleviates potential migration ordering issues that arise when we rely solely on the migration's timestamp for ordering.
+
+## Autovacuum wraparound protection
+
+This is a [special autovacuum](https://www.cybertec-postgresql.com/en/autovacuum-wraparound-protection-in-postgresql/)
+run mode for PostgreSQL and it requires a `ShareUpdateExclusiveLock` on the
+table that it is vacuuming. For [larger tables](https://gitlab.com/gitlab-org/release-tools/-/blob/master/lib/release_tools/prometheus/wraparound_vacuum_checks.rb#L11)
+this could take hours and the lock can conflict with most DDL migrations that
+try to modify the table at the same time. Because the migrations will not be
+able to acquire the lock in time, they will fail and block the deployments.
+
+The [post-deploy migration (PDM) pipeline](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/post_deploy_migration) can check and halt its execution if it
+detects a wraparound prevention vacuum process on one of the tables. For this to
+happen we need to use the complete table name in the migration name. For example
+`add_foreign_key_between_ci_builds_and_ci_job_artifacts` will check for vacuum
+on `ci_builds` and `ci_job_artifacts` before executing the migrations.
+
+If the migration doesn't have conflicting locks, the vacuum check can be skipped
+by not using the complete table name, for example `create_async_index_on_job_artifacts`.

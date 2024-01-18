@@ -8179,9 +8179,6 @@ msgstr ""
 msgid "Billing|User was successfully removed"
 msgstr ""
 
-msgid "Billing|View pending approvals"
-msgstr ""
-
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
 msgstr ""
 
@@ -12011,9 +12008,6 @@ msgstr ""
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
 msgstr ""
 
-msgid "Code Suggestions add-on status"
-msgstr ""
-
 msgid "Code block"
 msgstr ""
 
@@ -12108,9 +12102,6 @@ msgid "CodeSuggestions|Boost productivity by using %{linkStart}Code Suggestions%
 msgstr ""
 
 msgid "CodeSuggestions|Code Suggestions"
-msgstr ""
-
-msgid "CodeSuggestions|Code Suggestions add-on"
 msgstr ""
 
 msgid "CodeSuggestions|Duo Pro"
@@ -18299,6 +18290,9 @@ msgid "Due to inactivity, the %{project_name} (%{project_link}) project is sched
 msgstr ""
 
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
+msgstr ""
+
+msgid "Duo Pro add-on status"
 msgstr ""
 
 msgid "Duplicate page: A page with that title already exists"
@@ -56614,11 +56608,6 @@ msgstr ""
 
 msgid "You don’t have access to Value Stream Analytics for this group"
 msgstr ""
-
-msgid "You have %{pendingMembersCount} pending member that needs approval."
-msgid_plural "You have %{pendingMembersCount} pending members that need approval."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "You have already reported this user"
 msgstr ""

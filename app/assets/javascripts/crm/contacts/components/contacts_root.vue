@@ -80,7 +80,7 @@ export default {
     },
     tbodyTrClass() {
       return {
-        [bodyTrClass]: !this.loading && !this.isEmpty,
+        [bodyTrClass]: !this.isLoading && !this.isEmpty,
       };
     },
   },

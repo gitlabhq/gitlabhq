@@ -11,16 +11,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use secrets stored in the [Google Cloud (GCP) Secret Manager](https://cloud.google.com/security/products/secret-manager)
 in your GitLab CI/CD pipelines.
 
-The flow for using GitLab with GCP Secret Manager
-is summarized by this diagram:
+The flow for using GitLab with GCP Secret Manager is:
 
-1. GitLab issues ID token to CI/CD job.
-1. The runner authenticates to GCP using an ID token.
+1. GitLab issues an ID token to the CI/CD job.
+1. The runner authenticates to GCP using the ID token.
 1. GCP verifies the ID token with GitLab.
 1. GCP issues a short-lived access token.
 1. The runner accesses the secret data using the access token.
 1. GCP checks IAM permission on the access token's principal.
-1. GCP returns the secret data to Runner.
+1. GCP returns the secret data to the runner.
 
 To use GitLab with GCP Secret Manager, you must:
 

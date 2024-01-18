@@ -1,12 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import VueRouter from 'vue-router';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import OrganizationsRoot from '~/crm/organizations/components/organizations_root.vue';
-import routes from '~/crm/organizations/routes';
 import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import getGroupOrganizationsCountByStateQuery from '~/crm/organizations/components/graphql/get_group_organizations_count_by_state.query.graphql';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
@@ -15,24 +13,19 @@ import {
   getGroupOrganizationsCountQueryResponse,
 } from './mock_data';
 
+Vue.use(VueApollo);
+
 describe('Customer relations organizations root app', () => {
-  Vue.use(VueApollo);
-  Vue.use(VueRouter);
   let wrapper;
   let fakeApollo;
-  let router;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
-  const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const findNewOrganizationButton = () => wrapper.findByTestId('new-organization-button');
   const findTable = () => wrapper.findComponent(PaginatedTableWithSearchAndTabs);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse);
   const successCountQueryHandler = jest
     .fn()
     .mockResolvedValue(getGroupOrganizationsCountQueryResponse);
-
-  const basePath = '/groups/flightjs/-/crm/organizations';
 
   const mountComponent = ({
     queryHandler = successQueryHandler,
@@ -44,8 +37,7 @@ describe('Customer relations organizations root app', () => {
       [getGroupOrganizationsQuery, queryHandler],
       [getGroupOrganizationsCountByStateQuery, countQueryHandler],
     ]);
-    wrapper = mountExtended(OrganizationsRoot, {
-      router,
+    wrapper = shallowMountExtended(OrganizationsRoot, {
       provide: {
         canAdminCrmOrganization,
         groupFullPath: 'flightjs',
@@ -53,21 +45,9 @@ describe('Customer relations organizations root app', () => {
         textQuery,
       },
       apolloProvider: fakeApollo,
+      stubs: ['router-link', 'router-view'],
     });
   };
-
-  beforeEach(() => {
-    router = new VueRouter({
-      base: basePath,
-      mode: 'history',
-      routes,
-    });
-  });
-
-  afterEach(() => {
-    fakeApollo = null;
-    router = null;
-  });
 
   it('should render table with default props and loading spinner', () => {
     mountComponent();
@@ -118,19 +98,19 @@ describe('Customer relations organizations root app', () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(true);
     });
 
     it('should be removed on error-alert-dismissed event', async () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(true);
 
       findTable().vm.$emit('error-alert-dismissed');
       await waitForPromises();
 
-      expect(wrapper.text()).not.toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(false);
     });
   });
 
@@ -146,19 +126,8 @@ describe('Customer relations organizations root app', () => {
       mountComponent();
       await waitForPromises();
 
-      expect(findRowByName(/Test Inc/i)).toHaveLength(1);
-      expect(findRowByName(/VIP/i)).toHaveLength(1);
-      expect(findRowByName(/120/i)).toHaveLength(1);
-
-      expect(findIssuesLinks()).toHaveLength(3);
-
-      const links = findIssuesLinks().wrappers.map((w) => w.attributes('href'));
-      expect(links).toEqual(
-        expect.arrayContaining([
-          '/issues?crm_organization_id=1',
-          '/issues?crm_organization_id=2',
-          '/issues?crm_organization_id=3',
-        ]),
+      expect(findTable().props('items')).toEqual(
+        getGroupOrganizationsQueryResponse.data.group.organizations.nodes,
       );
     });
   });

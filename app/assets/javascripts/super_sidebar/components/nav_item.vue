@@ -263,7 +263,10 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasEndSpace" class="gl-text-right gl-relative gl-min-w-6">
+      <span
+        v-if="hasEndSpace"
+        class="gl-display-flex gl-align-items-start gl-justify-content-end gl-min-w-6"
+      >
         <gl-badge
           v-if="hasPill"
           size="sm"

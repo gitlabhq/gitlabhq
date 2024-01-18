@@ -431,21 +431,29 @@ module.exports = {
         loader: 'graphql-tag/loader',
       },
       {
-        test: /@gitlab\/svgs\/.+\.svg$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[contenthash:8].[ext]',
-        },
-      },
-      {
         test: /\.svg$/,
-        exclude: /@gitlab\/svgs\/.+\.svg$/,
-        resourceQuery: /url/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[contenthash:8].[ext]',
-          esModule: false,
-        },
+        oneOf: [
+          {
+            resourceQuery: /raw/,
+            loader: 'raw-loader',
+          },
+          {
+            exclude: /@gitlab\/svgs\/.+\.svg$/,
+            resourceQuery: /url/,
+            loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash:8].[ext]',
+              esModule: false,
+            },
+          },
+          {
+            test: /@gitlab\/svgs\/.+\.svg$/,
+            loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash:8].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(gif|png|mp4)$/,
@@ -491,6 +499,7 @@ module.exports = {
         },
       },
       {
+        exclude: /\.svg$/,
         resourceQuery: /raw/,
         loader: 'raw-loader',
       },
