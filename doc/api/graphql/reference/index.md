@@ -32002,6 +32002,7 @@ Stage event identifiers.
 | <a id="valuestreamstageeventissue_created"></a>`ISSUE_CREATED` | Issue created event. |
 | <a id="valuestreamstageeventissue_deployed_to_production"></a>`ISSUE_DEPLOYED_TO_PRODUCTION` | Issue deployed to production event. |
 | <a id="valuestreamstageeventissue_first_added_to_board"></a>`ISSUE_FIRST_ADDED_TO_BOARD` | Issue first added to board event. |
+| <a id="valuestreamstageeventissue_first_added_to_iteration"></a>`ISSUE_FIRST_ADDED_TO_ITERATION` | Issue first added to iteration event. |
 | <a id="valuestreamstageeventissue_first_assigned_at"></a>`ISSUE_FIRST_ASSIGNED_AT` | Issue first assigned at event. |
 | <a id="valuestreamstageeventissue_first_associated_with_milestone"></a>`ISSUE_FIRST_ASSOCIATED_WITH_MILESTONE` | Issue first associated with milestone event. |
 | <a id="valuestreamstageeventissue_first_mentioned_in_commit"></a>`ISSUE_FIRST_MENTIONED_IN_COMMIT` | Issue first mentioned in commit event. |

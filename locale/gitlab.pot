@@ -15183,6 +15183,9 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Issue first added to a board"
 msgstr ""
 
+msgid "CycleAnalyticsEvent|Issue first added to iteration"
+msgstr ""
+
 msgid "CycleAnalyticsEvent|Issue first assigned"
 msgstr ""
 

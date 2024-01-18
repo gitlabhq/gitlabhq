@@ -24,6 +24,7 @@ class UserCustomAttribute < ApplicationRecord
   DELETED_OWN_ACCOUNT_AT = 'deleted_own_account_at'
   SKIPPED_ACCOUNT_DELETION_AT = 'skipped_account_deletion_at'
   ASSUMED_HIGH_RISK_REASON = 'assumed_high_risk_reason'
+  DEEP_CLEAN_CI_USAGE_WHEN_BANNED = 'deep_clean_ci_usage_when_banned'
 
   class << self
     def upsert_custom_attributes(custom_attributes)

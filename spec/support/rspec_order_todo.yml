@@ -8510,7 +8510,6 @@
 - './spec/services/ci/deployments/destroy_service_spec.rb'
 - './spec/services/ci/destroy_pipeline_service_spec.rb'
 - './spec/services/ci/destroy_secure_file_service_spec.rb'
-- './spec/services/ci/disable_user_pipeline_schedules_service_spec.rb'
 - './spec/services/ci/drop_pipeline_service_spec.rb'
 - './spec/services/ci/ensure_stage_service_spec.rb'
 - './spec/services/ci/expire_pipeline_cache_service_spec.rb'

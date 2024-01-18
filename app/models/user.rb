@@ -500,8 +500,11 @@ class User < MainClusterwide::ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     after_transition any => :blocked do |user|
       user.run_after_commit do
-        Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
-        Ci::DisableUserPipelineSchedulesService.new.execute(user)
+        Ci::DropPipelinesAndDisableSchedulesForUserService.new.execute(
+          user,
+          reason: :user_blocked,
+          include_owned_projects_and_groups: false
+        )
       end
     end
 
@@ -512,11 +515,23 @@ class User < MainClusterwide::ApplicationRecord
         NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
       end
     end
-    # rubocop: enable CodeReuse/ServiceClass
 
     after_transition active: :banned do |user|
       user.create_banned_user
+
+      if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- this is always necessary on GitLab.com
+        user.run_after_commit do
+          deep_clean_ci = user.custom_attributes.by_key(UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED).exists?
+
+          Ci::DropPipelinesAndDisableSchedulesForUserService.new.execute(
+            user,
+            reason: :user_banned,
+            include_owned_projects_and_groups: deep_clean_ci
+          )
+        end
+      end
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     after_transition banned: :active do |user|
       user.banned_user&.destroy

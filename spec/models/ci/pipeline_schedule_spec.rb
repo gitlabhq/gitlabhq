@@ -115,6 +115,18 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
     end
   end
 
+  describe '.for_project' do
+    let(:project) { create(:project) }
+    let!(:project_pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+    let!(:other_pipeline_schedule) { create(:ci_pipeline_schedule) }
+
+    subject { described_class.for_project(project) }
+
+    it 'returns pipeline schedule only for project' do
+      is_expected.to eq([project_pipeline_schedule])
+    end
+  end
+
   describe '#set_next_run_at' do
     let(:now) { Time.zone.local(2021, 3, 2, 1, 0) }
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, cron: "0 1 * * *") }

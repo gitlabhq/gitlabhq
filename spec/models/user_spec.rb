@@ -2718,6 +2718,25 @@ RSpec.describe User, feature_category: :user_profile do
     it { expect(@user.namespaces).to eq([@user.namespace]) }
   end
 
+  shared_examples 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+    let(:reason) { :user_blocked }
+    let(:include_owned_projects_and_groups) { false }
+    subject(:action) { user.block! }
+
+    it 'calls Ci::DropPipelinesAndDisableSchedules service with correct arguments' do
+      drop_disable_service = double
+
+      expect(Ci::DropPipelinesAndDisableSchedulesForUserService).to receive(:new).and_return(drop_disable_service)
+      expect(drop_disable_service).to receive(:execute).with(
+        user,
+        reason: reason,
+        include_owned_projects_and_groups: include_owned_projects_and_groups
+      )
+
+      action
+    end
+  end
+
   describe 'blocking user' do
     let_it_be_with_refind(:user) { create(:user, name: 'John Smith') }
 
@@ -2727,33 +2746,10 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.blocked?).to be_truthy
     end
 
-    context 'when user has running CI pipelines' do
-      let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
-
-      it 'drops all running pipelines and related jobs' do
-        drop_service = double
-        disable_service = double
-
-        expect(user).to receive(:pipelines).and_return(pipelines)
-        expect(Ci::DropPipelineService).to receive(:new).and_return(drop_service)
-        expect(drop_service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
-
-        expect(Ci::DisableUserPipelineSchedulesService).to receive(:new).and_return(disable_service)
-        expect(disable_service).to receive(:execute).with(user)
-
-        user.block!
-      end
-
-      it 'does not drop running pipelines if the transaction rolls back' do
-        expect(Ci::DropPipelineService).not_to receive(:new)
-        expect(Ci::DisableUserPipelineSchedulesService).not_to receive(:new)
-
-        User.transaction do
-          user.block
-
-          raise ActiveRecord::Rollback
-        end
-      end
+    it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+      let(:reason) { :user_blocked }
+      let(:include_owned_projects_and_groups) { false }
+      subject(:action) { user.block! }
     end
 
     context 'when user has active CI pipeline schedules' do
@@ -2865,7 +2861,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'banning and unbanning a user', :aggregate_failures do
     let(:user) { create(:user) }
 
-    context 'banning a user' do
+    context 'when banning a user' do
       it 'bans and blocks the user' do
         user.ban
 
@@ -2876,6 +2872,35 @@ RSpec.describe User, feature_category: :user_profile do
       it 'creates a BannedUser record' do
         expect { user.ban }.to change { Users::BannedUser.count }.by(1)
         expect(Users::BannedUser.last.user_id).to eq(user.id)
+      end
+
+      context 'when GitLab.com' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+          let(:reason) { :user_banned }
+          let(:include_owned_projects_and_groups) { false }
+          subject(:action) { user.ban! }
+        end
+
+        context 'when user has "deep_clean_ci_usage_when_banned" custom attribute set' do
+          before do
+            create(
+              :user_custom_attribute,
+              key: UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED, value: true.to_s,
+              user_id: user.id
+            )
+            user.reload
+          end
+
+          it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+            let(:reason) { :user_banned }
+            let(:include_owned_projects_and_groups) { true }
+            subject(:action) { user.ban! }
+          end
+        end
       end
     end
 

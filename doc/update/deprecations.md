@@ -186,6 +186,22 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383084).
+</div>
+
+The `direction` GraphQL argument for the `ciJobTokenScopeRemoveProject` mutation is deprecated. Following the [default CI/CD job token scope change](https://docs.gitlab.com/ee/update/deprecations.html#default-cicd-job-token-ci_job_token-scope-changed) announced in GitLab 15.9, the `direction` argument will default to `INBOUND` and `OUTBOUND` will no longer be valid in GitLab 17.0. We will remove the `direction` argument in GitLab 18.0.
+
+If you are using `OUTBOUND` with the `direction` argument to control the direction of your project's token access, your pipeline that use job tokens risk failing authentication. To ensure pipelines continue to run as expected, you will need to explicitly [add the other projects to your project's allowlist](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-project-to-the-job-token-scope-allowlist).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 <div class="deprecation-notes">

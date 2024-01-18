@@ -934,6 +934,7 @@
 - spec/services/auth/container_registry_authentication_service_spec.rb
 - spec/services/award_emojis/add_service_spec.rb
 - spec/services/ci/abort_pipelines_service_spec.rb
+- spec/services/ci/drop_pipelines_and_disable_schedules_for_user_service_spec.rb
 - spec/services/draft_notes/publish_service_spec.rb
 - spec/services/environments/schedule_to_delete_review_apps_service_spec.rb
 - spec/services/import/bitbucket_server_service_spec.rb
