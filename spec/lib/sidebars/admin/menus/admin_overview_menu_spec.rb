@@ -9,4 +9,7 @@ RSpec.describe Sidebars::Admin::Menus::AdminOverviewMenu, feature_category: :nav
     icon: 'overview'
 
   it_behaves_like 'Admin menu with sub menus'
+
+  it_behaves_like 'Admin menu with extra container html options',
+    extra_container_html_options: { testid: 'admin-overview-submenu-content' }
 end

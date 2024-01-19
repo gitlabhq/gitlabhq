@@ -347,7 +347,7 @@ gem 'gon', '~> 6.4.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'request_store', '~> 1.5.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'base32', '~> 0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'gitlab-license', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'gitlab-license', '~> 2.4', feature_category: :shared
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory

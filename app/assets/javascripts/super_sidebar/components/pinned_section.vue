@@ -118,7 +118,7 @@ export default {
     </draggable>
     <li
       v-else
-      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-empty-pinned-text"
+      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-mix-blend-mode"
       style="margin-left: 2.5rem"
     >
       {{ $options.i18n.emptyHint }}

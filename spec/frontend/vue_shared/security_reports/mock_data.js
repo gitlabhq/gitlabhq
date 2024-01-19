@@ -53,7 +53,7 @@ export const mockFindings = [
     },
     remediations: [null],
     solution: 'Upgrade to version 2.1.1 or above.',
-    state: 'opened',
+    state: 'detected',
     blob_path: '/gitlab-org/gitlab-ui/blob/ad137f0a8ac59af961afe47d04e5cc062c6864a9/yarn.lock',
     evidence: 'Credit Card Detected: Diners Card',
   },

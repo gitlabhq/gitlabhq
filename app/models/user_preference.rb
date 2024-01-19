@@ -25,6 +25,8 @@ class UserPreference < MainClusterwide::ApplicationRecord
     format: { with: ColorsHelper::HEX_COLOR_PATTERN },
     allow_blank: true
 
+  validates :time_display_relative, allow_nil: false, inclusion: { in: [true, false] }
+  validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }

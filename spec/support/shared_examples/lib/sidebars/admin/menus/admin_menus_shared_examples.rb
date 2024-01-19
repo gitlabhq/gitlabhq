@@ -76,3 +76,15 @@ RSpec.shared_examples 'Admin menu with sub menus' do
     expect(subject.has_items?).to be true
   end
 end
+
+RSpec.shared_examples 'Admin menu with extra container html options' do |extra_container_html_options:|
+  let_it_be(:user) { build(:user, :admin) }
+
+  let(:context) { Sidebars::Context.new(current_user: user, container: nil) }
+
+  subject { described_class.new(context) }
+
+  it 'contains extra container html options' do
+    expect(subject.extra_container_html_options).to eq extra_container_html_options
+  end
+end

@@ -17,6 +17,20 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
+  describe 'cron_jobs job_class can be resolved' do
+    it 'resolves all defined cron job worker classes' do
+      Settings.cron_jobs.each_value do |job_config|
+        next unless job_config
+
+        job_class = job_config['job_class']
+
+        next unless job_class
+
+        expect(job_class.safe_constantize).not_to eq(nil), "The defined job class (#{job_class}) in the cron job settings cannot be resolved."
+      end
+    end
+  end
+
   describe '.build_ci_component_fqdn' do
     subject(:fqdn) { described_class.build_ci_component_fqdn }
 

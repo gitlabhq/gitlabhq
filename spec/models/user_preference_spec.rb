@@ -8,6 +8,16 @@ RSpec.describe UserPreference, feature_category: :user_profile do
   let(:user_preference) { create(:user_preference, user: user) }
 
   describe 'validations' do
+    it { is_expected.to validate_inclusion_of(:time_display_relative).in_array([true, false]) }
+    it { is_expected.to validate_inclusion_of(:render_whitespace_in_code).in_array([true, false]) }
+
+    it do
+      is_expected.to validate_numericality_of(:tab_width)
+                       .only_integer
+                       .is_greater_than_or_equal_to(Gitlab::TabWidth::MIN)
+                       .is_less_than_or_equal_to(Gitlab::TabWidth::MAX)
+    end
+
     describe 'diffs_deletion_color and diffs_addition_color' do
       using RSpec::Parameterized::TableSyntax
 
@@ -162,13 +172,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref.update_column(:tab_width, nil)
 
       expect(pref.reload.tab_width).to eq(8)
-    end
-
-    it do
-      is_expected.to validate_numericality_of(:tab_width)
-        .only_integer
-        .is_greater_than_or_equal_to(1)
-        .is_less_than_or_equal_to(12)
     end
   end
 

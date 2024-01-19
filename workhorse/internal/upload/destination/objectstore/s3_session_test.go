@@ -65,7 +65,7 @@ func TestS3SessionExpiry(t *testing.T) {
 	require.Equal(t, aws.StringValue(sess.Config.Region), "us-west-1")
 	require.True(t, aws.BoolValue(sess.Config.S3ForcePathStyle))
 
-	firstSession, ok := sessionCache.sessions[cfg]
+	firstSession, ok := getS3Session(cfg)
 	require.True(t, ok)
 	require.False(t, firstSession.isExpired())
 
@@ -75,7 +75,7 @@ func TestS3SessionExpiry(t *testing.T) {
 	_, err = setupS3Session(credentials, cfg)
 	require.NoError(t, err)
 
-	nextSession, ok := sessionCache.sessions[cfg]
+	nextSession, ok := getS3Session(cfg)
 	require.True(t, ok)
 	require.False(t, nextSession.isExpired())
 }
@@ -84,4 +84,11 @@ func resetS3Sessions() {
 	sessionCache.Lock()
 	defer sessionCache.Unlock()
 	sessionCache.sessions = make(map[config.S3Config]*s3Session)
+}
+
+func getS3Session(cfg config.S3Config) (*s3Session, bool) {
+	sessionCache.Lock()
+	defer sessionCache.Unlock()
+	session, ok := sessionCache.sessions[cfg]
+	return session, ok
 }

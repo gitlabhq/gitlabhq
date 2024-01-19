@@ -138,6 +138,7 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
 > - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
+> - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
@@ -148,7 +149,7 @@ To make imports as fast as possible, the following items aren't imported from Gi
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Import issue and pull request events**.
+- **Import issue and pull request events**. If the `github_import_extended_events` feature flag is enabled, this option is unavailable.
 - **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
   [limitation of the GitHub API](#missing-comments).
 - **Import Markdown attachments**.

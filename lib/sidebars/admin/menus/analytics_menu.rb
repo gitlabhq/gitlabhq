@@ -35,7 +35,7 @@ module Sidebars
             link: admin_dev_ops_reports_path,
             active_routes: { controller: 'dev_ops_report' },
             item_id: :dev_ops_reports,
-            container_html_options: { 'data-qa-selector': 'admin_analytics_link' }
+            container_html_options: { 'data-testid': 'admin-analytics-link' }
           )
         end
 

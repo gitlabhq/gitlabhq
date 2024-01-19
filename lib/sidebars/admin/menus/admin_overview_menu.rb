@@ -57,7 +57,7 @@ module Sidebars
             link: admin_users_path,
             active_routes: { controller: 'users' },
             item_id: :users,
-            container_html_options: { 'data-qa-selector': 'admin_overview_users_link' }
+            container_html_options: { 'data-testid': 'admin-overview-users-link' }
           )
         end
 
@@ -67,7 +67,7 @@ module Sidebars
             link: admin_groups_path,
             active_routes: { controller: 'groups' },
             item_id: :groups,
-            container_html_options: { 'data-qa-selector': 'admin_overview_groups_link' }
+            container_html_options: { 'data-testid': 'admin-overview-groups-link' }
           )
         end
 

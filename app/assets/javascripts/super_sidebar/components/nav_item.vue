@@ -244,7 +244,7 @@ export default {
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
+            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target super-sidebar-mix-blend-mode"
           />
           <gl-avatar
             v-else-if="hasAvatar"
