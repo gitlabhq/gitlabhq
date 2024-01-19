@@ -65,6 +65,27 @@ NOTE:
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
 [project imports](../project/import/index.md), and [group migrations](../group/import/index.md).
 
+## Delete emails from your user profile
+
+You can delete a secondary email address from your account. You cannot delete your
+primary email address.
+
+If the deleted email address is used for any user emails, those user emails are
+sent to the primary email address instead.
+
+NOTE:
+Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
+the deleted email address.
+
+To delete an email address from your account:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Emails**.
+1. Select **Delete** (**{remove}**) and confirm you want to **Remove**.
+
+You can also [use the API to delete a secondary email address](../../api/users.md#delete-email-for-current-user).
+
 ## Make your user profile page private
 
 You can make your user profile visible to only you and GitLab administrators.

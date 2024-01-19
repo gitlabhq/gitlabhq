@@ -12,40 +12,63 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-If you're using [GitLab Runner](../runners/index.md) with the Docker executor,
-you basically have everything set up already.
-
 NOTE:
-Variables set in the GitLab UI are not passed down to the service containers.
-For more information, see [GitLab CI/CD variables](../variables/index.md).
 
-First, in your `.gitlab-ci.yml` add:
+To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/index.md#define-a-cicd-variable-in-the-ui).
+You must define your variables as either Group or Project, then call the variables in your job as shown in the following workaround.
 
-```yaml
-default:
-  services:
-    - postgres:12.2-alpine
+In Postgres 15.4 and later, Postgres does not substitute a schema or owner name into an extension script if the name contains a quote, backslash, or dollar sign.
+If the CI variables are not configured, the value uses the environment variable name as a string instead. For example, `POSTGRES_USER: $USER` results in the
+`POSTGRES_USER` variable being set to '$USER', which causes Postgres to show the following error:
 
-variables:
-  POSTGRES_DB: $POSTGRES_DB
-  POSTGRES_USER: $POSTGRES_USER
-  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-  POSTGRES_HOST_AUTH_METHOD: trust
+```shell
+Fatal: invalid character in extension
 ```
 
-And then configure your application to use the database, for example:
+The workaround is to set your variables in [GitLab CI/CD variables](../variables/index.md) or set variables in string form:
 
-```yaml
-Host: postgres
-User: $POSTGRES_USER
-Password: $POSTGRES_PASSWORD
-Database: $POSTGRES_DB
-```
+1. [Set Postgres variables in GitLab](../variables/index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
 
-If you're wondering why we used `postgres` for the `Host`, read more at
-[How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
+1. In the `.gitlab-ci.yml` file, specify a Postgres image:
 
-You can also use any other Docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
+   ```yaml
+   default:
+      services:
+        - postgres
+   ```
+
+1. In the `.gitlab-ci.yml` file, add your defined variables:
+
+    ```yaml
+      variables:
+        POSTGRES_DB: $POSTGRES_DB
+        POSTGRES_USER: $POSTGRES_USER
+        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+       POSTGRES_HOST_AUTH_METHOD: trust
+   ```
+
+   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
+
+1. Configure your application to use the database, for example:
+
+   ```yaml
+   Host: postgres
+   User: $POSTGRES_USER
+   Password: $POSTGRES_PASSWORD
+   Database: $POSTGRES_DB
+   ```
+
+Alternatively, you can set variables as a string in the `.gitlab-ci.yml` file:
+
+   ```yaml
+   variables:
+     POSTGRES_DB: DB_name
+     POSTGRES_USER: username
+     POSTGRES_PASSWORD: password
+     POSTGRES_HOST_AUTH_METHOD: trust
+   ```
+
+You can use any other Docker image available on [Docker Hub](https://hub.docker.com/_/postgres).
 For example, to use PostgreSQL 14.3, the service becomes `postgres:14.3`.
 
 The `postgres` image can accept some environment variables. For more details,

@@ -121,7 +121,6 @@
 - ee/spec/finders/ee/fork_targets_finder_spec.rb
 - ee/spec/finders/issues_finder_spec.rb
 - ee/spec/finders/security/approval_groups_finder_spec.rb
-- ee/spec/frontend/fixtures/namespace.rb
 - ee/spec/frontend/fixtures/search.rb
 - ee/spec/graphql/ee/resolvers/board_lists_resolver_spec.rb
 - ee/spec/graphql/mutations/namespaces/increase_storage_temporarily_spec.rb

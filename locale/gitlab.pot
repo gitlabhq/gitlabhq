@@ -33426,6 +33426,9 @@ msgstr ""
 msgid "ObservabilityMetrics|Failed to load metrics."
 msgstr ""
 
+msgid "ObservabilityMetrics|Filter dimensions..."
+msgstr ""
+
 msgid "ObservabilityMetrics|Last ingested"
 msgstr ""
 
@@ -33450,6 +33453,12 @@ msgstr ""
 msgid "ObservabilityMetrics|Value"
 msgstr ""
 
+msgid "ObservabilityMetrics|is like"
+msgstr ""
+
+msgid "ObservabilityMetrics|is not like"
+msgstr ""
+
 msgid "Observability|Enable"
 msgstr ""
 
@@ -33460,6 +33469,36 @@ msgid "Observability|Error: Failed to load page. Try reloading the page."
 msgstr ""
 
 msgid "Observability|Get started with GitLab Observability"
+msgstr ""
+
+msgid "Observability|Last 1 hour"
+msgstr ""
+
+msgid "Observability|Last 12 hours"
+msgstr ""
+
+msgid "Observability|Last 14 days"
+msgstr ""
+
+msgid "Observability|Last 15 minutes"
+msgstr ""
+
+msgid "Observability|Last 24 hours"
+msgstr ""
+
+msgid "Observability|Last 30 days"
+msgstr ""
+
+msgid "Observability|Last 30 minutes"
+msgstr ""
+
+msgid "Observability|Last 4 hours"
+msgstr ""
+
+msgid "Observability|Last 5 minutes"
+msgstr ""
+
+msgid "Observability|Last 7 days"
 msgstr ""
 
 msgid "Observability|Monitor your applications with GitLab Observability."
@@ -43038,6 +43077,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select timezone"
 msgstr ""
 
+msgid "ScanExecutionPolicy|The file at that project, ref, and path doesn't exist"
+msgstr ""
+
 msgid "ScanExecutionPolicy|The file path can't be empty"
 msgstr ""
 
@@ -51725,36 +51767,6 @@ msgid "Tracing|Failed to load traces."
 msgstr ""
 
 msgid "Tracing|Filter traces"
-msgstr ""
-
-msgid "Tracing|Last 1 hour"
-msgstr ""
-
-msgid "Tracing|Last 12 hours"
-msgstr ""
-
-msgid "Tracing|Last 14 days"
-msgstr ""
-
-msgid "Tracing|Last 15 minutes"
-msgstr ""
-
-msgid "Tracing|Last 24 hours"
-msgstr ""
-
-msgid "Tracing|Last 30 days"
-msgstr ""
-
-msgid "Tracing|Last 30 minutes"
-msgstr ""
-
-msgid "Tracing|Last 4 hours"
-msgstr ""
-
-msgid "Tracing|Last 5 minutes"
-msgstr ""
-
-msgid "Tracing|Last 7 days"
 msgstr ""
 
 msgid "Tracing|Metadata"

@@ -63,6 +63,12 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
         it { is_expected.to eq('http://group.example.com/project') }
       end
 
+      context 'when project is upper cased' do
+        let(:full_path) { 'group/Project' }
+
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
+
       context 'when project is in a nested group page' do
         let(:full_path) { 'group/subgroup/project' }
 
@@ -123,6 +129,12 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
 
       context 'when namespace is upper cased' do
         let(:full_path) { 'Group/project' }
+
+        it { is_expected.to eq('http://example.com/group/project') }
+      end
+
+      context 'when project is upper cased' do
+        let(:full_path) { 'group/Project' }
 
         it { is_expected.to eq('http://example.com/group/project') }
       end

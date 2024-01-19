@@ -6,10 +6,6 @@
     max-width: 960px;
   }
 
-  .navbar-gitlab .container {
-    max-width: none;
-  }
-
   .flash-container {
     margin-bottom: $gl-padding;
     position: relative;
@@ -92,15 +88,6 @@
 
   .omniauth-divider {
     @include omniauth-divider;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .login-page {
-    .col-md-5.float-right {
-      float: none !important;
-      margin-bottom: 45px;
-    }
   }
 }
 

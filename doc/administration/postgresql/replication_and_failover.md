@@ -1242,7 +1242,7 @@ What happens here:
 - The application still uses the existing leader as its database backend.
 - The logical replication ensures that the new leader keeps in sync.
 - When other nodes are added to the new cluster, Patroni handles
-  the replication to the these nodes.
+  the replication to the nodes.
 
 It is a good idea to wait until the replica nodes of the new cluster are initialized and caught up on the replication
 lag.

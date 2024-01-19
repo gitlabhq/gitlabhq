@@ -4,20 +4,16 @@ import NamespaceStorageApp from '~/usage_quotas/storage/components/namespace_sto
 import StorageUsageStatistics from '~/usage_quotas/storage/components/storage_usage_statistics.vue';
 import DependencyProxyUsage from '~/usage_quotas/storage/components/dependency_proxy_usage.vue';
 import ContainerRegistryUsage from '~/usage_quotas/storage/components/container_registry_usage.vue';
-import { defaultNamespaceProvideValues } from '../mock_data';
+import {
+  defaultNamespaceProvideValues,
+  mockGetNamespaceStorageGraphQLResponse,
+} from '../mock_data';
 
 const defaultProps = {
   namespaceLoadingError: false,
   projectsLoadingError: false,
   isNamespaceStorageStatisticsLoading: false,
-  // hardcoding object until we move test_fixtures from ee/ to here
-  namespace: {
-    rootStorageStatistics: {
-      storageSize: 1234,
-      containerRegistrySize: 111,
-      containerRegistrySizeIsEstimated: false,
-    },
-  },
+  namespace: mockGetNamespaceStorageGraphQLResponse.data.namespace,
 };
 
 describe('NamespaceStorageApp', () => {

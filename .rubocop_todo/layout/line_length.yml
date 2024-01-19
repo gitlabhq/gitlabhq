@@ -3324,7 +3324,6 @@ Layout/LineLength:
     - 'spec/frontend/fixtures/merge_requests.rb'
     - 'spec/frontend/fixtures/merge_requests_diffs.rb'
     - 'spec/frontend/fixtures/pipeline_schedules.rb'
-    - 'spec/frontend/fixtures/projects.rb'
     - 'spec/frontend/fixtures/snippet.rb'
     - 'spec/graphql/gitlab_schema_spec.rb'
     - 'spec/graphql/mutations/boards/issues/issue_move_list_spec.rb'

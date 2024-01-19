@@ -62,7 +62,7 @@ such as the value of a setting or the count of rows in a database table.
 For GitLab there is an essential difference in analytics setup between SaaS and self-managed or GitLab Dedicated instances.
 On our SaaS instance both individual events and pre-computed metrics are available for analysis.
 Additionally for SaaS page views are automatically instrumented.
-For self-managed only the metrics instrumenented on the version installed on the instance are available.
+For self-managed only the metrics instrumented on the version installed on the instance are available.
 
 ## Data discovery
 
@@ -87,7 +87,7 @@ For a list of other metrics tables refer to the [Data Models Cheat Sheet](https:
 
 ### Querying events
 
-The following example query returns the number of daily event occurences for the `feature_used` event.
+The following example query returns the number of daily event occurrences for the `feature_used` event.
 
 ```sql
 SELECT

@@ -226,7 +226,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What data does the application store and how?
 
-- Git repositories and files, tracking information related to the them, and the GitLab database contents.
+- Git repositories and files, tracking information related to them, and the GitLab database contents.
 
 ### What data is or may need to be encrypted and what key management requirements have been defined?
 

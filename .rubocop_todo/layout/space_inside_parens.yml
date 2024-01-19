@@ -16,7 +16,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'
-    - 'ee/spec/frontend/fixtures/namespace.rb'
     - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'
     - 'ee/spec/lib/world_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'

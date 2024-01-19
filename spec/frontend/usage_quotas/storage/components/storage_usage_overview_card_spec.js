@@ -3,14 +3,14 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import StorageUsageOverviewCard from '~/usage_quotas/storage/components/storage_usage_overview_card.vue';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockGetNamespaceStorageGraphQLResponse } from '../mock_data';
 
 describe('StorageUsageOverviewCard', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
   const defaultProps = {
-    purchasedStorage: 0,
-    // hardcoding value until we move test_fixtures from ee/ to here
-    usedStorage: 1234,
+    usedStorage:
+      mockGetNamespaceStorageGraphQLResponse.data.namespace.rootStorageStatistics.storageSize,
     loading: false,
   };
 

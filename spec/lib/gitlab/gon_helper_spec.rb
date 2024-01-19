@@ -202,19 +202,6 @@ RSpec.describe Gitlab::GonHelper do
           helper.add_browsersdk_tracking
         end
       end
-
-      context 'when feature flag is false' do
-        before do
-          stub_feature_flags(gl_analytics_tracking: false)
-        end
-
-        it "doesn't set the analytics_url and analytics_id" do
-          expect(gon).not_to receive(:analytics_url=)
-          expect(gon).not_to receive(:analytics_id=)
-
-          helper.add_browsersdk_tracking
-        end
-      end
     end
 
     context 'when environment variables are not set' do
