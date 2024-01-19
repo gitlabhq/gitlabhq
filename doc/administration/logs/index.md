@@ -1098,6 +1098,10 @@ For example:
 }
 ```
 
+## Let's Encrypt logs
+
+For Linux package installations, Let's Encrypt [auto-renew](https://docs.gitlab.com/omnibus/settings/ssl/#renew-the-certificates-automatically) logs are in `/var/log/gitlab/lets-encrypt/`.
+
 ## Mattermost logs
 
 For Linux package installations, Mattermost logs are in these locations:

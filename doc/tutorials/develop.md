@@ -5,7 +5,7 @@ description: Integrations with third-party services.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorials: Develop with GitLab
+# Tutorials: Extend with GitLab
 
 ## Integrate with GitLab
 

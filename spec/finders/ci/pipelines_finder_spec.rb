@@ -259,16 +259,6 @@ RSpec.describe Ci::PipelinesFinder do
           is_expected.to be_empty
         end
       end
-
-      context 'when pipeline_name_search feature flag is off' do
-        before do
-          stub_feature_flags(pipeline_name_search: false)
-        end
-
-        it 'ignores name parameter' do
-          is_expected.to contain_exactly(pipeline, pipeline_other)
-        end
-      end
     end
 
     describe 'ordering' do

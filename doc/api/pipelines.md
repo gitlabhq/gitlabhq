@@ -19,12 +19,7 @@ Read more on [pagination](rest/index.md#pagination).
 > - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
 > - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
 > - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-
-FLAG:
-On self-managed GitLab, by default the `name` field in a request is ignored.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
-named `pipeline_name_search`.
-On GitLab.com, this feature is available.
+> - `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
 
 List pipelines in a project. Child pipelines are not included in the results,
 but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.

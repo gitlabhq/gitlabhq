@@ -149,9 +149,7 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def by_name(items)
-      return items unless
-        Feature.enabled?(:pipeline_name_search, project) &&
-          params[:name].present?
+      return items unless params[:name].present?
 
       items.for_name(params[:name])
     end

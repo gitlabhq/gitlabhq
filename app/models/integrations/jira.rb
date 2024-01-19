@@ -243,8 +243,8 @@ module Integrations
         }
       ]
 
-      # Jira issues is currently only configurable on the project level.
-      if project_level?
+      # Currently, Jira issues are only configurable at the project and group levels.
+      unless instance_level?
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
           title: _('Issues'),
