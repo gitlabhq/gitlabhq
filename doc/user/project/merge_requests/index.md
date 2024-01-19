@@ -229,6 +229,7 @@ An administrator can make this option the default in the project's settings.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
+> - Chained merge requests [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/323329) to automatically rebase on the new target branch in GitLab 16.9.
 
 Merge requests are often chained together, with one merge request depending on
 the code added or changed in another merge request. To support keeping individual
@@ -240,7 +241,7 @@ target branch merges into `main`. For example:
 
 If these merge requests are open at the same time, and merge request 1 (`feature-alpha`)
 merges into `main`, GitLab updates the destination of merge request 2 from `feature-alpha`
-to `main`.
+to `main` and then rebases the source branch onto the new target branch.
 
 Merge requests with interconnected content updates are usually handled in one of these ways:
 

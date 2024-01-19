@@ -13,11 +13,13 @@ RSpec.shared_examples 'export worker' do
 
     context 'when it succeeds' do
       it 'calls the ExportService' do
-        expect_next_instance_of(::Projects::ImportExport::ExportService) do |service|
+        params = { 'description' => 'An overridden description' }
+
+        expect_next_instance_of(::Projects::ImportExport::ExportService, project, user, params.symbolize_keys!) do |service|
           expect(service).to receive(:execute)
         end
 
-        subject.perform(user.id, project.id, { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' })
+        subject.perform(user.id, project.id, { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' }, params)
       end
 
       context 'export job' do

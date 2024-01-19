@@ -227,6 +227,25 @@ From GitLab 18.0 and later, the methods to register runners introduced by the ne
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Agent for Kubernetes option `ca-cert-file` renamed
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437728).
+</div>
+
+In the GitLab agent for Kubernetes (agentk), the `--ca-cert-file` command line option
+and the corresponding `config.caCert` Helm chart value have been renamed
+to `--kas-ca-cert-file` and `config.kasCaCert`, respectively.
+
+The old `--ca-cert-file` and `config.caCert` options are deprecated, and will
+be removed in GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Auto DevOps support for Herokuish is deprecated
 
 <div class="deprecation-notes">
@@ -466,6 +485,23 @@ The message field was removed from security reports schema in GitLab 16.0 and is
 </div>
 
 The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate `version` field in feature flag API
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437986).
+</div>
+
+The `version` field in the [feature flag REST API](https://docs.gitlab.com/ee/api/feature_flags.html)
+is deprecated and will be removed in GitLab 17.0.
+
+After the `version` field is removed, there won't be a way to create legacy feature flags.
 
 </div>
 
@@ -790,6 +826,26 @@ In GitLab 16.0 and later:
   and will not have any `CI_JOB_JWT*` tokens available.
 - Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
   tokens available until GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Heroku image upgrade in Auto DevOps build
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437937).
+</div>
+
+In GitLab 17.0, the `auto-build-image` project will upgrade from the `heroku/builder:20` image to `heroku/builder:22`.
+
+To test the behavior of the new image, set the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to
+`heroku/builder:22`.
+
+To continue to use `heroku/builder:20` after GitLab 17.0,
+set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:20`.
 
 </div>
 

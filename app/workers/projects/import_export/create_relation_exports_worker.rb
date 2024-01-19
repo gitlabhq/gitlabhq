@@ -18,7 +18,7 @@ module Projects
       INITIAL_DELAY = 10.seconds
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def perform(user_id, project_id, after_export_strategy = {})
+      def perform(user_id, project_id, after_export_strategy = {}, params = {})
         project = Project.find_by_id(project_id)
         return unless project
 
@@ -30,7 +30,7 @@ module Projects
         end
 
         relation_exports.each do |relation_export|
-          RelationExportWorker.with_status.perform_async(relation_export.id)
+          RelationExportWorker.with_status.perform_async(relation_export.id, user_id, params)
         end
 
         WaitRelationExportsWorker.perform_in(

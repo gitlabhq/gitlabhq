@@ -5,12 +5,13 @@ module Projects
     extend Forwardable
 
     attr_reader :project, :protected_branch
+    alias_method :branch_protection, :protected_branch
 
     def_delegators(:protected_branch, :name, :group, :default_branch?, :created_at, :updated_at)
 
     def initialize(project, protected_branch)
-      @protected_branch = protected_branch
       @project = project
+      @protected_branch = protected_branch
     end
 
     def protected?
@@ -21,10 +22,6 @@ module Projects
       branch_names = project.repository.branch_names
       matching_branches = protected_branch.matching(branch_names)
       matching_branches.count
-    end
-
-    def branch_protection
-      protected_branch
     end
   end
 end

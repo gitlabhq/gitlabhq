@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe Projects::ImportExport::RelationExportService, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
-  subject(:service) { described_class.new(relation_export, 'jid') }
+  subject(:service) { described_class.new(relation_export, user, 'jid') }
 
   let_it_be(:project_export_job) { create(:project_export_job) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let_it_be(:archive_path) { "#{Dir.tmpdir}/project_archive_spec" }
 

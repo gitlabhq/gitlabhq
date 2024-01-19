@@ -118,7 +118,7 @@ class IssuesFinder < IssuableFinder
     namespaces = if relations.one?
                    relations.first
                  else
-                   Namespace.from_union(relations, remove_duplicates: false)
+                   Namespace.from_union(relations)
                  end
 
     items.in_namespaces(namespaces)

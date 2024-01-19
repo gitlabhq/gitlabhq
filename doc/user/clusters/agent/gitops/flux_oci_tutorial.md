@@ -106,7 +106,7 @@ To configure, create an [`OCIRepository`](https://fluxcd.io/flux/components/sour
    with the following contents:
 
    ```yaml
-   apiVersion: source.toolkit.fluxcd.io/v1
+   apiVersion: source.toolkit.fluxcd.io/v1beta2
    kind: OCIRepository
    metadata:
      name: web-app-manifests

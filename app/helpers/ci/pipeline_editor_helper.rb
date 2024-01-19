@@ -21,7 +21,7 @@ module Ci
         "ci-lint-path" => project_ci_lint_path(project),
         "ci-troubleshooting-path" => help_page_path('ci/troubleshooting', anchor: 'common-cicd-issues'),
         "default-branch" => project.default_branch_or_main,
-        "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-dag-md.svg'),
+        "empty-state-illustration-path" => image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         "initial-branch-name" => initial_branch,
         "includes-help-page-path" => help_page_path('ci/yaml/includes'),
         "lint-help-page-path" => help_page_path('ci/lint', anchor: 'check-cicd-syntax'),

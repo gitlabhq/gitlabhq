@@ -1,0 +1,18 @@
+- title: "Agent for Kubernetes option `ca-cert-file` renamed"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: timofurrer
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437728
+  body: |  # (required) Don't change this line.
+    In the GitLab agent for Kubernetes (agentk), the `--ca-cert-file` command line option
+    and the corresponding `config.caCert` Helm chart value have been renamed
+    to `--kas-ca-cert-file` and `config.kasCaCert`, respectively.
+
+    The old `--ca-cert-file` and `config.caCert` options are deprecated, and will
+    be removed in GitLab 17.0.

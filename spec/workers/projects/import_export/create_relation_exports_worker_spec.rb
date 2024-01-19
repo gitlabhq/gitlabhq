@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_category: :importers do
-  let_it_be(:user) { build_stubbed(:user) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
   let(:after_export_strategy) { {} }
