@@ -99,15 +99,11 @@ export default {
       return this.state.mergeabilityChecks || [];
     },
     sortedChecks() {
-      return [...this.checks]
-        .sort((a, b) => {
-          if (a.status === 'FAILED' && b.status !== 'FAILED') return -1;
-          if (a.status === 'SUCCESS' && b.status !== 'SUCCESS')
-            return b.status === 'FAILED' ? 1 : -1;
+      const order = ['FAILED', 'SUCCESS'];
 
-          return 0;
-        })
-        .filter((s) => s.status !== 'INACTIVE');
+      return [...this.checks]
+        .filter((s) => s.status !== 'INACTIVE')
+        .sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
     },
     failedChecks() {
       return this.checks.filter((c) => c.status.toLowerCase() === 'failed');

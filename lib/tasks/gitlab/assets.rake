@@ -101,6 +101,8 @@ namespace :gitlab do
         # gettext:compile needs to run before rake:assets:precompile because
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
+        # Skip Yarn Install when using Cssbundling
+        Rake::Task["css:install"].clear if defined?(Cssbundling)
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

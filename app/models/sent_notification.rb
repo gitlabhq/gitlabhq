@@ -4,6 +4,7 @@ class SentNotification < ApplicationRecord
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"
+  belongs_to :issue_email_participant
 
   validates :recipient, presence: true
   validates :reply_key, presence: true, uniqueness: true

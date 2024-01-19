@@ -126,12 +126,12 @@ describe('content_editor/extensions/attachment', () => {
 
     describe.each`
       nodeType           | html                                           | file                 | mediaType
-      ${'image (png)'}   | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${imageFile}         | ${(attrs) => image(attrs)}
-      ${'image (svg)'}   | ${PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML}      | ${imageFileSvg}      | ${(attrs) => image(attrs)}
+      ${'image'}         | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${imageFile}         | ${(attrs) => image(attrs)}
+      ${'image'}         | ${PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML}      | ${imageFileSvg}      | ${(attrs) => image(attrs)}
       ${'audio'}         | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${audioFile}         | ${(attrs) => audio(attrs)}
       ${'video'}         | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${videoFile}         | ${(attrs) => video(attrs)}
       ${'drawioDiagram'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${drawioDiagramFile} | ${(attrs) => drawioDiagram(attrs)}
-    `('when the file is $nodeType', ({ html, file, mediaType }) => {
+    `('when the file is $nodeType', ({ nodeType, html, file, mediaType }) => {
       beforeEach(() => {
         renderMarkdown.mockResolvedValue(html);
       });
@@ -149,7 +149,13 @@ describe('content_editor/extensions/attachment', () => {
 
         it('inserts a media content with src set to the encoded content and uploading=file_name', async () => {
           const expectedDoc = doc(
-            p(mediaType({ uploading: file.name, src: blobUrl, alt: file.name })),
+            p(
+              mediaType({
+                uploading: expect.stringMatching(new RegExp(`${nodeType}[0-9]+`)),
+                src: blobUrl,
+                alt: file.name,
+              }),
+            ),
           );
 
           await expectDocumentAfterTransaction({
@@ -248,7 +254,12 @@ describe('content_editor/extensions/attachment', () => {
 
         it('inserts a link with a blob url', async () => {
           const expectedDoc = doc(
-            p(link({ uploading: attachmentFile.name, href: blobUrl }, 'test-file.zip')),
+            p(
+              link(
+                { uploading: expect.stringMatching(/file[0-9]+/), href: blobUrl },
+                'test-file.zip',
+              ),
+            ),
           );
 
           await expectDocumentAfterTransaction({
@@ -334,68 +345,228 @@ describe('content_editor/extensions/attachment', () => {
       };
 
       it.each([
-        [1, () => doc(p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')))],
+        [
+          1,
+          () =>
+            doc(
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+            ),
+        ],
         [
           2,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
           3,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
           4,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
             ),
         ],
         [
           5,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
             ),
         ],
         [
           6,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
           7,
           () =>
             doc(
-              p(link({ href: blobUrl, uploading: 'test-file.zip' }, 'test-file.zip')),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file.zip',
+                ),
+              ),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -412,12 +583,46 @@ describe('content_editor/extensions/attachment', () => {
                   'test-file.zip',
                 ),
               ),
-              p(image({ alt: 'test-file.png', src: blobUrl, uploading: 'test-file.png' })),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                image({
+                  alt: 'test-file.png',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/image[0-9]+/),
+                }),
+              ),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -442,11 +647,39 @@ describe('content_editor/extensions/attachment', () => {
                   uploading: false,
                 }),
               ),
-              p(video({ alt: 'test-file.mp4', src: blobUrl, uploading: 'test-file.mp4' })),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                video({
+                  alt: 'test-file.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -479,10 +712,32 @@ describe('content_editor/extensions/attachment', () => {
                   uploading: false,
                 }),
               ),
-              p(link({ href: blobUrl, uploading: 'test-file1.zip' }, 'test-file1.zip')),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file1.zip',
+                ),
+              ),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -525,9 +780,26 @@ describe('content_editor/extensions/attachment', () => {
                   'test-file1.zip',
                 ),
               ),
-              p(link({ href: blobUrl, uploading: 'test-file2.zip' }, 'test-file2.zip')),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                link(
+                  { href: blobUrl, uploading: expect.stringMatching(/file[0-9]+/) },
+                  'test-file2.zip',
+                ),
+              ),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -580,8 +852,20 @@ describe('content_editor/extensions/attachment', () => {
                   'test-file2.zip',
                 ),
               ),
-              p(video({ alt: 'test-file1.mp4', src: blobUrl, uploading: 'test-file1.mp4' })),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                video({
+                  alt: 'test-file1.mp4',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/video[0-9]+/),
+                }),
+              ),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [
@@ -642,7 +926,13 @@ describe('content_editor/extensions/attachment', () => {
                   uploading: false,
                 }),
               ),
-              p(audio({ alt: 'test-file.mp3', src: blobUrl, uploading: 'test-file.mp3' })),
+              p(
+                audio({
+                  alt: 'test-file.mp3',
+                  src: blobUrl,
+                  uploading: expect.stringMatching(/audio[0-9]+/),
+                }),
+              ),
             ),
         ],
         [

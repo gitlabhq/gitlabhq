@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SentNotification, :request_store do
+RSpec.describe SentNotification, :request_store, feature_category: :shared do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -40,6 +40,12 @@ RSpec.describe SentNotification, :request_store do
     end
   end
 
+  describe ' associations' do
+    subject { build(:sent_notification) }
+
+    it { is_expected.to belong_to(:issue_email_participant) }
+  end
+
   shared_examples 'a successful sent notification' do
     it 'creates a new SentNotification' do
       expect { subject }.to change { described_class.count }.by(1)
@@ -61,6 +67,20 @@ RSpec.describe SentNotification, :request_store do
 
     it_behaves_like 'a successful sent notification'
     it_behaves_like 'a non-sticky write'
+
+    context 'with issue email participant' do
+      let!(:issue_email_participant) { create(:issue_email_participant, issue: issue) }
+
+      subject(:sent_notification) do
+        described_class.record(issue, user.id, described_class.reply_key, {
+          issue_email_participant: issue_email_participant
+        })
+      end
+
+      it 'saves the issue_email_participant' do
+        expect(sent_notification.issue_email_participant).to eq(issue_email_participant)
+      end
+    end
   end
 
   describe '.record_note' do

@@ -336,7 +336,8 @@ gem 'gitlab_chronic_duration', '~> 0.12' # rubocop:todo Gemfile/MissingFeatureCa
 
 gem 'rack-proxy', '~> 0.7.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'sassc-rails', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sassc-rails', '~> 2.1.0', feature_category: :shared, require: false
+gem 'cssbundling-rails', '1.3.3', feature_category: :shared, require: false
 gem 'autoprefixer-rails', '10.2.5.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'terser', '1.0.2' # rubocop:todo Gemfile/MissingFeatureCategory
 

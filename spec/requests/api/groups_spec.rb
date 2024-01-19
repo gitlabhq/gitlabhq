@@ -991,6 +991,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'updating the `enabled_git_access_protocol` attribute' do
+        %w[ssh http all].each do |protocol|
+          context "with #{protocol}" do
+            subject do
+              put api("/groups/#{group1.id}", user1), params: { enabled_git_access_protocol: protocol }
+            end
+
+            it 'updates the attribute', :aggregate_failures do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['enabled_git_access_protocol']).to eq(protocol)
+            end
+          end
+        end
+      end
+
       context 'malicious group name' do
         subject { put api("/groups/#{group1.id}", user1), params: { name: "<SCRIPT>alert('DOUBLE-ATTACK!')</SCRIPT>" } }
 
@@ -2055,6 +2072,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
           end
+        end
+      end
+
+      context 'when creating a group with `enabled_git_access_protocol' do
+        let(:params) { attributes_for_group_api enabled_git_access_protocol: 'all' }
+
+        subject { post api("/groups", user3), params: params }
+
+        it 'creates group with the specified Git access protocol', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['enabled_git_access_protocol']).to eq(nil)
         end
       end
 

@@ -13,6 +13,10 @@ module WorkItems
       def self.quick_action_params
         [:add_label_ids, :remove_label_ids, :label_ids]
       end
+
+      def self.sync_params
+        [:label_ids]
+      end
     end
   end
 end

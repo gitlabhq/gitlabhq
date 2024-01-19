@@ -243,8 +243,9 @@ class NotifyPreview < ActionMailer::Preview
   def service_desk_new_note_email
     cleanup do
       note = create_note(noteable_type: 'Issue', noteable_id: issue.id, note: 'Issue note content')
+      participant = IssueEmailParticipant.create!(issue: issue, email: 'user@example.com')
 
-      Notify.service_desk_new_note_email(issue.id, note.id, 'someone@gitlab.com').message
+      Notify.service_desk_new_note_email(issue.id, note.id, participant).message
     end
   end
 

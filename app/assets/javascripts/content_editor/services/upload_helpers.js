@@ -1,3 +1,4 @@
+import { uniqueId } from 'lodash';
 import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
@@ -7,17 +8,17 @@ import { ALERT_EVENT } from '../constants';
 
 const chain = (editor) => editor.chain().setMeta('preventAutolink', true);
 
-const findUploadedFilePosition = (editor, filename) => {
+const findUploadedFilePosition = (editor, fileId) => {
   let position;
 
   editor.view.state.doc.descendants((descendant, pos) => {
-    if (descendant.attrs.uploading === filename) {
+    if (descendant.attrs.uploading === fileId) {
       position = pos;
       return false;
     }
 
     for (const mark of descendant.marks) {
-      if (mark.type.name === 'link' && mark.attrs.uploading === filename) {
+      if (mark.type.name === 'link' && mark.attrs.uploading === fileId) {
         position = pos + 1;
         return false;
       }
@@ -142,11 +143,12 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
   const objectUrl = URL.createObjectURL(file);
   const { selection } = editor.view.state;
   const currentNode = selection.$to.node();
+  const fileId = uniqueId(type);
 
   let position = selection.to;
   let content = {
     type,
-    attrs: { uploading: file.name, src: objectUrl, alt: file.name },
+    attrs: { uploading: fileId, src: objectUrl, alt: file.name },
   };
   let selectionIncrement = 0;
 
@@ -170,9 +172,9 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
     })
     .then(({ canonicalSrc }) => {
       // the position might have changed while uploading, so we need to find it again
-      position = findUploadedFilePosition(editor, file.name);
+      position = findUploadedFilePosition(editor, fileId);
 
-      uploadingStates[file.name] = true;
+      uploadingStates[fileId] = true;
 
       editor.view.dispatch(
         editor.state.tr.setMeta('preventAutolink', true).setNodeMarkup(position, undefined, {
@@ -186,7 +188,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
       chain(editor).setNodeSelection(position).run();
     })
     .catch((e) => {
-      position = findUploadedFilePosition(editor, file.name);
+      position = findUploadedFilePosition(editor, fileId);
 
       chain(editor)
         .deleteRange({ from: position, to: position + 1 })
@@ -203,14 +205,15 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
   const objectUrl = URL.createObjectURL(file);
   const { selection } = editor.view.state;
   const currentNode = selection.$to.node();
+  const fileId = uniqueId('file');
 
-  uploadingStates[file.name] = true;
+  uploadingStates[fileId] = true;
 
   let position = selection.to;
   let content = {
     type: 'text',
     text: file.name,
-    marks: [{ type: 'link', attrs: { href: objectUrl, uploading: file.name } }],
+    marks: [{ type: 'link', attrs: { href: objectUrl, uploading: fileId } }],
   };
 
   // if the current node is not empty, we need to wrap the content in a new paragraph
@@ -229,7 +232,7 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
     })
     .then(({ src, canonicalSrc }) => {
       // the position might have changed while uploading, so we need to find it again
-      position = findUploadedFilePosition(editor, file.name);
+      position = findUploadedFilePosition(editor, fileId);
 
       chain(editor)
         .setTextSelection(position)
@@ -238,7 +241,7 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eve
         .run();
     })
     .catch((e) => {
-      position = findUploadedFilePosition(editor, file.name);
+      position = findUploadedFilePosition(editor, fileId);
 
       chain(editor)
         .setTextSelection(position)

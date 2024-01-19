@@ -1136,7 +1136,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/highlight.rb'
     - 'lib/gitlab/hotlinking_detector.rb'
     - 'lib/gitlab/http.rb'
-    - 'lib/gitlab/http_connection_adapter.rb'
     - 'lib/gitlab/http_io.rb'
     - 'lib/gitlab/import_formatter.rb'
     - 'lib/gitlab/inactive_projects_deletion_warning_tracker.rb'

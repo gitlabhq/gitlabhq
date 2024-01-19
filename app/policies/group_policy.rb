@@ -243,6 +243,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
+    enable :update_git_access_protocol
 
     enable :read_billing
     enable :edit_billing

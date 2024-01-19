@@ -8741,33 +8741,6 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemupdateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
-### `Mutation.workItemUpdateTask`
-
-Updates a work item's task by Global ID.
-
-WARNING:
-**Introduced** in 15.1.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Input type: `WorkItemUpdateTaskInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemupdatetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemupdatetaskid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-| <a id="mutationworkitemupdatetasktaskdata"></a>`taskData` | [`WorkItemUpdatedTaskInput!`](#workitemupdatedtaskinput) | Arguments necessary to update a task. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationworkitemupdatetaskclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationworkitemupdatetaskerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationworkitemupdatetasktask"></a>`task` | [`WorkItem`](#workitem) | Updated task. |
-| <a id="mutationworkitemupdatetaskworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
-
 ### `Mutation.workspaceCreate`
 
 WARNING:
@@ -34786,27 +34759,6 @@ Attributes for value stream stage.
 | <a id="workitemconverttaskinputlockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
 | <a id="workitemconverttaskinputtitle"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
 | <a id="workitemconverttaskinputworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |
-
-### `WorkItemUpdatedTaskInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemupdatedtaskinputassigneeswidget"></a>`assigneesWidget` | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | Input for assignees widget. |
-| <a id="workitemupdatedtaskinputawardemojiwidget"></a>`awardEmojiWidget` | [`WorkItemWidgetAwardEmojiUpdateInput`](#workitemwidgetawardemojiupdateinput) | Input for emoji reactions widget. |
-| <a id="workitemupdatedtaskinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
-| <a id="workitemupdatedtaskinputcurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
-| <a id="workitemupdatedtaskinputdescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
-| <a id="workitemupdatedtaskinputhierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
-| <a id="workitemupdatedtaskinputid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-| <a id="workitemupdatedtaskinputlabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
-| <a id="workitemupdatedtaskinputmilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
-| <a id="workitemupdatedtaskinputnoteswidget"></a>`notesWidget` | [`WorkItemWidgetNotesInput`](#workitemwidgetnotesinput) | Input for notes widget. |
-| <a id="workitemupdatedtaskinputnotificationswidget"></a>`notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
-| <a id="workitemupdatedtaskinputstartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
-| <a id="workitemupdatedtaskinputstateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
-| <a id="workitemupdatedtaskinputtitle"></a>`title` | [`String`](#string) | Title of the work item. |
 
 ### `WorkItemWidgetAssigneesInput`
 

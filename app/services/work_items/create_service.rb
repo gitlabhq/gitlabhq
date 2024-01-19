@@ -53,6 +53,21 @@ module WorkItems
       end
     end
 
+    def prepare_create_params(work_item)
+      execute_widgets(
+        work_item: work_item,
+        callback: :prepare_create_params,
+        widget_params: @widget_params,
+        service_params: params
+      )
+
+      super
+    end
+
+    def parent
+      container
+    end
+
     private
 
     override :handle_quick_actions

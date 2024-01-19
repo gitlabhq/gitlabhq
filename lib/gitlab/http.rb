@@ -6,8 +6,6 @@
 # the usages to the new gem.
 #
 
-require_relative 'http_connection_adapter'
-
 module Gitlab
   class HTTP
     BlockedUrlError = Gitlab::HTTP_V2::BlockedUrlError

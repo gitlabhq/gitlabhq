@@ -7,6 +7,7 @@ module API
         SharedGroupWithGroup.represent(group.shared_with_group_links_visible_to_user(options[:current_user]))
       end
       expose :runners_token, if: ->(_, options) { options[:user_can_admin_group] }
+      expose :enabled_git_access_protocol, if: ->(group, options) { group.root? && options[:user_can_admin_group] }
       expose :prevent_sharing_groups_outside_hierarchy,
         if: ->(group) { group.root? && group.namespace_settings.present? }
 

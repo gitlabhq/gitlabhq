@@ -15,9 +15,9 @@ func ExitStatus(err error) (int, bool) {
 	}
 }
 
-func KillProcessGroup(cmd *exec.Cmd) {
+func KillProcessGroup(cmd *exec.Cmd) error {
 	if cmd == nil {
-		return
+		return nil
 	}
 
 	if p := cmd.Process; p != nil && p.Pid > 0 {
@@ -26,5 +26,5 @@ func KillProcessGroup(cmd *exec.Cmd) {
 	}
 
 	// reap our child process
-	cmd.Wait()
+	return cmd.Wait()
 }

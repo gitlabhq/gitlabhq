@@ -446,14 +446,18 @@ class NotificationService
     return unless note.project.service_desk_enabled?
 
     issue = note.noteable
-    recipients = issue.email_participants_emails
+    recipients = issue.issue_email_participants
 
     return unless recipients.any?
 
-    support_bot = Users::Internal.support_bot
-    recipients.delete(issue.external_author) if note.author == support_bot
+    # Only populated if note is from external participant
+    note_external_author = note.note_metadata&.email_participant&.downcase
 
     recipients.each do |recipient|
+      # Don't send Service Desk notification if the recipient is the author of the note.
+      # We store emails as-is but compare downcased versions.
+      next if recipient.email.downcase == note_external_author
+
       mailer.service_desk_new_note_email(issue.id, note.id, recipient).deliver_later
       Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
     end

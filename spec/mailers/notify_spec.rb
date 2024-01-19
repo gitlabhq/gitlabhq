@@ -1538,9 +1538,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     context 'for service desk issues' do
+      let_it_be(:issue_email_participant) do
+        create(:issue_email_participant, issue: issue, email: 'service.desk@example.com')
+      end
+
       before do
         issue.update!(external_author: 'service.desk@example.com')
-        issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
 
       describe 'thank you email', feature_category: :service_desk do
@@ -1615,7 +1618,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       describe 'new note email', feature_category: :service_desk do
         let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
 
-        subject { described_class.service_desk_new_note_email(issue.id, first_note.id, 'service.desk@example.com') }
+        subject { described_class.service_desk_new_note_email(issue.id, first_note.id, issue_email_participant) }
 
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'

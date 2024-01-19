@@ -491,6 +491,8 @@ module Gitlab
     private_class_method :increment_call_count
 
     def self.decrement_call_count(key)
+      return unless Gitlab::SafeRequestStore[key]
+
       Gitlab::SafeRequestStore[key] -= 1
     end
     private_class_method :decrement_call_count

@@ -76,9 +76,9 @@ export function processFilters(filters) {
       type = FILTERED_SEARCH_TERM;
       value = token;
     } else {
-      type = token.type;
-      operator = token.value.operator;
-      value = token.value.data;
+      type = token?.type;
+      operator = token?.value?.operator;
+      value = token?.value?.data;
     }
 
     if (!acc[type]) {

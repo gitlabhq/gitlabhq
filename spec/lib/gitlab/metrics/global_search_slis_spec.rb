@@ -87,6 +87,10 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
   end
 
   describe '#record_apdex' do
+    before do
+      allow(::Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return('end')
+    end
+
     where(:search_type, :code_search, :duration_target) do
       'basic'    | false | 8.812
       'basic'    | true  | 27.538
@@ -96,10 +100,6 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
     end
 
     with_them do
-      before do
-        allow(::Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return('end')
-      end
-
       let(:search_scope) { code_search ? 'blobs' : 'issues' }
 
       it 'increments the global_search SLI as a success if the elapsed time is within the target' do
@@ -141,6 +141,46 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_sear
           search_type: search_type,
           search_level: 'global',
           search_scope: search_scope
+        )
+      end
+    end
+
+    context 'when the search scope is merge_requests and the search type is basic' do
+      it 'increments the global_search SLI as a success if the elapsed time is within the target' do
+        expect(Gitlab::Metrics::Sli::Apdex[:global_search]).to receive(:increment).with(
+          labels: {
+            search_type: 'basic',
+            search_level: 'global',
+            search_scope: 'merge_requests',
+            endpoint_id: 'end'
+          },
+          success: true
+        )
+
+        described_class.record_apdex(
+          elapsed: 14,
+          search_type: 'basic',
+          search_level: 'global',
+          search_scope: 'merge_requests'
+        )
+      end
+
+      it 'increments the global_search SLI as a failure if the elapsed time is not within the target' do
+        expect(Gitlab::Metrics::Sli::Apdex[:global_search]).to receive(:increment).with(
+          labels: {
+            search_type: 'basic',
+            search_level: 'global',
+            search_scope: 'merge_requests',
+            endpoint_id: 'end'
+          },
+          success: false
+        )
+
+        described_class.record_apdex(
+          elapsed: 16,
+          search_type: 'basic',
+          search_level: 'global',
+          search_scope: 'merge_requests'
         )
       end
     end

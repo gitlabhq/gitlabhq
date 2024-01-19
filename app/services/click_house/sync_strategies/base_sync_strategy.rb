@@ -41,7 +41,7 @@ module ClickHouse
       private
 
       def enabled?
-        ClickHouse::Client.database_configured?(:main)
+        Gitlab::ClickHouse.configured?
       end
 
       def context

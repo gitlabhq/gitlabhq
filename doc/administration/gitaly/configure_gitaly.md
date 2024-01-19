@@ -136,16 +136,14 @@ To avoid downtime while rotating the Gitaly token, you can temporarily disable a
 
 Gitaly and GitLab use two shared secrets for authentication:
 
-- _Gitaly token_: used to authenticate gRPC requests to Gitaly
-- _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API
-
-Configure authentication in one of two ways:
+- _Gitaly token_: used to authenticate gRPC requests to Gitaly.
+- _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API.
 
 ::Tabs
 
 :::TabTitle Linux package (Omnibus)
 
-To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
+1. To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitaly['configuration'] = {
@@ -157,20 +155,20 @@ To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
    }
    ```
 
-Configure the _GitLab Shell token_ in one of two ways.
+1. Configure the _GitLab Shell token_ in one of two ways:
 
-Method 1 (recommended):
+   - Method 1 (recommended):
 
-Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
-   (and any other Gitaly clients).
+     Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
+     (and any other Gitaly clients).
 
-Method 2:
+   - Method 2:
 
-Edit `/etc/gitlab/gitlab.rb`:
+     Edit `/etc/gitlab/gitlab.rb`:
 
-   ```ruby
-   gitlab_shell['secret_token'] = 'shellsecret'
-   ```
+     ```ruby
+     gitlab_shell['secret_token'] = 'shellsecret'
+     ```
 
 :::TabTitle Self-compiled (source)
 
@@ -206,7 +204,7 @@ Updates to example must be made at:
 - All reference architecture pages
 -->
 
-Configure Gitaly server in one of two ways:
+Configure Gitaly server.
 
 ::Tabs
 

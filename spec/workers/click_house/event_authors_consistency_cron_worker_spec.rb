@@ -7,7 +7,7 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
   context 'when ClickHouse is disabled' do
     it 'does nothing' do
-      allow(ClickHouse::Client).to receive(:database_configured?).and_return(false)
+      allow(Gitlab::ClickHouse).to receive(:configured?).and_return(false)
 
       expect(worker).not_to receive(:log_extra_metadata_on_done)
 
@@ -17,7 +17,7 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
   context 'when the event_sync_worker_for_click_house feature flag is off' do
     it 'does nothing' do
-      allow(ClickHouse::Client).to receive(:database_configured?).and_return(true)
+      allow(Gitlab::ClickHouse).to receive(:configured?).and_return(true)
       stub_feature_flags(event_sync_worker_for_click_house: false)
 
       expect(worker).not_to receive(:log_extra_metadata_on_done)

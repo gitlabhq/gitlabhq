@@ -2,6 +2,8 @@
 
 module API
   class UsageData < ::API::Base
+    include APIGuard
+
     before { authenticate_non_get! }
 
     feature_category :service_ping
@@ -10,6 +12,33 @@ module API
       before do
         not_found! unless Feature.enabled?(:usage_data_api, type: :ops)
         forbidden!('Invalid CSRF token is provided') unless verified_request?
+      end
+
+      resource :service_ping do
+        allow_access_with_scope :read_service_ping
+
+        before do
+          authenticated_as_admin!
+        end
+
+        desc 'Get the latest ServicePing payload' do
+          detail 'Introduces in Gitlab 16.9. Requires Personal Access Token with read_service_ping scope.'
+          success code: 200
+          failure [
+            { code: 401, message: '401 Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[usage_data]
+          produces ['application/json']
+        end
+
+        get do
+          content_type 'application/json'
+
+          Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) ||
+            ::RawUsageData.for_current_reporting_cycle.first&.payload || {}
+        end
       end
 
       desc 'Track usage data event' do

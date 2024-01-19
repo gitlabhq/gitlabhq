@@ -1010,6 +1010,7 @@ epic:
 - user_note_authors
 - boards_epic_user_preferences
 - epic_board_positions
+- work_item
 epic_issue:
 - epic
 - issue

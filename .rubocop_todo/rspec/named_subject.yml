@@ -2225,7 +2225,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/health_checks/probes/collection_spec.rb'
     - 'spec/lib/gitlab/health_checks/redis_spec.rb'
     - 'spec/lib/gitlab/hook_data/base_builder_spec.rb'
-    - 'spec/lib/gitlab/http_connection_adapter_spec.rb'
     - 'spec/lib/gitlab/http_io_spec.rb'
     - 'spec/lib/gitlab/import/database_helpers_spec.rb'
     - 'spec/lib/gitlab/import/merge_request_creator_spec.rb'

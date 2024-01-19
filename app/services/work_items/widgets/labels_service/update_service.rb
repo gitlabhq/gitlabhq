@@ -3,17 +3,9 @@
 module WorkItems
   module Widgets
     module LabelsService
-      class UpdateService < WorkItems::Widgets::BaseService
+      class UpdateService < BaseService
         def prepare_update_params(params: {})
-          if new_type_excludes_widget?
-            params[:remove_label_ids] = @work_item.labels.map(&:id)
-            params[:add_label_ids] = []
-          end
-
-          return if params.blank?
-          return unless has_permission?(:set_work_item_metadata)
-
-          service_params.merge!(params.slice(:add_label_ids, :remove_label_ids))
+          prepare_params(params: params, permitted_params: %i[add_label_ids remove_label_ids])
         end
       end
     end

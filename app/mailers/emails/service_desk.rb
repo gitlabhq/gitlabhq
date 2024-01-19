@@ -37,7 +37,7 @@ module Emails
     def service_desk_new_note_email(issue_id, note_id, recipient)
       @note = Note.find(note_id)
 
-      setup_service_desk_mail(issue_id)
+      setup_service_desk_mail(issue_id, recipient)
       # Prepare uploads for text replacement in markdown content
       setup_service_desk_attachments
 
@@ -49,7 +49,7 @@ module Emails
 
       options = {
         from: email_sender,
-        to: recipient,
+        to: recipient.email,
         subject: subject_base,
         **service_desk_template_content_options('new_note')
       }
@@ -119,14 +119,20 @@ module Emails
 
     private
 
-    def setup_service_desk_mail(issue_id)
+    def setup_service_desk_mail(issue_id, issue_email_participant = nil)
       @issue = Issue.find(issue_id)
       @project = @issue.project
       @support_bot = Users::Internal.support_bot
 
       @service_desk_setting = @project.service_desk_setting
 
-      @sent_notification = SentNotification.record(@issue, @support_bot.id, reply_key)
+      if issue_email_participant.blank? && @issue.external_author.present?
+        issue_email_participant = @issue.issue_email_participants.find_by_email(@issue.external_author)
+      end
+
+      @sent_notification = SentNotification.record(@issue, @support_bot.id, reply_key, {
+        issue_email_participant: issue_email_participant
+      })
     end
 
     def service_desk_template_content_options(email_type)

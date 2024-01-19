@@ -62,7 +62,7 @@ module Gitlab
       def validate_url_with_proxy!(url)
         UrlBlocker.validate_url_with_proxy!(url, **url_blocker_options)
       rescue UrlBlocker::BlockedUrlError => e
-        raise HTTP_V2::BlockedUrlError, "URL is blocked: #{e.message}"
+        raise BlockedUrlError, "URL is blocked: #{e.message}"
       end
 
       def url_blocker_options

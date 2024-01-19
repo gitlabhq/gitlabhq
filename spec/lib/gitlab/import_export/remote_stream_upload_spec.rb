@@ -23,10 +23,14 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
   describe '#execute' do
     context 'when download request and upload request return 200' do
-      it 'uploads the downloaded content' do
+      before do
+        stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+        stub_application_setting(dns_rebinding_protection_enabled: false)
         stub_request(:get, download_url).to_return(status: 200, body: 'ABC', headers: { 'Content-Length' => 3 })
         stub_request(:post, upload_url)
+      end
 
+      it 'uploads the downloaded content' do
         subject.execute
 
         expect(
@@ -34,6 +38,16 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
             body: 'ABC', headers: { 'Content-Length' => 3, 'Content-Type' => 'text/plain' }
           )
         ).to have_been_made
+      end
+
+      it 'calls the connection adapter twice with required args' do
+        expect(Gitlab::HTTP_V2::NewConnectionAdapter)
+          .to receive(:new).twice.with(instance_of(URI::HTTP), {
+            allow_local_requests: true,
+            dns_rebind_protection: false
+          }).and_call_original
+
+        subject.execute
       end
     end
 
@@ -87,7 +101,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
       it 'raises error' do
         expect { subject.execute }.to raise_error(
-          Gitlab::HTTP::BlockedUrlError,
+          Gitlab::HTTP_V2::BlockedUrlError,
           "URL is blocked: Requests to localhost are not allowed"
         )
       end
@@ -113,7 +127,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
       it 'raises error' do
         expect { subject.execute }.to raise_error(
-          Gitlab::HTTP::BlockedUrlError,
+          Gitlab::HTTP_V2::BlockedUrlError,
           "URL is blocked: Requests to the local network are not allowed"
         )
       end
@@ -141,7 +155,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
         stub_request(:get, download_url)
 
         expect { subject.execute }.to raise_error(
-          Gitlab::HTTP::BlockedUrlError,
+          Gitlab::HTTP_V2::BlockedUrlError,
           "URL is blocked: Requests to localhost are not allowed"
         )
       end
@@ -167,7 +181,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
 
       it 'raises error' do
         expect { subject.execute }.to raise_error(
-          Gitlab::HTTP::BlockedUrlError,
+          Gitlab::HTTP_V2::BlockedUrlError,
           "URL is blocked: Requests to the local network are not allowed"
         )
       end
@@ -191,7 +205,7 @@ RSpec.describe Gitlab::ImportExport::RemoteStreamUpload do
         stub_full_request(upload_url, ip_address: '127.0.0.1', method: upload_method)
 
         expect { subject.execute }.to raise_error(
-          Gitlab::HTTP::BlockedUrlError,
+          Gitlab::HTTP_V2::BlockedUrlError,
           "URL is blocked: Requests to localhost are not allowed"
         )
       end

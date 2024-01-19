@@ -11,15 +11,15 @@ class SentNotificationsController < ApplicationController
 
     return render_404 unless unsubscribe_prerequisites_met?
 
-    return unsubscribe_and_redirect if current_user || params[:force]
+    unsubscribe_and_redirect if current_user || params[:force]
   end
 
   private
 
   def unsubscribe_prerequisites_met?
     @sent_notification.present? &&
-    @sent_notification.unsubscribable? &&
-    noteable.present?
+      @sent_notification.unsubscribable? &&
+      noteable.present?
   end
 
   def noteable
@@ -29,9 +29,7 @@ class SentNotificationsController < ApplicationController
   def unsubscribe_and_redirect
     noteable.unsubscribe(@sent_notification.recipient, @sent_notification.project)
 
-    if noteable.is_a?(Issue) && @sent_notification.recipient_id == Users::Internal.support_bot.id
-      noteable.unsubscribe_email_participant(noteable.external_author)
-    end
+    unsubscribe_issue_email_participant
 
     flash[:notice] = _("You have been unsubscribed from this thread.")
 
@@ -44,6 +42,15 @@ class SentNotificationsController < ApplicationController
     else
       redirect_to new_user_session_path
     end
+  end
+
+  def unsubscribe_issue_email_participant
+    return unless noteable.is_a?(Issue)
+    return unless @sent_notification.recipient_id == Users::Internal.support_bot.id
+
+    # Unsubscribe external author for legacy reasons when no issue email participant is set
+    email = @sent_notification.issue_email_participant&.email || noteable.external_author
+    noteable.unsubscribe_email_participant(email)
   end
 
   def noteable_path(noteable)

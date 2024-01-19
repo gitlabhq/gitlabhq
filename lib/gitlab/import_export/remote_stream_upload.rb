@@ -77,7 +77,10 @@ module Gitlab
       attr_reader :download_url, :upload_url, :upload_method, :upload_content_type, :logger
 
       def receive_data(uri)
-        http = Gitlab::HTTPConnectionAdapter.new(URI(uri), {}).connection
+        http = Gitlab::HTTP_V2::NewConnectionAdapter.new(URI(uri), {
+          allow_local_requests: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
+          dns_rebind_protection: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
+        }).connection
 
         http.start do
           request = Net::HTTP::Get.new(uri)
@@ -95,7 +98,10 @@ module Gitlab
       end
 
       def send_data(uri, content_length, chunks)
-        http = Gitlab::HTTPConnectionAdapter.new(URI(uri), {}).connection
+        http = Gitlab::HTTP_V2::NewConnectionAdapter.new(URI(uri), {
+          allow_local_requests: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
+          dns_rebind_protection: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
+        }).connection
 
         http.start do
           request = upload_request_class(upload_method).new(uri)

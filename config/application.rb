@@ -11,6 +11,7 @@ require 'action_view/railtie'
 require 'action_mailer/railtie'
 require 'action_cable/engine'
 require 'rails/test_unit/railtie'
+require 'sprockets/railtie'
 
 require 'gitlab/utils/all'
 
@@ -253,6 +254,19 @@ module Gitlab
     config.active_record.collection_cache_versioning = false
     config.active_record.has_many_inversing = false
     config.active_record.belongs_to_required_by_default = false
+
+    # Switch between cssbundling-rails and sassc-rails conditionally
+    # To activate cssbundling-rails you can set `USE_NEW_CSS_PIPELINE=1`
+    # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
+    # Need to be loaded before initializers
+    config.before_configuration do
+      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"])
+        require 'cssbundling-rails'
+      else
+        require 'fileutils'
+        require 'sassc-rails'
+      end
+    end
 
     # Enable the asset pipeline
     config.assets.enabled = true
@@ -542,7 +556,7 @@ module Gitlab
 
     # sprocket-rails adds some precompile assets we actually do not need.
     #
-    # It copies all _non_ js and CSS files from the app/assets/ older.
+    # It copies all _non_ js and CSS files from the app/assets/ folder.
     #
     # In our case this copies for example: Vue, Markdown and Graphql, which we do not need
     # for production.
@@ -603,6 +617,14 @@ module Gitlab
         %w[images javascripts stylesheets].each do |path|
           app.config.assets.paths.unshift("#{config.root}/#{extension}/app/assets/#{path}")
         end
+      end
+    end
+
+    # Add `app/assets/builds` as the highest precedence to find assets
+    # This is required if cssbundling-rails is used, but should not affect sassc-rails. it would be empty
+    if defined?(Cssbundling)
+      initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
+        app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
       end
     end
 

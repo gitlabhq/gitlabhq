@@ -66,7 +66,7 @@ module ClickHouse
       end
 
       def enabled?
-        ClickHouse::Client.database_configured?(:main) && Feature.enabled?(:event_sync_worker_for_click_house)
+        Gitlab::ClickHouse.configured? && Feature.enabled?(:event_sync_worker_for_click_house)
       end
 
       def runtime_limiter

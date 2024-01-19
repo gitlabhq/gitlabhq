@@ -520,7 +520,7 @@ Example response:
 
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
-if the group is publicly accessible. With authentication, it returns the `runners_token`
+if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
 for the group too, if the user is an administrator or group owner.
 
 ```plaintext
@@ -568,6 +568,7 @@ Example response:
   "runners_token": "ba324ca7b1c77fc20bb9",
   "file_template_project_id": 1,
   "parent_id": null,
+  "enabled_git_access_protocol": "all",
   "created_at": "2020-01-15T12:36:29.590Z",
   "shared_with_groups": [
     {
@@ -829,6 +830,7 @@ Parameters:
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
+| `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead.                                       |
 | `emails_enabled`                                        | boolean | no       | Enable email notifications.                                                                                                                                                                     |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group.                                                                                                                         |
@@ -1001,6 +1003,7 @@ PUT /groups/:id
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
+| `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |
 | `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
@@ -1060,6 +1063,7 @@ Example response:
   "full_path": "h5bp",
   "file_template_project_id": 1,
   "parent_id": null,
+  "enabled_git_access_protocol": "all",
   "created_at": "2020-01-15T12:36:29.590Z",
   "prevent_sharing_groups_outside_hierarchy": false,
   "projects": [ // Deprecated and will be removed in API v5

@@ -365,6 +365,20 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
       it 'returns the result of the allow_n_plus_1_calls block' do
         expect(described_class.allow_n_plus_1_calls { "result" }).to eq("result")
       end
+
+      context 'when the `gitaly_call_count_exception_block_depth` key is not present' do
+        before do
+          allow(Gitlab::SafeRequestStore).to receive(:[]).with(:gitaly_call_count_exception_block_depth).and_return(0, 1, nil)
+          allow(Gitlab::SafeRequestStore).to receive(:+)
+          allow(Gitlab::SafeRequestStore).to receive(:-)
+        end
+
+        it 'does not decrement call count' do
+          expect(Gitlab::SafeRequestStore).not_to have_received(:-)
+
+          described_class.allow_n_plus_1_calls { "result" }
+        end
+      end
     end
 
     context 'when RequestStore is not active' do

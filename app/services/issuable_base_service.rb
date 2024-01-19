@@ -227,6 +227,7 @@ class IssuableBaseService < ::BaseContainerService
   def create(issuable, skip_system_notes: false)
     initialize_callbacks!(issuable)
 
+    prepare_create_params(issuable)
     handle_quick_actions(issuable)
     filter_params(issuable)
 
@@ -286,6 +287,10 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def prepare_update_params(issuable)
+    # To be overridden by subclasses
+  end
+
+  def prepare_create_params(issuable)
     # To be overridden by subclasses
   end
 
