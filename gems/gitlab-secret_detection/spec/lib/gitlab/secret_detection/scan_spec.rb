@@ -149,6 +149,16 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         )
       end
 
+      it "attempts to keyword match returning only filtered blobs for further scan" do
+        expected = blobs.filter { |b| b.data != "data with no secret" }
+
+        expect(scan).to receive(:filter_by_keywords)
+                          .with(blobs)
+                          .and_return(expected)
+
+        scan.secrets_scan(blobs)
+      end
+
       it "matches multiple rules when running in main process" do
         expect(scan.secrets_scan(blobs, subprocess: false)).to eq(expected_response)
       end

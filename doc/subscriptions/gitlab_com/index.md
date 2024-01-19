@@ -64,10 +64,6 @@ The following information is displayed:
 
 ## How seat usage is determined
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216899) in GitLab 13.5.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/292086) in GitLab 13.8 to include public
-    email address.
-
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
 add and remove users during the subscription period without incurring additional charges, as long as the total users
@@ -123,8 +119,6 @@ The usage statistics are updated once per day, which may cause
 a difference between the information in the **Usage Quotas** page and the **Billing page**.
 
 ### Search seat usage
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.8.
 
 To search users in the **Seat usage** page, enter a string in the search field. A minimum of 3
 characters are required.
@@ -232,7 +226,7 @@ After you dismiss the alert, it doesn't display until another seat is used.
 The alert displays based on the following seat usage. You cannot configure the
 amounts at which the alert displays.
 
-| Seats in subscription | Seat usage           |
+| Seats in subscription | Alert displays when           |
 |-----------------------|----------------------|
 | 0-15                  | One seat remains.     |
 | 16-25                 | Two seats remain.    |

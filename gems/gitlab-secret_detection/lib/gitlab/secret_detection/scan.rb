@@ -86,9 +86,9 @@ module Gitlab
           next SecretDetection::Response.new(SecretDetection::Status::NOT_FOUND) if matched_blobs.empty?
 
           secrets = if subprocess
-                      run_scan_within_subprocess(blobs, blob_timeout)
+                      run_scan_within_subprocess(matched_blobs, blob_timeout)
                     else
-                      run_scan(blobs, blob_timeout)
+                      run_scan(matched_blobs, blob_timeout)
                     end
 
           scan_status = overall_scan_status(secrets)

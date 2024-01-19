@@ -78,9 +78,8 @@ Follow the steps for Linux package installations for each Web and Sidekiq node.
 ## Turn on the Dependency Proxy
 
 The Dependency Proxy is turned on by default, but can be turned off by an
-administrator. To turn on the Dependency Proxy, follow the instructions in
-[Turn off the Dependency Proxy](#turn-off-the-dependency-proxy),
-but set the `enabled` fields to `true`.
+administrator. To turn it off manually, follow the instructions in
+[Turn off the Dependency Proxy](#turn-off-the-dependency-proxy).
 
 ## Changing the storage path
 
