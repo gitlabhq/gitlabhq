@@ -27,8 +27,6 @@ Redis::Cluster::SlotLoader.prepend(Gitlab::Patch::SlotLoader)
 Redis::Cluster::CommandLoader.prepend(Gitlab::Patch::CommandLoader)
 Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
 
-ConnectionPool.prepend(Gitlab::Instrumentation::ConnectionPool)
-
 # this only instruments `RedisClient` used in `Sidekiq.redis`
 RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
 

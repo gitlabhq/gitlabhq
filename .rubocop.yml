@@ -883,6 +883,12 @@ Migration/SchemaAdditionMethodsNoPost:
     - db/post_migrate/*.rb
   EnforcedSince: 20221024034228
 
+Migration/AsyncPostMigrateOnly:
+  Enabled: true
+  Include:
+    - db/**/*.rb
+  EnforcedSince: 20240115115029
+
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'

@@ -29,6 +29,7 @@ module Pajamas
     def avatar_classes
       classes = ["gl-avatar", "gl-avatar-s#{@size}", @class]
       classes.push("gl-avatar-circle") if @item.is_a?(User) || @item.is_a?(AvatarEmail)
+      classes.push("gl-rounded-base!") if @item.is_a?(Project) || @item.is_a?(Group)
 
       unless src
         classes.push("gl-avatar-identicon")

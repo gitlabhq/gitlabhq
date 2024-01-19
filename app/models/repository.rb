@@ -1281,11 +1281,27 @@ class Repository
   def object_format
     return unless exists?
 
-    case raw.object_format
-    when :OBJECT_FORMAT_SHA1
-      FORMAT_SHA1
-    when :OBJECT_FORMAT_SHA256
-      FORMAT_SHA256
+    cache_key = "object_format:#{full_path}"
+
+    request_store_cache.fetch(cache_key) do
+      case raw.object_format
+      when :OBJECT_FORMAT_SHA1
+        FORMAT_SHA1
+      when :OBJECT_FORMAT_SHA256
+        FORMAT_SHA256
+      end
+    end
+  end
+
+  def blank_ref
+    return Gitlab::Git::SHA1_BLANK_SHA unless exists? &&
+      Feature.enabled?(:determine_blank_ref_based_on_gitaly_object_format, project, type: :gitlab_com_derisk)
+
+    case object_format
+    when FORMAT_SHA1
+      Gitlab::Git::SHA1_BLANK_SHA
+    when FORMAT_SHA256
+      Gitlab::Git::SHA256_BLANK_SHA
     end
   end
 

@@ -284,14 +284,29 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '.find_or_initialize_all_non_project_specific' do
     shared_examples 'integration instances' do
-      it 'returns the available integration instances' do
-        expect(described_class.find_or_initialize_all_non_project_specific(described_class.for_instance).map(&:to_param))
-          .to match_array(described_class.available_integration_names(include_project_specific: false))
-      end
+      [false, true].each do |include_instance_specific|
+        context "with include_instance_specific value equal to #{include_instance_specific}" do
+          it 'returns the available integration instances' do
+            integrations = described_class.find_or_initialize_all_non_project_specific(
+              described_class.for_instance, include_instance_specific: include_instance_specific
+            ).map(&:to_param)
 
-      it 'does not create integration instances' do
-        expect { described_class.find_or_initialize_all_non_project_specific(described_class.for_instance) }
-          .not_to change(described_class, :count)
+            expect(integrations).to match_array(
+              described_class.available_integration_names(
+                include_project_specific: false,
+                include_instance_specific: include_instance_specific)
+            )
+          end
+
+          it 'does not create integration instances' do
+            expect do
+              described_class.find_or_initialize_all_non_project_specific(
+                described_class.for_instance,
+                include_instance_specific: include_instance_specific
+              )
+            end.not_to change(described_class, :count)
+          end
+        end
       end
     end
 
@@ -990,6 +1005,7 @@ RSpec.describe Integration, feature_category: :integrations do
       allow(described_class).to receive(:integration_names).and_return(%w[foo])
       allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
       allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
+      allow(described_class).to receive(:instance_specific_integration_names).and_return(['instance-specific'])
     end
 
     it { is_expected.to include('foo', 'bar', 'baz') }
@@ -997,15 +1013,22 @@ RSpec.describe Integration, feature_category: :integrations do
     context 'when `include_project_specific` is false' do
       subject { described_class.available_integration_names(include_project_specific: false) }
 
-      it { is_expected.to include('foo', 'baz') }
+      it { is_expected.to include('foo', 'baz', 'instance-specific') }
       it { is_expected.not_to include('bar') }
     end
 
     context 'when `include_dev` is false' do
       subject { described_class.available_integration_names(include_dev: false) }
 
-      it { is_expected.to include('foo', 'bar') }
+      it { is_expected.to include('foo', 'bar', 'instance-specific') }
       it { is_expected.not_to include('baz') }
+    end
+
+    context 'when `include_instance_specific` is false' do
+      subject { described_class.available_integration_names(include_instance_specific: false) }
+
+      it { is_expected.to include('foo', 'baz', 'bar') }
+      it { is_expected.not_to include('instance-specific') }
     end
   end
 

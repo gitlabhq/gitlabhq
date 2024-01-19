@@ -143,6 +143,22 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
         end
       end
 
+      context 'when the parsed external command output returns invalid hash' do
+        before do
+          allow(Gitlab::Popen)
+            .to receive(:popen)
+            .and_return(["hello", 0])
+        end
+
+        it 'raises an error' do
+          expect { configuration.database_configuration }
+            .to raise_error(
+              Gitlab::Patch::DatabaseConfig::CommandExecutionError,
+              %r{database.yml: The output of `/opt/database-config.sh` must be a Hash, String given}
+            )
+        end
+      end
+
       context 'when the external command fails' do
         before do
           allow(Gitlab::Popen).to receive(:popen).and_return(["", 125])

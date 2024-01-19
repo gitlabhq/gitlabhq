@@ -55,7 +55,14 @@ module Gitlab
             "database.yml: Execution of `#{command}` failed with exit code #{exit_status}. Output: #{output}"
         end
 
-        YAML.safe_load(output).deep_stringify_keys
+        parsed_output = YAML.safe_load(output)
+
+        unless parsed_output.is_a?(Hash)
+          raise CommandExecutionError,
+            "database.yml: The output of `#{command}` must be a Hash, #{parsed_output.class} given. Output: #{parsed_output}"
+        end
+
+        parsed_output.deep_stringify_keys
       rescue Psych::SyntaxError => e
         error_message = <<~MSG
           database.yml: Execution of `#{command}` generated invalid yaml.

@@ -24,15 +24,13 @@ module Projects
       rescue Gitlab::Git::CommandTimedOut, GRPC::Internal => e
         Gitlab::ErrorTracking.track_exception(e)
       end
-
-      cleanup_orphan_lfs_file_references(resource) unless reorder_feature_flag?(resource)
     end
 
     override :after_gitaly_call
     def after_gitaly_call(task, resource)
       return unless gc?(task)
 
-      cleanup_orphan_lfs_file_references(resource) if reorder_feature_flag?(resource)
+      cleanup_orphan_lfs_file_references(resource)
     end
 
     def cleanup_orphan_lfs_file_references(resource)
@@ -51,10 +49,6 @@ module Projects
 
     def stats
       [:repository_size, :lfs_objects_size]
-    end
-
-    def reorder_feature_flag?(resource)
-      Feature.enabled?(:reorder_garbage_collection_calls, resource, type: :gitlab_com_derisk)
     end
   end
 end

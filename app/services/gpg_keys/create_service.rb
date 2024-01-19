@@ -3,15 +3,25 @@
 module GpgKeys
   class CreateService < Keys::BaseService
     def execute
-      key = create(params)
+      key = user.gpg_keys.build(params)
+
+      return key unless validate(key)
+
+      create(key)
+
       notification_service.new_gpg_key(key) if key.persisted?
       key
     end
 
     private
 
-    def create(params)
-      user.gpg_keys.create(params)
+    def validate(key)
+      GpgKeys::ValidateIntegrationsService.new(key).execute
+    end
+
+    def create(key)
+      key.save
+      key
     end
   end
 end

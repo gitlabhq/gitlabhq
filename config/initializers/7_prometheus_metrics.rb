@@ -103,6 +103,11 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   end
 
   Gitlab::Ci::Parsers.instrument!
+
+  # We intentionally defer this instrumentation to occur after `reinitialize_on_pid_change`.
+  # Otherwise `ConnectionPool.after_fork` will result in the instrumentation being called early,
+  # before we had a chance to re-initialize prometheus mmapped metrics.
+  ConnectionPool.prepend(Gitlab::Instrumentation::ConnectionPool)
 rescue IOError => e
   Gitlab::ErrorTracking.track_exception(e)
   Gitlab::Metrics.error_detected!

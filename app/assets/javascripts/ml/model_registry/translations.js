@@ -47,6 +47,11 @@ export const makeLoadVersionsErrorMessage = (message) =>
     message,
   });
 
+export const makeLoadModelErrorMessage = (message) =>
+  sprintf(s__('MlModelRegistry|Failed to load model with error: %{message}'), {
+    message,
+  });
+
 export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no candidates');
 export const makeLoadCandidatesErrorMessage = (message) =>
   sprintf(s__('MlModelRegistry|Failed to load model candidates with error: %{message}'), {

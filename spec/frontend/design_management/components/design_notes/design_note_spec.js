@@ -147,6 +147,31 @@ describe('Design note component', () => {
     it('should not display a dropdown if user does not have a permission to delete note', () => {
       expect(findDropdown().exists()).toBe(false);
     });
+
+    it('should not have a `Deleted user` header', () => {
+      expect(wrapper.text()).not.toContain('A deleted user');
+    });
+  });
+
+  describe('when note has no author', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          note: {
+            ...note,
+            author: null,
+          },
+        },
+      });
+    });
+
+    it('should not render author details', () => {
+      expect(findUserLink().exists()).toBe(false);
+    });
+
+    it('should render a `Deleted user` header', () => {
+      expect(wrapper.text()).toContain('A deleted user');
+    });
   });
 
   describe('when user has a permission to edit note', () => {
@@ -280,6 +305,7 @@ describe('Design note component', () => {
           ...note,
           userPermissions: {
             adminNote: true,
+            awardEmoji: false,
           },
         },
       },
@@ -297,6 +323,7 @@ describe('Design note component', () => {
           ...note,
           userPermissions: {
             adminNote: true,
+            awardEmoji: false,
           },
         },
       },

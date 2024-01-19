@@ -52,7 +52,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
         Integrations::Zentao.to_param
       ]
 
-      names = Integration.available_integration_names
+      names = Integration.available_integration_names(include_instance_specific: false)
       names.reject { |name| name.in?(unavailable_integration_names) }
     end
 

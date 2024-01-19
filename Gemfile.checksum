@@ -454,7 +454,7 @@
 {"name":"pastel","version":"0.8.0","platform":"ruby","checksum":"481da9fb7d2f6e6b1a08faf11fa10363172dc40fd47848f096ae21209f805a75"},
 {"name":"peek","version":"1.1.0","platform":"ruby","checksum":"d6501ead8cde46d8d8ed0d59eb6f0ba713d0a41c11a2c4a81447b2dce37b3ecc"},
 {"name":"pg","version":"1.5.4","platform":"ruby","checksum":"04f7b247151c639a0b955d8e5a9a41541343f4640aa3c2bdf749a872c339d25d"},
-{"name":"pg_query","version":"4.2.3","platform":"ruby","checksum":"1cc9955c7bce8e51e1abc11f1952e3d9d0f1cd4c16c58c56ec75d5aaf1cfd697"},
+{"name":"pg_query","version":"5.1.0","platform":"ruby","checksum":"b7f7f47c864f08ccbed46a8244906fb6ee77ee344fd27250717963928c93145d"},
 {"name":"plist","version":"3.7.0","platform":"ruby","checksum":"703ca90a7cb00e8263edd03da2266627f6741d280c910abbbac07c95ffb2f073"},
 {"name":"png_quantizator","version":"0.2.1","platform":"ruby","checksum":"6023d4d064125c3a7e02929c95b7320ed6ac0d7341f9e8de0c9ea6576ef3106b"},
 {"name":"premailer","version":"1.16.0","platform":"ruby","checksum":"03e4402c448e6bae13fb5f6301a8bde4f3508e1bff90ae7c0972c7be94694786"},

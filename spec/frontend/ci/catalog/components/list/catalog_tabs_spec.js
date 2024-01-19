@@ -17,7 +17,7 @@ describe('Catalog Tabs', () => {
   };
 
   const findAllTab = () => wrapper.findByTestId('resources-all-tab');
-  const findYourResourcesTab = () => wrapper.findByTestId('resources-your-tab');
+  const findGroupResourcesTab = () => wrapper.findByTestId('resources-group-tab');
   const findLoadingIcons = () => wrapper.findAllComponents(GlLoadingIcon);
 
   const triggerTabChange = (index) => wrapper.findAllComponents(GlTab).at(index).vm.$emit('click');
@@ -52,9 +52,9 @@ describe('Catalog Tabs', () => {
       expect(trimText(findAllTab().text())).toBe(`All ${defaultProps.resourceCounts.all}`);
     });
 
-    it('renders your resources tab with count', () => {
-      expect(trimText(findYourResourcesTab().text())).toBe(
-        `Your resources ${defaultProps.resourceCounts.namespaces}`,
+    it('renders group resources tab with count', () => {
+      expect(trimText(findGroupResourcesTab().text())).toBe(
+        `Your groups ${defaultProps.resourceCounts.namespaces}`,
       );
     });
 

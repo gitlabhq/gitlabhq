@@ -103,6 +103,7 @@ export default {
           inputAttrs: {
             class: !this.fieldsToRender.includes(FORM_FIELD_ID) ? 'gl-md-form-input-lg' : null,
             placeholder: s__('Organization|My organization'),
+            'data-testid': 'organization-name',
           },
         },
         [FORM_FIELD_ID]: {

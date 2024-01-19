@@ -200,6 +200,7 @@ class Project < ApplicationRecord
   has_one :asana_integration, class_name: 'Integrations::Asana'
   has_one :assembla_integration, class_name: 'Integrations::Assembla'
   has_one :bamboo_integration, class_name: 'Integrations::Bamboo'
+  has_one :beyond_identity_integration, class_name: 'Integrations::BeyondIdentity'
   has_one :bugzilla_integration, class_name: 'Integrations::Bugzilla'
   has_one :buildkite_integration, class_name: 'Integrations::Buildkite'
   has_one :campfire_integration, class_name: 'Integrations::Campfire'
@@ -1725,7 +1726,7 @@ class Project < ApplicationRecord
 
   def find_or_initialize_integrations
     Integration
-      .available_integration_names
+      .available_integration_names(include_instance_specific: false)
       .difference(disabled_integrations)
       .map { find_or_initialize_integration(_1) }
       .sort_by(&:title)
@@ -1742,7 +1743,8 @@ class Project < ApplicationRecord
   end
 
   def find_or_initialize_integration(name)
-    return if disabled_integrations.include?(name) || Integration.available_integration_names.exclude?(name)
+    return if disabled_integrations.include?(name)
+    return if Integration.available_integration_names(include_instance_specific: false).exclude?(name)
 
     find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end

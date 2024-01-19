@@ -48,7 +48,9 @@ export default {
     />
     <div class="gl-ml-3">
       <div class="gl-display-flex gl-align-items-center">
-        <h1 class="gl-m-0 gl-font-size-h1">{{ organization.name }}</h1>
+        <h1 class="gl-m-0 gl-font-size-h1" data-testid="organization-name">
+          {{ organization.name }}
+        </h1>
         <gl-icon
           v-gl-tooltip="visibilityTooltip"
           :name="visibilityIcon"

@@ -35,6 +35,12 @@ module QA
             click_element(:create_menu_item, create_menu_item: 'general_new_group')
           end
         end
+
+        def go_to_create_organization
+          within_new_item_menu do
+            click_element(:create_menu_item, create_menu_item: 'general_new_organization')
+          end
+        end
       end
     end
   end

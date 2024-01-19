@@ -20,7 +20,7 @@ module Resolvers
         description: 'Ordering column. Default is desc.'
 
       def resolve(**args)
-        return unless current_user.can?(:read_model_registry, object)
+        return unless Ability.allowed?(current_user, :read_model_registry, object)
 
         find_params = {
           name: args[:name],

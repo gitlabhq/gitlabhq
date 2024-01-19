@@ -1,4 +1,4 @@
 - breadcrumb_title s_('ModelRegistry|Model registry')
 - page_title s_('ModelRegistry|Model registry')
 
-= render(Projects::Ml::ModelsIndexComponent.new(project: @project, current_user: current_user, paginator: @paginator, model_count: @model_count))
+#js-index-ml-models{ data: { view_model: index_ml_model_data(@project, @current_user) } }

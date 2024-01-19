@@ -1,32 +1,29 @@
 <script>
-import { isEmpty } from 'lodash';
-import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
+import { GlExperimentBadge, GlButton } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import EmptyState from '../components/empty_state.vue';
 import * as i18n from '../translations';
-import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
-import SearchBar from '../components/search_bar.vue';
+import { BASE_SORT_FIELDS, GRAPHQL_PAGE_SIZE, MODEL_ENTITIES } from '../constants';
 import ModelRow from '../components/model_row.vue';
 import ActionsDropdown from '../components/actions_dropdown.vue';
+import getModelsQuery from '../graphql/queries/get_models.query.graphql';
+import { makeLoadModelErrorMessage } from '../translations';
+import SearchableList from '../components/searchable_list.vue';
 
 export default {
   name: 'IndexMlModels',
   components: {
-    Pagination,
     ModelRow,
-    SearchBar,
     MetadataItem,
     TitleArea,
-    GlBadge,
-    EmptyState,
+    GlExperimentBadge,
     GlButton,
+    EmptyState,
     ActionsDropdown,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    SearchableList,
   },
   provide() {
     return {
@@ -34,22 +31,13 @@ export default {
     };
   },
   props: {
-    models: {
-      type: Array,
-      required: true,
-    },
-    pageInfo: {
-      type: Object,
+    projectPath: {
+      type: String,
       required: true,
     },
     createModelPath: {
       type: String,
       required: true,
-    },
-    modelCount: {
-      type: Number,
-      required: false,
-      default: 0,
     },
     canWriteModelRegistry: {
       type: Boolean,
@@ -62,9 +50,68 @@ export default {
       default: '',
     },
   },
+  apollo: {
+    models: {
+      query: getModelsQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.project?.mlModels ?? [];
+      },
+      error(error) {
+        this.handleError(error);
+      },
+    },
+  },
+  data() {
+    return {
+      models: [],
+      errorMessage: undefined,
+    };
+  },
   computed: {
-    hasModels() {
-      return !isEmpty(this.models);
+    pageInfo() {
+      return this.models?.pageInfo ?? {};
+    },
+    items() {
+      return this.models?.nodes ?? [];
+    },
+    count() {
+      return this.models?.count ?? 0;
+    },
+    isLoading() {
+      return this.$apollo.queries.models.loading;
+    },
+    queryVariables() {
+      return {
+        fullPath: this.projectPath,
+        first: GRAPHQL_PAGE_SIZE,
+      };
+    },
+  },
+  methods: {
+    fetchPage(variables) {
+      const vars = {
+        ...this.queryVariables,
+        ...variables,
+        name: variables.name,
+        orderBy: variables.orderBy?.toUpperCase() || 'CREATED_AT',
+        sort: variables.sort?.toUpperCase() || 'DESC',
+      };
+
+      this.$apollo.queries.models
+        .fetchMore({
+          variables: vars,
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            return fetchMoreResult;
+          },
+        })
+        .catch(this.handleError);
+    },
+    handleError(error) {
+      this.errorMessage = makeLoadModelErrorMessage(error.message);
+      Sentry.captureException(error);
     },
   },
   i18n,
@@ -80,28 +127,39 @@ export default {
       <template #title>
         <div class="gl-flex-grow-1 gl-display-flex gl-align-items-center">
           <span>{{ $options.i18n.TITLE_LABEL }}</span>
-          <gl-badge variant="neutral" class="gl-mx-4" size="lg" :href="$options.docHref">
-            {{ __('Experiment') }}
-          </gl-badge>
+          <gl-experiment-badge :help-page-url="$options.docHref" />
         </div>
       </template>
       <template #metadata-models-count>
-        <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(modelCount)" />
+        <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(count)" />
       </template>
       <template #right-actions>
-        <gl-button v-if="canWriteModelRegistry" :href="createModelPath">{{
-          $options.i18n.CREATE_MODEL_LABEL
-        }}</gl-button>
+        <gl-button
+          v-if="canWriteModelRegistry"
+          :href="createModelPath"
+          data-testid="create-model-button"
+          >{{ $options.i18n.CREATE_MODEL_LABEL }}</gl-button
+        >
 
         <actions-dropdown />
       </template>
     </title-area>
-    <template v-if="hasModels">
-      <search-bar :sortable-fields="$options.sortableFields" />
-      <model-row v-for="model in models" :key="model.name" :model="model" />
-      <pagination v-bind="pageInfo" />
-    </template>
+    <searchable-list
+      show-search
+      :page-info="pageInfo"
+      :items="items"
+      :error-message="errorMessage"
+      :is-loading="isLoading"
+      :sortable-fields="$options.sortableFields"
+      @fetch-page="fetchPage"
+    >
+      <template #empty-state>
+        <empty-state :entity-type="$options.modelEntity" />
+      </template>
 
-    <empty-state v-else :entity-type="$options.modelEntity" />
+      <template #item="{ item }">
+        <model-row :model="item" />
+      </template>
+    </searchable-list>
   </div>
 </template>

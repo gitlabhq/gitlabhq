@@ -80,7 +80,7 @@ module Gitlab
       end
 
       def blank_ref?(ref)
-        ref == SHA1_BLANK_SHA
+        ref == SHA1_BLANK_SHA || ref == SHA256_BLANK_SHA
       end
 
       def commit_id?(ref)

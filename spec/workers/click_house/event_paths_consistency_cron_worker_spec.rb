@@ -96,18 +96,20 @@ RSpec.describe ClickHouse::EventPathsConsistencyCronWorker, feature_category: :v
         stub_const("#{ClickHouse::Concerns::ConsistencyWorker}::POSTGRESQL_BATCH_SIZE", 1)
 
         expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-          { status: :modification_limit_reached, modifications: 2 })
+          { status: :limit_reached, modifications: 1 })
 
         worker.perform
 
         paths = [
           "#{namespace1.id}/",
           "#{namespace2.traversal_ids.join('/')}/",
-          "#{namespace_with_updated_parent.traversal_ids.join('/')}/"
+          "#{namespace_with_updated_parent.traversal_ids.join('/')}/",
+          "#{deleted_namespace_id}/"
         ]
 
         expect(leftover_paths).to match_array(paths)
-        expect(ClickHouse::SyncCursor.cursor_for(:event_namespace_paths_consistency_check)).to eq(deleted_namespace_id)
+        expect(ClickHouse::SyncCursor.cursor_for(:event_namespace_paths_consistency_check))
+          .to eq(namespace_with_updated_parent.id)
       end
     end
 

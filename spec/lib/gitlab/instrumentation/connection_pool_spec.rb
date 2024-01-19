@@ -4,6 +4,10 @@ require 'spec_helper'
 require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::Instrumentation::ConnectionPool, feature_category: :redis do
+  before do
+    ::ConnectionPool.prepend(::Gitlab::Instrumentation::ConnectionPool)
+  end
+
   let(:option) { { name: 'test', size: 5 } }
   let(:pool) { ConnectionPool.new(option) { 'nothing' } }
 

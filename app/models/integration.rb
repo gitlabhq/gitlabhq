@@ -26,6 +26,10 @@ class Integration < ApplicationRecord
     unify_circuit webex_teams youtrack zentao
   ].freeze
 
+  INSTANCE_SPECIFIC_INTEGRATION_NAMES = %w[
+    beyond_identity
+  ].freeze
+
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
     apple_app_store gitlab_slack_application google_play jenkins
@@ -124,9 +128,14 @@ class Integration < ApplicationRecord
   scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
   scope :with_custom_settings, -> { where(inherit_from_id: nil) }
   scope :for_group, ->(group) {
-                      where(group_id: group, type: available_integration_types(include_project_specific: false))
-                    }
-  scope :for_instance, -> { where(instance: true, type: available_integration_types(include_project_specific: false)) }
+    types = available_integration_types(include_project_specific: false, include_instance_specific: false)
+    where(group_id: group, type: types)
+  }
+
+  scope :for_instance, -> {
+    types = available_integration_types(include_project_specific: false, include_instance_specific: true)
+    where(instance: true, type: types)
+  }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -270,17 +279,18 @@ class Integration < ApplicationRecord
   end
 
   def self.find_or_initialize_non_project_specific_integration(name, instance: false, group_id: nil)
-    return unless name.in?(available_integration_names(include_project_specific: false))
+    return unless name.in?(available_integration_names(include_project_specific: false,
+      include_instance_specific: instance))
 
     integration_name_to_model(name).find_or_initialize_by(instance: instance, group_id: group_id)
   end
 
-  def self.find_or_initialize_all_non_project_specific(scope)
-    scope + build_nonexistent_integrations_for(scope)
+  def self.find_or_initialize_all_non_project_specific(scope, include_instance_specific: false)
+    scope + build_nonexistent_integrations_for(scope, include_instance_specific: include_instance_specific)
   end
 
-  def self.build_nonexistent_integrations_for(scope)
-    nonexistent_integration_types_for(scope).map do |type|
+  def self.build_nonexistent_integrations_for(...)
+    nonexistent_integration_types_for(...).map do |type|
       integration_type_to_model(type).new
     end
   end
@@ -288,25 +298,35 @@ class Integration < ApplicationRecord
 
   # Returns a list of integration types that do not exist in the given scope.
   # Example: ["AsanaService", ...]
-  def self.nonexistent_integration_types_for(scope)
+  def self.nonexistent_integration_types_for(scope, include_instance_specific: false)
     # Using #map instead of #pluck to save one query count. This is because
     # ActiveRecord loaded the object here, so we don't need to query again later.
-    available_integration_types(include_project_specific: false) - scope.map(&:type)
+    available_integration_types(
+      include_project_specific: false,
+      include_instance_specific: include_instance_specific
+    ) - scope.map(&:type)
   end
   private_class_method :nonexistent_integration_types_for
 
   # Returns a list of available integration names.
   # Example: ["asana", ...]
-  def self.available_integration_names(include_project_specific: true, include_dev: true)
+  def self.available_integration_names(
+    include_project_specific: true, include_dev: true, include_instance_specific: true
+  )
     names = integration_names
     names += project_specific_integration_names if include_project_specific
     names += dev_integration_names if include_dev
+    names += instance_specific_integration_names if include_instance_specific
 
     names.sort_by(&:downcase)
   end
 
   def self.integration_names
     INTEGRATION_NAMES
+  end
+
+  def self.instance_specific_integration_names
+    INSTANCE_SPECIFIC_INTEGRATION_NAMES
   end
 
   def self.dev_integration_names
@@ -323,8 +343,8 @@ class Integration < ApplicationRecord
 
   # Returns a list of available integration types.
   # Example: ["Integrations::Asana", ...]
-  def self.available_integration_types(include_project_specific: true, include_dev: true)
-    available_integration_names(include_project_specific: include_project_specific, include_dev: include_dev).map do
+  def self.available_integration_types(...)
+    available_integration_names(...).map do
       integration_name_to_type(_1)
     end
   end

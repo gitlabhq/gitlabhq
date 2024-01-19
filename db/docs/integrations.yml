@@ -13,6 +13,7 @@ classes:
 - Integrations::BaseSlackNotification
 - Integrations::BaseSlashCommands
 - Integrations::BaseThirdPartyWiki
+- Integrations::BeyondIdentity
 - Integrations::Bugzilla
 - Integrations::Buildkite
 - Integrations::Campfire

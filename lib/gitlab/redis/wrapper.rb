@@ -210,7 +210,14 @@ module Gitlab
             "Redis: Execution of `#{command}` failed with exit code #{exit_status}. Output: #{output}"
         end
 
-        YAML.safe_load(output).deep_symbolize_keys
+        parsed_output = YAML.safe_load(output)
+
+        unless parsed_output.is_a?(Hash)
+          raise CommandExecutionError,
+            "Redis: The output of `#{command}` must be a Hash, #{parsed_output.class} given. Output: #{parsed_output}"
+        end
+
+        parsed_output.deep_symbolize_keys
       rescue Psych::SyntaxError => e
         error_message = <<~MSG
           Redis: Execution of `#{command}` generated invalid yaml.

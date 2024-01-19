@@ -2,11 +2,14 @@
 import { GlAlert } from '@gitlab/ui';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
-import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
+import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import { GRAPHQL_PAGE_SIZE, LIST_KEY_CREATED_AT } from '~/ml/model_registry/constants';
+import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default {
   name: 'SearchableList',
-  components: { PackagesListLoader, RegistryList, GlAlert },
+  components: { PackagesListLoader, RegistryList, RegistrySearch, GlAlert },
   props: {
     items: {
       type: Array,
@@ -26,30 +29,92 @@ export default {
       required: false,
       default: '',
     },
+    showSearch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    sortableFields: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
+  data() {
+    const query = queryToObject(window.location.search);
+
+    const filter = query.name ? [{ value: { data: query.name }, type: FILTERED_SEARCH_TERM }] : [];
+
+    const orderBy = query.orderBy || LIST_KEY_CREATED_AT;
+
+    return {
+      filters: filter,
+      sorting: {
+        orderBy,
+        sort: (query.sort || 'desc').toLowerCase(),
+      },
+    };
   },
   computed: {
     isListEmpty() {
       return this.items.length === 0;
     },
+    parsedQuery() {
+      const name = this.filters
+        .map((f) => f.value.data)
+        .join(' ')
+        .trim();
+
+      const filterByQuery = name === '' ? {} : { name };
+
+      return { ...filterByQuery, ...this.sorting };
+    },
+  },
+  created() {
+    this.nextPage();
   },
   methods: {
     prevPage() {
-      const pageInfo = {
+      const variables = {
         first: null,
         last: GRAPHQL_PAGE_SIZE,
         before: this.pageInfo.startCursor,
+        ...this.parsedQuery,
       };
 
-      this.$emit('fetch-page', pageInfo);
+      this.fetchPage(variables);
     },
     nextPage() {
-      const pageInfo = {
+      const variables = {
         first: GRAPHQL_PAGE_SIZE,
         last: null,
         after: this.pageInfo.endCursor,
+        ...this.parsedQuery,
       };
 
-      this.$emit('fetch-page', pageInfo);
+      this.fetchPage(variables);
+    },
+    fetchPage(variables) {
+      updateHistory({
+        url: setUrlParams(variables, window.location.href, true),
+        title: document.title,
+        replace: true,
+      });
+
+      this.$emit('fetch-page', variables);
+    },
+    submitFilters() {
+      this.fetchPage(this.parsedQuery);
+    },
+    updateFilters(newValue) {
+      this.filters = newValue;
+    },
+    updateSorting(newValue) {
+      this.sorting = { ...this.sorting, ...newValue };
+    },
+    updateSortingAndEmitUpdate(newValue) {
+      this.updateSorting(newValue);
+      this.submitFilters();
     },
   },
 };
@@ -57,6 +122,16 @@ export default {
 
 <template>
   <div>
+    <registry-search
+      v-if="showSearch"
+      :filters="filters"
+      :sorting="sorting"
+      :sortable-fields="sortableFields"
+      @sorting:changed="updateSortingAndEmitUpdate"
+      @filter:changed="updateFilters"
+      @filter:submit="submitFilters"
+      @filter:clear="filters = []"
+    />
     <packages-list-loader v-if="isLoading" />
     <gl-alert v-else-if="errorMessage" variant="danger" :dismissible="false">
       {{ errorMessage }}

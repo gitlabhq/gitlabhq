@@ -36,8 +36,7 @@ export default {
         return data.mlModel?.versions ?? {};
       },
       error(error) {
-        this.errorMessage = makeLoadVersionsErrorMessage(error.message);
-        Sentry.captureException(error);
+        this.handleError(error);
       },
     },
   },
@@ -68,12 +67,18 @@ export default {
         ...pageInfo,
       };
 
-      this.$apollo.queries.modelVersions.fetchMore({
-        variables,
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          return fetchMoreResult;
-        },
-      });
+      this.$apollo.queries.modelVersions
+        .fetchMore({
+          variables,
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            return fetchMoreResult;
+          },
+        })
+        .catch(this.handleError);
+    },
+    handleError(error) {
+      this.errorMessage = makeLoadVersionsErrorMessage(error.message);
+      Sentry.captureException(error);
     },
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,

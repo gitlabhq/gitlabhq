@@ -31,7 +31,8 @@ module Types
       end
 
       field :before_sha, GraphQL::Types::String, null: true,
-                                                 description: 'Base SHA of the source branch.'
+                                                 description: 'Base SHA of the source branch.',
+                                                 calls_gitaly: true
 
       field :complete, GraphQL::Types::Boolean, null: false, method: :complete?,
                                                 description: 'Indicates if a pipeline is complete.'

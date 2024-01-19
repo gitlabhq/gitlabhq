@@ -89,6 +89,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:external_wiki_integration) }
     it { is_expected.to have_one(:confluence_integration) }
     it { is_expected.to have_one(:gitlab_slack_application_integration) }
+    it { is_expected.to have_one(:beyond_identity_integration) }
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:container_expiration_policy) }
@@ -6619,6 +6620,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         ]
       end
     end
+
+    context 'with instance specific integration' do
+      it 'does not contain instance specific integrations' do
+        expect(subject.find_or_initialize_integrations).not_to include(
+          have_attributes(title: 'Beyond Identity')
+        )
+      end
+    end
   end
 
   describe '#disabled_integrations' do
@@ -6693,6 +6702,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'builds the integration' do
         expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
         expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil
+      end
+    end
+
+    context 'with instance specific integrations' do
+      it 'does not create an instance specific integration' do
+        expect(subject.find_or_initialize_integration('beyond_identity')).to be_nil
       end
     end
   end

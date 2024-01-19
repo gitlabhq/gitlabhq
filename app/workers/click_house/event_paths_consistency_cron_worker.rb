@@ -44,7 +44,7 @@ module ClickHouse
       metadata[:modifications] = modifications
 
       if modifications >= MAX_RECORD_MODIFICATIONS
-        metadata[:status] = :modification_limit_reached
+        metadata[:status] = :limit_reached
         return
       end
 

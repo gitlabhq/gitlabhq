@@ -1692,6 +1692,10 @@ Offerings:
 - `SAAS`
 - `ALL` - Applies to both self-managed and SaaS.
 
+NOTE:
+GitLab Dedicated is not currently covered by product tier badges in the documentation.
+For more information, see [issue 417171](https://gitlab.com/gitlab-org/gitlab/-/issues/417171#note_1568753875).
+
 You can also add a third component for the feature's status:
 
 - `EXPERIMENT`

@@ -185,6 +185,17 @@ RSpec.shared_examples "redis_shared_examples" do
         end
       end
 
+      context 'when the parsed external command output returns invalid hash' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["hello", 0])
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+            %r{Redis: The output of `/opt/redis-config.sh` must be a Hash, String given})
+        end
+      end
+
       context 'when the command fails' do
         before do
           allow(Gitlab::Popen).to receive(:popen).and_return(["", 125])

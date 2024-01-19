@@ -13,7 +13,7 @@ module Resolvers
 
       def resolve(id:)
         Gitlab::Graphql::Lazy.with_value(find_object(id: id)) do |ml_model|
-          ml_model if current_user.can?(:read_model_registry, ml_model&.project)
+          ml_model if Ability.allowed?(current_user, :read_model_registry, ml_model&.project)
         end
       end
 

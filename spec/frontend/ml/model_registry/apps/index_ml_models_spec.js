@@ -1,55 +1,80 @@
-import { GlBadge, GlButton } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlExperimentBadge } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
-import Pagination from '~/vue_shared/components/incubation/pagination.vue';
-import SearchBar from '~/ml/model_registry/components/search_bar.vue';
-import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '~/ml/model_registry/constants';
+import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import EmptyState from '~/ml/model_registry/components/empty_state.vue';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
-import { mockModels, startCursor, defaultPageInfo } from '../mock_data';
+import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query.graphql';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
-let wrapper;
+Vue.use(VueApollo);
 
-const createWrapper = (propsData = {}) => {
-  wrapper = shallowMountExtended(IndexMlModels, {
-    propsData: {
-      models: mockModels,
-      pageInfo: defaultPageInfo,
-      modelCount: 2,
-      createModelPath: 'path/to/create',
-      canWriteModelRegistry: false,
-      ...propsData,
-    },
-  });
+const defaultProps = {
+  projectPath: 'path/to/project',
+  createModelPath: 'path/to/create',
+  canWriteModelRegistry: false,
 };
 
-const findModelRow = (index) => wrapper.findAllComponents(ModelRow).at(index);
-const findPagination = () => wrapper.findComponent(Pagination);
-const findEmptyState = () => wrapper.findComponent(EmptyState);
-const findSearchBar = () => wrapper.findComponent(SearchBar);
-const findTitleArea = () => wrapper.findComponent(TitleArea);
-const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
-const findBadge = () => wrapper.findComponent(GlBadge);
-const findCreateButton = () => findTitleArea().findComponent(GlButton);
-const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
-
 describe('ml/model_registry/apps/index_ml_models', () => {
-  describe('empty state', () => {
-    beforeEach(() => createWrapper({ models: [], pageInfo: defaultPageInfo }));
+  let wrapper;
+  let apolloProvider;
 
-    it('shows empty state', () => {
-      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.model);
+  const createWrapper = ({
+    props = {},
+    resolver = jest.fn().mockResolvedValue(modelsQuery()),
+  } = {}) => {
+    const requestHandlers = [[getModelsQuery, resolver]];
+    apolloProvider = createMockApollo(requestHandlers);
+
+    const propsData = {
+      ...defaultProps,
+      ...props,
+    };
+
+    wrapper = mountExtended(IndexMlModels, {
+      apolloProvider,
+      propsData,
+    });
+  };
+
+  beforeEach(() => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
+  });
+
+  const emptyQueryResolver = () => jest.fn().mockResolvedValue(modelsQuery([]));
+
+  const findAllRows = () => wrapper.findAllComponents(ModelRow);
+  const findRow = (index) => findAllRows().at(index);
+  const findEmptyState = () => wrapper.findComponent(EmptyState);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
+  const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+  const findBadge = () => wrapper.findComponent(GlExperimentBadge);
+  const findCreateButton = () => wrapper.findByTestId('create-model-button');
+  const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
+  const findSearchableList = () => wrapper.findComponent(SearchableList);
+
+  describe('header', () => {
+    beforeEach(() => {
+      createWrapper();
     });
 
-    it('does not show pagination', () => {
-      expect(findPagination().exists()).toBe(false);
+    it('displays the title', () => {
+      expect(findTitleArea().text()).toContain('Model registry');
     });
 
-    it('does not show search bar', () => {
-      expect(findSearchBar().exists()).toBe(false);
+    it('displays the experiment badge', () => {
+      expect(findBadge().props('helpPageUrl')).toBe(
+        '/help/user/project/ml/model_registry/index.md',
+      );
     });
 
     it('renders the extra actions button', () => {
@@ -57,65 +82,155 @@ describe('ml/model_registry/apps/index_ml_models', () => {
     });
   });
 
+  describe('empty state', () => {
+    it('shows empty state', async () => {
+      createWrapper({ resolver: emptyQueryResolver() });
+
+      await waitForPromises();
+
+      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.model);
+    });
+  });
+
   describe('create button', () => {
     describe('when user has no permission to write model registry', () => {
-      it('does not display create button', () => {
-        createWrapper();
+      it('does not display create button', async () => {
+        createWrapper({ resolver: emptyQueryResolver() });
+
+        await waitForPromises();
 
         expect(findCreateButton().exists()).toBe(false);
       });
     });
 
     describe('when user has permission to write model registry', () => {
-      it('displays create button', () => {
-        createWrapper({ canWriteModelRegistry: true });
+      it('displays create button', async () => {
+        createWrapper({
+          props: { canWriteModelRegistry: true },
+          resolver: emptyQueryResolver(),
+        });
+
+        await waitForPromises();
 
         expect(findCreateButton().attributes().href).toBe('path/to/create');
       });
     });
   });
 
-  describe('with data', () => {
-    beforeEach(() => {
-      createWrapper();
+  describe('when loading data fails', () => {
+    beforeEach(async () => {
+      const error = new Error('Failure!');
+
+      createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
+
+      await waitForPromises();
     });
 
-    it('does not show empty state', () => {
+    it('error message is displayed', () => {
+      expect(findSearchableList().props('errorMessage')).toBe(
+        'Failed to load model with error: Failure!',
+      );
+    });
+
+    it('error is logged in sentry', () => {
+      expect(Sentry.captureException).toHaveBeenCalled();
+    });
+  });
+
+  describe('with data', () => {
+    it('does not show empty state', async () => {
+      createWrapper();
+      await waitForPromises();
+
       expect(findEmptyState().exists()).toBe(false);
     });
 
     describe('header', () => {
-      it('displays the title', () => {
-        expect(findTitleArea().text()).toContain('Model registry');
-      });
+      it('sets model metadata item to model count', async () => {
+        createWrapper();
+        await waitForPromises();
 
-      it('displays the experiment badge', () => {
-        expect(findBadge().attributes().href).toBe('/help/user/project/ml/model_registry/index.md');
-      });
-
-      it('sets model metadata item to model count', () => {
-        expect(findModelCountMetadataItem().props('text')).toBe(`2 models`);
+        expect(findModelCountMetadataItem().props('text')).toBe('2 models');
       });
     });
 
-    it('adds a search bar', () => {
-      expect(findSearchBar().props()).toMatchObject({ sortableFields: BASE_SORT_FIELDS });
-    });
+    describe('shows models', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await waitForPromises();
+      });
 
-    describe('model list', () => {
-      it('displays the models', () => {
-        expect(findModelRow(0).props('model')).toMatchObject(mockModels[0]);
-        expect(findModelRow(1).props('model')).toMatchObject(mockModels[1]);
+      it('passes items to list', () => {
+        expect(findSearchableList().props('items')).toEqual([
+          modelWithOneVersion,
+          modelWithoutVersion,
+        ]);
+      });
+
+      it('displays package version rows', () => {
+        expect(findAllRows()).toHaveLength(2);
+      });
+
+      it('binds the correct props', () => {
+        expect(findRow(0).props()).toMatchObject({
+          model: expect.objectContaining(modelWithOneVersion),
+        });
+
+        expect(findRow(1).props()).toMatchObject({
+          model: expect.objectContaining(modelWithoutVersion),
+        });
       });
     });
 
-    describe('pagination', () => {
-      it('should show', () => {
-        expect(findPagination().exists()).toBe(true);
+    describe('when query is updated', () => {
+      let resolver;
+
+      beforeEach(() => {
+        resolver = jest.fn().mockResolvedValue(modelsQuery());
+        createWrapper({ resolver });
       });
 
-      it('passes pagination to pagination component', () => {
-        expect(findPagination().props('startCursor')).toBe(startCursor);
+      it('when orderBy or sort are not present, use default value', async () => {
+        findSearchableList().vm.$emit('fetch-page', {
+          after: 'eyJpZCI6IjIifQ',
+          first: 30,
+        });
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            fullPath: 'path/to/project',
+            first: 30,
+            name: undefined,
+            orderBy: 'CREATED_AT',
+            sort: 'DESC',
+            after: 'eyJpZCI6IjIifQ',
+          }),
+        );
+      });
+
+      it('when orderBy or sort present, updates filters', async () => {
+        findSearchableList().vm.$emit('fetch-page', {
+          after: 'eyJpZCI6IjIifQ',
+          first: 30,
+          orderBy: 'name',
+          sort: 'asc',
+          name: 'something',
+        });
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            fullPath: 'path/to/project',
+            first: 30,
+            name: 'something',
+            orderBy: 'NAME',
+            sort: 'ASC',
+            after: 'eyJpZCI6IjIifQ',
+          }),
+        );
       });
     });
   });

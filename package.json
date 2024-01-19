@@ -285,7 +285,7 @@
     "stylelint": "^16.1.0",
     "swagger-cli": "^4.0.4",
     "timezone-mock": "^1.0.8",
-    "vite": "^5.0.11",
+    "vite": "^5.0.12",
     "vite-plugin-ruby": "^5.0.0",
     "vue-loader-vue3": "npm:vue-loader@17",
     "vue-test-utils-compat": "0.0.14",

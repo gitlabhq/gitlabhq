@@ -1,0 +1,46 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getModels(
+  $fullPath: ID!
+  $name: String
+  $orderBy: MlModelsOrderBy
+  $sort: SortDirectionEnum
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    mlModels(
+      name: $name
+      orderBy: $orderBy
+      sort: $sort
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
+      count
+      nodes {
+        id
+        name
+        versionCount
+        createdAt
+        latestVersion {
+          id
+          version
+          _links {
+            showPath
+          }
+        }
+        _links {
+          showPath
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

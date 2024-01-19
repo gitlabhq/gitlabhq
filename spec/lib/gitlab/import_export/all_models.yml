@@ -585,6 +585,7 @@ project:
 - prometheus_integration
 - assembla_integration
 - asana_integration
+- beyond_identity_integration
 - slack_integration
 - microsoft_teams_integration
 - mattermost_integration
