@@ -30,8 +30,3 @@ If the repository is too large, the import can timeout.
 1. Select **Create project**.
 
 Your newly created project is displayed.
-
-## Automate group and project import **(PREMIUM ALL)**
-
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](index.md#automate-group-and-project-import).

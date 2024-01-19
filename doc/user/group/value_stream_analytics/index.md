@@ -80,6 +80,7 @@ The following stage events are available:
 - Issue closed
 - Issue created
 - Issue first added to board
+- Issue first added to iteration
 - Issue first assigned
 - Issue first associated with milestone
 - Issue first mentioned

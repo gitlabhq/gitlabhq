@@ -162,6 +162,20 @@ func NewDefaultConfig() *Config {
 	}
 }
 
+func LoadConfigFromFile(file *string) (*Config, error) {
+	tomlData := ""
+
+	if *file != "" {
+		buf, err := os.ReadFile(*file)
+		if err != nil {
+			return nil, fmt.Errorf("file: %v", err)
+		}
+		tomlData = string(buf)
+	}
+
+	return LoadConfig(tomlData)
+}
+
 func LoadConfig(data string) (*Config, error) {
 	cfg := NewDefaultConfig()
 

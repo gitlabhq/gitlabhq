@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -195,4 +196,31 @@ func TestDefaultConfig(t *testing.T) {
 	cfg := NewDefaultConfig()
 
 	require.Equal(t, uint64(250000), cfg.ImageResizerConfig.MaxFilesize)
+}
+
+func TestLoadConfigFromFile(t *testing.T) {
+	config := `
+[image_resizer]
+max_filesize = 350000
+`
+
+	fileName := createTempFile(t, []byte(config))
+
+	cfg, err := LoadConfigFromFile(&fileName)
+	require.NoError(t, err)
+
+	require.Equal(t, uint64(350000), cfg.ImageResizerConfig.MaxFilesize)
+}
+
+func createTempFile(t *testing.T, contents []byte) string {
+	t.Helper()
+
+	tmpFile, err := os.CreateTemp(t.TempDir(), "config.toml")
+	require.NoError(t, err)
+	defer tmpFile.Close()
+
+	_, err = tmpFile.Write(contents)
+	require.NoError(t, err)
+
+	return tmpFile.Name()
 }

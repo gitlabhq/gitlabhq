@@ -10,6 +10,19 @@ When you want a group to have access to your project,
 you can invite [a group](../../group/index.md) to the project.
 The group's direct and inherited members get access to the project, which becomes a *shared project*.
 
+In this case, inherited members are members that are inherited from parent groups into the groups that are shared.
+Only members of the group that is shared get access to the project.
+If you want to give members of a subgroup of the group you are sharing access to the project, you have to share the subgroup.
+
+The following table provides an overview of the group members that get access to a shared project.
+
+| Group member source                                              | Access to shared project          |
+|------------------------------------------------------------------|------------------------|
+| Direct member of the group that is shared                        | **{check-circle}** Yes |
+| Inherited member of the group that is shared                        | **{check-circle}** Yes |
+| Direct member of a subgroup, but not of the group that is shared | **{dotted-circle}** No |
+| Inherited member of a subgroup, but not of the group that is shared | **{dotted-circle}** No |
+
 ## Example
 
 For a project that was created by `Group 1`:

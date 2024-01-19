@@ -369,6 +369,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
+              publicPath: './',
               filename: '[name].[contenthash:8].worker.js',
             },
           },

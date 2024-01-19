@@ -311,6 +311,22 @@ Prerequisites:
 1. To use LDAP groups to manage access to a project,
    [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
 
+## Project aliases **(PREMIUM SELF)**
+
+GitLab repositories are usually accessed with a namespace and a project name. When migrating
+frequently accessed repositories to GitLab, however, you can use project aliases to access those
+repositories with the original name. Accessing repositories through a project alias reduces the risk
+associated with migrating such repositories.
+
+This feature is only available on Git over SSH. Also, only GitLab administrators can create project
+aliases, and they can only do so through the API. For more information, see the
+[Project Aliases API documentation](../../api/project_aliases.md).
+
+After an administrator creates an alias for a project, you can use the alias to clone the
+repository. For example, if an administrator creates the alias `gitlab` for the project
+`https://gitlab.com/gitlab-org/gitlab`, you can clone the project with
+`git clone git@gitlab.com:gitlab.git` instead of `git clone git@gitlab.com:gitlab-org/gitlab.git`.
+
 ## Troubleshooting
 
 When working with projects, you might encounter the following issues, or require alternate methods to complete specific tasks.

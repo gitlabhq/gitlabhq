@@ -11,6 +11,12 @@ Use the project import and export API to import and export projects using file t
 Before using the project import and export API, you might want to use the
 [group import and export API](group_import_export.md).
 
+After using the project import and export API, you might want to use the
+[Project-level CI/CD variables API](project_level_variables.md).
+
+You must still migrate your [Container Registry](../user/packages/container_registry/index.md)
+over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
+
 ## Prerequisites
 
 For prerequisites for project import and export API, see:

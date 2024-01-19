@@ -167,6 +167,6 @@ auto-fix:
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion --no-server {files}
     gettext:
       tags: backend frontend view haml
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD --cached | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD) $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor locale/gitlab.pot

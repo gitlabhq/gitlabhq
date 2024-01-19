@@ -13,5 +13,4 @@ and removed in GitLab 16.0. To import GitLab projects from GitLab.com to a self-
 
 ## Related topics
 
-- [Automate group and project import](index.md#automate-group-and-project-import)
 - [Export a project](../settings/import_export.md#export-a-project-and-its-data)

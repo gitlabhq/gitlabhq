@@ -448,11 +448,6 @@ LoadModule ssl_module lib/httpd/modules/mod_ssl.so
 </VirtualHost>
 ```
 
-## Automate group and project import **(PREMIUM ALL)**
-
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](index.md#automate-group-and-project-import).
-
 ## Troubleshooting
 
 ### Manually continue a previously failed import process

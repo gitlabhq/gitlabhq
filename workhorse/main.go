@@ -138,16 +138,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 		cfg.CableBackend = cfg.Backend
 	}
 
-	tomlData := ""
-	if *configFile != "" {
-		buf, err := os.ReadFile(*configFile)
-		if err != nil {
-			return nil, nil, fmt.Errorf("configFile: %v", err)
-		}
-		tomlData = string(buf)
-	}
-
-	cfgFromFile, err := config.LoadConfig(tomlData)
+	cfgFromFile, err := config.LoadConfigFromFile(configFile)
 	if err != nil {
 		return nil, nil, fmt.Errorf("configFile: %v", err)
 	}

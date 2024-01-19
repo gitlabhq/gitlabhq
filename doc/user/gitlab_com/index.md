@@ -243,18 +243,6 @@ which GitLab you use:
 - GitLab self-managed: no import sources are enabled by default and must be
   [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
-| Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
-|:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|
-| [Bitbucket Cloud](../project/import/bitbucket.md)                                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Bitbucket Server](../project/import/bitbucket_server.md)                                           | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [FogBugz](../project/import/fogbugz.md)                                                             | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Gitea](../project/import/gitea.md)                                                                 | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitLab by direct transfer](../group/import/index.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitLab using file exports](../project/settings/import_export.md)                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitHub](../project/import/github.md)                                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Manifest file](../project/import/manifest.md)                                                      | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Repository by URL](../project/import/repo_by_url.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-
 ## IP range
 
 GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API

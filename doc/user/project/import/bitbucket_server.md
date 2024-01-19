@@ -145,7 +145,3 @@ for Bitbucket Cloud.
 If the project import completes but LFS objects can't be downloaded or cloned, you may be using a
 password or personal access token containing special characters. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
-
-## Related topics
-
-- [Automate group and project import](index.md#automate-group-and-project-import)

@@ -3,15 +3,14 @@
 require 'fast_spec_helper'
 require 'tty/prompt/test'
 require_relative '../../../scripts/internal_events/cli'
+require_relative '../../support/helpers/wait_helpers'
 
 RSpec.describe Cli, feature_category: :service_ping do
+  include WaitHelpers
+
   let(:prompt) { TTY::Prompt::Test.new }
   let(:files_to_cleanup) { [] }
-
-  let(:example_timeout) { 3 }
-  let(:example_error) { Class.new(Timeout::Error) }
-  let(:interaction_timeout) { 1 }
-  let(:interaction_error) { Class.new(Timeout::Error) }
+  let(:max_wait_time) { 20 }
 
   let(:event1_filepath) { 'config/events/internal_events_cli_used.yml' }
   let(:event1_content) { internal_event_fixture('events/event_with_identifiers.yml') }
@@ -31,19 +30,6 @@ RSpec.describe Cli, feature_category: :service_ping do
     delete_files(files_to_cleanup)
   end
 
-  around do |example|
-    Timeout.timeout(example_timeout, example_error) { example.run }
-  rescue example_error => e
-    # Override error to include CLI output in error detail
-    raise e.class, timeout_error_message, e.backtrace
-  end
-
-  subject(:execute) do
-    Timeout.timeout(interaction_timeout, interaction_error) { described_class.new(prompt).run }
-  rescue interaction_error
-    # Rescue from timeout so we can make assertions on the CLI output
-  end
-
   # Shared examples used for examples defined in new_events.yml & new_metrics.yml fixtures.
   # Note: Expects CLI to be exited using the 'Exit' option or completing definition flow
   shared_examples 'creates the right defintion files' do |description, test_case = {}|
@@ -51,6 +37,7 @@ RSpec.describe Cli, feature_category: :service_ping do
     let(:keystrokes) { test_case.dig('inputs', 'keystrokes') || [] }
     let(:input_files) { test_case.dig('inputs', 'files') || [] }
     let(:output_files) { test_case.dig('outputs', 'files') || [] }
+    let(:timeout_error) { 'Internal Events CLI timed out while awaiting completion.' }
 
     # Script execution should stop without a reduced timeout
     let(:interaction_timeout) { example_timeout }
@@ -61,7 +48,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       queue_cli_inputs(keystrokes)
       expect_file_creation
 
-      execute
+      wait_for_cli_completion
     end
 
     private
@@ -88,6 +75,12 @@ RSpec.describe Cli, feature_category: :service_ping do
         end
       else
         expect(File).not_to receive(:write)
+      end
+    end
+
+    def wait_for_cli_completion
+      with_cli_thread do |thread|
+        wait_for(timeout_error, max_wait_time: max_wait_time) { !thread.alive? }
       end
     end
   end
@@ -138,10 +131,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Copy & continue
         ])
 
-        execute
-
         # Filter down to "dev" options
-        expect(plain_last_lines(9)).to eq <<~TEXT.chomp
+        expected_output = <<~TEXT.chomp
         ‣ dev:plan:project_management
           dev:plan:product_planning
           dev:plan:knowledge
@@ -152,6 +143,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           dev:create:editor_extensions
           dev:create:code_creation
         TEXT
+
+        expect_cli_output { plain_last_lines(9) == expected_output }
       end
 
       it 'filters the product group options based on common section & stage' do
@@ -170,16 +163,16 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Copy & continue
         ])
 
-        execute
-
         # Filter down to "dev:create" options
-        expect(plain_last_lines(5)).to eq <<~TEXT.chomp
+        expected_output = <<~TEXT.chomp
         ‣ dev:create:source_code
           dev:create:code_review
           dev:create:ide
           dev:create:editor_extensions
           dev:create:code_creation
         TEXT
+
+        expect_cli_output { plain_last_lines(5) == expected_output }
       end
     end
 
@@ -206,10 +199,10 @@ RSpec.describe Cli, feature_category: :service_ping do
           "2\n" # Modify attributes
         ])
 
-        execute
-
         # Filter down to "dev" options
-        expect(plain_last_lines(50)).to include 'Select one: Which group owns the metric?'
+        expect_cli_output do
+          plain_last_lines(50).include?('Select one: Which group owns the metric?')
+        end
       end
     end
 
@@ -221,13 +214,15 @@ RSpec.describe Cli, feature_category: :service_ping do
       it 'shows all metrics options' do
         select_event_from_list
 
-        expect(plain_last_lines(5)).to eq <<~TEXT.chomp
+        expected_output = <<~TEXT.chomp
         ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
           Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
           Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
           Monthly/Weekly count of [internal_events_cli_used occurrences]
           Total count of [internal_events_cli_used occurrences]
         TEXT
+
+        expect_cli_output { plain_last_lines(5) == expected_output }
       end
 
       context 'with an existing weekly metric' do
@@ -241,7 +236,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         it 'partially filters metric options' do
           select_event_from_list
 
-          expect(plain_last_lines(6)).to eq <<~TEXT.chomp
+          expected_output = <<~TEXT.chomp
           ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
             Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
             Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
@@ -249,6 +244,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           ✘ Weekly count of [internal_events_cli_used occurrences] (already defined)
             Total count of [internal_events_cli_used occurrences]
           TEXT
+
+          expect_cli_output { plain_last_lines(6) == expected_output }
         end
       end
 
@@ -263,13 +260,15 @@ RSpec.describe Cli, feature_category: :service_ping do
         it 'filters whole metric options' do
           select_event_from_list
 
-          expect(plain_last_lines(5)).to eq <<~TEXT.chomp
+          expected_output = <<~TEXT.chomp
           ‣ Monthly/Weekly count of unique users [who triggered internal_events_cli_used]
             Monthly/Weekly count of unique projects [where internal_events_cli_used occurred]
             Monthly/Weekly count of unique namespaces [where internal_events_cli_used occurred]
             Monthly/Weekly count of [internal_events_cli_used occurrences]
           ✘ Total count of [internal_events_cli_used occurrences] (already defined)
           TEXT
+
+          expect_cli_output { plain_last_lines(5) == expected_output }
         end
       end
 
@@ -282,8 +281,6 @@ RSpec.describe Cli, feature_category: :service_ping do
           'internal_events_cli_used', # Filters to this event
           "\n" # Select: config/events/internal_events_cli_used.yml
         ])
-
-        execute
       end
     end
 
@@ -300,15 +297,15 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Select: config/events/internal_events_cli_opened.yml
         ])
 
-        execute
-
-        expect(plain_last_lines(5)).to eq <<~TEXT.chomp
+        expected_output = <<~TEXT.chomp
         ✘ Monthly/Weekly count of unique users [who triggered internal_events_cli_opened] (user unavailable)
         ✘ Monthly/Weekly count of unique projects [where internal_events_cli_opened occurred] (project unavailable)
         ✘ Monthly/Weekly count of unique namespaces [where internal_events_cli_opened occurred] (namespace unavailable)
         ‣ Monthly/Weekly count of [internal_events_cli_opened occurrences]
           Total count of [internal_events_cli_opened occurrences]
         TEXT
+
+        expect_cli_output { plain_last_lines(5) == expected_output }
       end
     end
 
@@ -339,10 +336,9 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n" # Select: config/events/00_event1.yml
         ])
 
-        execute
+        expected_output = 'Looks like the potential metrics for this event either already exist or are unsupported.'
 
-        expect(plain_last_lines(15)).to include 'Looks like the potential metrics for this event ' \
-                                                'either already exist or are unsupported.'
+        expect_cli_output { plain_last_lines(15).include?(expected_output) }
       end
     end
   end
@@ -410,13 +406,13 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        execute
+        expect_cli_output do
+          output = plain_last_lines(100)
 
-        output = plain_last_lines(100)
-
-        expect(output).to include expected_example_prompt
-        expect(output).to include expected_rails_example
-        expect(output).to include expected_rspec_example
+          output.include?(expected_example_prompt) &&
+            output.include?(expected_rails_example) &&
+            output.include?(expected_rspec_example)
+        end
       end
     end
 
@@ -577,17 +573,17 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        execute
+        expect_cli_output do
+          output = plain_last_lines(1000)
 
-        output = plain_last_lines(1000)
-
-        expect(output).to include expected_example_prompt
-        expect(output).to include expected_rails_example
-        expect(output).to include expected_rspec_example
-        expect(output).to include expected_vue_example
-        expect(output).to include expected_js_example
-        expect(output).to include expected_vue_template_example
-        expect(output).to include expected_haml_example
+          output.include?(expected_example_prompt) &&
+            output.include?(expected_rails_example) &&
+            output.include?(expected_rspec_example) &&
+            output.include?(expected_vue_example) &&
+            output.include?(expected_js_example) &&
+            output.include?(expected_vue_template_example) &&
+            output.include?(expected_haml_example)
+        end
       end
     end
 
@@ -637,13 +633,13 @@ RSpec.describe Cli, feature_category: :service_ping do
           "8\n" # Exit
         ])
 
-        execute
+        expect_cli_output do
+          output = plain_last_lines(300)
 
-        output = plain_last_lines(300)
-
-        expect(output).to include expected_example_prompt
-        expect(output).to include expected_event1_example
-        expect(output).to include expected_event2_example
+          output.include?(expected_example_prompt) &&
+            output.include?(expected_event1_example) &&
+            output.include?(expected_event2_example)
+        end
       end
     end
   end
@@ -756,9 +752,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Are you trying to track customer usage of a GitLab feature?
       ])
 
-      execute
-
-      expect(plain_last_lines(50)).to include("Oh no! This probably isn't the tool you need!")
+      expect_cli_output do
+        plain_last_lines(50).include?("Oh no! This probably isn't the tool you need!")
+      end
     end
 
     it "handles when product usage can't be tracked with events" do
@@ -768,9 +764,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Can usage for the feature be measured by tracking a specific user action?
       ])
 
-      execute
-
-      expect(plain_last_lines(50)).to include("Oh no! This probably isn't the tool you need!")
+      expect_cli_output do
+        plain_last_lines(50).include?("Oh no! This probably isn't the tool you need!")
+      end
     end
 
     it 'handles when user needs to add a new event' do
@@ -782,9 +778,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Ready to start?
       ])
 
-      execute
-
-      expect(plain_last_lines(30)).to include("Okay! The next step is adding a new event! (~5 min)")
+      expect_cli_output do
+        plain_last_lines(30).include?("Okay! The next step is adding a new event! (~5 min)")
+      end
     end
 
     it 'handles when user needs to add a new metric' do
@@ -796,9 +792,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         "n\n" # No --> Ready to start?
       ])
 
-      execute
-
-      expect(plain_last_lines(30)).to include("Amazing! The next step is adding a new metric! (~8 min)")
+      expect_cli_output do
+        plain_last_lines(30).include?("Amazing! The next step is adding a new metric! (~8 min)")
+      end
     end
   end
 
@@ -807,21 +803,6 @@ RSpec.describe Cli, feature_category: :service_ping do
   def queue_cli_inputs(keystrokes)
     prompt.input << keystrokes.join('')
     prompt.input.rewind
-  end
-
-  def timeout_error_message
-    <<~TEXT
-    Awaiting input too long. Entire CLI output:
-
-    #{
-      prompt.output.string.lines
-        .map { |line| "\e[0;37m#{line}\e[0m" } # wrap in white
-        .join('')
-        .gsub("\e[1G", "\e[1G       ") # align to error indent
-    }
-
-
-    TEXT
   end
 
   def plain_last_lines(size)
@@ -872,5 +853,17 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   def internal_event_fixture(filepath)
     Rails.root.join('spec', 'fixtures', 'scripts', 'internal_events', filepath)
+  end
+
+  def with_cli_thread
+    thread = Thread.new { described_class.new(prompt).run }
+
+    yield thread
+  ensure
+    thread.exit
+  end
+
+  def expect_cli_output(&blk)
+    with_cli_thread { wait_for(blk.source, max_wait_time: max_wait_time, &blk) }
   end
 end

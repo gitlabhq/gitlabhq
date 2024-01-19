@@ -53285,9 +53285,6 @@ msgstr ""
 msgid "User cap cannot be enabled. The group or one of its subgroups or projects is shared externally."
 msgstr ""
 
-msgid "User caps is enabled for this group, visit the %{pending_members_link_start}pending members%{pending_members_link_end} page to manage them."
-msgstr ""
-
 msgid "User created at"
 msgstr ""
 

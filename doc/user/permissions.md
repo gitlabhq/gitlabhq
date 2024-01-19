@@ -476,7 +476,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - Customize permissions on [protected branches](project/protected_branches.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
-- [Project aliases](../user/project/import/index.md#project-aliases)
+- [Project aliases](../user/project/working_with_projects.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)

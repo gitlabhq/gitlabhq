@@ -274,6 +274,10 @@ NOTES:
 - All date timestamps are displayed in UTC.
 - A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
+WARNING:
+
+Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../../administration/license_file.md#submit-license-usage-data).
+
 ## Renew your subscription
 
 You can renew your subscription starting from 15 days before your subscription expires. To renew your subscription:
