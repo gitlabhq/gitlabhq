@@ -28,7 +28,7 @@ describe('content_editor/extensions/code_suggestion', () => {
   let doc;
   let codeSuggestion;
 
-  const codeSuggestionConfig = {
+  const codeSuggestionsConfig = {
     canSuggest: true,
     line: { new_line: 5 },
     lines: [{ new_line: 5 }],
@@ -43,7 +43,9 @@ describe('content_editor/extensions/code_suggestion', () => {
     tiptapEditor = createTestEditor({
       extensions: [
         CodeBlockHighlight,
-        CodeSuggestion.configure({ config: { ...codeSuggestionConfig, ...config } }),
+        CodeSuggestion.configure({
+          codeSuggestionsConfig: { ...codeSuggestionsConfig, ...config },
+        }),
       ],
     });
 

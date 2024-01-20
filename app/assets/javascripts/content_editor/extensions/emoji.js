@@ -1,5 +1,6 @@
 import { Node, InputRule } from '@tiptap/core';
 import { initEmojiMap, getEmojiMap } from '~/emoji';
+import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 export default Node.create({
   name: 'emoji',
@@ -12,21 +13,10 @@ export default Node.create({
 
   addAttributes() {
     return {
-      moji: {
-        default: null,
-        parseHTML: (element) => element.textContent,
-      },
-      name: {
-        default: null,
-        parseHTML: (element) => element.dataset.name,
-      },
-      title: {
-        default: null,
-      },
-      unicodeVersion: {
-        default: '6.0',
-        parseHTML: (element) => element.dataset.unicodeVersion,
-      },
+      moji: { default: null },
+      name: { default: null },
+      title: { default: null },
+      unicodeVersion: { default: '6.0' },
     };
   },
 
@@ -34,6 +24,26 @@ export default Node.create({
     return [
       {
         tag: 'gl-emoji',
+        getAttrs: (el) => ({
+          name: el.dataset.name,
+          title: el.getAttribute('title'),
+          moji: el.textContent,
+          unicodeVersion: el.dataset.unicodeVersion || '6.0',
+        }),
+      },
+      {
+        tag: 'img.emoji',
+        getAttrs: (el) => {
+          const name = el.getAttribute('title').replace(/^:|:$/g, '');
+
+          return {
+            name,
+            title: name,
+            moji: name,
+            unicodeVersion: 'custom',
+          };
+        },
+        priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
     ];
   },

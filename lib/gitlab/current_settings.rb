@@ -24,12 +24,18 @@ module Gitlab
         Gitlab::SafeRequestStore.delete(:current_application_settings)
       end
 
+      # rubocop:disable GitlabSecurity/PublicSend -- Method calls are forwarded to one of the setting classes
       def method_missing(name, *args, **kwargs, &block)
-        current_application_settings.send(name, *args, **kwargs, &block) # rubocop:disable GitlabSecurity/PublicSend
+        application_settings = current_application_settings
+
+        return application_settings.send(name, *args, **kwargs, &block) if application_settings.respond_to?(name)
+
+        Organizations::OrganizationSetting.for_current_organization.send(name, *args, **kwargs, &block)
       end
+      # rubocop:enable GitlabSecurity/PublicSend
 
       def respond_to_missing?(name, include_private = false)
-        current_application_settings.respond_to?(name, include_private) || super
+        current_application_settings.respond_to?(name, include_private) || Organizations::OrganizationSetting.for_current_organization.respond_to?(name, include_private) || super
       end
     end
   end

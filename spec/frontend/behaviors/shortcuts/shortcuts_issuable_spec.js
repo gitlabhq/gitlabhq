@@ -11,6 +11,8 @@ jest.mock('~/lib/utils/common_utils', () => ({
   getSelectedFragment: jest.fn().mockName('getSelectedFragment'),
 }));
 
+jest.mock('~/emoji');
+
 describe('ShortcutsIssuable', () => {
   beforeAll(() => {
     initCopyAsGFM();
@@ -215,7 +217,7 @@ describe('ShortcutsIssuable', () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
         await waitForPromises();
-        expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
+        expect($(FORM_SELECTOR).val()).toBe('> _Selected text._\n\n');
       });
 
       it('triggers `focus`', async () => {

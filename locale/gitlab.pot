@@ -48467,9 +48467,6 @@ msgstr ""
 msgid "TXT"
 msgstr ""
 
-msgid "Table of Contents"
-msgstr ""
-
 msgid "Table of contents"
 msgstr ""
 

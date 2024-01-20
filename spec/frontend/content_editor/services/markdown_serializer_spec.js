@@ -138,10 +138,10 @@ const {
   },
 });
 
-const serialize = (...content) =>
-  new MarkdownSerializer().serialize({
-    doc: doc(...content),
-  });
+const serializeWithOptions = (options, ...content) =>
+  new MarkdownSerializer().serialize({ doc: doc(...content) }, options);
+
+const serialize = (...content) => new MarkdownSerializer().serialize({ doc: doc(...content) });
 
 describe('markdownSerializer', () => {
   it('correctly serializes bold', () => {
@@ -389,6 +389,16 @@ describe('markdownSerializer', () => {
     expect(serialize(paragraph(strike('deleted content')))).toBe('~~deleted content~~');
   });
 
+  it.each`
+    strikeTag
+    ${'s'}
+    ${'strike'}
+  `('correctly serializes strikethrough with "$strikeTag" tag', ({ strikeTag }) => {
+    expect(serialize(paragraph(strike({ htmlTag: strikeTag }, 'deleted content')))).toBe(
+      `<${strikeTag}>deleted content</${strikeTag}>`,
+    );
+  });
+
   it('correctly serializes blockquotes with hard breaks', () => {
     expect(serialize(blockquote('some text', hardBreak(), hardBreak(), 'new line'))).toBe(
       `
@@ -409,6 +419,32 @@ describe('markdownSerializer', () => {
 > \`\`\`
       `.trim(),
     );
+  });
+
+  it('correctly serializes a blockquote with a nested blockquote', () => {
+    expect(
+      serialize(
+        blockquote(
+          paragraph('some paragraph'),
+          blockquote(paragraph('nested paragraph'), codeBlock('var x = 10;')),
+        ),
+      ),
+    ).toBe(
+      `
+> some paragraph
+>
+> > nested paragraph
+> >
+> > \`\`\`
+> > var x = 10;
+> > \`\`\`
+      `.trim(),
+    );
+  });
+
+  it('skips serializing an empty blockquote if skipEmptyNodes=true', () => {
+    expect(serializeWithOptions({ skipEmptyNodes: true }, blockquote())).toBe('');
+    expect(serializeWithOptions({ skipEmptyNodes: true }, blockquote(paragraph()))).toBe('');
   });
 
   it('correctly serializes a multiline blockquote', () => {
@@ -445,6 +481,23 @@ var y = 10;
     ).toBe(
       `
 \`\`\`json
+this is not really json but just trying out whether this case works or not
+\`\`\`
+      `.trim(),
+    );
+  });
+
+  it('renders a plaintext code block without a prefix', () => {
+    expect(
+      serialize(
+        codeBlock(
+          { language: 'plaintext', langParams: '' },
+          'this is not really json but just trying out whether this case works or not',
+        ),
+      ),
+    ).toBe(
+      `
+\`\`\`
 this is not really json but just trying out whether this case works or not
 \`\`\`
       `.trim(),
@@ -514,6 +567,10 @@ var a = 0;
     );
   });
 
+  it('skips serializing an empty code block if skipEmptyNodes=true', () => {
+    expect(serializeWithOptions({ skipEmptyNodes: true }, codeBlock())).toBe('');
+  });
+
   it('correctly serializes emoji', () => {
     expect(serialize(paragraph(emoji({ name: 'dog' })))).toBe(':dog:');
   });
@@ -543,6 +600,20 @@ var a = 0;
 ###### Heading 6
       `.trim(),
     );
+  });
+
+  it('skips serializing an empty heading if skipEmptyNodes=true', () => {
+    expect(
+      serializeWithOptions(
+        { skipEmptyNodes: true },
+        heading({ level: 1 }),
+        heading({ level: 2 }),
+        heading({ level: 3 }),
+        heading({ level: 4 }),
+        heading({ level: 5 }),
+        heading({ level: 6 }),
+      ),
+    ).toBe('');
   });
 
   it('correctly serializes horizontal rule', () => {
@@ -612,6 +683,22 @@ var a = 0;
         ),
       ),
     ).toBe('![this is an image](file.png "foo bar baz")');
+  });
+
+  it('does not use the canonicalSrc if options.useCanonicalSrc=false', () => {
+    expect(
+      serializeWithOptions(
+        { useCanonicalSrc: false },
+        paragraph(
+          image({
+            src: '/uploads/abcde/file.png',
+            alt: 'this is an image',
+            canonicalSrc: 'file.png',
+            title: 'foo bar baz',
+          }),
+        ),
+      ),
+    ).toBe('![this is an image](/uploads/abcde/file.png "foo bar baz")');
   });
 
   it('correctly serializes bullet list', () => {

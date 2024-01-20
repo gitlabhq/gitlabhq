@@ -14,7 +14,7 @@ export default CodeBlockHighlight.extend({
   addOptions() {
     return {
       lowlight,
-      config: {},
+      codeSuggestionsConfig: {},
     };
   },
 
@@ -38,10 +38,13 @@ export default CodeBlockHighlight.extend({
         // do not insert a new suggestion if already inside a suggestion
         if (editor.isActive('codeSuggestion')) return false;
 
-        const rawPath = ext.options.config.diffFile.view_path.replace('/blob/', '/raw/');
+        const rawPath = ext.options.codeSuggestionsConfig.diffFile.view_path.replace(
+          '/blob/',
+          '/raw/',
+        );
         const allLines = (await memoizedGet(rawPath)).split('\n');
-        const { line } = ext.options.config;
-        let { lines } = ext.options.config;
+        const { line } = ext.options.codeSuggestionsConfig;
+        let { lines } = ext.options.codeSuggestionsConfig;
 
         if (!lines.length) lines = [line];
 

@@ -746,7 +746,10 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                       "type": "text",
                       "marks": [
                         {
-                          "type": "strike"
+                          "type": "strike",
+                          "attrs": {
+                            "htmlTag": null
+                          }
                         }
                       ],
                       "text": "Hi"

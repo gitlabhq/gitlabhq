@@ -29,7 +29,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
     it 'transforms HTML to GFM', :aggregate_failures do
       verify(
         'nesting',
-        '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'
+        '> 1. [x] [**$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~**](http://google.com)'
       )
 
       verify(
@@ -114,9 +114,9 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         GFM
         <<~GFM,
           1. [ ] Unchecked ordered task
-          1. [x] Checked ordered task
-          1. [~] Inapplicable ordered task
-          1. [~] Inapplicable ordered task with ~~del~~ and <s>strike</s> embedded
+          2. [x] Checked ordered task
+          3. [~] Inapplicable ordered task
+          4. [~] Inapplicable ordered task with ~~del~~ and <s>strike</s> embedded
         GFM
         <<~GFM
           * [ ] Unchecked loose list task
@@ -496,15 +496,14 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         <sub>sub</sub>
 
         <dl>
-          <dt>dt</dt>
-          <dt>dt</dt>
-          <dd>dd</dd>
-          <dd>dd</dd>
-
-          <dt>dt</dt>
-          <dt>dt</dt>
-          <dd>dd</dd>
-          <dd>dd</dd>
+        <dt>dt</dt>
+        <dt>dt</dt>
+        <dd>dd</dd>
+        <dd>dd</dd>
+        <dt>dt</dt>
+        <dt>dt</dt>
+        <dd>dd</dd>
+        <dd>dd</dd>
         </dl>
 
         <kbd>kbd</kbd>
@@ -518,9 +517,8 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         <abbr title="HyperText &quot;Markup&quot; Language">HTML</abbr>
 
         <details>
-        <summary>summary></summary>
-
-        details
+        <summary>summary</summary>
+         details
         </details>
         GFM
       )
@@ -542,17 +540,20 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         <<~GFM
           Foo
 
-              ```js
-              Code goes here
-              ```
+          ````
+          ```js
+          Code goes here
+          ```
+          ````
         GFM
       )
 
       verify(
         'MarkdownFilter',
-        "Line with two spaces at the end  \nto insert a linebreak",
+        "Line with backslash at the end\\\nto insert a linebreak",
         '`code`',
-        '`` code with ` ticks ``',
+        '``code with ` ticks``',
+        '`` `nested` code ``',
         '> Quote',
         # multiline quote
         <<~GFM,
@@ -589,7 +590,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         GFM
         <<~GFM,
           1. Ordered list item
-          1. Ordered list item 2
+          2. Ordered list item 2
         GFM
 
         # multiline ordered list item
@@ -618,7 +619,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
         '##### Heading',
         '###### Heading',
         '**Bold**',
-        '*Italics*',
+        '_Italics_',
         '~~Strikethrough (del)~~',
         '<s>Strikethrough</s>',
         '---',

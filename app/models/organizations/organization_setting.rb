@@ -2,6 +2,8 @@
 
 module Organizations
   class OrganizationSetting < ApplicationRecord
+    extend ::Organization::CurrentOrganization
+
     belongs_to :organization
 
     validates :settings, json_schema: { filename: "organization_settings" }
@@ -15,6 +17,12 @@ module Organizations
           record.errors.add(attr, format(_("'%{level}' is not a valid visibility level"), level: level))
         end
       end
+    end
+
+    def self.for_current_organization
+      return unless current_organization
+
+      current_organization.settings || current_organization.build_settings
     end
   end
 end

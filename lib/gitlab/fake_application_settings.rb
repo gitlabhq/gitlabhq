@@ -46,6 +46,10 @@ module Gitlab
     def method_missing(*)
       nil
     end
+
+    def respond_to_missing?(*)
+      true
+    end
   end
 end
 

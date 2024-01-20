@@ -3352,7 +3352,10 @@
             "type": "text",
             "marks": [
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "\n*foo*\n"
@@ -3375,7 +3378,10 @@
                 "type": "italic"
               },
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "foo"
@@ -3398,7 +3404,10 @@
                 "type": "italic"
               },
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "foo"
@@ -14842,7 +14851,10 @@
             "type": "text",
             "marks": [
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "Hi"
@@ -22303,7 +22315,10 @@
                     "type": "text",
                     "marks": [
                       {
-                        "type": "strike"
+                        "type": "strike",
+                        "attrs": {
+                          "htmlTag": null
+                        }
                       }
                     ],
                     "text": "great"
@@ -23125,7 +23140,10 @@
             "type": "text",
             "marks": [
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "del"
@@ -23267,7 +23285,10 @@
                         "type": "text",
                         "marks": [
                           {
-                            "type": "strike"
+                            "type": "strike",
+                            "attrs": {
+                              "htmlTag": null
+                            }
                           }
                         ],
                         "text": "strike"
@@ -23771,7 +23792,10 @@
                 }
               },
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "www.google.com"
@@ -23795,7 +23819,10 @@
                 }
               },
               {
-                "type": "strike"
+                "type": "strike",
+                "attrs": {
+                  "htmlTag": null
+                }
               }
             ],
             "text": "http://google.com"

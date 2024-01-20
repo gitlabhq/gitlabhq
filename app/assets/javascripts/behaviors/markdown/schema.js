@@ -1,20 +1,13 @@
+import { flatMap } from 'lodash';
+import { Editor } from '@tiptap/vue-2';
+import OrderedMap from 'orderedmap';
 import { Schema } from '@tiptap/pm/model';
-import editorExtensions from './editor_extensions';
+import * as extensions from '~/content_editor/extensions';
 
-const nodes = editorExtensions.nodes.reduce(
-  (ns, { name, schema }) => ({
-    ...ns,
-    [name]: schema,
-  }),
-  {},
-);
+const { schema } = new Editor({ extensions: flatMap(extensions) });
 
-const marks = editorExtensions.marks.reduce(
-  (ms, { name, schema }) => ({
-    ...ms,
-    [name]: schema,
-  }),
-  {},
-);
+const schemaSpec = { ...schema.spec };
+schemaSpec.marks = OrderedMap.from(schemaSpec.marks).remove('span');
+schemaSpec.nodes = OrderedMap.from(schemaSpec.nodes).remove('div').remove('pre');
 
-export default new Schema({ nodes, marks });
+export default new Schema(schemaSpec);
