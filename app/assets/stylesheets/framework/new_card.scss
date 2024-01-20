@@ -1,15 +1,16 @@
 .gl-new-card {
   @include gl-mt-5;
-  @include gl-bg-gray-10;
+  background-color: $gray-10;
   @include gl-border-1;
   @include gl-border-solid;
   @include gl-border-gray-100;
-  @include gl-rounded-base;
+  border-radius: $gl-border-radius-base;
 
   &-header {
-    @include gl-px-5;
+    padding-left: $gl-spacing-scale-5;
+    padding-right: $gl-spacing-scale-5;
     @include gl-py-4;
-    @include gl-display-flex;
+    display: flex;
     @include gl-justify-content-space-between;
     @include gl-bg-white;
     @include gl-border-b-1;
@@ -20,20 +21,20 @@
 
   &[aria-expanded=false] &-header {
     @include gl-border-bottom-0;
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
   }
 
   &-title-wrapper {
-    @include gl-display-flex;
+    display: flex;
     @include gl-flex-grow-1;
   }
 
   &-title {
-    @include gl-display-flex;
+    display: flex;
     @include gl-font-base;
     @include gl-font-weight-bold;
-    @include gl-relative;
-    @include gl-m-0;
+    position: relative;
+    margin: 0;
     @include gl-line-height-24;
   }
 
@@ -43,18 +44,18 @@
     @include gl-font-weight-bold;
     @include gl-text-gray-500;
     @include gl-display-inline-flex;
-    @include gl-align-items-center;
+    align-items: center;
   }
 
   &-description {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
     @include gl-text-gray-500;
-    @include gl-m-0;
+    margin: 0;
   }
 
   &-toggle {
     @include gl-pl-3;
-    @include gl-ml-3;
+    margin-left: $gl-spacing-scale-3;
     @include gl-mr-n2;
     @include gl-border-l-1;
     @include gl-border-l-solid;
@@ -64,17 +65,19 @@
   &-body {
     @include gl-rounded-bottom-base;
     @include gl-px-3;
-    @include gl-py-0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   &-content {
     @include gl-px-2;
-    @include gl-py-3;
+    padding-top: $gl-spacing-scale-3;
+    padding-bottom: $gl-spacing-scale-3;
   }
 
   &-empty {
-    @include gl-p-2;
-    @include gl-mb-0;
+    padding: $gl-spacing-scale-2;
+    margin-bottom: 0;
     @include gl-text-gray-500;
   }
 
@@ -89,7 +92,7 @@
     @include gl-border-1;
     @include gl-border-solid;
     @include gl-border-gray-100;
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
   }
 }
 
@@ -123,14 +126,14 @@
       }
 
       &:last-child::after {
-        @include gl-display-none;
+        display: none;
       }
     }
   }
 
   table.b-table-stacked-sm,
   table.b-table-stacked-md {
-    @include gl-mb-0;
+    margin-bottom: 0;
 
     tr:first-of-type th {
       @include gl-border-t-0;

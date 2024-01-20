@@ -35,8 +35,10 @@ If you've been granted access to Switchboard, you receive an email invitation wi
 Your invitation to Switchboard is valid for seven days. If you are having issues accessing
 Switchboard, or if your invitation has expired, please [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
-NOTE:
 The credentials for Switchboard are separate from any other GitLab credentials you may already have to sign in to a GitLab self-managed or GitLab.com instance.
+
+NOTE:
+If you log in to Switchboard through a VPN, you may experience a `403 Forbidden` error. The workaround is to log in directly rather than through a VPN.
 
 After you first sign in to Switchboard, you must update your password and set up MFA before you can complete your onboarding to create a new instance.
 

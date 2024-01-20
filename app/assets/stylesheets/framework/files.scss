@@ -415,7 +415,7 @@ span.idiff {
 .version-link {
   @include gl-display-inline-block;
   @include gl-align-self-center;
-  @include gl-mt-2;
+  margin-top: $gl-spacing-scale-2;
   @include gl-w-5;
   @include gl-h-5;
   @include gl-float-left;
@@ -472,7 +472,7 @@ span.idiff {
 // not render those elements, the browser doesn't need to spend resources
 // calculating and repainting what's hidden.
 .file-holder [data-loading] .file-content *:nth-of-type(1n+30) {
-  @include gl-display-none;
+  display: none;
 }
 
 .mr-tree-list:not(.tree-list-blobs) {
@@ -480,9 +480,9 @@ span.idiff {
 
   .tree-list-parent::before {
     @include gl-content-empty;
-    @include gl-absolute;
+    position: absolute;
     @include gl-z-index-1;
-    @include gl-pointer-events-none;
+    pointer-events: none;
 
     top: -4px;
     left: 0;

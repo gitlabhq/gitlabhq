@@ -1126,7 +1126,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .user-activity-content {
-  @include gl-relative;
+  position: relative;
 
   .system-note-image {
     @include gl--flex-center;
@@ -1141,7 +1141,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .user-profile-activity {
-  @include gl-relative;
+  position: relative;
 
   &:not(:last-child)::before {
     @include vertical-line(16px, 10px);

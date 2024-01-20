@@ -129,11 +129,14 @@
   blockquote,
   .blockquote {
     font-size: inherit;
-    @include gl-text-gray-700;
-    @include gl-py-3;
-    @include gl-pl-6;
-    @include gl-my-3;
-    @include gl-mx-0;
+    color: $gray-700;
+    padding-top: $gl-spacing-scale-3;
+    padding-bottom: $gl-spacing-scale-3;
+    padding-left: $gl-spacing-scale-6;
+    margin-top: $gl-spacing-scale-3;
+    margin-bottom: $gl-spacing-scale-3;
+    margin-left: 0;
+    margin-right: 0;
     @include gl-inset-border-l-4-gray-100;
 
     &:dir(rtl) {
@@ -657,7 +660,7 @@ body {
 
 /** CODE **/
 pre {
-  @include gl-relative;
+  position: relative;
   font-family: $monospace-font;
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;

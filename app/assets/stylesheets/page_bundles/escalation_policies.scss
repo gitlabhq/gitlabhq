@@ -39,7 +39,7 @@ $stroke-size: 1px;
   }
 
   @media (max-width: $breakpoint-lg) {
-    @include gl-w-full;
+    width: 100%;
   }
 }
 

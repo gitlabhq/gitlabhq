@@ -255,7 +255,7 @@
 
 .signature-badge {
   &:hover {
-    @include gl-text-decoration-none;
+    text-decoration: none;
   }
 
   .header-main-content & {

@@ -24,7 +24,7 @@
 
     .gl-label-text,
     .gl-label-text-scoped {
-      @include gl-font-sm;
+      font-size: $gl-font-size-sm;
       padding-block: $gl-spacing-scale-1;
       padding-inline: calc(#{$gl-spacing-scale-3} - 2px);
     }

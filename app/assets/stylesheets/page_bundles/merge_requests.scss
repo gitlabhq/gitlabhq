@@ -812,7 +812,8 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-body-ready-merge {
   @include media-breakpoint-down(sm) {
-    @include gl-py-3;
+    padding-top: $gl-spacing-scale-3;
+    padding-bottom: $gl-spacing-scale-3;
     @include gl-pr-3;
   }
 }
@@ -840,7 +841,7 @@ $tabs-holder-z-index: 250;
   container-type: inline-size;
   // Adds a fix for the view app dropdown not showing up
   // correctly.
-  @include gl-relative;
+  position: relative;
   @include gl-z-index-1;
 
   &.clickable:hover {
@@ -851,7 +852,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-extension-icon::before {
   @include gl-content-empty;
-  @include gl-absolute;
+  position: absolute;
   @include gl-left-50p;
   @include gl-top-half;
   @include gl-opacity-3;
@@ -866,7 +867,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-extension-icon::after {
   @include gl-content-empty;
-  @include gl-absolute;
+  position: absolute;
   @include gl-rounded-full;
   @include gl-left-50p;
   @include gl-top-half;
@@ -994,7 +995,8 @@ $tabs-holder-z-index: 250;
   .flash-container {
     @include gl-mx-auto;
     @include gl-max-w-container-xl;
-    @include gl-px-5;
+    padding-left: $gl-spacing-scale-5;
+    padding-right: $gl-spacing-scale-5;
   }
 }
 
@@ -1029,7 +1031,7 @@ $tabs-holder-z-index: 250;
 .mr-widget-merge-details {
   *,
   & {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
   }
 
   p {
@@ -1037,7 +1039,7 @@ $tabs-holder-z-index: 250;
   }
 
   li:not(:last-child) {
-    @include gl-mb-2;
+    margin-bottom: $gl-spacing-scale-2;
   }
 }
 
@@ -1048,7 +1050,7 @@ $tabs-holder-z-index: 250;
 
   &:hover,
   &:focus {
-    @include gl-text-decoration-none;
+    text-decoration: none;
   }
 }
 
@@ -1059,19 +1061,19 @@ $tabs-holder-z-index: 250;
 
 .merge-request-notification-toggle {
   .gl-toggle {
-    @include gl-ml-auto;
+    margin-left: auto;
   }
 
   .gl-toggle-label {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
 .mr-widget-status-icon-level-1::before {
   @include gl-content-empty;
-  @include gl-absolute;
-  @include gl-left-0;
-  @include gl-top-0;
+  position: absolute;
+  left: 0;
+  top: 0;
   @include gl-bottom-0;
   @include gl-right-0;
   @include gl-opacity-3;
@@ -1082,7 +1084,7 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-status-icon-level-1::after {
   @include gl-content-empty;
-  @include gl-absolute;
+  position: absolute;
   @include gl-rounded-full;
   @include gl-border-solid;
   @include gl-border-4;
@@ -1192,10 +1194,10 @@ $tabs-holder-z-index: 250;
 }
 
 .diff-file-discussions-wrapper {
-  @include gl-w-full;
+  width: 100%;
 
   .diff-discussions:not(:first-child) >.notes {
-    @include gl-pt-0;
+    padding-top: 0;
   }
 
   .note-discussion {
@@ -1203,7 +1205,7 @@ $tabs-holder-z-index: 250;
   }
 
   .discussion-collapsible {
-    @include gl-m-0;
+    margin: 0;
     @include gl-border-l-0;
     @include gl-border-r-0;
     @include gl-border-b-0;

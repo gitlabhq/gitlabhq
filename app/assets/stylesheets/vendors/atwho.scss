@@ -12,13 +12,13 @@
 
 
   small {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
   }
 
   small.description {
     display: block;
     width: auto;
-    @include gl-mt-2;
+    margin-top: $gl-spacing-scale-2;
   }
 
   .avatar-inline {

@@ -41,7 +41,7 @@ table {
       }
 
       th {
-        @include gl-bg-gray-10;
+        background-color: $gray-10;
         border-bottom: 0;
 
         &.wide {

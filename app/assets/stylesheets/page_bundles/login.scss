@@ -111,7 +111,7 @@
 
 @include media-breakpoint-down(sm) {
   .sm-bg-gray {
-    @include gl-bg-gray-10;
+    background-color: $gray-10;
 
     .gl-dark & {
       background-color: var(--gray-100);

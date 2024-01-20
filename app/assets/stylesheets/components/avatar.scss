@@ -206,7 +206,7 @@ $avatar-sizes: (
 
   &.user-popover-cannot-merge {
     .popover-header {
-      @include gl-bg-orange-50;
+      background-color: $orange-50;
     }
   }
 }

@@ -662,12 +662,13 @@
   display: block;
   width: 100%;
   min-height: 30px;
-  @include gl-py-0;
+  padding-top: 0;
+  padding-bottom: 0;
   @include gl-px-3;
   color: $gray-700;
   line-height: 30px;
   border: 1px solid $gray-400;
-  @include gl-rounded-base;
+  border-radius: $gl-border-radius-base;
   outline: 0;
 
   &:focus {
@@ -944,7 +945,7 @@
 
   .gl-button-text {
     display: flex;
-    @include gl-w-full;
+    width: 100%;
   }
 }
 

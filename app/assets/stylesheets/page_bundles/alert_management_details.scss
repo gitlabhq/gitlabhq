@@ -3,7 +3,7 @@
 .alert-management-details {
   @include media-breakpoint-down(xs) {
     .alert-details-incident-button {
-      @include gl-w-full;
+      width: 100%;
     }
   }
 
@@ -20,7 +20,7 @@
   .dropdown-item {
     &:first-child {
       &::before {
-        @include gl-pt-0;
+        padding-top: 0;
       }
     }
 
@@ -29,7 +29,8 @@
     }
 
     .gl-dropdown-item-text-wrapper {
-      @include gl-py-0;
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 
@@ -38,6 +39,6 @@
   }
 
   .note-header-info {
-    @include gl-mt-1;
+    margin-top: $gl-spacing-scale-1;
   }
 }

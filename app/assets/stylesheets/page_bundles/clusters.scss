@@ -3,12 +3,12 @@
 .clusters-container {
   @include media-breakpoint-down(xs) {
     .nav-controls {
-      @include gl-w-full;
+      width: 100%;
       order: -1;
 
       .gl-dropdown,
       .split-content-button {
-        @include gl-w-full;
+        width: 100%;
       }
     }
   }

@@ -31,19 +31,20 @@
   .gl-badge.sm,
   .gl-badge.md,
   .gl-badge.lg {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
     padding-block: $gl-spacing-scale-1;
     padding-inline: calc(#{$gl-spacing-scale-3} - 2px);
 
     > .gl-icon {
-      @include gl-ml-0;
+      margin-left: 0;
     }
   }
 
   // These changes will be moved to
   // GitLab UI's button component
   .gl-button .gl-badge {
-    @include gl-py-0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   // These changes will be moved to
@@ -62,6 +63,6 @@
   // speciality this FF adds
   // the utility class gets overriden
   .gl-badge.ci-icon {
-    @include gl-p-2;
+    padding: $gl-spacing-scale-2;
   }
 }

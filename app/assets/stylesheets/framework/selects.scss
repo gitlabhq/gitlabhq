@@ -42,15 +42,15 @@
   width: calc(70% - #{$gl-spacing-scale-5});
 
   .gl-new-dropdown-toggle {
-    @include gl-w-full;
+    width: 100%;
   }
 
   .dropdown-menu {
-    @include gl-w-full;
+    width: 100%;
     @include gl-max-w-none;
   }
 
   .gl-dropdown-item-check-icon {
-    @include gl-display-none;
+    display: none;
   }
 }

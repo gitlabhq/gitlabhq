@@ -154,7 +154,7 @@
 
 .build-sidebar-item {
   &:last-of-type {
-    @include gl-mb-0;
+    margin-bottom: 0;
   }
 }
 

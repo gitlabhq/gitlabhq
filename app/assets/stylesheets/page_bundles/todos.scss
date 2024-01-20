@@ -14,7 +14,7 @@
   button,
   a:not(.todo-target-link),
   time {
-    @include gl-relative;
+    position: relative;
   }
 
   // overwrite border style of .content-list
@@ -50,10 +50,10 @@
   .todo-label a::before {
     // Make area of the todo item clickable by expanding the area around the todo link
     @include gl-content-empty;
-    @include gl-absolute;
-    @include gl-left-0;
+    position: absolute;
+    left: 0;
     @include gl-right-0;
-    @include gl-top-0;
+    top: 0;
     @include gl-bottom-0;
     z-index: 9;
   }
@@ -77,11 +77,12 @@
   }
 
   pre.code.highlight {
-    @include gl-py-0;
+    padding-top: 0;
+  padding-bottom: 0;
     @include gl-px-1;
-    @include gl-m-0;
+    margin: 0;
     @include gl-border-0;
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
     @include gl-display-inline-flex;
     background: var(--gray-50, $gray-50);
     color: var(--gl-text-color, $gl-text-color);
@@ -92,7 +93,7 @@
   }
 
   .avatar {
-    @include gl-mb-0;
+    margin-bottom: 0;
   }
 }
 
@@ -103,10 +104,10 @@
 }
 
 .todo-actions {
-  @include gl-absolute;
+  position: absolute;
   @include gl-right-0;
 
   @include media-breakpoint-up(sm) {
-    @include gl-relative;
+    position: relative;
   }
 }

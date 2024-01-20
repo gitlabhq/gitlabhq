@@ -135,11 +135,11 @@ $work-item-overview-gap-width: 2rem;
 
 .work-item-notifications-form {
   .gl-toggle {
-    @include gl-ml-auto;
+    margin-left: auto;
   }
 
   .gl-toggle-label {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
@@ -237,7 +237,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 @mixin hierarchy-path-chevron {
   content: '';
-  @include gl-absolute;
+  position: absolute;
   @include gl-reset-bg;
   top: 0.39rem;
   right: px-to-rem(-9px);
@@ -248,10 +248,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 .disclosure-hierarchy-button {
   @include gl-pl-4;
-  @include gl-py-3;
-  @include gl-display-flex;
-  @include gl-relative;
-  @include gl-font-sm;
+  padding-top: $gl-spacing-scale-3;
+  padding-bottom: $gl-spacing-scale-3;
+  display: flex;
+  position: relative;
+  font-size: $gl-font-size-sm;
   border: 1px solid var(--gray-100, $gray-100);
   @include gl-border-r-none;
   @include gl-border-l-none;
@@ -293,7 +294,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     @include gl-rounded-bottom-left-base;
 
     &::before {
-      @include gl-display-none;
+      display: none;
     }
 
     &:active,

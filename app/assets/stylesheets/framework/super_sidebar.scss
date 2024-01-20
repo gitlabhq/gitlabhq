@@ -232,7 +232,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     background-color: var(--super-sidebar-user-bar-bg);
 
     .user-bar-dropdown-toggle {
-      @include gl-p-2;
+      padding: $gl-spacing-scale-2;
       @include gl-border-none;
 
       &[aria-expanded='true'] {
@@ -482,7 +482,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 
   .gl-search-box-by-type-input-borderless {
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
   }
 
   .global-search-results {
@@ -494,7 +494,8 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
     // Target groups
     [id*='gl-disclosure-dropdown-group'] {
-      @include gl-px-5;
+      padding-left: $gl-spacing-scale-5;
+      padding-right: $gl-spacing-scale-5;
     }
   }
 }

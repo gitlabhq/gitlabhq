@@ -126,7 +126,7 @@
 }
 
 @mixin btn-with-margin {
-  @include gl-ml-3;
+  margin-left: $gl-spacing-scale-3;
   float: left;
 
   &.inline {
@@ -352,7 +352,7 @@ fieldset[disabled] .btn,
 }
 
 copy-code {
-  @include gl-absolute;
+  position: absolute;
   @include gl-transition-medium;
   @include gl-opacity-0;
 

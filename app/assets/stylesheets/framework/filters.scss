@@ -358,11 +358,11 @@
 
   .filter-dropdown-container {
     > div {
-      @include gl-m-0;
+      margin: 0;
 
       > .btn {
         margin: 0 0 $gl-input-padding;
-        @include gl-w-full;
+        width: 100%;
       }
     }
 

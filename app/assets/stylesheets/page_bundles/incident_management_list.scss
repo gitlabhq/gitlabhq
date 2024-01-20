@@ -13,7 +13,7 @@
 
       > .gl-tab-counter-badge {
         @include gl-reset-color;
-        @include gl-font-sm;
+        font-size: $gl-font-size-sm;
         background-color: var(--gray-50, $gray-50);
       }
     }
@@ -25,7 +25,7 @@
     }
 
     .create-incident-button {
-      @include gl-w-full;
+      width: 100%;
     }
   }
 }

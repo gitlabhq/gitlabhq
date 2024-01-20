@@ -4,14 +4,14 @@
   #editor,
   .editor {
     @include gl-border-0;
-    @include gl-m-0;
-    @include gl-p-0;
-    @include gl-relative;
-    @include gl-w-full;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
     height: 500px;
 
     .editor-loading-content {
-      @include gl-h-full;
+      height: 100%;
       @include gl-border-0;
     }
   }

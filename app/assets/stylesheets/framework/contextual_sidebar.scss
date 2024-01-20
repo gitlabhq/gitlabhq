@@ -7,10 +7,10 @@
   @include context-header-collapsed;
 
   .context-header {
-    @include gl-h-auto;
+    height: auto;
 
     a {
-      @include gl-p-2;
+      padding: $gl-spacing-scale-2;
     }
   }
 
@@ -35,8 +35,8 @@
     }
 
     .icon-chevron-double-lg-left {
-      @include gl-rotate-180;
-      @include gl-m-0;
+      transform: rotate(180deg);
+      margin: 0;
     }
   }
 }
@@ -70,38 +70,40 @@
 @mixin sub-level-items-flyout {
   .sidebar-sub-level-items {
     @include media-breakpoint-up(sm) {
-      @include gl-fixed;
-      @include gl-top-0;
-      @include gl-left-0;
-      @include gl-ml-3;
-      @include gl-mt-0;
-      @include gl-px-0;
-      @include gl-pb-2;
-      @include gl-pt-0;
-      @include gl-bg-gray-10;
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin-left: $gl-spacing-scale-3;
+      margin-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: $gl-spacing-scale-2;
+      padding-top: 0;
+      background-color: $gray-10;
       box-shadow: 0 $gl-spacing-scale-2 $gl-spacing-scale-5 $t-gray-a-24, 0 0 $gl-spacing-scale-1 $t-gray-a-24;
       border-style: none;
       border-radius: $border-radius-default;
 
       .divider {
-        @include gl-display-none;
+        display: none;
       }
 
       .divider + li > a {
-        @include gl-mt-2;
+        margin-top: $gl-spacing-scale-2;
       }
 
       li:last-of-type a {
-        @include gl-mb-0;
+        margin-bottom: 0;
       }
 
       &.is-above {
-        @include gl-mt-0;
+        margin-top: 0;
       }
     }
 
     a {
-      @include gl-px-4;
+      padding-left: $gl-spacing-scale-4;
+      padding-right: $gl-spacing-scale-4;
     }
 
     .fly-out-top-item {
@@ -123,23 +125,24 @@
 @mixin context-header {
   $avatar-box-shadow: inset 0 0 0 1px $t-gray-a-08;
 
-  @include gl-p-2;
-  @include gl-mb-2;
-  @include gl-mt-1;
+  padding: $gl-spacing-scale-2;
+  margin-bottom: $gl-spacing-scale-2;
+  margin-top: $gl-spacing-scale-1;
 
   .avatar-container {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
     flex: none;
   }
 }
 
 @mixin top-level-item {
-  @include gl-h-7;
-  @include gl-px-4;
-  @include gl-display-flex;
-  @include gl-align-items-center;
-  @include gl-rounded-base;
-  @include gl-w-auto;
+  height: $gl-spacing-scale-7;
+  padding-left: $gl-spacing-scale-4;
+  padding-right: $gl-spacing-scale-4;
+  display: flex;
+  align-items: center;
+  border-radius: $gl-border-radius-base;
+  width: auto;
   transition: none;
   margin: $sidebar-top-item-tb-margin $sidebar-top-item-lr-margin;
 
@@ -149,35 +152,37 @@
 }
 
 @mixin fly-out-top-item($has-sub-items: false) {
-  @include gl-display-none;
+  display: none;
 
   a,
   a:hover,
   &.active a,
   .fly-out-top-item-container {
-    @include gl-mx-0;
-    @include gl-px-5;
-    @include gl-cursor-default;
-    @include gl-pointer-events-none;
-    @include gl-font-sm;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: $gl-spacing-scale-5;
+    padding-right: $gl-spacing-scale-5;
+    cursor: default;
+    pointer-events: none;
+    font-size: $gl-font-size-sm;
 
     @if $has-sub-items {
-      @include gl-mt-0;
+      margin-top: 0;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     } @else {
-      @include gl-my-n2;
-      @include gl-mt-0;
-      @include gl-relative;
-      @include gl-text-white;
+      margin-bottom: -#{$gl-spacing-scale-2};
+      margin-top: 0;
+      position: relative;
+      color: $white;
       background: var(--black, $black);
 
       strong {
-        @include gl-font-weight-normal;
+        font-weight: $gl-font-weight-normal;
       }
 
       &::before {
-        @include gl-absolute;
+        position: absolute;
         content: '';
         display: block;
         top: 50%;
@@ -219,7 +224,7 @@
   }
 
   a {
-    @include gl-text-decoration-none;
+    text-decoration: none;
     color: $gray-900;
   }
 
@@ -281,10 +286,10 @@
   }
 
   a.has-sub-items + .sidebar-sub-level-items.fly-out-list {
-    @include gl-mt-n2;
+    margin-top: -$gl-spacing-scale-2;
 
     &.is-above {
-      @include gl-mt-2;
+      margin-top: $gl-spacing-scale-2;
     }
   }
 
@@ -297,18 +302,18 @@
 }
 
 .nav-sidebar-inner-scroll {
-  @include gl-h-full;
-  @include gl-w-full;
-  @include gl-overflow-x-hidden;
-  @include gl-overflow-y-auto;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   > div.context-header {
-    @include gl-mt-2;
+    margin-top: $gl-spacing-scale-2;
 
     a {
       @include top-level-item;
       @include context-header;
-      @include gl-h-auto;
+      height: auto;
     }
   }
 }
@@ -318,7 +323,7 @@
 
   .context-header a {
     @include context-header;
-    @include gl-h-auto;
+    height: auto;
   }
 
   > li {
@@ -332,19 +337,20 @@
   li > a.gl-link {
     // undo gl-link text items for things in the sidebar - including sub menus
     // defined in https://gitlab.com/gitlab-org/gitlab-ui/-/blob/5431e0ca5149d4e02e3d5d617d194ac9609bb82d/src/components/base/link/link.scss
-    @include gl-text-body;
+    color: $body-color;
 
     &:active,
     &:focus,
     &:focus:active {
-      @include gl-text-decoration-none;
+      text-decoration: none;
     }
   }
 }
 
 .sidebar-sub-level-items {
-  @include gl-py-0;
-  @include gl-display-none;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: none;
 
   &:not(.fly-out-list) {
     li > a {

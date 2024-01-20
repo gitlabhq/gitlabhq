@@ -64,7 +64,7 @@
     &:focus,
     &:focus:active {
       .gl-new-dropdown-item-content {
-        @include gl-bg-gray-10;
+        background-color: $gray-10;
       }
     }
   }

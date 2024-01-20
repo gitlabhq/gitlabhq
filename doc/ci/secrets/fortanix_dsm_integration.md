@@ -130,9 +130,9 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
    If not, select **Build > Pipelines > Run pipeline**.
 1. Go to **Build > Jobs** and check the `build` job's log:
 
-   - ![gitlab_build_result_1](../img/gitlab_build_result_1.png)
+   - ![gitlab_build_result_1](img/gitlab_build_result_1.png)
 
-![dsm_secrets](../img/dsm_secrets.png)
+![dsm_secrets](img/dsm_secrets.png)
 
 ## Use an existing secret from Fortanix DSM
 
@@ -140,7 +140,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
 1. The secret must be marked as exportable in Fortanix:
 
-   ![dsm_secret_import_1](../img/dsm_secret_import_1.png)
+   ![dsm_secret_import_1](img/dsm_secret_import_1.png)
 
 1. In GitLab, go to your project.
 1. Go to **Settings > CI/CD > Variables**, and add these variables:
@@ -170,7 +170,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
    If not, select **Build > Pipelines > Run pipeline**.
 1. Go to **Build > Jobs** and check the `build` job's log:
 
-   - ![gitlab_build_result_2](../img/gitlab_build_result_2.png)
+   - ![gitlab_build_result_2](img/gitlab_build_result_2.png)
 
 ## Code Signing
 
@@ -179,7 +179,7 @@ To set up code signing securely in your GitLab environment:
 1. Log in to your Fortanix DSM account.
 1. Import `keystore_password` and `key_password` as secrets in Fortanix DSM. Ensure that they are marked as exportable.
 
-   ![dsm_secret_import_2](../img/dsm_secret_import_2.png)
+   ![dsm_secret_import_2](img/dsm_secret_import_2.png)
 
 1. In GitLab, go to your project.
 1. Go to **Settings > CI/CD > Variables**, and add these variables:
@@ -219,4 +219,4 @@ To set up code signing securely in your GitLab environment:
    If not, select **Build > Pipelines > Run pipeline**.
 1. Go to **Build > Jobs** and check the `build` job's log:
 
-   - ![gitlab_build_result_3](../img/gitlab_build_result_3.png)
+   - ![gitlab_build_result_3](img/gitlab_build_result_3.png)

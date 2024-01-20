@@ -47,14 +47,14 @@
 
 .gl-children-ml-sm-3 > * {
   @include media-breakpoint-up(sm) {
-    @include gl-ml-3;
+    margin-left: $gl-spacing-scale-3;
   }
 }
 
 .gl-first-child-ml-sm-0 > a:first-child,
 .gl-first-child-ml-sm-0 > button:first-child {
   @include media-breakpoint-up(sm) {
-    @include gl-ml-0;
+    margin-left: 0;
   }
 }
 

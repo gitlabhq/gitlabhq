@@ -49,7 +49,7 @@
     a {
       font-family: $monospace-font;
       white-space: nowrap;
-      @include gl-display-flex;
+      display: flex;
       @include gl-justify-content-end;
 
       i,
@@ -97,7 +97,7 @@ td.line-numbers {
     min-width: 6rem;
     // for server-side-rendering
     .line-links {
-      @include gl-display-flex;
+      display: flex;
     }
 
     // for client
@@ -125,12 +125,12 @@ td.line-numbers {
   }
 
   .file-line-blame {
-    @include gl-ml-3;
+    margin-left: $gl-spacing-scale-3;
   }
 
   .file-line-num,
   .file-line-blame {
-    @include gl-align-items-center;
-    @include gl-display-flex;
+    align-items: center;
+    display: flex;
   }
 }

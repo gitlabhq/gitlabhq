@@ -297,7 +297,7 @@
       @include basic-list-stats;
 
       .description > p {
-        @include gl-mb-0;
+        margin-bottom: 0;
       }
     }
 
@@ -309,7 +309,7 @@
   .project-details {
     p,
     .commit-row-message {
-      @include gl-mb-0;
+      margin-bottom: 0;
       @include str-truncated(100%);
     }
 
@@ -328,7 +328,7 @@
         &:not(.with-pipeline-status) {
           .icon-wrapper:first-of-type {
             @include media-breakpoint-up(lg) {
-              @include gl-ml-7;
+              margin-left: $gl-spacing-scale-7;
             }
           }
         }
@@ -355,12 +355,12 @@
     .icon-wrapper {
       @include media-breakpoint-down(md) {
         @include gl-mr-0;
-        @include gl-ml-3;
+        margin-left: $gl-spacing-scale-3;
       }
 
       @include media-breakpoint-down(xs) {
         &:first-child {
-          @include gl-ml-0;
+          margin-left: 0;
         }
       }
     }
@@ -374,7 +374,7 @@
 
   &.compact {
     .description {
-      @include gl-w-full;
+      width: 100%;
       @include gl-display-table;
       @include gl-table-layout-fixed;
     }
@@ -391,12 +391,12 @@
 
     .updated-note {
       @include media-breakpoint-up(sm) {
-        @include gl-mt-2;
+        margin-top: $gl-spacing-scale-2;
       }
     }
 
     .icon-wrapper {
-      @include gl-ml-3;
+      margin-left: $gl-spacing-scale-3;
       @include gl-mr-0;
     }
 
@@ -415,7 +415,7 @@
   .forks,
   .pipeline-status,
   .updated-note {
-    @include gl-display-flex;
+    display: flex;
   }
 
   @include media-breakpoint-down(md) {
@@ -429,7 +429,7 @@
 
   @include media-breakpoint-down(xs) {
     .updated-note {
-      @include gl-mt-0;
+      margin-top: 0;
       @include gl-text-left;
     }
   }

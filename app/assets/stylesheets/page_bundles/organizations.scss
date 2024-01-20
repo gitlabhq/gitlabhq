@@ -2,7 +2,7 @@
 
 // Modeled after projects.scss and groups.scss
 .organization-row .organization-description p {
-  @include gl-mb-0;
+  margin-bottom: 0;
 }
 
 .organization-root-path {
