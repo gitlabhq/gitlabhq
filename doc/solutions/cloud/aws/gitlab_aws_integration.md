@@ -11,7 +11,7 @@ Learn how to integrate GitLab and AWS.
 
 This content is intended for GitLab team members as well as members of the wider community.
 
-When content that is badged for GitLab SaaS ( **(SAAS)** ) or Self-Managed ( **(SELF)** ) it means that the link applies to only that type of GitLab instance implementation. Unbadged content works for any type of GitLab implementation.
+Unless otherwise noted, all of this content applies to both GitLab.com and self-managed instances.
 
 This page attempts to index the ways in which GitLab can integrate with AWS. It does so whether the integration is the result of configuring general functionality, was built in to AWS or GitLab or is provided as a solution.
 
@@ -135,8 +135,8 @@ Top level groups on GitLab.com are also known as "Namespaces" and naming one aft
 
 ### User authentication and authorization between GitLab and AWS
 
-- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/index.md) `[GitLab Configuration]` **(SAAS)**
-- [Integrate LDAP with GitLab](../../../administration/auth/ldap/index.md) `[GitLab Configuration]` **(SELF)**
+- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/index.md) `[GitLab Configuration]` - GitLab.com only
+- [Integrate LDAP with GitLab](../../../administration/auth/ldap/index.md) `[GitLab Configuration]` - Self-managed only
 
 ### Runner workload authentication and authorization integration
 
