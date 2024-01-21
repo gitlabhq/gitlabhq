@@ -12038,6 +12038,9 @@ msgstr ""
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
+msgid "Code indexing concurrency"
+msgstr ""
+
 msgid "Code owner approval is required"
 msgstr ""
 
@@ -24559,6 +24562,9 @@ msgid "How does pull mirroring work?"
 msgstr ""
 
 msgid "How is progress calculated?"
+msgstr ""
+
+msgid "How many code indexing jobs are allowed to run concurrently. A higher value improves repository indexing performance by increasing Sidekiq and Elasticsearch load. Setting it to 0 allows an unlimited number of indexing jobs."
 msgstr ""
 
 msgid "How many seconds an IP counts toward the IP address limit."
