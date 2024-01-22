@@ -269,7 +269,7 @@ gem 'rainbow', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ruby-progressbar', '~> 1.10' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '2.6.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 're2', '2.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 

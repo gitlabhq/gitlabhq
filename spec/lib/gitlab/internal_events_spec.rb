@@ -309,7 +309,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
         allow(GitlabSDK::Client)
           .to receive(:new)
-          .with(app_id: app_id, host: url)
+          .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
           .and_return(sdk_client)
       end
 

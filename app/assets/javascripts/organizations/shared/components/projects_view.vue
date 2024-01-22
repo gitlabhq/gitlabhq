@@ -1,7 +1,8 @@
 <script>
-import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import { formatProjects } from '../utils';
@@ -18,11 +19,14 @@ export default {
       ),
       primaryButtonText: __('New project'),
     },
+    prev: __('Prev'),
+    next: __('Next'),
   },
   components: {
     ProjectsList,
     GlLoadingIcon,
     GlEmptyState,
+    GlKeysetPagination,
   },
   inject: {
     organizationGid: {},
@@ -42,10 +46,47 @@ export default {
       required: false,
       default: '',
     },
+    startCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    endCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    perPage: {
+      type: Number,
+      required: false,
+      default: DEFAULT_PER_PAGE,
+    },
   },
   data() {
-    return {
+    const baseData = {
       projects: {},
+    };
+
+    if (!this.startCursor && !this.endCursor) {
+      return {
+        ...baseData,
+        pagination: {
+          first: this.perPage,
+          after: null,
+          last: null,
+          before: null,
+        },
+      };
+    }
+
+    return {
+      ...baseData,
+      pagination: {
+        first: this.endCursor && this.perPage,
+        after: this.endCursor,
+        last: this.startCursor && this.perPage,
+        before: this.startCursor,
+      },
     };
   },
   apollo: {
@@ -54,6 +95,7 @@ export default {
       variables() {
         return {
           id: this.organizationGid,
+          ...this.pagination,
         };
       },
       update({
@@ -66,6 +108,13 @@ export default {
           pageInfo,
         };
       },
+      result() {
+        this.$emit('page-change', {
+          endCursor: this.pagination.after,
+          startCursor: this.pagination.before,
+          hasPreviousPage: this.pageInfo.hasPreviousPage,
+        });
+      },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
       },
@@ -74,6 +123,9 @@ export default {
   computed: {
     nodes() {
       return this.projects.nodes || [];
+    },
+    pageInfo() {
+      return this.projects.pageInfo || {};
     },
     isLoading() {
       return this.$apollo.queries.projects.loading;
@@ -97,16 +149,40 @@ export default {
       return baseProps;
     },
   },
+  methods: {
+    onNext(endCursor) {
+      this.pagination = {
+        first: this.perPage,
+        after: endCursor,
+        last: null,
+        before: null,
+      };
+    },
+    onPrev(startCursor) {
+      this.pagination = {
+        first: null,
+        after: null,
+        last: this.perPage,
+        before: startCursor,
+      };
+    },
+  },
 };
 </script>
 
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
-  <projects-list
-    v-else-if="nodes.length"
-    :projects="nodes"
-    show-project-icon
-    :list-item-class="listItemClass"
-  />
+  <div v-else-if="nodes.length">
+    <projects-list :projects="nodes" show-project-icon :list-item-class="listItemClass" />
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="$options.i18n.prev"
+        :next-text="$options.i18n.next"
+        @prev="onPrev"
+        @next="onNext"
+      />
+    </div>
+  </div>
   <gl-empty-state v-else v-bind="emptyStateProps" />
 </template>

@@ -14,3 +14,6 @@ export const FORM_FIELD_PATH_VALIDATORS = [
     (val) => val.length >= 2,
   ),
 ];
+
+export const QUERY_PARAM_START_CURSOR = 'start_cursor';
+export const QUERY_PARAM_END_CURSOR = 'end_cursor';

@@ -9,6 +9,7 @@ module Ci
     belongs_to :pipeline
 
     self.primary_key = :id
+    self.sequence_name = :ci_pipeline_variables_id_seq
 
     partitionable scope: :pipeline
 

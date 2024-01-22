@@ -33,6 +33,7 @@ describe('GroupsAndProjectsApp', () => {
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSort = () => wrapper.findComponent(GlSorting);
+  const findProjectsView = () => wrapper.findComponent(ProjectsView);
 
   describe.each`
     display                   | expectedComponent | expectedDisplayListboxSelectedProp
@@ -158,6 +159,72 @@ describe('GroupsAndProjectsApp', () => {
       expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
         TOKEN_EMPTY_SEARCH_TERM,
       ]);
+    });
+  });
+
+  describe('when page is changed', () => {
+    const mockEndCursor = 'mockEndCursor';
+    const mockStartCursor = 'mockStartCursor';
+
+    describe('when going to next page', () => {
+      beforeEach(() => {
+        createComponent({ routeQuery: { display: RESOURCE_TYPE_PROJECTS } });
+        findProjectsView().vm.$emit('page-change', {
+          endCursor: mockEndCursor,
+          startCursor: null,
+          hasPreviousPage: true,
+        });
+      });
+
+      it('sets `end_cursor` query string', () => {
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { display: RESOURCE_TYPE_PROJECTS, end_cursor: mockEndCursor },
+        });
+      });
+    });
+
+    describe('when going to previous page', () => {
+      it('sets `start_cursor` query string', () => {
+        createComponent({
+          routeQuery: {
+            display: RESOURCE_TYPE_PROJECTS,
+            start_cursor: mockStartCursor,
+            end_cursor: mockEndCursor,
+          },
+        });
+
+        findProjectsView().vm.$emit('page-change', {
+          endCursor: null,
+          startCursor: mockStartCursor,
+          hasPreviousPage: true,
+        });
+
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { display: RESOURCE_TYPE_PROJECTS, start_cursor: mockStartCursor },
+        });
+      });
+
+      describe('when going to the first page', () => {
+        it('removes `start_cursor` and `end_cursor` query string', () => {
+          createComponent({
+            routeQuery: {
+              display: RESOURCE_TYPE_PROJECTS,
+              start_cursor: mockStartCursor,
+              end_cursor: mockEndCursor,
+            },
+          });
+
+          findProjectsView().vm.$emit('page-change', {
+            endCursor: null,
+            startCursor: mockStartCursor,
+            hasPreviousPage: false,
+          });
+
+          expect(routerMock.push).toHaveBeenCalledWith({
+            query: { display: RESOURCE_TYPE_PROJECTS },
+          });
+        });
+      });
     });
   });
 });

@@ -6,6 +6,8 @@ module Gitlab
     InvalidPropertyError = Class.new(StandardError)
     InvalidPropertyTypeError = Class.new(StandardError)
 
+    SNOWPLOW_EMITTER_BUFFER_SIZE = 100
+
     class << self
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
@@ -120,7 +122,7 @@ module Gitlab
 
         return unless app_id.present? && host.present?
 
-        GitlabSDK::Client.new(app_id: app_id, host: host)
+        GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: SNOWPLOW_EMITTER_BUFFER_SIZE)
       end
       strong_memoize_attr :gitlab_sdk_client
     end

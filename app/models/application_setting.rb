@@ -379,6 +379,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     :can_create_organization,
     :allow_project_creation_for_guest_and_below,
     :user_defaults_to_private_profile,
+    :enable_member_promotion_management,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 

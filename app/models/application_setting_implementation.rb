@@ -278,7 +278,8 @@ module ApplicationSettingImplementation
         gitlab_shell_operation_limit: 600,
         project_jobs_api_rate_limit: 600,
         security_txt_content: nil,
-        allow_project_creation_for_guest_and_below: true
+        allow_project_creation_for_guest_and_below: true,
+        enable_member_promotion_management: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

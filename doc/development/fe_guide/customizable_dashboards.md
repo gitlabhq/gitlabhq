@@ -74,7 +74,7 @@ export const pageViewsOverTime = {
       dimensions: [],
       filters: [
         {
-          member: 'TrackedEvents.event',
+          member: 'TrackedEvents.eventName',
           operator: 'equals',
           values: ['page_view']
         }

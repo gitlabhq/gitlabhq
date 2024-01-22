@@ -1,15 +1,21 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import { formatProjects } from '~/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { createAlert } from '~/alert';
+import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { organizationProjects as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
+import {
+  organizationProjects as nodes,
+  pageInfo,
+  pageInfoEmpty,
+  pageInfoOnePage,
+} from '~/organizations/mock_data';
 
 jest.mock('~/alert');
 
@@ -56,6 +62,7 @@ describe('ProjectsView', () => {
     });
   };
 
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
@@ -131,6 +138,139 @@ describe('ProjectsView', () => {
           projects: formatProjects(nodes),
           showProjectIcon: true,
           listItemClass: defaultPropsData.listItemClass,
+        });
+      });
+    });
+
+    describe('when there is one page of projects', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: jest.fn().mockResolvedValue({
+            data: {
+              organization: {
+                id: defaultProvide.organizationGid,
+                projects: {
+                  nodes,
+                  pageInfo: pageInfoOnePage,
+                },
+              },
+            },
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('does not render pagination', () => {
+        expect(findPagination().exists()).toBe(false);
+      });
+    });
+
+    describe('when there is a next page of projects', () => {
+      const mockEndCursor = 'mockEndCursor';
+      const handler = jest.fn().mockResolvedValue({
+        data: {
+          organization: {
+            id: defaultProvide.organizationGid,
+            projects: {
+              nodes,
+              pageInfo: {
+                ...pageInfo,
+                hasNextPage: true,
+                hasPreviousPage: false,
+              },
+            },
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        createComponent({ handler });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(async () => {
+          findPagination().vm.$emit('next', mockEndCursor);
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler).toHaveBeenCalledWith({
+            after: mockEndCursor,
+            before: null,
+            first: DEFAULT_PER_PAGE,
+            id: defaultProvide.organizationGid,
+            last: null,
+          });
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: mockEndCursor,
+              startCursor: null,
+              hasPreviousPage: false,
+            },
+          ]);
+        });
+      });
+    });
+
+    describe('when there is a previous page of projects', () => {
+      const mockStartCursor = 'mockStartCursor';
+      const handler = jest.fn().mockResolvedValue({
+        data: {
+          organization: {
+            id: defaultProvide.organizationGid,
+            projects: {
+              nodes,
+              pageInfo: {
+                ...pageInfo,
+                hasNextPage: false,
+                hasPreviousPage: true,
+              },
+            },
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        createComponent({ handler });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(async () => {
+          findPagination().vm.$emit('prev', mockStartCursor);
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler).toHaveBeenCalledWith({
+            after: null,
+            before: mockStartCursor,
+            first: null,
+            id: defaultProvide.organizationGid,
+            last: DEFAULT_PER_PAGE,
+          });
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: null,
+              startCursor: mockStartCursor,
+              hasPreviousPage: true,
+            },
+          ]);
         });
       });
     });

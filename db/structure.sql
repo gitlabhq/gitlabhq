@@ -12633,6 +12633,7 @@ CREATE TABLE application_settings (
     lock_toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
     rate_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
     elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
+    enable_member_promotion_management boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -14704,7 +14705,7 @@ CREATE SEQUENCE ci_pipeline_schedules_id_seq
 
 ALTER SEQUENCE ci_pipeline_schedules_id_seq OWNED BY ci_pipeline_schedules.id;
 
-CREATE TABLE ci_pipeline_variables (
+CREATE TABLE p_ci_pipeline_variables (
     key character varying NOT NULL,
     value text,
     encrypted_value text,
@@ -14714,9 +14715,9 @@ CREATE TABLE ci_pipeline_variables (
     partition_id bigint NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
-    pipeline_id bigint NOT NULL,
-    CONSTRAINT partitioning_constraint CHECK ((partition_id = ANY (ARRAY[(100)::bigint, (101)::bigint])))
-);
+    pipeline_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
 
 CREATE SEQUENCE ci_pipeline_variables_id_seq
     START WITH 1
@@ -14725,7 +14726,20 @@ CREATE SEQUENCE ci_pipeline_variables_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER SEQUENCE ci_pipeline_variables_id_seq OWNED BY ci_pipeline_variables.id;
+ALTER SEQUENCE ci_pipeline_variables_id_seq OWNED BY p_ci_pipeline_variables.id;
+
+CREATE TABLE ci_pipeline_variables (
+    key character varying NOT NULL,
+    value text,
+    encrypted_value text,
+    encrypted_value_salt character varying,
+    encrypted_value_iv character varying,
+    variable_type smallint DEFAULT 1 NOT NULL,
+    partition_id bigint NOT NULL,
+    raw boolean DEFAULT false NOT NULL,
+    id bigint DEFAULT nextval('ci_pipeline_variables_id_seq'::regclass) NOT NULL,
+    pipeline_id bigint NOT NULL
+);
 
 CREATE TABLE ci_pipelines (
     id integer NOT NULL,
@@ -26801,6 +26815,8 @@ ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
 
+ALTER TABLE ONLY p_ci_pipeline_variables ATTACH PARTITION ci_pipeline_variables FOR VALUES IN ('100', '101');
+
 ALTER TABLE ONLY abuse_events ALTER COLUMN id SET DEFAULT nextval('abuse_events_id_seq'::regclass);
 
 ALTER TABLE ONLY abuse_report_assignees ALTER COLUMN id SET DEFAULT nextval('abuse_report_assignees_id_seq'::regclass);
@@ -27034,8 +27050,6 @@ ALTER TABLE ONLY ci_pipeline_messages ALTER COLUMN id SET DEFAULT nextval('ci_pi
 ALTER TABLE ONLY ci_pipeline_schedule_variables ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_schedule_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pipeline_schedules ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_schedules_id_seq'::regclass);
-
-ALTER TABLE ONLY ci_pipeline_variables ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_pipelines_id_seq'::regclass);
 
@@ -27540,6 +27554,8 @@ ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT next
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_job_annotations ALTER COLUMN id SET DEFAULT nextval('p_ci_job_annotations_id_seq'::regclass);
+
+ALTER TABLE ONLY p_ci_pipeline_variables ALTER COLUMN id SET DEFAULT nextval('ci_pipeline_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
@@ -29126,6 +29142,9 @@ ALTER TABLE ONLY ci_pipeline_schedule_variables
 
 ALTER TABLE ONLY ci_pipeline_schedules
     ADD CONSTRAINT ci_pipeline_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY p_ci_pipeline_variables
+    ADD CONSTRAINT p_ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY ci_pipeline_variables
     ADD CONSTRAINT ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
@@ -34800,6 +34819,8 @@ CREATE INDEX index_pipeline_metadata_on_name_text_pattern_pipeline_id ON ci_pipe
 
 CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, name text_pattern_ops);
 
+CREATE UNIQUE INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ON ONLY p_ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
+
 CREATE UNIQUE INDEX index_pipeline_variables_on_pipeline_id_key_partition_id_unique ON ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
@@ -35939,6 +35960,8 @@ CREATE INDEX index_web_hook_logs_part_on_created_at_and_web_hook_id ON ONLY web_
 CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHERE ((type)::text = 'GroupHook'::text);
 
 CREATE INDEX index_web_hooks_on_integration_id ON web_hooks USING btree (integration_id);
+
+CREATE INDEX index_web_hooks_on_project_id_and_id ON web_hooks USING btree (project_id, id) WHERE ((type)::text = 'ProjectHook'::text);
 
 CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING btree (project_id, recent_failures);
 
@@ -37938,6 +37961,8 @@ ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
 
 ALTER INDEX p_ci_builds_pkey ATTACH PARTITION ci_builds_pkey;
 
+ALTER INDEX p_ci_pipeline_variables_pkey ATTACH PARTITION ci_pipeline_variables_pkey;
+
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
 ALTER INDEX p_ci_builds_metadata_build_id_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_id_and_interruptible;
@@ -37983,6 +38008,8 @@ ALTER INDEX p_ci_builds_project_id_status_idx ATTACH PARTITION index_ci_builds_p
 ALTER INDEX p_ci_builds_runner_id_idx ATTACH PARTITION index_ci_builds_runner_id_running;
 
 ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
+
+ALTER INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ATTACH PARTITION index_pipeline_variables_on_pipeline_id_key_partition_id_unique;
 
 ALTER INDEX p_ci_builds_user_id_name_created_at_idx ATTACH PARTITION index_secure_ci_builds_on_user_id_name_created_at;
 
@@ -39198,7 +39225,7 @@ ALTER TABLE ONLY timelogs
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_f15266b5f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_variables
+ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY zoekt_indices

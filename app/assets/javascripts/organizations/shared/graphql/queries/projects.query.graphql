@@ -1,7 +1,15 @@
-query getOrganizationProjects($id: OrganizationsOrganizationID!) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getOrganizationProjects(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
   organization(id: $id) {
     id
-    projects {
+    projects(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         id
         nameWithNamespace
@@ -23,6 +31,9 @@ query getOrganizationProjects($id: OrganizationsOrganizationID!) {
         forkingAccessLevel {
           stringValue
         }
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

@@ -16,6 +16,8 @@ import {
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
 import GroupsView from '../../shared/components/groups_view.vue';
 import ProjectsView from '../../shared/components/projects_view.vue';
+import { onPageChange } from '../../shared/utils';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '../../shared/constants';
 import {
   DISPLAY_LISTBOX_ITEMS,
   SORT_DIRECTION_ASC,
@@ -65,6 +67,12 @@ export default {
     },
     sortText() {
       return this.activeSortItem.text;
+    },
+    startCursor() {
+      return this.$route.query[QUERY_PARAM_START_CURSOR] || null;
+    },
+    endCursor() {
+      return this.$route.query[QUERY_PARAM_END_CURSOR] || null;
     },
     filteredSearchValue() {
       const tokens = prepareTokens(
@@ -122,6 +130,9 @@ export default {
         }),
       });
     },
+    onPageChange(pagination) {
+      this.pushQuery(onPageChange({ ...pagination, routeQuery: this.$route.query }));
+    },
   },
 };
 </script>
@@ -166,6 +177,12 @@ export default {
         </div>
       </div>
     </div>
-    <component :is="routerView" list-item-class="gl-px-5" />
+    <component
+      :is="routerView"
+      list-item-class="gl-px-5"
+      :start-cursor="startCursor"
+      :end-cursor="endCursor"
+      @page-change="onPageChange"
+    />
   </div>
 </template>
