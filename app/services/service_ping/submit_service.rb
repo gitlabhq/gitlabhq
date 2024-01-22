@@ -16,7 +16,7 @@ module ServicePing
     end
 
     def execute
-      return unless ServicePing::ServicePingSettings.product_intelligence_enabled?
+      return unless ServicePing::ServicePingSettings.enabled_and_consented?
 
       start_time = Time.current
 

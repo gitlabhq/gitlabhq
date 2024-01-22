@@ -1648,7 +1648,7 @@ Tier badges provide information about a feature and are displayed next to the to
 
 Assign tier badges to:
 
-- All H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
+- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
 - Topic titles that don't apply to the same tier as the H1.
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
@@ -1731,9 +1731,18 @@ Or add the status by itself:
 
 ##### Inline tier badges
 
-Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
+Do not add tier badges inline with other text.
 The single source of truth for a feature should be the topic where the
 functionality is described.
+
+If you need to mention a tier inline, write it in plain text. For example,
+for an API topic:
+
+```markdown
+IDs of the users to assign the issue to. Ultimate only.
+```
+
+For more examples, see the [REST API style guide](../restful_api_styleguide.md).
 
 ##### Administrator documentation tier badges
 

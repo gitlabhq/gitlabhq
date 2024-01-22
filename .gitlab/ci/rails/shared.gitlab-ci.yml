@@ -115,6 +115,14 @@ include:
           --input-files "rspec/rspec-*.json" \
           --merge_request_iid "$CI_MERGE_REQUEST_IID";
       fi
+      if [ "$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES" == "true" ]; then
+        bundle exec knapsack-report-issues \
+          --token "${KNAPSACK_REPORT_ISSUES_PROJECT_TOKEN}" \
+          --project "gitlab-org/gitlab" \
+          --input-file knapsack/rspec_*_report.json \
+          --expected-report node_specs_expected_duration.json \
+          --merge_request_iid "$CI_MERGE_REQUEST_IID";
+      fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
     - tooling/bin/push_job_metrics || true
 

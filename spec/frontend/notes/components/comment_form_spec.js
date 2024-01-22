@@ -401,9 +401,26 @@ describe('issue_comment_form component', () => {
             let store;
 
             beforeEach(() => {
-              store = createStore();
+              store = createStore({
+                actions: {
+                  saveNote: jest.fn().mockResolvedValue(),
+                },
+              });
               store.registerModule('batchComments', batchComments());
               store.state.batchComments.drafts = [{ note: 'A' }];
+            });
+
+            it('sends the event to indicate that a new draft comment has been added', () => {
+              const note = 'some note text which enables actually adding a draft note';
+
+              jest.spyOn(eventHub, '$emit');
+              mountComponent({ mountFunction: mount, initialData: { note }, store });
+
+              findAddToReviewButton().trigger('click');
+
+              expect(eventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
+                name: 'noteFormAddToReview',
+              });
             });
 
             it('should save note draft when cmd+enter is pressed', async () => {

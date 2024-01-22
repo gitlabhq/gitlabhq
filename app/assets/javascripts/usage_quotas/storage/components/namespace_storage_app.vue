@@ -1,20 +1,23 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
 import StorageUsageStatistics from 'ee_else_ce/usage_quotas/storage/components/storage_usage_statistics.vue';
 import SearchAndSortBar from '~/usage_quotas/components/search_and_sort_bar/search_and_sort_bar.vue';
 import DependencyProxyUsage from './dependency_proxy_usage.vue';
 import ContainerRegistryUsage from './container_registry_usage.vue';
+import ProjectList from './project_list.vue';
 
 export default {
   name: 'NamespaceStorageApp',
   components: {
     GlAlert,
+    GlKeysetPagination,
     StorageUsageStatistics,
     DependencyProxyUsage,
     ContainerRegistryUsage,
     SearchAndSortBar,
+    ProjectList,
   },
-  inject: ['userNamespace', 'namespaceId'],
+  inject: ['userNamespace', 'namespaceId', 'helpLinks', 'defaultPerPage'],
   props: {
     namespaceLoadingError: {
       type: Boolean,
@@ -31,10 +34,25 @@ export default {
       required: false,
       default: false,
     },
+    isNamespaceProjectsLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     namespace: {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    projects: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    initialSortBy: {
+      type: String,
+      required: false,
+      default: 'storage',
     },
   },
   computed: {
@@ -54,6 +72,27 @@ export default {
     },
     containerRegistrySizeIsEstimated() {
       return this.namespace.rootStorageStatistics?.containerRegistrySizeIsEstimated ?? false;
+    },
+    projectList() {
+      return this.projects?.nodes ?? [];
+    },
+    pageInfo() {
+      return this.projects?.pageInfo;
+    },
+    showPagination() {
+      return Boolean(this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
+    },
+  },
+  methods: {
+    onPrev(before) {
+      if (this.pageInfo?.hasPreviousPage) {
+        this.$emit('fetch-more-projects', { before, last: this.defaultPerPage, first: undefined });
+      }
+    },
+    onNext(after) {
+      if (this.pageInfo?.hasNextPage) {
+        this.$emit('fetch-more-projects', { after, first: this.defaultPerPage });
+      }
     },
   },
 };
@@ -103,7 +142,26 @@ export default {
           "
         />
       </div>
-      <slot name="ee-storage-app"></slot>
+      <project-list
+        :projects="projectList"
+        :is-loading="isNamespaceProjectsLoading"
+        :help-links="helpLinks"
+        :sort-by="initialSortBy"
+        :sort-desc="true"
+        @sortChanged="
+          ($event) => {
+            $emit('sort-changed', $event);
+          }
+        "
+      />
+      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+        <gl-keyset-pagination
+          v-if="showPagination"
+          v-bind="pageInfo"
+          @prev="onPrev"
+          @next="onNext"
+        />
+      </div>
     </section>
   </div>
 </template>

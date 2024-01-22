@@ -15,6 +15,7 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
@@ -86,7 +87,7 @@ export default {
     GlSprintf,
     GlAlert,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -443,6 +444,8 @@ export default {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
       notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      notesEventHub.$on('noteFormAddToReview', this.handleReviewTracking);
+      notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
@@ -453,6 +456,8 @@ export default {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      notesEventHub.$off('noteFormStartReview', this.handleReviewTracking);
+      notesEventHub.$off('noteFormAddToReview', this.handleReviewTracking);
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
@@ -678,6 +683,16 @@ export default {
     },
     reloadPage() {
       window.location.reload();
+    },
+    handleReviewTracking(event) {
+      const types = {
+        noteFormStartReview: 'merge_request_click_start_review_on_changes_tab',
+        noteFormAddToReview: 'merge_request_click_add_to_review_on_changes_tab',
+      };
+
+      if (this.shouldShow && types[event.name]) {
+        this.trackEvent(types[event.name]);
+      }
     },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/reviews/index.md', {

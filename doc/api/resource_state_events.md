@@ -13,6 +13,9 @@ Resource state events keep track of what happens to GitLab [issues](../user/proj
 
 Use them to track which state was set, who did it, and when it happened.
 
+Resource state events API does not track the initial state ("create" or "open") of resources.
+For a resource that was not closed or re-opened, an empty list is returned.
+
 ## Issues
 
 ### List project issue state events

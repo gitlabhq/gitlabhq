@@ -12,6 +12,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { badgeState } from '~/merge_requests/components/merge_request_header.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -48,7 +49,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [issuableStateMixin],
+  mixins: [issuableStateMixin, InternalEvents.mixin()],
   props: {
     noteableType: {
       type: String,
@@ -252,6 +253,10 @@ export default {
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
 
         this.isSubmitting = true;
+
+        if (isDraft) {
+          eventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
+        }
 
         trackSavedUsingEditor(
           this.$refs.markdownEditor.isContentEditorActive,
