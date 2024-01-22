@@ -46,17 +46,19 @@ The [get started](getting_started.md) page includes different methods to customi
 
 ### Authentication
 
-Some queries can be accessed anonymously without the request needing to be authenticated,
-but others require it. Mutations always require authentication.
+You can access some queries without authentication, but others require authentication. Mutations always require
+authentication.
 
-Authentication can happen by:
+You can authenticate by using either a:
 
 - [Token](#token-authentication)
 - [Session cookie](#session-cookie-authentication)
 
-If the authentication information is not valid, GitLab returns an error message with a status code of 401:
+If the authentication information is not valid, GitLab returns an error message with a status code of `401`:
 
+```json
 {"errors":[{"message":"Invalid token"}]}
+```
 
 #### Token authentication
 
@@ -83,7 +85,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer <token>" \
 
 ##### Parameter authentication
 
-Alternatively, OAuth 2.0 tokens can be passed in using the `access_token` parameter:
+Example of using an OAuth 2.0 token in the `access_token` parameter:
 
 ```shell
 curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
@@ -91,7 +93,7 @@ curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
      --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
-Personal, project, or group access tokens can be passed in using the `private_token` parameter:
+You can pass in personal, project, or group access tokens using the `private_token` parameter:
 
 ```shell
 curl "https://gitlab.com/api/graphql?private_token=<access_token>" \

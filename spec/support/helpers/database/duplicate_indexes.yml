@@ -162,9 +162,6 @@ term_agreements:
 todos:
   index_todos_on_author_id_and_created_at:
     - index_todos_on_author_id
-user_callouts:
-  index_user_callouts_on_user_id_and_feature_name:
-    - index_user_callouts_on_user_id
 vulnerabilities:
   index_vulnerabilities_project_id_state_severity_default_branch:
     - index_vulnerabilities_on_project_id_and_state_and_severity
