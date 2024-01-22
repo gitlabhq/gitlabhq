@@ -23401,7 +23401,7 @@ Represents the network policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="noteauthor"></a>`author` | [`UserCore!`](#usercore) | User who wrote this note. |
+| <a id="noteauthor"></a>`author` | [`UserCore`](#usercore) | User who wrote this note. |
 | <a id="noteauthoriscontributor"></a>`authorIsContributor` | [`Boolean`](#boolean) | Indicates whether the note author is a contributor. |
 | <a id="noteawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the note. (see [Connections](#connections)) |
 | <a id="notebody"></a>`body` | [`String!`](#string) | Content of the note. |

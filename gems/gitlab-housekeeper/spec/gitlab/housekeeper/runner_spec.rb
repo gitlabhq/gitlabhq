@@ -100,8 +100,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         .with(
           source_project_id: '123',
           title: 'The title of MR1',
-          description: 'The description of the MR',
-          labels: ['example-label'],
+          description: /The description of the MR/,
+          labels: %w[example-label automation:gitlab-housekeeper-authored],
           source_branch: 'the-identifier-for-the-first-change',
           target_branch: 'master',
           target_project_id: '456',
@@ -113,8 +113,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         .with(
           source_project_id: '123',
           title: 'The title of MR2',
-          description: 'The description of the MR',
-          labels: ['example-label'],
+          description: /The description of the MR/,
+          labels: %w[example-label automation:gitlab-housekeeper-authored],
           source_branch: 'the-identifier-for-the-second-change',
           target_branch: 'master',
           target_project_id: '456',
@@ -157,8 +157,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           .with(
             source_project_id: '123',
             title: 'The title of MR1',
-            description: 'The description of the MR',
-            labels: ['example-label'],
+            description: /The description of the MR/,
+            labels: %w[example-label automation:gitlab-housekeeper-authored],
             source_branch: 'the-identifier-for-the-first-change',
             target_branch: 'master',
             target_project_id: '456',
@@ -170,8 +170,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           .with(
             source_project_id: '123',
             title: 'The title of MR2',
-            description: 'The description of the MR',
-            labels: ['example-label'],
+            description: /The description of the MR/,
+            labels: %w[example-label automation:gitlab-housekeeper-authored],
             source_branch: 'the-identifier-for-the-second-change',
             target_branch: 'master',
             target_project_id: '456',

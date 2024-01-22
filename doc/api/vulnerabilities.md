@@ -224,7 +224,7 @@ POST /vulnerabilities/:id/revert
 | `id` | integer or string | yes | The ID of a vulnerability to revert to detected state |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/dismiss"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/revert"
 ```
 
 Example response:

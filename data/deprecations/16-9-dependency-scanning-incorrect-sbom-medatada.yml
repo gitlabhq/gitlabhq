@@ -1,0 +1,20 @@
+- title: "Dependency Scanning incorrect SBOM metadata properties"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  breaking_change: true
+  reporter: gonzoyumo
+  stage: Secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438779
+  body: |  # (required) Don't change this line.
+    GitLab 17.0 removes support for the following metadata properties in CycloneDX SBOM reports:
+
+    - `gitlab:dependency_scanning:input_file`
+    - `gitlab:dependency_scanning:package_manager`
+
+    These were added in GitLab 15.7 to the SBOM produced by Dependency Scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/ee/development/sec/cyclonedx_property_taxonomy.html).
+    The following correct properties were added in GitLab 15.11 to address this:
+
+    - `gitlab:dependency_scanning:input_file:path`
+    - `gitlab:dependency_scanning:package_manager:name`
+
+    The incorrect properties were kept for backward compatibility. They are now deprecated and will be removed in 17.0.

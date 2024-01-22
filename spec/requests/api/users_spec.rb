@@ -4384,21 +4384,20 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   context "user activities", :clean_gitlab_redis_shared_state do
     let_it_be(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let_it_be(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+    let_it_be(:newly_active_private_user) { create(:user, last_activity_on: 1.day.ago.midday, private_profile: true) }
     let(:path) { '/user/activities' }
 
-    it_behaves_like 'GET request permissions for admin mode'
+    context 'for an anonymous user' do
+      it 'returns 401' do
+        get api(path)
 
-    context 'last activity as normal user' do
-      it 'has no permission' do
-        get api(path, user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
-    context 'as admin' do
+    context 'as a logged in user' do
       it 'returns the activities from the last 6 months' do
-        get api(path, admin, admin_mode: true)
+        get api(path, user)
 
         expect(response).to include_pagination_headers
         expect(json_response.size).to eq(1)
@@ -4412,7 +4411,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
       context 'passing a :from parameter' do
         it 'returns the activities from the given date' do
-          get api("#{path}?from=2000-1-1", admin, admin_mode: true)
+          get api("#{path}?from=2000-1-1", user)
 
           expect(response).to include_pagination_headers
           expect(json_response.size).to eq(2)
@@ -4423,6 +4422,22 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           expect(activity['last_activity_on']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
           expect(activity['last_activity_at']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
         end
+      end
+
+      it 'does not include users with private profiles' do
+        get api(path, user)
+
+        expect(json_response.map { |user| user['username'] })
+          .not_to include(newly_active_private_user.username)
+      end
+    end
+
+    context 'as admin' do
+      it 'includes users with private profiles' do
+        get api(path, admin, admin_mode: true)
+
+        expect(json_response.map { |user| user['username'] })
+          .to include(newly_active_private_user.username)
       end
     end
   end

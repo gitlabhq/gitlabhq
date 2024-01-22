@@ -1,4 +1,4 @@
-import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
+import { GlSorting, GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import component from '~/vue_shared/components/registry/registry_search.vue';
@@ -7,7 +7,6 @@ describe('Registry Search', () => {
   let wrapper;
 
   const findPackageListSorting = () => wrapper.findComponent(GlSorting);
-  const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
 
   const defaultProps = {
@@ -32,9 +31,6 @@ describe('Registry Search', () => {
   const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMount(component, {
       propsData,
-      stubs: {
-        GlSortingItem,
-      },
     });
   };
 
@@ -92,7 +88,10 @@ describe('Registry Search', () => {
     it('has all the sortable items', () => {
       mountComponent();
 
-      expect(findSortingItems()).toHaveLength(defaultProps.sortableFields.length);
+      expect(findPackageListSorting().props().sortOptions).toMatchObject([
+        { text: 'name', value: 'name' },
+        { text: 'baz', value: 'bar' },
+      ]);
     });
 
     it('on sort change emits sorting:changed event', () => {
@@ -108,7 +107,7 @@ describe('Registry Search', () => {
     it('on sort item click emits sorting:changed event', () => {
       mountComponent();
 
-      findSortingItems().at(1).vm.$emit('click');
+      findPackageListSorting().vm.$emit('sortByChange', 'bar');
 
       expect(wrapper.emitted('sorting:changed')).toEqual([
         [{ orderBy: defaultProps.sortableFields[1].orderBy }],

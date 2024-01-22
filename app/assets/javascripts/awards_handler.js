@@ -294,7 +294,7 @@ export class AwardsHandler {
     }
 
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
-    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).closest('button');
 
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
@@ -312,7 +312,7 @@ export class AwardsHandler {
     }
     this.addEmojiToFrequentlyUsedList(emoji);
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
-    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).closest('button');
     if ($emojiButton.length > 0) {
       if (this.isActive($emojiButton)) {
         this.decrementCounter($emojiButton, normalizedEmoji);
@@ -355,7 +355,7 @@ export class AwardsHandler {
     const awardUrl = this.getAwardUrl();
     if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
       const mutualVote = emoji === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
-      const $emojiButton = votesBlock.find(`[data-name="${mutualVote}"]`).parent();
+      const $emojiButton = votesBlock.find(`[data-name="${mutualVote}"]`).closest('button');
       const isAlreadyVoted = $emojiButton.hasClass('active');
       if (isAlreadyVoted) {
         this.addAward(votesBlock, awardUrl, mutualVote, false);
@@ -430,7 +430,7 @@ export class AwardsHandler {
   }
 
   addYouToUserList(votesBlock, emoji) {
-    const awardBlock = this.findEmojiIcon(votesBlock, emoji).parent();
+    const awardBlock = this.findEmojiIcon(votesBlock, emoji).closest('button');
     const origTitle = this.getAwardTooltip(awardBlock);
     let users = [];
     if (origTitle) {

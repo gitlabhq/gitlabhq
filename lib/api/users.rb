@@ -1347,11 +1347,11 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get "activities", feature_category: :user_profile do
-        authenticated_as_admin!
-
         activities = User
           .where(User.arel_table[:last_activity_on].gteq(params[:from]))
           .reorder(last_activity_on: :asc)
+
+        activities = activities.with_public_profile unless current_user.can_read_all_resources?
 
         present paginate(activities), with: Entities::UserActivity
       end

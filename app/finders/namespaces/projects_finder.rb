@@ -11,6 +11,7 @@
 #     sort: string
 #     search: string
 #     include_subgroups: boolean
+#     include_archived: boolean
 #     ids: int[]
 #     with_issues_enabled: boolean
 #     with_merge_requests_enabled: boolean
@@ -45,6 +46,7 @@ module Namespaces
 
     def filter_projects(collection)
       collection = by_ids(collection)
+      collection = by_archived(collection)
       collection = by_similarity(collection)
       by_feature_availability(collection)
     end
@@ -53,6 +55,12 @@ module Namespaces
       return items unless params[:ids].present?
 
       items.id_in(params[:ids])
+    end
+
+    def by_archived(items)
+      return items if Gitlab::Utils.to_boolean(params[:include_archived], default: true)
+
+      items.non_archived
     end
 
     def by_similarity(items)

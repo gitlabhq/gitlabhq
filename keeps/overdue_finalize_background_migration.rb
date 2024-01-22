@@ -66,10 +66,6 @@ module Keeps
         [required stop](https://docs.gitlab.com/ee/development/database/required_stops.html)
         to process the migration. Therefore we can finalize any batched background migration that was added before the
         last required stop.
-
-          This merge request was created using the
-        [gitlab-housekeeper](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139492)
-        gem.
         MARKDOWN
         # rubocop:enable Gitlab/DocUrl
 

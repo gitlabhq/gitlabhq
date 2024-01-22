@@ -200,8 +200,8 @@ describe('AwardsHandler', () => {
     it('should handle :+1: and :-1: mutuality', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
-      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
-      const $thumbsDownEmoji = $votesBlock.find('[data-name=thumbsdown]').parent();
+      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').closest('button');
+      const $thumbsDownEmoji = $votesBlock.find('[data-name=thumbsdown]').closest('button');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
 
       expect($thumbsUpEmoji.hasClass('active')).toBe(true);
@@ -230,7 +230,7 @@ describe('AwardsHandler', () => {
     it('should prepend "You" to the award tooltip', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
-      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').closest('button');
       $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
 
@@ -240,7 +240,7 @@ describe('AwardsHandler', () => {
     it('handles the special case where "You" is not cleanly comma separated', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
-      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').closest('button');
       $thumbsUpEmoji.attr('data-title', 'sam');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
 
@@ -252,7 +252,7 @@ describe('AwardsHandler', () => {
     it('removes "You" from the front of the tooltip', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
-      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').closest('button');
       $thumbsUpEmoji.attr('data-title', 'You, sam, jerry, max, and andy');
       $thumbsUpEmoji.addClass('active');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
@@ -263,7 +263,7 @@ describe('AwardsHandler', () => {
     it('handles the special case where "You" is not cleanly comma separated', () => {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
-      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+      const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').closest('button');
       $thumbsUpEmoji.attr('data-title', 'You and sam');
       $thumbsUpEmoji.addClass('active');
       awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);

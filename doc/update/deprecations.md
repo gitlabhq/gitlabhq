@@ -402,6 +402,31 @@ To help avoid being impacted by this breaking change, create new access tokens w
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Dependency Scanning incorrect SBOM metadata properties
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438779).
+</div>
+
+GitLab 17.0 removes support for the following metadata properties in CycloneDX SBOM reports:
+
+- `gitlab:dependency_scanning:input_file`
+- `gitlab:dependency_scanning:package_manager`
+
+These were added in GitLab 15.7 to the SBOM produced by Dependency Scanning. However, these properties were incorrect and didn't align with the [GitLab CycloneDX property taxonomy](https://docs.gitlab.com/ee/development/sec/cyclonedx_property_taxonomy.html).
+The following correct properties were added in GitLab 15.11 to address this:
+
+- `gitlab:dependency_scanning:input_file:path`
+- `gitlab:dependency_scanning:package_manager:name`
+
+The incorrect properties were kept for backward compatibility. They are now deprecated and will be removed in 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Dependency Scanning support for sbt 1.0.X
 
 <div class="deprecation-notes">
@@ -1268,6 +1293,31 @@ This deprecation affects users compiling GitLab from source, who will need
 to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
 Omnibus, the Helm chart, and Operator will handle this configuration
 automatically from GitLab 16.0 onwards.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Support for self-hosted Sentry versions 21.4.1 and earlier
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/435791).
+</div>
+
+Support for self-hosted Sentry versions 21.4.1 and earlier is deprecated and will be removed in GitLab 17.0.
+
+If your self-hosted Sentry version is 21.4.1 or earlier, you may not be able to collect errors from your GitLab instance after upgrading to GitLab 17.0 or later.
+To continue sending errors from your GitLab instance to your Sentry instance, upgrade Sentry to version 21.5.0 or later. For more information,
+see [Sentry documentation](https://develop.sentry.dev/self-hosted/releases/).
+
+NOTE:
+The deprecated support is for
+[GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry)
+for administrators. The deprecated support does not relate to
+[GitLab error tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking) for
+developers' own deployed applications.
 
 </div>
 

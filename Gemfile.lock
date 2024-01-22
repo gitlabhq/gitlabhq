@@ -34,6 +34,7 @@ PATH
   specs:
     gitlab-housekeeper (0.1.0)
       activesupport
+      awesome_print
       httparty
       rubocop
 

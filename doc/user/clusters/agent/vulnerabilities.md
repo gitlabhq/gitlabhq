@@ -53,6 +53,16 @@ container_scanning:
       - kube-system
 ```
 
+For every target namespace, all images in the following workload resources are scanned:
+
+- Pod
+- ReplicaSet
+- ReplicationController
+- StatefulSet
+- DaemonSet
+- CronJob
+- Job
+
 ### Enable via scan execution policies
 
 To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the

@@ -166,8 +166,8 @@ def click_sort_option(option, ascending)
 
   find('[data-testid="registry-sort-dropdown"]').click
 
-  page.within('[data-testid="registry-sort-dropdown"] .dropdown-menu') do
-    click_button option
+  page.within('[data-testid="registry-sort-dropdown"] [data-testid="base-dropdown-menu"]') do
+    find('.gl-new-dropdown-item', text: option).click
   end
 
   if ascending
