@@ -150,7 +150,7 @@ describe('WorkItemMilestoneWithEdit component', () => {
 
       await nextTick();
 
-      expect(findSidebarDropdownWidget().props('itemValue').title).toBe(milestoneAtIndex.title);
+      expect(findSidebarDropdownWidget().props('itemValue')).toBe(milestoneAtIndex.id);
     });
   });
 

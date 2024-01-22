@@ -337,6 +337,15 @@ create-release:
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
 
+#### Test a component against sample files
+
+In some cases, components require source files to interact with. For example, a component
+that builds Go source code likely needs some samples of Go to test against. Alternatively,
+a component that builds Docker images likely needs some sample Dockerfiles to test against.
+
+You can include sample files like these directly in the component project, to be used
+during component testing. For example, you can see the [code-quality CI/CD component's testing samples](https://gitlab.com/components/code-quality/-/tree/main/src).
+
 ### Avoid using global keywords
 
 Avoid using [global keywords](../yaml/index.md#global-keywords) in a component.

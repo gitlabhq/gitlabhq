@@ -39,7 +39,7 @@ export default {
       default: () => [],
     },
     itemValue: {
-      type: Object,
+      type: [Array, String],
       required: false,
       default: null,
     },
@@ -68,29 +68,39 @@ export default {
       required: false,
       default: '',
     },
+    multiSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showFooter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    infiniteScroll: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    infiniteScrollLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isEditing: false,
-      localSelectedItem: this.itemValue?.id,
+      localSelectedItem: this.itemValue,
     };
   },
   computed: {
     hasValue() {
-      return this.itemValue != null || !isEmpty(this.item);
-    },
-    listboxText() {
-      return (
-        this.listItems.find(({ value }) => this.localSelectedItem === value)?.text ||
-        this.itemValue?.title ||
-        this.$options.i18n.none
-      );
+      return this.multiSelect ? !isEmpty(this.itemValue) : this.itemValue !== null;
     },
     inputId() {
       return `work-item-dropdown-listbox-value-${this.dropdownName}`;
-    },
-    toggleText() {
-      return this.toggleDropdownText || this.listboxText;
     },
     resetButton() {
       return this.resetButtonLabel || this.$options.i18n.resetButtonText;
@@ -100,7 +110,7 @@ export default {
     itemValue: {
       handler(newVal) {
         if (!this.isEditing) {
-          this.localSelectedItem = newVal?.id;
+          this.localSelectedItem = newVal;
         }
       },
     },
@@ -114,18 +124,25 @@ export default {
     },
     handleItemClick(item) {
       this.localSelectedItem = item;
-      this.$emit('updateValue', item);
+      if (!this.multiSelect) {
+        this.$emit('updateValue', item);
+      } else {
+        this.$emit('updateSelected', this.localSelectedItem);
+      }
     },
     onListboxShown() {
       this.$emit('dropdownShown');
     },
     onListboxHide() {
       this.isEditing = false;
+      if (this.multiSelect) {
+        this.$emit('updateValue', this.localSelectedItem);
+      }
     },
     unassignValue() {
-      this.localSelectedItem = null;
+      this.localSelectedItem = this.multiSelect ? [] : null;
       this.isEditing = false;
-      this.$emit('updateValue', null);
+      this.$emit('updateValue', this.localSelectedItem);
     },
   },
 };
@@ -165,34 +182,42 @@ export default {
       </div>
       <gl-collapsible-listbox
         :id="inputId"
+        :multiple="multiSelect"
         block
         searchable
         start-opened
         is-check-centered
         fluid-width
+        :infinite-scroll="infiniteScroll"
         :searching="loading"
         :header-text="headerText"
-        :toggle-text="toggleText"
+        :toggle-text="toggleDropdownText"
         :no-results-text="$options.i18n.noMatchingResults"
         :items="listItems"
         :selected="localSelectedItem"
         :reset-button-label="resetButton"
+        :infinite-scroll-loading="infiniteScrollLoading"
         @reset="unassignValue"
         @search="debouncedSearchKeyUpdate"
         @select="handleItemClick"
         @shown="onListboxShown"
         @hidden="onListboxHide"
+        @bottom-reached="$emit('bottomReached')"
       >
         <template #list-item="{ item }">
           <slot name="list-item" :item="item">{{ item.text }}</slot>
         </template>
+        <template v-if="showFooter" #footer>
+          <div class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-p-2!">
+            <slot name="footer"></slot>
+          </div>
+        </template>
       </gl-collapsible-listbox>
+      {{ hasValue }}
     </gl-form>
-    <slot v-else-if="hasValue" name="readonly">
-      {{ listboxText }}
-    </slot>
-    <div v-else class="gl-text-secondary">
+    <slot v-else-if="hasValue" name="readonly"></slot>
+    <slot v-else class="gl-text-secondary" name="none">
       {{ $options.i18n.none }}
-    </div>
+    </slot>
   </div>
 </template>

@@ -167,69 +167,125 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  it 'successfully assigns the current user by searching',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-    # The button is only when the mouse is over the input
-    find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
-    wait_for_requests
-    # submit and simulate blur to save
-    send_keys(:enter)
-    find("body").click
-    wait_for_requests
+  context 'when the work_items_mvc_2 FF is disabled' do
+    include_context 'with work_items_mvc_2', false
 
-    expect(work_item.reload.assignees).to include(user)
-  end
+    it 'successfully assigns the current user by searching',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
+      # The button is only when the mouse is over the input
+      find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
+      wait_for_requests
+      # submit and simulate blur to save
+      send_keys(:enter)
+      find("body").click
+      wait_for_requests
 
-  it 'successfully assigns the current user by clicking `Assign myself` button' do
-    find('[data-testid="work-item-assignees-input"]').hover
-    click_button _('Assign yourself')
-
-    expect(work_item.reload.assignees).to include(user)
-  end
-
-  it 'successfully removes all users on clear all button click' do
-    find('[data-testid="work-item-assignees-input"]').hover
-    click_button _('Assign yourself')
-
-    expect(work_item.reload.assignees).to include(user)
-
-    find('[data-testid="work-item-assignees-input"]').click
-    click_button 'Clear all'
-    find("body").click
-    wait_for_requests
-
-    expect(work_item.reload.assignees).not_to include(user)
-  end
-
-  it 'successfully removes user on clicking badge cross button' do
-    find('[data-testid="work-item-assignees-input"]').hover
-    click_button _('Assign yourself')
-
-    expect(work_item.reload.assignees).to include(user)
-
-    within('[data-testid="work-item-assignees-input"]') do
-      click_button 'Close'
+      expect(work_item.reload.assignees).to include(user)
     end
-    find("body").click
-    wait_for_requests
 
-    expect(work_item.reload.assignees).not_to include(user)
-  end
+    it 'successfully assigns the current user by clicking `Assign myself` button' do
+      find('[data-testid="work-item-assignees-input"]').hover
+      click_button _('Assign yourself')
 
-  it 'updates the assignee in real-time' do
-    Capybara::Session.new(:other_session)
+      expect(work_item.reload.assignees).to include(user)
+    end
 
-    using_session :other_session do
-      visit work_items_path
+    it 'successfully removes all users on clear all button click' do
+      find('[data-testid="work-item-assignees-input"]').hover
+      click_button _('Assign yourself')
+
+      expect(work_item.reload.assignees).to include(user)
+
+      find('[data-testid="work-item-assignees-input"]').click
+      click_button 'Clear all'
+      find("body").click
+      wait_for_requests
+
       expect(work_item.reload.assignees).not_to include(user)
     end
 
-    find('[data-testid="work-item-assignees-input"]').hover
-    click_button _('Assign yourself')
+    it 'successfully removes user on clicking badge cross button' do
+      find('[data-testid="work-item-assignees-input"]').hover
+      click_button _('Assign yourself')
 
-    expect(work_item.reload.assignees).to include(user)
-    using_session :other_session do
       expect(work_item.reload.assignees).to include(user)
+
+      within('[data-testid="work-item-assignees-input"]') do
+        click_button 'Close'
+      end
+      find("body").click
+      wait_for_requests
+
+      expect(work_item.reload.assignees).not_to include(user)
+    end
+
+    it 'updates the assignee in real-time' do
+      Capybara::Session.new(:other_session)
+
+      using_session :other_session do
+        visit work_items_path
+        expect(work_item.reload.assignees).not_to include(user)
+      end
+
+      find('[data-testid="work-item-assignees-input"]').hover
+      click_button _('Assign yourself')
+
+      expect(work_item.reload.assignees).to include(user)
+      using_session :other_session do
+        expect(work_item.reload.assignees).to include(user)
+      end
+    end
+  end
+
+  context 'when the work_items_mvc_2 FF is enabled' do
+    let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
+
+    include_context 'with work_items_mvc_2', true
+
+    it 'successfully assigns the current user by searching',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
+      # The button is only when the mouse is over the input
+      find_and_click_edit(work_item_assignees_selector)
+
+      select_listbox_item(user.username)
+
+      find("body").click
+      wait_for_all_requests
+
+      expect(work_item.assignees).to include(user)
+    end
+
+    it 'successfully removes all users on clear all button click' do
+      find_and_click_edit(work_item_assignees_selector)
+
+      select_listbox_item(user.username)
+
+      find("body").click
+      wait_for_requests
+
+      find_and_click_edit(work_item_assignees_selector)
+
+      find_and_click_clear(work_item_assignees_selector)
+      wait_for_all_requests
+
+      expect(work_item.assignees).not_to include(user)
+    end
+
+    it 'updates the assignee in real-time' do
+      Capybara::Session.new(:other_session)
+
+      using_session :other_session do
+        visit work_items_path
+        expect(work_item.reload.assignees).not_to include(user)
+      end
+
+      click_button 'assign yourself'
+      wait_for_all_requests
+
+      expect(work_item.reload.assignees).to include(user)
+      using_session :other_session do
+        expect(work_item.reload.assignees).to include(user)
+      end
     end
   end
 end
@@ -391,15 +447,37 @@ end
 RSpec.shared_examples 'work items invite members' do
   include Features::InviteMembersModalHelpers
 
-  it 'successfully assigns the current user by searching' do
-    # The button is only when the mouse is over the input
-    find('[data-testid="work-item-assignees-input"]').fill_in(with: 'Invite members')
-    wait_for_requests
+  context 'when the work_items_mvc_2 FF is disabled' do
+    include_context 'with work_items_mvc_2', false
 
-    click_button('Invite members')
+    it 'successfully assigns the current user by searching' do
+      # The button is only when the mouse is over the input
+      find('[data-testid="work-item-assignees-input"]').fill_in(with: 'Invite members')
+      wait_for_requests
 
-    page.within invite_modal_selector do
-      expect(page).to have_text("You're inviting members to the #{work_item.project.name} project")
+      click_button('Invite members')
+
+      page.within invite_modal_selector do
+        expect(page).to have_text("You're inviting members to the #{work_item.project.name} project")
+      end
+    end
+  end
+
+  context 'when the work_items_mvc_2 FF is enabled' do
+    let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
+
+    include_context 'with work_items_mvc_2', true
+
+    it 'successfully assigns the current user by searching' do
+      # The button is only when the mouse is over the input
+      find_and_click_edit(work_item_assignees_selector)
+      wait_for_requests
+
+      click_link('Invite members')
+
+      page.within invite_modal_selector do
+        expect(page).to have_text("You're inviting members to the #{work_item.project.name} project")
+      end
     end
   end
 end

@@ -11,7 +11,7 @@ import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphq
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemAssigneesInline from '~/work_items/components/work_item_assignees_inline.vue';
 import {
   i18n,
   DEFAULT_PAGE_SIZE_ASSIGNEES,
@@ -35,7 +35,7 @@ Vue.use(VueApollo);
 const workItemId = 'gid://gitlab/WorkItem/1';
 const dropdownItems = projectMembersResponseWithCurrentUser.data.workspace.users.nodes;
 
-describe('WorkItemAssignees component', () => {
+describe('WorkItemAssigneesInline component', () => {
   let wrapper;
 
   const findAssigneeLinks = () => wrapper.findAllComponents(GlLink);
@@ -88,7 +88,7 @@ describe('WorkItemAssignees component', () => {
       [updateWorkItemMutation, updateWorkItemMutationHandler],
     ]);
 
-    wrapper = mountExtended(WorkItemAssignees, {
+    wrapper = mountExtended(WorkItemAssigneesInline, {
       provide: {
         isGroup,
       },

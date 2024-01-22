@@ -15,7 +15,8 @@ import {
   WORK_ITEM_TYPE_VALUE_TASK,
 } from '../constants';
 import WorkItemDueDate from './work_item_due_date.vue';
-import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemAssigneesInline from './work_item_assignees_inline.vue';
+import WorkItemAssigneesWithEdit from './work_item_assignees_with_edit.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
@@ -27,7 +28,8 @@ export default {
     WorkItemLabels,
     WorkItemMilestoneInline,
     WorkItemMilestoneWithEdit,
-    WorkItemAssignees,
+    WorkItemAssigneesInline,
+    WorkItemAssigneesWithEdit,
     WorkItemDueDate,
     WorkItemParent,
     WorkItemParentInline,
@@ -114,17 +116,31 @@ export default {
 
 <template>
   <div class="work-item-attributes-wrapper">
-    <work-item-assignees
-      v-if="workItemAssignees"
-      :can-update="canUpdate"
-      :full-path="fullPath"
-      :work-item-id="workItem.id"
-      :assignees="workItemAssignees.assignees.nodes"
-      :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-      :work-item-type="workItemType"
-      :can-invite-members="workItemAssignees.canInviteMembers"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemAssignees">
+      <work-item-assignees-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        @error="$emit('error', $event)"
+      />
+      <work-item-assignees-inline
+        v-else
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <work-item-labels
       v-if="workItemLabels"
       :can-update="canUpdate"

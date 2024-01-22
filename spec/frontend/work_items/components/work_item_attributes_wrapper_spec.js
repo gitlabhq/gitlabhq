@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone_inline.vue';
@@ -23,7 +23,7 @@ describe('WorkItemAttributesWrapper component', () => {
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
 
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
-  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
+  const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssigneesWithEdit);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
   const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);

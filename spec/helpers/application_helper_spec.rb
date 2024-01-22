@@ -701,17 +701,31 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'with-header' do
-      context 'when current_user' do
+      context 'when @with_header is falsey' do
         before do
-          allow(helper).to receive(:current_user).and_return(user)
+          helper.instance_variable_set(:@with_header, nil)
         end
 
-        it { is_expected.not_to include('with-header') }
+        context 'when current_user' do
+          before do
+            allow(helper).to receive(:current_user).and_return(user)
+          end
+
+          it { is_expected.not_to include('with-header') }
+        end
+
+        context 'when no current_user' do
+          before do
+            allow(helper).to receive(:current_user).and_return(nil)
+          end
+
+          it { is_expected.to include('with-header') }
+        end
       end
 
-      context 'when no current_user' do
+      context 'when @with_header is true' do
         before do
-          allow(helper).to receive(:current_user).and_return(nil)
+          helper.instance_variable_set(:@with_header, true)
         end
 
         it { is_expected.to include('with-header') }

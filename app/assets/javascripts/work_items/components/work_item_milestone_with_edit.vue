@@ -91,6 +91,9 @@ export default {
         expired,
       }));
     },
+    localMilestoneId() {
+      return this.localMilestone?.id;
+    },
   },
   watch: {
     workItemMilestone(newVal) {
@@ -184,7 +187,7 @@ export default {
     dropdown-name="milestone"
     :loading="isLoadingMilestones"
     :list-items="milestonesList"
-    :item-value="localMilestone"
+    :item-value="localMilestoneId"
     :update-in-progress="updateInProgress"
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select milestone')"

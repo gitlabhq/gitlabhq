@@ -33944,6 +33944,12 @@ msgstr ""
 msgid "OnDemandScans|at"
 msgstr ""
 
+msgid "Onboarding|If you can't find your organization, request an invite from your company's GitLab administrator."
+msgstr ""
+
+msgid "Onboarding|Looking for your team?"
+msgstr ""
+
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
 msgstr ""
 
@@ -55627,6 +55633,9 @@ msgstr ""
 msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again."
 msgstr ""
 
+msgid "WorkItem|%{usersLength} assignees"
+msgstr ""
+
 msgid "WorkItem|%{workItemType} deleted"
 msgstr ""
 
@@ -55795,6 +55804,9 @@ msgid "WorkItem|New %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|New task"
+msgstr ""
+
+msgid "WorkItem|No assignees"
 msgstr ""
 
 msgid "WorkItem|No child items are currently assigned. Use child items to break down this issue into smaller parts."
