@@ -74,14 +74,14 @@ RSpec.describe Gitlab::Instrumentation::RedisClientMiddleware, :request_store, f
     context 'when encountering exceptions' do
       before do
         allow(redis_client.instance_variable_get(:@raw_connection)).to receive(:call).and_raise(
-          RedisClient::ConnectionError, 'Connection was closed or lost')
+          RedisClient::Error)
       end
 
       it 'counts exception' do
         expect(instrumentation_class).to receive(:instance_count_exception)
-                                           .with(instance_of(RedisClient::ConnectionError)).and_call_original
+                                           .with(instance_of(RedisClient::Error)).and_call_original
         expect(instrumentation_class).to receive(:log_exception)
-                                           .with(instance_of(RedisClient::ConnectionError)).and_call_original
+                                           .with(instance_of(RedisClient::Error)).and_call_original
         expect(instrumentation_class).to receive(:instance_count_request).and_call_original
 
         expect do

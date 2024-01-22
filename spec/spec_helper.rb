@@ -330,6 +330,9 @@ RSpec.configure do |config|
 
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
+
+      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/432866
+      stub_feature_flags(redis_hll_property_name_tracking: false)
     else
       unstub_all_feature_flags
     end

@@ -11,9 +11,9 @@ module Groups
         [
           current_user
             .manageable_groups(include_groups_with_developer_maintainer_access: true)
-            .project_creation_allowed,
+            .project_creation_allowed(current_user),
           owner_maintainer_groups_originating_from_group_shares
-            .project_creation_allowed,
+            .project_creation_allowed(current_user),
           *developer_groups_originating_from_group_shares
         ]
 

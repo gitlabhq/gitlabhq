@@ -1998,10 +1998,10 @@ to select a specific site profile and scanner profile.
 ### `dependencies`
 
 Use the `dependencies` keyword to define a list of specific jobs to fetch [artifacts](#artifacts)
-from. When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
-and the job fetches all artifacts from those jobs.
+from. The specified jobs must all be in earlier stages. You can also set a job to download no artifacts at all.
 
-You can also set a job to download no artifacts at all.
+When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
+and the job fetches all artifacts from those jobs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2057,6 +2057,8 @@ the [stage](#stages) precedence.
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
+- To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
+  You should not combine `dependencies` with `needs` in the same job.
 
 ### `environment`
 
@@ -2917,8 +2919,7 @@ In this example:
 
 **Additional details**:
 
-- In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
-  with `needs`.
+- You should not combine `needs` with [`dependencies`](#dependencies) in the same job.
 
 #### `needs:project` **(PREMIUM ALL)**
 

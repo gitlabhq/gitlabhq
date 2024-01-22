@@ -171,14 +171,10 @@ export default {
           return true;
         }
 
-        return (
-          !this.sastReportsInInlineDiff ||
-          (!this.codequalityReportAvailable && !this.sastReportAvailable)
-        );
+        return !this.codequalityReportAvailable && !this.sastReportAvailable;
       },
       update(data) {
         const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
-
         this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
@@ -307,9 +303,6 @@ export default {
     resourceId() {
       return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
-    sastReportsInInlineDiff() {
-      return this.glFeatures.sastReportsInInlineDiff;
-    },
   },
   watch: {
     commit(newCommit, oldCommit) {
@@ -347,10 +340,6 @@ export default {
     isLoading: 'adjustView',
   },
   mounted() {
-    if (this.endpointCodequality) {
-      this.setCodequalityEndpoint(this.endpointCodequality);
-    }
-
     if (this.shouldShow) {
       this.fetchData();
     }
@@ -423,14 +412,12 @@ export default {
     ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
-      'setCodequalityEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchFileByFile',
       'loadCollapsedDiff',
       'setFileForcedOpen',
       'fetchCoverageFiles',
-      'fetchCodequality',
       'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
@@ -574,10 +561,6 @@ export default {
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
-      }
-
-      if (this.endpointCodequality && !this.sastReportsInInlineDiff) {
-        this.fetchCodequality();
       }
 
       if (!this.isNotesFetched) {

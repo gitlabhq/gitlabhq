@@ -83,13 +83,13 @@ module ClickHouse
 
       paths = id_paths.map(&:second).map { |value| "'#{value}'" }.join(',')
       query = ClickHouse::Client::Query.new(
-        raw_query: "DELETE FROM events WHERE path IN (#{paths})"
+        raw_query: "ALTER TABLE events DELETE WHERE path IN (#{paths})"
       )
 
       connection.execute(query)
 
       query = ClickHouse::Client::Query.new(
-        raw_query: 'DELETE FROM event_namespace_paths WHERE namespace_id IN ({namespace_ids:Array(UInt64)})',
+        raw_query: 'ALTER TABLE event_namespace_paths DELETE WHERE namespace_id IN ({namespace_ids:Array(UInt64)})',
         placeholders: { namespace_ids: id_paths.map(&:first).to_json }
       )
 

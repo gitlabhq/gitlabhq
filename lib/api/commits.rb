@@ -32,7 +32,8 @@ module API
         return unless find_user_from_warden
 
         Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
-        Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
+        Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)
+
         namespace = user_project.namespace
 
         Gitlab::Tracking.event(

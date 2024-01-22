@@ -1585,11 +1585,6 @@ msgstr ""
 msgid "0 B"
 msgstr ""
 
-msgid "1 Code Quality finding"
-msgid_plural "%d Code Quality findings"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""
@@ -5515,9 +5510,6 @@ msgid "An unexpected error occurred while checking the project runners."
 msgstr ""
 
 msgid "An unexpected error occurred while communicating with the Web Terminal."
-msgstr ""
-
-msgid "An unexpected error occurred while loading the code quality diff."
 msgstr ""
 
 msgid "An unexpected error occurred while starting the Web Terminal."
@@ -23061,6 +23053,18 @@ msgid "Google Cloud authorizations required"
 msgstr ""
 
 msgid "Google Play service account key."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Open in Google Cloud"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Project ID"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Repository name"
 msgstr ""
 
 msgid "GoogleCloud|Cancel"

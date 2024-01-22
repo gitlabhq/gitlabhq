@@ -125,9 +125,6 @@ project_compliance_standards_adherence:
 project_repositories:
   index_project_repositories_on_shard_id_and_project_id:
     - index_project_repositories_on_shard_id
-protected_environments:
-  index_protected_environments_on_project_id_and_name:
-    - index_protected_environments_on_project_id
 protected_tags:
   index_protected_tags_on_project_id_and_name:
     - index_protected_tags_on_project_id

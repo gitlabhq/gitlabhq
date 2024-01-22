@@ -90,7 +90,7 @@ This chart contains several types of items:
     AB["batch_comments~~draft_note.vue"]
     AC["diffs~~diff_comment_cell.vue"]
     AD["diffs~~diff_gutter_avatars.vue"]
-    AE["ee-diffs~~inline_findings_flag_switcher.vue"]
+    AE["ee-diffs~~inline_findings_gutter_icon_dropdown.vue"]
     AF["notes~~noteable_note.vue"]
     AG["notes~~note_actions.vue"]
     AH["notes~~note_body.vue"]

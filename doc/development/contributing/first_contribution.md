@@ -199,22 +199,16 @@ In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change this text:
 
-![UI text](img/ui_text_before.png)
+![UI text](img/ui_color_theme_before.png)
 
-Other settings on the page start with the word `Customize` and skip the `This setting allows you to` part.
-I'll update this phrase to match the others.
+Let's clarify `Customize the color of GitLab.` by changing the phrase to `Customize the color theme of the GitLab UI.`.
 
-NOTE:
-As this text has already been [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116472) when developing this tutorial, you can instead search for `Customize the appearance of the syntax` to find the files that were changed.
+1. Search the `gitlab-development-kit/gitlab` directory for the string `Customize the color`.
 
-1. Search the `gitlab-development-kit/gitlab` directory for the string `This setting allows you to customize`.
+   The results shows 1 `.haml` file, and several `.po` files.
 
-   The results show one `.haml` file, two `.md` files, one `.pot` file, and
-   several `.po` files.
-
-1. Open the `.haml` file. This file is where the UI text resides.
-1. Update the string. In this case, I'll remove the words before `customize`
-   and start the word `customize` with a capital `C`.
+1. Open the `app/views/profiles/preferences/show.html.haml` file. This file is where the UI text resides.
+1. Update the string from `Customize the color of GitLab.` to `Customize the color theme of the GitLab UI.`.
 1. Save the file.
 
 You can check that you were successful:
@@ -229,7 +223,7 @@ You can check that you were successful:
 - Refresh the web browser where you're viewing the GDK.
   The changes should be displayed. Take a screenshot.
 
-  ![UI text](img/ui_text_after.png)
+  ![UI text](img/ui_color_theme_after.png)
 
 ### Update the translation files
 

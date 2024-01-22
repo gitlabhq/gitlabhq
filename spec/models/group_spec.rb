@@ -1122,6 +1122,50 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.excluding_restricted_visibility_levels_for_user' do
+      let_it_be(:admin_user) { create(:admin) }
+
+      context 'when restricted_visibility_level is not configured' do
+        context 'when user is an admin', :enable_admin_mode do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+
+        context 'when user is not an admin' do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+      end
+
+      context 'when restricted_visibility_level is set to private' do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE])
+        end
+
+        context 'and user is an admin', :enable_admin_mode do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+
+        context 'and user is not an admin' do
+          it 'excludes private groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
+              [internal_group, group]
+            )
+          end
+        end
+      end
+    end
+
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
@@ -1129,7 +1173,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_4) { create(:group, project_creation_level: nil) }
 
       it 'only includes groups where project creation is allowed' do
-        result = described_class.project_creation_allowed
+        expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
+
+        result = described_class.project_creation_allowed(user1)
 
         expect(result).to include(group_2, group_3, group_4)
         expect(result).not_to include(group_1)
@@ -1141,7 +1187,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         it 'only includes groups where project creation is allowed' do
-          result = described_class.project_creation_allowed
+          expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
+
+          result = described_class.project_creation_allowed(user1)
 
           expect(result).to include(group_2, group_3)
 

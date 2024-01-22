@@ -87,15 +87,15 @@ class ProjectsController < Projects::ApplicationController
 
     @parent_group = Group.find_by(id: params[:namespace_id])
 
-    manageable_groups_count = current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count
+    manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 
-    if manageable_groups_count == 0 && !can?(current_user, :create_projects, current_user.namespace)
+    if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
       return access_denied!
     end
 
     @current_user_group =
-      if manageable_groups_count == 1
-        current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first
+      if manageable_groups.one?
+        manageable_groups.first
       end
 
     @project = Project.new(namespace_id: @namespace&.id)

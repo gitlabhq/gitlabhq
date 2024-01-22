@@ -10,7 +10,6 @@ import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
-import DiffLine from './diff_line.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
 import { isHighlighted } from './diff_row_utils';
@@ -19,7 +18,6 @@ export default {
   components: {
     DiffExpansionCell,
     DiffRow,
-    DiffLine,
     DiffCommentCell,
     DraftNote,
   },
@@ -47,11 +45,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      inlineFindingsExpandedLines: [],
-    };
   },
   idState() {
     return {
@@ -87,9 +80,6 @@ export default {
         this.sastDiff?.added?.length > 0
       );
     },
-    sastReportsInInlineDiff() {
-      return this.glFeatures.sastReportsInInlineDiff;
-    },
   },
   created() {
     this.onDragOverThrottled = throttle((line) => this.onDragOver(line), 100, { leading: true });
@@ -108,19 +98,6 @@ export default {
         hide(event.target.parentNode);
       }
       this.idState.dragStart = line;
-    },
-    hideInlineFindings(line) {
-      const index = this.inlineFindingsExpandedLines.indexOf(line);
-      if (index > -1) {
-        this.inlineFindingsExpandedLines.splice(index, 1);
-      }
-    },
-    toggleCodeQualityFindings(line) {
-      if (!this.inlineFindingsExpandedLines.includes(line)) {
-        this.inlineFindingsExpandedLines.push(line);
-      } else {
-        this.hideInlineFindings(line);
-      }
     },
     onDragOver(line) {
       if (line.chunk !== this.idState.dragStart.chunk) return;
@@ -266,12 +243,10 @@ export default {
         :is-last-highlighted-line="isLastHighlightedLine(line) || index === commentedLines.endLine"
         :inline="inline"
         :index="index"
-        :inline-findings-expanded="inlineFindingsExpandedLines.includes(getCodeQualityLine(line))"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
         @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
-        @toggleCodeQualityFindings="toggleCodeQualityFindings"
         @toggleLineDiscussions="
           ({ lineCode, expanded }) =>
             toggleLineDiscussions({ lineCode, fileHash: diffFile.file_hash, expanded })
@@ -279,15 +254,6 @@ export default {
         @enterdragging="onDragOverThrottled"
         @startdragging="onStartDragging"
         @stopdragging="onStopDragging"
-      />
-      <!-- Don't display InlineFindings expanded section when sastReportsInInlineDiff is false  -->
-      <diff-line
-        v-if="
-          inlineFindingsExpandedLines.includes(getCodeQualityLine(line)) && !sastReportsInInlineDiff
-        "
-        :key="line.line_code"
-        :line="line"
-        @hideInlineFindings="hideInlineFindings"
       />
       <div
         v-if="line.renderCommentRow"

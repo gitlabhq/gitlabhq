@@ -24,7 +24,7 @@
 * Any concepts, procedures, reference info we could add to make it easier to successfully use GitLab?
 * Include use cases, benefits, and/or goals for this work.
 * If adding content: What audience is it intended for? (What roles and scenarios?)
-  For ideas, see personas at https://about.gitlab.com/handbook/product/personas/ or the persona labels at
+  For ideas, see personas at https://handbook.gitlab.com/handbook/product/personas/ or the persona labels at
   https://gitlab.com/groups/gitlab-org/-/labels?subscribed=&search=persona%3A
 -->
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::AcceptingProjectTransfersFinder do
+RSpec.describe Groups::AcceptingProjectTransfersFinder, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:group_where_direct_owner) { create(:group) }
   let_it_be(:subgroup_of_group_where_direct_owner) { create(:group, parent: group_where_direct_owner) }

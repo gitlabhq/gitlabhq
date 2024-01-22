@@ -35115,8 +35115,6 @@ CREATE INDEX index_protected_environments_on_approval_count_and_created_at ON pr
 
 CREATE UNIQUE INDEX index_protected_environments_on_group_id_and_name ON protected_environments USING btree (group_id, name) WHERE (group_id IS NOT NULL);
 
-CREATE INDEX index_protected_environments_on_project_id ON protected_environments USING btree (project_id);
-
 CREATE UNIQUE INDEX index_protected_environments_on_project_id_and_name ON protected_environments USING btree (project_id, name);
 
 CREATE INDEX index_protected_tag_create_access ON protected_tag_create_access_levels USING btree (protected_tag_id);

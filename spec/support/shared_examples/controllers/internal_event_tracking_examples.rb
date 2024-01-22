@@ -23,7 +23,7 @@ RSpec.shared_examples 'internal event tracking' do
 
     project = try(:project)
     user = try(:user)
-    namespace = try(:namespace)
+    namespace = try(:namespace) || project&.namespace
 
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)

@@ -83,7 +83,7 @@ To change the default collapse behavior for a file type:
    docs/** gitlab-generated
 
    # Do not collapse package-lock.json
-   package-json -gitlab-generated
+   package-lock.json -gitlab-generated
    ```
 
 1. Commit, push, and merge your changes into your default branch.

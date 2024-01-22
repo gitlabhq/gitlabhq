@@ -106,7 +106,9 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
     end
 
     context 'with PersonalSnippet' do
-      it_behaves_like 'creates snippet'
+      it_behaves_like 'creates snippet' do
+        let(:project) { nil }
+      end
     end
 
     context 'with ProjectSnippet' do

@@ -117,6 +117,8 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :request_store, featur
           expect do
             redis_store_class.with { |redis| redis.call(:auth, 'foo', 'bar') }
           end.to raise_exception(Redis::CommandError)
+
+          expect(Thread.current[:redis_client_error_count]).to eq(0)
         end
       end
     end

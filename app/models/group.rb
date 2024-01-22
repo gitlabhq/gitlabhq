@@ -211,7 +211,11 @@ class Group < Namespace
     where(project_creation_level: project_creation_levels)
   end
 
-  scope :project_creation_allowed, -> do
+  scope :excluding_restricted_visibility_levels_for_user, -> (user) do
+    user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
+  end
+
+  scope :project_creation_allowed, -> (user) do
     project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
@@ -227,7 +231,7 @@ class Group < Namespace
       project_creation_allowed_on_levels.delete(nil)
     end
 
-    with_project_creation_levels(project_creation_allowed_on_levels)
+    with_project_creation_levels(project_creation_allowed_on_levels).excluding_restricted_visibility_levels_for_user(user)
   end
 
   scope :shared_into_ancestors, -> (group) do

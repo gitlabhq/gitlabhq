@@ -2681,7 +2681,6 @@ Layout/LineLength:
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/usage_data/topology.rb'
     - 'lib/gitlab/usage_data_counters/base_counter.rb'
-    - 'lib/gitlab/usage_data_counters/editor_unique_counter.rb'
     - 'lib/gitlab/usage_data_counters/gitlab_cli_activity_unique_counter.rb'
     - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
     - 'lib/gitlab/usage_data_counters/issue_activity_unique_counter.rb'

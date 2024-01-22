@@ -581,7 +581,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       context 'when using access token authentication' do
         it 'does not increment the usage counters' do
           expect(::Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_commits_count)
-          expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).not_to receive(:track_web_ide_edit_action)
+          expect(::Gitlab::InternalEvents).not_to receive(:track_event)
 
           post api(url, user), params: valid_c_params
         end
@@ -596,21 +596,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
         it 'increments usage counters' do
           expect(::Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_commits_count)
-          expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
 
           subject
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:event) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
+          let(:event) { 'g_edit_by_web_ide' }
           let(:namespace) { project.namespace.reload }
         end
 
         context 'counts.web_ide_commits Snowplow event tracking' do
-          before do
-            allow(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
-          end
-
           it_behaves_like 'Snowplow event tracking' do
             let(:action) { :commit }
             let(:category) { described_class.to_s }

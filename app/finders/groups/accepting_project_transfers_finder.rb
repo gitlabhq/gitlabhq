@@ -15,7 +15,7 @@ module Groups
 
       groups = ::Group.from_union(groups_accepting_project_transfers)
 
-      groups.project_creation_allowed
+      groups.project_creation_allowed(current_user)
     end
 
     private

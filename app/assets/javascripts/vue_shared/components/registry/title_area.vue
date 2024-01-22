@@ -127,5 +127,6 @@ export default {
         </gl-sprintf>
       </span>
     </p>
+    <slot></slot>
   </div>
 </template>

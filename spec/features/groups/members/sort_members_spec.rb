@@ -18,7 +18,7 @@ RSpec.describe 'Groups > Members > Sort members', :js, feature_category: :groups
 
   def expect_sort_by(text, sort_direction)
     within_testid('members-sort-dropdown') do
-      expect(page).to have_css('button[aria-haspopup="menu"]', text: text)
+      expect(page).to have_css('button[aria-haspopup="listbox"]', text: text)
       expect(page).to have_button("Sort direction: #{sort_direction == :asc ? 'Ascending' : 'Descending'}")
     end
   end

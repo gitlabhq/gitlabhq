@@ -26,7 +26,7 @@ You can use the [Web IDE](../../../user/project/web_ide/index.md) to commit chan
 
 ## Long-term vision
 
-As a [new Software Developer to a team such as Sasha](https://about.gitlab.com/handbook/product/personas/#sasha-software-developer) with no local development environment, I should be able to:
+As a [new Software Developer to a team such as Sasha](https://handbook.gitlab.com/handbook/product/personas/#sasha-software-developer) with no local development environment, I should be able to:
 
 - Go to a repository on GitLab.com or self-managed.
 - Click a button that will provide a list of current workspaces for this repository.
