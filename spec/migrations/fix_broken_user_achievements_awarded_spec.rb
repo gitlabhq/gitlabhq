@@ -32,15 +32,27 @@ RSpec.describe FixBrokenUserAchievementsAwarded, migration: :gitlab_main, featur
       awarding_user.delete
     end
 
-    it 'migrates the invalid user achievement' do
-      expect { migrate! }
-        .to change { user_achievement_invalid.reload.awarded_by_user_id }
-        .from(nil).to(Users::Internal.ghost.id)
+    context 'when ghost user exists' do
+      let!(:ghost_user) do
+        users_table.create!(username: generate(:username), email: 'ghost@example.com', projects_limit: 0, user_type: 5)
+      end
+
+      it 'migrates the invalid user achievement' do
+        expect { migrate! }
+          .to change { user_achievement_invalid.reload.awarded_by_user_id }
+          .from(nil).to(ghost_user.id)
+      end
+
+      it 'does not migrate the valid user achievement' do
+        expect { migrate! }
+          .not_to change { user_achievement_valid.reload.awarded_by_user_id }
+      end
     end
 
-    it 'does not migrate the valid user achievement' do
-      expect { migrate! }
-        .not_to change { user_achievement_valid.reload.awarded_by_user_id }
+    context 'when ghost user does not exist' do
+      it 'does not migrate the invalid user achievement' do
+        expect { migrate! }.not_to change { user_achievement_invalid.reload.awarded_by_user_id }
+      end
     end
   end
 end

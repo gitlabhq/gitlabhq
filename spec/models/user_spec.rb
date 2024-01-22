@@ -1755,6 +1755,41 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  context 'when after_create_commit :create_default_organization_user on default organization' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+    let(:user) { create(:user) }
+
+    subject(:create_user) { user }
+
+    context 'when user is created as an instance admin' do
+      let(:user) { create(:admin) }
+
+      it 'adds user to organization_users as an owner of default organization' do
+        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
+        expect(default_organization.owner?(user)).to be(true)
+      end
+    end
+
+    context 'when user is created as a regular user' do
+      it 'adds user to organization_users as a regular user of default organization' do
+        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
+        expect(default_organization.owner?(user)).to be(false)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+
+    context 'when feature flag update_default_organization_users is disabled' do
+      before do
+        stub_feature_flags(update_default_organization_users: false)
+      end
+
+      it 'adds user to organization_users as a regular user of default organization' do
+        expect { create_user }.not_to change { Organizations::OrganizationUser.count }
+        expect(default_organization.user?(user)).to be(false)
+      end
+    end
+  end
+
   describe 'name getters' do
     let(:user) { create(:user, name: 'Kane Martin William') }
 

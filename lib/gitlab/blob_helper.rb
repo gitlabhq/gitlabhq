@@ -47,7 +47,7 @@ module Gitlab
     end
 
     def image?
-      ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'].include?(extname.downcase)
+      ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.bmp', '.webp'].include?(extname.downcase)
     end
 
     # Internal: Lookup mime type for extension.

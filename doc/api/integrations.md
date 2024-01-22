@@ -10,7 +10,7 @@ This API enables you to work with external services that integrate with GitLab.
 
 NOTE:
 In GitLab 14.4, the `services` endpoint was [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/334500) to `integrations`.
-Calls to the Integrations API can be made to both `/projects/:id/services` and `/projects/:id/integrations`.
+Calls to the integrations API can be made to both `/projects/:id/services` and `/projects/:id/integrations`.
 The examples in this document refer to the endpoint at `/projects/:id/integrations`.
 
 This API requires an access token with the Maintainer or Owner role.
@@ -728,6 +728,56 @@ Get the GitHub integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/github
+```
+
+## GitLab for Slack app
+
+### Set up GitLab for Slack app
+
+Update the GitLab for Slack app integration for a project.
+
+You cannot create a GitLab for Slack app. You must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+
+```plaintext
+PUT /projects/:id/integrations/gitlab-slack-application
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `channel` | string | false | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `alert_events` | boolean | false | Enable notifications for alert events. |
+| `issues_events` | boolean | false | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `note_events` | boolean | false | Enable notifications for note events. |
+| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
+| `deployment_events` | boolean | false | Enable notifications for deployment events. |
+| `incidents_events` | boolean | false | Enable notifications for incident events. |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `push_events` | boolean | false | Enable notifications for push events. |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `vulnerability_events` | boolean | false | Enable notifications for vulnerability events. |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+
+### Disable GitLab for Slack app
+
+Disable the GitLab for Slack app integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/gitlab-slack-application
+```
+
+### Get GitLab for Slack app settings
+
+Get the GitLab for Slack app integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/gitlab-slack-application
 ```
 
 ## Google Chat

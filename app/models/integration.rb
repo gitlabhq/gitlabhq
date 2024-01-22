@@ -547,7 +547,9 @@ class Integration < ApplicationRecord
   end
 
   def self.api_fields
-    fields.map do |field|
+    fields.filter_map do |field|
+      next if field.if != true
+
       {
         required: field.required?,
         name: field.name.to_sym,

@@ -241,7 +241,8 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
             labels: "label-1,label-2",
             source_branch: "the-source-branch",
             target_branch: "the-target-branch",
-            target_project_id: 456
+            target_project_id: 456,
+            remove_source_branch: true
           },
           headers: {
             'Content-Type' => 'application/json',

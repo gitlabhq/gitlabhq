@@ -206,7 +206,8 @@ module Gitlab
           labels: Array(labels).join(','),
           source_branch: source_branch,
           target_branch: target_branch,
-          target_project_id: target_project_id
+          target_project_id: target_project_id,
+          remove_source_branch: true
         }.to_json,
           headers: {
             'Private-Token' => @token,

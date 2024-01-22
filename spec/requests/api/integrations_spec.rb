@@ -44,9 +44,8 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     end
 
     where(:integration) do
-      # The Project Integrations API supports all integrations except:
-      # - The GitLab Slack Application integration, as it must be installed via the UI.
-      # - ZenTao integration, as new integration is blocked from being created.
+      # The integrations API supports all project integrations.
+      # You cannot create a GitLab for Slack app. You must install the app from the GitLab UI.
       unavailable_integration_names = [
         Integrations::GitlabSlackApplication.to_param,
         Integrations::Zentao.to_param
@@ -398,6 +397,58 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           get api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user)
 
           expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+        end
+      end
+    end
+
+    describe 'GitLab for Slack app integration' do
+      before do
+        stub_application_setting(slack_app_enabled: true)
+        create(:gitlab_slack_application_integration, project: project)
+      end
+
+      describe "PUT /projects/:id/#{endpoint}/gitlab-slack-application" do
+        context 'for integration creation' do
+          before do
+            project.gitlab_slack_application_integration.destroy!
+          end
+
+          it 'returns 422' do
+            put api("/projects/#{project.id}/#{endpoint}/gitlab-slack-application", user)
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          end
+        end
+
+        context 'for integration update' do
+          before do
+            project.gitlab_slack_application_integration.update!(active: false)
+          end
+
+          it "does not enable the integration" do
+            put api("/projects/#{project.id}/#{endpoint}/gitlab-slack-application", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(project.gitlab_slack_application_integration.reload).to have_attributes(active: false)
+          end
+        end
+      end
+
+      describe "GET /projects/:id/#{endpoint}/gitlab-slack-application" do
+        it "fetches the integration and returns the correct fields" do
+          get api("/projects/#{project.id}/#{endpoint}/gitlab-slack-application", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          assert_correct_response_fields(json_response['properties'].keys, project.gitlab_slack_application_integration)
+        end
+      end
+
+      describe "DELETE /projects/:id/#{endpoint}/gitlab-slack-application" do
+        it "disables the integration" do
+          expect { delete api("/projects/#{project.id}/#{endpoint}/gitlab-slack-application", user) }
+            .to change { project.gitlab_slack_application_integration.reload.activated? }.from(true).to(false)
+
+          expect(response).to have_gitlab_http_status(:no_content)
         end
       end
     end

@@ -373,6 +373,8 @@ class User < MainClusterwide::ApplicationRecord
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
 
+  after_create_commit :create_default_organization_user
+
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
 
@@ -2598,6 +2600,19 @@ class User < MainClusterwide::ApplicationRecord
 
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX
+  end
+
+  def create_default_organization_user
+    return unless Feature.enabled?(:update_default_organization_users, self, type: :gitlab_com_derisk)
+
+    organization_access_level = if admin?
+                                  :owner
+                                else
+                                  :default
+                                end
+
+    Organizations::OrganizationUser
+      .create_default_organization_record_for(id, organization_access_level)
   end
 
   # method overriden in EE

@@ -113,6 +113,14 @@ module API
             integration = user_project.find_or_initialize_integration(slug.underscore)
             params = declared_params(include_missing: false).merge(active: true)
 
+            if integration.is_a?(::Integrations::GitlabSlackApplication)
+              if integration.new_record?
+                render_api_error!('You cannot create the GitLab for Slack app from the API', 422)
+              end
+
+              params.delete(:active)
+            end
+
             if integration.update(params)
               present integration, with: Entities::ProjectIntegration
             else

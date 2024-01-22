@@ -23,6 +23,16 @@ FactoryBot.define do
       user.assign_personal_namespace if assign_ns
     end
 
+    trait :without_default_org do
+      after(:build) do
+        User.skip_callback(:commit, :after, :create_default_organization_user)
+      end
+
+      after(:create) do
+        User.set_callback(:commit, :after, :create_default_organization_user)
+      end
+    end
+
     trait :with_namespace do
       namespace { assign_personal_namespace }
     end

@@ -25,20 +25,32 @@ RSpec.describe FixBrokenUserAchievementsRevoked, migration: :gitlab_main, featur
   let(:not_revoked) { user_achievements_table.create!(user_id: user.id, achievement_id: achievement.id) }
 
   describe '#up' do
-    it 'migrates the invalid user achievement' do
-      expect { migrate! }
-        .to change { revoked_invalid.reload.revoked_by_user_id }
-        .from(nil).to(Users::Internal.ghost.id)
+    context 'when ghost user exists' do
+      let!(:ghost_user) do
+        users_table.create!(username: generate(:username), email: 'ghost@example.com', projects_limit: 0, user_type: 5)
+      end
+
+      it 'migrates the invalid user achievement' do
+        expect { migrate! }
+          .to change { revoked_invalid.reload.revoked_by_user_id }
+          .from(nil).to(ghost_user.id)
+      end
+
+      it 'does not migrate valid revoked user achievement' do
+        expect { migrate! }
+          .not_to change { revoked_valid.reload.revoked_by_user_id }
+      end
+
+      it 'does not migrate the not revoked user achievement' do
+        expect { migrate! }
+          .not_to change { not_revoked.reload.revoked_by_user_id }
+      end
     end
 
-    it 'does not migrate valid revoked user achievement' do
-      expect { migrate! }
-        .not_to change { revoked_valid.reload.revoked_by_user_id }
-    end
-
-    it 'does not migrate the not revoked user achievement' do
-      expect { migrate! }
-        .not_to change { not_revoked.reload.revoked_by_user_id }
+    context 'when ghost user does not exist' do
+      it 'does not migrate the invalid user achievement' do
+        expect { migrate! }.not_to change { revoked_invalid.reload.revoked_by_user_id }
+      end
     end
   end
 end

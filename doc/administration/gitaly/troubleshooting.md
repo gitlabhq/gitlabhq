@@ -498,3 +498,44 @@ Execution traces can be viewed by running:
 ```shell
 go tool trace heap.bin
 ```
+
+## Repositories are shown as empty after a GitLab restore
+
+When using `fapolicyd` for increased security, GitLab can report that a restore from a GitLab backup file was successful but:
+
+- Repositories show as empty.
+- Creating new files causes an error similar to:
+
+  ```plaintext
+  13:commit: commit: starting process [/var/opt/gitlab/gitaly/run/gitaly-5428/gitaly-git2go -log-format json -log-level -correlation-id 
+  01GP1383JV6JD6MQJBH2E1RT03 -enabled-feature-flags -disabled-feature-flags commit]: fork/exec /var/opt/gitlab/gitaly/run/gitaly-5428/gitaly-git2go: operation not permitted.
+  ```
+
+- Gitaly logs might contain errors similar to:
+
+  ```plaintext
+   "error": "exit status 128, stderr: \"fatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction': 
+
+    Operation not permitted\\nfatal: cannot exec '/var/opt/gitlab/gitaly/run/gitaly-5428/hooks-1277154941.d/reference-transaction': Operation 
+    not permitted\\nfatal: ref updates aborted by hook\\n\"",
+   "grpc.code": "Internal",
+   "grpc.meta.deadline_type": "none",
+   "grpc.meta.method_type": "client_stream",
+   "grpc.method": "FetchBundle",
+   "grpc.request.fullMethod": "/gitaly.RepositoryService/FetchBundle",
+  ...
+  ```
+
+You can use
+[debug mode](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/assembly_blocking-and-allowing-applications-using-fapolicyd_security-hardening#ref_troubleshooting-problems-related-to-fapolicyd_assembly_blocking-and-allowing-applications-using-fapolicyd)
+to help determine if `fapolicyd` is denying execution based on current rules.
+
+If you find that `fapolicyd` is denying execution, consider the following:
+
+1. Allow all executables in `/var/opt/gitlab/gitaly` in your `fapolicyd` configuration:
+
+   ```plaintext
+   allow perm=any all : ftype=application/x-executable dir=/var/opt/gitlab/gitaly/
+   ```
+
+1. Restart the service.

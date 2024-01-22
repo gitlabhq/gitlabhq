@@ -222,6 +222,10 @@ module API
             }
           ],
           'external-wiki' => ::Integrations::ExternalWiki.api_fields,
+          'gitlab-slack-application' => [
+            ::Integrations::GitlabSlackApplication.api_fields,
+            chat_notification_channels
+          ].flatten,
           'google-play' => ::Integrations::GooglePlay.api_fields,
           'hangouts-chat' => [
             {
@@ -638,6 +642,7 @@ module API
           ::Integrations::EmailsOnPush,
           ::Integrations::Ewm,
           ::Integrations::ExternalWiki,
+          ::Integrations::GitlabSlackApplication,
           ::Integrations::GooglePlay,
           ::Integrations::HangoutsChat,
           ::Integrations::Harbor,

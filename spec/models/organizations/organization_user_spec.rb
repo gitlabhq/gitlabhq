@@ -44,4 +44,65 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
   end
 
   it_behaves_like 'having unique enum values'
+
+  describe '.create_default_organization_record_for' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+    let_it_be(:user) { create(:user, :without_default_org) }
+    let(:access_level) { :default }
+    let(:user_id) { user.id }
+
+    subject(:create_entry) { described_class.create_default_organization_record_for(user_id, access_level) }
+
+    context 'when creating as as default user' do
+      it 'creates record with correct attributes' do
+        expect { create_entry }.to change { described_class.count }.by(1)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+
+    context 'when creating as an owner' do
+      let(:access_level) { :owner }
+
+      it 'creates record with correct attributes' do
+        expect { create_entry }.to change { described_class.count }.by(1)
+        expect(default_organization.owner?(user)).to be(true)
+      end
+    end
+
+    context 'when entry already exists' do
+      let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
+
+      it 'does not create or update existing record' do
+        expect { create_entry }.not_to change { described_class.count }
+      end
+
+      context 'when access_level changes' do
+        let(:access_level) { :owner }
+
+        it 'changes access_level on the existing record' do
+          expect(default_organization.owner?(user)).to be(false)
+
+          expect { create_entry }.not_to change { described_class.count }
+
+          expect(default_organization.owner?(user)).to be(true)
+        end
+      end
+    end
+
+    context 'when creating with invalid access_level' do
+      let(:access_level) { :foo }
+
+      it 'raises and error' do
+        expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
+      end
+    end
+
+    context 'when creating with invalid user_id' do
+      let(:user_id) { nil }
+
+      it 'raises and error' do
+        expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
+      end
+    end
+  end
 end
