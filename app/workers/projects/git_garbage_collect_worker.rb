@@ -24,6 +24,11 @@ module Projects
       rescue Gitlab::Git::CommandTimedOut, GRPC::Internal => e
         Gitlab::ErrorTracking.track_exception(e)
       end
+    end
+
+    override :after_gitaly_call
+    def after_gitaly_call(task, resource)
+      return unless gc?(task)
 
       cleanup_orphan_lfs_file_references(resource)
     end

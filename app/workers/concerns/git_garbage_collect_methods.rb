@@ -33,6 +33,7 @@ module GitGarbageCollectMethods
 
     before_gitaly_call(task, resource)
     gitaly_call(task, resource)
+    after_gitaly_call(task, resource)
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(resource) if gc?(task)
@@ -95,6 +96,10 @@ module GitGarbageCollectMethods
   rescue GRPC::BadStatus => e
     Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
     raise Gitlab::Git::CommandError, e
+  end
+
+  def after_gitaly_call(task, resource)
+    # no-op
   end
 
   def flush_ref_caches(resource)

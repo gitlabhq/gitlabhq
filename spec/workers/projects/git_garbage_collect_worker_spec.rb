@@ -69,6 +69,20 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
         expect(project.lfs_objects.reload).not_to include(lfs_object)
       end
 
+      context 'when optimize repository call fails' do
+        before do
+          allow(project.repository.gitaly_repository_client).to receive(:optimize_repository).and_raise('Boom')
+        end
+
+        it 'does not clean up unreferenced LFS objects' do
+          expect(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:new)
+
+          expect { subject.perform(*params) }.to raise_error('Boom')
+
+          expect(project.lfs_objects.reload).to include(lfs_object)
+        end
+      end
+
       it 'catches and logs exceptions' do
         allow_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
           allow(svg).to receive(:run!).and_raise(/Failed/)
