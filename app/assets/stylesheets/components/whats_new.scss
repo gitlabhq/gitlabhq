@@ -17,7 +17,7 @@
     align-items: stretch;
 
     .nav-item {
-      @include gl-flex-shrink-0;
+      flex-shrink: 0;
 
       a {
         height: 100%;
@@ -38,7 +38,7 @@
   &:hover,
   &:focus,
   &:active {
-    @include gl-text-gray-900;
+    color: $gray-900;
   }
 }
 

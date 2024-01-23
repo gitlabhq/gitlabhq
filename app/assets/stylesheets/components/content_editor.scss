@@ -202,7 +202,7 @@
       padding-right: 10px;
       padding-left: 10px;
 
-      @include gl-text-secondary;
+      color: $gl-text-color-secondary;
     }
 
     > code::after {
@@ -212,7 +212,7 @@
       width: 20px;
       text-align: center;
 
-      @include gl-text-secondary;
+      color: $gl-text-color-secondary;
     }
   }
 
@@ -369,7 +369,7 @@
 
   li.focused div.gl-new-dropdown-item-content {
     @include gl-focus($inset: true);
-    @include gl-bg-gray-50;
+    background-color: $gray-50;
   }
 }
 

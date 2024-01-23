@@ -8,6 +8,6 @@
   }
 
   .timeline-entry::before {
-    @include gl-mt-4;
+    margin-top: $gl-spacing-scale-4;
   }
 }

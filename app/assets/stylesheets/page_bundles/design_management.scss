@@ -81,7 +81,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       @include gl-opacity-5;
 
       &:hover {
-        @include gl-opacity-10;
+        opacity: 1;
       }
     }
   }

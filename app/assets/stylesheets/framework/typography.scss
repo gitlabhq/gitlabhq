@@ -81,7 +81,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: keep-all;
-    @include gl-font-base;
+    font-size: $gl-font-size;
   }
 
   h1 {
@@ -665,7 +665,7 @@ pre {
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  @include gl-font-base;
+  font-size: $gl-font-size;
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
@@ -712,7 +712,7 @@ code {
  */
 textarea.js-gfm-input {
   font-family: $monospace-font;
-  @include gl-font-base;
+  font-size: $gl-font-size;
 }
 
 h1,

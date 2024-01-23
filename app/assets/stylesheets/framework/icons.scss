@@ -47,7 +47,7 @@
   // - app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue
   // - app/helpers/ci/status_helper.rb
   .ci-icon-gl-icon-wrapper {
-    @include gl-rounded-full;
+    border-radius: $gl-border-radius-full;
     @include gl-line-height-0;
   }
 

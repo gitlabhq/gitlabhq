@@ -22,6 +22,9 @@ const LABELS_ALIAS = 'labels';
 const SNIPPETS_ALIAS = 'snippets';
 const CONTACTS_ALIAS = 'contacts';
 
+const CADENCE_REFERENCE_PREFIX = '[cadence:';
+const ITERATION_REFERENCE_PREFIX = '*iteration:';
+
 export const AT_WHO_ACTIVE_CLASS = 'at-who-active';
 export const CONTACT_STATE_ACTIVE = 'active';
 export const CONTACTS_ADD_COMMAND = '/add_contacts';
@@ -220,6 +223,11 @@ class GfmAutoComplete {
           const match = regexp.exec(value.params);
           if (match) {
             [referencePrefix] = match;
+
+            // EE-ONLY; iteration quick action should autocomplete iteration reference only
+            if (referencePrefix === CADENCE_REFERENCE_PREFIX)
+              referencePrefix = ITERATION_REFERENCE_PREFIX;
+
             tpl += '<%- referencePrefix %>';
           } else {
             [[referencePrefix]] = value.params;
@@ -227,7 +235,7 @@ class GfmAutoComplete {
               tpl += '<%- referencePrefix %>';
             } else if (/^[*]/.test(referencePrefix)) {
               // EE-ONLY
-              referencePrefix = '*iteration:';
+              referencePrefix = ITERATION_REFERENCE_PREFIX;
               tpl += '<%- referencePrefix %>';
             }
           }

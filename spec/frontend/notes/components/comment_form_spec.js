@@ -636,7 +636,7 @@ describe('issue_comment_form component', () => {
         noteableType      | rendered | message
         ${'Issue'}        | ${true}  | ${'render'}
         ${'Epic'}         | ${true}  | ${'render'}
-        ${'MergeRequest'} | ${false} | ${'not render'}
+        ${'MergeRequest'} | ${true}  | ${'render'}
       `(
         'should $message checkbox when noteableType is $noteableType',
         ({ noteableType, rendered }) => {

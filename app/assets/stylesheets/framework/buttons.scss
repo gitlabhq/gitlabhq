@@ -354,14 +354,14 @@ fieldset[disabled] .btn,
 copy-code {
   position: absolute;
   @include gl-transition-medium;
-  @include gl-opacity-0;
+  opacity: 0;
 
   top: 7px;
   right: $input-horizontal-padding;
 
   .markdown-code-block:hover &,
   &:focus-within {
-    @include gl-opacity-10;
+    opacity: 1;
   }
 }
 

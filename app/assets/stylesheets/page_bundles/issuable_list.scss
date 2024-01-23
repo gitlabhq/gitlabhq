@@ -90,9 +90,9 @@
 .issuable-list li,
 .issuable-info-container .controls {
   .avatar-counter {
-    @include gl-pl-1;
-    @include gl-pr-2;
-    @include gl-h-5;
+    padding-left: $gl-spacing-scale-1;
+    padding-right: $gl-spacing-scale-2;
+    height: $gl-spacing-scale-5;
     @include gl-min-w-5;
     line-height: 14px;
   }
@@ -101,7 +101,7 @@
 .merge-request {
   .issuable-info-container .controls {
     .avatar-counter {
-      @include gl-line-height-normal;
+      line-height: $gl-line-height-16;
       border: 0;
     }
   }

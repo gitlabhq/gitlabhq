@@ -120,8 +120,8 @@ td.line-numbers {
 
   .file-line-num {
     @include gl-justify-content-end;
-    @include gl-flex-grow-1;
-    @include gl-pr-3;
+    flex-grow: 1;
+    padding-right: $gl-spacing-scale-3;
   }
 
   .file-line-blame {

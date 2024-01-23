@@ -38,7 +38,7 @@ Parameters:
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
-| `repository_storage` **(PREMIUM ALL)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
+| `repository_storage`                  | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 
 ```plaintext
 GET /groups
@@ -844,10 +844,10 @@ Parameters:
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role).                                   |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours).                                                                                                                                   |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`.                                                                                                                              |
-| `membership_lock` **(PREMIUM ALL)**                     | boolean | no       | Users cannot be added to projects in this group.                                                                                                                                                |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group.                                                                                                                   |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                         |
-| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`.                                                                                                                              |
+| `membership_lock`                                       | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only.                                                                                              |
+| `extra_shared_runners_minutes_limit`                    | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only.                                                                  |
+| `shared_runners_minutes_limit`                          | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only.            |
+| `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.                                                                       |
 
 ### Options for `default_branch_protection`
 
@@ -1017,18 +1017,18 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
-| `file_template_project_id` **(PREMIUM ALL)**                | integer | no       | The ID of a project to load custom file templates from. |
-| `membership_lock` **(PREMIUM ALL)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `prevent_forking_outside_group` **(PREMIUM ALL)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `unique_project_download_limit` **(ULTIMATE ALL)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
-| `unique_project_download_limit_interval_in_seconds` **(ULTIMATE ALL)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
-| `unique_project_download_limit_allowlist` **(ULTIMATE ALL)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
-| `unique_project_download_limit_alertlist` **(ULTIMATE ALL)** | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. |
-| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE ALL)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
-| `ip_restriction_ranges` **(PREMIUM ALL)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
-| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
+| `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only. |
+| `file_template_project_id`               | integer | no       | The ID of a project to load custom file templates from. Premium and Ultimate only. |
+| `membership_lock`                    | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only. |
+| `prevent_forking_outside_group`        | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. Premium and Ultimate only. |
+| `shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only. |
+| `unique_project_download_limit` | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. Ultimate only. |
+| `unique_project_download_limit_interval_in_seconds` | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). Ultimate only. |
+| `unique_project_download_limit_allowlist` | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. Ultimate only.|
+| `unique_project_download_limit_alertlist` | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. Ultimate only.|
+| `auto_ban_user_on_excessive_projects_download` | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. Ultimate only.|
+| `ip_restriction_ranges`                | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. Premium and Ultimate only.|
+| `wiki_access_level`                    | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.|
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1192,8 +1192,8 @@ Parameters:
 | Attribute            | Type             | Required | Description                                                                                                                                                 |
 |----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)                                                                                |
-| `permanently_remove` **(PREMIUM ALL)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
-| `full_path` **(PREMIUM ALL)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
+| `permanently_remove` | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. Premium and Ultimate only. |
+| `full_path`   | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group). Premium and Ultimate only. |
 
 The response is `202 Accepted` if the user has authorization.
 

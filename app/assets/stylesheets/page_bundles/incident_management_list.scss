@@ -6,7 +6,7 @@
   }
 
   .gl-tabs-nav {
-    @include gl-border-b-0;
+    border-bottom-width: 0;
 
     .gl-tab-nav-item {
       color: var(--gray-500, $gray-500);

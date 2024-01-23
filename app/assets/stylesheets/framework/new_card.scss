@@ -1,76 +1,82 @@
 .gl-new-card {
-  @include gl-mt-5;
+  margin-top: $gl-spacing-scale-5;
   background-color: $gray-10;
-  @include gl-border-1;
-  @include gl-border-solid;
-  @include gl-border-gray-100;
+  border-width: $gl-border-size-1;
+  border-style: solid;
+  border-color: $gray-100;
   border-radius: $gl-border-radius-base;
 
   &-header {
     padding-left: $gl-spacing-scale-5;
     padding-right: $gl-spacing-scale-5;
-    @include gl-py-4;
+    padding-top: $gl-spacing-scale-4;
+    padding-bottom: $gl-spacing-scale-4;
     display: flex;
-    @include gl-justify-content-space-between;
-    @include gl-bg-white;
-    @include gl-border-b-1;
-    @include gl-border-b-solid;
-    @include gl-border-b-gray-100;
-    @include gl-rounded-top-base;
+    justify-content: space-between;
+    background-color: $white;
+    border-bottom-width: $gl-border-size-1;
+    border-bottom-style: solid;
+    border-bottom-color: $gray-100;
+    border-top-left-radius: $gl-border-radius-base;
+    border-top-right-radius: $gl-border-radius-base;
   }
 
   &[aria-expanded=false] &-header {
-    @include gl-border-bottom-0;
+    border-bottom: 0;
     border-radius: $gl-border-radius-base;
   }
 
   &-title-wrapper {
     display: flex;
-    @include gl-flex-grow-1;
+    flex-grow: 1;
   }
 
   &-title {
     display: flex;
-    @include gl-font-base;
-    @include gl-font-weight-bold;
+    font-size: $gl-font-size;
+    font-weight: $gl-font-weight-bold;
     position: relative;
     margin: 0;
-    @include gl-line-height-24;
+    line-height: $gl-line-height-24;
   }
 
   &-count {
-    @include gl-mx-3;
-    @include gl-font-base;
-    @include gl-font-weight-bold;
-    @include gl-text-gray-500;
-    @include gl-display-inline-flex;
+    margin-left: $gl-spacing-scale-3;
+    margin-right: $gl-spacing-scale-3;
+    font-size: $gl-font-size;
+    font-weight: $gl-font-weight-bold;
+    color: $gray-500;
+    display: inline-flex;
     align-items: center;
   }
 
   &-description {
     font-size: $gl-font-size-sm;
-    @include gl-text-gray-500;
+    color: $gray-500;
     margin: 0;
   }
 
   &-toggle {
-    @include gl-pl-3;
+    padding-left: $gl-spacing-scale-3;
     margin-left: $gl-spacing-scale-3;
-    @include gl-mr-n2;
-    @include gl-border-l-1;
-    @include gl-border-l-solid;
-    @include gl-border-l-gray-100;
+    margin-right: -$gl-spacing-scale-2;
+    border-left-width: $gl-border-size-1;
+    border-left-style: solid;
+    border-left-color: $gray-100;
   }
 
   &-body {
-    @include gl-rounded-bottom-base;
-    @include gl-px-3;
+    border-bottom-left-radius: $gl-border-radius-base;
+    border-bottom-right-radius: $gl-border-radius-base;
+    padding-left: $gl-spacing-scale-3;
+    padding-right: $gl-spacing-scale-3;
     padding-top: 0;
     padding-bottom: 0;
   }
 
   &-content {
-    @include gl-px-2;
+    padding-left: $gl-spacing-scale-2;
+    padding-right: $gl-spacing-scale-2;
     padding-top: $gl-spacing-scale-3;
     padding-bottom: $gl-spacing-scale-3;
   }
@@ -78,20 +84,21 @@
   &-empty {
     padding: $gl-spacing-scale-2;
     margin-bottom: 0;
-    @include gl-text-gray-500;
+    color: $gray-500;
   }
 
   &-footer {
-    @include gl-bg-white;
+    background-color: $white;
   }
 
   &-add-form {
-    @include gl-p-4;
-    @include gl-my-2;
-    @include gl-bg-white;
-    @include gl-border-1;
-    @include gl-border-solid;
-    @include gl-border-gray-100;
+    padding: $gl-spacing-scale-4;
+    margin-top: $gl-spacing-scale-2;
+    margin-bottom: $gl-spacing-scale-2;
+    background-color: $white;
+    border-width: $gl-border-size-1;
+    border-style: solid;
+    border-color: $gray-100;
     border-radius: $gl-border-radius-base;
   }
 }
@@ -102,27 +109,27 @@
     tbody > tr {
       &:first-of-type > td[data-label],
       &:first-of-type > td:first-of-type:last-of-type {
-        @include gl-border-t-0;
+        border-top-width: 0;
       }
 
       &:last-of-type td:not(:last-of-type) {
-        @include gl-border-b-1;
+        border-bottom-width: $gl-border-size-1;
       }
 
       > td[data-label] {
-        @include gl-border-left-0;
-        @include gl-border-l-none;
-        @include gl-border-right-0;
-        @include gl-border-r-none;
+        border-left: 0;
+        border-left-style: none;
+        border-right: 0;
+        border-right-style: none;
       }
 
       > th {
-        @include gl-border-t-1;
-        @include gl-border-b-0;
+        border-top-width: $gl-border-size-1;
+        border-bottom-width: 0;
       }
 
       &::after {
-        @include gl-bg-white;
+        background-color: $white;
       }
 
       &:last-child::after {
@@ -136,11 +143,11 @@
     margin-bottom: 0;
 
     tr:first-of-type th {
-      @include gl-border-t-0;
+      border-top-width: 0;
     }
 
     tr:last-of-type td {
-      @include gl-border-b-0;
+      border-bottom-width: 0;
     }
   }
 

@@ -118,10 +118,7 @@ export default {
       return this.getNoteableData.current_user.can_create_note;
     },
     canSetInternalNote() {
-      return (
-        this.getNoteableData.current_user.can_create_confidential_note &&
-        (this.isIssue || this.isEpic)
-      );
+      return this.getNoteableData.current_user.can_create_confidential_note;
     },
     issueActionButtonTitle() {
       const openOrClose = this.isOpen ? 'close' : 'reopen';

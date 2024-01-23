@@ -19,7 +19,7 @@
     &:focus:active {
       @include gl-reset-color;
       @include gl-shadow-none;
-      @include gl-outline-none;
+      outline: none;
     }
 
     .gl-label-text,

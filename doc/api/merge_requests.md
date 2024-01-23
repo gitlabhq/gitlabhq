@@ -51,8 +51,8 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
-| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`. Maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids`               | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`. Maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
+| `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
@@ -235,8 +235,8 @@ Supported attributes:
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids`               | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
+| `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
@@ -422,9 +422,9 @@ Supported attributes:
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approved_by_usernames` **(PREMIUM ALL)** | string array  | No       | Returns merge requests which have been approved by all the users with the given `username`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids`               | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
+| `approved_by_usernames`         | string array  | No       | Returns merge requests which have been approved by all the users with the given `username`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
+| `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
@@ -604,7 +604,7 @@ Supported attributes:
 
 | Attribute                        | Type | Description |
 |----------------------------------|------|-------------|
-| `approvals_before_merge`| integer | **(PREMIUM ALL)** Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `approvals_before_merge`| integer | Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
 | `assignee` | object | First assignee of the merge request. |
 | `assignees` | array | Assignees of the merge request. |
 | `author` | object | User who created this merge request. |
@@ -1296,7 +1296,7 @@ POST /projects/:id/merge_requests
 | `target_branch`            | string  | Yes      | The target branch. |
 | `title`                    | string  | Yes      | Title of MR. |
 | `allow_collaboration`      | boolean | No       | Allow commits from members who can merge to the target branch. |
-| `approvals_before_merge` **(PREMIUM ALL)**                      | integer | No | Number of approvals required before this can be merged (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `approvals_before_merge`   | integer | No | Number of approvals required before this can be merged (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
 | `allow_maintainer_to_push` | boolean | No       | Alias of `allow_collaboration`. |
 | `assignee_id`              | integer | No       | Assignee user ID. |
 | `assignee_ids`             | integer array | No | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |

@@ -21,7 +21,7 @@
   }
 
   + .snippet-file-content {
-    @include gl-mt-5;
+    margin-top: $gl-spacing-scale-5;
   }
 
   &:last-of-type {

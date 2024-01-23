@@ -176,8 +176,16 @@ RSpec.describe Note, feature_category: :team_planning do
           expect(subject).to be_valid
         end
 
-        context 'when noteable is not allowed to have confidential notes' do
+        context 'when noteable is a merge request' do
           let_it_be(:noteable) { create(:merge_request) }
+
+          it 'can not be set confidential' do
+            expect(subject).to be_valid
+          end
+        end
+
+        context 'when noteable is not allowed to have confidential notes' do
+          let_it_be(:noteable) { create(:snippet) }
 
           it 'can not be set confidential' do
             expect(subject).not_to be_valid

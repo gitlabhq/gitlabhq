@@ -3,7 +3,7 @@
   display: flex;
   @include gl-justify-content-center;
   align-items: center;
-  @include gl-z-index-0;
+  z-index: 0;
 
   > * {
     filter: blur(5px);
@@ -13,7 +13,7 @@
     content: '';
     @include spinner-deprecated(32px, 3px);
     position: absolute;
-    @include gl-z-index-1;
+    z-index: 1;
   }
 
   pre {
@@ -30,8 +30,10 @@
 
   .md {
     @include gl-overflow-scroll;
-    @include gl-px-6;
-    @include gl-py-4;
+    padding-left: $gl-spacing-scale-6;
+    padding-right: $gl-spacing-scale-6;
+    padding-top: $gl-spacing-scale-4;
+    padding-bottom: $gl-spacing-scale-4;
     width: 100%;
   }
 
@@ -73,11 +75,11 @@
 
       &::before {
         @include gl-visibility-hidden;
-        @include gl-align-self-center;
-        @include gl-bg-gray-400;
-        @include gl-mr-2;
-        @include gl-w-4;
-        @include gl-h-4;
+        align-self: center;
+        background-color: $gray-400;
+        margin-right: $gl-spacing-scale-2;
+        width: $gl-spacing-scale-4;
+        height: $gl-spacing-scale-4;
         mask-image: url('icons-stacked.svg#link');
         mask-repeat: no-repeat;
         mask-size: cover;
@@ -100,7 +102,7 @@
       }
 
       .link-anchor {
-        @include gl-display-block;
+        display: block;
         position: absolute;
         width: 100%;
         height: 100%;
@@ -115,6 +117,6 @@
 }
 
 .active-line-text {
-  @include gl-bg-orange-600;
+  background-color: $orange-600;
   @include gl-opacity-3;
 }

@@ -37,7 +37,7 @@
     }
 
     &:hover {
-      @include gl-border-t-1;
+      border-top-width: $gl-border-size-1;
       @include gl-border-t-transparent;
       @include gl-border-t-solid;
     }
@@ -63,7 +63,7 @@
   margin-right: 2.5rem;
 
   @include media-breakpoint-up(sm) {
-    @include gl-mr-0;
+    margin-right: 0;
     @include gl-text-overflow-ellipsis;
     @include gl-white-space-nowrap;
     @include gl-overflow-hidden;
@@ -72,18 +72,19 @@
 
 .todo-body {
   p {
-    @include gl-display-inline;
+    display: inline;
     color: var(--gl-text-color, $gl-text-color);
   }
 
   pre.code.highlight {
     padding-top: 0;
-  padding-bottom: 0;
-    @include gl-px-1;
+    padding-bottom: 0;
+    padding-left: $gl-spacing-scale-1;
+    padding-right: $gl-spacing-scale-1;
     margin: 0;
     @include gl-border-0;
     border-radius: $gl-border-radius-base;
-    @include gl-display-inline-flex;
+    display: inline-flex;
     background: var(--gray-50, $gray-50);
     color: var(--gl-text-color, $gl-text-color);
   }

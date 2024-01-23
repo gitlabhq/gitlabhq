@@ -52,8 +52,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To reinstall the GitLab for Slack app:
 
-1. On the left sidebar, select **Search or go to** and find a project
-   where the GitLab for Slack app is [installed](#install-the-gitlab-for-slack-app).
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Reinstall GitLab for Slack app**.
@@ -69,27 +68,30 @@ You can use slash commands to run common GitLab operations.
 
 For the GitLab for Slack app:
 
-- You must authorize your Slack user on GitLab.com when you run your first slash command.
-- You can [create a project alias](#create-a-project-alias) for slash commands.
+- You must authorize your Slack user when you run your first slash command.
+- You can replace `<project>` with a project full path or
+  [create a project alias](#create-a-project-alias) for slash commands.
+
+If you use [Slack slash commands](slack_slash_commands.md) or
+[Mattermost slash commands](mattermost_slash_commands.md) instead:
+
+- Replace `/gitlab` with the trigger name you've configured for these integrations.
+- Remove `<project>`.
 
 The following slash commands are available in GitLab:
-
-- For [Slack slash commands](slack_slash_commands.md) on self-managed GitLab and [Mattermost slash commands](mattermost_slash_commands.md),
-  replace `/gitlab` with the trigger name of the slash command you've configured for the integration.
-- Replace `<project>` with a project full path.
 
 | Command | Description |
 | ------- | ----------- |
 | `/gitlab help` | Shows all available slash commands. |
-| `/gitlab <project> issue new <title>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<description>` | Creates a new issue with the title `<title>` and description `<description>`. |
 | `/gitlab <project> issue show <id>` | Shows the issue with the ID `<id>`. |
-| `/gitlab <project> issue close <id>` | Closes the issue with the ID `<id>`. |
+| `/gitlab <project> issue new <title>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<description>` | Creates an issue with the title `<title>` and description `<description>`. |
 | `/gitlab <project> issue search <query>` | Shows up to five issues that match `<query>`. |
 | `/gitlab <project> issue move <id> to <project>` | Moves the issue with the ID `<id>` to `<project>`. |
-| `/gitlab <project> issue comment <id>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<comment>` | Adds a new comment with the comment body `<comment>` to the issue with the ID `<id>`. |
+| `/gitlab <project> issue close <id>` | Closes the issue with the ID `<id>`. |
+| `/gitlab <project> issue comment <id>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<comment>` | Adds a comment with the comment body `<comment>` to the issue with the ID `<id>`. |
 | `/gitlab <project> deploy <from> to <to>` | [Deploys](#deploy-command) from the `<from>` environment to the `<to>` environment. |
 | `/gitlab <project> run <job name> <arguments>` | Executes the [ChatOps](../../../ci/chatops/index.md) job `<job name>` on the default branch. |
-| `/gitlab incident declare` | Opens a dialog to [create a new incident from Slack](../../../operations/incident_management/slack.md). |
+| `/gitlab incident declare` | Opens a dialog to [create an incident from Slack](../../../operations/incident_management/slack.md). |
 
 ### `deploy` command
 
@@ -103,10 +105,12 @@ The command returns an error if GitLab cannot find a matching deployment action.
 
 ### Create a project alias
 
-By default, slash commands expect a project full path. To create a project alias in the GitLab for Slack app:
+In the GitLab for Slack app, slash commands use a project full path by default.
+You can use a project alias instead.
 
-1. On the left sidebar, select **Search or go to** and find a project
-   where the GitLab for Slack app is [installed](#install-the-gitlab-for-slack-app).
+To create a project alias for slash commands in the GitLab for Slack app:
+
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
@@ -122,8 +126,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 
 To configure Slack notifications:
 
-1. On the left sidebar, select **Search or go to** and find a project
-   where the GitLab for Slack app is [installed](#install-the-gitlab-for-slack-app).
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:

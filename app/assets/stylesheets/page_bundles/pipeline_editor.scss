@@ -17,7 +17,7 @@
 }
 
 .file-tree-includes-link:hover > svg {
-  @include gl-display-block;
+  display: block;
   top: 2px;
 }
 

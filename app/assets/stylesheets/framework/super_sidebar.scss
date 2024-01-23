@@ -501,7 +501,8 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     max-height: 30rem;
 
     .gl-new-dropdown-item {
-      @include gl-px-3;
+      padding-left: $gl-spacing-scale-3;
+      padding-right: $gl-spacing-scale-3;
     }
 
     // Target groups

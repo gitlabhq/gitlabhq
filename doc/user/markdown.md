@@ -697,6 +697,9 @@ GitLab Flavored Markdown recognizes the following:
 | Snippet                                                        | `$123`                         | `namespace/project$123`                 | `project$123`                      |
 | [Epic](group/epics/index.md)                                   | `&123`                         | `group1/subgroup&123`                   |                                    |
 | [Iteration](group/iterations/index.md)                         | `*iteration:"iteration title"` |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`      |                             |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`     |                             |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]` |                             |                                    |
 | [Vulnerability](application_security/vulnerabilities/index.md) | `[vulnerability:123]`          | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
 | Feature flag                                                   | `[feature_flag:123]`           | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
 | Label by ID                                                    | `~123`                         | `namespace/project~123`                 | `project~123`                      |
@@ -712,6 +715,15 @@ GitLab Flavored Markdown recognizes the following:
 | Repository file reference (specific line)                      | `[README](doc/README.md#L13)`  |                                         |                                    |
 | [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
 | [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
+
+<ol>
+  <li>
+    <small>
+      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/384885">Introduced</a> in GitLab 16.9. Iteration cadence references are always rendered following the format <code>[cadence:&lt;ID>]</code>.
+    For example, the text reference <code>[cadence:"plan"]</code> renders as <code>[cadence:1]</code> if the referenced iterations cadence's ID is <code>1</code>.
+    </small>
+  </li>
+</ol>
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is

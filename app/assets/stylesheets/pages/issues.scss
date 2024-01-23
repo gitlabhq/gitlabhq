@@ -198,7 +198,7 @@ ul.related-merge-requests > li gl-emoji {
     display: flex;
 
     .new-branch-col {
-      @include gl-pb-0;
+      padding-bottom: 0;
       align-self: flex-end;
     }
   }

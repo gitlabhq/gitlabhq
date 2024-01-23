@@ -331,7 +331,7 @@ $tabs-holder-z-index: 250;
       width: 100% !important;
       // avoid sticky elements overlap header and other elements
       z-index: 1;
-      @include gl-mb-3;
+      margin-bottom: $gl-spacing-scale-3;
     }
 
     .tree-list-holder {
@@ -814,7 +814,7 @@ $tabs-holder-z-index: 250;
   @include media-breakpoint-down(sm) {
     padding-top: $gl-spacing-scale-3;
     padding-bottom: $gl-spacing-scale-3;
-    @include gl-pr-3;
+    padding-right: $gl-spacing-scale-3;
   }
 }
 
@@ -842,7 +842,7 @@ $tabs-holder-z-index: 250;
   // Adds a fix for the view app dropdown not showing up
   // correctly.
   position: relative;
-  @include gl-z-index-1;
+  z-index: 1;
 
   &.clickable:hover {
     background-color: var(--gray-50, $gray-50);
@@ -856,9 +856,9 @@ $tabs-holder-z-index: 250;
   @include gl-left-50p;
   @include gl-top-half;
   @include gl-opacity-3;
-  @include gl-border-solid;
+  border-style: solid;
   @include gl-border-4;
-  @include gl-rounded-full;
+  border-radius: $gl-border-radius-full;
 
   width: 24px;
   height: 24px;
@@ -868,7 +868,7 @@ $tabs-holder-z-index: 250;
 .mr-widget-extension-icon::after {
   @include gl-content-empty;
   position: absolute;
-  @include gl-rounded-full;
+  border-radius: $gl-border-radius-full;
   @include gl-left-50p;
   @include gl-top-half;
 
@@ -1035,7 +1035,7 @@ $tabs-holder-z-index: 250;
   }
 
   p {
-    @include gl-font-base;
+    font-size: $gl-font-size;
   }
 
   li:not(:last-child) {
@@ -1077,16 +1077,16 @@ $tabs-holder-z-index: 250;
   @include gl-bottom-0;
   @include gl-right-0;
   @include gl-opacity-3;
-  @include gl-rounded-full;
-  @include gl-border-solid;
+  border-radius: $gl-border-radius-full;
+  border-style: solid;
   @include gl-border-4;
 }
 
 .mr-widget-status-icon-level-1::after {
   @include gl-content-empty;
   position: absolute;
-  @include gl-rounded-full;
-  @include gl-border-solid;
+  border-radius: $gl-border-radius-full;
+  border-style: solid;
   @include gl-border-4;
   @include gl-left-2;
   @include gl-right-2;
@@ -1208,7 +1208,7 @@ $tabs-holder-z-index: 250;
     margin: 0;
     @include gl-border-l-0;
     @include gl-border-r-0;
-    @include gl-border-b-0;
+    border-bottom-width: 0;
     @include gl-rounded-top-left-none;
     @include gl-rounded-top-right-none;
   }

@@ -45,7 +45,7 @@
 }
 
 .detail-page-header-meta {
-  @include gl-flex-basis-full;
+  flex-basis: 100%;
 }
 
 .detail-page-description {

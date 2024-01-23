@@ -457,6 +457,22 @@ The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageInc
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate Maven versions below 3.8.8
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438772).
+</div>
+
+GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
+
+Maven versions below 3.6.3 have reached their end-of-life. Users are advised to upgrade to 3.8.8 or greater.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate Windows CMD in GitLab Runner
 
 <div class="deprecation-notes">

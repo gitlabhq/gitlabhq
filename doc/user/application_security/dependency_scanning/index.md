@@ -141,7 +141,7 @@ The following languages and dependency managers are supported:
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">Maven</a></td>
+      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">3</a></b></sup></td>
       <td><code>pom.xml</code></td>
       <td>N</td>
     </tr>
@@ -280,6 +280,14 @@ The following languages and dependency managers are supported:
       <ul>
         <li>Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.</li>
         <li>Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated in GitLab 16.8</a>.</li>
+      </ul>
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
+    <p>
+      <ul>
+        <li>Support for Maven below 3.8.8 was deprecated in GitLab 16.9 and will be removed in GitLab 17.0</li>
       </ul>
     </p>
   </li>

@@ -69,7 +69,7 @@
   }
 
   .inline-block {
-    @include gl-display-inline-block;
+    display: inline-block;
   }
 
   &.right-sidebar-merge-requests {
@@ -491,7 +491,8 @@
     }
 
     .issuable-sidebar-header {
-      @include gl-py-5;
+      padding-top: $gl-spacing-scale-5;
+      padding-bottom: $gl-spacing-scale-5;
     }
 
     .value {

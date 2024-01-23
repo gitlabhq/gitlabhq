@@ -347,12 +347,12 @@
   }
 
   .filtered-search-block .boards-switcher {
-    @include gl-mr-0;
+    margin-right: 0;
     margin-bottom: $gl-input-padding;
 
     .boards-selector-wrapper,
     .dropdown {
-      @include gl-display-block;
+      display: block;
     }
   }
 

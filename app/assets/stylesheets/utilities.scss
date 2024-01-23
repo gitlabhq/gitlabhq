@@ -134,7 +134,7 @@
 }
 
 .gl-last-of-type-border-b-0:last-of-type {
-  @include gl-border-b-0;
+  border-bottom-width: 0;
 }
 
 .gl-md-h-9 {

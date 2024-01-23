@@ -1,0 +1,11 @@
+- title: "Deprecate Maven versions below 3.8.8"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: Secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438772
+  body: |  # (required) Don't change this line.
+    GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
+
+    Maven versions below 3.6.3 have reached their end-of-life. Users are advised to upgrade to 3.8.8 or greater.

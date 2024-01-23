@@ -68,6 +68,13 @@ the first time or after more than an hour of inactivity.
 
 View and provide feedback about the UI in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
+## Manage an agent's workspaces
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 16.8.
+
+You can view and manage all workspaces associated with an agent.
+For more information, see [Manage workspaces at the agent level](../../workspace/index.md#manage-workspaces-at-the-agent-level).
+
 ## Debug the agent
 
 > The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.

@@ -113,10 +113,10 @@
 @mixin line-link($color, $icon) {
   &::before {
     @include gl-visibility-hidden;
-    @include gl-align-self-center;
-    @include gl-mr-1;
-    @include gl-w-5;
-    @include gl-h-5;
+    align-self: center;
+    margin-right: $gl-spacing-scale-1;
+    width: $gl-spacing-scale-5;
+    height: $gl-spacing-scale-5;
     background-color: rgba($color, 0.3);
     mask-image: url('icons-stacked.svg##{$icon}');
     mask-repeat: no-repeat;

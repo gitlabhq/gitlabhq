@@ -176,7 +176,6 @@ The following metrics are available:
 | `gitlab_ci_current_queue_size` | Gauge | 16.3 | Current size of initialized CI/CD builds queue |
 | `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
 | `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
-| `gitlab_ci_queue_active_runners_total` | Histogram | 16.3 | The amount of active runners that can process queue in a project |
 | `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool |
 | `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool |
 | `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process scan result policies |
@@ -407,6 +406,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_design_management_repositories_verification_total`  | Gauge   | 16.1 | Number of design repositories verifications tried on secondary | `url` |
 | `geo_design_management_repositories_verified`            | Gauge   | 16.1 | Number of design repositories verified on secondary | `url` |
 | `geo_design_management_repositories_verification_failed` | Gauge   | 16.1 | Number of design repositories verifications failed on secondary | `url` |
+| `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3 | The number of active runners that can process the CI/CD queue in a project |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 

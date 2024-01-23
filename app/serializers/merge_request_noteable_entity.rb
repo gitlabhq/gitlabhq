@@ -49,6 +49,10 @@ class MergeRequestNoteableEntity < IssuableEntity
     expose :can_update do |merge_request|
       can?(current_user, :update_merge_request, merge_request)
     end
+
+    expose :can_create_confidential_note do |merge_request|
+      can?(request.current_user, :mark_note_as_internal, merge_request)
+    end
   end
 
   expose :locked_discussion_docs_path, if: -> (merge_request) { merge_request.discussion_locked? } do |merge_request|

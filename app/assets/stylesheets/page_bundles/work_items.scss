@@ -247,16 +247,16 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 }
 
 .disclosure-hierarchy-button {
-  @include gl-pl-4;
+  padding-left: $gl-spacing-scale-4;
   padding-top: $gl-spacing-scale-3;
   padding-bottom: $gl-spacing-scale-3;
   display: flex;
   position: relative;
   font-size: $gl-font-size-sm;
   border: 1px solid var(--gray-100, $gray-100);
-  @include gl-border-r-none;
-  @include gl-border-l-none;
-  @include gl-line-height-normal;
+  border-right-style: none;
+  border-left-style: none;
+  line-height: $gl-line-height-16;
   padding-right: $grid-size;
   max-width: $gl-spacing-scale-20;
   background: var(--gray-10, $white);
@@ -288,7 +288,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   .disclosure-hierarchy-item:first-child & {
-    @include gl-pl-3;
+    padding-left: $gl-spacing-scale-3;
     border-left: 1px solid var(--gray-100, $gray-100);
     @include gl-rounded-top-left-base;
     @include gl-rounded-bottom-left-base;
@@ -306,7 +306,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   .disclosure-hierarchy-item:last-child & {
-    @include gl-pr-4;
+    padding-right: $gl-spacing-scale-4;
     border-right: 1px solid var(--gray-100, $gray-100);
     @include gl-rounded-top-right-base;
     @include gl-rounded-bottom-right-base;
@@ -343,7 +343,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     border-bottom: 1px solid var(--gray-400, $gray-400);
     @include hierarchy-active-item-color;
     z-index: 2;
-    @include gl-rounded-small;
+    border-radius: $gl-border-radius-small;
 
     &::before, &::after {
       box-shadow: 2px -2px 0 1px $blue-400;

@@ -16,7 +16,7 @@
 
 .cluster-card-item {
   @include media-breakpoint-up(sm) {
-    @include gl-pt-2;
+    padding-top: $gl-spacing-scale-2;
     min-height: 372px;
   }
 }
@@ -27,6 +27,6 @@
 
 .select-agent-dropdown {
   .gl-button-text {
-    @include gl-flex-grow-1;
+    flex-grow: 1;
   }
 }

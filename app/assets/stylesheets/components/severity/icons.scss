@@ -2,26 +2,26 @@
 .incident-management-list,
 .alert-management-details {
   .icon-critical {
-    @include gl-text-red-800;
+    color: $red-800;
   }
 
   .icon-high {
-    @include gl-text-red-600;
+    color: $red-600;
   }
 
   .icon-medium {
-    @include gl-text-orange-400;
+    color: $orange-400;
   }
 
   .icon-low {
-    @include gl-text-orange-300;
+    color: $orange-300;
   }
 
   .icon-info {
-    @include gl-text-blue-400;
+    color: $blue-400;
   }
 
   .icon-unknown {
-    @include gl-text-gray-200;
+    color: $gray-200;
   }
 }

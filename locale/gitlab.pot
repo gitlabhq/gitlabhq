@@ -14290,6 +14290,24 @@ msgstr ""
 msgid "Could not apply %{name} command. %{message}."
 msgstr ""
 
+msgid "Could not apply iteration command. Failed to find the referenced iteration cadence."
+msgstr ""
+
+msgid "Could not apply iteration command. Failed to find the referenced iteration."
+msgstr ""
+
+msgid "Could not apply iteration command. Missing option --current or --next."
+msgstr ""
+
+msgid "Could not apply iteration command. No current iteration found for the cadence."
+msgstr ""
+
+msgid "Could not apply iteration command. No upcoming iteration found for the cadence."
+msgstr ""
+
+msgid "Could not apply iteration command. There are multiple cadences but no cadence is specified."
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 

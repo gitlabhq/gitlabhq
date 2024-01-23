@@ -13,7 +13,7 @@
 
   .dropdown-menu-toggle {
     &:hover {
-      @include gl-bg-white;
+      background-color: $white;
     }
   }
 
@@ -25,7 +25,7 @@
     }
 
     &::before {
-      @include gl-pt-8;
+      padding-top: $gl-spacing-scale-8;
     }
 
     .gl-dropdown-item-text-wrapper {

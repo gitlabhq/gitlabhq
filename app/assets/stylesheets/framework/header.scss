@@ -123,9 +123,9 @@
     padding: 6px 8px;
     height: 32px;
     border-radius: $border-radius-default;
-    @include gl-text-gray-100;
+    color: $gray-100;
     font-weight: $gl-font-weight-normal;
-    @include gl-font-base;
+    font-size: $gl-font-size;
 
     &:hover,
     &:focus,

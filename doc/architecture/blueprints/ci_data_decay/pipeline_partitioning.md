@@ -318,11 +318,11 @@ This process can take up to 40 minutes.
 With this strategy, we successfully acquired a lock on `ci_builds` table after 15 retries
 during a low traffic period([after `00:00 UTC`](https://dashboards.gitlab.net/d/web-main/web-overview?orgId=1&viewPanel=537181794&from=now-2d&to=now)).
 
-See an example of this strategy in our [partition tooling](../../../development/database/table_partitioning.md#step-6---create-parent-table-and-attach-existing-table-as-the-initial-partition)).
+See an example of this strategy in our [partition tooling](../../../development/database/partitioning/list.md#step-6---create-parent-table-and-attach-existing-table-as-the-initial-partition)).
 
 ### Partitioning steps
 
-The database [partition tooling](../../../development/database/table_partitioning.md#partitioning-a-table-list)
+The database [partition tooling](../../../development/database/partitioning/list.md)
 docs contain a list of steps to partition a table, but the steps are not enough
 for our iterative strategy. As our dataset continues to grow we want to take
 advantage of partitioning performance right away and not wait until all tables

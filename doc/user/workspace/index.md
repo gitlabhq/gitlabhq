@@ -55,6 +55,38 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 
 [Issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384) proposes to change this behavior.
 
+## Manage workspaces at the agent level
+
+Prerequisites:
+
+- You must be a Kubernetes administrator.
+
+As a Kubernetes administrator, you might have to manage workspaces that you do not own. To see a list of all workspaces running on a particular agent:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Operate > Kubernetes clusters**.
+1. Select **Agent** tab to view clusters connected to GitLab through the agent.
+1. Select the agent configured for remote development.
+1. Select **Workspaces** to view all active workspaces on the agent.
+
+From this list, you can terminate a workspace.
+
+NOTE:
+Terminating a workspace is a destructive and irreversible action. Any unsaved or uncommitted data in the workspace is immediately deleted and cannot be recovered.
+
+### Identify the agent from a running workspace
+
+Prerequisites:
+
+- You must be a Kubernetes administrator.
+
+In larger deployments that contain multiple agents, it might be difficult to identify the agent responsible for running the workspace with information provided at the workspace level. To identify the agent and view its status page, use one of the following GraphQL API endpoints:
+
+- `agent-id` to inspect the project the agent belongs to.
+- [`Query.workspaces`](../../api/graphql/reference/index.md#queryworkspaces) to search for workspaces and find their associated [cluster agent](../../api/graphql/reference/index.md#clusteragent) and the project the agent belongs to.
+
+You can then use the resulting project ID to view and manage the correct project.
+
 ## Devfile
 
 A devfile is a file that defines a development environment by specifying the necessary

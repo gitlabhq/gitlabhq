@@ -35,7 +35,7 @@ $stroke-size: 1px;
 .rule-condition {
   @media (min-width: $breakpoint-lg) {
     flex-basis: 25%;
-    @include gl-flex-shrink-0;
+    flex-shrink: 0;
   }
 
   @media (max-width: $breakpoint-lg) {

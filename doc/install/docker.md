@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Docker images **(FREE SELF)**
+# Install GitLab using Docker **(FREE SELF)**
 
 The GitLab Docker images are monolithic images of GitLab running all the
 necessary services in a single container.
@@ -18,9 +18,6 @@ solution is to add an MTA (such as Postfix or Sendmail) running in a separate
 container. As another option, you can install an MTA directly in the GitLab
 container, but this adds maintenance overhead as you'll likely need to reinstall
 the MTA after every upgrade or restart.
-
-In the following examples, if you want to use the latest RC image, use
-`gitlab/gitlab-ee:rc` instead.
 
 You should not deploy the GitLab Docker image in Kubernetes as it creates a
 single point of failure. If you want to deploy GitLab in Kubernetes, the
@@ -37,8 +34,49 @@ to community resources (such as IRC or forums) to seek help from other users.
 
 To use the GitLab Docker images:
 
-- You must install Docker.
+- You must [install Docker](https://docs.docker.com/engine/install/#server).
 - You must use a valid externally-accessible hostname. Do not use `localhost`.
+
+## Configure the SSH port
+
+GitLab uses SSH to interact with Git over SSH. By default, GitLab uses port `22`.
+
+To use a different port when using the GitLab Docker image, you can either:
+
+- Change the server's SSH port (recommended).
+- Change the GitLab Shell SSH port.
+
+### Change the server's SSH port
+
+You can change the server's SSH port without making another SSH configuration
+change in GitLab. In that case, the SSH clone URLs looks like
+`ssh://git@gitlab.example.com/user/project.git`.
+
+To change the server's SSH port:
+
+1. Open `/etc/ssh/sshd_config` with your editor, and change the SSH port:
+
+   ```conf
+   Port = 2424
+   ```
+
+1. Save the file and restart the SSH service:
+
+   ```shell
+   sudo systemctl restart ssh
+   ```
+
+1. Open a new terminal session and verify that you can connect using SSH to the server using
+   the new port.
+
+### Change the GitLab Shell SSH port
+
+If you don't want to change the server's default SSH port, you can configure a
+different SSH port that GitLab uses for Git over SSH pushes. In that case,
+the SSH clone URLs looks like
+`ssh://git@gitlab.example.com:<portNumber>/user/project.git`.
+
+For more information, see how to [change the GitLab Shell SSH port](#expose-gitlab-on-different-ports).
 
 ## Set up the volumes location
 
@@ -74,6 +112,32 @@ The GitLab container uses host mounted volumes to store persistent data:
 | `$GITLAB_HOME/logs`  | `/var/log/gitlab`  | For storing logs.                           |
 | `$GITLAB_HOME/config`| `/etc/gitlab`      | For storing the GitLab configuration files. |
 
+## Find the GitLab version and edition to use
+
+In a production environment, you should pin your deployment to a specific
+GitLab version. Find the version to use in the Docker tags page:
+
+- [GitLab Enterprise Edition tags](https://hub.docker.com/r/gitlab/gitlab-ee/tags/)
+- [GitLab Community Edition tags](https://hub.docker.com/r/gitlab/gitlab-ce/tags/)
+
+The tag name consists of the following:
+
+```plaintext
+gitlab/gitlab-ee:<version>-ee.0
+```
+
+Where `<version>` is the GitLab version, for example `16.5.3`. It always includes
+`<major>.<minor>.<patch>` in its name.
+
+For testing purposes, you can use the `latest` tag, such as `gitlab/gitlab-ee:latest`,
+which points to the latest stable release.
+
+In the following examples, we use a stable Enterprise Edition version, but
+if you want to use the Release Candidate (RC) or nightly image, use
+`gitlab/gitlab-ee:rc` or `gitlab/gitlab-ee:nightly` instead.
+
+To install the Community Edition, replace `ee` with `ce`.
+
 ## Installation
 
 The GitLab Docker images can be run in multiple ways:
@@ -90,6 +154,7 @@ Once you've set up the `GITLAB_HOME` variable, you can run the image:
 ```shell
 sudo docker run --detach \
   --hostname gitlab.example.com \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com" \
   --publish 443:443 --publish 80:80 --publish 22:22 \
   --name gitlab \
   --restart always \
@@ -97,18 +162,20 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   --shm-size 256m \
-  gitlab/gitlab-ee:latest
+  gitlab/gitlab-ee:<version>-ee.0
 ```
 
-This will download and start a GitLab container and publish ports needed to
-access SSH, HTTP and HTTPS. All GitLab data will be stored as subdirectories of
-`$GITLAB_HOME`. The container will automatically `restart` after a system reboot.
+This command downloads and starts a GitLab container, and
+[publishes ports](https://docs.docker.com/network/#published-ports) needed to
+access SSH, HTTP and HTTPS. All GitLab data are stored as subdirectories of
+`$GITLAB_HOME`. The container automatically restarts after a system reboot.
 
 If you are on SELinux, then run this instead:
 
 ```shell
 sudo docker run --detach \
   --hostname gitlab.example.com \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com" \
   --publish 443:443 --publish 80:80 --publish 22:22 \
   --name gitlab \
   --restart always \
@@ -116,13 +183,13 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/logs:/var/log/gitlab:Z \
   --volume $GITLAB_HOME/data:/var/opt/gitlab:Z \
   --shm-size 256m \
-  gitlab/gitlab-ee:latest
+  gitlab/gitlab-ee:<version>-ee.0
 ```
 
-This will ensure that the Docker process has enough permissions to create the
+This command ensures that the Docker process has enough permissions to create the
 configuration files in the mounted volumes.
 
-If you're using the [Kerberos integration](../integration/kerberos.md) **(PREMIUM ONLY)**,
+If you're using the [Kerberos integration](../integration/kerberos.md),
 you must also publish your Kerberos port (for example, `--publish 8443:8443`).
 Failing to do so prevents Git operations with Kerberos.
 
@@ -133,9 +200,8 @@ process with:
 sudo docker logs -f gitlab
 ```
 
-After starting a container you can visit `gitlab.example.com` (or
-`http://192.168.59.103` if you used boot2docker on macOS). It might take a while
-before the Docker container starts to respond to queries.
+After starting the container, you can visit `gitlab.example.com`. It might take
+a while before the Docker container starts to respond to queries.
 
 Visit the GitLab URL, and sign in with the username `root`
 and the password from the following command:
@@ -145,27 +211,28 @@ sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
 ```
 
 NOTE:
-The password file will be automatically deleted in the first reconfigure run after 24 hours.
+The password file is automatically deleted in the first container restart after 24 hours.
 
 ### Install GitLab using Docker Compose
 
 With [Docker Compose](https://docs.docker.com/compose/) you can easily configure,
 install, and upgrade your Docker-based GitLab installation:
 
-1. [Install Docker Compose](https://docs.docker.com/compose/install/).
+1. [Install Docker Compose](https://docs.docker.com/compose/install/linux/).
 1. Create a `docker-compose.yml` file:
 
    ```yaml
    version: '3.6'
    services:
-     web:
-       image: 'gitlab/gitlab-ee:latest'
+     gitlab:
+       image: gitlab/gitlab-ee:<version>-ee.0
+       name: gitlab
        restart: always
        hostname: 'gitlab.example.com'
        environment:
          GITLAB_OMNIBUS_CONFIG: |
-           external_url 'https://gitlab.example.com'
            # Add any other gitlab.rb configuration here, each on its own line
+           external_url 'https://gitlab.example.com'
        ports:
          - '80:80'
          - '443:443'
@@ -185,7 +252,7 @@ install, and upgrade your Docker-based GitLab installation:
    ```
 
 NOTE:
-Read the ["Pre-configure Docker container"](#pre-configure-docker-container) section
+Read the [Pre-configure Docker container](#pre-configure-docker-container) section
 to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
 
 Below is another `docker-compose.yml` example with GitLab running on a custom
@@ -195,17 +262,19 @@ HTTP and SSH port. Notice how the `GITLAB_OMNIBUS_CONFIG` variables match the
 ```yaml
 version: '3.6'
 services:
-  web:
-    image: 'gitlab/gitlab-ee:latest'
+  gitlab:
+    image: gitlab/gitlab-ee:<version>-ee.0
+    name: gitlab
     restart: always
     hostname: 'gitlab.example.com'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://gitlab.example.com:8929'
-        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+        gitlab_rails['gitlab_shell_ssh_port'] = 2424
     ports:
       - '8929:8929'
-      - '2224:22'
+      - '443:443'
+      - '2424:2424'
     volumes:
       - '$GITLAB_HOME/config:/etc/gitlab'
       - '$GITLAB_HOME/logs:/var/log/gitlab'
@@ -213,7 +282,7 @@ services:
     shm_size: '256m'
 ```
 
-This is the same as using `--publish 8929:8929 --publish 2224:22`.
+This configuration is the same as using `--publish 8929:8929 --publish 2424:2424`.
 
 ### Install GitLab using Docker swarm mode
 
@@ -235,7 +304,10 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
    version: "3.6"
    services:
      gitlab:
-       image: gitlab/gitlab-ee:latest
+       image: gitlab/gitlab-ee:<version>-ee.0
+       name: gitlab
+       restart: always
+       hostname: 'gitlab.example.com'
        ports:
          - "22:22"
          - "80:80"
@@ -275,7 +347,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
    gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password').gsub("\n", "")
    ```
 
-1. Create a `root_password.txt` file:
+1. Create a file called `root_password.txt` containing the password:
 
    ```plaintext
    MySuperSecretAndSecurePassw0rd!
@@ -333,7 +405,8 @@ You can pre-configure the GitLab Docker image by adding the environment variable
 and make database configuration or any other option from the
 [Linux package template](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 The settings contained in `GITLAB_OMNIBUS_CONFIG` aren't written to the
-`gitlab.rb` configuration file, and are evaluated on load.
+`gitlab.rb` configuration file, and are evaluated on load. To provide multiple
+settings, separate them with a colon (`;`).
 
 Here's an example that sets the external URL and enables LFS while starting
 the container:
@@ -341,7 +414,7 @@ the container:
 ```shell
 sudo docker run --detach \
   --hostname gitlab.example.com \
-  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://my.domain.com/'; gitlab_rails['lfs_enabled'] = true;" \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com; gitlab_rails['lfs_enabled'] = true;" \
   --publish 443:443 --publish 80:80 --publish 22:22 \
   --name gitlab \
   --restart always \
@@ -349,23 +422,12 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   --shm-size 256m \
-  gitlab/gitlab-ee:latest
+  gitlab/gitlab-ee:<version>-ee.0
 ```
 
 Every time you execute a `docker run` command, you need to provide
 the `GITLAB_OMNIBUS_CONFIG` option. The content of `GITLAB_OMNIBUS_CONFIG` is
 _not_ preserved between subsequent runs.
-
-### Use tagged versions of GitLab
-
-Tagged versions of the GitLab Docker images are also provided.
-To see all available tags see:
-
-- [GitLab CE tags](https://hub.docker.com/r/gitlab/gitlab-ce/tags/)
-- [GitLab EE tags](https://hub.docker.com/r/gitlab/gitlab-ee/tags/)
-
-To use a specific tagged version, replace `gitlab/gitlab-ee:latest` with
-the GitLab version you want to run, for example `gitlab/gitlab-ee:12.1.3-ce.0`.
 
 ### Run GitLab on a public IP address
 
@@ -377,6 +439,7 @@ To expose GitLab on IP `198.51.100.1`:
 ```shell
 sudo docker run --detach \
   --hostname gitlab.example.com \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com" \
   --publish 198.51.100.1:443:443 \
   --publish 198.51.100.1:80:80 \
   --publish 198.51.100.1:22:22 \
@@ -386,7 +449,7 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/logs:/var/log/gitlab \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   --shm-size 256m \
-  gitlab/gitlab-ee:latest
+  gitlab/gitlab-ee:<version>-ee.0
 ```
 
 You can then access your GitLab instance at `http://198.51.100.1/` and `https://198.51.100.1/`.
@@ -396,31 +459,32 @@ You can then access your GitLab instance at `http://198.51.100.1/` and `https://
 GitLab will occupy [some ports](../administration/package_information/defaults.md)
 inside the container.
 
-If you want to use a different host port than `80` (HTTP) or `443` (HTTPS),
+If you want to use a different host port than `80` (HTTP), `443` (HTTPS), or `22` (SSH),
 you need to add a separate `--publish` directive to the `docker run` command.
 
 For example, to expose the web interface on the host's port `8929`, and the SSH service on
-port `2289`:
+port `2424`:
 
 1. Use the following `docker run` command:
 
    ```shell
    sudo docker run --detach \
      --hostname gitlab.example.com \
-     --publish 8929:8929 --publish 2289:22 \
+     --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com:8929'; gitlab_rails['gitlab_shell_ssh_port'] = 2424" \
+     --publish 8929:8929 --publish 2424:2424 \
      --name gitlab \
      --restart always \
      --volume $GITLAB_HOME/config:/etc/gitlab \
      --volume $GITLAB_HOME/logs:/var/log/gitlab \
      --volume $GITLAB_HOME/data:/var/opt/gitlab \
      --shm-size 256m \
-     gitlab/gitlab-ee:latest
+     gitlab/gitlab-ee:<version>-ee.0
    ```
 
    NOTE:
    The format for publishing ports is `hostPort:containerPort`. Read more in the
    Docker documentation about
-   [exposing incoming ports](https://docs.docker.com/engine/reference/run/#/expose-incoming-ports).
+   [exposing incoming ports](https://docs.docker.com/network/#published-ports).
 
 1. Enter the running container:
 
@@ -445,10 +509,10 @@ port `2289`:
    `nginx['listen_port']`, it will be pulled from the `external_url`.
    For more information see the [NGINX documentation](https://docs.gitlab.com/omnibus/settings/nginx.html).
 
-1. Set `gitlab_shell_ssh_port`:
+1. Set the SSH port:
 
    ```ruby
-   gitlab_rails['gitlab_shell_ssh_port'] = 2289
+   gitlab_rails['gitlab_shell_ssh_port'] = 2424
    ```
 
 1. Finally, reconfigure GitLab:
@@ -497,7 +561,7 @@ and sign-up restrictions.
 ## Upgrade
 
 In most cases, upgrading GitLab is as easy as downloading the newest Docker
-[image tag](#use-tagged-versions-of-gitlab).
+image tag.
 
 ### Upgrade GitLab using Docker Engine
 
@@ -518,10 +582,10 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
    sudo docker rm gitlab
    ```
 
-1. Pull the new image. For example, the latest GitLab image:
+1. Pull the new image:
 
    ```shell
-   sudo docker pull gitlab/gitlab-ee:latest
+   sudo docker pull gitlab/gitlab-ee:<version>-ee.0
    ```
 
 1. Ensure that the `GITLAB_HOME` environment variable is [defined](#set-up-the-volumes-location):
@@ -543,7 +607,7 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
    --volume $GITLAB_HOME/logs:/var/log/gitlab \
    --volume $GITLAB_HOME/data:/var/opt/gitlab \
    --shm-size 256m \
-   gitlab/gitlab-ee:latest
+   gitlab/gitlab-ee:<version>-ee.0
    ```
 
 On the first run, GitLab will reconfigure and upgrade itself.
@@ -557,16 +621,13 @@ To upgrade GitLab that was [installed using Docker Compose](#install-gitlab-usin
 
 1. Take a [backup](#back-up-gitlab). As a minimum, back up [the database](#create-a-database-backup) and
    the GitLab secrets file.
-
+1. Edit `docker-compose.yml` and change the version to pull.
 1. Download the newest release and upgrade your GitLab instance:
 
    ```shell
    docker compose pull
    docker compose up -d
    ```
-
-   If you have used [tags](#use-tagged-versions-of-gitlab) instead, you'll need
-   to first edit `docker-compose.yml`.
 
 ### Convert Community Edition to Enterprise Edition
 
@@ -591,8 +652,8 @@ The following steps assume that you are upgrading the same version.
 
 To downgrade GitLab after an upgrade:
 
-1. Follow the upgrade procedure, but [specify the tag for the original version of GitLab](#use-tagged-versions-of-gitlab)
-   instead of `latest`.
+1. Follow the upgrade procedure, by [specifying the version](#find-the-gitlab-version-and-edition-to-use)
+   to downgrade to.
 
 1. Restore the [database backup you made](#create-a-database-backup) as part of the upgrade.
 
@@ -635,13 +696,6 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 
 The backup is written to `/var/opt/gitlab/backups` which should be on a
 [volume mounted by Docker](#set-up-the-volumes-location).
-
-## Installing GitLab Community Edition
-
-[GitLab CE Docker image](https://hub.docker.com/r/gitlab/gitlab-ce/)
-
-To install the Community Edition, replace `ee` with `ce` in the commands on this
-page.
 
 ## Troubleshooting
 

@@ -132,11 +132,11 @@ GET /projects/:id/members/all
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `query`   | string | no     | A query string to search for members |
-| `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
-| `show_seat_info`   | boolean | no     | Show seat information for users |
-| `state`   | string | no | Filter results by member state, one of `awaiting` or `active` **(PREMIUM ALL)** |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `query`   | string | no     | A query string to search for members. |
+| `user_ids`   | array of integers | no     | Filter the results on the given user IDs. |
+| `show_seat_info`   | boolean | no     | Show seat information for users. |
+| `state`   | string | no | Filter results by member state, one of `awaiting` or `active`. Premium and Ultimate only. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/all"

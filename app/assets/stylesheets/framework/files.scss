@@ -413,12 +413,10 @@ span.idiff {
 }
 
 .version-link {
-  @include gl-display-inline-block;
-  @include gl-align-self-center;
+  align-self: center;
   margin-top: $gl-spacing-scale-2;
-  @include gl-w-5;
-  @include gl-h-5;
-  @include gl-float-left;
+  width: $gl-spacing-scale-5;
+  height: $gl-spacing-scale-5;
   background-color: $gray-400;
   mask-image: url('icons-stacked.svg#doc-versions');
   mask-repeat: no-repeat;
@@ -455,15 +453,15 @@ span.idiff {
 .blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type),
 .blob-viewer[data-loading] .file-content.code .file-line-num:nth-of-type(69):not(:last-of-type) {
   &::after {
-    @include gl-display-block;
-    @include gl-font-weight-bold;
+    display: block;
+    font-weight: $gl-font-weight-bold;
     content: '\2026';
   }
 }
 
 .blob-viewer[data-loading] .file-content.code .line:nth-of-type(69):not(:last-of-type) {
   &::after {
-    @include gl-text-center;
+    text-align: center;
   }
 }
 
@@ -481,7 +479,7 @@ span.idiff {
   .tree-list-parent::before {
     @include gl-content-empty;
     position: absolute;
-    @include gl-z-index-1;
+    z-index: 1;
     pointer-events: none;
 
     top: -4px;
@@ -570,7 +568,7 @@ span.idiff {
   border-radius: 0;
 
   .file-line-num {
-    @include gl-min-w-9;
+    min-width: $gl-spacing-scale-9;
   }
 }
 

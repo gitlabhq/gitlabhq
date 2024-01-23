@@ -1032,7 +1032,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   &.is-active {
     svg {
-      @include gl-text-green-500;
+      color: $green-500;
     }
 
     &:hover,

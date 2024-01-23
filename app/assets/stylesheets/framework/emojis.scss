@@ -26,7 +26,7 @@ gl-emoji {
 }
 
 .emoji-picker-category-header {
-  @include gl-sticky;
+  position: sticky;
   background: linear-gradient(to bottom, $white 50%, transparent 100%);
 }
 
@@ -40,7 +40,7 @@ gl-emoji {
 
   &:hover,
   &:focus {
-    @include gl-z-index-2;
+    z-index: 2;
     transform: scale(1.3) !important;
   }
 

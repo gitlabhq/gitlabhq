@@ -21,7 +21,7 @@ GET /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards"
@@ -105,8 +105,8 @@ GET /projects/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
@@ -182,8 +182,8 @@ POST /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name` | string | yes | The name of the new board |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `name` | string | yes | The name of the new board. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards?name=newboard"
@@ -225,13 +225,13 @@ PUT /projects/:id/boards/:board_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id`                   | integer        | yes      | The ID of a board |
-| `name`                       | string         | no       | The new name of the board |
-| `assignee_id` **(PREMIUM ALL)**  | integer        | no       | The assignee the board should be scoped to |
-| `milestone_id` **(PREMIUM ALL)** | integer        | no       | The milestone the board should be scoped to |
-| `labels` **(PREMIUM ALL)**       | string         | no       | Comma-separated list of label names which the board should be scoped to |
-| `weight` **(PREMIUM ALL)**       | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id`                   | integer        | yes      | The ID of a board. |
+| `name`                       | string         | no       | The new name of the board. |
+| `assignee_id`                | integer        | no       | The assignee the board should be scoped to. Premium and Ultimate only. |
+| `milestone_id`               | integer        | no       | The milestone the board should be scoped to. Premium and Ultimate only. |
+| `labels`                     | string         | no       | Comma-separated list of label names which the board should be scoped to. Premium and Ultimate only. |
+| `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to. Premium and Ultimate only. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
@@ -305,8 +305,8 @@ DELETE /projects/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1"
@@ -323,8 +323,8 @@ GET /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists"
@@ -383,9 +383,9 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
-| `list_id`| integer | yes | The ID of a board's list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
+| `list_id`| integer | yes | The ID of a board's list. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"
@@ -418,11 +418,11 @@ POST /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
-| `label_id` | integer | no | The ID of a label |
-| `assignee_id` **(PREMIUM ALL)** | integer | no | The ID of a user |
-| `milestone_id` **(PREMIUM ALL)** | integer | no | The ID of a milestone |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
+| `label_id` | integer | no | The ID of a label. |
+| `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
+| `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
 
 NOTE:
 Label, assignee and milestone arguments are mutually exclusive,
@@ -461,10 +461,10 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
-| `list_id` | integer | yes | The ID of a board's list |
-| `position` | integer | yes | The position of the list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
+| `list_id` | integer | yes | The ID of a board's list. |
+| `position` | integer | yes | The position of the list. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2"
@@ -497,9 +497,9 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `board_id` | integer | yes | The ID of a board |
-| `list_id` | integer | yes | The ID of a board's list |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `board_id` | integer | yes | The ID of a board. |
+| `list_id` | integer | yes | The ID of a board's list. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1"

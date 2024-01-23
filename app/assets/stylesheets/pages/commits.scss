@@ -259,7 +259,7 @@
   }
 
   .header-main-content & {
-    @include gl-mr-2;
+    margin-right: $gl-spacing-scale-2;
   }
 }
 
