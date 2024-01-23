@@ -235,6 +235,20 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sort
   }
 }
 
+async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {} } = {}) {
+  const params = filterObjToQueryParams(filters);
+
+  try {
+    const { data } = await axios.get(tracingAnalyticsUrl, {
+      withCredentials: true,
+      params,
+    });
+    return data.results ?? [];
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
 async function fetchServices(servicesUrl) {
   try {
     const { data } = await axios.get(servicesUrl, {
@@ -339,6 +353,7 @@ export function buildClient(config) {
   const {
     provisioningUrl,
     tracingUrl,
+    tracingAnalyticsUrl,
     servicesUrl,
     operationsUrl,
     metricsUrl,
@@ -351,6 +366,10 @@ export function buildClient(config) {
 
   if (typeof tracingUrl !== 'string') {
     throw new Error('tracingUrl param must be a string');
+  }
+
+  if (typeof tracingAnalyticsUrl !== 'string') {
+    throw new Error('tracingAnalyticsUrl param must be a string');
   }
 
   if (typeof servicesUrl !== 'string') {
@@ -373,6 +392,7 @@ export function buildClient(config) {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
     fetchTraces: (options) => fetchTraces(tracingUrl, options),
+    fetchTracesAnalytics: (options) => fetchTracesAnalytics(tracingAnalyticsUrl, options),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),

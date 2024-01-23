@@ -23,14 +23,17 @@ module Packages
 
       before_save :set_package_name_pattern_ilike_query, if: :package_name_pattern_changed?
 
-      scope :for_package_name, ->(package_name) {
+      scope :for_package_name, ->(package_name) do
         return none if package_name.blank?
 
-        where(':package_name ILIKE package_name_pattern_ilike_query', package_name: package_name)
-      }
+        where(
+          ":package_name ILIKE #{::Gitlab::SQL::Glob.to_like('package_name_pattern')}",
+          package_name: package_name
+        )
+      end
 
-      def self.push_protected_from?(access_level:, package_name:, package_type:)
-        return true if [access_level, package_name, package_type].any?(&:blank?)
+      def self.for_push_exists?(access_level:, package_name:, package_type:)
+        return false if [access_level, package_name, package_type].any?(&:blank?)
 
         where(package_type: package_type, push_protected_up_to_access_level: access_level..)
           .for_package_name(package_name)

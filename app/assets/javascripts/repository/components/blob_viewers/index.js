@@ -1,5 +1,3 @@
-import { TEXT_FILE_TYPE } from '../../constants';
-
 export const viewers = {
   csv: () => import('./csv_viewer.vue'),
   download: () => import('./download_viewer.vue'),
@@ -17,12 +15,8 @@ export const viewers = {
   geo_json: () => import('./geo_json/geo_json_viewer.vue'),
 };
 
-export const loadViewer = (type, isUsingLfs, hljsWorkerEnabled) => {
+export const loadViewer = (type, isUsingLfs) => {
   let viewer = viewers[type];
-
-  if (hljsWorkerEnabled && type === TEXT_FILE_TYPE) {
-    viewer = () => import('~/vue_shared/components/source_viewer/source_viewer_new.vue');
-  }
 
   if (!viewer && isUsingLfs) {
     viewer = viewers.lfs;

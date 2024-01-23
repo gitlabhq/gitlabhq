@@ -1,279 +1,175 @@
-import hljs from 'highlight.js/lib/core';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { setHTMLFixture } from 'helpers/fixtures';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
-import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
-import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
-import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import Chunk from '~/vue_shared/components/source_viewer/components/chunk_new.vue';
 import {
   EVENT_ACTION,
   EVENT_LABEL_VIEWER,
-  EVENT_LABEL_FALLBACK,
-  ROUGE_TO_HLJS_LANGUAGE_MAP,
-  LINES_PER_CHUNK,
-  LEGACY_FALLBACKS,
   CODEOWNERS_FILE_NAME,
-  CODEOWNERS_LANGUAGE,
-  SVELTE_LANGUAGE,
 } from '~/vue_shared/components/source_viewer/constants';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import waitForPromises from 'helpers/wait_for_promises';
-import LineHighlighter from '~/blob/line_highlighter';
-import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
+import LineHighlighter from '~/blob/line_highlighter';
+import addBlobLinksTracking from '~/blob/blob_links_tracking';
+import waitForPromises from 'helpers/wait_for_promises';
+import blameDataQuery from '~/vue_shared/components/source_viewer/queries/blame_data.query.graphql';
+import Blame from '~/vue_shared/components/source_viewer/components/blame_info.vue';
+import * as utils from '~/vue_shared/components/source_viewer/utils';
+import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
+
+import {
+  BLOB_DATA_MOCK,
+  CHUNK_1,
+  CHUNK_2,
+  LANGUAGE_MOCK,
+  BLAME_DATA_QUERY_RESPONSE_MOCK,
+  SOURCE_CODE_CONTENT_MOCK,
+} from './mock_data';
+
+Vue.use(VueApollo);
 
 const lineHighlighter = new LineHighlighter();
-jest.mock('~/blob/line_highlighter', () => jest.fn().mockReturnValue({ highlightHash: jest.fn() }));
-jest.mock('highlight.js/lib/core');
-jest.mock('~/vue_shared/components/source_viewer/plugins/index');
-const mockAxios = new MockAdapter(axios);
-
-const generateContent = (content, totalLines = 1, delimiter = '\n') => {
-  let generatedContent = '';
-  for (let i = 0; i < totalLines; i += 1) {
-    generatedContent += `Line: ${i + 1} = ${content}${delimiter}`;
-  }
-  return generatedContent;
-};
-
-const execImmediately = (callback) => callback();
+jest.mock('~/blob/line_highlighter', () =>
+  jest.fn().mockReturnValue({
+    highlightHash: jest.fn(),
+  }),
+);
+jest.mock('~/blob/blob_links_tracking');
 
 describe('Source Viewer component', () => {
   let wrapper;
-  const language = 'docker';
-  const selectedRangeHash = '#L1-2';
-  const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
-  const chunk1 = generateContent('// Some source code 1', 70);
-  const chunk2 = generateContent('// Some source code 2', 70);
-  const chunk3 = generateContent('// Some source code 3', 70, '\r\n');
-  const chunk3Result = generateContent('// Some source code 3', 70, '\n');
-  const content = chunk1 + chunk2 + chunk3;
-  const path = 'some/path.js';
-  const blamePath = 'some/blame/path.js';
-  const fileType = 'javascript';
-  const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath, fileType };
-  const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
+  let fakeApollo;
+  const CHUNKS_MOCK = [CHUNK_1, CHUNK_2];
+  const projectPath = 'test';
   const currentRef = 'main';
-  const projectPath = 'test/project';
+  const hash = '#L142';
 
-  const createComponent = async (blob = {}) => {
+  const blameDataQueryHandlerSuccess = jest.fn().mockResolvedValue(BLAME_DATA_QUERY_RESPONSE_MOCK);
+  const blameInfo =
+    BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
+
+  const createComponent = ({ showBlame = true, blob = {} } = {}) => {
+    fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
+
     wrapper = shallowMountExtended(SourceViewer, {
-      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob }, currentRef, projectPath },
-      mocks: { $route: { hash: selectedRangeHash } },
+      apolloProvider: fakeApollo,
+      mocks: { $route: { hash } },
+      propsData: {
+        blob: { ...blob, ...BLOB_DATA_MOCK },
+        chunks: CHUNKS_MOCK,
+        projectPath,
+        currentRef,
+        showBlame,
+      },
     });
-    await waitForPromises();
   };
 
   const findChunks = () => wrapper.findAllComponents(Chunk);
+  const findBlameComponents = () => wrapper.findAllComponents(Blame);
+  const triggerChunkAppear = async (chunkIndex = 0) => {
+    findChunks().at(chunkIndex).vm.$emit('appear');
+    await waitForPromises();
+  };
 
   beforeEach(() => {
-    hljs.highlight.mockImplementation(() => ({ value: highlightedContent }));
-    hljs.highlightAuto.mockImplementation(() => ({ value: highlightedContent }));
-    jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
-    jest.spyOn(eventHub, '$emit');
     jest.spyOn(Tracking, 'event');
-
     return createComponent();
   });
 
-  describe('Displaying LFS blob', () => {
-    const rawPath = '/org/project/-/raw/file.xml';
-    const externalStorageUrl = 'http://127.0.0.1:9000/lfs-objects/91/12/1341234';
-    const rawTextBlob = 'This is the external content';
-    const blob = {
-      storedExternally: true,
-      externalStorage: 'lfs',
-      simpleViewer: { fileType: 'text' },
-      rawPath,
-    };
-
-    afterEach(() => {
-      mockAxios.reset();
-    });
-
-    it('Uses externalStorageUrl to fetch content if present', async () => {
-      mockAxios.onGet(externalStorageUrl).replyOnce(HTTP_STATUS_OK, rawTextBlob);
-
-      await createComponent({ ...blob, externalStorageUrl });
-
-      expect(mockAxios.history.get).toHaveLength(1);
-      expect(mockAxios.history.get[0].url).toBe(externalStorageUrl);
-      expect(wrapper.vm.$data.content).toBe(rawTextBlob);
-    });
-
-    it('Falls back to rawPath to fetch content', async () => {
-      mockAxios.onGet(rawPath).replyOnce(HTTP_STATUS_OK, rawTextBlob);
-
-      await createComponent(blob);
-
-      expect(mockAxios.history.get).toHaveLength(1);
-      expect(mockAxios.history.get[0].url).toBe(rawPath);
-      expect(wrapper.vm.$data.content).toBe(rawTextBlob);
-    });
+  it('instantiates the lineHighlighter class', () => {
+    expect(LineHighlighter).toHaveBeenCalled();
   });
 
   describe('event tracking', () => {
     it('fires a tracking event when the component is created', () => {
-      const eventData = { label: EVENT_LABEL_VIEWER, property: language };
+      const eventData = { label: EVENT_LABEL_VIEWER, property: LANGUAGE_MOCK };
       expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
     });
 
-    it('does not emit an error event when the language is supported', () => {
-      expect(wrapper.emitted('error')).toBeUndefined();
-    });
-
-    it('fires a tracking event and emits an error when the language is not supported', () => {
-      const unsupportedLanguage = 'apex';
-      const eventData = { label: EVENT_LABEL_FALLBACK, property: unsupportedLanguage };
-      createComponent({ language: unsupportedLanguage });
-
-      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
-      expect(wrapper.emitted('error')).toHaveLength(1);
-    });
-  });
-
-  describe('legacy fallbacks', () => {
-    it.each(LEGACY_FALLBACKS)(
-      'tracks a fallback event and emits an error when viewing %s files',
-      (fallbackLanguage) => {
-        const eventData = { label: EVENT_LABEL_FALLBACK, property: fallbackLanguage };
-        createComponent({ language: fallbackLanguage });
-
-        expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
-        expect(wrapper.emitted('error')).toHaveLength(1);
-      },
-    );
-  });
-
-  describe('highlight.js', () => {
-    beforeEach(() => createComponent({ language: mappedLanguage }));
-
-    it('registers our plugins for Highlight.js', () => {
-      expect(registerPlugins).toHaveBeenCalledWith(hljs, fileType, content);
-    });
-
-    it('registers the language definition', async () => {
-      const languageDefinition = await import(`highlight.js/lib/languages/${mappedLanguage}`);
-
-      expect(hljs.registerLanguage).toHaveBeenCalledWith(
-        mappedLanguage,
-        languageDefinition.default,
-      );
-    });
-
-    describe('sub-languages', () => {
-      const languageDefinition = {
-        subLanguage: 'xml',
-        contains: [{ subLanguage: 'javascript' }, { subLanguage: 'typescript' }],
-      };
-
-      beforeEach(async () => {
-        jest.spyOn(hljs, 'getLanguage').mockReturnValue(languageDefinition);
-        createComponent();
-        await waitForPromises();
-      });
-
-      it('registers the primary sub-language', () => {
-        expect(hljs.registerLanguage).toHaveBeenCalledWith(
-          languageDefinition.subLanguage,
-          expect.any(Function),
-        );
-      });
-
-      it.each(languageDefinition.contains)(
-        'registers the rest of the sub-languages',
-        ({ subLanguage }) => {
-          expect(hljs.registerLanguage).toHaveBeenCalledWith(subLanguage, expect.any(Function));
-        },
-      );
-    });
-
-    it('registers json language definition if fileType is package_json', async () => {
-      await createComponent({ language: 'json', fileType: 'package_json' });
-      const languageDefinition = await import(`highlight.js/lib/languages/json`);
-
-      expect(hljs.registerLanguage).toHaveBeenCalledWith('json', languageDefinition.default);
-    });
-
-    it('correctly maps languages starting with uppercase', async () => {
-      await createComponent({ language: 'Ruby' });
-      const languageDefinition = await import(`highlight.js/lib/languages/ruby`);
-
-      expect(hljs.registerLanguage).toHaveBeenCalledWith('ruby', languageDefinition.default);
-    });
-
-    it('registers codeowners language definition if file name is CODEOWNERS', async () => {
-      await createComponent({ name: CODEOWNERS_FILE_NAME });
-      const languageDefinition = await import(
-        '~/vue_shared/components/source_viewer/languages/codeowners'
-      );
-
-      expect(hljs.registerLanguage).toHaveBeenCalledWith(
-        CODEOWNERS_LANGUAGE,
-        languageDefinition.default,
-      );
-    });
-
-    it('registers svelte language definition if file name ends with .svelte', async () => {
-      await createComponent({ name: `component.${SVELTE_LANGUAGE}` });
-      const languageDefinition = await import(
-        '~/vue_shared/components/source_viewer/languages/svelte'
-      );
-
-      expect(hljs.registerLanguage).toHaveBeenCalledWith(
-        SVELTE_LANGUAGE,
-        languageDefinition.default,
-      );
-    });
-
-    it('highlights the first chunk', () => {
-      expect(hljs.highlight).toHaveBeenCalledWith(chunk1.trim(), { language: mappedLanguage });
-      expect(findChunks().at(0).props('isFirstChunk')).toBe(true);
-    });
-
-    describe('auto-detects if a language cannot be loaded', () => {
-      beforeEach(() => createComponent({ language: 'some_unknown_language' }));
-
-      it('highlights the content with auto-detection', () => {
-        expect(hljs.highlightAuto).toHaveBeenCalledWith(chunk1.trim());
-      });
+    it('adds blob links tracking', () => {
+      expect(addBlobLinksTracking).toHaveBeenCalled();
     });
   });
 
   describe('rendering', () => {
-    it.each`
-      chunkIndex | chunkContent    | totalChunks
-      ${0}       | ${chunk1}       | ${0}
-      ${1}       | ${chunk2}       | ${3}
-      ${2}       | ${chunk3Result} | ${3}
-    `('renders chunk $chunkIndex', ({ chunkIndex, chunkContent, totalChunks }) => {
-      const chunk = findChunks().at(chunkIndex);
+    it('does not render a Blame component if the respective chunk for the blame has not appeared', async () => {
+      await waitForPromises();
+      expect(findBlameComponents()).toHaveLength(0);
+    });
 
-      expect(chunk.props('content')).toContain(chunkContent.trim());
+    describe('DOM updates', () => {
+      it('adds the necessary classes to the DOM', async () => {
+        setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
+        jest.spyOn(utils, 'toggleBlameClasses');
+        createComponent();
+        await triggerChunkAppear();
 
-      expect(chunk.props()).toMatchObject({
-        totalLines: LINES_PER_CHUNK,
-        startingFrom: LINES_PER_CHUNK * chunkIndex,
-        totalChunks,
+        expect(utils.toggleBlameClasses).toHaveBeenCalledWith(blameInfo, true);
       });
     });
 
-    it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
-      findChunks().at(0).vm.$emit('appear');
-      expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', path);
+    describe('Blame information', () => {
+      it('renders a Blame component when a chunk appears', async () => {
+        await triggerChunkAppear();
+
+        expect(findBlameComponents().at(0).exists()).toBe(true);
+        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+      });
+
+      it('calls the blame data query', async () => {
+        await triggerChunkAppear();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            filePath: BLOB_DATA_MOCK.path,
+            fullPath: projectPath,
+            ref: currentRef,
+          }),
+        );
+      });
+
+      it('calls the query only once per chunk', async () => {
+        // We trigger the `appear` event multiple times here in order to simulate the user scrolling past the chunk more than once.
+        // In this scenario we only want to query the backend once.
+        await triggerChunkAppear();
+        await triggerChunkAppear();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
+      });
+
+      it('requests blame information for overlapping chunk', async () => {
+        await triggerChunkAppear(1);
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(2);
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 71, toLine: 110 }),
+        );
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({ fromLine: 1, toLine: 70 }),
+        );
+
+        expect(findChunks().at(0).props('isHighlighted')).toBe(true);
+      });
+
+      it('does not render a Blame component when `showBlame: false`', async () => {
+        createComponent({ showBlame: false });
+        await triggerChunkAppear();
+
+        expect(findBlameComponents()).toHaveLength(0);
+      });
+    });
+
+    it('renders a Chunk component for each chunk', () => {
+      expect(findChunks().at(0).props()).toMatchObject(CHUNK_1);
+      expect(findChunks().at(1).props()).toMatchObject(CHUNK_2);
     });
   });
 
-  describe('LineHighlighter', () => {
-    it('instantiates the lineHighlighter class', () => {
-      expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
-    });
-
-    it('highlights the range when chunk appears', () => {
-      findChunks().at(0).vm.$emit('appear');
-      const scrollEnabled = false;
-      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(selectedRangeHash, scrollEnabled);
+  describe('hash highlighting', () => {
+    it('calls highlightHash with expected parameter', () => {
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });
 
@@ -282,11 +178,13 @@ describe('Source Viewer component', () => {
 
     it('does not render codeowners validation when file is not CODEOWNERS', async () => {
       await createComponent();
+      await nextTick();
       expect(findCodeownersValidation().exists()).toBe(false);
     });
 
     it('renders codeowners validation when file is CODEOWNERS', async () => {
-      await createComponent({ name: CODEOWNERS_FILE_NAME });
+      await createComponent({ blob: { name: CODEOWNERS_FILE_NAME } });
+      await nextTick();
       expect(findCodeownersValidation().exists()).toBe(true);
     });
   });

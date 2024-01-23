@@ -334,7 +334,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :search
           end
 
-          resources :deployments, only: [:index] do
+          resources :deployments, only: [:index, :show] do
             member do
               get :metrics
               get :additional_metrics

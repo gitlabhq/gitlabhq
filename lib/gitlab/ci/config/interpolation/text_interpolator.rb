@@ -10,8 +10,8 @@ module Gitlab
         class TextInterpolator
           attr_reader :errors
 
-          def initialize(config, input_args, variables)
-            @config = config
+          def initialize(yaml_documents, input_args, variables)
+            @yaml_documents = yaml_documents
             @input_args = input_args.to_h
             @variables = variables
             @errors = []
@@ -37,14 +37,12 @@ module Gitlab
           end
 
           def interpolate!
-            return errors.concat(config.errors) unless config.valid?
-
             if inputs_without_header?
               return errors.push(
                 _('Given inputs not defined in the `spec` section of the included configuration file'))
             end
 
-            return @result ||= config.content unless config.header
+            return @result ||= yaml_documents.content unless yaml_documents.header
 
             return errors.concat(header.errors) unless header.valid?
             return errors.concat(inputs.errors) unless inputs.valid?
@@ -62,14 +60,14 @@ module Gitlab
 
           private
 
-          attr_reader :config, :input_args, :variables
+          attr_reader :yaml_documents, :input_args, :variables
 
           def inputs_without_header?
-            input_args.any? && !config.header
+            input_args.any? && !yaml_documents.header
           end
 
           def header
-            @header ||= Header::Root.new(config.header).tap do |header|
+            @header ||= Header::Root.new(yaml_documents.header).tap do |header|
               header.key = 'header'
 
               header.compose!
@@ -77,7 +75,7 @@ module Gitlab
           end
 
           def content
-            @content ||= config.content
+            @content ||= yaml_documents.content
           end
 
           def spec

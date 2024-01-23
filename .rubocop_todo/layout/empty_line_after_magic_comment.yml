@@ -368,7 +368,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/gitlab/auth/otp/fortinet.rb'
     - 'lib/gitlab/background_migration/backfill_imported_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
-    - 'lib/gitlab/background_migration/backfill_project_import_level.rb'
     - 'lib/gitlab/background_migration/backfill_project_namespace_details.rb'
     - 'lib/gitlab/background_migration/mailers/unconfirm_mailer.rb'
     - 'lib/gitlab/ci/secure_files/mobile_provision.rb'

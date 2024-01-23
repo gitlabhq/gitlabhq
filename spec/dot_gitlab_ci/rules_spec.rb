@@ -3,10 +3,16 @@
 require 'fast_spec_helper'
 
 RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
-  config = YAML.load_file(
-    File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
-    aliases: true
-  ).freeze
+  begin
+    config = YAML.load_file(
+      File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
+      aliases: true
+    ).freeze
+  rescue ArgumentError # Ruby 3.0 does not take `aliases: true`
+    config = YAML.load_file(
+      File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__)
+    ).freeze
+  end
 
   context 'with changes' do
     config.each do |name, definition|

@@ -293,7 +293,7 @@ export default function setupVueRepositoryList() {
       resourceId,
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
-      highlightWorker: gon.features.highlightJsWorker ? new HighlightWorker() : null,
+      highlightWorker: new HighlightWorker(),
     },
     render(h) {
       return h(App);

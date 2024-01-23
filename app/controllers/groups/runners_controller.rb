@@ -6,6 +6,10 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_update_runner!, only: [:edit, :update, :destroy, :pause, :resume]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 
+  before_action do
+    push_frontend_feature_flag(:gcp_runner, @project, type: :wip)
+  end
+
   feature_category :runner
   urgency :low
 

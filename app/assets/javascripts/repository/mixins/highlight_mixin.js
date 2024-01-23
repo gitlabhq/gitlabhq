@@ -49,7 +49,7 @@ export default {
     initHighlightWorker(blob, isUsingLfs) {
       const { rawTextBlob, language, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
 
-      if (!this.glFeatures.highlightJsWorker || simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
+      if (simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
 
       if (this.isUnsupportedLanguage(language)) {
         this.handleUnsupportedLanguage(language);

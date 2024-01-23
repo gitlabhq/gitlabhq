@@ -6,7 +6,9 @@ module Backup
       attr_reader :progress, :options
 
       # Identifier used as parameter in the CLI to skip from executing
-      def self.id = raise NotImplementedError
+      def self.id
+        raise NotImplementedError
+      end
 
       def initialize(progress:, options:)
         @progress = progress
@@ -14,16 +16,24 @@ module Backup
       end
 
       # Key string that identifies the task
-      def key = raise NotImplementedError
+      def key
+        raise NotImplementedError
+      end
 
       # Name of the task used for logging.
-      def human_name = raise NotImplementedError
+      def human_name
+        raise NotImplementedError
+      end
 
       # Where the task should put its backup file/dir
-      def destination_path = raise NotImplementedError
+      def destination_path
+        raise NotImplementedError
+      end
 
       # The target factory method
-      def target = raise NotImplementedError
+      def target
+        raise NotImplementedError
+      end
 
       # Path to remove after a successful backup, uses #destination_path when not specified
       def cleanup_path
@@ -31,12 +41,18 @@ module Backup
       end
 
       # `true` if the destination might not exist on a successful backup
-      def destination_optional = false
+      def destination_optional
+        false
+      end
 
       # `true` if the task can be used
-      def enabled = true
+      def enabled
+        true
+      end
 
-      def enabled? = enabled
+      def enabled?
+        enabled
+      end
     end
   end
 end

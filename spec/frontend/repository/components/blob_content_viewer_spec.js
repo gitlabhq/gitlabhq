@@ -18,7 +18,6 @@ import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
-import SourceViewerNew from '~/vue_shared/components/source_viewer/source_viewer_new.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import projectInfoQuery from '~/repository/queries/project_info.query.graphql';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
@@ -60,6 +59,7 @@ const mockRouterPush = jest.fn();
 const mockRouter = {
   push: mockRouterPush,
 };
+const highlightWorker = { postMessage: jest.fn() };
 
 const legacyViewerUrl = '/some_file.js?format=json&viewer=simple';
 
@@ -74,7 +74,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     downloadCode = userPermissionsMock.downloadCode,
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
-    inject = {},
+    inject = { highlightWorker },
   } = mockData;
 
   const blobInfo = {
@@ -136,9 +136,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         targetBranch: 'test',
         originalBranch: 'default-ref',
         ...inject,
-        glFeatures: {
-          highlightJsWorker: false,
-        },
       },
     }),
   );
@@ -158,7 +155,6 @@ describe('Blob content viewer component', () => {
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
   const findCodeIntelligence = () => wrapper.findComponent(CodeIntelligence);
   const findSourceViewer = () => wrapper.findComponent(SourceViewer);
-  const findSourceViewerNew = () => wrapper.findComponent(SourceViewerNew);
 
   beforeEach(() => {
     jest.spyOn(window, 'requestIdleCallback').mockImplementation(execImmediately);
@@ -203,28 +199,28 @@ describe('Blob content viewer component', () => {
       });
 
       it('adds blame param to the URL and passes `showBlame` to the SourceViewer', async () => {
-        loadViewer.mockReturnValueOnce(SourceViewerNew);
+        loadViewer.mockReturnValueOnce(SourceViewer);
         await createComponent({ blob: simpleViewerMock });
 
         await triggerBlame();
 
         expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '1' } });
-        expect(findSourceViewerNew().props('showBlame')).toBe(true);
+        expect(findSourceViewer().props('showBlame')).toBe(true);
 
         await triggerBlame();
 
         expect(mockRouterPush).toHaveBeenCalledWith({ query: { blame: '0' } });
-        expect(findSourceViewerNew().props('showBlame')).toBe(false);
+        expect(findSourceViewer().props('showBlame')).toBe(false);
       });
 
       describe('when viewing rich content', () => {
         it('always shows the blame when clicking on the blame button', async () => {
-          loadViewer.mockReturnValueOnce(SourceViewerNew);
+          loadViewer.mockReturnValueOnce(SourceViewer);
           const query = { plain: '0', blame: '1' };
           await createComponent({ blob: simpleViewerMock }, shallowMount, { query });
           await triggerBlame();
 
-          expect(findSourceViewerNew().props('showBlame')).toBe(true);
+          expect(findSourceViewer().props('showBlame')).toBe(true);
         });
       });
     });
@@ -435,7 +431,7 @@ describe('Blob content viewer component', () => {
 
       await waitForPromises();
 
-      expect(loadViewer).toHaveBeenCalledWith(viewer, false, false, 'javascript');
+      expect(loadViewer).toHaveBeenCalledWith(viewer, false);
       expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
     });
   });
@@ -514,7 +510,7 @@ describe('Blob content viewer component', () => {
     });
 
     it('is called with originalBranch value if the prop has a value', async () => {
-      await createComponent({ inject: { originalBranch: 'some-branch' } });
+      await createComponent({ inject: { originalBranch: 'some-branch', highlightWorker } });
 
       expect(blobInfoMockResolver).toHaveBeenCalledWith(
         expect.objectContaining({

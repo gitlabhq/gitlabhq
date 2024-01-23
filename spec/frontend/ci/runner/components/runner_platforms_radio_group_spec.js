@@ -22,65 +22,108 @@ describe('RunnerPlatformsRadioGroup', () => {
       .filter((w) => w.text() === text)
       .at(0);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
+  const createComponent = ({
+    props = {},
+    mountFn = shallowMountExtended,
+    gcpRunner = false,
+    ...options
+  } = {}) => {
     wrapper = mountFn(RunnerPlatformsRadioGroup, {
       propsData: {
         value: null,
         ...props,
       },
+      provide: {
+        glFeatures: {
+          gcpRunner,
+        },
+      },
       ...options,
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
-  it('contains expected options with images', () => {
-    const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
-
-    expect(labels).toEqual([
-      ['Linux', expect.any(String)],
-      ['macOS', null],
-      ['Windows', null],
-      ['Docker', expect.any(String)],
-      ['Kubernetes', expect.any(String)],
-    ]);
-  });
-
-  it('allows users to use radio group', async () => {
-    findFormRadioGroup().vm.$emit('input', MACOS_PLATFORM);
-    await nextTick();
-
-    expect(wrapper.emitted('input')[0]).toEqual([MACOS_PLATFORM]);
-  });
-
-  it.each`
-    text         | value
-    ${'Linux'}   | ${LINUX_PLATFORM}
-    ${'macOS'}   | ${MACOS_PLATFORM}
-    ${'Windows'} | ${WINDOWS_PLATFORM}
-  `('user can select "$text"', async ({ text, value }) => {
-    const radio = findFormRadioByText(text);
-    expect(radio.props('value')).toBe(value);
-
-    radio.vm.$emit('input', value);
-    await nextTick();
-
-    expect(wrapper.emitted('input')[0]).toEqual([value]);
-  });
-
-  it.each`
-    text            | href
-    ${'Docker'}     | ${DOCKER_HELP_URL}
-    ${'Kubernetes'} | ${KUBERNETES_HELP_URL}
-  `('provides link to "$text" docs', ({ text, href }) => {
-    const radio = findFormRadioByText(text);
-
-    expect(radio.findComponent(GlLink).attributes()).toEqual({
-      href,
-      target: '_blank',
+  describe('defaults', () => {
+    beforeEach(() => {
+      createComponent();
     });
-    expect(radio.findComponent(GlIcon).props('name')).toBe('external-link');
+
+    it('contains expected options with images', () => {
+      const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
+
+      expect(labels).toStrictEqual([
+        ['Linux', expect.any(String)],
+        ['macOS', null],
+        ['Windows', null],
+        ['Docker', expect.any(String)],
+        ['Kubernetes', expect.any(String)],
+      ]);
+    });
+
+    it('allows users to use radio group', async () => {
+      findFormRadioGroup().vm.$emit('input', MACOS_PLATFORM);
+      await nextTick();
+
+      expect(wrapper.emitted('input')[0]).toEqual([MACOS_PLATFORM]);
+    });
+
+    it.each`
+      text         | value
+      ${'Linux'}   | ${LINUX_PLATFORM}
+      ${'macOS'}   | ${MACOS_PLATFORM}
+      ${'Windows'} | ${WINDOWS_PLATFORM}
+    `('user can select "$text"', async ({ text, value }) => {
+      const radio = findFormRadioByText(text);
+      expect(radio.props('value')).toBe(value);
+
+      radio.vm.$emit('input', value);
+      await nextTick();
+
+      expect(wrapper.emitted('input')[0]).toEqual([value]);
+    });
+
+    it.each`
+      text            | href
+      ${'Docker'}     | ${DOCKER_HELP_URL}
+      ${'Kubernetes'} | ${KUBERNETES_HELP_URL}
+    `('provides link to "$text" docs', ({ text, href }) => {
+      const radio = findFormRadioByText(text);
+
+      expect(radio.findComponent(GlLink).attributes()).toEqual({
+        href,
+        target: '_blank',
+      });
+      expect(radio.findComponent(GlIcon).props('name')).toBe('external-link');
+    });
+  });
+
+  describe('with gcpRunner flag enabled', () => {
+    it('contains expected options with images', () => {
+      createComponent({ props: {}, mountFn: shallowMountExtended, gcpRunner: true });
+
+      const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
+
+      expect(labels).toStrictEqual([
+        ['Linux', expect.any(String)],
+        ['macOS', null],
+        ['Windows', null],
+        ['Google Cloud', null],
+        ['Docker', expect.any(String)],
+        ['Kubernetes', expect.any(String)],
+      ]);
+    });
+
+    it('does not contain cloud option when admin prop is passed', () => {
+      createComponent({ props: { admin: true }, mountFn: shallowMountExtended, gcpRunner: true });
+
+      const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
+
+      expect(labels).toStrictEqual([
+        ['Linux', expect.any(String)],
+        ['macOS', null],
+        ['Windows', null],
+        ['Docker', expect.any(String)],
+        ['Kubernetes', expect.any(String)],
+      ]);
+    });
   });
 });

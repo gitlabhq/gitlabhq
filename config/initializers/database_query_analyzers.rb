@@ -8,6 +8,7 @@ Gitlab::Database::QueryAnalyzer.instance.tap do |query_analyzer|
     analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification)
     analyzers.append(::Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer)
+    analyzers.append(::Gitlab::Database::QueryAnalyzers::LogLargeInLists)
 
     if Gitlab.dev_or_test_env?
       analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection)

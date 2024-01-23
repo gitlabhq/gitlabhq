@@ -12,7 +12,7 @@
         .content
           = render "layouts/flash"
           - if custom_text.present?
-            .row
+            .row.gl-mt-5.gl-row-gap-5
               .col-md.order-12.sm-bg-gray
                 .col-sm-12
                   %h1.mb-3.gl-font-size-h2
@@ -24,12 +24,11 @@
                     = brand_image
                   = yield
           - else
-            .mt-3
+            .gl-my-5
               .col-sm-12.gl-text-center
                 = brand_image
                 %h1.mb-3.gl-font-size-h2
                   = brand_title
-            .mb-3
               .gl-w-full.gl-sm-w-half.gl-ml-auto.gl-mr-auto.bar
                 = yield
 

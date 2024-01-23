@@ -1838,7 +1838,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             expect(pipeline).to be_persisted
             expect(pipeline.yaml_errors)
-              .to include 'interpolation interrupted by errors, unknown interpolation key: `suite`'
+              .to include 'unknown interpolation key: `suite`'
           end
         end
 
@@ -2001,7 +2001,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             expect(pipeline).to be_persisted
             expect(pipeline.yaml_errors)
-              .to include 'interpolation interrupted by errors, unknown interpolation key: `suite`'
+              .to include 'unknown interpolation key: `suite`'
           end
         end
 

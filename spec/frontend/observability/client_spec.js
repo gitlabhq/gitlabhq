@@ -14,6 +14,7 @@ describe('buildClient', () => {
   let axiosMock;
 
   const tracingUrl = 'https://example.com/tracing';
+  const tracingAnalyticsUrl = 'https://example.com/tracing/analytics';
   const provisioningUrl = 'https://example.com/provisioning';
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
@@ -23,6 +24,7 @@ describe('buildClient', () => {
 
   const apiConfig = {
     tracingUrl,
+    tracingAnalyticsUrl,
     provisioningUrl,
     servicesUrl,
     operationsUrl,
@@ -385,6 +387,196 @@ describe('buildClient', () => {
         });
 
         expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
+      });
+    });
+  });
+
+  describe('fetchTracesAnalytics', () => {
+    it('fetches analytics from the tracesAnalytics URL', async () => {
+      const mockResponse = {
+        results: [
+          {
+            Interval: 1705039800,
+            count: 5,
+            p90_duration_nano: 50613502867,
+            p95_duration_nano: 50613502867,
+            p75_duration_nano: 49756727928,
+            p50_duration_nano: 41610120929,
+            error_count: 324,
+            trace_rate: 2.576111111111111,
+            error_rate: 0.09,
+          },
+        ],
+      };
+
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, mockResponse);
+
+      const result = await client.fetchTracesAnalytics();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(tracingAnalyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+      });
+      expect(result).toEqual(mockResponse.results);
+    });
+
+    it('returns empty array if analytics are missing', async () => {
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+
+      expect(await client.fetchTracesAnalytics()).toEqual([]);
+    });
+
+    describe('query filter', () => {
+      beforeEach(() => {
+        axiosMock.onGet(tracingAnalyticsUrl).reply(200, {
+          results: [],
+        });
+      });
+
+      it('does not set any query param without filters', async () => {
+        await client.fetchTracesAnalytics();
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('converts filter to proper query params', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: [
+              { operator: '>', value: '100' },
+              { operator: '<', value: '1000' },
+            ],
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '!=', value: 'not-op' },
+            ],
+            service: [
+              { operator: '=', value: 'service' },
+              { operator: '!=', value: 'not-service' },
+            ],
+            period: [{ operator: '=', value: '5m' }],
+            status: [
+              { operator: '=', value: 'ok' },
+              { operator: '!=', value: 'error' },
+            ],
+            traceId: [
+              { operator: '=', value: 'trace-id' },
+              { operator: '!=', value: 'not-trace-id' },
+            ],
+            attribute: [{ operator: '=', value: 'name1=value1' }],
+          },
+        });
+        expect(getQueryParam()).toContain(
+          'gt[duration_nano]=100000000&lt[duration_nano]=1000000000' +
+            '&operation=op&not[operation]=not-op' +
+            '&service_name=service&not[service_name]=not-service' +
+            '&period=5m' +
+            '&trace_id=trace-id&not[trace_id]=not-trace-id' +
+            '&attr_name=name1&attr_value=value1' +
+            '&status=ok&not[status]=error',
+        );
+      });
+      describe('date range time filter', () => {
+        it('handles custom date range period filter', async () => {
+          await client.fetchTracesAnalytics({
+            filters: {
+              period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+            },
+          });
+          expect(getQueryParam()).not.toContain('period=');
+          expect(getQueryParam()).toContain(
+            'start_time=2023-01-01T00:00:00.000Z&end_time=2023-02-01T00:00:00.000Z',
+          );
+        });
+
+        it.each([
+          'invalid - 2023-02-01',
+          '2023-02-01 - invalid',
+          'invalid - invalid',
+          '2023-01-01 / 2023-02-01',
+          '2023-01-01 2023-02-01',
+          '2023-01-01 - 2023-02-01 - 2023-02-01',
+        ])('ignore invalid values', async (val) => {
+          await client.fetchTracesAnalytics({
+            filters: {
+              period: [{ operator: '=', value: val }],
+            },
+          });
+
+          expect(getQueryParam()).not.toContain('start_time=');
+          expect(getQueryParam()).not.toContain('end_time=');
+          expect(getQueryParam()).not.toContain('period=');
+        });
+      });
+
+      it('handles repeated params', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '=', value: 'op2' },
+            ],
+          },
+        });
+        expect(getQueryParam()).toContain('operation=op&operation=op2');
+      });
+
+      it('ignores unsupported filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores empty filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: null,
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores non-array filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            traceId: { operator: '=', value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores unsupported operators', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: [
+              { operator: '*', value: 'foo' },
+              { operator: '=', value: 'foo' },
+              { operator: '!=', value: 'foo' },
+            ],
+            operation: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            service: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            period: [{ operator: '!=', value: 'foo' }],
+            traceId: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
       });
     });
   });

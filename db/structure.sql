@@ -19982,7 +19982,6 @@ CREATE TABLE namespace_settings (
     enabled_git_access_protocol smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit_interval_in_seconds integer DEFAULT 0 NOT NULL,
-    project_import_level smallint DEFAULT 50 NOT NULL,
     unique_project_download_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     auto_ban_user_on_excessive_projects_download boolean DEFAULT false NOT NULL,
     only_allow_merge_if_pipeline_succeeds boolean DEFAULT false NOT NULL,

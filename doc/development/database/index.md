@@ -34,13 +34,21 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - [Different types of migrations](../migration_style_guide.md#choose-an-appropriate-migration-type)
 - [Migrations for multiple databases](migrations_for_multiple_databases.md)
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations
-- [Partitioning tables](table_partitioning.md)
+- [Partitioning tables](partitioning/index.md)
 - [Post-deployment migrations guidelines](post_deployment_migrations.md) and [how to create one](post_deployment_migrations.md#creating-migrations)
 - [Running database migrations](database_debugging.md#migration-wrangling)
 - [SQL guidelines](../sql.md) for working with SQL queries
 - [Swapping tables](swapping_tables.md)
 - [Testing Rails migrations](../testing_guide/testing_migrations_guide.md) guide
 - [When and how to write Rails migrations tests](../testing_guide/testing_migrations_guide.md)
+
+## Partitioning tables
+
+- [Overview](partitioning/index.md)
+- [Date range](partitioning/date_range.md)
+- [Hash](partitioning/hash.md)
+- [Int range](partitioning/int_range.md)
+- [List](partitioning/list.md)
 
 ## Debugging
 

@@ -4,6 +4,7 @@ export function createMockClient() {
   const mockClient = buildClient({
     provisioningUrl: 'provisioning-url',
     tracingUrl: 'tracing-url',
+    tracingAnalyticsUrl: 'tracing-analytics-url',
     servicesUrl: 'services-url',
     operationsUrl: 'operations-url',
     metricsUrl: 'metrics-url',

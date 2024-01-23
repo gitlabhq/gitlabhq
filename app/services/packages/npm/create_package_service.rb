@@ -72,7 +72,7 @@ module Packages
         return false if Feature.disabled?(:packages_protected_packages, project)
 
         user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
-        project.package_protection_rules.push_protected_from?(access_level: user_project_authorization_access_level, package_name: name, package_type: :npm)
+        project.package_protection_rules.for_push_exists?(access_level: user_project_authorization_access_level, package_name: name, package_type: :npm)
       end
 
       def name

@@ -1,0 +1,4 @@
+- add_to_breadcrumbs _("Environments"), project_environments_path(@project)
+- add_to_breadcrumbs @environment.name, project_environment_path(@project, @environment)
+- breadcrumb_title _("Deployment #%{iid}") % { iid: @deployment.iid }
+- page_title _("Deployment #%{iid}") % { iid: @deployment.iid }

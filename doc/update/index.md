@@ -218,9 +218,7 @@ crucial database schema and migration patches may be included in the latest patc
 Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required
 upgrade stops allow required background migrations to finish.
 
-During GitLab 16.x, we are scheduling required upgrade stops beforehand so users can better plan out appropriate upgrade stops and downtime when necessary.
-
-The first scheduled required upgrade stop has been announced for 16.3.x. When planning upgrades, take this into account.
+During GitLab 16.x, we are scheduling required upgrade stops beforehand so you can better plan out appropriate upgrade stops and downtime when necessary. When planning upgrades, take this into account.
 
 ### Earlier GitLab versions
 

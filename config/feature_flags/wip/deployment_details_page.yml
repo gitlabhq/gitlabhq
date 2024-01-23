@@ -1,0 +1,8 @@
+---
+name: deployment_details_page
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141808'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438327'
+milestone: '16.9'
+type: wip
+group: group::environments
+default_enabled: false

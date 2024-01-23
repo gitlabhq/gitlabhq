@@ -34,17 +34,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::TextInterpolator, feature_cate
     end
   end
 
-  context 'when the header has an error while being parsed' do
-    let(:header) { ::Gitlab::Config::Loader::Yaml.new('_!@malformedyaml:&') }
-
-    it 'surfaces the error' do
-      interpolator.interpolate!
-
-      expect(interpolator).not_to be_valid
-      expect(interpolator.error_message).to eq('Invalid configuration format')
-    end
-  end
-
   context 'when spec header is missing but inputs are specified' do
     let(:documents) { ::Gitlab::Ci::Config::Yaml::Documents.new([content]) }
 

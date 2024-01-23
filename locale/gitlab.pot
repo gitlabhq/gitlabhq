@@ -12120,7 +12120,7 @@ msgstr ""
 msgid "CodeSuggestions|A user can be assigned a Duo Pro seat only once each billable month."
 msgstr ""
 
-msgid "CodeSuggestions|Boost productivity by using %{linkStart}Code Suggestions%{linkEnd} to write and understand code. Code Suggestions is part of the GitLab Duo Pro add-on, available to Premium and Ultimate users now."
+msgid "CodeSuggestions|Boost productivity by using %{linkStart}Code Suggestions%{linkEnd} to write and understand code. Starting in February 2024, Code Suggestions will be part of %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd}, available to Premium and Ultimate users for purchase now."
 msgstr ""
 
 msgid "CodeSuggestions|Code Suggestions"
@@ -17152,6 +17152,9 @@ msgid "Deploying to"
 msgstr ""
 
 msgid "Deployment"
+msgstr ""
+
+msgid "Deployment #%{iid}"
 msgstr ""
 
 msgid "Deployment Frequency"
@@ -42099,6 +42102,9 @@ msgstr ""
 msgid "Runners|Clear selection"
 msgstr ""
 
+msgid "Runners|Cloud"
+msgstr ""
+
 msgid "Runners|Command to register runner"
 msgstr ""
 
@@ -42234,6 +42240,9 @@ msgid "Runners|Go to %{groupLink} to enable them."
 msgstr ""
 
 msgid "Runners|Go to runners page"
+msgstr ""
+
+msgid "Runners|Google Cloud connection"
 msgstr ""
 
 msgid "Runners|Group"

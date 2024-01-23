@@ -187,7 +187,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
   end
 
-  describe '.push_protected_from?' do
+  describe '.for_push_exists?' do
     let_it_be(:project_with_ppr) { create(:project) }
     let_it_be(:project_without_ppr) { create(:project) }
 
@@ -230,7 +230,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     subject do
       project
         .package_protection_rules
-        .push_protected_from?(
+        .for_push_exists?(
           access_level: access_level,
           package_name: package_name,
           package_type: package_type
@@ -270,8 +270,11 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         ref(:project_with_ppr)    | Gitlab::Access::NO_ACCESS | '@my-scope/my-package-prod'           | :npm   | true
 
         # Edge cases
-        ref(:project_with_ppr)    | 0                         | ''                                    | nil    | true
-        ref(:project_with_ppr)    | nil                       | nil                                   | nil    | true
+        ref(:project_with_ppr)    | nil                       | '@my-scope/my-package-stage-sha-1234' | :npm   | false
+        ref(:project_with_ppr)    | :developer                | nil                                   | :npm   | false
+        ref(:project_with_ppr)    | :developer                | ''                                    | :npm   | false
+        ref(:project_with_ppr)    | :developer                | '@my-scope/my-package-stage-sha-1234' | nil    | false
+        ref(:project_with_ppr)    | nil                       | nil                                   | nil    | false
 
         # For projects that have no package protection rules
         ref(:project_without_ppr) | :developer                | '@my-scope/my-package-prod'           | :npm   | false

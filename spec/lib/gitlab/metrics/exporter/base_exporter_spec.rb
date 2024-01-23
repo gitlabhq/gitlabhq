@@ -167,9 +167,9 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud
 
       describe '#start' do
         it "doesn't start running server" do
-          expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:start)
+          expect(::WEBrick::HTTPServer).not_to receive(:new)
 
-          expect { exporter.start }.not_to change { exporter.thread? }
+          exporter.start
         end
       end
 

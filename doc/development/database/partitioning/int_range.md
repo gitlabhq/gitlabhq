@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Description
 
-Int range partition is a technique for dividing a large table into smaller,
+Int range partitioning is a technique for dividing a large table into smaller,
 more manageable chunks based on an integer column.
 This can be particularly useful for tables with large numbers of rows,
 as it can significantly improve query performance, reduce storage requirements, and simplify maintenance tasks.

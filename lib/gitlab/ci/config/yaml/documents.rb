@@ -7,17 +7,10 @@ module Gitlab
         class Documents
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :errors
-
           def initialize(documents)
             @documents = documents
-            @errors = []
 
             parsed_first_document
-          end
-
-          def valid?
-            errors.none?
           end
 
           def header
@@ -46,8 +39,6 @@ module Gitlab
             return {} if documents.count == 0
 
             documents.first.load!
-          rescue ::Gitlab::Config::Loader::FormatError => e
-            errors << e.message
           end
           strong_memoize_attr :parsed_first_document
         end

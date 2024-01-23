@@ -9,7 +9,6 @@ import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -33,7 +32,7 @@ export default {
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
-  mixins: [getRefMixin, glFeatureFlagMixin(), highlightMixin],
+  mixins: [getRefMixin, highlightMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -150,14 +149,7 @@ export default {
     },
     blobViewer() {
       const { fileType } = this.viewer;
-      return this.shouldLoadLegacyViewer
-        ? null
-        : loadViewer(
-            fileType,
-            this.isUsingLfs,
-            this.glFeatures.highlightJsWorker,
-            this.blobInfo.language,
-          );
+      return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
     },
     shouldLoadLegacyViewer() {
       return LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;

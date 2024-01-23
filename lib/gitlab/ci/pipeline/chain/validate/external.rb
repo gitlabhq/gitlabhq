@@ -72,7 +72,12 @@ module Gitlab
             end
 
             def validation_service_url
-              Gitlab::CurrentSettings.external_pipeline_validation_service_url || ENV['EXTERNAL_VALIDATION_SERVICE_URL']
+              if migration_enabled?
+                # After derisking, feature flag will be removed in favor of existing external_pipeline_validation_service_url setting
+                ENV['EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL']
+              else
+                Gitlab::CurrentSettings.external_pipeline_validation_service_url || ENV['EXTERNAL_VALIDATION_SERVICE_URL']
+              end
             end
 
             def validation_service_token
@@ -140,6 +145,10 @@ module Gitlab
 
             def stages_attributes
               command.yaml_processor_result.stages_attributes
+            end
+
+            def migration_enabled?
+              ENV['EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL'].present? && Feature.enabled?(:external_pipeline_validation_migration, project, type: :gitlab_com_derisk)
             end
           end
         end

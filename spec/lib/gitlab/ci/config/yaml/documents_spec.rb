@@ -5,24 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Yaml::Documents, feature_category: :pipeline_composition do
   let(:documents) { described_class.new(yaml_documents) }
 
-  describe '#valid?' do
-    context 'when there are no errors' do
-      let(:yaml_documents) { [::Gitlab::Config::Loader::Yaml.new('job:')] }
-
-      it 'returns true' do
-        expect(documents).to be_valid
-      end
-    end
-
-    context 'when there are errors' do
-      let(:yaml_documents) { [::Gitlab::Config::Loader::Yaml.new('_!@malformedyaml:&')] }
-
-      it 'returns false' do
-        expect(documents).not_to be_valid
-      end
-    end
-  end
-
   describe '#header' do
     context 'when there are at least 2 documents and the first document has a `spec` keyword' do
       let(:yaml_documents) { [::Gitlab::Config::Loader::Yaml.new('spec:'), ::Gitlab::Config::Loader::Yaml.new('job:')] }

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
+  using RSpec::Parameterized::TableSyntax
+
   let(:analyzer) { double(:query_analyzer) }
   let(:user_analyzer) { double(:user_query_analyzer) }
   let(:disabled_analyzer) { double(:disabled_query_analyzer) }
@@ -181,11 +183,33 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
       expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
     end
 
-    def process_sql(sql)
+    def process_sql(sql, event_name = 'load')
       described_class.instance.within do
         ApplicationRecord.load_balancer.read_write do |connection|
-          described_class.instance.send(:process_sql, sql, connection)
+          described_class.instance.send(:process_sql, sql, connection, event_name)
         end
+      end
+    end
+  end
+
+  describe '#normalize_event_name' do
+    where(:event, :parsed_event) do
+      'Project Load'                     | 'load'
+      'Namespaces::UserNamespace Create' | 'create'
+      'Project Update'                   | 'update'
+      'Project Destroy'                  | 'destroy'
+      'Project Pluck'                    | 'pluck'
+      'Project Insert'                   | 'insert'
+      'Project Delete All'               | 'delete_all'
+      'Project Exists?'                  | 'exists?'
+      nil                                | ''
+      'TRANSACTION'                      | 'transaction'
+      'SCHEMA'                           | 'schema'
+    end
+
+    with_them do
+      it 'parses event name correctly' do
+        expect(described_class.instance.send(:normalize_event_name, event)).to eq(parsed_event)
       end
     end
   end
