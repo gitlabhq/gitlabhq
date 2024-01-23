@@ -215,7 +215,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 
       ```ruby
       # Creating dummy token, and this will work as long as `AIGW_AUTH__BYPASS_EXTERNAL=true` in AI Gateway.
-      ::Ai::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
+      ::CloudConnector::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
       ```
 
    1. Ensure GitLab-Rails can talk to the AI Gateway. Run `gdk rails console` and execute:

@@ -21,7 +21,8 @@
       "type": "string"
     },
     "action": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
     },
     "label_description": {
       "type": [

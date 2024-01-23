@@ -71,9 +71,9 @@ module InternalEventsCli
 
       event.action = cli.ask("Define the event name: #{input_required_text}", **input_opts) do |q|
         q.required true
-        q.validate ->(input) { input =~ /\A\w+\z/ && !events_by_filepath.values.map(&:action).include?(input) } # rubocop:disable Rails/NegateInclude -- Not rails
+        q.validate ->(input) { input =~ /\A[a-z1-9_]+\z/ && !events_by_filepath.values.map(&:action).include?(input) } # rubocop:disable Rails/NegateInclude -- Not rails
         q.modify :trim
-        q.messages[:valid?] = format_warning("Invalid event name. Only letters/numbers/underscores allowed. " \
+        q.messages[:valid?] = format_warning("Invalid event name. Only lowercase/numbers/underscores allowed. " \
                                              "Ensure %{value} is not an existing event.")
         q.messages[:required?] = Text::EVENT_ACTION_HELP
       end

@@ -89,6 +89,18 @@ RSpec.describe Cli, feature_category: :service_ping do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_events.yml')).each do |test_case|
       it_behaves_like 'creates the right defintion files', test_case['description'], test_case
     end
+
+    context 'with invalid event name' do
+      it 'prompts user to select another name' do
+        queue_cli_inputs([
+          "1\n", # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+          "Engineer uses Internal Event CLI to define a new event\n", # Submit description
+          "badDDD_ event (name) with // prob.lems\n" # Submit action name
+        ])
+
+        expect_cli_output { prompt.output.string.include?('Invalid event name.') }
+      end
+    end
   end
 
   context 'when creating new metrics' do

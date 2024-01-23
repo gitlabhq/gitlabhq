@@ -3,9 +3,9 @@ import {
   GlAvatar,
   GlLoadingIcon,
   GlBadge,
+  GlButton,
   GlIcon,
   GlLabel,
-  GlButton,
   GlPopover,
   GlLink,
   GlTooltipDirective,
@@ -27,7 +27,6 @@ import { ITEM_TYPE, ACTIVE_TAB_SHARED } from '../constants';
 import eventHub from '../event_hub';
 
 import ItemActions from './item_actions.vue';
-import ItemCaret from './item_caret.vue';
 import ItemStats from './item_stats.vue';
 import ItemTypeIcon from './item_type_icon.vue';
 
@@ -39,14 +38,13 @@ export default {
   components: {
     GlAvatar,
     GlBadge,
+    GlButton,
     GlLoadingIcon,
     GlIcon,
     GlLabel,
-    GlButton,
     GlPopover,
     GlLink,
     UserAccessRoleBadge,
-    ItemCaret,
     ItemTypeIcon,
     ItemActions,
     ItemStats,
@@ -125,6 +123,12 @@ export default {
           VISIBILITY_LEVELS_STRING_TO_INTEGER[this.currentGroupVisibility]
       );
     },
+    toggleAriaLabel() {
+      return this.group.isOpen ? this.$options.i18n.collapse : this.$options.i18n.expand;
+    },
+    toggleIconName() {
+      return this.group.isOpen ? 'chevron-down' : 'chevron-right';
+    },
   },
   methods: {
     onClickRowGroup(e) {
@@ -142,6 +146,8 @@ export default {
     },
   },
   i18n: {
+    expand: __('Expand'),
+    collapse: __('Collapse'),
     popoverTitle: __('Less restrictive visibility'),
     popoverBody: __('Project visibility level is less restrictive than the group settings.'),
     learnMore: __('Learn more'),
@@ -173,7 +179,16 @@ export default {
       class="group-row-contents d-flex align-items-center py-2 pr-3"
     >
       <div class="folder-toggle-wrap gl-mr-2 d-flex align-items-center">
-        <item-caret :is-group-open="group.isOpen" />
+        <gl-button
+          v-if="hasChildren"
+          :aria-label="toggleAriaLabel"
+          :aria-expanded="String(group.isOpen)"
+          category="tertiary"
+          data-testid="group-item-toggle-button"
+          :icon="toggleIconName"
+          @click.stop="onClickRowGroup"
+        />
+        <div v-else class="gl-h-7 gl-w-7"></div>
         <item-type-icon :item-type="group.type" />
       </div>
       <gl-loading-icon
@@ -215,7 +230,7 @@ export default {
               {{ group.name }}
             </a>
             <gl-icon
-              v-gl-tooltip.hover.bottom
+              v-gl-tooltip.bottom
               class="gl-display-inline-flex gl-align-items-center gl-mr-3 gl-text-gray-500"
               :name="visibilityIcon"
               :title="visibilityTooltip"

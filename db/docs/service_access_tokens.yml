@@ -1,7 +1,7 @@
 ---
 table_name: service_access_tokens
 classes:
-- Ai::ServiceAccessToken
+- CloudConnector::ServiceAccessToken
 feature_categories:
 - cloud_connector
 description: Persists JWT tokens for AI features (e.g. Code Suggestions) to authenticate

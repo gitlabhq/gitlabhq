@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :cloud_connector do
+RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_category: :cloud_connector do
   describe '.expired', :freeze_time do
     let_it_be(:expired_token) { create(:service_access_token, :expired) }
     let_it_be(:active_token) {  create(:service_access_token, :active) }
@@ -22,16 +22,18 @@ RSpec.describe Ai::ServiceAccessToken, type: :model, feature_category: :cloud_co
   end
 
   describe '#token' do
+    subject(:service_access_token) { described_class.new }
+
     let(:token_value) { 'Abc' }
 
     it 'is encrypted' do
-      subject.token = token_value
+      service_access_token.token = token_value
 
       aggregate_failures do
-        expect(subject.encrypted_token_iv).to be_present
-        expect(subject.encrypted_token).to be_present
-        expect(subject.encrypted_token).not_to eq(token_value)
-        expect(subject.token).to eq(token_value)
+        expect(service_access_token.encrypted_token_iv).to be_present
+        expect(service_access_token.encrypted_token).to be_present
+        expect(service_access_token.encrypted_token).not_to eq(token_value)
+        expect(service_access_token.token).to eq(token_value)
       end
     end
 

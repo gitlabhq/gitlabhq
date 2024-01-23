@@ -10,7 +10,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
 
   def click_group_caret(group)
     within("#group-#{group.id}") do
-      first('.folder-caret').click
+      find_by_testid('group-item-toggle-button').click
     end
     wait_for_requests
   end

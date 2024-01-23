@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Ai
+module CloudConnector
   class ServiceAccessToken < ApplicationRecord
     self.table_name = 'service_access_tokens'
 
