@@ -231,6 +231,18 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   .user-bar {
     background-color: var(--super-sidebar-user-bar-bg);
 
+    .organization-switcher-button {
+      background-color: transparent;
+      color: var(--super-sidebar-user-bar-button-color);
+
+      &:active,
+      &:hover,
+      &:focus {
+        background-color: var(--super-sidebar-user-bar-button-hover-bg);
+        color: var(--super-sidebar-user-bar-button-hover-color);
+      }
+    }
+
     .user-bar-dropdown-toggle {
       padding: $gl-spacing-scale-2;
       @include gl-border-none;

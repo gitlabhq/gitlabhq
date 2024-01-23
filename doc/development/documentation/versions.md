@@ -115,13 +115,13 @@ To deprecate a page or topic:
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
    ```
 
    If you're not sure when the feature will be removed or no
    replacement feature exists, you don't need to add this information.
 
-1. If the deprecation is a breaking change, add this text:
+1. If the deprecation is a [breaking change](../../update/terminology.md#breaking-change), add this text:
 
    ```markdown
    This change is a breaking change.
@@ -139,7 +139,7 @@ To deprecate a page or topic:
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
 
    <!--- end_remove -->
    ```
@@ -174,7 +174,7 @@ To remove a page:
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-issue>) instead.
+   Use [feature X](<link-to-docs>) instead.
    ```
 
 1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
@@ -199,7 +199,7 @@ To remove a topic:
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-issue>) instead.
+   Use [feature X](<link-to-docs>) instead.
 
    <!--- end_remove -->
    ```

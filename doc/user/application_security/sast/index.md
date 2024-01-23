@@ -265,6 +265,7 @@ were introduced by the changes made in the merge request.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
 > - Enabled by default in GitLab 16.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
 
 SAST results display in the merge request **Changes** view. Lines containing SAST
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.

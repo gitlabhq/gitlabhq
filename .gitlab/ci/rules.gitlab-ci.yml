@@ -50,6 +50,9 @@
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package)/'
 
+.if-merge-request-and-devops-fulfillment: &if-merge-request-and-devops-fulfillment
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
+
 .if-merge-request-not-approved: &if-merge-request-not-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
@@ -1915,6 +1918,14 @@
       when: never
     # From .qa:rules:code-merge-request-manual
     - <<: *if-merge-request
+      changes: *code-patterns
+      allow_failure: true
+
+.qa:rules:fulfillment-e2e-quarantine-report:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-and-devops-fulfillment
       changes: *code-patterns
       allow_failure: true
 

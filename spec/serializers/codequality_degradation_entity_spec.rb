@@ -8,18 +8,6 @@ RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
   describe '#as_json' do
     subject { entity.as_json }
 
-    context 'when sast_reports_in_inline_diff is disabled' do
-      before do
-        stub_feature_flags(sast_reports_in_inline_diff: false)
-      end
-
-      let(:codequality_degradation) { build(:codequality_degradation_1) }
-
-      it 'does not contain fingerprint' do
-        expect(subject[:fingerprint]).to be_nil
-      end
-    end
-
     context 'when codequality contains an error' do
       context 'when line is included in location' do
         let(:codequality_degradation) { build(:codequality_degradation_2) }

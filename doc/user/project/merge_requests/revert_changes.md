@@ -52,14 +52,19 @@ Prerequisites:
 
 - You must have a role in the project that allows you to edit merge requests, and add
   code to the repository.
+- The commit must not have already been reverted, as the **Revert** option is not
+  shown in this case.
 
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. If you know the merge request that contains the commit:
-   1. Select **Code > Merge requests**, then identify and select your merge request.
-   1. Select **Commits**, then select the title of the commit you want to revert. This displays the commit in the **Changes** tab of your merge request.
-   1. Select the commit hash you want to revert. GitLab displays the contents of the commit.
+   1. Select **Code > Merge requests**, then select your merge request.
+   1. Select **Commits**, then select the title of the commit you want to revert.
+      This displays the commit in the context of your merge request.
+   1. Below the secondary menu, the message **Viewing commit `00001111`** is shown,
+      where `00001111` is the hash of the commit. Select the commit hash to show
+      the commit's page.
 1. If you don't know the merge request the commit originated from:
    1. Select **Code > Commits**.
    1. Select the title of the commit to display full information about the commit.
@@ -67,8 +72,6 @@ To do this:
 1. In **Revert in branch**, select the branch to revert your changes into.
 1. Optional. Select **Start a new merge request** to start a new merge request with the new revert commit.
 1. Select **Revert**.
-
-The option to **Revert** is no longer shown after a commit is reverted.
 
 ### Revert a merge commit to a different parent commit
 

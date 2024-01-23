@@ -804,6 +804,12 @@ With multi-project pipelines, the trigger job fails and does not create the down
   to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
   for more information.
 
+To identify which user is having permission issues in the downstream project, you can check the trigger job using the following command in the [Rails console](../../administration/operations/rails_console.md) and look at the `user_id` attribute.
+
+```ruby
+Ci::Bridge.find(<job_id>)
+```
+
 ### Job in child pipeline is not created when the pipeline runs
 
 If the parent pipeline is a [merge request pipeline](merge_request_pipelines.md),

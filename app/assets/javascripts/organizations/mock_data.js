@@ -4,6 +4,13 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/420777
 // https://gitlab.com/gitlab-org/gitlab/-/issues/421441
 
+export const defaultOrganization = {
+  id: 1,
+  name: 'Default',
+  web_url: '/-/organizations/default',
+  avatar_url: null,
+};
+
 export const organizations = [
   {
     id: 'gid://gitlab/Organizations::Organization/1',

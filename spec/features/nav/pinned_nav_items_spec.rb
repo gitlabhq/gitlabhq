@@ -170,6 +170,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   def add_pin(nav_item_title)
     nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    scroll_to(nav_item)
     nav_item.hover
     pin_button = nav_item.find("[data-testid=\"nav-item-pin\"]")
     pin_button.click
@@ -178,6 +179,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   def remove_pin(nav_item_title)
     nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    scroll_to(nav_item)
     nav_item.hover
     unpin_button = nav_item.find("[data-testid=\"nav-item-unpin\"]")
     unpin_button.click

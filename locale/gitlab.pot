@@ -34232,6 +34232,9 @@ msgstr ""
 msgid "Organization|Create organization"
 msgstr ""
 
+msgid "Organization|Current organization"
+msgstr ""
+
 msgid "Organization|Frequently visited groups"
 msgstr ""
 
@@ -34254,6 +34257,9 @@ msgid "Organization|My organization"
 msgstr ""
 
 msgid "Organization|New organization"
+msgstr ""
+
+msgid "Organization|No organizations available to switch to."
 msgstr ""
 
 msgid "Organization|Org ID"
@@ -34317,6 +34323,9 @@ msgid "Organization|Search or filter list"
 msgstr ""
 
 msgid "Organization|Select an organization"
+msgstr ""
+
+msgid "Organization|Switch organizations"
 msgstr ""
 
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."

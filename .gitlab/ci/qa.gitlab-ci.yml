@@ -251,3 +251,34 @@ e2e:code-suggestions-eval-results:
     expose_as: 'Code Suggestions evaluation results'
     paths:
       - scores.csv
+
+e2e:fulfillment-quarantine-report:
+  extends:
+    - .qa:rules:fulfillment-e2e-quarantine-report
+  stage: qa
+  before_script:
+    - cd qa && bundle install
+    - apt-get update && apt-get install -y jq
+  variables:
+    RSPEC_JSON: "tmp/rspec-fulfillment-quarantined.json"
+    NOTES_API: "https://gitlab.com/api/v4/projects/$CI_MERGE_REQUEST_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"
+    USER_API: "https://gitlab.com/api/v4/user"
+    FULFILLMENT_SPECS_PATH: "qa/specs/features/ee/browser_ui/11_fulfillment"
+  script:
+    - bundle exec rspec $FULFILLMENT_SPECS_PATH --tag quarantine --format json --out $RSPEC_JSON --dry-run
+    - |
+      if [[ -f $RSPEC_JSON && $(cat $RSPEC_JSON | jq ".examples[]") ]]
+      then # quarantined tests found
+        bot_user_id=$(curl $USER_API -H "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" | jq ".id")
+        existing_comment=$(curl $NOTES_API -H "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" | jq ".[] | select((.author | .id | contains($bot_user_id)) and (.body | contains(\"# Quarantined Fulfillment QA E2E Tests\")))")
+        if [[ ! -z $existing_comment ]]
+        then
+          echo 'MR comment already exists, doing nothing'
+        else
+          COMMENT_HEADER=$'# Quarantined Fulfillment QA E2E Tests\nThe following Fulfillment QA E2E tests are in quarantine. If your changes would be covered by these tests, please be sure to perform manual testing.\n'
+          COMMENT_TABLE=$(cat $RSPEC_JSON | jq --raw-output '"|Description|Location|\n|---|---|\n" + ([.examples[] | "| \(.full_description) | \(.id) |\n"] | join(""))')
+          curl --request POST $NOTES_API -H "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" --data-urlencode "body=$COMMENT_HEADER $COMMENT_TABLE"
+        fi
+      else
+        echo 'No quarantined tests found'
+      fi
