@@ -27,7 +27,9 @@ module BulkImports
           return if user_membership && user_membership[:access_level] >= data[:access_level]
 
           # Create new membership for any other access level
-          portable.members.create!(data)
+          member = portable.members.new(data)
+          member.importing = true # avoid sending new member notification to the invited user
+          member.save!
         end
 
         private

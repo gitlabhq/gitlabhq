@@ -112,7 +112,7 @@ module LoginHelpers
     visit new_user_session_path
     expect(page).to have_css('.js-oauth-login')
 
-    check 'remember_me_omniauth' if remember_me
+    check 'js-remember-me-omniauth' if remember_me
 
     click_button "oauth-login-#{provider}"
   end

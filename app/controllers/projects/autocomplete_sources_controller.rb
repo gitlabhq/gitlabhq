@@ -59,7 +59,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
     # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/388541
     # type_id is a misnomer. QuickActions::TargetService actually requires an iid.
     QuickActions::TargetService
-      .new(project, current_user)
+      .new(container: project, current_user: current_user)
       .execute(target_type, params[:type_id])
   end
 

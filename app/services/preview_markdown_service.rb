@@ -55,7 +55,7 @@ class PreviewMarkdownService < BaseService
 
   def find_commands_target
     QuickActions::TargetService
-      .new(project, current_user, group: params[:group])
+      .new(container: project, current_user: current_user, params: { group: params[:group] })
       .execute(target_type, target_id)
   end
 

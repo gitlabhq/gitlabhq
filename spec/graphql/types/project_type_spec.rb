@@ -42,7 +42,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
-      allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers
+      allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -768,6 +768,57 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe 'is_forked' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:unforked_project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(unforked_project) }
+    let(:project) { nil }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            isForked
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query).as_json }
+
+    subject(:is_forked) { response.dig('data', 'project', 'isForked') }
+
+    context 'when project has a fork network' do
+      context 'when fork is itself' do
+        let(:project) { unforked_project }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when fork is not itself' do
+        let(:project) { forked_project }
+
+        it { is_expected.to be true }
+
+        it 'avoids N+1 queries' do
+          query_count = ActiveRecord::QueryRecorder.new { response }
+
+          expect(query_count).not_to exceed_query_limit(8)
+        end
+      end
+    end
+
+    context 'when project does not have a fork network' do
+      let(:project) { unforked_project }
+
+      before do
+        allow(project).to receive(:fork_network).and_return(nil)
+      end
+
+      it { is_expected.to be false }
     end
   end
 

@@ -402,7 +402,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       it 'displays the remember me checkbox' do
         visit new_user_session_path
 
-        expect(page).to have_field('remember_me_omniauth')
+        expect(page).to have_field('js-remember-me-omniauth')
       end
 
       context 'when remember me is not enabled' do
@@ -413,7 +413,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         it 'does not display the remember me checkbox' do
           visit new_user_session_path
 
-          expect(page).not_to have_field('remember_me_omniauth')
+          expect(page).not_to have_field('js-remember-me-omniauth')
         end
       end
 

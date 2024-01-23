@@ -252,7 +252,7 @@ Ideally, you should use [CI/CD variables](../variables/predefined_variables.md)
 to replace those values at runtime when each review app is created:
 
 - `data-project-id` is the project ID, which can be found by the `CI_PROJECT_ID`
-  variable.
+  variable or on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - `data-merge-request-id` is the merge request ID, which can be found by the
   `CI_MERGE_REQUEST_IID` variable. `CI_MERGE_REQUEST_IID` is available only if
   [`rules:if: $CI_PIPELINE_SOURCE == "merge_request_event`](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs)

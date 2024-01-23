@@ -685,6 +685,12 @@ module Types
       description: 'Project allows assigning multiple reviewers to a merge request.',
       null: false
 
+    field :is_forked,
+      GraphQL::Types::Boolean,
+      resolver: Resolvers::Projects::IsForkedResolver,
+      description: 'Project is forked.',
+      null: false
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

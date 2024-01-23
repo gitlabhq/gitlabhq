@@ -631,6 +631,8 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  scope :preload_user_detail, -> { preload(:user_detail) }
+
   def self.supported_keyset_orderings
     {
       id: [:asc, :desc],

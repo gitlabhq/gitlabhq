@@ -87,6 +87,12 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
         expect(member.expires_at).to eq(nil)
       end
 
+      it 'does not send new member notification' do
+        expect(NotificationService).not_to receive(:new)
+
+        subject.load(context, member_data)
+      end
+
       context 'when user_id is current user id' do
         it 'does not create new membership' do
           data = { user_id: user.id }

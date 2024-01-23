@@ -29,8 +29,7 @@ In GitLab 14.8 and earlier, projects in personal namespaces have an `access_leve
 
 The `group_saml_identity` attribute is only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible to group owners for users provisioned by the group with [SCIM](../user/group/saml_sso/scim_setup.md).
-[Issue 391453](https://gitlab.com/gitlab-org/gitlab/-/issues/391453) proposes to change the criteria for access to the `email` attribute from provisioned users to [enterprise users](../user/enterprise_user/index.md).
+The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/index.md) of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 
 ## List all members of a group or project
 

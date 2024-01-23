@@ -738,6 +738,12 @@ module API
         namespace: namespace,
         project: project
       )
+    rescue Gitlab::InternalEvents::UnknownEventError => e
+      Gitlab::ErrorTracking.track_exception(e, event_name: event_name)
+
+      # We want to keep the error silent on production to keep the behavior
+      # consistent with StandardError rescue
+      unprocessable_entity!(e.message) if Gitlab.dev_or_test_env?
     rescue StandardError => e
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name)
     end

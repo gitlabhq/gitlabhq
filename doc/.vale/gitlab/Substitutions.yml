@@ -28,8 +28,10 @@ swap:
   raketask: Rake task
   raketasks: Rake tasks
   rspec: RSpec
-  self hosted: self-managed
-  self-hosted: self-managed
+  GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   styleguide: style guide
   to login: to log in
   can login: can log in

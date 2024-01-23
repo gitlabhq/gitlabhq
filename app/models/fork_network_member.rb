@@ -9,6 +9,9 @@ class ForkNetworkMember < ApplicationRecord
 
   after_destroy :cleanup_fork_network
 
+  scope :by_projects, ->(ids) { where(project_id: ids) }
+  scope :with_fork_network, -> { joins(:fork_network).includes(:fork_network) }
+
   private
 
   def cleanup_fork_network

@@ -3,13 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
-  let(:service) { described_class.new(project, user) }
-
-  before do
-    project.add_maintainer(user)
-  end
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be(:user) { create(:user).tap { |u| project.add_maintainer(u) } }
+  let(:container) { project }
+  let(:service) { described_class.new(container: container, current_user: user) }
 
   describe '#execute' do
     shared_examples 'no target' do |type_iid:|
@@ -32,7 +30,7 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
       it 'builds a new target' do
         target = service.execute(type, type_iid)
 
-        expect(target.project).to eq(project)
+        expect(target.resource_parent).to eq(container)
         expect(target).to be_new_record
       end
     end
@@ -45,6 +43,15 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
       it_behaves_like 'find target'
       it_behaves_like 'build target', type_iid: nil
       it_behaves_like 'build target', type_iid: -1
+
+      context 'when issue belongs to a group' do
+        let(:container) { group }
+        let(:target) { create(:issue, :group_level, namespace: group) }
+
+        it_behaves_like 'find target'
+        it_behaves_like 'build target', type_iid: nil
+        it_behaves_like 'build target', type_iid: -1
+      end
     end
 
     context 'for work item' do
@@ -53,6 +60,13 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
       let(:type) { 'WorkItem' }
 
       it_behaves_like 'find target'
+
+      context 'when work item belongs to a group' do
+        let(:container) { group }
+        let(:target) { create(:work_item, :group_level, namespace: group) }
+
+        it_behaves_like 'find target'
+      end
     end
 
     context 'for merge request' do

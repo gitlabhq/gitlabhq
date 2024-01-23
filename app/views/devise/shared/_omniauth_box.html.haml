@@ -12,6 +12,6 @@
       data: { testid: test_id_for_provider(provider) },
       id: "oauth-login-#{provider}"
   - if render_remember_me
-    = render Pajamas::CheckboxTagComponent.new(name: 'remember_me_omniauth', value: nil) do |c|
+    = render Pajamas::CheckboxTagComponent.new(name: 'js-remember-me-omniauth', value: nil) do |c|
       - c.with_label do
         = _('Remember me')

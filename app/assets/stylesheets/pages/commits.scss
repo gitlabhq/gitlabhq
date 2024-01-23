@@ -136,6 +136,10 @@
     .commit-author-link {
       color: $gl-text-color;
     }
+
+    .commit-author-link.gl-text-truncate {
+      max-width: 20ch;
+    }
   }
 }
 

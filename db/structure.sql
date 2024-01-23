@@ -14603,7 +14603,7 @@ CREATE TABLE ci_pipeline_artifacts (
     verification_checksum bytea,
     verification_failure text,
     locked smallint DEFAULT 2,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     CONSTRAINT check_191b5850ec CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_abeeb71caf CHECK ((file IS NOT NULL)),
     CONSTRAINT ci_pipeline_artifacts_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
@@ -14658,7 +14658,7 @@ CREATE TABLE ci_pipeline_metadata (
     name text,
     auto_cancel_on_new_commit smallint DEFAULT 0 NOT NULL,
     auto_cancel_on_job_failure smallint DEFAULT 0 NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     CONSTRAINT check_9d3665463c CHECK ((char_length(name) <= 255))
 );
 
@@ -14782,7 +14782,7 @@ CREATE TABLE ci_pipelines (
 CREATE TABLE ci_pipelines_config (
     pipeline_id bigint NOT NULL,
     content text NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_pipelines_id_seq

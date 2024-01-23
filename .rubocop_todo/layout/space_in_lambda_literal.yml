@@ -277,7 +277,6 @@ Layout/SpaceInLambdaLiteral:
     - 'ee/lib/ee/api/entities/list.rb'
     - 'ee/lib/ee/api/entities/member.rb'
     - 'ee/lib/ee/api/entities/project_approval_rule.rb'
-    - 'ee/lib/ee/api/entities/user_basic.rb'
     - 'ee/lib/ee/api/entities/vulnerability_issue_link.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_epic_cache_counts.rb'
     - 'ee/lib/ee/gitlab/background_migration/delete_approval_rules_with_vulnerability.rb'

@@ -16,14 +16,15 @@ const commit = {
 
 const findTextExpander = () => wrapper.findComponent(GlButton);
 const findUserLink = () => wrapper.findByText(commit.author.name);
+const findCommitterWrapper = () => wrapper.findByTestId('committer');
 const findUserAvatarLink = () => wrapper.findComponent(UserAvatarLink);
 const findAuthorName = () => wrapper.findByText(`${commit.authorName} authored`);
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
 
-const createComponent = async ({ commitMock = {}, prevBlameLink } = {}) => {
+const createComponent = async ({ commitMock = {}, prevBlameLink, span = 3 } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
-    propsData: { commit: { ...commit, ...commitMock }, prevBlameLink },
+    propsData: { commit: { ...commit, ...commitMock }, prevBlameLink, span },
   });
 
   await nextTick();
@@ -44,6 +45,22 @@ describe('Repository last commit component', () => {
     expect(findUserLink().exists()).toBe(false);
     expect(findUserAvatarLink().exists()).toBe(false);
     expect(findAuthorName().exists()).toBe(true);
+  });
+
+  it('truncates author name when commit spans less than 3 lines', () => {
+    createComponent({ span: 2 });
+
+    expect(findCommitterWrapper().classes()).toEqual([
+      'committer',
+      'gl-flex-basis-full',
+      'gl-display-inline-flex',
+    ]);
+    expect(findUserLink().classes()).toEqual([
+      'commit-author-link',
+      'js-user-link',
+      'gl-display-inline-block',
+      'gl-text-truncate',
+    ]);
   });
 
   it('does not render description expander when description is null', () => {

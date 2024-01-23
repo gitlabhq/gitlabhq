@@ -73,7 +73,7 @@ module API
         end
 
         desc 'Updates a group or project invitation.' do
-          success Entities::Member
+          success Entities::Invitation
           tags %w[invitations]
         end
         params do
@@ -103,7 +103,7 @@ module API
           updated_member = result[:members].first
 
           if result[:status] == :success
-            present_members updated_member
+            present_member_invitations updated_member
           else
             render_validation_error!(updated_member)
           end
