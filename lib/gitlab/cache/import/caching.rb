@@ -239,6 +239,25 @@ module Gitlab
           end
         end
 
+        # Increments value of a field in a hash
+        #
+        # raw_key - The key of the hash to add to.
+        # field - The field to increment.
+        # value - The field value to add to the hash.
+        # timeout - The new timeout of the key.
+        def self.hash_increment(raw_key, field, value, timeout: TIMEOUT)
+          return if value.to_i <= 0
+
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.multi do |m|
+              m.hincrby(key, field, value.to_i)
+              m.expire(key, timeout)
+            end
+          end
+        end
+
         # Adds a value to a list.
         #
         # raw_key - The key of the list to add to.

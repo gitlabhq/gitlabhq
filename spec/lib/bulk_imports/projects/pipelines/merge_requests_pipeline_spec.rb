@@ -101,6 +101,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
       allow(project.repository).to receive(:create_branch)
 
       allow(::Projects::ImportExport::AfterImportMergeRequestsWorker).to receive(:perform_async)
+      allow(pipeline).to receive(:set_source_objects_counter)
 
       pipeline.run
     end

@@ -78,7 +78,7 @@ If you use [Slack slash commands](slack_slash_commands.md) or
 - Replace `/gitlab` with the trigger name you've configured for these integrations.
 - Remove `<project>`.
 
-The following slash commands are available in GitLab:
+The following slash commands are available for GitLab:
 
 | Command | Description |
 | ------- | ----------- |
@@ -157,7 +157,7 @@ To receive notifications to a private Slack channel, you must add the GitLab for
 
 ### Notification events
 
-The following GitLab events are available for Slack notifications:
+The following GitLab events can trigger notifications in Slack:
 
 | Event                                                                | Description                                                   |
 |----------------------------------------------------------------------|---------------------------------------------------------------|

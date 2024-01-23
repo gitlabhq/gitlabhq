@@ -9,6 +9,10 @@ FactoryBot.define do
     sequence(:pipeline_name) { |n| "pipeline_name_#{n}" }
     sequence(:jid) { |n| "bulk_import_entity_#{n}" }
 
+    source_objects_count { 1 }
+    fetched_objects_count { 1 }
+    imported_objects_count { 1 }
+
     trait :started do
       status { 1 }
     end

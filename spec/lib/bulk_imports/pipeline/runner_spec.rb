@@ -41,6 +41,12 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
     end
 
     stub_const('BulkImports::MyPipeline', pipeline)
+
+    allow_next_instance_of(BulkImports::ExportStatus) do |export_status|
+      allow(export_status).to receive(:total_objects_count).and_return(1)
+    end
+
+    allow(tracker).to receive_message_chain(:pipeline_class, :relation).and_return('relation')
   end
 
   let_it_be(:bulk_import) { create(:bulk_import) }
@@ -430,6 +436,35 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
         end
 
         subject.run
+      end
+    end
+
+    describe 'object counting' do
+      it 'increments object counters' do
+        allow_next_instance_of(BulkImports::Extractor) do |extractor|
+          allow(extractor).to receive(:extract).with(context).and_return(extracted_data)
+        end
+
+        allow_next_instance_of(BulkImports::Transformer) do |transformer|
+          allow(transformer)
+            .to receive(:transform)
+            .with(context, extracted_data.data.first)
+            .and_return(extracted_data.data.first)
+        end
+
+        allow_next_instance_of(BulkImports::Loader) do |loader|
+          expect(loader).to receive(:load).with(context, extracted_data.data.first)
+        end
+
+        expect(BulkImports::ObjectCounter).to receive(:set).with(tracker, :source, 1)
+        expect(BulkImports::ObjectCounter).to receive(:increment).with(tracker, :fetched)
+        expect(BulkImports::ObjectCounter).to receive(:increment).with(tracker, :imported)
+
+        subject.run
+
+        expect(tracker.source_objects_count).to eq(1)
+        expect(tracker.fetched_objects_count).to eq(1)
+        expect(tracker.imported_objects_count).to eq(1)
       end
     end
 

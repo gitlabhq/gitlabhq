@@ -152,7 +152,19 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "project_id": null,
         "created_at": "2021-06-18T09:47:37.390Z",
         "updated_at": "2021-06-18T09:47:51.867Z",
-        "failures": []
+        "failures": [],
+        "stats": {
+            "labels": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            },
+            "milestones": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            }
+        }
     },
     {
         "id": 2,
@@ -233,7 +245,19 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "status": "finished",
         "source_type": "gitlab",
         "created_at": "2021-06-18T09:45:55.358Z",
-        "updated_at": "2021-06-18T09:46:27.003Z"
+        "updated_at": "2021-06-18T09:46:27.003Z",
+        "stats": {
+            "labels": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            },
+            "milestones": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            }
+        }
     }
 ]
 ```

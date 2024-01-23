@@ -36,6 +36,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: project_data))
       end
 
+      allow(project_pipeline).to receive(:set_source_objects_counter)
+
       group.add_owner(user)
     end
 

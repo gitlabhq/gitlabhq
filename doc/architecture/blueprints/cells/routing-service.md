@@ -2,6 +2,7 @@
 stage: core platform
 group: Tenant Scale
 description: 'Cells: Routing Service'
+status: accepted
 ---
 
 # Cells: Routing Service
@@ -398,7 +399,7 @@ For the above example:
 {
     "metadata": {
         "rule_id": "c9scvaiwj51a75kzoh917uwtnw8z4ebl",
-        "headers": { 
+        "headers": {
             "all_request_headers": "value"
         },
         "method": "GET",

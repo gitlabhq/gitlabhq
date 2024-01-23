@@ -171,6 +171,40 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache, :clean
     end
   end
 
+  describe '.hash_increment' do
+    it 'increments a value in a hash' do
+      described_class.hash_increment('foo', 'field', 1)
+      described_class.hash_increment('foo', 'field', 5)
+
+      key = described_class.cache_key_for('foo')
+      values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+
+      expect(values).to eq({ 'field' => '6' })
+    end
+
+    context 'when the value is not an integer' do
+      it 'returns' do
+        described_class.hash_increment('another-foo', 'another-field', 'not-an-integer')
+
+        key = described_class.cache_key_for('foo')
+        values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+
+        expect(values).to eq({})
+      end
+    end
+
+    context 'when the value is less than 0' do
+      it 'returns' do
+        described_class.hash_increment('another-foo', 'another-field', -5)
+
+        key = described_class.cache_key_for('foo')
+        values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+
+        expect(values).to eq({})
+      end
+    end
+  end
+
   describe '.write_multiple' do
     it 'sets multiple keys when key_prefix not set' do
       mapping = { 'foo' => 10, 'bar' => 20 }

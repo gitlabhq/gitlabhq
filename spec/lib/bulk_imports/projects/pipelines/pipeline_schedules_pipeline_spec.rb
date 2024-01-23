@@ -43,6 +43,8 @@ RSpec.describe BulkImports::Projects::Pipelines::PipelineSchedulesPipeline, :cle
       allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [schedule]))
     end
 
+    allow(pipeline).to receive(:set_source_objects_counter)
+
     pipeline.run
   end
 

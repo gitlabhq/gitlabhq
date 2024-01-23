@@ -32,6 +32,7 @@ module TimeTrackable
     @spent_at = options[:spent_at]
     @summary = options[:summary]
     @original_total_time_spent = nil
+    @category_id = category_id(options[:category])
 
     return if @time_spent == 0
 
@@ -94,7 +95,8 @@ module TimeTrackable
       note_id: @time_spent_note_id,
       user: @time_spent_user,
       spent_at: @spent_at,
-      summary: @summary
+      summary: @summary,
+      timelog_category_id: @category_id
     )
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -118,5 +120,9 @@ module TimeTrackable
     return if time_estimate.is_a?(Numeric) && time_estimate >= 0
 
     errors.add(:time_estimate, _('must have a valid format and be greater than or equal to zero.'))
+  end
+
+  def category_id(category)
+    TimeTracking::TimelogCategory.find_by_name(project.root_namespace, category).first&.id
   end
 end

@@ -219,7 +219,7 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          const regexp = /\[[a-z]+:/;
+          const regexp = /^<\[[a-z]+:/;
           const match = regexp.exec(value.params);
           if (match) {
             [referencePrefix] = match;

@@ -181,7 +181,14 @@ module Gitlab
           spend_time_message(time_spent, time_spent_date, true)
         end
 
-        params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
+        params do
+          base_params = 'time(1h30m | -1h30m) <date(YYYY-MM-DD)>'
+          if Feature.enabled?(:timelog_categories, quick_action_target.project)
+            "#{base_params} <[timecategory:category-name]>"
+          else
+            base_params
+          end
+        end
         types Issue, MergeRequest
         condition do
           quick_action_target.supports_time_tracking? &&
@@ -190,12 +197,13 @@ module Gitlab
         parse_params do |raw_time_date|
           Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
         end
-        command :spend, :spent, :spend_time do |time_spent, time_spent_date|
+        command :spend, :spent, :spend_time do |time_spent, time_spent_date, category|
           if time_spent
             @updates[:spend_time] = {
               duration: time_spent,
               user_id: current_user.id,
-              spent_at: time_spent_date
+              spent_at: time_spent_date,
+              category: category
             }
           end
         end

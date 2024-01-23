@@ -122,6 +122,12 @@ export const MERGE_REQUEST_METRICS = {
   THROUGHPUT: MERGE_REQUEST_THROUGHPUT_TYPE,
 };
 
+export const CONTRIBUTOR_COUNT_TYPE = 'contributor_count';
+
+export const CONTRIBUTOR_METRICS = {
+  COUNT: CONTRIBUTOR_COUNT_TYPE,
+};
+
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
     description: s__(
@@ -192,6 +198,15 @@ export const METRIC_TOOLTIPS = {
     groupLink: '-/analytics/productivity_analytics',
     projectLink: '-/analytics/merge_request_analytics',
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+  [CONTRIBUTOR_METRICS.COUNT]: {
+    description: s__(
+      'ValueStreamAnalytics|Number of monthly unique users with contributions in the group.',
+    ),
+    groupLink: '-/contribution_analytics',
+    docsLink: helpPagePath('user/profile/contributions_calendar.html', {
+      anchor: 'user-contribution-events',
+    }),
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
     description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),

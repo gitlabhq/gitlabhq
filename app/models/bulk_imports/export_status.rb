@@ -46,6 +46,10 @@ module BulkImports
       status['batches'].find { |item| item['batch_number'] == batch_number }
     end
 
+    def total_objects_count
+      status['total_objects_count']
+    end
+
     private
 
     attr_reader :client, :entity, :relation, :pipeline_tracker

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::GroupAttributesPipeline do
+RSpec.describe BulkImports::Groups::Pipelines::GroupAttributesPipeline, feature_category: :importers do
   subject(:pipeline) { described_class.new(context) }
 
   let_it_be(:user) { create(:user) }
@@ -35,6 +35,8 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupAttributesPipeline do
           BulkImports::Pipeline::ExtractedData.new(data: group_attributes)
         )
       end
+
+      allow(pipeline).to receive(:set_source_objects_counter)
     end
 
     it 'imports allowed group attributes' do

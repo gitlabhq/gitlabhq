@@ -35,6 +35,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline, f
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [[external_pull_request, 0]]))
       end
 
+      allow(pipeline).to receive(:set_source_objects_counter)
+
       pipeline.run
     end
 

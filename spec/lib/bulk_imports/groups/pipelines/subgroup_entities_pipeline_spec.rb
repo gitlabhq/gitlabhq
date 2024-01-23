@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
+RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, path: 'group') }
   let_it_be(:parent) { create(:group, name: 'Imported Group', path: 'imported-group') }
@@ -24,6 +24,8 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline do
       allow_next_instance_of(BulkImports::Groups::Extractors::SubgroupsExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(extracted_data)
       end
+
+      allow(subject).to receive(:set_source_objects_counter)
 
       parent.add_owner(user)
     end

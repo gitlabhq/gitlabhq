@@ -487,4 +487,71 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       expect(subject.source_version).to eq(subject.bulk_import.source_version_info)
     end
   end
+
+  describe '#checksums' do
+    let(:entity) { create(:bulk_import_entity) }
+
+    it 'returns checksums for all imported relations' do
+      create(:bulk_import_tracker,
+        entity: entity,
+        relation: 'BulkImports::Common::Pipelines::MilestonesPipeline',
+        source_objects_count: 7,
+        fetched_objects_count: 6,
+        imported_objects_count: 5
+      )
+
+      create(:bulk_import_tracker,
+        entity: entity,
+        relation: 'BulkImports::Common::Pipelines::LabelsPipeline',
+        source_objects_count: 10,
+        fetched_objects_count: 9,
+        imported_objects_count: 8
+      )
+
+      expect(entity.checksums).to eq(
+        {
+          milestones: {
+            source: 7,
+            fetched: 6,
+            imported: 5
+          },
+          labels: {
+            source: 10,
+            fetched: 9,
+            imported: 8
+          }
+        }
+      )
+    end
+
+    context 'when tracker should not be included' do
+      let(:tracker) { create(:bulk_import_tracker, entity: entity, relation: 'BulkImports::Common::Pipelines::MilestonesPipeline') }
+
+      context 'when tracker is for a file extraction pipeline' do
+        it 'does not include the tracker' do
+          expect(entity.checksums).to eq({})
+        end
+      end
+
+      context 'when tracker is skipped' do
+        it 'does not include the tracker' do
+          tracker.skip!
+
+          expect(entity.checksums).to eq({})
+        end
+      end
+
+      context 'when tracker checksums are zeros' do
+        it 'does not include the tracker' do
+          tracker.update!(
+            source_objects_count: 0,
+            fetched_objects_count: 0,
+            imported_objects_count: 0
+          )
+
+          expect(entity.checksums).to eq({})
+        end
+      end
+    end
+  end
 end

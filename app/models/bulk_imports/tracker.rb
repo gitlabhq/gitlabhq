@@ -86,5 +86,42 @@ class BulkImports::Tracker < ApplicationRecord
     event :cleanup_stale do
       transition [:created, :started] => :timeout
     end
+
+    after_transition any => [:finished, :failed] do |tracker|
+      BulkImports::ObjectCounter.persist!(tracker)
+    end
+  end
+
+  def checksums
+    return unless file_extraction_pipeline?
+
+    # Return cached counters until they expire
+    { importing_relation => cached_checksums || persisted_checksums }
+  end
+
+  def checksums_empty?
+    return true unless checksums
+
+    sums = checksums[importing_relation]
+
+    sums[:source] == 0 && sums[:fetched] == 0 && sums[:imported] == 0
+  end
+
+  def importing_relation
+    pipeline_class.relation.to_sym
+  end
+
+  private
+
+  def cached_checksums
+    BulkImports::ObjectCounter.summary(self)
+  end
+
+  def persisted_checksums
+    {
+      source: source_objects_count,
+      fetched: fetched_objects_count,
+      imported: imported_objects_count
+    }
   end
 end

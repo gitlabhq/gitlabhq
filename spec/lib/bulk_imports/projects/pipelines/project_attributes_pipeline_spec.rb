@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :with_license do
+RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :with_license, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import) }
@@ -61,6 +61,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
           BulkImports::Pipeline::ExtractedData.new(data: project_attributes)
         )
       end
+
+      allow(pipeline).to receive(:set_source_objects_counter)
 
       pipeline.run
     end

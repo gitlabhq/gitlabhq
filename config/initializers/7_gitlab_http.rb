@@ -25,7 +25,7 @@ Gitlab::HTTP_V2.configure do |config|
   end
 end
 
-if Gitlab.config.gitlab['http_client']
+if Gitlab.config.gitlab['http_client'].present?
   pem = File.read(Gitlab.config.gitlab['http_client']['tls_client_cert_file'])
   password = Gitlab.config.gitlab['http_client']['tls_client_cert_password']
 

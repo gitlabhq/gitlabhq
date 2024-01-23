@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -42,6 +42,10 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline do
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
   subject(:pipeline) { described_class.new(context) }
+
+  before do
+    allow(pipeline).to receive(:set_source_objects_counter)
+  end
 
   describe '#run', :clean_gitlab_redis_cache do
     before do

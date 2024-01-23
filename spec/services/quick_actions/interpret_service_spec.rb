@@ -384,6 +384,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
+                                  category: nil,
                                   duration: 3600,
                                   user_id: developer.id,
                                   spent_at: DateTime.current
@@ -398,6 +399,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
+                                  category: nil,
                                   duration: -7200,
                                   user_id: developer.id,
                                   spent_at: DateTime.current
@@ -417,6 +419,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: {
+                                category: nil,
                                 duration: 1800,
                                 user_id: developer.id,
                                 spent_at: Date.parse(date)
@@ -437,6 +440,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})
+      end
+    end
+
+    shared_examples 'spend command with category' do
+      it 'populates spend_time with expected attributes' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates).to match(spend_time: a_hash_including(category: 'pm'))
       end
     end
 
@@ -1541,6 +1552,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
     it_behaves_like 'spend command with future date' do
       let(:content) { '/spent 30m 6017-10-10' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with category' do
+      let(:content) { '/spent 30m [timecategory:pm]' }
       let(:issuable) { issue }
     end
 

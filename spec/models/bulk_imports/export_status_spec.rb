@@ -389,4 +389,12 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
     end
   end
+
+  describe '#total_objects_count' do
+    let(:status) { BulkImports::Export::FINISHED }
+
+    it 'returns total objects count' do
+      expect(subject.total_objects_count).to eq(1)
+    end
+  end
 end

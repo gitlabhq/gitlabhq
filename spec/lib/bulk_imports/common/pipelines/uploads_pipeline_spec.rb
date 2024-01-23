@@ -19,6 +19,8 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
 
     FileUtils.mkdir_p(uploads_dir_path)
     FileUtils.touch(upload_file_path)
+
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   after do

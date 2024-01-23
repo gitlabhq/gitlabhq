@@ -48,6 +48,8 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline, feature_categ
     allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
       allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: exported_milestones))
     end
+
+    allow(subject).to receive(:set_source_objects_counter)
   end
 
   subject { described_class.new(context) }

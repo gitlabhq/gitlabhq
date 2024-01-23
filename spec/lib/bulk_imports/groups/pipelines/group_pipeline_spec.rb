@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
+RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: :importers do
   describe '#run', :clean_gitlab_redis_cache do
     let_it_be(:user) { create(:user) }
     let_it_be(:parent) { create(:group) }
@@ -41,6 +41,8 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: group_data))
       end
+
+      allow(subject).to receive(:set_source_objects_counter)
 
       parent.add_owner(user)
     end

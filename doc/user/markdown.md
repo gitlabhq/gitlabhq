@@ -1047,6 +1047,8 @@ the note content.
 Regardless of the tag names, the relative order of the reference tags determines the rendered
 numbering.
 
+Regardless where you put the note, it's always shown at the bottom of the file.
+
 <!--
 The following codeblock uses HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblock.

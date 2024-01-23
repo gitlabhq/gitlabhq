@@ -12,6 +12,7 @@ module BulkImports
 
         info(message: 'Pipeline started')
 
+        set_source_objects_counter
         extracted_data = extracted_data_from
 
         if extracted_data
@@ -21,6 +22,8 @@ module BulkImports
             raw_entry = entry.dup
             next if already_processed?(raw_entry, index)
 
+            increment_fetched_objects_counter
+
             transformers.each do |transformer|
               entry = run_pipeline_step(:transformer, transformer.class.name) do
                 transformer.transform(context, entry)
@@ -29,6 +32,8 @@ module BulkImports
 
             run_pipeline_step(:loader, loader.class.name, entry) do
               loader.load(context, entry)
+
+              increment_imported_objects_counter
             end
 
             save_processed_entry(raw_entry, index)
@@ -195,6 +200,21 @@ module BulkImports
       def refresh_entity_and_import
         context.entity.touch
         context.bulk_import.touch
+      end
+
+      def set_source_objects_counter
+        # Export status is cached for 24h and read from Redis at this point
+        export_status = ExportStatus.new(tracker, tracker.importing_relation)
+
+        ObjectCounter.set(tracker, ObjectCounter::SOURCE_COUNTER, export_status.total_objects_count)
+      end
+
+      def increment_fetched_objects_counter
+        ObjectCounter.increment(tracker, ObjectCounter::FETCHED_COUNTER)
+      end
+
+      def increment_imported_objects_counter
+        ObjectCounter.increment(tracker, ObjectCounter::IMPORTED_COUNTER)
       end
     end
   end

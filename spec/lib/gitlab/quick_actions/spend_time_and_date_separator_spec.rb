@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator do
+RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category: :team_planning do
   subject { described_class }
 
   shared_examples 'arg line with invalid parameters' do
@@ -51,23 +51,38 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator do
       end
     end
 
-    context 'only time present in arg line' do
-      it_behaves_like 'arg line with valid parameters' do
-        let(:valid_arg) { '2m 3m 5m 1h' }
-        let(:time) { Gitlab::TimeTrackingFormatter.parse(valid_arg) }
-        let(:date) { DateTime.current }
-        let(:expected_response) { [time, date] }
+    context 'time present in arg line' do
+      let(:time_part) { '2m 3m 5m 1h' }
+      let(:valid_arg) { time_part }
+      let(:time) { Gitlab::TimeTrackingFormatter.parse(time_part) }
+      let(:date) { DateTime.current }
+      let(:expected_response) { [time, date, nil] }
+
+      it_behaves_like 'arg line with valid parameters'
+
+      context 'timecategory present in arg line' do
+        let(:valid_arg) { "#{time_part} [timecategory:dev]" }
+        let(:expected_response) { [time, date, 'dev'] }
+
+        it_behaves_like 'arg line with valid parameters'
       end
     end
 
     context 'simple time with date in arg line' do
-      it_behaves_like 'arg line with valid parameters' do
-        let(:raw_time) { '10m' }
-        let(:raw_date) { '2016-02-02' }
-        let(:valid_arg) { "#{raw_time} #{raw_date}" }
-        let(:date) { Date.parse(raw_date) }
-        let(:time) { Gitlab::TimeTrackingFormatter.parse(raw_time) }
-        let(:expected_response) { [time, date] }
+      let(:raw_time) { '10m' }
+      let(:raw_date) { '2016-02-02' }
+      let(:valid_arg) { "#{raw_time} #{raw_date}" }
+      let(:date) { Date.parse(raw_date) }
+      let(:time) { Gitlab::TimeTrackingFormatter.parse(raw_time) }
+      let(:expected_response) { [time, date, nil] }
+
+      it_behaves_like 'arg line with valid parameters'
+
+      context 'timecategory present in arg line' do
+        let(:valid_arg) { "#{raw_time} #{raw_date} [timecategory:support]" }
+        let(:expected_response) { [time, date, 'support'] }
+
+        it_behaves_like 'arg line with valid parameters'
       end
     end
 
@@ -78,7 +93,7 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator do
         let(:valid_arg) { "#{raw_time} #{raw_date}" }
         let(:date) { Date.parse(raw_date) }
         let(:time) { Gitlab::TimeTrackingFormatter.parse(raw_time) }
-        let(:expected_response) { [time, date] }
+        let(:expected_response) { [time, date, nil] }
       end
     end
   end

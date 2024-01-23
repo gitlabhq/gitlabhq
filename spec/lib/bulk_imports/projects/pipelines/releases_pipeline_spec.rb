@@ -46,6 +46,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ReleasesPipeline, feature_categ
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [with_index]))
       end
+
+      allow(pipeline).to receive(:set_source_objects_counter)
     end
 
     it 'imports release into destination project' do

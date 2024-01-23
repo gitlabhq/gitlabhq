@@ -30,6 +30,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeli
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [[policy, 0]]))
       end
 
+      allow(pipeline).to receive(:set_source_objects_counter)
+
       pipeline.run
 
       policy.each_pair do |key, value|

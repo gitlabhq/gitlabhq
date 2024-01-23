@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::MembersPipeline do
+RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
   let_it_be(:member_user1) { create(:user, email: 'email1@email.com') }
@@ -24,6 +24,10 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline do
   let(:members) { portable.members.map { |m| m.slice(:user_id, :access_level) } }
 
   subject(:pipeline) { described_class.new(context) }
+
+  before do
+    allow(pipeline).to receive(:set_source_objects_counter)
+  end
 
   def extracted_data(email:, has_next_page: false)
     data = {

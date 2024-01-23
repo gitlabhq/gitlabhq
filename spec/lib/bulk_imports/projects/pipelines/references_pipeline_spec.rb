@@ -37,6 +37,10 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
 
   subject(:pipeline) { described_class.new(context) }
 
+  before do
+    allow(subject).to receive(:set_source_objects_counter)
+  end
+
   describe '#run' do
     it "enqueues TransformReferencesWorker for the project's issues, mrs and their notes" do
       expect(BulkImports::TransformReferencesWorker).to receive(:perform_in)

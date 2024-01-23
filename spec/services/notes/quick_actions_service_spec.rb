@@ -105,6 +105,19 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
           end
         end
 
+        context 'with a timecategory' do
+          let!(:timelog_category) { create(:timelog_category, name: 'bob', namespace: project.root_namespace) }
+          let(:note_text) { "a note \n/spend 1h [timecategory:bob]" }
+
+          it 'sets the category of the new timelog' do
+            new_content, update_params = service.execute(note)
+            note.update!(note: new_content)
+            service.apply_updates(update_params, note)
+
+            expect(Timelog.last.timelog_category_id).to eq(timelog_category.id)
+          end
+        end
+
         context 'adds a system note' do
           context 'when not specifying a date' do
             let(:note_text) { "/spend 1h" }

@@ -45,6 +45,10 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
 
   let(:extracted_data) { BulkImports::Pipeline::ExtractedData.new(data: data, page_info: page_info) }
 
+  before do
+    allow(pipeline).to receive(:set_source_objects_counter)
+  end
+
   describe 'extractor' do
     it 'is a GraphqlExtractor with Graphql::GetSnippetRepositoryQuery' do
       expect(described_class.get_extractor).to eq(

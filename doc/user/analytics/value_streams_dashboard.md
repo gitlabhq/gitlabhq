@@ -35,6 +35,8 @@ The Value Streams Dashboard panels has a default configuration, but you can also
 
 ### DevSecOps metrics comparison panel
 
+> Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
+
 The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.
 
@@ -47,6 +49,9 @@ that are the largest value contributors, overperforming, or underperforming.
 
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
+
+NOTE:
+The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md), and enable the [feature flags](../../administration/feature_flags.md) `clickhouse_data_collection` and `event_sync_worker_for_click_house`.
 
 ### DORA Performers score panel
 
@@ -242,6 +247,7 @@ If the comparison panel from the configuration file is enabled with `filter_labe
 | Issues closed | Number of issues closed by month. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [Value Stream Analytics](../group/value_stream_analytics/index.md)  | `issues_completed` |
 | Number of deploys | Total number of deploys to production. | [Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Merge request analytics](merge_request_analytics.md) | `deploys` |
 | Merge request throughput | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `merge_request_throughput` |
+| Contributor count | Number of monthly unique users with contributions in the group.| [Contribution Analytics](https://gitlab.com/groups/gitlab-org/-/contribution_analytics) | [User contribution events](../profile/contributions_calendar.md#user-contribution-events) | `contributor_count` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_high` |
 
