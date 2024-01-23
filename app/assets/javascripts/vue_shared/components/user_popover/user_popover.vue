@@ -267,6 +267,10 @@ export default {
       <template v-else>
         <template v-if="!isBlocked">
           <div class="gl-text-gray-500">
+            <div v-if="user.email" class="gl-display-flex gl-mb-2">
+              <gl-icon name="mail" class="gl-flex-shrink-0" />
+              <span ref="email" class="gl-ml-2">{{ user.email }}</span>
+            </div>
             <div v-if="user.bio" class="gl-display-flex gl-mb-2">
               <gl-icon name="profile" class="gl-flex-shrink-0" />
               <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>

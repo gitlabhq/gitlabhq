@@ -5,18 +5,12 @@ module Import
     include ActiveSupport::NumberHelper
     include Gitlab::Utils::StrongMemoize
 
-    MINIMUM_IMPORT_SCOPE = %w[repo].freeze
-    COLLAB_IMPORT_SCOPES = %w[admin:org read:org].freeze
-
     attr_accessor :client
     attr_reader :params, :current_user
 
     def execute(access_params, provider)
       context_error = validate_context
       return context_error if context_error
-
-      scope_error = validate_scopes
-      return scope_error if scope_error
 
       project = create_project(access_params, provider)
       track_access_level('github')
@@ -103,26 +97,6 @@ module Import
     end
 
     private
-
-    def validate_scopes
-      # We need to call `#repo` to ensure the `#last_response` from the client has the headers we need.
-      repo
-      scopes = client.octokit.last_response.headers["x-oauth-scopes"]
-      scopes = scopes.split(',').map(&:strip)
-
-      unless scopes.intersect?(MINIMUM_IMPORT_SCOPE + COLLAB_IMPORT_SCOPES)
-        return log_and_return_error('Invalid Scope', _('Your GitHub access token does not have the correct scope to import.'), :unprocessable_entity)
-      end
-
-      collaborators_import = params.dig(:optional_stages, :collaborators_import)
-      # A value for `collaborators_import` may not be included in POST params
-      # and the default value is `true`
-      return unless collaborators_import == true || collaborators_import.nil?
-
-      return if scopes.intersect?(COLLAB_IMPORT_SCOPES)
-
-      log_and_return_error('Invalid scope', _('Your GitHub access token does not have the correct scope to import collaborators.'), :unprocessable_entity)
-    end
 
     def validate_context
       if blocked_url?

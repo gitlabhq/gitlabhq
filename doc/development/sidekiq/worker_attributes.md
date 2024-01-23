@@ -406,3 +406,18 @@ class LimitedWorker
   # ...
 end
 ```
+
+## Skip execution of workers in Geo secondary
+
+On Geo secondary sites, database writes are disabled.
+You must skip execution of workers that attempt database writes from Geo secondary sites.
+To skip execution, prepend the `::Geo::SkipSecondary` module to the worker class.
+
+```ruby
+class DummyWorker
+  include ApplicationWorker
+  prepend ::Geo::SkipSecondary
+
+ # ...
+end
+```

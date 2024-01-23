@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { unionBy } from 'lodash';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
@@ -139,12 +139,10 @@ export default {
       return this.allowsMultipleAssignees ? __('Select assignees') : __('Select assignee');
     },
     filteredAssignees() {
-      return isEmpty(this.searchUsers)
-        ? this.assignees
-        : this.searchUsers.filter(({ id }) => this.localAssigneeIds.includes(id));
+      return unionBy(this.assignees, this.searchUsers, 'id');
     },
     localAssignees() {
-      return this.filteredAssignees || [];
+      return this.filteredAssignees.filter(({ id }) => this.localAssigneeIds.includes(id)) || [];
     },
   },
   watch: {
@@ -238,7 +236,7 @@ export default {
     :dropdown-label="dropdownLabel"
     :can-update="canUpdate"
     dropdown-name="assignees"
-    show-footer
+    :show-footer="canInviteMembers"
     :infinite-scroll="hasNextPage"
     :infinite-scroll-loading="isLoadingMore"
     :loading="isLoadingUsers"

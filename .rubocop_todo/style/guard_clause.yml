@@ -411,7 +411,6 @@ Style/GuardClause:
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/helpers/version.rb'
     - 'lib/api/projects.rb'
-    - 'lib/backup/files.rb'
     - 'lib/banzai/filter/external_link_filter.rb'
     - 'lib/banzai/filter/gollum_tags_filter.rb'
     - 'lib/banzai/filter/references/merge_request_reference_filter.rb'

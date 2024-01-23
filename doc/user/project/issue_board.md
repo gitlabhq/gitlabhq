@@ -602,7 +602,7 @@ Prerequisites:
 To move an issue to the start of the list:
 
 1. In an issue board, hover over the card of the issue you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to start of list**.
 
 #### Move an issue to the end of the list
 
@@ -619,7 +619,7 @@ Prerequisites:
 To move an issue to the end of the list:
 
 1. In an issue board, hover over the card of the issue you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to end of list**.
 
 #### Dragging issues between lists
 

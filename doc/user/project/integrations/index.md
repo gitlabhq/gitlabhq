@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Project integrations **(FREE ALL)**
 
 NOTE:
-This page contains information about configuring project integrations on GitLab.com. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
+This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
 
 You can integrate with external applications to add functionality to GitLab.
 

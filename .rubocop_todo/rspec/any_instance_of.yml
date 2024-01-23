@@ -118,7 +118,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/api/entities/merge_request_basic_spec.rb'
     - 'spec/lib/api/entities/merge_request_changes_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
-    - 'spec/lib/backup/files_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'
     - 'spec/lib/banzai/commit_renderer_spec.rb'
     - 'spec/lib/banzai/filter/references/external_issue_reference_filter_spec.rb'

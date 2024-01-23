@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting GitLab for Jira Cloud app administration **(FREE SELF)**
 
-When administering the GitLab for Jira Cloud app for self-managed instances, you might encounter the following issues.
+When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 
-For GitLab.com, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
+For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
 
 ## Sign-in message displayed when already signed in
 

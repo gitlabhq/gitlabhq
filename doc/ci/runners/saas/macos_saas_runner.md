@@ -37,7 +37,7 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 
 | VM image                   | Status |              |
 |----------------------------|--------|--------------|
-| `macos-12-xcode-14`        | `GA`   |              |
+| `macos-12-xcode-14`        | `Deprecated` | (Removal in GitLab 16.10) |
 | `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-13.yml) |
 | `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-14.yml) |
 
@@ -60,7 +60,7 @@ The following sample `.gitlab-ci.yml` file shows how to start using the SaaS run
 .macos_saas_runners:
   tags:
     - saas-macos-medium-m1
-  image: macos-12-xcode-14
+  image: macos-14-xcode-15
   before_script:
     - echo "started by ${GITLAB_USER_NAME}"
 

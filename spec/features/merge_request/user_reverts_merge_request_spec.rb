@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'User reverts a merge request', :js, feature_category: :code_review_workflow do
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { create(:user) }
+  let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
   before do
     project.add_developer(user)
@@ -57,6 +57,22 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
     visit(merge_request_path(merge_request))
 
     expect(page).not_to have_link('Revert')
+  end
+
+  context 'when project merge method is fast-forward merge and squash is enabled' do
+    let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'compare-with-merge-head-target', source_project: project, squash: true) }
+
+    before do
+      project.update!(merge_requests_ff_only_enabled: true)
+    end
+
+    it 'reverts a merge request', :sidekiq_might_not_need_inline do
+      revert_commit
+
+      wait_for_requests
+
+      expect(page).to have_content('The merge request has been successfully reverted.')
+    end
   end
 
   def revert_commit(create_merge_request: false)

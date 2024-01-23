@@ -242,6 +242,10 @@ module Backup
       extract_skippable_tasks(list)
     end
 
+    def skip_task?(task_name)
+      !!skippable_tasks[task_name]
+    end
+
     private
 
     def extract_skippable_operations!(list)

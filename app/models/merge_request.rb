@@ -1905,6 +1905,10 @@ class MergeRequest < ApplicationRecord
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
 
+  def squash_commit
+    @squash_commit ||= project.commit(squash_commit_sha) if squash_commit_sha
+  end
+
   def short_merge_commit_sha
     Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
@@ -1922,9 +1926,32 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Exists only for merged merge requests
+  def commit_to_revert
+    return unless merged?
+
+    # By default, it's equal to a merge commit
+    return merge_commit if merge_commit
+
+    # But in case of fast-forward merge merge commits are not created
+    # To solve that we can use `squash_commit` if the merge request was squashed
+    return squash_commit if squash_commit
+
+    # Edge case: one commit in the merge request without merge or squash commit
+    return project.commit(diff_head_sha) if commits_count == 1
+
+    nil
+  end
+
+  def commit_to_cherry_pick
+    commit_to_revert
+  end
+
   def can_be_reverted?(current_user)
-    return false unless merge_commit
     return false unless merged_at
+
+    commit = commit_to_revert
+    return false unless commit
 
     # It is not guaranteed that Note#created_at will be strictly later than
     # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
@@ -1934,7 +1961,7 @@ class MergeRequest < ApplicationRecord
 
     notes_association = notes_with_associations.where('created_at >= ?', cutoff)
 
-    !merge_commit.has_been_reverted?(current_user, notes_association)
+    !commit.has_been_reverted?(current_user, notes_association)
   end
 
   def merged_at
@@ -1949,7 +1976,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_be_cherry_picked?
-    merge_commit.present?
+    commit_to_cherry_pick.present?
   end
 
   def has_complete_diff_refs?

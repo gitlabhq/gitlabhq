@@ -167,7 +167,6 @@ Style/SymbolProc:
     - 'spec/graphql/types/work_items/widget_type_enum_spec.rb'
     - 'spec/helpers/instance_configuration_helper_spec.rb'
     - 'spec/helpers/members_helper_spec.rb'
-    - 'spec/lib/backup/gitaly_backup_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/loose_foreign_key_helpers_spec.rb'
     - 'spec/lib/gitlab/git/commit_spec.rb'
     - 'spec/lib/gitlab/gpg/invalid_gpg_signature_updater_spec.rb'

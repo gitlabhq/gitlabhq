@@ -877,6 +877,37 @@ eos
     end
   end
 
+  describe '#merged_merge_request' do
+    subject { commit.merged_merge_request(user) }
+
+    let(:user) { project.first_owner }
+
+    before do
+      allow(commit).to receive(:parent_ids).and_return(parent_ids)
+    end
+
+    context 'when commit is a merge commit' do
+      let!(:merge_request) { create(:merge_request, source_project: project, merge_commit_sha: commit.id) }
+      let(:parent_ids) { [1, 2] }
+
+      it { is_expected.to eq(merge_request) }
+    end
+
+    context 'when commit is a squash commit' do
+      let!(:merge_request) { create(:merge_request, source_project: project, squash_commit_sha: commit.id) }
+      let(:parent_ids) { [1] }
+
+      it { is_expected.to eq(merge_request) }
+    end
+
+    context 'when commit does not belong to the merge request' do
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+      let(:parent_ids) { [1] }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#tipping_refs' do
     let_it_be(:tag_name) { 'v1.1.0' }
     let_it_be(:branch_names) { %w[master not-merged-branch v1.1.0] }

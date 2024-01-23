@@ -34,6 +34,7 @@ export const member = {
     availability: null,
     lastActivityOn: '2022-03-15',
     showStatus: true,
+    email: 'my@email.com',
   },
   id: 238,
   createdAt: '2020-07-17T16:22:46.923Z',

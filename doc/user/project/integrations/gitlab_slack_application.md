@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Slack app **(FREE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
 
 NOTE:
-This page contains information about configuring the GitLab for Slack app on GitLab.com. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
+This page contains user documentation for the GitLab for Slack app. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
 
 The GitLab for Slack app is a native Slack app that provides [slash commands](#slash-commands) and [notifications](#slack-notifications)
 in your Slack workspace. GitLab links your Slack user with your GitLab user so that any command

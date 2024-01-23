@@ -2580,8 +2580,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/api/validations/validators/untrusted_regexp_spec.rb'
     - 'spec/lib/backup/database_backup_error_spec.rb'
     - 'spec/lib/backup/file_backup_error_spec.rb'
-    - 'spec/lib/backup/files_spec.rb'
-    - 'spec/lib/backup/task_spec.rb'
     - 'spec/lib/banzai/filter/inline_diff_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'
     - 'spec/lib/bitbucket/collection_spec.rb'

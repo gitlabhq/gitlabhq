@@ -272,4 +272,20 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
       end
     end
   end
+
+  describe '#skip_task?' do
+    tasks = %w[db uploads builds artifacts lfs terraform_state registry pages repositories packages ci_secure_files]
+
+    tasks.each do |task_name|
+      it "returns true when task #{task_name} is skipped" do
+        options.skippable_tasks[task_name] = true
+
+        expect(options.skip_task?(task_name)).to be(true)
+      end
+
+      it "returns false when task #{task_name} has default skip behavior" do
+        expect(options.skip_task?(task_name)).to be(false)
+      end
+    end
+  end
 end

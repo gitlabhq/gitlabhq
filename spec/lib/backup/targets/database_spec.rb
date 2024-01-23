@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Backup::Database, :reestablished_active_record_base, feature_category: :backup_restore do
+RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
   let(:progress_output) { progress.string }
   let(:backup_id) { 'some_id' }
@@ -18,7 +18,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
     end
   end
 
-  before(:all) do # rubocop:disable RSpec/BeforeAll
+  before_all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
@@ -29,11 +29,11 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
   describe '#dump', :delete do
     let(:force) { true }
 
-    subject { described_class.new(progress, force: force, options: backup_options) }
+    subject(:databases) { described_class.new(progress, force: force, options: backup_options) }
 
     it 'creates gzipped database dumps' do
       Dir.mktmpdir do |dir|
-        subject.dump(dir, backup_id)
+        databases.dump(dir, backup_id)
 
         base_models_for_backup.each_key do |database_name|
           filename = database_name == 'main' ? 'database.sql.gz' : "#{database_name}_database.sql.gz"
@@ -59,7 +59,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
             expect(backup_connection).to receive(:release_snapshot!).and_call_original
           end
 
-          subject.dump(dir, backup_id)
+          databases.dump(dir, backup_id)
         end
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
             expect(backup_connection).not_to receive(:release_snapshot!)
           end
 
-          subject.dump(dir, backup_id)
+          databases.dump(dir, backup_id)
         end
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
             .to receive(:new).exactly(number_of_databases).times.and_return(timeout_service)
           expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
 
-          expect { subject.dump(dir, backup_id) }.to raise_error StandardError
+          expect { databases.dump(dir, backup_id) }.to raise_error StandardError
         end
       end
     end
@@ -111,7 +111,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
       it 'will override database.yml configuration' do
         # Expect an error because we can't connect to test.invalid.
         expect do
-          Dir.mktmpdir { |dir| subject.dump(dir, backup_id) }
+          Dir.mktmpdir { |dir| databases.dump(dir, backup_id) }
         end.to raise_error(Backup::DatabaseBackupError)
 
         expect do
@@ -129,19 +129,19 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
     let(:force) { true }
     let(:rake_task) { instance_double(Rake::Task, invoke: true) }
 
-    subject { described_class.new(progress, force: force, options: backup_options) }
+    subject(:databases) { described_class.new(progress, force: force, options: backup_options) }
 
     before do
       allow(Rake::Task).to receive(:[]).with(any_args).and_return(rake_task)
 
-      allow(subject).to receive(:pg_restore_cmd).and_return(cmd)
+      allow(databases).to receive(:pg_restore_cmd).and_return(cmd)
     end
 
     context 'when not forced' do
       let(:force) { false }
 
       it 'warns the user and waits' do
-        expect(subject).to receive(:sleep)
+        expect(databases).to receive(:sleep)
 
         if one_database_configured?
           expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
@@ -149,13 +149,13 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir, backup_id)
+        databases.restore(backup_dir, backup_id)
 
         expect(progress_output).to include('Removing all tables. Press `Ctrl-C` within 5 seconds to abort')
       end
 
       it 'has a pre restore warning' do
-        expect(subject.pre_restore_warning).not_to be_nil
+        expect(databases.pre_restore_warning).not_to be_nil
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir, backup_id)
+        databases.restore(backup_dir, backup_id)
 
         expect(progress_output).to include("Restoring PostgreSQL database")
         expect(progress_output).to include("[DONE]")
@@ -181,7 +181,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
         it 'outputs a message about DECOMPRESS_CMD' do
           expect do
-            subject.restore(backup_dir, backup_id)
+            databases.restore(backup_dir, backup_id)
           end.to output(/Using custom DECOMPRESS_CMD 'tee'/).to_stdout
         end
       end
@@ -189,7 +189,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
     context 'with a corrupted .gz file' do
       before do
-        allow(subject).to receive(:file_name).and_return("#{backup_dir}big-image.png")
+        allow(databases).to receive(:file_name).and_return("#{backup_dir}big-image.png")
       end
 
       it 'raises a backup error' do
@@ -199,7 +199,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        expect { subject.restore(backup_dir, backup_id) }.to raise_error(Backup::Error)
+        expect { databases.restore(backup_dir, backup_id) }.to raise_error(Backup::Error)
       end
     end
 
@@ -215,17 +215,17 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           expect(Rake::Task['gitlab:db:drop_tables:main']).to receive(:invoke)
         end
 
-        subject.restore(backup_dir, backup_id)
+        databases.restore(backup_dir, backup_id)
 
         expect(progress_output).to include("ERRORS")
         expect(progress_output).not_to include(noise)
         expect(progress_output).to include(visible_error)
-        expect(subject.post_restore_warning).not_to be_nil
+        expect(databases.post_restore_warning).not_to be_nil
       end
     end
 
     context 'with PostgreSQL settings defined in the environment' do
-      let(:config) { YAML.load_file(File.join(Rails.root, 'config', 'database.yml'))['test'] }
+      let(:config) { YAML.load_file(Rails.root.join('config/database.yml'))['test'] }
 
       before do
         stub_env(ENV.to_h.merge({
@@ -244,7 +244,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
         expect(ENV).to receive(:merge!).with(hash_including { 'PGHOST' => 'test.example.com' })
         expect(ENV).not_to receive(:[]=).with('PGPASSWORD', anything)
 
-        subject.restore(backup_dir, backup_id)
+        databases.restore(backup_dir, backup_id)
 
         expect(ENV['PGPORT']).to eq(config['port']) if config['port']
         expect(ENV['PGUSER']).to eq(config['username']) if config['username']
@@ -267,14 +267,14 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
           end
 
           expect do
-            subject.restore('db', backup_id)
+            databases.restore('db', backup_id)
           end.to raise_error(Backup::Error, /Source database file does not exist/)
         end
       end
 
       context 'for ci database' do
         it 'ci database tolerates missing source file' do
-          expect { subject.restore(backup_dir, backup_id) }.not_to raise_error
+          expect { databases.restore(backup_dir, backup_id) }.not_to raise_error
         end
       end
     end

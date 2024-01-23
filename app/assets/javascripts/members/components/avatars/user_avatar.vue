@@ -65,6 +65,7 @@ export default {
     :href="user.webUrl"
     :data-user-id="user.id"
     :data-username="user.username"
+    :data-email="user.email"
   >
     <gl-avatar-labeled
       :label="user.name"

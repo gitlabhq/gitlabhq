@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Project integration administration **(FREE SELF)**
 
 NOTE:
-This page contains information about administering project integrations for self-managed instances. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
+This page contains administrator documentation for project integrations. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
 
 Project integrations can be configured and enabled by project administrators. As a GitLab instance
 administrator, you can set default configuration parameters for a given integration that all projects

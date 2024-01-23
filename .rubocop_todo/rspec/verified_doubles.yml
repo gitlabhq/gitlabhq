@@ -309,8 +309,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/api/helpers/variables_helpers_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/atlassian/jira_connect/client_spec.rb'
-    - 'spec/lib/backup/files_spec.rb'
-    - 'spec/lib/backup/repositories_spec.rb'
     - 'spec/lib/banzai/cross_project_reference_spec.rb'
     - 'spec/lib/banzai/filter/gollum_tags_filter_spec.rb'
     - 'spec/lib/banzai/filter/repository_link_filter_spec.rb'

@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting GitLab for Slack app **(FREE ALL)**
 
-When configuring the GitLab for Slack app on GitLab.com, you might encounter the following issues.
+When working with the GitLab for Slack app, you might encounter the following issues.
 
-For self-managed GitLab, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md#troubleshooting).
+For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md#troubleshooting).
 
 ## App does not appear in the list of integrations
 

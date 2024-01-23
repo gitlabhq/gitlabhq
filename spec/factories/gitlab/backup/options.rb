@@ -45,9 +45,18 @@ FactoryBot.define do
       repositories_paths
       skip_repositories_paths
       remote_directory
+      skip_all
+      compression_options { attributes_for(:backup_compression_options, :all) }
+    end
+
+    trait :skip_all do
       skippable_tasks { attributes_for(:backup_skippable_tasks, :skip_all) }
       skippable_operations { attributes_for(:backup_skippable_operations, :skip_all) }
-      compression_options { attributes_for(:backup_compression_options, :all) }
+    end
+
+    trait :skip_none do
+      skippable_tasks { attributes_for(:backup_skippable_tasks, :skip_none) }
+      skippable_operations { attributes_for(:backup_skippable_operations, :skip_none) }
     end
   end
 

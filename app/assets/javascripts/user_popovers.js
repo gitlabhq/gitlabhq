@@ -13,13 +13,14 @@ const removeTitle = (el) => {
 
 const getPreloadedUserInfo = (dataset) => {
   const userId = dataset.user || dataset.userId;
-  const { username, name, avatarUrl } = dataset;
+  const { username, name, avatarUrl, email } = dataset;
 
   return {
     userId,
     username,
     name,
     avatarUrl,
+    email,
   };
 };
 

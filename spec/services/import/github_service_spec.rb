@@ -21,19 +21,12 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     }
   end
 
-  let(:headers) do
-    {
-      'x-oauth-scopes' => 'read:org'
-    }
-  end
-
   let(:client) { Gitlab::GithubImport::Client.new(token) }
   let(:project_double) { instance_double(Project, persisted?: true) }
 
   subject(:github_importer) { described_class.new(client, user, params) }
 
   before do
-    allow(client).to receive_message_chain(:octokit, :last_response, :headers).and_return(headers)
     allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
     allow(settings)
       .to receive(:write)
@@ -202,42 +195,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       end
     end
 
-    context 'validates minimum scope when collaborator import is false' do
-      let(:optional_stages) do
-        {
-          collaborators_import: false
-        }
-      end
-
-      let(:headers) do
-        {
-          'x-oauth-scopes' => 'write:packages'
-        }
-      end
-
-      it 'returns error when scope is not adequate' do
-        expect(subject.execute(access_params, :github)).to include(minimum_scope_error)
-      end
-    end
-
-    context 'validates collaborator scopes when collaborator import is true' do
-      let(:optional_stages) do
-        {
-          collaborators_import: true
-        }
-      end
-
-      let(:headers) do
-        {
-          'x-oauth-scopes' => 'repo, read:user'
-        }
-      end
-
-      it 'returns error when scope is not adequate' do
-        expect(subject.execute(access_params, :github)).to include(collab_import_scope_error)
-      end
-    end
-
     context 'when timeout strategy param is present' do
       let(:timeout_strategy) { 'pessimistic' }
 
@@ -370,22 +327,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       status: :error,
       http_status: :unprocessable_entity,
       message: '"repository" size (101 B) is larger than the limit of 100 B.'
-    }
-  end
-
-  def minimum_scope_error
-    {
-      status: :error,
-      http_status: :unprocessable_entity,
-      message: 'Your GitHub access token does not have the correct scope to import.'
-    }
-  end
-
-  def collab_import_scope_error
-    {
-      status: :error,
-      http_status: :unprocessable_entity,
-      message: 'Your GitHub access token does not have the correct scope to import collaborators.'
     }
   end
 

@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Slack app administration **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed instances in GitLab 16.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
 
 NOTE:
-This page contains information about administering the GitLab for Slack app for self-managed instances. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
+This page contains administrator documentation for the GitLab for Slack app. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
 
 The GitLab for Slack app distributed through the Slack App Directory only works with GitLab.com.
 On self-managed GitLab, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
@@ -102,9 +102,9 @@ To enable the GitLab for Slack app functionality, your network must allow inboun
 
 ## Troubleshooting
 
-When administering the GitLab for Slack app for self-managed instances, you might encounter the following issues.
+When administering the GitLab for Slack app, you might encounter the following issues.
 
-For GitLab.com, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_app_troubleshooting.md).
+For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_app_troubleshooting.md).
 
 ### Slash commands return `dispatch_failed` in Slack
 

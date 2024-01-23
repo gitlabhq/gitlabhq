@@ -5,24 +5,6 @@ module Backup
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
     MANIFEST_NAME = 'backup_information.yml'
 
-    # pages used to deploy tmp files to this path
-    # if some of these files are still there, we don't need them in the backup
-    LEGACY_PAGES_TMP_PATH = '@pages.tmp'
-
-    TaskDefinition = Struct.new(
-      :enabled, # `true` if the task can be used. Treated as `true` when not specified.
-      :human_name, # Name of the task used for logging.
-      :destination_path, # Where the task should put its backup file/dir.
-      :destination_optional, # `true` if the destination might not exist on a successful backup.
-      :cleanup_path, # Path to remove after a successful backup. Uses `destination_path` when not specified.
-      :task,
-      keyword_init: true
-    ) do
-      def enabled?
-        enabled.nil? || enabled
-      end
-    end
-
     attr_reader :progress, :remote_storage, :options
 
     def initialize(progress, definitions: nil)
@@ -58,13 +40,13 @@ module Backup
         return
       end
 
-      if skipped?(task_name)
+      if options.skip_task?(task_name)
         puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
 
       puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.task.dump(destination_dir, backup_id)
+      definition.target.dump(destination_dir, backup_id)
       puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
@@ -92,17 +74,17 @@ module Backup
 
       puts_time "Restoring #{definition.human_name} ... ".color(:blue)
 
-      warning = definition.task.pre_restore_warning
+      warning = definition.target.pre_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      definition.task.restore(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      definition.target.restore(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
 
       puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
-      warning = definition.task.post_restore_warning
+      warning = definition.target.post_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
@@ -116,95 +98,20 @@ module Backup
     private
 
     def definitions
-      @definitions ||= build_definitions
-    end
-
-    def build_definitions # rubocop:disable Metrics/AbcSize
-      {
-        'db' => TaskDefinition.new(
-          human_name: _('database'),
-          destination_path: 'db',
-          cleanup_path: 'db',
-          task: build_db_task
-        ),
-        'repositories' => TaskDefinition.new(
-          human_name: _('repositories'),
-          destination_path: 'repositories',
-          destination_optional: true,
-          task: build_repositories_task
-        ),
-        'uploads' => TaskDefinition.new(
-          human_name: _('uploads'),
-          destination_path: 'uploads.tar.gz',
-          task: build_files_task(File.join(Gitlab.config.uploads.storage_path, 'uploads'), excludes: ['tmp'])
-        ),
-        'builds' => TaskDefinition.new(
-          human_name: _('builds'),
-          destination_path: 'builds.tar.gz',
-          task: build_files_task(Settings.gitlab_ci.builds_path)
-        ),
-        'artifacts' => TaskDefinition.new(
-          human_name: _('artifacts'),
-          destination_path: 'artifacts.tar.gz',
-          task: build_files_task(JobArtifactUploader.root, excludes: ['tmp'])
-        ),
-        'pages' => TaskDefinition.new(
-          human_name: _('pages'),
-          destination_path: 'pages.tar.gz',
-          task: build_files_task(Gitlab.config.pages.path, excludes: [LEGACY_PAGES_TMP_PATH])
-        ),
-        'lfs' => TaskDefinition.new(
-          human_name: _('lfs objects'),
-          destination_path: 'lfs.tar.gz',
-          task: build_files_task(Settings.lfs.storage_path)
-        ),
-        'terraform_state' => TaskDefinition.new(
-          human_name: _('terraform states'),
-          destination_path: 'terraform_state.tar.gz',
-          task: build_files_task(Settings.terraform_state.storage_path, excludes: ['tmp'])
-        ),
-        'registry' => TaskDefinition.new(
-          enabled: Gitlab.config.registry.enabled,
-          human_name: _('container registry images'),
-          destination_path: 'registry.tar.gz',
-          task: build_files_task(Settings.registry.path)
-        ),
-        'packages' => TaskDefinition.new(
-          human_name: _('packages'),
-          destination_path: 'packages.tar.gz',
-          task: build_files_task(Settings.packages.storage_path, excludes: ['tmp'])
-        ),
-        'ci_secure_files' => TaskDefinition.new(
-          human_name: _('ci secure files'),
-          destination_path: 'ci_secure_files.tar.gz',
-          task: build_files_task(Settings.ci_secure_files.storage_path, excludes: ['tmp'])
-        )
+      @definitions ||= {
+        Backup::Tasks::Database.id => Backup::Tasks::Database.new(progress: progress, options: options),
+        Backup::Tasks::Repositories.id => Backup::Tasks::Repositories.new(progress: progress, options: options,
+          server_side: backup_information[:repositories_server_side]),
+        Backup::Tasks::Uploads.id => Backup::Tasks::Uploads.new(progress: progress, options: options),
+        Backup::Tasks::Builds.id => Backup::Tasks::Builds.new(progress: progress, options: options),
+        Backup::Tasks::Artifacts.id => Backup::Tasks::Artifacts.new(progress: progress, options: options),
+        Backup::Tasks::Pages.id => Backup::Tasks::Pages.new(progress: progress, options: options),
+        Backup::Tasks::Lfs.id => Backup::Tasks::Lfs.new(progress: progress, options: options),
+        Backup::Tasks::TerraformState.id => Backup::Tasks::TerraformState.new(progress: progress, options: options),
+        Backup::Tasks::Registry.id => Backup::Tasks::Registry.new(progress: progress, options: options),
+        Backup::Tasks::Packages.id => Backup::Tasks::Packages.new(progress: progress, options: options),
+        Backup::Tasks::CiSecureFiles.id => Backup::Tasks::CiSecureFiles.new(progress: progress, options: options)
       }.freeze
-    end
-
-    def build_db_task
-      Database.new(progress, options: options, force: options.force?)
-    end
-
-    def build_repositories_task
-      strategy = Backup::GitalyBackup.new(progress,
-                                          incremental: options.incremental?,
-                                          max_parallelism: options.max_parallelism,
-                                          storage_parallelism: options.max_storage_parallelism,
-                                          server_side: backup_information[:repositories_server_side]
-                                         )
-
-      Repositories.new(progress,
-        strategy: strategy,
-        options: options,
-        storages: options.repositories_storages,
-        paths: options.repositories_paths,
-        skip_paths: options.skip_repositories_paths
-      )
-    end
-
-    def build_files_task(app_files_dir, excludes: [])
-      Files.new(progress, app_files_dir, options: options, excludes: excludes)
     end
 
     def run_all_create_tasks
@@ -237,8 +144,8 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      definitions.each_key do |task_name|
-        if !skipped?(task_name) && enabled_task?(task_name)
+      definitions.each do |task_name, definition|
+        if !options.skip_task?(task_name) && definition.enabled?
           run_restore_task(task_name)
         end
       end
@@ -476,14 +383,6 @@ module Backup
       tar_version.dup.force_encoding('locale').split("\n").first
     end
 
-    def skipped?(item)
-      options.skippable_tasks[item]
-    end
-
-    def enabled_task?(task_name)
-      definitions[task_name].enabled?
-    end
-
     def backup_file?(file)
       file.match(/^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/)
     end
@@ -510,7 +409,7 @@ module Backup
 
     def backup_contents
       [MANIFEST_NAME] + definitions.reject do |name, definition|
-        skipped?(name) || !enabled_task?(name) ||
+        options.skip_task?(name) || !definition.enabled? ||
           (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
       end.values.map(&:destination_path)
     end

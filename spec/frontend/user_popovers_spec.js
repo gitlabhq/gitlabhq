@@ -156,13 +156,14 @@ describe('User Popovers', () => {
       });
 
       it('populates popover with preloaded user data', () => {
-        const { name, userId, username } = userLink.dataset;
+        const { name, userId, username, email } = userLink.dataset;
 
         expect(userLink.user).toEqual(
           expect.objectContaining({
             name,
             userId,
             username,
+            email,
           }),
         );
       });

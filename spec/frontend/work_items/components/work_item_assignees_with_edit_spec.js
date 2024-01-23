@@ -250,12 +250,14 @@ describe('WorkItemAssigneesWithEdit component', () => {
     it('does not render `Invite members` link if user has no permission to invite members', () => {
       createComponent();
 
+      expect(findSidebarDropdownWidget().props('showFooter')).toBe(false);
       expect(findInviteMembersTrigger().exists()).toBe(false);
     });
 
     it('renders `Invite members` link if user has a permission to invite members', () => {
       createComponent({ canInviteMembers: true });
 
+      expect(findSidebarDropdownWidget().props('showFooter')).toBe(true);
       expect(findInviteMembersTrigger().exists()).toBe(true);
     });
   });

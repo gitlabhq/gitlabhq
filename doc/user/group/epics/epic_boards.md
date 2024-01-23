@@ -181,7 +181,7 @@ Prerequisites:
 To move an epic to the start of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to start of list**.
 
 #### Move an epic to the end of the list
 
@@ -199,7 +199,7 @@ Prerequisites:
 To move an epic to the end of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to end of list**.
 
 #### Dragging epics between lists
 

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab for Jira Cloud app **(FREE ALL)**
 
 NOTE:
-This page contains information about configuring the GitLab for Jira Cloud app on GitLab.com. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
+This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
@@ -100,9 +100,9 @@ and the access token is stored encrypted with `AES256-GCM` on GitLab.
 
 ## Troubleshooting
 
-When configuring the GitLab for Jira Cloud app on GitLab.com, you might encounter the following issues.
+When working with the GitLab for Jira Cloud app, you might encounter the following issues.
 
-For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
+For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
 ### Error when connecting the app
 
