@@ -57,7 +57,7 @@ GET /projects
 | `id_after`                                     | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                                    | integer  | No       | Limit results to projects with IDs less than the specified ID. |
 | `imported`                                     | boolean  | No       | Limit results to projects which were imported from external systems by current user. |
-| `include_hidden` **(PREMIUM ALL)**             | boolean  | No       | Include hidden projects. _(administrators only)_ |
+| `include_hidden`                               | boolean  | No       | Include hidden projects. _(administrators only)_ Premium and Ultimate only. |
 | `include_pending_delete`                       | boolean  | No       | Include projects pending deletion. _(administrators only)_ |
 | `last_activity_after`                          | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`                         | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
@@ -65,7 +65,7 @@ GET /projects
 | `min_access_level`                             | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                                     | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                                        | boolean  | No       | Limit by projects explicitly owned by the current user. |
-| `repository_checksum_failed` **(PREMIUM ALL)** | boolean  | No       | Limit projects where the repository checksum calculation has failed. |
+| `repository_checksum_failed`                   | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
 | `repository_storage`                           | string   | No       | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`                            | boolean  | No       | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                       | string   | No       | Return list of projects matching the search criteria. |
@@ -78,7 +78,7 @@ GET /projects
 | `updated_after`                                | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
 | `updated_before`                               | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
 | `visibility`                                   | string   | No       | Limit by visibility `public`, `internal`, or `private`. |
-| `wiki_checksum_failed` **(PREMIUM ALL)**       | boolean  | No       | Limit projects where the wiki checksum calculation has failed. |
+| `wiki_checksum_failed`                         | boolean  | No       | Limit projects where the wiki checksum calculation has failed. Premium and Ultimate only. |
 | `with_custom_attributes`                       | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`                          | boolean  | No       | Limit by enabled issues feature. |
 | `with_merge_requests_enabled`                  | boolean  | No       | Limit by enabled merge requests feature. |
@@ -1507,7 +1507,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `path`                                                            | string  | Yes (if `name` isn't provided) | Repository name for new project. Generated based on name if not provided (generated as lowercase with dashes). Starting with GitLab 14.9, path must not start or end with a special character and must not contain consecutive special characters. |
 | `allow_merge_on_skipped_pipeline`                                 | boolean | No                             | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                          | string  | No                             | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM ALL)**                        | integer | No                             | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `approvals_before_merge`                                          | integer | No                             | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                                   | string  | No                             | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                                     | string  | No                             | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                             | boolean | No                             | Enable Auto DevOps for this project. |
@@ -1525,11 +1525,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `emails_disabled`                                                 | boolean | No                             | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead |
 | `emails_enabled`                                                  | boolean | No                             | Enable email notifications. |
 | `environments_access_level`                                       | string  | No                             | One of `disabled`, `private`, or `enabled`. |
-| `external_authorization_classification_label` **(PREMIUM ALL)**   | string  | No                             | The classification label for the project. |
+| `external_authorization_classification_label`                     | string  | No                             | The classification label for the project. Premium and Ultimate only. |
 | `feature_flags_access_level`                                      | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `forking_access_level`                                            | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `group_runners_enabled`                                           | boolean | No                             | Enable group runners for this project. |
-| `group_with_project_templates_id` **(PREMIUM ALL)**               | integer | No                             | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
+| `group_with_project_templates_id`                                 | integer | No                             | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. Premium and Ultimate only. |
 | `import_url`                                                      | string  | No                             | URL to import repository from. When the URL value isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
 | `infrastructure_access_level`                                     | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `initialize_with_readme`                                          | boolean | No                             | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this boolean is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
@@ -1542,8 +1542,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `merge_requests_access_level`                                     | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                          | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                                            | boolean | No                             | Enable or disable merge trains. |
-| `mirror_trigger_builds` **(PREMIUM ALL)**                         | boolean | No                             | Pull mirroring triggers builds. |
-| `mirror` **(PREMIUM ALL)**                                        | boolean | No                             | Enables pull mirroring in a project. |
+| `mirror_trigger_builds`                                           | boolean | No                             | Pull mirroring triggers builds. Premium and Ultimate only. |
+| `mirror`                                                          | boolean | No                             | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `model_experiments_access_level`                                  | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level`                                     | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                            | string  | No                             | One of `disabled`, `private`, or `enabled`. |
@@ -1570,9 +1570,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `squash_option`                                                   | string  | No                             | One of `never`, `always`, `default_on`, or `default_off`. |
 | `tag_list`                                                        | array   | No                             | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `template_name`                                                   | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
-| `template_project_id` **(PREMIUM ALL)**                           | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` since `template_name` may be ambiguous. |
+| `template_project_id`                                             | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` since `template_name` may be ambiguous. Premium and Ultimate only. |
 | `topics`                                                          | array   | No                             | The list of topics for a project; put array of topics, that should be finally assigned to a project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
-| `use_custom_template` **(PREMIUM ALL)**                           | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. |
+| `use_custom_template`                                             | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                                      | string  | No                             | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                               | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                                    | boolean | No                             | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
@@ -1598,7 +1598,7 @@ POST /projects/user/:user_id
 | `user_id`                                                         | integer | Yes      | The user ID of the project owner. |
 | `allow_merge_on_skipped_pipeline`                                 | boolean | No       | Set whether or not merge requests can be merged with skipped jobs. |
 | `analytics_access_level`                                          | string  | No       | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM ALL)**                        | integer | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `approvals_before_merge`                                          | integer | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                                   | string  | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                                     | string  | No       | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                             | boolean | No       | Enable Auto DevOps for this project. |
@@ -1616,11 +1616,11 @@ POST /projects/user/:user_id
 | `emails_enabled`                                                  | boolean | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                                  | boolean | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `environments_access_level`                                       | string  | No       | One of `disabled`, `private`, or `enabled`. |
-| `external_authorization_classification_label` **(PREMIUM ALL)**   | string  | No       | The classification label for the project. |
+| `external_authorization_classification_label`                     | string  | No       | The classification label for the project. Premium and Ultimate only. |
 | `feature_flags_access_level`                                      | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `forking_access_level`                                            | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `group_runners_enabled`                                           | boolean | No       | Enable group runners for this project. |
-| `group_with_project_templates_id` **(PREMIUM ALL)**               | integer | No       | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
+| `group_with_project_templates_id`                                 | integer | No       | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. Premium and Ultimate only. |
 | `import_url`                                                      | string  | No       | URL to import repository from. |
 | `infrastructure_access_level`                                     | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `initialize_with_readme`                                          | boolean | No       | `false` by default. |
@@ -1633,8 +1633,8 @@ POST /projects/user/:user_id
 | `merge_method`                                                    | string  | No       | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                                     | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                          | boolean | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `mirror_trigger_builds` **(PREMIUM ALL)**                         | boolean | No       | Pull mirroring triggers builds. |
-| `mirror` **(PREMIUM ALL)**                                        | boolean | No       | Enables pull mirroring in a project. |
+| `mirror_trigger_builds`                                           | boolean | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
+| `mirror`                                                          | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `model_experiments_access_level`                                  | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `model_registry_access_level`                                     | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `monitor_access_level`                                            | string  | No       | One of `disabled`, `private`, or `enabled`. |
@@ -1665,7 +1665,7 @@ POST /projects/user/:user_id
 | `tag_list`                                                        | array   | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `template_name`                                                   | string  | No       | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
 | `topics`                                                          | array   | No       | The list of topics for the project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
-| `use_custom_template` **(PREMIUM ALL)**                           | boolean | No       | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. |
+| `use_custom_template`                                             | boolean | No       | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                                      | string  | No       | See [project visibility level](#project-visibility-level). |
 | `wiki_access_level`                                               | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                                    | boolean | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
@@ -1700,10 +1700,10 @@ Supported attributes:
 |-------------------------------------------------------------------|-------------------|----------|-------------|
 | `id`                                                              | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `allow_merge_on_skipped_pipeline`                                 | boolean           | No       | Set whether or not merge requests can be merged with skipped jobs. |
-| `allow_pipeline_trigger_approve_deployment` **(PREMIUM ALL)**     | boolean           | No       | Set whether or not a pipeline triggerer is allowed to approve deployments. |
+| `allow_pipeline_trigger_approve_deployment`                       | boolean           | No       | Set whether or not a pipeline triggerer is allowed to approve deployments. Premium and Ultimate only. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE ALL)** | boolean           | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. |
 | `analytics_access_level`                                          | string            | No       | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM ALL)**                        | integer           | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `approvals_before_merge`                                          | integer           | No       | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate only. |
 | `auto_cancel_pending_pipelines`                                   | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                                     | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                                             | boolean           | No       | Enable Auto DevOps for this project. |
@@ -1718,7 +1718,7 @@ Supported attributes:
 | `ci_forward_deployment_rollback_allowed`                          | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project`                | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                                             | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
-| `ci_restrict_pipeline_cancellation_role` **(PREMIUM ALL)**        | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8.)_ |
+| `ci_restrict_pipeline_cancellation_role`                          | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
 | `container_expiration_policy_attributes`                          | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_access_level`                                 | string            | No       | Set visibility of container registry, for this project, to one of `disabled`, `private` or `enabled`. |
 | `container_registry_enabled`                                      | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
@@ -1727,13 +1727,13 @@ Supported attributes:
 | `emails_disabled`                                                 | boolean           | No       | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead |
 | `emails_enabled`                                                  | boolean           | No       | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                                  | boolean           | No       | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
-| `external_authorization_classification_label` **(PREMIUM ALL)**   | string            | No       | The classification label for the project. |
+| `external_authorization_classification_label`                     | string            | No       | The classification label for the project. Premium and Ultimate only. |
 | `forking_access_level`                                            | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `group_runners_enabled`                                           | boolean           | No       | Enable group runners for this project. |
 | `import_url`                                                      | string            | No       | URL the repository was imported from. |
 | `issues_access_level`                                             | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                                  | boolean           | No       | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
-| `issues_template` **(PREMIUM ALL)**                               | string            | No       | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
+| `issues_template`                                                 | string            | No       | Default description for Issues. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
 | `jobs_enabled`                                                    | boolean           | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `keep_latest_artifact`                                            | boolean           | No       | Disable or enable the ability to keep the latest artifact for this project. |
 | `lfs_enabled`                                                     | boolean           | No       | Enable LFS. |
@@ -1742,21 +1742,21 @@ Supported attributes:
 | `merge_pipelines_enabled`                                         | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_access_level`                                     | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                          | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `merge_requests_template` **(PREMIUM ALL)**                       | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). |
+| `merge_requests_template`                                         | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
 | `merge_trains_enabled`                                            | boolean           | No       | Enable or disable merge trains. |
-| `mirror_overwrites_diverged_branches` **(PREMIUM ALL)**           | boolean           | No       | Pull mirror overwrites diverged branches. |
-| `mirror_trigger_builds` **(PREMIUM ALL)**                         | boolean           | No       | Pull mirroring triggers builds. |
-| `mirror_user_id` **(PREMIUM ALL)**                                | integer           | No       | User responsible for all the activity surrounding a pull mirror event. _(administrators only)_ |
-| `mirror` **(PREMIUM ALL)**                                        | boolean           | No       | Enables pull mirroring in a project. |
+| `mirror_overwrites_diverged_branches`                             | boolean           | No       | Pull mirror overwrites diverged branches. Premium and Ultimate only. |
+| `mirror_trigger_builds`                                           | boolean           | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
+| `mirror_user_id`                                                  | integer           | No       | User responsible for all the activity surrounding a pull mirror event. _(administrators only)_ Premium and Ultimate only. |
+| `mirror`                                                          | boolean           | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
 | `mr_default_target_self`                                          | boolean           | No       | For forked projects, target merge requests to this project. If `false`, the target is the upstream project. |
 | `name`                                                            | string            | No       | The name of the project. |
 | `only_allow_merge_if_all_discussions_are_resolved`                | boolean           | No       | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`                           | boolean           | No       | Set whether merge requests can only be merged with successful jobs. |
-| `only_mirror_protected_branches` **(PREMIUM ALL)**                | boolean           | No       | Only mirror protected branches. |
+| `only_mirror_protected_branches`                                  | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
 | `packages_enabled`                                                | boolean           | No       | Enable or disable packages repository feature. |
 | `pages_access_level`                                              | string            | No       | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                            | string            | No       | Custom repository name for the project. By default generated based on name. |
-| `prevent_merge_without_jira_issue` **(PREMIUM ALL)**              | boolean           | No       | Set whether merge requests require an associated issue from Jira. |
+| `prevent_merge_without_jira_issue`                                | boolean           | No       | Set whether merge requests require an associated issue from Jira. Premium and Ultimate only. |
 | `printing_merge_request_link_enabled`                             | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                                   | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string            | No       | One of `disabled`, `private`, or `enabled`. |
@@ -2519,8 +2519,8 @@ DELETE /projects/:id
 | Attribute                              | Type              | Required | Description |
 |----------------------------------------|-------------------|----------|-------------|
 | `id`                                   | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `full_path` **(PREMIUM ALL)**          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project) |
-| `permanently_remove` **(PREMIUM ALL)** | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 |
+| `full_path`                            | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project). Premium and Ultimate only. |
+| `permanently_remove`                   | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
 ## Restore project marked for deletion **(PREMIUM ALL)**
 

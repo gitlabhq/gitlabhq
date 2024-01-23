@@ -401,4 +401,34 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
       end
     end
   end
+
+  describe 'maxAccessLevel' do
+    let(:project_fields) { 'maxAccessLevel { integerValue }' }
+
+    it 'returns access level of the current user in the project' do
+      project.add_developer(current_user)
+
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data_at(:project, :maxAccessLevel, :integerValue)).to eq(Gitlab::Access::DEVELOPER)
+    end
+
+    shared_examples 'public project in which the user has no membership' do
+      it 'returns no access' do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :maxAccessLevel, :integerValue)).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    it_behaves_like 'public project in which the user has no membership'
+
+    context 'when the user is not authenticated' do
+      let(:current_user) { nil }
+
+      it_behaves_like 'public project in which the user has no membership'
+    end
+  end
 end

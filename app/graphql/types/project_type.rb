@@ -110,6 +110,10 @@ module Types
       null: true,
       description: 'Indicates if the project has Large File Storage (LFS) enabled.'
 
+    field :max_access_level, Types::AccessLevelType,
+      null: false,
+      description: 'The maximum access level of the current user in the project.'
+
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if no merge commits should be created and all merges should instead be ' \
@@ -821,6 +825,16 @@ module Types
         snippets: Gitlab::Routing.url_helpers.project_snippets_url(project),
         container_registry: Gitlab::Routing.url_helpers.project_container_registry_index_url(project)
       }
+    end
+
+    def max_access_level
+      return Gitlab::Access::NO_ACCESS if current_user.nil?
+
+      BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        current_user.max_member_access_for_project_ids(project_ids).each do |project_id, max_access_level|
+          loader.call(project_id, max_access_level)
+        end
+      end
     end
 
     private

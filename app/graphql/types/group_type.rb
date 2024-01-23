@@ -62,6 +62,10 @@ module Types
           null: true,
           description: 'Indicates if a group has email notifications disabled.'
 
+    field :max_access_level, Types::AccessLevelType,
+          null: false,
+          description: 'The maximum access level of the current user in the group.'
+
     field :mentions_disabled,
           type: GraphQL::Types::Boolean,
           null: true,
@@ -372,6 +376,16 @@ module Types
       BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
         members_counts = Group.id_in(group_ids).group_members_counts
         members_counts.each { |group_id, count| loader.call(group_id, count) }
+      end
+    end
+
+    def max_access_level
+      return Gitlab::Access::NO_ACCESS if current_user.nil?
+
+      BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
+        current_user.max_member_access_for_group_ids(group_ids).each do |group_id, max_access_level|
+          loader.call(group_id, max_access_level)
+        end
       end
     end
 

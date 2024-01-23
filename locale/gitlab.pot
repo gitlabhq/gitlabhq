@@ -30096,13 +30096,10 @@ msgstr ""
 msgid "MemberRole|Incident manager"
 msgstr ""
 
-msgid "MemberRole|Make sure the group is in the Ultimate tier."
-msgstr ""
-
 msgid "MemberRole|Name"
 msgstr ""
 
-msgid "MemberRole|No custom roles for this group"
+msgid "MemberRole|No custom roles found"
 msgstr ""
 
 msgid "MemberRole|Permissions"
@@ -30124,9 +30121,6 @@ msgid "MemberRole|Standard roles"
 msgstr ""
 
 msgid "MemberRole|To add a new role select 'Add new role'."
-msgstr ""
-
-msgid "MemberRole|To add a new role select a group and then 'Add new role'."
 msgstr ""
 
 msgid "MemberRole|To delete the custom role make sure no group member has this custom role"

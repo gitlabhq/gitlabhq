@@ -229,11 +229,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 | `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
 | `name`                                       | string         | yes | The name of the branch or wildcard.
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. (default: `false`)
-| `allowed_to_merge` **(PREMIUM ALL)**             | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
-| `allowed_to_push` **(PREMIUM ALL)**              | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
-| `allowed_to_unprotect` **(PREMIUM ALL)**         | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. |
-| `code_owner_approval_required` **(PREMIUM ALL)** | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). (defaults: false)
-| `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role)
+| `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.
+| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.
+| `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). (defaults: false) Premium and Ultimate only.
+| `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role).
 | `push_access_level`                          | integer        | no  | Access levels allowed to push. (defaults: `40`, Maintainer role)
 | `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect. (defaults: `40`, Maintainer role)
 
@@ -460,10 +460,10 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitl
 | `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
 | `name`                                       | string         | yes | The name of the branch or wildcard.
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push.
-| `allowed_to_merge` **(PREMIUM ALL)**             | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
-| `allowed_to_push` **(PREMIUM ALL)**              | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
-| `allowed_to_unprotect` **(PREMIUM ALL)**         | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. |
-| `code_owner_approval_required` **(PREMIUM ALL)** | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). |
+| `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.
+| `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.
+| `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Premium and Ultimate only. |
 
 Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
 `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
