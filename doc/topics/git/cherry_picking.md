@@ -11,14 +11,13 @@ and apply those changes to another branch. Cherry-picks can help you:
 
 - Backport bug fixes from the default branch to previous release branches.
 - Copy changes from a fork
-  [to the upstream repository](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-into-a-project).
+  [to the upstream repository](../../user/project/merge_requests/cherry_pick_changes.md).
 
 You can cherry-pick commits from the command line. In the GitLab user interface,
-you can also:
+you can also cherry-pick:
 
-- Cherry-pick [all changes from a merge request](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-all-changes-from-a-merge-request).
-- Cherry-pick [a single commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit).
-- Cherry-pick [from a fork to the upstream repository](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-into-a-project).
+- [All changes from a merge request](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-all-changes-from-a-merge-request) from the current project or a project fork.
+- [A single commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit).
 
 ## Cherry-pick from the command line
 

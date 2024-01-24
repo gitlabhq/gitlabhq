@@ -306,7 +306,6 @@ export default {
         <emoji-picker
           v-if="canAwardEmoji"
           toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
-          boundary="viewport"
           :right="false"
           data-testid="note-emoji-button"
           @click="handleAwardEmoji"
@@ -333,6 +332,7 @@ export default {
           no-caret
           left
           :items="dropdownItems"
+          data-testid="more-actions"
         />
       </div>
     </div>

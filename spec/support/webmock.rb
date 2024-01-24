@@ -17,8 +17,15 @@ def webmock_allowed_hosts
       hosts.concat(allowed_host_and_ip(ENV['ZOEKT_SEARCH_BASE_URL']))
     end
 
+    # The test Rails server usually runs on 127.0.0.1.
+    # On some development configurations Webpack or Vite may be running on a
+    # different address so explicitly allow connections to that host.
     if Gitlab.config.webpack&.dev_server&.enabled
       hosts << Gitlab.config.webpack.dev_server.host
+    end
+
+    if ViteRuby.env['VITE_ENABLED'] == "true"
+      hosts << ViteRuby.instance.config.host
     end
   end.compact.uniq
 end

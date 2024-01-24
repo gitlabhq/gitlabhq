@@ -18,7 +18,7 @@ export const FAILURE_REASONS = {
   need_rebase: __('Merge request must be rebased, because a fast-forward merge is not possible.'),
   not_approved: __('All required approvals must be given.'),
   policies_denied: __('Denied licenses must be removed or approved.'),
-  merge_request_blocked: __('Merge request is blocked by another merge request.'),
+  merge_request_blocked: __('Merge request dependencies have been merged.'),
   status_checks_must_pass: __('Status checks must pass.'),
   jira_association_missing: __('Either the title or description must reference a Jira issue.'),
 };

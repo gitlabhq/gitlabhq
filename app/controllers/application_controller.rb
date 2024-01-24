@@ -208,8 +208,8 @@ class ApplicationController < BaseActionController
     Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def can?(object, action, subject = :global)
-    Ability.allowed?(object, action, subject)
+  def can?(user, action, subject = :global)
+    Ability.allowed?(user, action, subject)
   end
 
   def access_denied!(message = nil, status = nil)

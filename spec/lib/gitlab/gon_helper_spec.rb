@@ -107,6 +107,22 @@ RSpec.describe Gitlab::GonHelper do
     end
   end
 
+  describe '#push_frontend_ability' do
+    it 'pushes an ability to the frontend' do
+      user = create(:user)
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ abilities: { 'logIn' => true } }, true)
+
+      helper.push_frontend_ability(ability: :log_in, user: user)
+    end
+  end
+
   describe '#push_frontend_feature_flag' do
     before do
       skip_feature_flags_yaml_validation

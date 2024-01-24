@@ -165,6 +165,8 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
+> Support for Entity Relationship diagrams and mindmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
+
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#mermaid).
 
 Visit the [official page](https://mermaidjs.github.io/) for more details. The

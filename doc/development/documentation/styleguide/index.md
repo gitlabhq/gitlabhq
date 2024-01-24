@@ -399,7 +399,7 @@ Follow these guidelines for punctuation.
 
 <!-- vale gitlab.Repetition = NO -->
 
-- End full sentences with a period.
+- End full sentences with a period, including full sentences in tables.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
 
 <!-- vale gitlab.Repetition = YES -->

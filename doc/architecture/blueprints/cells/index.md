@@ -18,6 +18,10 @@ Cells is a new architecture for our software as a service platform. This archite
 
 For more information about Cells, see also:
 
+## Cells Iterations
+
+See Cell 1.0, Cell 1.5, and Cell 2.0.
+
 ## Goals
 
 See [Goals, Glossary and Requirements](goals.md).
@@ -30,8 +34,8 @@ See [Deployment Architecture](deployment-architecture.md).
 
 We can't ship the entire Cells architecture in one go - it is too large.
 Instead, we are defining key work streams required by the project.
+For each work stream, we need to define the effort necessary to make features compliant with Cell 1.0, Cell 1.5, and Cell 2.0, respectively.
 
-Not all objectives need to be fulfilled to reach production readiness.
 It is expected that some objectives will not be completed for General Availability (GA), but will be enough to run Cells in production.
 
 ### 1. Data access layer
@@ -70,10 +74,10 @@ Under this objective the following steps are expected:
 
     Ensure that migrations can be run independently between Cells, and we safely handle migrations of shared data in a way that does not impact other Cells.
 
-### 2. Essential workflows
+### 2. Workflows
 
 To make Cells viable we require to define and support essential workflows before we can consider the Cells to be of Beta quality.
-Essential workflows are meant to cover the majority of application functionality that makes the product mostly useable, but with some caveats.
+Workflows are meant to cover the majority of application functionality that makes the product mostly useable, but with some caveats.
 
 The current approach is to define workflows from top to bottom.
 The order defines the presumed priority of the items.
@@ -118,7 +122,7 @@ The first 2-3 quarters are required to define a general split of data, and build
 
 1. **User can push to Git repository.**
 
-    The purpose is to ensure that essential joins from the Projects table are properly attributed to be Cell-local, and as a result the essential Git workflow is supported.
+    The purpose is to ensure that essential joins from the Projects table are properly attributed to be Cell-local, and as a result the Git workflow is supported.
 
 1. **User can run CI pipeline.**
 
@@ -144,9 +148,21 @@ The first 2-3 quarters are required to define a general split of data, and build
 
     The purpose is to have many Organizations per Cell, but never have a single Organization spanning across many Cells. This is required to ensure that information shown within an Organization is isolated, and does not require fetching information from other Cells.
 
+Some of the following workflows might need to be supported, depending on the group's decision.
+This list is not exhaustive of work needed to be done.
+
+1. **User can use all Group-level features.**
+1. **User can use all Project-level features.**
+1. **User can share Groups with other Groups in an Organization.**
+1. **User can create system webhook.**
+1. **User can upload and manage packages.**
+1. **User can manage security detection features.**
+1. **User can manage Kubernetes integration.**
+1. TBD
+
 #### Dependencies
 
-We have identified the following dependencies between the essential workflows.
+We have identified the following dependencies between workflows.
 
 ```mermaid
 flowchart TD
@@ -166,25 +182,11 @@ flowchart TD
     L --> E[Create file in repository]
 ```
 
-### 3. Additional workflows
-
-Some of these additional workflows might need to be supported, depending on the group decision.
-This list is not exhaustive of work needed to be done.
-
-1. **User can use all Group-level features.**
-1. **User can use all Project-level features.**
-1. **User can share Groups with other Groups in an Organization.**
-1. **User can create system webhook.**
-1. **User can upload and manage packages.**
-1. **User can manage security detection features.**
-1. **User can manage Kubernetes integration.**
-1. TBD
-
-### 4. Routing layer
+### 3. Routing layer
 
 See [Cells: Routing Service](routing-service.md).
 
-### 5. Cell deployment
+### 4. Cell deployment
 
 We will run many Cells.
 To manage them easier, we need to have consistent deployment procedures for Cells, including a way to deploy, manage, migrate, and monitor.
@@ -194,7 +196,7 @@ We are very likely to use tooling made for [GitLab Dedicated](https://about.gitl
 1. **Extend GitLab Dedicated to support GCP.**
 1. TBD
 
-### 6. Migration
+### 5. Migration
 
 When we reach production and are able to store new Organizations on new Cells, we need to be able to divide big Cells into many smaller ones.
 
@@ -220,8 +222,8 @@ We are following the [Support for Experiment, Beta, and Generally Available feat
 
 Expectations:
 
-- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [Cell deployment](#5-cell-deployment) tooling.
-- User can create Organization, Group and Project, and run some of the [essential workflows](#2-essential-workflows).
+- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [Cell deployment](#4-cell-deployment) tooling.
+- User can create Organization, Group and Project, and run some of the [workflows](#2-workflows).
 - It is not expected to be able to run a router to serve all requests under a single domain.
 - We expect data loss of data stored on additional Cells.
 - We expect to tear down and create many new Cells to validate tooling.
@@ -231,8 +233,8 @@ Expectations:
 Expectations:
 
 - We can run many Cells under a single domain (ex. `staging.gitlab.com`).
-- All features defined in [essential workflows](#2-essential-workflows) are supported.
-- Not all aspects of the [routing layer](#4-routing-layer) are finalized.
+- All features defined in [workflows](#2-workflows) are supported.
+- Not all aspects of the [routing layer](#3-routing-layer) are finalized.
 - We expect additional Cells to be stable with minimal data loss.
 
 ### 3. GA
@@ -240,17 +242,14 @@ Expectations:
 Expectations:
 
 - We can run many Cells under a single domain (for example, `staging.gitlab.com`).
-- All features defined in [essential workflows](#2-essential-workflows) are supported.
-- All features of the [routing layer](#4-routing-layer) are supported.
-- Most of the [additional workflows](#3-additional-workflows) are supported.
-- We don't expect to support any of the [migration](#6-migration) aspects.
+- All features of the [routing layer](#3-routing-layer) are supported.
+- We don't expect to support any of the [migration](#5-migration) aspects.
 
 ### 4. Post GA
 
 Expectations:
 
-- We support all [additional workflows](#3-additional-workflows).
-- We can [migrate](#6-migration) existing Organizations onto new Cells.
+- We can [migrate](#5-migration) existing Organizations onto new Cells.
 
 ## Iteration plan
 
@@ -260,22 +259,22 @@ It is expected that initial iterations will be rather slow, because they require
 ### [Iteration 1](https://gitlab.com/groups/gitlab-org/-/epics/9667) (FY24Q1)
 
 - Data access layer: Initial Admin Area settings are shared across cluster.
-- Essential workflows: Allow to share cluster-wide data with database-level data access layer.
+- Workflow: Allow to share cluster-wide data with database-level data access layer.
 
 ### [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) (FY24Q2-FY24Q3)
 
-- Essential workflows: User accounts are shared across cluster.
-- Essential workflows: User can create Group.
+- Workflow: User accounts are shared across cluster.
+- Workflow: User can create Group.
 
 ### [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) (FY24Q4-FY25Q1)
 
-- Essential workflows: User can create Project.
+- Workflow: User can create Project.
 - Routing: Technology.
 - Routing: Cell discovery.
 
 ### [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) (FY25Q1-FY25Q2)
 
-- Essential workflows: User can create Organization on Cell 2.
+- Workflow: User can create Organization on Cell 2.
 
 ### Iteration 5..N - starting FY25Q3
 
@@ -284,16 +283,16 @@ It is expected that initial iterations will be rather slow, because they require
 - Data access layer: Data access layer.
 - Routing: User can use single domain to interact with many Cells.
 - Cell deployment: Extend GitLab Dedicated to support GCP.
-- Essential workflows: User can create Project with a README file.
-- Essential workflows: User can push to Git repository.
-- Essential workflows: User can run CI pipeline.
-- Essential workflows: Instance-wide settings are shared across cluster.
-- Essential workflows: User can change profile avatar that is shared in cluster.
-- Essential workflows: User can create issue.
-- Essential workflows: User can create merge request, and merge it after it is green.
-- Essential workflows: User can manage Group and Project members.
-- Essential workflows: User can manage instance-wide runners.
-- Essential workflows: User is part of Organization and can only see information from the Organization.
+- Workflow: User can create Project with a README file.
+- Workflow: User can push to Git repository.
+- Workflow: User can run CI pipeline.
+- Workflow: Instance-wide settings are shared across cluster.
+- Workflow: User can change profile avatar that is shared in cluster.
+- Workflow: User can create issue.
+- Workflow: User can create merge request, and merge it after it is green.
+- Workflow: User can manage Group and Project members.
+- Workflow: User can manage instance-wide runners.
+- Workflow: User is part of Organization and can only see information from the Organization.
 - Routing: Router endpoints classification.
 - Routing: GraphQL and other ambiguous endpoints.
 - Data access layer: Allow to share cluster-wide data with database-level data access layer.

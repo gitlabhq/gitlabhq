@@ -40,7 +40,7 @@ To enable tracing in a project:
 1. Select **Monitor > Tracing**.
 1. Select **Enable**.
 
-## Configure your application to use the OpenTelemetry exporter
+### Configure your application to use the OpenTelemetry exporter
 
 Next, configure your application to send traces to GitLab.
 

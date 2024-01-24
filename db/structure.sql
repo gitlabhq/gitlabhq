@@ -34402,6 +34402,8 @@ CREATE INDEX index_ml_experiments_on_user_id ON ml_experiments USING btree (user
 
 CREATE INDEX index_ml_model_version_metadata_on_project_id ON ml_model_version_metadata USING btree (project_id);
 
+CREATE INDEX index_ml_model_versions_on_created_at_on_model_id ON ml_model_versions USING btree (model_id, created_at);
+
 CREATE INDEX index_ml_model_versions_on_package_id ON ml_model_versions USING btree (package_id);
 
 CREATE INDEX index_ml_model_versions_on_project_id ON ml_model_versions USING btree (project_id);

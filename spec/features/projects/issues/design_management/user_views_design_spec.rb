@@ -16,7 +16,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     page.within(first(".image-notes li#note_#{diff_note.id}.design-note")) do
       page.find('[data-testid="note-emoji-button"] .note-emoji-button').click
 
-      page.within('ul.dropdown-menu') do
+      page.within('.emoji-picker') do
         page.find('input[type="search"]').set(emoji_name)
         page.find('button[data-testid="emoji-button"]:first-child').click
       end

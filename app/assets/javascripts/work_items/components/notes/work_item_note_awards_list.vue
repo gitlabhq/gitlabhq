@@ -29,9 +29,6 @@ export default {
     },
   },
   computed: {
-    awardsListBoundary() {
-      return this.isModal ? '.modal-body' : '';
-    },
     awards() {
       return this.note.awardEmoji.nodes.map((award) => {
         return {
@@ -93,7 +90,6 @@ export default {
     :awards="awards"
     :can-award-emoji="hasAwardEmojiPermission"
     :current-user-id="currentUserId"
-    :boundary="awardsListBoundary"
     class="gl-px-2"
     @award="handleAward($event)"
   />

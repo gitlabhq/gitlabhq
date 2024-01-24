@@ -185,7 +185,6 @@ export default {
         <emoji-picker
           dropdown-class="gl-h-full"
           toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-          boundary="viewport"
           :right="false"
           @click="handleEmojiClick"
         >

@@ -101,15 +101,17 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
     describe 'response' do
       let_it_be(:branch_name_a) { TestEnv::BRANCH_SHA.each_key.first }
       let_it_be(:branch_name_b) { 'diff-*' }
-      let_it_be(:branch_rules) { [branch_rule_a, branch_rule_b] }
-      let_it_be(:branch_rule_a) do
+      let_it_be(:protected_branch_a) do
         create(:protected_branch, project: project, name: branch_name_a)
       end
 
-      let_it_be(:branch_rule_b) do
+      let_it_be(:protected_branch_b) do
         create(:protected_branch, project: project, name: branch_name_b)
       end
 
+      let(:branch_rule_a) { Projects::BranchRule.new(project, protected_branch_a) }
+      let(:branch_rule_b) { Projects::BranchRule.new(project, protected_branch_b) }
+      let(:branch_rules) { [branch_rule_a, branch_rule_b] }
       # branchRules are returned in alphabetical order
       let(:branch_rule_a_data) { branch_rules_data.dig(1, 'node') }
       let(:branch_rule_b_data) { branch_rules_data.dig(0, 'node') }

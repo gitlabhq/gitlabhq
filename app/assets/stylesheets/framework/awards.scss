@@ -269,7 +269,6 @@
   // other gl-buttons despite all child elements being set to
   // `position:absolute`
 
-
   .reaction-control-icon {
     .gl-icon {
       height: $default-icon-size;
@@ -334,4 +333,26 @@
       }
     }
   }
+}
+
+.add-reaction-search {
+  $input-focus-ring-border-radius: calc(#{$gl-border-radius-large} - #{$gl-border-size-1});
+
+  input {
+    border-top-left-radius: $input-focus-ring-border-radius !important;
+    border-top-right-radius: $input-focus-ring-border-radius !important;
+  }
+}
+
+.award-list .gl-button:focus {
+  @include gl-focus(
+    $outline: true,
+    $outline-offset: -2px,
+    $important: true
+  );
+  box-shadow: none !important;
+}
+
+.design-note.note-form .emoji-picker .gl-new-dropdown-panel {
+  left: 0 !important;
 }

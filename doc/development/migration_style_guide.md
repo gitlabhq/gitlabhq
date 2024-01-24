@@ -844,9 +844,7 @@ combining it with other operations that don't require `disable_ddl_transaction!`
 
 ### Disabling an index
 
-There are certain situations in which you might want to disable an index before removing it.
-See the [maintenance operations guide](database/maintenance_operations.md#disabling-an-index)
-for more details.
+[Disabling an index is not a safe operation](database/maintenance_operations.md#disabling-an-index-is-not-safe).
 
 ## Adding indexes
 

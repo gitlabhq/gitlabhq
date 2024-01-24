@@ -8,39 +8,31 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 This page details various database related operations that may relate to development.
 
-## Disabling an index
+## Disabling an index is not safe
+
+WARNING:
+Previously, this section described a procedure to mark the index as invalid before removing it.
+It's no longer recommended, as [it is not safe](https://gitlab.com/groups/gitlab-org/-/epics/11543#note_1570734906).
 
 There are certain situations in which you might want to disable an index before removing it:
 
 - The index is on a large table and rebuilding it in the case of a revert would take a long time.
 - It is uncertain whether or not the index is being used in ways that are not fully visible.
 
-To disable an index before removing it:
+In such situations, the index was disabled in a coordinated manner with
+the infrastructure team and the database team
+by opening a [production infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new)
+with the "Production Change" template and
+then running the following commands:
 
-1. Open a [production infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new)
-   and use the "Production Change" template.
-1. Inform the database team in the issue `@gl-database` or in Slack `#database`.
-1. Add a step to verify the index is used (this would likely be an `EXPLAIN` command known to use the index).
-1. Add the step to disable the index:
+```sql
+-- Disable the index then run an EXPLAIN command known to use the index:
+UPDATE pg_index SET indisvalid = false WHERE indexrelid = 'index_issues_on_foo'::regclass;
+-- Verify the index is invalid on replicas:
+SELECT indisvalid FROM pg_index WHERE indexrelid = 'index_issues_on_foo'::regclass;
 
-   ```sql
-   UPDATE pg_index SET indisvalid = false WHERE indexrelid = 'index_issues_on_foo'::regclass;
-   ```
-
-1. Add a step to verify the index is invalid (this would likely be the same as used to verify before disabling the index).
-1. Verify the index is invalid on replicas:
-
-   ```sql
-   SELECT indisvalid FROM pg_index WHERE indexrelid = 'index_issues_on_foo'::regclass;
-   ```
-
-1. Add steps for rolling back the invalidation:
-   1. Rollback the index invalidation
-
-      ```sql
-      UPDATE pg_index SET indisvalid = true WHERE indexrelid = 'index_issues_on_foo'::regclass;
-      ```
-
-   1. Verify the index is being used again.
+-- Rollback the invalidation:
+UPDATE pg_index SET indisvalid = true WHERE indexrelid = 'index_issues_on_foo'::regclass;
+```
 
 See this [example infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2795) for reference.

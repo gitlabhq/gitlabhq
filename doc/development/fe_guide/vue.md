@@ -351,6 +351,31 @@ return new Vue({
 });
 ```
 
+#### Accessing abilities
+
+After pushing an ability to the [frontend](../permissions/authorizations.md#frontend),
+use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
+mechanisms in Vue to make abilities available to any descendant components
+in a Vue application. The `glAbilties` object is already provided in
+`commons/vue.js`, so only the mixin is required to use the flags:
+
+```javascript
+// An arbitrary descendant component
+
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
+
+export default {
+  // ...
+  mixins: [glAbilitiesMixin()],
+  // ...
+  created() {
+    if (this.glAbilities.someAbility) {
+      // ...
+    }
+  },
+}
+```
+
 #### Accessing feature flags
 
 After pushing a feature flag to the [frontend](../feature_flags/index.md#frontend),

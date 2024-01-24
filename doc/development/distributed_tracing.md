@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Distributed tracing development guidelines
 
-GitLab is instrumented for distributed tracing. Distributed Tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
+GitLab is instrumented for distributed tracing. Distributed tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
 
 According to [Open Tracing](https://opentracing.io/docs/overview/what-is-tracing/):
 

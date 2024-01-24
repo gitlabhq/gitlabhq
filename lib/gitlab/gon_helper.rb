@@ -96,6 +96,14 @@ module Gitlab
       push_to_gon_attributes(:features, name, enabled)
     end
 
+    def push_frontend_ability(ability:, user:, resource: :global)
+      push_to_gon_attributes(
+        :abilities,
+        ability,
+        Ability.allowed?(user, ability, resource)
+      )
+    end
+
     # Exposes the state of a feature flag to the frontend code.
     # Can be used for more complex feature flag checks.
     #

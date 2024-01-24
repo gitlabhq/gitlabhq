@@ -50,8 +50,9 @@ gl-emoji {
   }
 }
 
-.emoji-picker .gl-dropdown .dropdown-menu {
-  width: 350px;
+.emoji-picker .gl-dropdown .dropdown-menu,
+.emoji-picker .gl-new-dropdown .gl-new-dropdown-panel {
+  width: 350px !important;
 }
 
 .emoji-picker-category-tab {

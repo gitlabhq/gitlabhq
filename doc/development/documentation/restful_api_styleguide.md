@@ -31,9 +31,11 @@ In the Markdown doc for a resource (AKA endpoint):
 - Every method must have a cURL example.
 - Every method must have a detailed [description of the response body](#response-body-description).
 - Every method must have a response body example (in JSON format).
-- If an attribute is available only to higher level tiers than the other
-  attributes, add the appropriate tier to the description. If an attribute is
+- If an attribute is available only to higher level subscription tiers, add the appropriate tier to the **Description**. If an attribute is
   for Premium, include that it's also available for Ultimate.
+- If an attribute is available only in certain offerings, add the offerings to the **Description**. If the attribute's
+  description also has both offering and tier, combine them. For
+  example: _Self-managed, Premium and Ultimate only._
 
 After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/3497).
 

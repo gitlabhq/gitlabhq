@@ -30450,10 +30450,10 @@ msgstr ""
 msgid "Merge request dependencies"
 msgstr ""
 
-msgid "Merge request events"
+msgid "Merge request dependencies have been merged."
 msgstr ""
 
-msgid "Merge request is blocked by another merge request."
+msgid "Merge request events"
 msgstr ""
 
 msgid "Merge request must be open."

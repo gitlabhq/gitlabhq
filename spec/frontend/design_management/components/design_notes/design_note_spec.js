@@ -48,7 +48,7 @@ describe('Design note component', () => {
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findEditButton = () => wrapper.findByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdown = () => wrapper.findByTestId('more-actions');
   const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findEditDropdownItem = () => findDropdownItems().at(0);
   const findCopyLinkDropdownItem = () => findDropdownItems().at(1);
@@ -353,7 +353,6 @@ describe('Design note component', () => {
 
       expect(emojiPicker.exists()).toBe(true);
       expect(emojiPicker.props()).toMatchObject({
-        boundary: 'viewport',
         right: false,
       });
     });
