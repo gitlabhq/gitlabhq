@@ -856,6 +856,16 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       subject
     end
+
+    context 'with malicious owner name' do
+      before do
+        allow_any_instance_of(User).to receive(:name).and_return('a<a class="fixed-top" href=/api/v4')
+      end
+
+      it 'escapes the malicious owner name' do
+        expect(subject).not_to include('<a class="fixed-top" href="/api/v4"></a>')
+      end
+    end
   end
 
   describe '#project_permissions_panel_data' do

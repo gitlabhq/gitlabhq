@@ -4088,28 +4088,55 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#sanitize_attrs' do
-    let(:user) { build(:user, name: 'test <& user', skype: 'test&user') }
+    let(:user) { build(:user, name: 'test & user', skype: 'test&user') }
 
     it 'does not encode HTML entities in the name attribute' do
       expect { user.sanitize_attrs }.not_to change { user.name }
     end
 
-    it 'sanitizes attr from html tags' do
-      user = create(:user, name: '<a href="//example.com">Test<a>')
+    context 'for name attribute' do
+      subject { user.name }
 
-      expect(user.name).to eq('Test')
-    end
+      before do
+        user.name = input_name
+        user.sanitize_attrs
+      end
 
-    it 'sanitizes attr from js scripts' do
-      user = create(:user, name: '<script>alert("Test")</script>')
+      context 'from html tags' do
+        let(:input_name) { '<a href="//example.com">Test<a>' }
 
-      expect(user.name).to eq("alert(\"Test\")")
-    end
+        it { is_expected.to eq('-Test-') }
+      end
 
-    it 'sanitizes attr from iframe scripts' do
-      user = create(:user, name: 'User"><iframe src=javascript:alert()><iframe>')
+      context 'from unclosed html tags' do
+        let(:input_name) { 'a<a class="js-evil" href=/api/v4' }
 
-      expect(user.name).to eq('User">')
+        it { is_expected.to eq('a-a class="js-evil" href=/api/v4') }
+      end
+
+      context 'from closing html brackets' do
+        let(:input_name) { 'alice some> tag' }
+
+        it { is_expected.to eq('alice some- tag') }
+      end
+
+      context 'from self-closing tags' do
+        let(:input_name) { '</link>alice' }
+
+        it { is_expected.to eq('-alice') }
+      end
+
+      context 'from js scripts' do
+        let(:input_name) { '<script>alert("Test")</script>' }
+
+        it { is_expected.to eq('-alert("Test")-') }
+      end
+
+      context 'from iframe scripts' do
+        let(:input_name) { 'User"><iframe src=javascript:alert()><iframe>' }
+
+        it { is_expected.to eq('User"---') }
+      end
     end
   end
 

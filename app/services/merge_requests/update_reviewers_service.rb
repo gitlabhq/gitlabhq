@@ -3,7 +3,7 @@
 module MergeRequests
   class UpdateReviewersService < UpdateService
     def execute(merge_request)
-      return merge_request unless current_user&.can?(:update_merge_request, merge_request)
+      return merge_request unless current_user&.can?(:set_merge_request_metadata, merge_request)
 
       old_reviewers = merge_request.reviewers.to_a
       old_ids = old_reviewers.map(&:id)
