@@ -2,6 +2,8 @@
 
 return unless Rails.env.test?
 
+require 'gitlab_edition'
+
 module RspecProfilingExt
   module Collectors
     class CSVWithTimestamps < ::RspecProfiling::Collectors::CSV
@@ -30,7 +32,7 @@ module RspecProfilingExt
   module Git
     def branch
       if ENV['CI_COMMIT_REF_NAME']
-        "#{defined?(Gitlab::License) ? 'ee' : 'ce'}:#{ENV['CI_COMMIT_REF_NAME']}"
+        "#{GitlabEdition.ee? ? 'ee' : 'ce'}:#{ENV['CI_COMMIT_REF_NAME']}"
       else
         super&.chomp
       end
