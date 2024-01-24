@@ -302,8 +302,14 @@ The browser-based analyzer does not have an equivalent for proxy-based checks th
 
 ## Managing scan time
 
-It is expected that running the browser-based crawler results in better coverage for many web applications, when compared to the standard GitLab DAST solution.
-This can come at a cost of increased scan time.
+Running the browser-based crawler results in better coverage for many web applications when compared to the proxy-based scanner, and this increased coverage can come at a cost of increased scan time.
+
+Scan time is affected by:
+
+- The response time of the target site
+- The number of browsers concurrently running scans
+- The number and complexity of pages that are crawled
+- The number and complexity of security checks that are run
 
 You can manage the trade-off between coverage and scan time with the following measures:
 
@@ -315,6 +321,7 @@ You can manage the trade-off between coverage and scan time with the following m
 - Prevent pages from being crawled using the [variable](#available-cicd-variables) `DAST_EXCLUDE_URLS`.
 - Prevent elements being selected using the [variable](#available-cicd-variables) `DAST_BROWSER_EXCLUDED_ELEMENTS`. Use with caution, as defining this variable causes an extra lookup for each page crawled.
 - If the target application has minimal or fast rendering, consider reducing the [variable](#available-cicd-variables) `DAST_BROWSER_DOM_READY_AFTER_TIMEOUT` to a smaller value. The default is `500ms`.
+- Selectively include only specific security checks. Use this, for example, to target a vulnerability type, such as cross-site scripting. Consider using the [variable](#available-cicd-variables) `DAST_EXCLUDE_RULES` to exclude security checks your team is not concerned about or `DAST_BROWSER_INCLUDE_ONLY_RULES` to run only security checks your team is concerned about.
 
 ## Timeouts
 

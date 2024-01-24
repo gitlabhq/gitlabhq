@@ -345,6 +345,42 @@ async function fetchMetric(searchUrl, name, type) {
   }
 }
 
+async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
+  try {
+    if (!name) {
+      throw new Error('fetchMetric() - metric name is required.');
+    }
+    if (!type) {
+      throw new Error('fetchMetric() - metric type is required.');
+    }
+
+    // TODO remove mocks once API has been implemented https://gitlab.com/gitlab-org/opstrace/opstrace/-/work_items/2624
+    // const params = new URLSearchParams({
+    //   mname: name,
+    //   mtype: type,
+    // });
+    // const { data } = await axios.get(searchMetadataUrl, {
+    //   params,
+    //   withCredentials: true,
+    // });
+    // return data;
+
+    return {
+      name: 'cpu_seconds_total',
+      type: 'sum',
+      description: 'some_description',
+      last_ingested_at: 1705374438711900000,
+      attribute_keys: ['host.name', 'host.dc', 'host.type'],
+      supported_aggregations: ['1m', '1h'],
+      supported_functions: ['min', 'max', 'avg', 'sum', 'count'],
+      default_group_by_attributes: ['host.name'],
+      default_group_by_function: ['avg'],
+    };
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
 export function buildClient(config) {
   if (!config) {
     throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -358,6 +394,7 @@ export function buildClient(config) {
     operationsUrl,
     metricsUrl,
     metricsSearchUrl,
+    metricsSearchMetadataUrl,
   } = config;
 
   if (typeof provisioningUrl !== 'string') {
@@ -388,6 +425,10 @@ export function buildClient(config) {
     throw new Error('metricsSearchUrl param must be a string');
   }
 
+  if (typeof metricsSearchMetadataUrl !== 'string') {
+    throw new Error('metricsSearchMetadataUrl param must be a string');
+  }
+
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
@@ -398,5 +439,7 @@ export function buildClient(config) {
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
     fetchMetrics: (options) => fetchMetrics(metricsUrl, options),
     fetchMetric: (metricName, metricType) => fetchMetric(metricsSearchUrl, metricName, metricType),
+    fetchMetricSearchMetadata: (metricName, metricType) =>
+      fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
   };
 }

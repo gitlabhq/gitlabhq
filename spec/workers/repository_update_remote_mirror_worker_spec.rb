@@ -72,7 +72,7 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
     end
   end
 
-  include_examples 'an idempotent worker' do
+  it_behaves_like 'an idempotent worker' do
     let(:job_args) { [remote_mirror.id, scheduled_time] }
   end
 end

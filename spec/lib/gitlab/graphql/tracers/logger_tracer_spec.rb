@@ -35,6 +35,7 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
       "query_analysis.complexity" => 1,
       "query_analysis.depth" => 1,
       "query_analysis.used_deprecated_fields" => [],
+      "query_analysis.used_deprecated_arguments" => [],
       "query_analysis.used_fields" => ["FakeQuery.helloWorld"],
       duration_s: be > 0,
       is_mutation: false,

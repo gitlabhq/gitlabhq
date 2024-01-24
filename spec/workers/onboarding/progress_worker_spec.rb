@@ -7,9 +7,11 @@ RSpec.describe Onboarding::ProgressWorker, '#perform', feature_category: :onboar
   let_it_be(:action) { 'git_pull' }
 
   it_behaves_like 'records an onboarding progress action', :git_pull do
-    include_examples 'an idempotent worker' do
-      subject { described_class.new.perform(namespace.id, action) }
-    end
+    subject { described_class.new.perform(namespace.id, action) }
+  end
+
+  it_behaves_like 'an idempotent worker' do
+    let(:job_args) { [namespace.id, action] }
   end
 
   it_behaves_like 'does not record an onboarding progress action' do

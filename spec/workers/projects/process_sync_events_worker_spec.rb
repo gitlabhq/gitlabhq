@@ -8,7 +8,7 @@ RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :cell do
 
   subject(:worker) { described_class.new }
 
-  include_examples 'an idempotent worker'
+  it_behaves_like 'an idempotent worker'
 
   it 'has the `until_executed` deduplicate strategy' do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)

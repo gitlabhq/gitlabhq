@@ -62,6 +62,15 @@ export const typePolicies = {
       },
     },
   },
+  Dora: {
+    merge: true,
+  },
+  GroupValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
+  ProjectValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

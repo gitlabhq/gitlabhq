@@ -6,7 +6,7 @@ RSpec.describe Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker, feat
   subject(:worker) { described_class.new }
 
   describe '#perform' do
-    include_examples 'an idempotent worker' do
+    it_behaves_like 'an idempotent worker' do
       it 'schedules Projects::RefreshBuildArtifactsSizeStatisticsWorker to be performed with capacity' do
         expect(Projects::RefreshBuildArtifactsSizeStatisticsWorker).to receive(:perform_with_capacity).twice
 

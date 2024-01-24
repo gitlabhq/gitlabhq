@@ -97,25 +97,6 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
 
   it { expect(partitioned_model.sequence_name).to eq('_test_ci_jobs_metadata_id_seq') }
 
-  context 'with singe table inheritance' do
-    let(:child_model) do
-      Class.new(model) do
-        def self.name
-          'TestSwitchJobMetadataChild'
-        end
-      end
-    end
-
-    it 'adds a Partitioned model for each descendant' do
-      expect(model::Partitioned).not_to eq(child_model::Partitioned)
-    end
-
-    it 'uses the parent name in STI queries' do
-      recorder = ActiveRecord::QueryRecorder.new { child_model.all.load }
-      expect(recorder.log).to include(/"type" = 'TestSwitchJobMetadataChild'/)
-    end
-  end
-
   context 'when switching the tables' do
     before do
       stub_feature_flags(table_rollout_flag => false)

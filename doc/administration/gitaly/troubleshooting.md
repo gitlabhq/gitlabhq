@@ -499,6 +499,20 @@ Execution traces can be viewed by running:
 go tool trace heap.bin
 ```
 
+### Profile Git operations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `log_git_traces`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md)
+named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+
+You can profile Git operations that Gitaly performs by sending additional information about Git operations to Gitaly logs. With this information, users have more insight
+for performance optimization, debugging, and general telemetry collection. For more information, see the [Git Trace2 API reference](https://git-scm.com/docs/api-trace2).
+
+To prevent system overload, the additional information logging is rate limited. If the rate limit is exceeded, traces are skipped. However, after the rate returns to a healthy
+state, the traces are processed again automatically. Rate limiting ensures that the system remains stable and avoids any adverse impact because of excessive trace processing.
+
 ## Repositories are shown as empty after a GitLab restore
 
 When using `fapolicyd` for increased security, GitLab can report that a restore from a GitLab backup file was successful but:

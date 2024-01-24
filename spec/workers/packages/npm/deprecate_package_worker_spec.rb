@@ -18,7 +18,7 @@ RSpec.describe Packages::Npm::DeprecatePackageWorker, feature_category: :package
       }
     end
 
-    include_examples 'an idempotent worker' do
+    it_behaves_like 'an idempotent worker' do
       let(:job_args) { [project.id, params] }
 
       it 'calls the deprecation service' do

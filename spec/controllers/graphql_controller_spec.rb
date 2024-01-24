@@ -684,6 +684,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           operation_name: 'getProject_1',
           complexity: 3,
           depth: 2,
+          used_deprecated_arguments: [],
           used_deprecated_fields: [],
           used_fields: ['Project.id', 'Project.name', 'Query.project'],
           variables: '{}'
@@ -692,6 +693,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           operation_name: 'getProject_2',
           complexity: 2,
           depth: 2,
+          used_deprecated_arguments: [],
           used_deprecated_fields: [],
           used_fields: ['Project.id', 'Query.project'],
           variables: '{}'

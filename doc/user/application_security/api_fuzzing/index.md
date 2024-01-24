@@ -24,13 +24,6 @@ Web API fuzzing runs in the `fuzz` stage of the CI/CD pipeline. To ensure API fu
 latest code, your CI/CD pipeline should deploy changes to a test environment in one of the stages
 preceding the `fuzz` stage.
 
-Note the following changes have been made to the API fuzzing template:
-
-- In GitLab 14.0 and later, you must define a `fuzz` stage in your `.gitlab-ci.yml` file.
-- In GitLab 13.12 and earlier, the API fuzzing template defines `build`, `test`, `deploy`, and
-  `fuzz` stages. The `fuzz` stage runs last by default. The predefined stages were deprecated, and removed from the `API-Fuzzing.latest.gitlab-ci.yml` template. We plan to remove them in a future GitLab
-  version.
-
 If your pipeline is configured to deploy to the same web server on each run, running a
 pipeline while another is still running could cause a race condition in which one pipeline
 overwrites the code from another. The API to scan should be excluded from changes for the duration

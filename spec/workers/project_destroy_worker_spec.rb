@@ -10,7 +10,7 @@ RSpec.describe ProjectDestroyWorker, feature_category: :source_code_management d
 
   subject(:worker) { described_class.new }
 
-  include_examples 'an idempotent worker' do
+  it_behaves_like 'an idempotent worker' do
     let(:job_args) { [project.id, user.id, {}] }
 
     it 'does not change projects when run twice' do

@@ -13,7 +13,7 @@ RSpec.describe PipelineProcessWorker, feature_category: :continuous_integration 
     expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once, ttl: 1.minute })
   end
 
-  include_examples 'an idempotent worker' do
+  it_behaves_like 'an idempotent worker' do
     let(:pipeline) { create(:ci_pipeline, :created) }
     let(:job_args) { [pipeline.id] }
 

@@ -43,7 +43,7 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker, feature_catego
         expect { worker.perform }.to change { expired_today.reload.expiry_notification_delivered_at }
       end
 
-      include_examples 'an idempotent worker' do
+      it_behaves_like 'an idempotent worker' do
         subject do
           perform_multiple(worker: worker)
         end

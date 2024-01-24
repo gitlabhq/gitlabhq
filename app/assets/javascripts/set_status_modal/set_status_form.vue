@@ -218,7 +218,7 @@ export default {
 
     <gl-form-checkbox
       :checked="availability"
-      class="gl-mb-5"
+      class="gl-mb-3"
       data-testid="user-availability-checkbox"
       @input="$emit('availability-input', $event)"
     >

@@ -215,13 +215,6 @@ class MergeRequest < ApplicationRecord
     state :locked, value: MergeRequest.available_states[:locked]
   end
 
-  # Alias to state machine .with_state_id method
-  # This needs to be defined after the state machine block to avoid errors
-  class << self
-    alias_method :with_state, :with_state_id
-    alias_method :with_states, :with_state_ids
-  end
-
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_preparing do
       transition unchecked: :preparing
@@ -319,7 +312,7 @@ class MergeRequest < ApplicationRecord
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
-  scope :open_and_closed, -> { with_states(:opened, :closed) }
+  scope :open_and_closed, -> { with_state(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_sorted_source_branches, ->(branches) do

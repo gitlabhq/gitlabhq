@@ -49,7 +49,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
         end
       end
 
-      include_examples 'an idempotent worker' do
+      it_behaves_like 'an idempotent worker' do
         before do
           allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
           issue.metrics.update!(first_mentioned_in_commit_at: nil)

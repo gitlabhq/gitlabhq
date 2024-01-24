@@ -12,7 +12,7 @@ module Preloaders
       return unless @projects.is_a?(ActiveRecord::Relation)
 
       root_query = Namespace.joins("INNER JOIN (#{join_sql}) as root_query ON root_query.root_id = namespaces.id")
-                        .select('namespaces.*, root_query.id as source_id')
+                        .select('namespaces.*, root_query.project_id as source_id')
 
       root_query = root_query.preload(*@root_ancestor_preloads) if @root_ancestor_preloads.any?
 
@@ -30,7 +30,7 @@ module Preloaders
     def join_sql
       @projects
         .joins(@namespace_sti_name)
-        .select('projects.id, namespaces.traversal_ids[1] as root_id')
+        .select('projects.id as project_id, namespaces.traversal_ids[1] as root_id')
         .to_sql
     end
   end

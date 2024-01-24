@@ -37684,7 +37684,7 @@ msgstr ""
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
-msgid "Profiles|Don't display activity-related personal information on your profile."
+msgid "Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}Learn more%{private_profile_help_link_end}."
 msgstr ""
 
 msgid "Profiles|Edit Profile"
@@ -37861,7 +37861,7 @@ msgstr ""
 msgid "Profiles|This email will be displayed on your public profile."
 msgstr ""
 
-msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more.%{commit_email_link_end}"
+msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more%{commit_email_link_end}."
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
@@ -37939,7 +37939,7 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
-msgid "Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}"
+msgid "Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more%{external_accounts_link_end}."
 msgstr ""
 
 msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"

@@ -108,7 +108,7 @@
       .form-group.gl-form-group
         - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')
         - external_accounts_link = link_to '', external_accounts_help_url, target: "_blank", rel: "noopener noreferrer"
-        - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more.%{external_accounts_link_end}'), tag_pair(external_accounts_link, :external_accounts_link_start, :external_accounts_link_end))
+        - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more%{external_accounts_link_end}.'), tag_pair(external_accounts_link, :external_accounts_link_start, :external_accounts_link_end))
         - min_discord_length = 17
         - max_discord_length = 20
         = f.label :discord
@@ -154,9 +154,9 @@
         %fieldset.form-group.gl-form-group
           %legend.col-form-label
             = _('Private profile')
-          - private_profile_label = s_("Profiles|Don't display activity-related personal information on your profile.")
-          - private_profile_help_link = link_to sprite_icon('question-o'), help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
-          = f.gitlab_ui_checkbox_component :private_profile, '%{private_profile_label} %{private_profile_help_link}'.html_safe % { private_profile_label: private_profile_label, private_profile_help_link: private_profile_help_link.html_safe }
+          - private_profile_help_link = link_to _("Learn more"), help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
+          - private_profile_label = safe_format(s_("Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}Learn more%{private_profile_help_link_end}."), tag_pair(private_profile_help_link, :private_profile_help_link_start, :private_profile_help_link_end))
+          = f.gitlab_ui_checkbox_component :private_profile, private_profile_label
         %fieldset.form-group.gl-form-group
           %legend.col-form-label
             = s_("Profiles|Private contributions")

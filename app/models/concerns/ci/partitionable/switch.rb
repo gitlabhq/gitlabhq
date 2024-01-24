@@ -2,8 +2,6 @@
 
 module Ci
   module Partitionable
-    MUTEX = Mutex.new
-
     module Switch
       extend ActiveSupport::Concern
 
@@ -16,39 +14,18 @@ module Ci
                             predicate_builder cached_find_by_statement].freeze
 
       included do |base|
-        install_partitioned_class(base)
-      end
+        partitioned = Class.new(base) do
+          self.table_name = base.routing_table_name
 
-      class_methods do
-        # `Class.new(partitionable_model)` triggers `partitionable_model.inherited`
-        # and we need the mutex to break the recursion without adding extra accessors
-        # on the model. This will be used during code loading, not runtime.
-        #
-        def install_partitioned_class(partitionable_model)
-          Partitionable::MUTEX.synchronize do
-            partitioned = Class.new(partitionable_model) do
-              self.table_name = partitionable_model.routing_table_name
-
-              def self.routing_class?
-                true
-              end
-
-              def self.sti_name
-                superclass.sti_name
-              end
-            end
-
-            partitionable_model.const_set(:Partitioned, partitioned)
+          def self.routing_class?
+            true
           end
         end
 
-        def inherited(child_class)
-          super
-          return if Partitionable::MUTEX.owned?
+        base.const_set(:Partitioned, partitioned)
+      end
 
-          install_partitioned_class(child_class)
-        end
-
+      class_methods do
         def routing_class?
           false
         end
@@ -57,7 +34,7 @@ module Ci
           return false if routing_class?
 
           Gitlab::SafeRequestStore.fetch(routing_table_name_flag) do
-            ::Feature.enabled?(routing_table_name_flag)
+            ::Feature.enabled?(routing_table_name_flag, :request)
           end
         end
 
@@ -73,13 +50,6 @@ module Ci
               super(*args, &block)
             end
           end
-        end
-
-        def type_condition(table = arel_table)
-          sti_column = table[inheritance_column]
-          sti_names  = ([self] + descendants).map(&:sti_name).uniq
-
-          predicate_builder.build(sti_column, sti_names)
         end
       end
     end

@@ -105,6 +105,7 @@ module Issuable
     scope :not_authored, ->(user) { where.not(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
+    scope :with_state, ->(*states) { where(state_id: states.flatten.map { |s| STATE_ID_MAP[s] }) }
     scope :opened, -> { with_state(:opened) }
     scope :closed, -> { with_state(:closed) }
 
