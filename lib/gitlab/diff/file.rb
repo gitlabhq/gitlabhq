@@ -5,7 +5,7 @@ module Gitlab
     class File
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier
+      attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier, :max_blob_size
 
       delegate :new_file?, :deleted_file?, :renamed_file?, :unidiff,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
@@ -31,7 +31,8 @@ module Gitlab
         diff_refs: nil,
         fallback_diff_refs: nil,
         stats: nil,
-        unique_identifier: nil)
+        unique_identifier: nil,
+        max_blob_size: nil)
 
         @diff = diff
         @stats = stats
@@ -39,6 +40,7 @@ module Gitlab
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
         @unique_identifier = unique_identifier
+        @max_blob_size = max_blob_size
         @unfolded = false
 
         # Ensure items are collected in the the batch
@@ -397,7 +399,11 @@ module Gitlab
       def fetch_blob(sha, path)
         return unless sha
 
-        Blob.lazy(repository, sha, path)
+        if max_blob_size.present?
+          Blob.lazy(repository, sha, path, blob_size_limit: max_blob_size)
+        else
+          Blob.lazy(repository, sha, path)
+        end
       end
 
       def total_blob_lines(blob)

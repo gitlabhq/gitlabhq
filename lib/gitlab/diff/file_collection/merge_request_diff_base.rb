@@ -49,6 +49,14 @@ module Gitlab
           diff_stats_cache.clear
         end
 
+        override :max_blob_size
+        def self.max_blob_size(project)
+          return unless Feature.enabled?(:increase_diff_file_performance, project)
+
+          [Gitlab::Git::Diff.patch_hard_limit_bytes,
+            Gitlab.config.extra['maximum_text_highlight_size_kilobytes']].max
+        end
+
         private
 
         def highlight_cache

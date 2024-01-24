@@ -77,20 +77,6 @@ RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
    1. For Anthropic, create an access request
 
-### Set up the embedding database
-
-For features that use the embedding database, additional setup is needed.
-
-1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
-1. Enable the embedding database in GDK
-
-   ```shell
-     gdk config set gitlab.rails.databases.embedding.enabled true
-   ```
-
-1. Run `gdk reconfigure`
-1. Run database migrations to create the embedding database
-
 ### Configure GCP Vertex access
 
 In order to obtain a GCP service key for local development, follow the steps below:
@@ -118,38 +104,71 @@ Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
-### Populating embeddings and using embeddings fixture
+### Embeddings database
 
-Embeddings are generated through VertexAI text embeddings endpoint. The sections below explain how to populate
-embeddings in the DB or extract embeddings to be used in specs.
+Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings). The sections
+below explain how to populate embeddings in the DB or extract embeddings to be
+used in specs.
 
-#### VertexAI embeddings
+#### Set up
 
-To seed your development database with the embeddings for GitLab Documentation,
-you may use the pre-generated embeddings and a Rake task.
+1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
+1. Enable the embedding database in GDK
+
+   ```shell
+     gdk config set gitlab.rails.databases.embedding.enabled true
+   ```
+
+1. Run `gdk reconfigure`
+1. Run database migrations to create the embedding database
+
+   ```shell
+     RAILS_ENV=development bin/rails db:migrate
+   ```
+
+#### Populate
+
+Seed your development database with the embeddings for GitLab Documentation
+using this Rake task:
 
 ```shell
 RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:seed
 ```
 
-The DBCleaner gem we use clear the database tables before each test runs.
-Instead of fully populating the table `vertex_gitlab_docs` where we store VertexAI embeddings for the documentations,
-we can add a few selected embeddings to the table from a pre-generated fixture.
+This Rake Task populates the embeddings database with a vectorized
+representation of all GitLab Documentation. The file the Rake Task uses as a
+source is a snapshot of GitLab Documentation at some point in the past and is
+not updated regularly. As a result, it is helpful to know that this seed task
+creates embeddings based on GitLab Documentation that is out of date. Slightly
+outdated documentation embeddings are sufficient for the development
+environment, which is the use-case for the seed task.
 
-For instance, to test that the question "How can I reset my password" is correctly
-retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
-to the question into a fixture and only restore a small number of embeddings quickly.
-To facilitate an extraction process, a Rake task has been written.
-You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
+When writing or updating tests related to embeddings, you may want to update the
+embeddings fixture file:
 
 ```shell
 RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:extract_embeddings
 ```
 
-#### Using embeddings in specs
+#### Use embeddings in specs
+
+The `seed` Rake Task populates the development database with embeddings for all GitLab
+Documentation. The `extract_embeddings` Rake Task populates a fixture file with a subset
+of embeddings.
+
+The set of questions listed in the Rake Task itself determines
+which embeddings are pulled into the fixture file. For example, one of the
+questions is "How can I reset my password?" The `extract_embeddings` Task
+pulls the most relevant embeddings for this question from the development
+database (which has data from the `seed` Rake Task) and saves those embeddings
+in `ee/spec/fixtures/vertex_embeddings`. This fixture is used in tests related
+to embeddings.
+
+If you would like to change any of the questions supported in embeddings specs,
+update and re-run the `extract_embeddings` Rake Task.
 
 In the specs where you need to use the embeddings,
-use the RSpec config hook `:ai_embedding_fixtures` on a context.
+use the RSpec `:ai_embedding_fixtures` metadata.
 
 ```ruby
 context 'when asking about how to use GitLab', :ai_embedding_fixtures do

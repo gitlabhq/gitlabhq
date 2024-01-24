@@ -27,6 +27,10 @@ but have several advantages:
 Instead of creating your own components, you can also search for published components
 that have the functionality you need in the [CI/CD Catalog](#cicd-catalog).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an introduction and hands-on examples, see [Efficient DevSecOps workflows with reusable CI/CD components](https://www.youtube.com/watch?v=-yvfSFKAgbA).
+<!-- Video published on 2024-01-22. DRI: Developer Relations, https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/399 -->
+
 ## Component project
 
 A component project is a GitLab project with a repository that hosts one or more components.
@@ -301,7 +305,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: gitlab.com/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
+  - component: $CI_SERVER_HOST/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
     inputs:
       stage: build
 
@@ -315,7 +319,7 @@ ensure-job-added:
   image: badouralix/curl-jq
   script:
     - |
-      route="https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
+      route="${CI_API_V4_URL}/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
       count=`curl --silent --header "PRIVATE-TOKEN: $API_TOKEN" $route | jq 'map(select(.name | contains("component-job"))) | length'`
       if [ "$count" != "1" ]; then
         exit 1

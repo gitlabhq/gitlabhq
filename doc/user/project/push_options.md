@@ -32,6 +32,10 @@ For server-side controls and enforcement of best practices, see
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
+NOTE:
+Push options are not available for merge request pipelines. For more information,
+see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
+
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
 | `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |

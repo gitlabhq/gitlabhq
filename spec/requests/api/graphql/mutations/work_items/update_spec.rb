@@ -1479,6 +1479,109 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'with notes widget input' do
+      let(:discussion_locked) { true }
+      let(:input) { { 'notesWidget' => { 'discussionLocked' => true } } }
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                discussionLocked
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      shared_examples 'work item is not updated' do
+        it 'ignores the update' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.not_to change(&work_item_change)
+        end
+      end
+
+      it_behaves_like 'work item is not updated' do
+        let(:current_user) { guest }
+        let(:work_item_change) { -> { work_item.discussion_locked } }
+      end
+
+      context 'when user has permissions to update the work item' do
+        let(:current_user) { reporter }
+
+        it 'updates work item discussion locked attribute on notes widget' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change { work_item.discussion_locked }.from(nil).to(true)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']['widgets']).to include(
+            {
+              'discussionLocked' => true,
+              'type' => 'NOTES'
+            }
+          )
+        end
+
+        context 'when using quick action' do
+          let(:input) { { 'descriptionWidget' => { 'description' => "/lock" } } }
+
+          it 'updates work item discussion locked attribute on notes widget' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change { work_item.discussion_locked }.from(nil).to(true)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'discussionLocked' => true,
+                'type' => 'NOTES'
+              }
+            )
+          end
+
+          context 'when unlocking discussion' do
+            let(:input) { { 'descriptionWidget' => { 'description' => "/unlock" } } }
+
+            before do
+              work_item.update!(discussion_locked: true)
+            end
+
+            it 'updates work item discussion locked attribute on notes widget' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.to change { work_item.discussion_locked }.from(true).to(false)
+
+              expect(response).to have_gitlab_http_status(:success)
+            end
+          end
+
+          context 'when the work item type does not support the notes widget' do
+            let(:input) do
+              { 'descriptionWidget' => { 'description' => "Updating notes discussion locked.\n/lock" } }
+            end
+
+            before do
+              WorkItems::Type.default_by_type(:issue).widget_definitions
+                .find_by_widget_type(:notes).update!(disabled: true)
+            end
+
+            it_behaves_like 'work item is not updated' do
+              let(:work_item_change) { -> { work_item.discussion_locked } }
+            end
+          end
+        end
+      end
+    end
+
     context 'when unsupported widget input is sent' do
       let_it_be(:work_item) { create(:work_item, :test_case, project: project) }
 

@@ -12,7 +12,7 @@ NOTE:
 Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
+1. [Ensure the embedding database is configured](index.md#embeddings-database).
 1. Ensure that your current branch is up-to-date with `master`.
 1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
 
