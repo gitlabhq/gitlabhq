@@ -60,7 +60,7 @@ the container registry on the primary site and restore it onto the secondary
 site:
 
 1. On your primary site, back up only the registry and
-   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup):
+   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup):
 
    ```shell
    # Create a backup in the /var/opt/gitlab/backups folder

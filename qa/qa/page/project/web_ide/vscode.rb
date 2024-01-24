@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# VSCode WebIDE is built off an iFrame application therefore we are unable to use `qa-selectors`
+# VSCode WebIDE is built off an iFrame application therefore we are unable to use `testids`
 module QA
   module Page
     module Project

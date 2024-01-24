@@ -1,0 +1,8 @@
+---
+name: preload_autocomplete_members_issues_mrs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139085
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435698
+milestone: '16.8'
+type: development
+group: group::global search
+default_enabled: false

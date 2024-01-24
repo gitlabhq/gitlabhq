@@ -1864,6 +1864,46 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     end
   end
 
+  describe 'GET /projects/:id/repository/commits/:sha/sequence' do
+    let(:current_user) { user }
+    let(:commit) { project.repository.commit }
+    let(:commit_id) { commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/sequence" }
+
+    context 'when commit does not exist' do
+      let(:commit_id) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Commit Not Found' }
+      end
+    end
+
+    context 'when commit exists' do
+      it 'returns correct JSON' do
+        expected_count = project.repository.count_commits(ref: commit_id, first_parent: false)
+
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['count']).to eq(expected_count)
+      end
+    end
+
+    context 'when commit exists first-parent' do
+      let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/sequence?first_parent=true" }
+
+      it 'returns correct JSON' do
+        expected_count = project.repository.count_commits(ref: commit_id, first_parent: true)
+
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['count']).to eq(expected_count)
+      end
+    end
+  end
+
   describe 'POST :id/repository/commits/:sha/cherry_pick' do
     let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
     let(:commit) { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }

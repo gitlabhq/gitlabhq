@@ -85,7 +85,7 @@ module QA
 
           def click_boards_dropdown_button
             # The dropdown button comes from the `GlDropdown` component of `@gitlab/ui`,
-            # so it wasn't possible to add a `data-qa-selector` to it.
+            # so it wasn't possible to add a `data-testid` to it.
             find_element('boards-dropdown').find('button').click
           end
 

@@ -178,12 +178,13 @@ including:
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
+- Merge request diffs (Helm chart installation only)
 
 Backups do not include:
 
-- [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
+- [Mattermost data](../../integration/mattermost/index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
-- [Object storage](#object-storage)
+- [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
 
 WARNING:
 GitLab does not back up any configuration files (`/etc/gitlab`), TLS keys and certificates, or system
@@ -208,7 +209,7 @@ system. If you installed GitLab:
 ### Backup command
 
 WARNING:
-The backup command does not back up items in [object storage](#object-storage).
+The backup command does not back up items in [object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations.
 
 WARNING:
 The backup command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
@@ -238,8 +239,6 @@ Run the backup task by using `kubectl` to run the `backup-utility` script on the
 :::TabTitle Docker
 
 Run the backup from the host.
-
-- GitLab 12.2 or later:
 
 ```shell
 docker exec -t <container name> gitlab-backup create
@@ -439,28 +438,45 @@ on all distributions. To verify that it's available in your distribution, run
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
-#### Excluding specific directories from the backup
+#### Excluding specific data from the backup
 
-You can exclude specific directories from the backup by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
+Depending on your installation type, slightly different components can be skipped on backup creation.
+
+::Tabs
+
+:::Tab Title Linux package (Omnibus) / Docker / Self-compiled
+
+<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/31c3df7ebb65768208772da3e20d32688a6c90ef/lib/backup/manager.rb#L126 -->
 
 - `db` (database)
+- `repositories` (Git repositories data, including wikis)
 - `uploads` (attachments)
 - `builds` (CI job output logs)
 - `artifacts` (CI job artifacts)
+- `pages` (Pages content)
 - `lfs` (LFS objects)
 - `terraform_state` (Terraform states)
 - `registry` (Container registry images)
-- `pages` (Pages content)
-- `repositories` (Git repositories data)
 - `packages` (Packages)
 - `ci_secure_files` (Project-level Secure Files)
 
-NOTE:
-When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../../user/packages/package_registry/index.md).
-For more information see [command line arguments](https://docs.gitlab.com/charts/architecture/backup-restore.html#command-line-arguments).
+:::TabTitle Helm chart (Kubernetes)
 
-All wikis are backed up as part of the `repositories` group. Non-existent
-wikis are skipped during a backup.
+<!-- source: https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19 -->
+
+- `db` (database)
+- `repositories` (Git repositories data, including wikis)
+- `uploads` (attachments)
+- `artifacts` (CI job artifacts and output logs)
+- `pages` (Pages content)
+- `lfs` (LFS objects)
+- `terraform_state` (Terraform states)
+- `registry` (Container registry images)
+- `packages` (Package registry)
+- `ci_secure_files` (Project-level Secure Files)
+- `external_diffs` (Merge request diffs)
+
+::EndTabs
 
 ::Tabs
 
@@ -469,6 +485,10 @@ wikis are skipped during a backup.
 ```shell
 sudo gitlab-backup create SKIP=db,uploads
 ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup.html#skipping-components) in charts backup documentation.
 
 :::TabTitle Self-compiled
 
@@ -1341,7 +1361,7 @@ If you have a specific reason to change the path, it can be configured in the Li
 
 Because every deployment may have different capabilities, you should first review [what data needs to be backed up](#what-data-needs-to-be-backed-up) to better understand if, and how, you can leverage them.
 
-For example, if you use Amazon RDS, you might choose to use its built-in backup and restore features to handle your GitLab [PostgreSQL data](#postgresql-databases), and [exclude PostgreSQL data](#excluding-specific-directories-from-the-backup) when using the [backup command](#backup-command).
+For example, if you use Amazon RDS, you might choose to use its built-in backup and restore features to handle your GitLab [PostgreSQL data](#postgresql-databases), and [exclude PostgreSQL data](#excluding-specific-data-from-the-backup) when using the [backup command](#backup-command).
 
 In the following cases, consider using file system data transfer or snapshots as part of your backup strategy:
 
@@ -1381,7 +1401,7 @@ practical use.
 
 ### Back up repository data separately
 
-First, ensure you back up existing GitLab data while [skipping repositories](#excluding-specific-directories-from-the-backup):
+First, ensure you back up existing GitLab data while [skipping repositories](#excluding-specific-data-from-the-backup):
 
 ::Tabs
 

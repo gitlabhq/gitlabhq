@@ -125,7 +125,6 @@ type testServer struct {
 	writer     *multipart.Writer
 	buffer     *bytes.Buffer
 	fileWriter io.Writer
-	cleanup    func()
 }
 
 func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format string, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *testServer {
@@ -143,10 +142,10 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 	require.NotNil(t, fileWriter)
 	require.NoError(t, err)
 
-	cleanup := func() {
+	t.Cleanup(func() {
 		ts.Close()
 		require.NoError(t, writer.Close())
-	}
+	})
 
 	qs := ""
 
@@ -154,7 +153,7 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 		qs = fmt.Sprintf("?%s=%s", ArtifactFormatKey, format)
 	}
 
-	return &testServer{url: ts.URL + Path + qs, writer: writer, buffer: &buffer, fileWriter: fileWriter, cleanup: cleanup}
+	return &testServer{url: ts.URL + Path + qs, writer: writer, buffer: &buffer, fileWriter: fileWriter}
 }
 
 func testUploadArtifacts(t *testing.T, contentType, url string, body io.Reader) *httptest.ResponseRecorder {
@@ -211,7 +210,6 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 					require.Contains(t, r.PostForm, "metadata.gitlab-workhorse-upload")
 				},
 			)
-			defer s.cleanup()
 
 			archive := zip.NewWriter(s.fileWriter)
 			file, err := archive.Create("test.file")
@@ -241,7 +239,6 @@ func TestUploadHandlerTarArtifact(t *testing.T) {
 			require.Contains(t, r.PostForm, "file.gitlab-workhorse-upload")
 		},
 	)
-	defer s.cleanup()
 
 	file, err := os.Open("../../testdata/tarfile.tar")
 	require.NoError(t, err)
@@ -258,7 +255,6 @@ func TestUploadHandlerTarArtifact(t *testing.T) {
 
 func TestUploadHandlerForUnsupportedArchive(t *testing.T) {
 	s := setupWithTmpPath(t, "file", true, "other", nil, nil)
-	defer s.cleanup()
 	require.NoError(t, s.writer.Close())
 
 	response := testUploadArtifacts(t, s.writer.FormDataContentType(), s.url, s.buffer)
@@ -268,7 +264,6 @@ func TestUploadHandlerForUnsupportedArchive(t *testing.T) {
 
 func TestUploadHandlerForMultipleFiles(t *testing.T) {
 	s := setupWithTmpPath(t, "file", true, "", nil, nil)
-	defer s.cleanup()
 
 	file, err := s.writer.CreateFormFile("file", "my.file")
 	require.NotNil(t, file)
@@ -281,7 +276,6 @@ func TestUploadHandlerForMultipleFiles(t *testing.T) {
 
 func TestUploadFormProcessing(t *testing.T) {
 	s := setupWithTmpPath(t, "metadata", true, "", nil, nil)
-	defer s.cleanup()
 	require.NoError(t, s.writer.Close())
 
 	response := testUploadArtifacts(t, s.writer.FormDataContentType(), s.url, s.buffer)
@@ -292,7 +286,6 @@ func TestLsifFileProcessing(t *testing.T) {
 	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
-	defer s.cleanup()
 
 	file, err := os.Open("../../testdata/lsif/valid.lsif.zip")
 	require.NoError(t, err)
@@ -311,7 +304,6 @@ func TestInvalidLsifFileProcessing(t *testing.T) {
 	tempPath := t.TempDir()
 
 	s := setupWithTmpPath(t, "file", true, "zip", &api.Response{TempPath: tempPath, ProcessLsif: true}, nil)
-	defer s.cleanup()
 
 	file, err := os.Open("../../testdata/lsif/invalid.lsif.zip")
 	require.NoError(t, err)

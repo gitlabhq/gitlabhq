@@ -92,7 +92,9 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
 
     wait_for_requests
-    expect(page.html).to include('Are you sure you want to cancel creating this comment?')
+    page.within('.modal-dialog') do
+      expect(page).to have_content('Are you sure you want to cancel creating this comment?')
+    end
   end
 
   it 'loads new comment' do

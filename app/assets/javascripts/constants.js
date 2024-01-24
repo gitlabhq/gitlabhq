@@ -3,3 +3,5 @@ export const getModifierKey = (removeSuffix = false) => {
   const winKey = `Ctrl${removeSuffix ? '' : '+'}`;
   return window.gl?.client?.isMac ? '⌘' : winKey;
 };
+
+export const PRELOAD_THROTTLE_TIMEOUT_MS = 4000;
