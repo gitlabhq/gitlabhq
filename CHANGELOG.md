@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.1 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Optimize garbage collection process](gitlab-org/security/gitlab@1d5a7bc23d5678a2d3c059cbced7d33f5e1e68c4)
+
+### Changed (1 change)
+
+- [Migrate {hll_counters}_i_code_review_create_mr from hll to int](gitlab-org/security/gitlab@357bfe13fc9ab986bba65eb2b06413baed1357f1)
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@4f2cc52e8695d219bc9e5c73ada1cf92b1b7a398) ([merge request](gitlab-org/security/gitlab!3817))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@d3b7615e4b0e5aa8007a8d00944bbd98a98c5f84) ([merge request](gitlab-org/security/gitlab!3822))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@2f5cccd35e5e0e5e1786d9d10cfacf890704d1ad) ([merge request](gitlab-org/security/gitlab!3818))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@7a315ac79ece40726fa28d0821c872f0343346b8) ([merge request](gitlab-org/security/gitlab!3819))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@bf0c84e848ef955443e3998b937aabaf66cdb5ed) ([merge request](gitlab-org/security/gitlab!3820))
+
 ## 16.8.0 (2024-01-17)
 
 ### Added (113 changes)
