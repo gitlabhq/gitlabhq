@@ -11,6 +11,7 @@ module Gitlab
           AmbigiousSpecificationError = Class.new(Error)
           TooManyIncludesError = Class.new(Error)
           TooMuchDataInPipelineTreeError = Class.new(Error)
+          InvalidTypeError = Class.new(Error)
 
           def initialize(values, context)
             @locations = Array.wrap(values.fetch(:include, [])).compact

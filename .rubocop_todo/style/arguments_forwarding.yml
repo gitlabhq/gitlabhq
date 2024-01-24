@@ -115,7 +115,6 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/redis/multi_store.rb'
     - 'lib/gitlab/repository_cache.rb'
     - 'lib/gitlab/tracking.rb'
-    - 'lib/gitlab/url_blocker.rb'
     - 'lib/gitlab/url_builder.rb'
     - 'lib/gitlab/usage/metrics/query.rb'
     - 'lib/gitlab_settings/settings.rb'

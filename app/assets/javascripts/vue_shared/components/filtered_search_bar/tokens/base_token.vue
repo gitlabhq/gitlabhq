@@ -78,16 +78,12 @@ export default {
       required: false,
       default: undefined,
     },
-    multiSelectValues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   data() {
     return {
       hasFetched: false, // use this to avoid flash of `No suggestions found` before fetching
       searchKey: '',
+      selectedTokens: [],
       recentSuggestions: this.config.recentSuggestionsStorageKey
         ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey) ?? []
         : [],
@@ -197,6 +193,30 @@ export default {
         }
       },
     },
+    value: {
+      deep: true,
+      immediate: true,
+      handler(newValue) {
+        const { data } = newValue;
+
+        if (!this.multiSelectEnabled) {
+          return;
+        }
+
+        // don't add empty values to selectedUsernames
+        if (!data) {
+          return;
+        }
+
+        if (Array.isArray(data)) {
+          this.selectedTokens = data;
+          // !active so we don't add strings while searching, e.g. r, ro, roo
+          // !includes so we don't add the same usernames (if @input is emitted twice)
+        } else if (!this.active && !this.selectedTokens.includes(data)) {
+          this.selectedTokens = this.selectedTokens.concat(data);
+        }
+      },
+    },
   },
   methods: {
     handleInput: debounce(function debouncedSearch({ data, operator }) {
@@ -222,7 +242,15 @@ export default {
     }, DEBOUNCE_DELAY),
     handleTokenValueSelected(selectedValue) {
       if (this.multiSelectEnabled) {
-        this.$emit('token-selected', selectedValue);
+        const index = this.selectedTokens.indexOf(selectedValue);
+        if (index > -1) {
+          this.selectedTokens.splice(index, 1);
+        } else {
+          this.selectedTokens.push(selectedValue);
+        }
+
+        // need to clear search
+        this.$emit('input', { ...this.value, data: '' });
       }
 
       const activeTokenValue = this.getActiveTokenValue(this.suggestions, selectedValue);
@@ -253,7 +281,7 @@ export default {
     :config="validatedConfig"
     :value="value"
     :active="active"
-    :multi-select-values="multiSelectValues"
+    :multi-select-values="selectedTokens"
     v-bind="$attrs"
     v-on="$listeners"
     @input="handleInput"
@@ -265,6 +293,7 @@ export default {
         :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
           ...viewTokenProps,
           activeTokenValue,
+          selectedTokens,
         } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       ></slot>
     </template>
@@ -274,6 +303,7 @@ export default {
         :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
           ...viewTokenProps,
           activeTokenValue,
+          selectedTokens,
         } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       ></slot>
     </template>
@@ -290,17 +320,26 @@ export default {
       </template>
       <template v-if="showRecentSuggestions">
         <gl-dropdown-section-header>{{ __('Recently used') }}</gl-dropdown-section-header>
-        <slot name="suggestions-list" :suggestions="recentSuggestions"></slot>
+        <slot
+          name="suggestions-list"
+          :suggestions="recentSuggestions"
+          :selections="selectedTokens"
+        ></slot>
         <gl-dropdown-divider />
       </template>
       <slot
         v-if="showPreloadedSuggestions"
         name="suggestions-list"
         :suggestions="preloadedSuggestions"
+        :selections="selectedTokens"
       ></slot>
       <gl-loading-icon v-if="suggestionsLoading" size="sm" />
       <template v-else-if="showAvailableSuggestions">
-        <slot name="suggestions-list" :suggestions="availableSuggestions"></slot>
+        <slot
+          name="suggestions-list"
+          :suggestions="availableSuggestions"
+          :selections="selectedTokens"
+        ></slot>
       </template>
       <gl-dropdown-text v-else-if="showNoMatchesText">
         {{ __('No matches found') }}

@@ -174,6 +174,15 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
         it_behaves_like 'logging config file fetch', 'config_file_fetch_project_content_duration_s', 1
       end
+
+      context 'when the include value is a Boolean' do
+        let(:values) { { include: true } }
+
+        it 'raises an error' do
+          expect { process }.to raise_error(
+            Gitlab::Ci::Config::External::Mapper::InvalidTypeError, /Each include must be a hash or a string/)
+        end
+      end
     end
 
     context "when 'include' is defined as an array" do
@@ -185,6 +194,15 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       it 'returns Files instances' do
         expect(subject).to all(respond_to(:valid?))
         expect(subject).to all(respond_to(:content))
+      end
+
+      context 'when an include value is an Array' do
+        let(:values) { { include: [remote_url, [local_file]] } }
+
+        it 'raises an error' do
+          expect { process }.to raise_error(
+            Gitlab::Ci::Config::External::Mapper::InvalidTypeError, /Each include must be a hash or a string/)
+        end
       end
     end
 

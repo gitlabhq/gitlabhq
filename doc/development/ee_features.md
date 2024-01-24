@@ -63,6 +63,29 @@ Each SaaS feature is defined in a separate YAML file consisting of a number of f
 | `milestone`         | no       | Milestone in which the SaaS feature was created.                                                             |
 | `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
+#### Create a new SaaS feature file definition
+
+The GitLab codebase provides [`bin/saas-feature.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/saas-feature.rb),
+a dedicated tool to create new SaaS feature definitions.
+The tool asks various questions about the new SaaS feature, then creates
+a YAML definition in `ee/config/saas_features`.
+
+Only SaaS features that have a YAML definition file can be used when running the development or testing environments.
+
+```shell
+❯ bin/saas-feature my_saas_feature
+You picked the group 'group::acquisition'
+
+>> URL of the MR introducing the SaaS feature (enter to skip and let Danger provide a suggestion directly in the MR):
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+create ee/config/saas_features/my_saas_feature.yml
+---
+name: my_saas_feature
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+milestone: '16.8'
+group: group::acquisition
+```
+
 ### Opting out of a SaaS-only feature on another SaaS instance (JiHu)
 
 Prepend the `ee/lib/ee/gitlab/saas.rb` module and override the `Gitlab::Saas.feature_available?` method.

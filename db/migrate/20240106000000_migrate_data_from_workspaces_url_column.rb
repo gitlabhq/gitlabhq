@@ -13,7 +13,7 @@ class MigrateDataFromWorkspacesUrlColumn < Gitlab::Database::Migration[2.2]
     each_batch_range('workspaces', scope: ->(table) { table.all }, of: BATCH_SIZE) do |min, max|
       execute(<<~SQL)
         UPDATE workspaces
-        SET url_prefix = CONCAT('https://#{DEFAULT_PORT}-', name),
+        SET url_prefix = CONCAT('#{DEFAULT_PORT}-', name),
             dns_zone = remote_development_agent_configs.dns_zone,
             url_query_string = CASE
                                     WHEN POSITION('?' IN url) > 0

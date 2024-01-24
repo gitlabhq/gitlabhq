@@ -381,7 +381,7 @@ class NotifyPreview < ActionMailer::Preview
   def custom_email_credential
     @custom_email_credential ||= project.service_desk_custom_email_credential || ServiceDesk::CustomEmailCredential.create!(
       project: project,
-      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::UrlBlocker resolves DNS
+      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::HTTP_V2::UrlBlocker resolves DNS
       smtp_port: 587,
       smtp_username: 'user@gmail.com',
       smtp_password: 'supersecret'

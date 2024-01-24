@@ -106,6 +106,10 @@ module Namespaces
         end
       end
 
+      def all_project_ids
+        all_projects.select(:id)
+      end
+
       def self_and_descendants
         return super unless use_traversal_ids?
 

@@ -20240,6 +20240,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="groupprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="groupprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
+| <a id="groupprojectsincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Include also archived projects. |
 | <a id="groupprojectsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include also subgroup projects. |
 | <a id="groupprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Include projects that are not aimed for deletion. |
 | <a id="groupprojectssbomcomponentid"></a>`sbomComponentId` | [`ID`](#id) | Return only the projects related to the specified SBOM component. |
@@ -23297,6 +23298,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="namespaceprojectshascodecoverage"></a>`hasCodeCoverage` | [`Boolean`](#boolean) | Returns only the projects which have code coverage. |
 | <a id="namespaceprojectshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only the projects which have vulnerabilities. |
 | <a id="namespaceprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
+| <a id="namespaceprojectsincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Include also archived projects. |
 | <a id="namespaceprojectsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include also subgroup projects. |
 | <a id="namespaceprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Include projects that are not aimed for deletion. |
 | <a id="namespaceprojectssbomcomponentid"></a>`sbomComponentId` | [`ID`](#id) | Return only the projects related to the specified SBOM component. |

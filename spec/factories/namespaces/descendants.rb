@@ -8,5 +8,11 @@ FactoryBot.define do
     traversal_ids { namespace.traversal_ids }
     outdated_at { nil }
     calculated_at { Time.current }
+
+    trait :up_to_date do
+      after(:create) do |record|
+        record.reload.update!(outdated_at: nil)
+      end
+    end
   end
 end

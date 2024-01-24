@@ -2,11 +2,76 @@
 
 require 'spec_helper'
 
-RSpec.describe UserDetail do
+RSpec.describe UserDetail, feature_category: :system_access do
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to define_enum_for(:registration_objective).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other, :joining_team]).with_suffix }
+
+  specify do
+    values = [:basics, :move_repository, :code_storage, :exploring, :ci, :other, :joining_team]
+    is_expected.to define_enum_for(:registration_objective).with_values(values).with_suffix
+  end
 
   describe 'validations' do
+    context 'for onboarding_status json schema' do
+      let(:step_url) { '_some_string_' }
+      let(:email_opt_in) { true }
+      let(:onboarding_status) do
+        {
+          step_url: step_url,
+          email_opt_in: email_opt_in
+        }
+      end
+
+      it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+      context 'for step_url' do
+        let(:onboarding_status) do
+          {
+            step_url: step_url
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'step_url' is invalid" do
+          let(:step_url) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for email_opt_in' do
+        let(:onboarding_status) do
+          {
+            email_opt_in: email_opt_in
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'email_opt_in' is invalid" do
+          let(:email_opt_in) { 'true' }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'when there is no data' do
+        let(:onboarding_status) { {} }
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+      end
+
+      context 'when trying to store an unsupported key' do
+        let(:onboarding_status) do
+          {
+            unsupported_key: '_some_value_'
+          }
+        end
+
+        it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+      end
+    end
+
     describe '#job_title' do
       it { is_expected.not_to validate_presence_of(:job_title) }
       it { is_expected.to validate_length_of(:job_title).is_at_most(200) }
@@ -75,7 +140,8 @@ RSpec.describe UserDetail do
           user_detail.mastodon = '@robin'
 
           expect(user_detail).not_to be_valid
-          expect(user_detail.errors.full_messages).to match_array([_('Mastodon must contain only a mastodon username.')])
+          expect(user_detail.errors.full_messages)
+            .to match_array([_('Mastodon must contain only a mastodon username.')])
         end
       end
     end

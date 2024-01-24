@@ -1215,7 +1215,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/untrusted_regexp.rb'
     - 'lib/gitlab/untrusted_regexp/ruby_syntax.rb'
     - 'lib/gitlab/uploads_transfer.rb'
-    - 'lib/gitlab/url_blocker.rb'
     - 'lib/gitlab/url_builder.rb'
     - 'lib/gitlab/url_helpers.rb'
     - 'lib/gitlab/url_sanitizer.rb'

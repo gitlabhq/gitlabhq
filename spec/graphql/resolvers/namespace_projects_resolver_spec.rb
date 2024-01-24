@@ -25,7 +25,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
     let(:group) { create(:group) }
     let(:namespace) { group }
     let(:project1) { create(:project, namespace: namespace) }
-    let(:project2) { create(:project, namespace: namespace) }
+    let(:project2) { create(:project, :archived, namespace: namespace) }
     let(:project3) { create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
     let(:nested_group) { create(:group, parent: group) }
     let(:nested_project) { create(:project, group: nested_group) }
@@ -52,6 +52,12 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         arg = { not_aimed_for_deletion: true }
 
         expect(resolve_projects(arg)).to contain_exactly(project1, project2)
+      end
+
+      it 'can filter out archived projects' do
+        arg = { include_archived: false }
+
+        expect(resolve_projects(arg)).to contain_exactly(project1, project3)
       end
 
       it 'finds all projects not aimed for deletion including the subgroups' do

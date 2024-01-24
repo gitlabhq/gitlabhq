@@ -20,7 +20,7 @@ module RestClient
           raise ArgumentError, "URL is blocked: #{e.message}"
         end
 
-        # Gitlab::UrlBlocker returns a Addressable::URI which we need to coerce
+        # Gitlab::HTTP_V2::UrlBlocker returns a Addressable::URI which we need to coerce
         # to URI so that rest-client can use it to determine if it's a
         # URI::HTTPS or not. It uses it to set `net.use_ssl` to true or not:
         #

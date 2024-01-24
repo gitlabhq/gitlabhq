@@ -472,12 +472,8 @@ class Namespace < ApplicationRecord
     false
   end
 
-  def all_project_ids
-    all_projects.pluck(:id)
-  end
-
   def all_project_ids_except(ids)
-    all_projects.where.not(id: ids).pluck(:id)
+    all_project_ids.where.not(id: ids)
   end
 
   # Deprecated, use #licensed_feature_available? instead. Remove once Namespace#feature_available? isn't used anymore.

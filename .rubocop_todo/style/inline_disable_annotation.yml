@@ -2620,7 +2620,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/throttle.rb'
     - 'lib/gitlab/tracking.rb'
     - 'lib/gitlab/uploads/migration_helper.rb'
-    - 'lib/gitlab/url_blocker.rb'
     - 'lib/gitlab/url_builder.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_imported_projects_metric.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/database_metric.rb'

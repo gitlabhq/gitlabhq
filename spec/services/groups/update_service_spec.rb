@@ -457,6 +457,8 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       context 'when enabling the setting' do
         it 'creates the initial Namespaces::Descendants record' do
           expect { result }.to change { public_group.reload.namespace_descendants.present? }.from(false).to(true)
+
+          expect(public_group.namespace_descendants.outdated_at).to be_present
         end
       end
 

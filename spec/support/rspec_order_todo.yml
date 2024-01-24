@@ -6714,7 +6714,6 @@
 - './spec/lib/gitlab/uploads_transfer_spec.rb'
 - './spec/lib/gitlab/url_blockers/domain_allowlist_entry_spec.rb'
 - './spec/lib/gitlab/url_blockers/ip_allowlist_entry_spec.rb'
-- './spec/lib/gitlab/url_blocker_spec.rb'
 - './spec/lib/gitlab/url_blockers/url_allowlist_spec.rb'
 - './spec/lib/gitlab/url_builder_spec.rb'
 - './spec/lib/gitlab/url_sanitizer_spec.rb'

@@ -136,19 +136,19 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    identifier
-    ${'conflict'}
-    ${'discussions_not_resolved'}
-    ${'need_rebase'}
-    ${'default'}
-  `('renders $identifier merge check', async ({ identifier }) => {
+    identifier                    | componentName
+    ${'conflict'}                 | ${'conflict'}
+    ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
+    ${'need_rebase'}              | ${'need_rebase'}
+    ${'policies_denied'}          | ${'default'}
+  `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 
     wrapper.findComponent(StateContainer).vm.$emit('toggle');
 
     await waitForPromises();
 
-    const { default: component } = await COMPONENTS[identifier]();
+    const { default: component } = await COMPONENTS[componentName]();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
   });
@@ -166,9 +166,9 @@ describe('Merge request merge checks component', () => {
   it('sorts merge checks', async () => {
     mountComponent({
       mergeabilityChecks: [
-        { identifier: 'discussions', status: 'SUCCESS' },
-        { identifier: 'discussions', status: 'INACTIVE' },
-        { identifier: 'rebase', status: 'FAILED' },
+        { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+        { identifier: 'status_checks_must_pass', status: 'INACTIVE' },
+        { identifier: 'need_rebase', status: 'FAILED' },
       ],
     });
 
@@ -183,5 +183,22 @@ describe('Merge request merge checks component', () => {
     expect(mergeChecks.at(1).props('check')).toEqual(
       expect.objectContaining({ status: 'SUCCESS' }),
     );
+  });
+
+  it('does not render check component if no message exists', async () => {
+    mountComponent({
+      mergeabilityChecks: [
+        { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+        { identifier: 'fakemessage', status: 'FAILED' },
+      ],
+    });
+
+    await waitForPromises();
+
+    await wrapper.findByTestId('widget-toggle').trigger('click');
+
+    const mergeChecks = wrapper.findAllByTestId('merge-check');
+
+    expect(mergeChecks.length).toBe(1);
   });
 });

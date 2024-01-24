@@ -258,7 +258,7 @@ the mitigations for a new feature.
 
 #### URL blocker & validation libraries
 
-[`Gitlab::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/url_blocker.rb) can be used to validate that a
+[`Gitlab::HTTP_V2::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-http/lib/gitlab/http_v2/url_blocker.rb) can be used to validate that a
 provided URL meets a set of constraints. Importantly, when `dns_rebind_protection` is `true`, the method returns a known-safe URI where the hostname
 has been replaced with an IP address. This prevents DNS rebinding attacks, because the DNS record has been resolved. However, if we ignore this returned
 value, we **will not** be protected against DNS rebinding.
@@ -1234,7 +1234,7 @@ These types of bugs are often seen in environments which allow multi-threading a
 
 **Example 1:** you have a model which accepts a URL as input. When the model is created you verify that the URL host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
 
-GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d).
+GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::HTTP_V2::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/85c6a73598e72ab104ab29b72bf83661cd961646).
 
 **Example 2:** you have a feature which schedules jobs. When the user schedules the job, they have permission to do so. But imagine if, between the time they schedule the job and the time it is run, their permissions are restricted. Unless you re-check permissions at time of use, you could inadvertently allow unauthorized activity.
 
@@ -1264,9 +1264,9 @@ end
 - Use your framework's validations and database features to impose constraints and atomic reads and writes.
 - Read about [Server Side Request Forgery (SSRF) and DNS rebinding](#server-side-request-forgery-ssrf)
 
-An example of well implemented `Gitlab::UrlBlocker.validate!` call that prevents TOCTOU bug:
+An example of well implemented `Gitlab::HTTP_V2::UrlBlocker.validate!` call that prevents TOCTOU bug:
 
-1. [Preventing DNS rebinding in Gitea importer](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d)
+1. [Preventing DNS rebinding in Gitea importer](https://gitlab.com/gitlab-org/gitlab/-/commit/85c6a73598e72ab104ab29b72bf83661cd961646)
 
 ### Resources
 

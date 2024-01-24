@@ -408,7 +408,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # its preferable to keep it below all other project routes
         draw :repository
         draw :wiki
-        draw :gcp
 
         namespace :import do
           resource :jira, only: [:show], controller: :jira

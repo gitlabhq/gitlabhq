@@ -38,8 +38,8 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 | VM image                   | Status |              |
 |----------------------------|--------|--------------|
 | `macos-12-xcode-14`        | `Deprecated` | (Removal in GitLab 16.10) |
-| `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-13.yml) |
-| `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/main/toolchain/macos-14.yml) |
+| `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/36d443841732f2d4f7e3de1bce63f530edef1676/toolchain/macos-13.yml) |
+| `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/36d443841732f2d4f7e3de1bce63f530edef1676/toolchain/macos-14.yml) |
 
 If no image is specified, the macOS runner uses `macos-13-xcode-14`.
 

@@ -2416,7 +2416,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/tree_summary_spec.rb'
     - 'spec/lib/gitlab/unicode_spec.rb'
     - 'spec/lib/gitlab/untrusted_regexp_spec.rb'
-    - 'spec/lib/gitlab/url_blocker_spec.rb'
     - 'spec/lib/gitlab/url_builder_spec.rb'
     - 'spec/lib/gitlab/usage/metric_definition_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/database_metric_spec.rb'

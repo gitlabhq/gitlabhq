@@ -61,7 +61,8 @@ module Groups
         params[:namespace_descendants_attributes] = {
           traversal_ids: group.traversal_ids,
           all_project_ids: [],
-          self_and_descendant_group_ids: []
+          self_and_descendant_group_ids: [],
+          outdated_at: Time.current
         }
       else
         return unless group.namespace_descendants

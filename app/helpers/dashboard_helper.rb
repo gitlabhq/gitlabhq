@@ -33,6 +33,10 @@ module DashboardHelper
       end
     end
   end
+
+  def user_groups_requiring_reauth
+    []
+  end
 end
 
 DashboardHelper.prepend_mod_with('DashboardHelper')

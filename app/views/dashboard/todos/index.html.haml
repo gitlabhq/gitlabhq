@@ -2,7 +2,10 @@
 
 = render_two_factor_auth_recovery_settings_check
 = render_dashboard_ultimate_trial(current_user)
-= render_if_exists 'dashboard/todos/saml_reauth_notice'
+
+= render_if_exists 'shared/dashboard/saml_reauth_notice',
+  groups_requiring_saml_reauth: todo_groups_requiring_saml_reauth(@todos)
+
 - add_page_specific_style 'page_bundles/todos'
 - add_page_specific_style 'page_bundles/issuable'
 - filter_by_done = params[:state] == 'done'

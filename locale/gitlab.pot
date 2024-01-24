@@ -23595,7 +23595,7 @@ msgstr ""
 msgid "GroupSAML|Some branches are inaccessible because your SAML session has expired. To access the branches, select the group’s path to reauthenticate."
 msgstr ""
 
-msgid "GroupSAML|Some to-do items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view the hidden to-do items."
+msgid "GroupSAML|Some items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view any hidden items."
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."
@@ -55631,10 +55631,10 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
-msgid "Wiki|Create New Page"
+msgid "Wiki|Edit Page"
 msgstr ""
 
-msgid "Wiki|Edit Page"
+msgid "Wiki|New Page"
 msgstr ""
 
 msgid "Wiki|New page"

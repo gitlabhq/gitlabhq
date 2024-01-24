@@ -3,7 +3,10 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
+import {
+  COMPONENTS,
+  FAILURE_REASONS,
+} from '~/vue_merge_request_widget/components/checks/constants';
 import mergeRequestQueryVariablesMixin from '../mixins/merge_request_query_variables';
 import mergeChecksQuery from '../queries/merge_checks.query.graphql';
 import mergeChecksSubscription from '../queries/merge_checks.subscription.graphql';
@@ -102,7 +105,7 @@ export default {
       const order = ['FAILED', 'SUCCESS'];
 
       return [...this.checks]
-        .filter((s) => s.status !== 'INACTIVE')
+        .filter((s) => s.status !== 'INACTIVE' && FAILURE_REASONS[s.identifier.toLowerCase()])
         .sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
     },
     failedChecks() {

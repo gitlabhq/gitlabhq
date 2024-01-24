@@ -14,7 +14,18 @@ module Gitlab
       end
 
       def pages_url(with_unique_domain: false)
-        find_url(with_unique_domain).downcase
+        return namespace_in_path_url(with_unique_domain && unique_domain_enabled?) if config.namespace_in_path
+        return unique_url if with_unique_domain && unique_domain_enabled?
+
+        project_path_url = "#{config.protocol}://#{project_path}".downcase
+
+        # If the project path is the same as host, we serve it as group page
+        # On development we ignore the URL port to make it work on GDK
+        return namespace_url if Rails.env.development? && portless(namespace_url) == project_path_url
+        # If the project path is the same as host, we serve it as group page
+        return namespace_url if namespace_url == project_path_url
+
+        "#{namespace_url}/#{project_path}"
       end
 
       def unique_host
@@ -52,21 +63,6 @@ module Gitlab
 
       attr_reader :project, :project_path
 
-      def find_url(with_unique_domain)
-        return namespace_in_path_url(with_unique_domain && unique_domain_enabled?) if config.namespace_in_path
-        return unique_url if with_unique_domain && unique_domain_enabled?
-
-        project_path_url = "#{config.protocol}://#{project_path}"
-
-        # If the project path is the same as host, we serve it as group page
-        # On development we ignore the URL port to make it work on GDK
-        return namespace_url if Rails.env.development? && portless(namespace_url) == project_path_url
-        # If the project path is the same as host, we serve it as group page
-        return namespace_url if namespace_url == project_path_url
-
-        "#{namespace_url}/#{project_path}"
-      end
-
       def namespace_url
         @namespace_url ||= url_for(project_namespace)
       end
@@ -79,13 +75,14 @@ module Gitlab
         @pages_url ||= URI(config.url)
           .tap { |url| url.port = config.port }
           .to_s
+          .downcase
       end
 
       def namespace_in_path_url(with_unique_domain)
         if with_unique_domain
-          "#{pages_base_url}/#{project.project_setting.pages_unique_domain}"
+          "#{pages_base_url}/#{project.project_setting.pages_unique_domain}".downcase
         else
-          "#{pages_base_url}/#{project_namespace}/#{project_path}"
+          "#{pages_base_url}/#{project_namespace}/#{project_path}".downcase
         end
       end
 
@@ -94,6 +91,7 @@ module Gitlab
           .tap { |url| url.port = config.port }
           .tap { |url| url.host.prepend("#{subdomain}.") }
           .to_s
+          .downcase
       end
 
       def portless(url)

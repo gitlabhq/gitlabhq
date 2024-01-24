@@ -117,7 +117,7 @@ RSpec.shared_examples 'User views a wiki page' do
       click_on('image')
 
       expect(page).to have_current_path(%r{wikis/#{path}})
-      expect(page).to have_content('Create New Page')
+      expect(page).to have_content('New Page')
     end
   end
 
@@ -281,6 +281,6 @@ RSpec.shared_examples 'User views a wiki page' do
 
     click_link "Create your first page"
 
-    expect(page).to have_content('Create New Page')
+    expect(page).to have_content('New Page')
   end
 end

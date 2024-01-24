@@ -443,4 +443,10 @@ RSpec.describe TodosHelper do
       end
     end
   end
+
+  describe '.todo_groups_requiring_saml_reauth', feature_category: :system_access do
+    it 'returns an empty array' do
+      expect(helper.todo_groups_requiring_saml_reauth([])).to match_array([])
+    end
+  end
 end
