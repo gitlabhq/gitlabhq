@@ -8,7 +8,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Utility Classes
 
+NOTE:
+Please do not use any utilities that are prefixed with `gl-deprecated-`, instead use a Tailwind utility.
+
 In order to reduce the generation of more CSS as our site grows, prefer the use of utility classes over adding new CSS. In complex cases, CSS can be addressed by adding component classes.
+
+### Tailwind CSS migration
+
+We are in the process of migrating our CSS utility class setup to [Tailwind CSS](https://tailwindcss.com/).
+See the [Tailwind CSS blueprint](../../../architecture/blueprints/tailwindcss/index.md) for motivation, proposal,
+and implementation details.
 
 ### Where are utility classes defined?
 
@@ -37,9 +46,8 @@ result (such as `ml-1` becoming `gl-ml-2`).
 
 ### Where should you put new utility classes?
 
-If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) and refer to the [GitLab UI CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.
-
-If it is not possible to wait for a GitLab UI update (generally one day), add the class to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/utilities.scss) following the same naming conventions documented in GitLab UI. A follow-up issue to backport the class to GitLab UI and delete it from GitLab should be opened.
+Because we are in the process of [migrating to Tailwind](#tailwind-css-migration) the utility class you need may already be
+available from Tailwind. The [IntelliSense for VS Code plugin](https://tailwindcss.com/docs/editor-setup#intelli-sense-for-vs-code) will tell you what utility classes are available. If the utility class you need is not available from Tailwind, you should continue to use the [utility classes defined in GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities) which can be [seen on Unpkg](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss). If the utility class is still not available we need to enable a new core plugin in Tailwind. [Find the relevant core plugin](https://tailwindcss.com/docs/theme#configuration-reference) and open a MR to add the core plugin to the `corePlugins` array in [tailwind.defaults.js](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/bad526b4662f38868cfc3d89157b22f5cc9a94c5/tailwind.defaults.js).
 
 ### When should you create component classes?
 
@@ -57,36 +65,27 @@ Inspiration:
 
 ### Utility mixins
 
-In addition to utility classes GitLab UI provides utility mixins named after the utility classes.
-
-For example a utility class `.gl-mt-3` will have a corresponding mixin `gl-mt-3`. Here's how it can be used in an SCSS file:
-
-```scss
-.my-class {
-  @include gl-mt-3;
-}
-```
-
-These mixins should be used to replace _magic values_ in our code.
-For example a `margin-top: 8px` is a good candidate for the `@include gl-mt-3` mixin replacement.
-
-Avoid using utility mixins for [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values).
-For example prefer `display: flex` over `@include gl-display-flex`. Utility mixins are particularly useful for encapsulating our design system but there is no need to encapsulate simple properties.
+We are currently in the process of [migrating to Tailwind](#tailwind-css-migration). The migration removes utility mixins so please do not add any new usages of utility mixins. Instead use [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values) with SCSS variables.
 
 ```scss
 // Bad
 .my-class {
-  @include gl-display-flex;
-}
-
-// Good
-.my-class {
-  display: flex;
-}
-
-// Good
-.my-class {
   @include gl-mt-3;
+}
+
+// Very bad
+.my-class {
+  @include gl-deprecated-mt-3;
+}
+
+// Bad
+.my-class {
+  margin-top: 0.5rem;
+}
+
+// Good
+.my-class {
+  margin-top: $gl-spacing-scale-3;
 }
 ```
 

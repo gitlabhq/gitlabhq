@@ -49,11 +49,7 @@ module QA
 
       it(
         'publishes a composer package and deletes it',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016',
-        quarantine: {
-          type: :broken,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/421885"
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
       ) do
         Page::Project::Menu.perform(&:go_to_package_registry)
 

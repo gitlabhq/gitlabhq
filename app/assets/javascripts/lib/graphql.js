@@ -140,6 +140,10 @@ function createApolloClient(resolvers = {}, config = {}) {
     uri = `${baseUrl}${uri}`.replace(/\/{3,}/g, '/');
   }
 
+  if (gon.version) {
+    httpHeaders['x-gitlab-version'] = gon.version;
+  }
+
   const httpOptions = {
     uri,
     headers: {

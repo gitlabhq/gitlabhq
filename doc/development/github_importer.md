@@ -233,6 +233,10 @@ Advancing stages is done in one of two ways:
 The first approach should only be used by workers that perform all their work in
 a single thread, while `AdvanceStageWorker` should be used for everything else.
 
+An example of the first approach is how `ImportBaseDataWorker` invokes `PullRequestWorker` [directly](https://gitlab.com/gitlab-org/gitlab/-/blob/e047d64057e24d9183bd0e18e22f1c1eee8a4e92/app/workers/gitlab/github_import/stage/import_base_data_worker.rb#L29-29).
+
+An example of the second approach is how `PullRequestsWorker` invokes the `AdvanceStageWorker` when its own work has been [completed](https://gitlab.com/gitlab-org/gitlab/-/blob/e047d64057e24d9183bd0e18e22f1c1eee8a4e92/app/workers/gitlab/github_import/stage/import_pull_requests_worker.rb#L29).
+
 When you schedule a job, `AdvanceStageWorker`
 is given a project ID, a list of Redis keys, and the name of the next
 stage. The Redis keys (produced by `Gitlab::JobWaiter`) are used to check if the
