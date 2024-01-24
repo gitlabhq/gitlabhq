@@ -800,7 +800,7 @@ module ProjectsHelper
       group_title(project.group, nil, nil)
     else
       owner = project.namespace.owner
-      name = simple_sanitize(owner.name)
+      name = sanitize(owner.name, tags: [])
       url = user_path(owner)
 
       push_to_schema_breadcrumb(name, url)
