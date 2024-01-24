@@ -128,5 +128,21 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
           .to issue_fewer_queries_than { update_service.execute(other_mr) }
       end
     end
+
+    context 'when user has no set_merge_request_metadata permissions' do
+      before do
+        allow(user).to receive(:can?).and_call_original
+
+        allow(user)
+          .to receive(:can?)
+          .with(:set_merge_request_metadata, merge_request)
+          .and_return(false)
+      end
+
+      it 'does not update the MR assignees' do
+        expect { update_merge_request }
+          .not_to change { merge_request.reload.assignees.to_a }
+      end
+    end
   end
 end

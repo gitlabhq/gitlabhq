@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DependencyLinker::CargoTomlLinker do
+RSpec.describe Gitlab::DependencyLinker::CargoTomlLinker, feature_category: :source_code_management do
   describe '.support?' do
     it 'supports Cargo.toml' do
       expect(described_class.support?('Cargo.toml')).to be_truthy
@@ -102,6 +102,28 @@ RSpec.describe Gitlab::DependencyLinker::CargoTomlLinker do
     it 'does not link dependencies with a custom registry' do
       expect(subject).not_to include(link('registry-ignored', 'https://crates.io/crates/registry-ignored'))
       expect(subject).not_to include(link('custom-rand', 'https://crates.io/crates/custom-rand'))
+    end
+
+    context 'when file contents contain special regular expressions' do
+      let(:file_content) do
+        <<-CONTENT.strip_heredoc
+          [dependencies]
+          chrono = "0.4.7"
+          ".*((a|a)+|c)+"= { version = "0.17.5", path = ["aaaaaaaaaaaaaaaaaaa"] }
+          ".*((a|a)+|d)+"="aaaaaaaaaaaaaaaaaaa"
+
+          [dependencies.".*((a|a)+|e)+"]
+          version = "1.2.3"
+          path = "aaaaaaaaaaaaaaaaaaa"
+        CONTENT
+      end
+
+      it 'protects against malicious backtracking' do
+        expect do
+          Timeout.timeout(Gitlab::OtherMarkup::RENDER_TIMEOUT.seconds) { subject }
+        end.not_to raise_error
+        expect(subject).to include(link('chrono', 'https://crates.io/crates/chrono'))
+      end
     end
   end
 end

@@ -32,7 +32,7 @@ module Gitlab
 
       def link_toml(key, value, type, &url_proc)
         if value.is_a? String
-          link_regex(/^(?<name>#{key})\s*=\s*"#{value}"/, &url_proc)
+          link_regex(Gitlab::UntrustedRegexp.new(%{^(?<name>#{key})\\s*=\\s*"#{value}"}), &url_proc)
         elsif value.is_a? Hash
           # Don't link when using a custom registry
           return if value['registry']
@@ -41,8 +41,8 @@ module Gitlab
           # See https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#multiple-locations
           return unless value['version']
 
-          link_regex(/^(?<name>#{key})\s*=\s*\{/, &url_proc)
-          link_regex(/^\[#{type}\.(?<name>#{key})\]/, &url_proc)
+          link_regex(Gitlab::UntrustedRegexp.new("^(?<name>#{key})\\s*=\\s*\\{"), &url_proc)
+          link_regex(Gitlab::UntrustedRegexp.new("^\\[#{type}\\.(?<name>#{key})\\]"), &url_proc)
         end
       end
 

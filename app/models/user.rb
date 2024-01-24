@@ -1429,7 +1429,7 @@ class User < MainClusterwide::ApplicationRecord
   def sanitize_name
     return unless self.name
 
-    self.name = self.name.gsub(%r{</?[^>]*>}, '')
+    self.name = self.name.gsub(%r{(?:</?[^>]*>|<|>)}, '-')
   end
 
   def unset_secondary_emails_matching_deleted_email!(deleted_email)
