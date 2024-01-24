@@ -361,16 +361,13 @@ We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/
 
 ### Security policy scopes
 
-> The `policy_scope` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`.
+To enable these experimental features, a Group owner or administrator must toggle the experimental features by visiting `Settings > General > Permissions and group features`.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../../administration/feature_flags.md)
-named `security_policies_policy_scope`.
-On GitLab.com, this feature is available.
+![Enabling experimental security policy features](img/experimental-features-policies.png)
 
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
+Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or project on which you want to enforce policies, and the security policy project that contains the
 policies. For example, if you are linking policies to a group, a group owner must create the link to
 the security policy project. Then, all policies in the security policy project are inherited by all
 projects in the group.
@@ -433,14 +430,9 @@ scan_result_policy:
 
 ### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
 
-On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a
-group and imported into another, and had scan result policy rules. These rules are stored in a
-separate project to the one that was exported. As a result, the project contains policy rules that
-reference entities that don't exist in the imported project's group. The result is policy rules that
-are invalid, duplicated, or both.
+On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had scan result policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
 
-To remove all invalid scan result policy rules from a GitLab instance, an administrator can run
-the following script in the [Rails console](../../../administration/operations/rails_console.md).
+To remove all invalid scan result policy rules from a GitLab instance, an administrator can run the following script in the [Rails console](../../../administration/operations/rails_console.md).
 
 ```ruby
 Project.joins(:approval_rules).where(approval_rules: { report_type: %i[scan_finding license_scanning] }).where.not(approval_rules: { security_orchestration_policy_configuration_id: nil }).find_in_batches.flat_map do |batch|

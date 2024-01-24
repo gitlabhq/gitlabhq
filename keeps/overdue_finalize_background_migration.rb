@@ -23,7 +23,7 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
-    CUTOFF_MILESTONE = '16.4'
+    CUTOFF_MILESTONE = '16.8' # Only finalize migrations added before this
 
     def initialize; end
 
@@ -45,6 +45,7 @@ module Keeps
         identifiers = [self.class.name.demodulize, job_name]
 
         last_migration_file = last_migration_for_job(job_name)
+        next unless last_migration_file
 
         # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
         description = <<~MARKDOWN
@@ -110,14 +111,19 @@ module Keeps
     end
 
     def last_migration_for_job(job_name)
-      result = ::Gitlab::Housekeeper::Shell.execute('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.").chomp
-      result = result.each_line.select do |file|
+      files = ::Gitlab::Housekeeper::Shell.execute('git', 'grep', '--name-only', "MIGRATION = .#{job_name}.")
+        .each_line.map(&:chomp)
+
+      result = files.select do |file|
         File.read(file).include?('queue_batched_background_migration')
       end.max
 
       raise "Could not find migration for #{job_name}" unless result.present?
 
       result
+    rescue ::Gitlab::Housekeeper::Shell::Error
+      # `git grep` returns an error status code if it finds no results
+      nil
     end
 
     def add_ensure_call_to_migration(file, queue_method_node, job_name)

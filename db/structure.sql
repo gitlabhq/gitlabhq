@@ -23597,6 +23597,8 @@ CREATE TABLE sbom_source_packages (
     id bigint NOT NULL,
     name text NOT NULL,
     purl_type smallint NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_8fba79abed CHECK ((char_length(name) <= 255))
 );
 

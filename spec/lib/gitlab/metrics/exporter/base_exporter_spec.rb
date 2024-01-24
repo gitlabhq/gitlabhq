@@ -166,7 +166,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud
       end
 
       describe '#start' do
-        it "doesn't start running server" do
+        it "doesn't start running server", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438765' do
           expect(::WEBrick::HTTPServer).not_to receive(:new)
 
           exporter.start

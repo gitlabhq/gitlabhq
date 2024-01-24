@@ -1495,6 +1495,10 @@ ee/lib/ee/api/entities/project.rb
 ^[DiffMatchPatch gem]
 /vendor/gems/diff_match_patch @garyh
 
+^[Gitlab Housekeeper gem] @DylanGriffith @rymai @tigerwnz
+/gems/gitlab-housekeeper/
+/keeps/
+
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
 [JH Frontend] @jihulab/maintainers/frontend

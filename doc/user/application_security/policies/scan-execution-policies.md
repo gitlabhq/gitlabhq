@@ -12,11 +12,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
 > - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
 
-FLAG:
-On self-managed GitLab, this feature is enabled by default. To disable it, ask an
-administrator to [disable the feature flag](../../../administration/feature_flags.md) named
-`scan_execution_policy_pipelines`. On GitLab.com, this feature is enabled.
-
 Group, subgroup, or project owners can use scan execution policies to require that security scans
 run on a specified schedule or with the project pipeline. The security scan runs with multiple
 project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
@@ -331,14 +326,13 @@ These experimental features have limitations:
    without a `.gitlab-ci.yml` is not supported.
 1. The pipeline execution action cannot be used with a scheduled trigger type.
 
+To enable these experimental features, a Group owner or administrator must toggle the experimental features by visiting `Settings > General > Permissions and group features`.
+
+![Enabling experimental security policy features](img/experimental-features-policies.png)
+ 
+Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
+
 ### Pipeline execution policy action
-
-> The `custom` scan action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126457) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `compliance_pipeline_in_policies`.
-On GitLab.com, this feature is available.
 
 The pipeline execution policy action introduces a new scan action type into
 scan execution policies for creating and enforcing custom CI in your target
@@ -401,14 +395,6 @@ scan_execution_policy:
 In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 
 ### Security policy scopes
-
-> The `policy_scope` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../../administration/feature_flags.md)
-named `security_policies_policy_scope`.
-On GitLab.com, this feature is available.
 
 Security policy enforcement depends first on establishing a link between the group, subgroup, or
 project on which you want to enforce policies, and the security policy project that contains the
