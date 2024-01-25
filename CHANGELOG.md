@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.4 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Bring legacy verification behavior back for repositories](gitlab-org/security/gitlab@0f3c5e6c2867cb9ea5ca40cf6a0f1526d6018ad1) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@ae7844052f79e4fa987818bf642313fb6e47388f) ([merge request](gitlab-org/security/gitlab!3800))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@9abe7c6ca865c4884ad25db17c02ee7feb5c6c91) ([merge request](gitlab-org/security/gitlab!3803))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@58ab3f89b3298a248640bddbf94a5c3fdf27a867) ([merge request](gitlab-org/security/gitlab!3785))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@ced4fa77abf8a05cbc015b6128220d783d11c3a2) ([merge request](gitlab-org/security/gitlab!3788))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@d374f84266d2ca14a79a3924f458e244b50191e4) ([merge request](gitlab-org/security/gitlab!3792))
+
 ## 16.7.3 (2024-01-13)
 
 ### Fixed (1 change)

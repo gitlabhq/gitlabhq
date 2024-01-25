@@ -37228,6 +37228,9 @@ msgstr ""
 msgid "Profiles|Manage two-factor authentication"
 msgstr ""
 
+msgid "Profiles|No \"&lt;\" or \"&gt;\" characters, please."
+msgstr ""
+
 msgid "Profiles|No file chosen."
 msgstr ""
 
